@@ -43,7 +43,7 @@ namespace Framework
             }
         }
 
-        private MonoPoolBase GetOrCreatePool(MonoPoolBase pool)
+        public MonoPoolBase GetOrCreatePool(MonoPoolBase pool)
         {
             if (pool == null)
                 return null;
@@ -69,22 +69,33 @@ namespace Framework
                 
         public MonoPoolBase GetOrCreatePool(MonoPooledObjectBase asset)
         {
+            MonoPoolBase pool = GetPool(asset);
+            if (pool != null)
+                return pool;
+
+            // create new
             GameObject go = new GameObject();
             go.transform.parent = transform;
 #if UNITY_EDITOR
-            go.name = asset.gameObject.name;
+            go.name = "[Pool]" + asset.gameObject.name;
 #endif
 
-            PrefabObjectPool pool = go.AddComponent<PrefabObjectPool>();            // 默认使用PrefabObjectPool
+            pool = go.AddComponent<PrefabObjectPool>();            // 默认使用PrefabObjectPool
             pool.PrefabAsset = asset;
+            pool.Pivot = go.transform;
 
-            MonoPoolBase newPool = GetOrCreatePool(pool);
-            if ( newPool != pool)
-            { // 已存在相同PrefabAsset对应的Pool
-                Destroy(go);
-            }
+            pool = GetOrCreatePool(pool);
+            return pool;
+        }
 
-            return newPool;
+        private MonoPoolBase GetPool(MonoPooledObjectBase asset)
+        {
+            if (asset == null)
+                return null;
+
+            MonoPoolBase pool;
+            m_dictInstanceIdToPool.TryGetValue(asset.gameObject.GetInstanceID(), out pool);
+            return pool;
         }
     }
 }

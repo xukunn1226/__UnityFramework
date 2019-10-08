@@ -91,6 +91,9 @@ namespace Framework
 
         public override void Return(IPooledObject item)
         {
+            if (item == null)
+                return;
+
             --m_ActiveObjectsCount;
             m_DeactiveObjects.Add(item);
 
