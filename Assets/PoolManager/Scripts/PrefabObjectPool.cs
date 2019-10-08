@@ -6,8 +6,6 @@ namespace Framework
 {
     public class PrefabObjectPool : MonoPoolBase
     {
-        public GenericMonoPooledObject          PrefabAsset;
-
         [Range(0, 100)]
         public int                              PreAllocateAmount   = 1;                // 预实例化数量
 
@@ -21,7 +19,7 @@ namespace Framework
         public int                              CullAbove           = 10;               // 自动清理开启时至少保持deactive的数量
 
         
-        private List<IPooledObject>             m_DeactiveObjects = new List<IPooledObject>();
+        private List<IPooledObject>             m_DeactiveObjects   = new List<IPooledObject>();
 
         private int                             m_ActiveObjectsCount;
 
@@ -33,7 +31,8 @@ namespace Framework
             }
         }
 
-        private void Awake()
+        // 等待参数设置，故需在Start执行
+        private void Start()
         {
             Warmup();
         }
@@ -74,14 +73,18 @@ namespace Framework
                 if (!LimitInstance || totalCount < LimitAmount)
                 {
                     obj = Instantiate(PrefabAsset);
+                    obj.Pool = this;
                 }
             }
 
             if (obj != null)
             {
-                obj.Pool = this;
-                obj.OnGet();
                 ++m_ActiveObjectsCount;
+
+                MonoPooledObjectBase monoObj = (MonoPooledObjectBase)obj;
+                monoObj.transform.parent = Pivot;       // 默认放置Pivot下
+
+                obj.OnGet();
             }
             return obj;
         }
@@ -89,8 +92,12 @@ namespace Framework
         public override void Return(IPooledObject item)
         {
             --m_ActiveObjectsCount;
-            item.OnRelease();
             m_DeactiveObjects.Add(item);
+
+            MonoPooledObjectBase monoObj = (MonoPooledObjectBase)item;
+            monoObj.transform.parent = Pivot;           // 回收时放置Pivot下
+
+            item.OnRelease();
 
             if(CullDeactived && m_DeactiveObjects.Count > CullAbove)
             {
@@ -102,7 +109,7 @@ namespace Framework
         {
             while(m_DeactiveObjects.Count > CullAbove)
             {
-                GenericMonoPooledObject inst = m_DeactiveObjects[m_DeactiveObjects.Count - 1] as GenericMonoPooledObject;
+                MonoPooledObjectBase inst = m_DeactiveObjects[m_DeactiveObjects.Count - 1] as MonoPooledObjectBase;
                 m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
 
                 if(inst != null)
@@ -115,7 +122,7 @@ namespace Framework
             int count = m_DeactiveObjects.Count;
             for(int i = 0; i < count; ++i)
             {
-                GenericMonoPooledObject inst = m_DeactiveObjects[i] as GenericMonoPooledObject;
+                MonoPooledObjectBase inst = m_DeactiveObjects[i] as MonoPooledObjectBase;
                 if(inst != null)
                 {
                     Destroy(inst.gameObject);
@@ -124,19 +131,19 @@ namespace Framework
             m_DeactiveObjects.Clear();
         }
 
-        public GenericMonoPooledObject GetObject()
+        public MonoPooledObjectBase GetObject()
         {
-            return Get() as GenericMonoPooledObject;
+            return Get() as MonoPooledObjectBase;
         }
 
-        public GenericMonoPooledObject GetObject(Vector3 pos = default(Vector3), Quaternion rot = default(Quaternion), Transform parent = null)
+        public MonoPooledObjectBase GetObject(Vector3 pos = default(Vector3), Quaternion rot = default(Quaternion), Transform parent = null)
         {
-            GenericMonoPooledObject inst = GetObject();
+            MonoPooledObjectBase inst = GetObject();
             if (inst != null)
             {
                 inst.transform.position = pos;
                 inst.transform.rotation = rot;
-                inst.transform.parent = parent != null ? parent : transform;
+                inst.transform.parent = parent != null ? parent : Pivot;
             }
             return inst;
         }

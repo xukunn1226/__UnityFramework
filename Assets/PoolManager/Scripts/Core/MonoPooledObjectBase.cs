@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class GenericMonoPooledObject : MonoBehaviour, IPooledObject
+    public class MonoPooledObjectBase : MonoBehaviour, IPooledObject
     {
         public void OnInit()
         {
