@@ -111,8 +111,7 @@ namespace Framework
                 return;
             }
 
-            Destroy(pool.Group);
-            Destroy(pool.gameObject);
+            Destroy(pool.Group.gameObject);
             m_MonoPools.Remove(key);
         }
 
@@ -129,8 +128,7 @@ namespace Framework
                 return;
             }
 
-            Destroy(pool.Group);
-            Destroy(pool.gameObject);
+            Destroy(pool.Group.gameObject);
             m_MonoPools.Remove(key);
         }
 
@@ -139,7 +137,7 @@ namespace Framework
             Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
             while(e.MoveNext())
             {
-                Destroy(e.Current.Value);
+                Destroy(e.Current.Value.gameObject);
             }
             e.Dispose();
             m_MonoPools.Clear();
@@ -156,7 +154,7 @@ namespace Framework
             Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
             while(e.MoveNext())
             {
-                int key = (int)(e.Current.Key & 0xFFFF);
+                int key = (int)(e.Current.Key & 0xFFFFFFFF);
                 if(key == instanceId)
                 {
                     pool = e.Current.Value;
@@ -180,9 +178,11 @@ namespace Framework
 
         private static long GenerateKey(MonoPooledObjectBase asset, Type poolType)
         {
-            long key = asset.gameObject.GetInstanceID() | poolType.GetHashCode() << 32;
+            long key1 = (long)asset.gameObject.GetInstanceID();
+            long key2 = (long)poolType.GetHashCode() << 32;
+            long key = key1 | key2;
 
-            Debug.Log($"InstanceID: {asset.gameObject.GetInstanceID()}  Type: {poolType.GetHashCode()}  Type<<32: {poolType.GetHashCode() << 32}    key: {key}");
+            //Debug.Log($"InstanceID: {key1}  Type: {poolType.GetHashCode()}  Type<<32: {key2}    key: {key}");
 
             return key;
         }

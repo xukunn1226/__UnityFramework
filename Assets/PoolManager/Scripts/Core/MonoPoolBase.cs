@@ -9,10 +9,10 @@ namespace Framework
     /// </summary>
     public abstract class MonoPoolBase : MonoBehaviour, IPool
     {
-        public MonoPooledObjectBase     PrefabAsset;                // 缓存对象
+        public  MonoPooledObjectBase        PrefabAsset;                // 缓存对象
 
-        private Transform               m_Group;                    // 缓存对象挂载处
-        public Transform                Group
+        private Transform                   m_Group;                    // 缓存对象挂载处
+        public  Transform                   Group
         {
             get
             {
@@ -28,12 +28,14 @@ namespace Framework
             }
         }
 
-        public abstract void            Warmup();
+        protected   abstract void           Warmup();
 
-        public abstract IPooledObject   Get();
+        public      abstract IPooledObject  Get();
 
-        public abstract void            Return(IPooledObject item);
+        public      abstract void           Return(IPooledObject item);
 
-        public abstract void            Clear();
+        public      abstract void           TrimExcess();
+
+        protected   abstract void           Clear();
     }
 }

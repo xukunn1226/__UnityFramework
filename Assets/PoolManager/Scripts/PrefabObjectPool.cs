@@ -14,9 +14,10 @@ namespace Framework
         [Range(1, 1000)]
         public int                              LimitAmount         = 20;               // 最大实例化数量（激活与未激活）
         
-        public bool                             CullDeactived;                          // 是否开启清理未激活实例功能
+        public bool                             TrimDeactived;                          // 是否开启清理未激活实例功能
 
-        public int                              CullAbove           = 10;               // 自动清理开启时至少保持deactive的数量
+        [Range(1, 100)]
+        public int                              TrimAbove           = 10;               // 自动清理开启时至少保持deactive的数量
 
         
         private List<IPooledObject>             m_DeactiveObjects   = new List<IPooledObject>();
@@ -42,7 +43,7 @@ namespace Framework
             Clear();
         }
 
-        public override void Warmup()
+        protected override void Warmup()
         {
             if (PreAllocateAmount <= 0 || PrefabAsset == null)
                 return;
@@ -134,15 +135,15 @@ namespace Framework
 
             item.OnRelease();
 
-            if(CullDeactived && m_DeactiveObjects.Count > CullAbove)
+            if(TrimDeactived && m_DeactiveObjects.Count > TrimAbove)
             {
-                CullDeactivedObject();
+                TrimExcess();
             }
         }
 
-        private void CullDeactivedObject()
+        public override void TrimExcess()
         {
-            while(m_DeactiveObjects.Count > CullAbove)
+            while(m_DeactiveObjects.Count > TrimAbove)
             {
                 MonoPooledObjectBase inst = m_DeactiveObjects[m_DeactiveObjects.Count - 1] as MonoPooledObjectBase;
                 m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
@@ -154,7 +155,7 @@ namespace Framework
             }
         }
 
-        public override void Clear()
+        protected override void Clear()
         {
             int count = m_DeactiveObjects.Count;
             for(int i = 0; i < count; ++i)

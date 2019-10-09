@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework;
-using System;
 
 /// <summary>
 /// 对象池静态加载、动态加载、释放、查找等范例
@@ -10,28 +9,32 @@ using System;
 public class CreatePoolExample : MonoBehaviour
 {
     public MonoPooledObjectBase Prefab;
-
-    private MonoPoolBase m_Pool;
+    
+    private PrefabObjectPool    m_Pool;
 
     void Start()
     {
+        // 动态加载
         m_Pool = PoolManager.GetOrCreatePool(Prefab);
+        m_Pool.PreAllocateAmount = 3;
+        //m_Pool.LimitAmount = ...;
+        //m_Pool.LimitInstance = ...;
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftControl))
+        // 释放
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Backspace))
         {
-            if(Input.GetKeyDown(KeyCode.Backspace))
-            {
-                if (m_Pool != null)
-                    PoolManager.RemovePool(m_Pool);
-            }
+            //PoolManager.RemovePool(m_Pool);
 
-            if(Input.GetKeyDown(KeyCode.F))
-            {
-                MonoPoolBase pool = PoolManager.GetPool(Prefab);
-            }
+            PoolManager.RemovePool<PrefabObjectPool>(Prefab);
+        }
+
+        // 查找
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
+        {
+            MonoPoolBase pool = PoolManager.GetPool(Prefab);
         }
     }
 }
