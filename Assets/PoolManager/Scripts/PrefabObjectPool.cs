@@ -37,7 +37,12 @@ namespace Framework
             Warmup();
         }
 
-        public void Warmup()
+        private void OnDestroy()
+        {
+            Clear();
+        }
+
+        public override void Warmup()
         {
             if (PreAllocateAmount <= 0 || PrefabAsset == null)
                 return;
@@ -49,9 +54,36 @@ namespace Framework
 
             while(totalCount < PreAllocateAmount)
             {
-                IPooledObject obj = Get();
+                IPooledObject obj = GetNew();
                 Return(obj);
             }
+        }
+
+        private IPooledObject GetNew()
+        {
+            if (PrefabAsset == null)
+            {
+                Debug.LogError("PrefabObjectPool::GetNew() return null, because of PrefabAsset == null");
+                return null;
+            }
+
+            IPooledObject obj = null;
+            if (!LimitInstance || totalCount < LimitAmount)
+            {
+                obj = Instantiate(PrefabAsset);
+                obj.Pool = this;
+            }
+
+            if (obj != null)
+            {
+                ++m_ActiveObjectsCount;
+
+                MonoPooledObjectBase monoObj = (MonoPooledObjectBase)obj;
+                monoObj.transform.parent = Group;       // 默认放置Group下
+
+                obj.OnGet();
+            }
+            return obj;
         }
 
         public override IPooledObject Get()
@@ -82,7 +114,7 @@ namespace Framework
                 ++m_ActiveObjectsCount;
 
                 MonoPooledObjectBase monoObj = (MonoPooledObjectBase)obj;
-                monoObj.transform.parent = Pivot;       // 默认放置Pivot下
+                monoObj.transform.parent = Group;       // 默认放置Group下
 
                 obj.OnGet();
             }
@@ -98,7 +130,7 @@ namespace Framework
             m_DeactiveObjects.Add(item);
 
             MonoPooledObjectBase monoObj = (MonoPooledObjectBase)item;
-            monoObj.transform.parent = Pivot;           // 回收时放置Pivot下
+            monoObj.transform.parent = Group;           // 回收时放置Group下
 
             item.OnRelease();
 
@@ -115,12 +147,14 @@ namespace Framework
                 MonoPooledObjectBase inst = m_DeactiveObjects[m_DeactiveObjects.Count - 1] as MonoPooledObjectBase;
                 m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
 
-                if(inst != null)
+                if (inst != null)
+                {
                     Destroy(inst);
+                }
             }
         }
 
-        public void Clear()
+        public override void Clear()
         {
             int count = m_DeactiveObjects.Count;
             for(int i = 0; i < count; ++i)
@@ -146,7 +180,7 @@ namespace Framework
             {
                 inst.transform.position = pos;
                 inst.transform.rotation = rot;
-                inst.transform.parent = parent != null ? parent : Pivot;
+                inst.transform.parent = parent != null ? parent : Group;
             }
             return inst;
         }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +6,14 @@ namespace Framework
 {
     public class PoolManager : MonoBehaviour
     {
-        private Dictionary<int, MonoPoolBase>           m_dictInstanceIdToPool = new Dictionary<int, MonoPoolBase>();
+        private static PoolManager                      instance;
+
+        private static Dictionary<long, MonoPoolBase>   m_MonoPools = new Dictionary<long, MonoPoolBase>();         // key: instanceId | type.hashcode << 32
 
         private void Awake()
         {
+            instance = this;
+
             transform.parent = null;
             transform.position = Vector3.zero;
             transform.rotation = Quaternion.identity;
@@ -18,84 +22,169 @@ namespace Framework
             InitMonoPools();
         }
 
+        private void OnDestroy()
+        {
+            Clear();
+        }
+
         private void InitMonoPools()
         {
             MonoPoolBase[] pools = GetComponents<MonoPoolBase>();
             foreach(MonoPoolBase pool in pools)
             {
-                MonoPoolBase newPool = GetOrCreatePool(pool);
+                MonoPoolBase newPool = InitPool(pool);
                 if (newPool == null)
                     continue;
 
                 if(newPool != pool)
                 {
-                    Destroy(pool);
-                }
-                else
-                {
-                    GameObject go = new GameObject();
-                    go.transform.parent = transform;
-#if UNITY_EDITOR
-                    go.name = newPool.PrefabAsset.gameObject.name;
-#endif
-
+                    pool.enabled = false;       // 已存在对应Pool
                 }
             }
         }
 
-        public MonoPoolBase GetOrCreatePool(MonoPoolBase pool)
+        private MonoPoolBase InitPool(MonoPoolBase pool)
         {
-            if (pool == null)
-                return null;
-
-            if(pool.PrefabAsset == null)
+            if(pool == null || pool.PrefabAsset == null)
             {
-                Debug.LogWarning("pool.PrefabAsset == null, return null");
+                Debug.LogWarning("pool == null || pool.PrefabAsset == null, return null");
                 return null;
             }
 
-            MonoPoolBase value;
-            if(m_dictInstanceIdToPool.TryGetValue(pool.PrefabAsset.gameObject.GetInstanceID(), out value))
+            MonoPoolBase newPool = GetPool(pool.PrefabAsset, pool.GetType());
+            if (newPool != null)
             {
-                Debug.LogWarning($"PrefabAsset[{pool.PrefabAsset}] has already exist, plz check it");
-                return value;
+                Debug.LogWarning($"PrefabAsset[{pool.PrefabAsset.gameObject.name}] managed with [{pool.GetType().Name}] has already exist, plz check it");
+                return newPool;
             }
 
-            pool.transform.parent = transform;
-            m_dictInstanceIdToPool.Add(pool.PrefabAsset.gameObject.GetInstanceID(), pool);
-
-            return pool;
-        }
-                
-        public MonoPoolBase GetOrCreatePool(MonoPooledObjectBase asset)
-        {
-            MonoPoolBase pool = GetPool(asset);
-            if (pool != null)
-                return pool;
-
-            // create new
             GameObject go = new GameObject();
             go.transform.parent = transform;
 #if UNITY_EDITOR
-            go.name = "[Pool]" + asset.gameObject.name;
+            go.name = "[Pool]" + pool.PrefabAsset.gameObject.name;
 #endif
+            pool.Group = go.transform;
+            m_MonoPools.Add(GenerateKey(pool.PrefabAsset, pool.GetType()), pool);
 
-            pool = go.AddComponent<PrefabObjectPool>();            // 默认使用PrefabObjectPool
-            pool.PrefabAsset = asset;
-            pool.Pivot = go.transform;
-
-            pool = GetOrCreatePool(pool);
             return pool;
         }
 
-        private MonoPoolBase GetPool(MonoPooledObjectBase asset)
+        public static PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase asset)
+        {
+            return GetOrCreatePool<PrefabObjectPool>(asset);
+        }
+
+        public static T GetOrCreatePool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
         {
             if (asset == null)
                 return null;
 
+            MonoPoolBase pool = GetPool(asset, typeof(T));
+            if (pool != null)
+            {
+                Debug.LogWarning($"PrefabAsset[{asset.gameObject.name}] managed with [{typeof(T).Name}] has already exist, plz check it");
+                return (T)pool;
+            }
+
+            GameObject go = new GameObject();
+            go.transform.parent = PoolManager.instance.transform;
+#if UNITY_EDITOR
+            go.name = "[Pool]" + asset.gameObject.name;
+#endif
+            T newPool = go.AddComponent<T>();
+            newPool.PrefabAsset = asset;
+            newPool.Group = go.transform;
+            m_MonoPools.Add(GenerateKey(asset, typeof(T)), newPool);
+            
+            return newPool;
+        }
+
+        public static void RemovePool(MonoPoolBase pool)
+        {
+            if (pool == null || pool.PrefabAsset == null)
+                return;
+
+            long key = GenerateKey(pool.PrefabAsset, pool.GetType());
+            if (!m_MonoPools.ContainsKey(key))
+            {
+                Debug.LogWarning($"Try to remove an inexistent pool, [{pool.PrefabAsset.gameObject.name}]  [{pool.GetType().Name}]");
+                return;
+            }
+
+            Destroy(pool.Group);
+            Destroy(pool.gameObject);
+            m_MonoPools.Remove(key);
+        }
+
+        public static void RemovePool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
+        {
+            if (asset == null)
+                return;
+
+            long key = GenerateKey(asset, typeof(T));
             MonoPoolBase pool;
-            m_dictInstanceIdToPool.TryGetValue(asset.gameObject.GetInstanceID(), out pool);
+            if(!m_MonoPools.TryGetValue(key, out pool))
+            {
+                Debug.LogWarning($"Try to remove not exist pool, [{asset.gameObject.name}]  [{typeof(T).Name}]");
+                return;
+            }
+
+            Destroy(pool.Group);
+            Destroy(pool.gameObject);
+            m_MonoPools.Remove(key);
+        }
+
+        private void Clear()
+        {
+            Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
+            while(e.MoveNext())
+            {
+                Destroy(e.Current.Value);
+            }
+            e.Dispose();
+            m_MonoPools.Clear();
+        }
+
+        // 仅返回第一个符合查找条件的数据
+        public static MonoPoolBase GetPool(MonoPooledObjectBase asset)
+        {
+            if (asset == null)
+                return null;
+
+            MonoPoolBase pool = null;
+            int instanceId = asset.gameObject.GetInstanceID();
+            Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
+            while(e.MoveNext())
+            {
+                int key = (int)(e.Current.Key & 0xFFFF);
+                if(key == instanceId)
+                {
+                    pool = e.Current.Value;
+                    break;
+                }
+            }
+            e.Dispose();
+
             return pool;
+        }
+
+        private static MonoPoolBase GetPool(MonoPooledObjectBase asset, Type poolType)
+        {
+            if (asset == null || poolType == null)
+                return null;
+
+            MonoPoolBase pool;
+            m_MonoPools.TryGetValue(GenerateKey(asset, poolType), out pool);
+            return pool;
+        }
+
+        private static long GenerateKey(MonoPooledObjectBase asset, Type poolType)
+        {
+            long key = asset.gameObject.GetInstanceID() | poolType.GetHashCode() << 32;
+
+            Debug.Log($"InstanceID: {asset.gameObject.GetInstanceID()}  Type: {poolType.GetHashCode()}  Type<<32: {poolType.GetHashCode() << 32}    key: {key}");
+
+            return key;
         }
     }
 }

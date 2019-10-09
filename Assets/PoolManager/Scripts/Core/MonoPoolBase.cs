@@ -11,25 +11,29 @@ namespace Framework
     {
         public MonoPooledObjectBase     PrefabAsset;                // 缓存对象
 
-        private Transform               m_Pivot;                    // 缓存对象挂载处
-        public Transform                Pivot
+        private Transform               m_Group;                    // 缓存对象挂载处
+        public Transform                Group
         {
             get
             {
-                if(m_Pivot == null)
+                if(m_Group == null)
                 {
-                    m_Pivot = transform;
+                    m_Group = transform;
                 }
-                return m_Pivot;
+                return m_Group;
             }
             set
             {
-                m_Pivot = value;
+                m_Group = value;
             }
         }
 
-        public abstract IPooledObject Get();
+        public abstract void            Warmup();
 
-        public abstract void Return(IPooledObject item);
+        public abstract IPooledObject   Get();
+
+        public abstract void            Return(IPooledObject item);
+
+        public abstract void            Clear();
     }
 }

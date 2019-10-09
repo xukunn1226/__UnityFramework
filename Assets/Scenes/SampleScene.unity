@@ -149,8 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e12a180a5dcf8f74d8d77dc1ab7a8c73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 8949299729863850809, guid: aa172dc2d53075e4aa54a163c0f616c9, type: 3}
-  SpawnDelay: 3
+  Prefab: {fileID: -2552148250554265963, guid: 820177e395c55f64f9409c8fee4291f4, type: 3}
 --- !u!4 &272467199
 Transform:
   m_ObjectHideFlags: 0
@@ -223,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PrefabAsset: {fileID: 8949299729863850809, guid: aa172dc2d53075e4aa54a163c0f616c9,
     type: 3}
-  PreAllocateAmount: 1
+  PreAllocateAmount: 4
   LimitInstance: 0
   LimitAmount: 20
   CullDeactived: 0
