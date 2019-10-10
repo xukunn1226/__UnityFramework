@@ -24,11 +24,21 @@ public class Foo : IPooledObject
 
     public void ReturnToPool()
     {
-        Debug.Log("Foo::ReturnPool");
-        //throw new System.NotImplementedException();
+        //Debug.Log("Foo::ReturnPool");
+        throw new System.NotImplementedException();
     }
 
-    public IPool Pool { get; set; }
+    public IPool Pool
+    {
+        get
+        {
+            throw new System.AccessViolationException();
+        }
+        set
+        {
+            throw new System.AccessViolationException();
+        }
+    }
 
     public static Foo Get()
     {
@@ -37,8 +47,7 @@ public class Foo : IPooledObject
             m_Pool = new ObjectPool<Foo>(1);
         }
 
-        Foo f = (Foo)m_Pool.Get();
-        return f;
+        return (Foo)m_Pool.Get();
     }
 
     public static void Release(Foo f)
