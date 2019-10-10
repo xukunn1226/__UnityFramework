@@ -78,7 +78,7 @@ namespace Framework
             IPooledObject obj = null;
             if (!LimitInstance || totalCount < LimitAmount)
             {
-                obj = Instantiate(PrefabAsset);
+                obj = (IPooledObject)PoolManager.Instantiate(PrefabAsset);
                 obj.Pool = this;
             }
 
@@ -113,7 +113,7 @@ namespace Framework
             {
                 if (!LimitInstance || totalCount < LimitAmount)
                 {
-                    obj = Instantiate(PrefabAsset);
+                    obj = (IPooledObject)PoolManager.Instantiate(PrefabAsset);
                     obj.Pool = this;
                 }
             }
@@ -159,7 +159,7 @@ namespace Framework
 
                 if (inst != null)
                 {
-                    Destroy(inst);
+                    PoolManager.Destroy(inst.gameObject);
                 }
             }
         }
@@ -172,7 +172,7 @@ namespace Framework
                 MonoPooledObjectBase inst = m_DeactiveObjects[i] as MonoPooledObjectBase;
                 if(inst != null)
                 {
-                    Destroy(inst.gameObject);
+                    PoolManager.Destroy(inst.gameObject);
                 }
             }
             m_DeactiveObjects.Clear();

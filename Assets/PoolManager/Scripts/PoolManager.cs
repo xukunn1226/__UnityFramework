@@ -190,5 +190,35 @@ namespace Framework
 
             return key;
         }
+
+        public delegate UnityEngine.Object InstantiateDelegate(UnityEngine.Object original);
+        public delegate void DestroyDelegate(GameObject obj);
+
+        public static InstantiateDelegate   InstantiateDelegates;
+        public static DestroyDelegate       DestroyDelegates;
+
+        new public static UnityEngine.Object Instantiate(UnityEngine.Object original)
+        {
+            if(InstantiateDelegates != null)
+            {
+                return InstantiateDelegates(original);
+            }
+            else
+            {
+                return UnityEngine.Object.Instantiate(original);
+            }
+        }
+
+        public static void Destroy(GameObject obj)
+        {
+            if(DestroyDelegates != null)
+            {
+                DestroyDelegates(obj);
+            }
+            else
+            {
+                UnityEngine.Object.Destroy(obj);
+            }
+        }
     }
 }

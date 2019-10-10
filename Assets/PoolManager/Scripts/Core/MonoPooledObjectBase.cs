@@ -48,7 +48,7 @@ namespace Framework
             else
             {
                 Debug.LogWarning("Discard the PooledObject, because of Pool == null");
-                Destroy(this);
+                PoolManager.Destroy(gameObject);
             }
         }
     }
