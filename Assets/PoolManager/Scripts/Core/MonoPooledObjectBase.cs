@@ -6,6 +6,24 @@ namespace Framework
 {
     public class MonoPooledObjectBase : MonoBehaviour, IPooledObject
     {
+        private IPool m_Pool;
+
+        public IPool Pool
+        {
+            get
+            {
+                if(m_Pool == null)
+                {
+                    m_Pool = PoolManager.GetOrCreatePool(this);
+                }
+                return m_Pool;
+            }
+            set
+            {
+                m_Pool = value;
+            }
+        }
+
         public void OnInit()
         {
             throw new System.NotImplementedException("GenericMonoPooledObject:OnInit not implemente");
@@ -33,7 +51,5 @@ namespace Framework
                 Destroy(this);
             }
         }
-
-        public IPool Pool { get; set; }
     }
 }

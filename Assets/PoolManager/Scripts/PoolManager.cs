@@ -69,6 +69,21 @@ namespace Framework
             return pool;
         }
 
+        private void Clear()
+        {
+            Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
+            while (e.MoveNext())
+            {
+                Destroy(e.Current.Value.gameObject);
+            }
+            e.Dispose();
+            m_MonoPools.Clear();
+        }
+
+
+
+
+
         public static PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase asset)
         {
             return GetOrCreatePool<PrefabObjectPool>(asset);
@@ -82,12 +97,12 @@ namespace Framework
             MonoPoolBase pool = GetPool(asset, typeof(T));
             if (pool != null)
             {
-                Debug.LogWarning($"PrefabAsset[{asset.gameObject.name}] managed with [{typeof(T).Name}] has already exist, plz check it");
+                //Debug.LogWarning($"PrefabAsset[{asset.gameObject.name}] managed with [{typeof(T).Name}] has already exist, plz check it");
                 return (T)pool;
             }
 
             GameObject go = new GameObject();
-            go.transform.parent = PoolManager.instance.transform;
+            go.transform.parent = instance?.transform;
 #if UNITY_EDITOR
             go.name = "[Pool]" + asset.gameObject.name;
 #endif
@@ -132,17 +147,6 @@ namespace Framework
             m_MonoPools.Remove(key);
         }
 
-        private void Clear()
-        {
-            Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
-            while(e.MoveNext())
-            {
-                Destroy(e.Current.Value.gameObject);
-            }
-            e.Dispose();
-            m_MonoPools.Clear();
-        }
-
         // 仅返回第一个符合查找条件的数据
         public static MonoPoolBase GetPool(MonoPooledObjectBase asset)
         {
@@ -178,7 +182,7 @@ namespace Framework
 
         private static long GenerateKey(MonoPooledObjectBase asset, Type poolType)
         {
-            long key1 = (long)asset.gameObject.GetInstanceID();
+            long key1 = asset.gameObject.GetInstanceID();
             long key2 = (long)poolType.GetHashCode() << 32;
             long key = key1 | key2;
 

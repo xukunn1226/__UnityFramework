@@ -2,7 +2,7 @@
 
 namespace Framework
 {
-    public class CubePooledObject : MonoPooledObjectBase
+    public class CapsulePooledObject : MonoPooledObjectBase
     {
         public float m_LifeTime = 5;
 

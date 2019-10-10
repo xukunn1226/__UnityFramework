@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class CubePool : PrefabObjectPool
+    public class CapsulePool : PrefabObjectPool
     {
         
     }

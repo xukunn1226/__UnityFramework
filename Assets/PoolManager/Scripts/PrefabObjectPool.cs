@@ -43,6 +43,13 @@ namespace Framework
             Clear();
         }
 
+#if UNITY_EDITOR
+        private void Update()
+        {
+            DisplayDebugInfo();
+        }
+#endif
+
         protected override void Warmup()
         {
             if (PreAllocateAmount <= 0 || PrefabAsset == null)
@@ -84,6 +91,7 @@ namespace Framework
 
                 obj.OnGet();
             }
+
             return obj;
         }
 
@@ -119,6 +127,7 @@ namespace Framework
 
                 obj.OnGet();
             }
+
             return obj;
         }
 
@@ -184,6 +193,11 @@ namespace Framework
                 inst.transform.parent = parent != null ? parent : Group;
             }
             return inst;
+        }
+
+        private void DisplayDebugInfo()
+        {
+            gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset.gameObject.name, m_DeactiveObjects.Count, totalCount);
         }
     }
 }
