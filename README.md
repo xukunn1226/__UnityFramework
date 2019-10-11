@@ -8,4 +8,4 @@ TODO LIST:
 * system object managed with PoolManager
 * implement self-adapted "Pool"
  
-![image](https://github.com/xukunn1226/PoolManager/Images/QQ截图20191011135925.png)
+![image](https://github.com/xukunn1226/PoolManager/blob/master/Images/20191011135925.png)
