@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class PrefabObjectPool : MonoPoolBase
+    public sealed class PrefabObjectPool : MonoPoolBase
     {
         [Range(0, 100)]
         public int                              PreAllocateAmount   = 1;                // 预实例化数量
