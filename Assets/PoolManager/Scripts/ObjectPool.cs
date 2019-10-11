@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class ObjectPool<T> : IPool where T : IPooledObject, new()
+    public class ObjectPool<T> : IPool where T : IPooledObject  //, new()
     {
         private Stack<T>            m_Stack;
 
@@ -13,6 +13,8 @@ namespace Framework
         
         public ObjectPool(int initSize, int MaxCount = 0)
         {
+            PoolManager.RegisterObjectPool(typeof(T), this);
+
             initSize = Mathf.Max(0, initSize);
             m_MaxCount = MaxCount <= 0 ? int.MaxValue : Mathf.Max(initSize, MaxCount);
 
@@ -28,7 +30,8 @@ namespace Framework
 
             for (int i = 0; i < initSize; ++i)
             {
-                T element = new T();
+                //T element = new T();
+                T element = System.Activator.CreateInstance<T>();
                 element.OnInit();
                 m_Stack.Push(element);
             }
@@ -39,7 +42,8 @@ namespace Framework
             T element;
             if (m_Stack.Count == 0)
             {
-                element = new T();
+                //element = new T();
+                element = System.Activator.CreateInstance<T>();
                 element.OnInit();
             }
             else
@@ -61,6 +65,11 @@ namespace Framework
                 m_Stack.Push((T)element);
                 element.OnRelease();
             }
+        }
+
+        public void Clear()
+        {
+            m_Stack.Clear();
         }
     }
 }

@@ -164,7 +164,7 @@ namespace Framework
             }
         }
 
-        protected override void Clear()
+        public override void Clear()
         {
             int count = m_DeactiveObjects.Count;
             for(int i = 0; i < count; ++i)

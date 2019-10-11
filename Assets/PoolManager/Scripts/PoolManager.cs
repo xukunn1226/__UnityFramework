@@ -6,9 +6,18 @@ namespace Framework
 {
     public class PoolManager : MonoBehaviour
     {
+        public delegate UnityEngine.Object InstantiateDelegate(UnityEngine.Object original);
+        public delegate void DestroyDelegate(GameObject obj);
+
+        public static InstantiateDelegate               InstantiateDelegates;
+        public static DestroyDelegate                   DestroyDelegates;
+
+
         private static PoolManager                      instance;
 
         private static Dictionary<long, MonoPoolBase>   m_MonoPools = new Dictionary<long, MonoPoolBase>();         // key: instanceId | type.hashcode << 32
+
+        private static Dictionary<Type, IPool> m_Pools = new Dictionary<Type, IPool>();
 
         private void Awake()
         {
@@ -24,7 +33,7 @@ namespace Framework
 
         private void OnDestroy()
         {
-            Clear();
+            ClearMonoPools();
         }
 
         private void InitMonoPools()
@@ -69,7 +78,7 @@ namespace Framework
             return pool;
         }
 
-        private void Clear()
+        public static void ClearMonoPools()
         {
             Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
             while (e.MoveNext())
@@ -191,11 +200,32 @@ namespace Framework
             return key;
         }
 
-        public delegate UnityEngine.Object InstantiateDelegate(UnityEngine.Object original);
-        public delegate void DestroyDelegate(GameObject obj);
 
-        public static InstantiateDelegate   InstantiateDelegates;
-        public static DestroyDelegate       DestroyDelegates;
+        public static void RegisterObjectPool(Type type, IPool pool)
+        {
+            if(m_Pools.ContainsKey(type))
+            {
+                Debug.LogError($"RegisterObjectPool: Type[{type}] has already registered.");
+                return;
+            }
+
+            m_Pools.Add(type, pool);
+        }
+
+        public static void UnregisterObjectPool(Type type)
+        {
+            if(!m_Pools.ContainsKey(type))
+            {
+                Debug.LogError($"UnregisterObjectPool: Type[{type}] can't find");
+                return;
+            }
+
+            m_Pools[type].Clear();
+            m_Pools.Remove(type);
+        }
+
+
+
 
         new public static UnityEngine.Object Instantiate(UnityEngine.Object original)
         {

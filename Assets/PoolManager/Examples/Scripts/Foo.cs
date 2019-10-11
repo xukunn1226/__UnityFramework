@@ -24,8 +24,8 @@ public class Foo : IPooledObject
 
     public void ReturnToPool()
     {
-        //Debug.Log("Foo::ReturnPool");
-        throw new System.NotImplementedException();
+        Debug.Log("Foo::ReturnPool");
+        Release(this);
     }
 
     public IPool Pool

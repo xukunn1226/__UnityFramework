@@ -9,5 +9,7 @@ namespace Framework
         IPooledObject Get();
 
         void Return(IPooledObject item);
+
+        void Clear();
     }
 }

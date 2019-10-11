@@ -36,6 +36,6 @@ namespace Framework
 
         public      abstract void           TrimExcess();
 
-        protected   abstract void           Clear();
+        public      abstract void           Clear();
     }
 }
