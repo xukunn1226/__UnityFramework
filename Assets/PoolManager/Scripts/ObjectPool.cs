@@ -4,19 +4,21 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class ObjectPool<T> : IPool where T : IPooledObject  //, new()
+    public sealed class ObjectPool<T> : IPool where T : IPooledObject  //, new()
     {
         private Stack<T>            m_Stack;
 
-        // 缓存池最大缓存数量，<= 0, 表示没有最大限制
-        private readonly int        m_MaxCount;
+        public int                  countAll        { get; private set; }
+
+        public int                  countActive     { get { return countAll - countInactive; } }
+
+        public int                  countInactive   { get { return m_Stack.Count; } }
         
-        public ObjectPool(int initSize, int MaxCount = 0)
+        public ObjectPool(int initSize)
         {
             PoolManager.RegisterObjectPool(typeof(T), this);
 
             initSize = Mathf.Max(0, initSize);
-            m_MaxCount = MaxCount <= 0 ? int.MaxValue : Mathf.Max(initSize, MaxCount);
 
             InitPool(initSize);
         }
@@ -34,6 +36,7 @@ namespace Framework
                 T element = System.Activator.CreateInstance<T>();
                 element.OnInit();
                 m_Stack.Push(element);
+                ++countAll;
             }
         }
 
@@ -45,6 +48,7 @@ namespace Framework
                 //element = new T();
                 element = System.Activator.CreateInstance<T>();
                 element.OnInit();
+                ++countAll;
             }
             else
             {
@@ -60,11 +64,8 @@ namespace Framework
             if (element == null)
                 return;
 
-            if (m_Stack.Count < m_MaxCount)
-            {
-                m_Stack.Push((T)element);
-                element.OnRelease();
-            }
+            m_Stack.Push((T)element);
+            element.OnRelease();
         }
 
         public void Clear()

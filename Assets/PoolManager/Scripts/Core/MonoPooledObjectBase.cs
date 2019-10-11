@@ -14,7 +14,7 @@ namespace Framework
             {
                 if(m_Pool == null)
                 {
-                    m_Pool = PoolManager.GetOrCreatePool(this);
+                    m_Pool = PoolManager.GetOrCreatePool(this);         // 默认使用PrefabObjectPool，使用PoolManager::GetOrCreatePool<T>(MonoPooledObjectBase)可以创建指定Pool
                 }
                 return m_Pool;
             }

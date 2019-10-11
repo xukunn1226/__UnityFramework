@@ -28,14 +28,12 @@ namespace Framework
             }
         }
 
-        protected   abstract void           Warmup();
-
         public      abstract IPooledObject  Get();
 
         public      abstract void           Return(IPooledObject item);
 
-        public      abstract void           TrimExcess();
-
         public      abstract void           Clear();
+
+        protected   virtual void            Warmup() { }
     }
 }

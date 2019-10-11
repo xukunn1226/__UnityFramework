@@ -31,10 +31,10 @@ namespace Framework
                 return m_DeactiveObjects.Count + m_ActiveObjectsCount;
             }
         }
-
-        // 等待参数设置，故需在Start执行
+                
         private void Start()
         {
+            // 等待参数设置，故需在Start执行
             Warmup();
         }
 
@@ -150,7 +150,11 @@ namespace Framework
             }
         }
 
-        public override void TrimExcess()
+        /// <summary>
+        /// 裁减未激活对象
+        /// 注意：不是清空，不同于Clear
+        /// </summary>
+        public void TrimExcess()
         {
             while(m_DeactiveObjects.Count > TrimAbove)
             {
