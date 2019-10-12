@@ -15,9 +15,9 @@ namespace Framework
 
         private static PoolManager                      instance;
 
-        private static Dictionary<long, MonoPoolBase>   m_MonoPools = new Dictionary<long, MonoPoolBase>();         // key: instanceId | type.hashcode << 32
+        private static Dictionary<long, MonoPoolBase>   m_MonoPools     = new Dictionary<long, MonoPoolBase>();         // key: instanceId | type.hashcode << 32
 
-        private static Dictionary<Type, IPool> m_Pools = new Dictionary<Type, IPool>();
+        private static Dictionary<Type, IPool>          m_Pools         = new Dictionary<Type, IPool>();
 
         private void Awake()
         {
