@@ -47,8 +47,7 @@
     inst.transform.localRotation = Random.rotation;
     inst.Body.useGravity = false;
     ```
-> **PoolManager**
-    
+> **PoolManager**    
     ```C#
     PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase asset)
     T GetOrCreatePool<T>(MonoPooledObjectBase asset)
