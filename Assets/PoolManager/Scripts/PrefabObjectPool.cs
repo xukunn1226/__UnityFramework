@@ -22,16 +22,12 @@ namespace Framework
         
         private List<IPooledObject>             m_DeactiveObjects   = new List<IPooledObject>();
 
-        private int                             m_ActiveObjectsCount;
+        public int                              countAll            { get; private set; }
 
-        public int                              totalCount
-        {
-            get
-            {
-                return m_DeactiveObjects.Count + m_ActiveObjectsCount;
-            }
-        }
-                
+        public int                              countActive         { get { return countAll - countInactive; } }
+
+        public int                              countInactive       { get { return m_DeactiveObjects.Count; } }
+
         private void Start()
         {
             // 等待参数设置，故需在Start执行
@@ -60,7 +56,7 @@ namespace Framework
                 PreAllocateAmount = Mathf.Min(PreAllocateAmount, LimitAmount);
             }
 
-            while(totalCount < PreAllocateAmount)
+            while(countAll < PreAllocateAmount)
             {
                 IPooledObject obj = GetNew();
                 Return(obj);
@@ -76,16 +72,15 @@ namespace Framework
             }
 
             IPooledObject obj = null;
-            if (!LimitInstance || totalCount < LimitAmount)
+            if (!LimitInstance || countAll < LimitAmount)
             {
                 obj = (IPooledObject)PoolManager.Instantiate(PrefabAsset);
                 obj.Pool = this;
+                ++countAll;
             }
 
             if (obj != null)
             {
-                ++m_ActiveObjectsCount;
-
                 MonoPooledObjectBase monoObj = (MonoPooledObjectBase)obj;
                 monoObj.transform.parent = Group;       // 默认放置Group下
 
@@ -111,17 +106,16 @@ namespace Framework
             }
             else
             {
-                if (!LimitInstance || totalCount < LimitAmount)
+                if (!LimitInstance || countAll < LimitAmount)
                 {
                     obj = (IPooledObject)PoolManager.Instantiate(PrefabAsset);
                     obj.Pool = this;
+                    ++countAll;
                 }
             }
 
             if (obj != null)
             {
-                ++m_ActiveObjectsCount;
-
                 MonoPooledObjectBase monoObj = (MonoPooledObjectBase)obj;
                 monoObj.transform.parent = Group;       // 默认放置Group下
 
@@ -136,7 +130,6 @@ namespace Framework
             if (item == null)
                 return;
 
-            --m_ActiveObjectsCount;
             m_DeactiveObjects.Add(item);
 
             MonoPooledObjectBase monoObj = (MonoPooledObjectBase)item;
@@ -201,7 +194,7 @@ namespace Framework
 
         private void DisplayDebugInfo()
         {
-            gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset.gameObject.name, m_DeactiveObjects.Count, totalCount);
+            gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset.gameObject.name, m_DeactiveObjects.Count, countAll);
         }
     }
 }

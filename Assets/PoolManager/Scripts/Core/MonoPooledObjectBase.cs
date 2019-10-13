@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class MonoPooledObjectBase : MonoBehaviour, IPooledObject
+    public abstract class MonoPooledObjectBase : MonoBehaviour, IPooledObject
     {
         private IPool m_Pool;
 

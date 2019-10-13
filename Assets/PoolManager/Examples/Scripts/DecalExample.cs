@@ -7,12 +7,12 @@ public class DecalExample : MonoBehaviour
 {
     public Decal Prefab;
 
-    private AdjustedPrefabObjectPool m_Pool;
+    private LivingPrefabObjectPool m_Pool;
 
     private void Start()
     {
         if(Prefab != null)
-            m_Pool = PoolManager.GetOrCreatePool<AdjustedPrefabObjectPool>(Prefab);
+            m_Pool = PoolManager.GetOrCreatePool<LivingPrefabObjectPool>(Prefab);
     }
     private void Spawn()
     {
