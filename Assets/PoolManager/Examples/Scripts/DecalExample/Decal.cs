@@ -44,7 +44,7 @@ public class Decal : LivingMonoPooledObject
         if(m_PS != null)
         {
             ParticleSystem.MainModule main = m_PS.main;
-            main.simulationSpeed = m_Speed;
+            main.simulationSpeed = Speed;
         }
     }
 }

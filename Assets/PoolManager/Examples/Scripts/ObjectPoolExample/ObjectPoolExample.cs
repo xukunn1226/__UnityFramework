@@ -16,10 +16,4 @@ public class ObjectPoolExample : MonoBehaviour
 
         Foo.Get();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -6,20 +6,24 @@ namespace Framework
 {
     public class LivingMonoPooledObject : MonoPooledObjectBase, ILifeTime
     {
-        public float        LifeTime        { get; set; }
-
+        public float        LifeTime        { get; set; }                   // <= 0, 表示生命周期无限，不会自动回收
         private float       m_LifeTime;
+
+        public float        Speed           { get { return m_Speed; } }
+        private float       m_Speed;
 
         private float       m_ElapsedTime;
 
-        protected float     m_Speed = 1;
         
         protected virtual void Update()
         {
-            m_ElapsedTime += Time.deltaTime * m_Speed;
-            if (m_ElapsedTime > m_LifeTime)
+            if (m_LifeTime > 0)
             {
-                ReturnToPool();
+                m_ElapsedTime += Time.deltaTime * m_Speed;
+                if (m_ElapsedTime > m_LifeTime)
+                {
+                    ReturnToPool();
+                }
             }
         }
 
@@ -27,8 +31,10 @@ namespace Framework
         {
             base.OnGet();
 
+            // reset variables
             m_LifeTime = LifeTime;
             m_ElapsedTime = 0;
+            SetSpeed(1);
         }
 
         public virtual void SetSpeed(float speed)

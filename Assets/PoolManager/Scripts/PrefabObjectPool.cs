@@ -20,7 +20,7 @@ namespace Framework
         public int                              TrimAbove           = 10;               // 自动清理开启时至少保持deactive的数量
 
         
-        private List<IPooledObject>             m_DeactiveObjects   = new List<IPooledObject>();
+        private List<MonoPooledObjectBase>      m_DeactiveObjects   = new List<MonoPooledObjectBase>();
 
         public int                              countAll            { get; private set; }
 
@@ -71,19 +71,17 @@ namespace Framework
                 return null;
             }
 
-            IPooledObject obj = null;
+            MonoPooledObjectBase obj = null;
             if (!LimitInstance || countAll < LimitAmount)
             {
-                obj = (IPooledObject)PoolManager.Instantiate(PrefabAsset);
+                obj = (MonoPooledObjectBase)PoolManager.Instantiate(PrefabAsset);
                 obj.Pool = this;
                 ++countAll;
             }
 
             if (obj != null)
             {
-                MonoPooledObjectBase monoObj = (MonoPooledObjectBase)obj;
-                monoObj.transform.parent = Group;       // 默认放置Group下
-
+                obj.transform.parent = Group;       // 每次取出时默认放置Group下，因为parent可能会被改变
                 obj.OnGet();
             }
 
@@ -98,7 +96,7 @@ namespace Framework
                 return null;
             }
 
-            IPooledObject obj = null;
+            MonoPooledObjectBase obj = null;
             if (m_DeactiveObjects.Count > 0)
             {
                 obj = m_DeactiveObjects[m_DeactiveObjects.Count - 1];
@@ -108,7 +106,7 @@ namespace Framework
             {
                 if (!LimitInstance || countAll < LimitAmount)
                 {
-                    obj = (IPooledObject)PoolManager.Instantiate(PrefabAsset);
+                    obj = (MonoPooledObjectBase)PoolManager.Instantiate(PrefabAsset);
                     obj.Pool = this;
                     ++countAll;
                 }
@@ -116,9 +114,7 @@ namespace Framework
 
             if (obj != null)
             {
-                MonoPooledObjectBase monoObj = (MonoPooledObjectBase)obj;
-                monoObj.transform.parent = Group;       // 默认放置Group下
-
+                obj.transform.parent = Group;       // 每次取出时默认放置Group下，因为parent可能会被改变
                 obj.OnGet();
             }
 
@@ -130,12 +126,11 @@ namespace Framework
             if (item == null)
                 return;
 
-            m_DeactiveObjects.Add(item);
-
             MonoPooledObjectBase monoObj = (MonoPooledObjectBase)item;
+            m_DeactiveObjects.Add(monoObj);
             monoObj.transform.parent = Group;           // 回收时放置Group下
 
-            item.OnRelease();
+            monoObj.OnRelease();
 
             if(TrimDeactived && m_DeactiveObjects.Count > TrimAbove)
             {
@@ -151,7 +146,7 @@ namespace Framework
         {
             while(m_DeactiveObjects.Count > TrimAbove)
             {
-                MonoPooledObjectBase inst = m_DeactiveObjects[m_DeactiveObjects.Count - 1] as MonoPooledObjectBase;
+                MonoPooledObjectBase inst = m_DeactiveObjects[m_DeactiveObjects.Count - 1];
                 m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
 
                 if (inst != null)
@@ -166,7 +161,7 @@ namespace Framework
             int count = m_DeactiveObjects.Count;
             for(int i = 0; i < count; ++i)
             {
-                MonoPooledObjectBase inst = m_DeactiveObjects[i] as MonoPooledObjectBase;
+                MonoPooledObjectBase inst = m_DeactiveObjects[i];
                 if(inst != null)
                 {
                     PoolManager.Destroy(inst.gameObject);

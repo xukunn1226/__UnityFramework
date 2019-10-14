@@ -19,6 +19,20 @@ public class SpawnExample : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        StartCoroutine(Spawn());
+    }
+
+    IEnumerator Spawn()
+    {
+        yield return new WaitForSeconds(1);
+
+        SpawnStuff();
+
+        StartCoroutine(Spawn());
+    }
+
     // Method1：不创建特定Pool，使用MonoPooledObjectBase.Poo.Get()
     void SpawnStuff()
     {

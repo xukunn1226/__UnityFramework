@@ -8,6 +8,8 @@ namespace Framework
     {
         float LifeTime { get; }
 
+        float Speed { get; }
+
         void SetSpeed(float speed);
     }
 }
