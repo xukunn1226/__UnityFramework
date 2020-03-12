@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework;
 
-public class Foo : IPooledObject
+public class AssetLoader : IPooledObject
 {
-    static private ObjectPool<Foo> m_Pool;
+    static private ObjectPool<AssetLoader> m_Pool;
 
     public void OnInit()
     {
@@ -32,7 +32,11 @@ public class Foo : IPooledObject
     {
         get
         {
-            throw new System.AccessViolationException();
+            if (m_Pool == null)
+            {
+                m_Pool = new ObjectPool<AssetLoader>(1);
+            }
+            return m_Pool;
         }
         set
         {
@@ -40,17 +44,17 @@ public class Foo : IPooledObject
         }
     }
 
-    public static Foo Get()
+    public static AssetLoader Get()
     {
         if(m_Pool == null)
         {
-            m_Pool = new ObjectPool<Foo>(1);
+            m_Pool = new ObjectPool<AssetLoader>(1);
         }
 
-        return (Foo)m_Pool.Get();
+        return (AssetLoader)m_Pool.Get();
     }
 
-    public static void Release(Foo f)
+    public static void Release(AssetLoader f)
     {
         if (m_Pool == null)
             return;

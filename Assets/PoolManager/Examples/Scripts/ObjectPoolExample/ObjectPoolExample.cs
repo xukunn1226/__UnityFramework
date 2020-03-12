@@ -8,12 +8,12 @@ public class ObjectPoolExample : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Foo f1 = Foo.Get();
-        Foo f2 = Foo.Get();
+        AssetLoader f1 = AssetLoader.Get();
+        AssetLoader f2 = AssetLoader.Get();
 
-        Foo.Release(f1);
-        PoolManager.UnregisterObjectPool(typeof(Foo));
+        AssetLoader.Release(f1);
+        PoolManager.UnregisterObjectPool(typeof(AssetLoader));
 
-        Foo.Get();
+        AssetLoader.Get();
     }
 }

@@ -4,7 +4,11 @@ using UnityEngine;
 
 namespace Framework
 {
-    public sealed class ObjectPool<T> : IPool where T : IPooledObject  //, new()
+    /// <summary>
+    /// 非Mono对象缓存池，不支持扩展，
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public sealed class ObjectPool<T> : IPool where T : IPooledObject, new()
     {
         private Stack<T>            m_Stack;
 

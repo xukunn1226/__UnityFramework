@@ -4,11 +4,17 @@ using UnityEngine;
 
 namespace Framework
 {
+    /// <summary>
+    /// 基于Mono的可缓存对象基类
+    /// </summary>
     public abstract class MonoPooledObjectBase : MonoBehaviour, IPooledObject
     {
         private IPool m_Pool;
 
-        public IPool Pool
+        /// <summary>
+        /// 获取管理此类对象的缓存池
+        /// </summary>
+        public virtual IPool Pool
         {
             get
             {
