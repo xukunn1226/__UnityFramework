@@ -6,6 +6,7 @@ using Framework;
 public class AssetLoader : IPooledObject
 {
     static private ObjectPool<AssetLoader> m_Pool;
+    static private int m_kInitSize = 20;
 
     public void OnInit()
     {
@@ -34,7 +35,7 @@ public class AssetLoader : IPooledObject
         {
             if (m_Pool == null)
             {
-                m_Pool = new ObjectPool<AssetLoader>(1);
+                m_Pool = new ObjectPool<AssetLoader>(m_kInitSize);
             }
             return m_Pool;
         }
@@ -48,7 +49,7 @@ public class AssetLoader : IPooledObject
     {
         if(m_Pool == null)
         {
-            m_Pool = new ObjectPool<AssetLoader>(1);
+            m_Pool = new ObjectPool<AssetLoader>(m_kInitSize);
         }
 
         return (AssetLoader)m_Pool.Get();

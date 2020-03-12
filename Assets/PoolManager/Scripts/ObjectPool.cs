@@ -36,8 +36,7 @@ namespace Framework
 
             for (int i = 0; i < initSize; ++i)
             {
-                //T element = new T();
-                T element = System.Activator.CreateInstance<T>();
+                T element = new T();
                 element.OnInit();
                 m_Stack.Push(element);
                 ++countAll;
@@ -49,8 +48,7 @@ namespace Framework
             T element;
             if (m_Stack.Count == 0)
             {
-                //element = new T();
-                element = System.Activator.CreateInstance<T>();
+                element = new T();
                 element.OnInit();
                 ++countAll;
             }
