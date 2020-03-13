@@ -43,6 +43,9 @@ namespace Framework
         /// </summary>
         public void Init()
         {
+            // register to pool manager
+            PoolManager.GetOrCreatePool<PrefabObjectPool>(PrefabAsset);
+
             Warmup();
         }
 
@@ -205,6 +208,11 @@ namespace Framework
                 }
             }
             m_DeactiveObjects.Clear();
+        }
+
+        public override void Trim()
+        {
+            m_DeactiveObjects.TrimExcess();
         }
 
         private void DisplayDebugInfo()

@@ -30,15 +30,17 @@ namespace Framework
             }
         }
 
-        public      abstract IPooledObject  Get();
+        public abstract IPooledObject  Get();
 
-        public      abstract void           Return(IPooledObject item);
+        public abstract void Return(IPooledObject item);
 
-        public      abstract void           Clear();
+        public abstract void Clear();
+
+        public abstract void Trim();
 
         /// <summary>
         /// prefab对象比较“重”，不建议warmup，但对于可预测的缓存对象可提前实例化
         /// </summary>
-        public   virtual void               Warmup() { }
+        public virtual void Warmup() { }
     }
 }

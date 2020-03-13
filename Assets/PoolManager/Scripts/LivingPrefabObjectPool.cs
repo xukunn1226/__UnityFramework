@@ -85,5 +85,9 @@ namespace Framework
             }
             m_DeactiveObjects.Clear();
         }
+
+        public override void Trim()
+        {
+        }
     }
 }

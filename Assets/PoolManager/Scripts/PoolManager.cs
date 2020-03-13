@@ -19,7 +19,7 @@ namespace Framework
         private static PoolManager                      instance;
 
         private static Dictionary<long, MonoPoolBase>   m_MonoPools     = new Dictionary<long, MonoPoolBase>();         // key: instanceId | poolType.hashcode << 32
-                                                                                                                        // 同一个PrefabAsset支持由多个不同类型Pool管理
+                                                                                                                        // 同一个PrefabAsset支持由多个不同类型Pool
 
         private static Dictionary<Type, IPool>          m_Pools         = new Dictionary<Type, IPool>();
 
@@ -32,66 +32,56 @@ namespace Framework
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
 
-            InitMonoPools();
+            //InitMonoPools();
         }
 
         private void OnDestroy()
         {
-            Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
-            while (e.MoveNext())
-            {
-                Destroy(e.Current.Value.gameObject);
-            }
-            e.Dispose();
-            m_MonoPools.Clear();
+            RemoveAllMonoPools();
+            UnregisterAllObjectPools();
         }
 
-        private void InitMonoPools()
-        {
-            MonoPoolBase[] pools = GetComponents<MonoPoolBase>();
-            foreach(MonoPoolBase pool in pools)
-            {
-                MonoPoolBase newPool = InitPool(pool);
-                if (newPool == null)
-                    continue;
+        //private void InitMonoPools()
+        //{
+        //    MonoPoolBase[] pools = GetComponents<MonoPoolBase>();
+        //    foreach(MonoPoolBase pool in pools)
+        //    {
+        //        MonoPoolBase newPool = InitPool(pool);
+        //        if (newPool == null)
+        //            continue;
 
-                if(newPool != pool)
-                {
-                    pool.enabled = false;       // 已存在对应Pool
-                }
-            }
-        }
+        //        if(newPool != pool)
+        //        {
+        //            pool.enabled = false;       // 已存在对应Pool
+        //        }
+        //    }
+        //}
 
-        private MonoPoolBase InitPool(MonoPoolBase pool)
-        {
-            if(pool == null || pool.PrefabAsset == null)
-            {
-                Debug.LogWarning("pool == null || pool.PrefabAsset == null, return null");
-                return null;
-            }
+//        private MonoPoolBase InitPool(MonoPoolBase pool)
+//        {
+//            if(pool == null || pool.PrefabAsset == null)
+//            {
+//                Debug.LogWarning("pool == null || pool.PrefabAsset == null, return null");
+//                return null;
+//            }
 
-            MonoPoolBase newPool = GetMonoPool(pool.PrefabAsset, pool.GetType());
-            if (newPool != null)
-            {
-                Debug.LogWarning($"PrefabAsset[{pool.PrefabAsset.gameObject.name}] managed with [{pool.GetType().Name}] has already exist, plz check it");
-                return newPool;
-            }
+//            MonoPoolBase newPool = GetMonoPool(pool.PrefabAsset, pool.GetType());
+//            if (newPool != null)
+//            {
+//                Debug.LogWarning($"PrefabAsset[{pool.PrefabAsset.gameObject.name}] managed with [{pool.GetType().Name}] has already exist, plz check it");
+//                return newPool;
+//            }
 
-            GameObject go = new GameObject();
-            go.transform.parent = transform;
-#if UNITY_EDITOR
-            go.name = "[Pool]" + pool.PrefabAsset.gameObject.name;
-#endif
-            pool.Group = go.transform;
-            m_MonoPools.Add(GenerateKey(pool.PrefabAsset, pool.GetType()), pool);
+//            GameObject go = new GameObject();
+//            go.transform.parent = transform;
+//#if UNITY_EDITOR
+//            go.name = "[Pool]" + pool.PrefabAsset.gameObject.name;
+//#endif
+//            pool.Group = go.transform;
+//            m_MonoPools.Add(GenerateKey(pool.PrefabAsset, pool.GetType()), pool);
 
-            return pool;
-        }
-
-
-
-
-
+//            return pool;
+//        }
 
         public static PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase asset)
         {
@@ -123,7 +113,20 @@ namespace Framework
             return newPool;
         }
 
-        public static void RemovePool(MonoPoolBase pool)
+        public static void RemoveAllMonoPools()
+        {
+            Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
+            while (e.MoveNext())
+            {
+                e.Current.Value.Clear();
+                UnityEngine.Object.Destroy(e.Current.Value.gameObject);
+            }
+            e.Dispose();
+
+            m_MonoPools.Clear();
+        }
+
+        public static void RemoveMonoPool(MonoPoolBase pool)
         {
             if (pool == null || pool.PrefabAsset == null)
                 return;
@@ -135,11 +138,12 @@ namespace Framework
                 return;
             }
 
-            Destroy(pool.Group.gameObject);
+            pool.Clear();
+            UnityEngine.Object.Destroy(pool.gameObject);        // 删除dummy gameobject
             m_MonoPools.Remove(key);
         }
 
-        public static void RemovePool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
+        public static void RemoveMonoPool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
         {
             if (asset == null)
                 return;
@@ -152,12 +156,14 @@ namespace Framework
                 return;
             }
 
-            Destroy(pool.Group.gameObject);
+            pool.Clear();
+            UnityEngine.Object.Destroy(pool.gameObject);        // 删除dummy gameobject
             m_MonoPools.Remove(key);
         }
 
+        // 有必要提供此API吗？
         // 仅返回第一个符合查找条件的数据
-        public static MonoPoolBase GetPool(MonoPooledObjectBase asset)
+        public static MonoPoolBase GetMonoPool(MonoPooledObjectBase asset)
         {
             if (asset == null)
                 return null;
@@ -200,6 +206,22 @@ namespace Framework
             return key;
         }
 
+        public static void TrimAllObjectPools()
+        {
+            foreach(var pool in m_Pools)
+            {
+                pool.Value.Trim();
+            }
+        }
+
+        public static void UnregisterAllObjectPools()
+        {
+            foreach(var pool in m_Pools)
+            {
+                pool.Value.Clear();
+            }
+            m_Pools.Clear();
+        }
 
         /// <summary>
         /// 非Mono对象池注册接口

@@ -74,5 +74,10 @@ namespace Framework
         {
             m_Stack.Clear();
         }
+
+        public void Trim()
+        {
+            m_Stack.TrimExcess();
+        }
     }
 }

@@ -25,5 +25,10 @@ namespace Framework
         /// 清空缓存池对象
         /// </summary>
         void Clear();
+
+        /// <summary>
+        /// trim excess data
+        /// </summary>
+        void Trim();
     }
 }

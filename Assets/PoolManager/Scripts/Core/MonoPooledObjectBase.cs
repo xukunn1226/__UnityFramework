@@ -12,7 +12,7 @@ namespace Framework
         private IPool m_Pool;
 
         /// <summary>
-        /// 获取管理此类对象的缓存池
+        /// 获取缓存池
         /// </summary>
         public virtual IPool Pool
         {
@@ -32,7 +32,7 @@ namespace Framework
 
         public void OnInit()
         {
-            throw new System.NotImplementedException("GenericMonoPooledObject:OnInit not implemente");
+            throw new System.NotImplementedException("MonoPooledObjectBase:OnInit not implemente");
         }
 
         public virtual void OnGet()
