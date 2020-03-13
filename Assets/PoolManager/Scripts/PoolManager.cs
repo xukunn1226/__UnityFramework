@@ -18,7 +18,8 @@ namespace Framework
 
         private static PoolManager                      instance;
 
-        private static Dictionary<long, MonoPoolBase>   m_MonoPools     = new Dictionary<long, MonoPoolBase>();         // key: instanceId | type.hashcode << 32
+        private static Dictionary<long, MonoPoolBase>   m_MonoPools     = new Dictionary<long, MonoPoolBase>();         // key: instanceId | poolType.hashcode << 32
+                                                                                                                        // 同一个PrefabAsset支持由多个不同类型Pool管理
 
         private static Dictionary<Type, IPool>          m_Pools         = new Dictionary<Type, IPool>();
 
