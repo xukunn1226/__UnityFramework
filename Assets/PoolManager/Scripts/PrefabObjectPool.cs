@@ -6,20 +6,24 @@ namespace Framework
 {
     public sealed class PrefabObjectPool : MonoPoolBase
     {
+        [Tooltip("预实例化数量")]
         [Range(0, 100)]
         public int                              PreAllocateAmount   = 1;                // 预实例化数量
 
+        [Tooltip("是否设定实例化上限值")]
         public bool                             LimitInstance;                          // 是否设定实例化上限值
 
+        [Tooltip("最大实例化数量（激活与未激活）")]
         [Range(1, 1000)]
         public int                              LimitAmount         = 20;               // 最大实例化数量（激活与未激活）
-        
+
+        [Tooltip("是否开启清理未激活实例功能")]
         public bool                             TrimDeactived;                          // 是否开启清理未激活实例功能
 
+        [Tooltip("至少保持deactive的数量，当自动清理开启有效")]
         [Range(1, 100)]
         public int                              TrimAbove           = 10;               // 自动清理开启时至少保持deactive的数量
 
-        
         private List<MonoPooledObjectBase>      m_DeactiveObjects   = new List<MonoPooledObjectBase>();
 
         public int                              countAll            { get; private set; }
@@ -28,9 +32,17 @@ namespace Framework
 
         public int                              countInactive       { get { return m_DeactiveObjects.Count; } }
 
-        private void Start()
+        private void Awake()
         {
-            // 等待参数设置，故需在Start执行
+            Init();
+        }
+
+        /// <summary>
+        /// 初始化
+        /// 动态创建对象池时需要主动调用
+        /// </summary>
+        public void Init()
+        {
             Warmup();
         }
 
@@ -46,10 +58,18 @@ namespace Framework
         }
 #endif
 
-        protected override void Warmup()
+        /// <summary>
+        /// 预实例化对象
+        /// </summary>
+        public override void Warmup()
         {
-            if (PreAllocateAmount <= 0 || PrefabAsset == null)
+            if (PrefabAsset == null)        // 动态创建Pool时可能相关参数仍未设置
                 return;
+
+            if(TrimDeactived)
+            {
+                PreAllocateAmount = Mathf.Min(PreAllocateAmount, TrimAbove);
+            }
 
             if(LimitInstance)
             {
@@ -58,67 +78,84 @@ namespace Framework
 
             while(countAll < PreAllocateAmount)
             {
-                IPooledObject obj = GetNew();
-                Return(obj);
+                IPooledObject obj = GetInternal(true);      // 强制创建新的实例，而不是从池中获取
+                if (obj != null)
+                {
+                    Return(obj);
+                }
             }
         }
 
-        private IPooledObject GetNew()
+        /// <summary>
+        /// 从对象池中获取一个对象
+        /// 根据配置可能返回null
+        /// </summary>
+        /// <returns></returns>
+        public override IPooledObject Get()
         {
-            if (PrefabAsset == null)
+            return GetInternal();
+        }
+
+        /// <summary>
+        /// 获取对象接口
+        /// </summary>
+        /// <param name="forceCreateNew"></param>
+        /// <returns></returns>
+        private IPooledObject GetInternal(bool forceCreateNew = false)
+        {
+            MonoPooledObjectBase obj = null;
+            if(forceCreateNew || m_DeactiveObjects.Count == 0)
             {
-                Debug.LogError("PrefabObjectPool::GetNew() return null, because of PrefabAsset == null");
-                return null;
+                obj = CreateNew();
+            }
+            else
+            {
+                obj = m_DeactiveObjects[m_DeactiveObjects.Count - 1];
+                m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
             }
 
+            // 取出的对象默认放置在Group之下
+            if (obj != null)
+            {
+                obj.transform.parent = Group;
+                obj.OnGet();
+            }
+            return obj;
+        }
+
+        /// <summary>
+        /// Instantiate PrefabAsset
+        /// </summary>
+        /// <returns></returns>
+        private MonoPooledObjectBase CreateNew()
+        {
             MonoPooledObjectBase obj = null;
-            if (!LimitInstance || countAll < LimitAmount)
+            if (PrefabAsset != null && (!LimitInstance || countAll < LimitAmount))
             {
                 obj = (MonoPooledObjectBase)PoolManager.Instantiate(PrefabAsset);
                 obj.Pool = this;
                 ++countAll;
             }
-
-            if (obj != null)
-            {
-                obj.transform.parent = Group;       // 每次取出时默认放置Group下，因为parent可能会被改变
-                obj.OnGet();
-            }
-
             return obj;
         }
 
-        public override IPooledObject Get()
+        /// <summary>
+        /// 相比IPool.Get()接口，提供更丰富、使用简单的接口
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="pos"></param>
+        /// <param name="rot"></param>
+        /// <returns></returns>
+        public MonoPooledObjectBase Get(Transform parent, Vector3 pos = default(Vector3), Quaternion rot = default(Quaternion))
         {
-            if (PrefabAsset == null)
+            MonoPooledObjectBase inst = Get() as MonoPooledObjectBase;
+            if (inst != null)
             {
-                Debug.LogError("PrefabObjectPool::Get() return null, because of PrefabAsset == null");
-                return null;
+                inst.transform.position = pos;
+                inst.transform.rotation = rot;
+                inst.transform.parent = parent != null ? parent : Group;
             }
-
-            MonoPooledObjectBase obj = null;
-            if (m_DeactiveObjects.Count > 0)
-            {
-                obj = m_DeactiveObjects[m_DeactiveObjects.Count - 1];
-                m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
-            }
-            else
-            {
-                if (!LimitInstance || countAll < LimitAmount)
-                {
-                    obj = (MonoPooledObjectBase)PoolManager.Instantiate(PrefabAsset);
-                    obj.Pool = this;
-                    ++countAll;
-                }
-            }
-
-            if (obj != null)
-            {
-                obj.transform.parent = Group;       // 每次取出时默认放置Group下，因为parent可能会被改变
-                obj.OnGet();
-            }
-
-            return obj;
+            return inst;
         }
 
         public override void Return(IPooledObject item)
@@ -168,23 +205,6 @@ namespace Framework
                 }
             }
             m_DeactiveObjects.Clear();
-        }
-
-        public MonoPooledObjectBase GetObject()
-        {
-            return Get() as MonoPooledObjectBase;
-        }
-
-        public MonoPooledObjectBase GetObject(Vector3 pos = default(Vector3), Quaternion rot = default(Quaternion), Transform parent = null)
-        {
-            MonoPooledObjectBase inst = GetObject();
-            if (inst != null)
-            {
-                inst.transform.position = pos;
-                inst.transform.rotation = rot;
-                inst.transform.parent = parent != null ? parent : Group;
-            }
-            return inst;
         }
 
         private void DisplayDebugInfo()

@@ -12,8 +12,11 @@ public class ObjectPoolExample : MonoBehaviour
         AssetLoader f2 = AssetLoader.Get();
 
         AssetLoader.Release(f1);
+
+        // 并没有真正销毁对象池，仅从PoolManager注销，仍被AssetLoader持有
         PoolManager.UnregisterObjectPool(typeof(AssetLoader));
 
+        // dangerous call
         AssetLoader.Get();
     }
 }

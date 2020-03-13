@@ -5,12 +5,12 @@ using UnityEngine;
 namespace Framework
 {
     /// <summary>
-    /// 对象缓存池
-    /// prefab对象的缓存池
+    /// prefab对象缓存池
+    /// 相比IPool多了PrefabAsset、Group、Warmup
     /// </summary>
     public abstract class MonoPoolBase : MonoBehaviour, IPool
     {
-        public MonoPooledObjectBase         PrefabAsset { get; set; }   // 缓存对象原型(proto type)
+        public MonoPooledObjectBase         PrefabAsset;                // 缓存对象原型(proto type)
 
         private Transform                   m_Group;
 
@@ -39,6 +39,6 @@ namespace Framework
         /// <summary>
         /// prefab对象比较“重”，不建议warmup，但对于可预测的缓存对象可提前实例化
         /// </summary>
-        protected   virtual void            Warmup() { }
+        public   virtual void               Warmup() { }
     }
 }
