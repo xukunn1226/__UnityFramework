@@ -19,8 +19,8 @@ namespace Framework
             get
             {
                 if(m_Pool == null)
-                {
-                    m_Pool = PoolManager.GetOrCreatePool(this);         // 默认使用PrefabObjectPool，使用PoolManager::GetOrCreatePool<T>(MonoPooledObjectBase)可以创建指定Pool
+                { // create the default pool named "PrefabObjectPool", you can override it
+                    m_Pool = PoolManager.GetOrCreatePool<PrefabObjectPool>(this);
                 }
                 return m_Pool;
             }

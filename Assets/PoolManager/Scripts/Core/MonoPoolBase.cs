@@ -10,7 +10,11 @@ namespace Framework
     /// </summary>
     public abstract class MonoPoolBase : MonoBehaviour, IPool
     {
-        public MonoPooledObjectBase         PrefabAsset;                // 缓存对象原型(proto type)
+        /// <summary>
+        /// 缓存对象原型(proto type)
+        /// 注意：PrefabAsset是从AB加载出来的asset，尚未实例化
+        /// </summary>
+        public MonoPooledObjectBase         PrefabAsset;
 
         private Transform                   m_Group;
 

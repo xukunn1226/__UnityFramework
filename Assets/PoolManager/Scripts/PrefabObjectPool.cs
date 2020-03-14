@@ -8,29 +8,32 @@ namespace Framework
     {
         [Tooltip("预实例化数量")]
         [Range(0, 100)]
-        public int                              PreAllocateAmount   = 1;                // 预实例化数量
+        public int                                  PreAllocateAmount   = 1;                // 预实例化数量
 
         [Tooltip("是否设定实例化上限值")]
-        public bool                             LimitInstance;                          // 是否设定实例化上限值
+        public bool                                 LimitInstance;                          // 是否设定实例化上限值
 
         [Tooltip("最大实例化数量（激活与未激活）")]
         [Range(1, 1000)]
-        public int                              LimitAmount         = 20;               // 最大实例化数量（激活与未激活）
+        public int                                  LimitAmount         = 20;               // 最大实例化数量（激活与未激活）
 
         [Tooltip("是否开启清理未激活实例功能")]
-        public bool                             TrimDeactived;                          // 是否开启清理未激活实例功能
+        public bool                                 TrimDeactived;                          // 是否开启清理未激活实例功能
 
         [Tooltip("至少保持deactive的数量，当自动清理开启有效")]
         [Range(1, 100)]
-        public int                              TrimAbove           = 10;               // 自动清理开启时至少保持deactive的数量
+        public int                                  TrimAbove           = 10;               // 自动清理开启时至少保持deactive的数量
 
-        private List<MonoPooledObjectBase>      m_DeactiveObjects   = new List<MonoPooledObjectBase>();
+        // TODO: opt, use BetterLinkedList
+        private LinkedList<MonoPooledObjectBase>    m_ActivedObjects    = new LinkedList<MonoPooledObjectBase>();
 
-        public int                              countAll            { get; private set; }
+        private List<MonoPooledObjectBase>          m_DeactiveObjects   = new List<MonoPooledObjectBase>();
 
-        public int                              countActive         { get { return countAll - countInactive; } }
+        public int                                  countAll            { get { return countActive + countInactive; } }
 
-        public int                              countInactive       { get { return m_DeactiveObjects.Count; } }
+        public int                                  countActive         { get { return m_ActivedObjects.Count; } }
+
+        public int                                  countInactive       { get { return m_DeactiveObjects.Count; } }
 
         private void Awake()
         {
@@ -114,12 +117,13 @@ namespace Framework
             else
             {
                 obj = m_DeactiveObjects[m_DeactiveObjects.Count - 1];
-                m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
+                m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);                
             }
 
             // 取出的对象默认放置在Group之下
             if (obj != null)
             {
+                m_ActivedObjects.AddLast(obj);
                 obj.transform.parent = Group;
                 obj.OnGet();
             }
@@ -137,7 +141,6 @@ namespace Framework
             {
                 obj = (MonoPooledObjectBase)PoolManager.Instantiate(PrefabAsset);
                 obj.Pool = this;
-                ++countAll;
             }
             return obj;
         }
@@ -168,6 +171,7 @@ namespace Framework
 
             MonoPooledObjectBase monoObj = (MonoPooledObjectBase)item;
             m_DeactiveObjects.Add(monoObj);
+            m_ActivedObjects.Remove(monoObj);
             monoObj.transform.parent = Group;           // 回收时放置Group下
 
             monoObj.OnRelease();
@@ -198,16 +202,27 @@ namespace Framework
 
         public override void Clear()
         {
-            int count = m_DeactiveObjects.Count;
-            for(int i = 0; i < count; ++i)
+            List<MonoPooledObjectBase>.Enumerator deactiveObjEnum = m_DeactiveObjects.GetEnumerator();
+            while(deactiveObjEnum.MoveNext())
             {
-                MonoPooledObjectBase inst = m_DeactiveObjects[i];
-                if(inst != null)
+                if(deactiveObjEnum.Current != null)
                 {
-                    PoolManager.Destroy(inst.gameObject);
+                    PoolManager.Destroy(deactiveObjEnum.Current.gameObject);
                 }
             }
+            deactiveObjEnum.Dispose();
             m_DeactiveObjects.Clear();
+
+            LinkedList<MonoPooledObjectBase>.Enumerator activeObjEnum = m_ActivedObjects.GetEnumerator();
+            while(activeObjEnum.MoveNext())
+            {
+                if(activeObjEnum.Current != null)
+                {
+                    PoolManager.Destroy(activeObjEnum.Current.gameObject);
+                }
+            }
+            activeObjEnum.Dispose();
+            m_ActivedObjects.Clear();
         }
 
         public override void Trim()

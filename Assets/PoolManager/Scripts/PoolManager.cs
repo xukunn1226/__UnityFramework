@@ -9,14 +9,27 @@ namespace Framework
     /// </summary>
     public class PoolManager : MonoBehaviour
     {
-        public delegate UnityEngine.Object InstantiateDelegate(UnityEngine.Object original);
-        public delegate void DestroyDelegate(GameObject obj);
+        //public delegate UnityEngine.Object InstantiateDelegate(UnityEngine.Object original);
+        //public delegate void DestroyDelegate(GameObject obj);
 
-        public static InstantiateDelegate               InstantiateDelegates;
-        public static DestroyDelegate                   DestroyDelegates;
+        //public static InstantiateDelegate               InstantiatePrefabDelegate;
+        //public static DestroyDelegate                   DestroyPrefabDelegate;
 
 
-        private static PoolManager                      instance;
+        private static PoolManager                      m_kInstance;
+        static public PoolManager Instance
+        {
+            get
+            {
+                if(m_kInstance == null)
+                {
+                    GameObject go = new GameObject("[PoolManager]");
+                    m_kInstance = go.AddComponent<PoolManager>();
+                    DontDestroyOnLoad(go);
+                }
+                return m_kInstance;
+            }
+        }
 
         private static Dictionary<long, MonoPoolBase>   m_MonoPools     = new Dictionary<long, MonoPoolBase>();         // key: instanceId | poolType.hashcode << 32
                                                                                                                         // 同一个PrefabAsset支持由多个不同类型Pool
@@ -25,67 +38,27 @@ namespace Framework
 
         private void Awake()
         {
-            instance = this;
+            if(GameObject.FindObjectsOfType<PoolManager>().Length > 1)
+            {
+                Debug.LogErrorFormat("PoolManager has already exist [{0}], kill it", name);
+                DestroyImmediate(gameObject);
+                return;
+            }
 
+            m_kInstance = this;
             transform.parent = null;
+            transform.gameObject.name = "[PoolManager]";
+            DontDestroyOnLoad(gameObject);
+
             transform.position = Vector3.zero;
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
-
-            //InitMonoPools();
         }
 
         private void OnDestroy()
         {
             RemoveAllMonoPools();
             UnregisterAllObjectPools();
-        }
-
-        //private void InitMonoPools()
-        //{
-        //    MonoPoolBase[] pools = GetComponents<MonoPoolBase>();
-        //    foreach(MonoPoolBase pool in pools)
-        //    {
-        //        MonoPoolBase newPool = InitPool(pool);
-        //        if (newPool == null)
-        //            continue;
-
-        //        if(newPool != pool)
-        //        {
-        //            pool.enabled = false;       // 已存在对应Pool
-        //        }
-        //    }
-        //}
-
-//        private MonoPoolBase InitPool(MonoPoolBase pool)
-//        {
-//            if(pool == null || pool.PrefabAsset == null)
-//            {
-//                Debug.LogWarning("pool == null || pool.PrefabAsset == null, return null");
-//                return null;
-//            }
-
-//            MonoPoolBase newPool = GetMonoPool(pool.PrefabAsset, pool.GetType());
-//            if (newPool != null)
-//            {
-//                Debug.LogWarning($"PrefabAsset[{pool.PrefabAsset.gameObject.name}] managed with [{pool.GetType().Name}] has already exist, plz check it");
-//                return newPool;
-//            }
-
-//            GameObject go = new GameObject();
-//            go.transform.parent = transform;
-//#if UNITY_EDITOR
-//            go.name = "[Pool]" + pool.PrefabAsset.gameObject.name;
-//#endif
-//            pool.Group = go.transform;
-//            m_MonoPools.Add(GenerateKey(pool.PrefabAsset, pool.GetType()), pool);
-
-//            return pool;
-//        }
-
-        public static PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase asset)
-        {
-            return GetOrCreatePool<PrefabObjectPool>(asset);
         }
 
         public static T GetOrCreatePool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
@@ -101,7 +74,7 @@ namespace Framework
             }
 
             GameObject go = new GameObject();
-            go.transform.parent = instance?.transform;
+            go.transform.parent = m_kInstance?.transform;
 #if UNITY_EDITOR
             go.name = "[Pool]" + asset.gameObject.name;
 #endif
@@ -262,11 +235,11 @@ namespace Framework
         /// <returns></returns>
         new public static UnityEngine.Object Instantiate(UnityEngine.Object original)
         {
-            if(InstantiateDelegates != null)
-            {
-                return InstantiateDelegates(original);
-            }
-            else
+            //if(InstantiatePrefabDelegate != null)
+            //{
+            //    return InstantiatePrefabDelegate(original);
+            //}
+            //else
             {
                 return UnityEngine.Object.Instantiate(original);
             }
@@ -278,11 +251,11 @@ namespace Framework
         /// <param name="obj"></param>
         public static void Destroy(GameObject obj)
         {
-            if(DestroyDelegates != null)
-            {
-                DestroyDelegates(obj);
-            }
-            else
+            //if(DestroyPrefabDelegate != null)
+            //{
+            //    DestroyPrefabDelegate(obj);
+            //}
+            //else
             {
                 UnityEngine.Object.Destroy(obj);
             }

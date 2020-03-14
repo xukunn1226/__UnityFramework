@@ -30,6 +30,7 @@ namespace Framework
             transform.localPosition = Random.insideUnitSphere * 5;
 
             m_StartTime = Time.time;
+            m_LifeTime = Random.Range(5, 10);
         }
     }
 }

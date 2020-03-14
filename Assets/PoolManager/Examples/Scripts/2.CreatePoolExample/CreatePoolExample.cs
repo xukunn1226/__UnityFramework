@@ -4,13 +4,13 @@ using UnityEngine;
 using Framework;
 
 /// <summary>
-/// 对象池静态加载、动态加载、释放、查找等范例
+/// 对象池静态创建、动态创建、释放、查找等范例
 /// </summary>
 public class CreatePoolExample : MonoBehaviour
 {
     public RectanglePooledObject    Prefab;
         
-    private PrefabObjectPool        m_Pool;
+    public PrefabObjectPool         Pool;
 
     //IEnumerator Start()
     //{
@@ -41,13 +41,21 @@ public class CreatePoolExample : MonoBehaviour
     //    yield break;
     //}
 
+    private void Update()
+    {
+        if(Input.GetKey(KeyCode.Space))
+        {
+            Pool.Get();
+        }
+    }
+
     private void OnGUI()
     {
         if(GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
         {
-            m_Pool = PoolManager.GetOrCreatePool(Prefab);
-            m_Pool.PreAllocateAmount = 3;
-            m_Pool.Init();
+            Pool = PoolManager.GetOrCreatePool<PrefabObjectPool>(Prefab);
+            Pool.PreAllocateAmount = 3;
+            Pool.Init();
         }
 
         if(GUI.Button(new Rect(100, 200, 150, 80), "Run"))
@@ -57,7 +65,13 @@ public class CreatePoolExample : MonoBehaviour
 
         if(GUI.Button(new Rect(100, 300, 150, 80), "Stop"))
         {
+            Pool = PoolManager.GetOrCreatePool<PrefabObjectPool>(Prefab);
 
+            // method 1.
+            PoolManager.RemoveMonoPool(Pool);
+
+            // method 2.
+            //PoolManager.RemoveMonoPool<PrefabObjectPool>(Prefab);
         }
     }
 }

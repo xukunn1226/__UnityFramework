@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework;
 
+[System.Serializable]
 public class AssetLoader : IPooledObject
 {
     static private ObjectPool<AssetLoader> m_Pool;
     static private int m_kInitSize = 20;
+
+    [SerializeField] private int m_Value;
+
+    public int value { get { return m_Value; } set { m_Value = value; } }
 
     public void OnInit()
     {
@@ -58,7 +63,10 @@ public class AssetLoader : IPooledObject
     public static void Release(AssetLoader f)
     {
         if (m_Pool == null)
+        {
+            Debug.LogError($"Pool[{f.GetType().Name}] not exist");
             return;
+        }
 
         m_Pool.Return(f);
     }
