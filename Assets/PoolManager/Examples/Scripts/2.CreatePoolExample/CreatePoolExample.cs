@@ -61,6 +61,8 @@ public class CreatePoolExample : MonoBehaviour
         {
             GameObject go = Object.Instantiate(inst);
             go.name = "121212112";
+            go.transform.parent = inst.transform;
+            go.transform.parent = null;
         }
     }
 }

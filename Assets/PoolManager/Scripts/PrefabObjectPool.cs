@@ -64,7 +64,8 @@ namespace Framework
 
         private void OnDestroy()
         {
-            Clear();
+            //Clear();
+            PoolManager.RemoveMonoPool(this);
         }
 
 #if UNITY_EDITOR
