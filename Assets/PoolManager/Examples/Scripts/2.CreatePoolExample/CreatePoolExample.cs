@@ -15,9 +15,9 @@ public class CreatePoolExample : MonoBehaviour
 
     private void Start()
     {
-        inst = Object.Instantiate(PrefabAsset);
-        inst.name = "inst";
-        DontDestroyOnLoad(inst);
+        //inst = Object.Instantiate(PrefabAsset);
+        //inst.name = "inst";
+        //DontDestroyOnLoad(inst);
     }
 
     private void OnGUI()

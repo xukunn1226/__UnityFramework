@@ -43,8 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0da815d70bff03948a1abc1683938334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PrefabAsset: {fileID: -2552148250554265963, guid: 820177e395c55f64f9409c8fee4291f4,
+  PrefabAsset: {fileID: -3301828075794242841, guid: 1cd422cc17f805842a4ef026727d18de,
     type: 3}
+  ScriptNewAdded: 0
   PreAllocateAmount: 1
   LimitInstance: 0
   LimitAmount: 20

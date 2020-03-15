@@ -1,3 +1,4 @@
 * LRU
 * BetterLinkedList
 * review LivingPrefabObjectPool
+* Pool支持可选是否DontDestroyOnLoad
