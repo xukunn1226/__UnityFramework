@@ -13,7 +13,7 @@ public class DecalExample : MonoBehaviour
     {
         if (Prefab != null)
         {
-            m_Pool = PoolManager.GetOrCreatePool<LivingPrefabObjectPool>(Prefab);
+            //m_Pool = PoolManager.GetOrCreatePool<LivingPrefabObjectPool>(Prefab);
             m_Pool.LimitAmount = 5;
             m_Pool.Speed = 3;
         }

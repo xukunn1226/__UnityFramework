@@ -16,6 +16,8 @@ namespace Framework
         /// </summary>
         public MonoPooledObjectBase         PrefabAsset;
 
+        public bool                         ScriptNewAdded = true;      // MonoPooledObjectBase是否是运行时Add
+
         private Transform                   m_Group;
 
         public  Transform                   Group                       // 缓存对象回收时的挂载处（不仅限于回收时）

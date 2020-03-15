@@ -37,7 +37,20 @@ namespace Framework
 
         private void Awake()
         {
+            // 动态创建对象池时，PrefabAsset为空
+            if(PrefabAsset != null)
+                PoolManager.RegisterMonoPool(this);
+
             Init();
+        }
+
+        private void Start()
+        {
+            // 
+            if (PoolManager.Instance.gameObject != transform.root.gameObject)
+            {
+                transform.parent = PoolManager.Instance.transform;
+            }
         }
 
         /// <summary>
@@ -46,9 +59,6 @@ namespace Framework
         /// </summary>
         public void Init()
         {
-            // register to pool manager
-            PoolManager.GetOrCreatePool<PrefabObjectPool>(PrefabAsset);
-
             Warmup();
         }
 
@@ -84,7 +94,7 @@ namespace Framework
 
             while(countAll < PreAllocateAmount)
             {
-                IPooledObject obj = GetInternal(true);      // 强制创建新的实例，而不是从池中获取
+                IPooledObject obj = InternalGet(true);      // 强制创建新的实例，而不是从池中获取
                 if (obj != null)
                 {
                     Return(obj);
@@ -99,7 +109,7 @@ namespace Framework
         /// <returns></returns>
         public override IPooledObject Get()
         {
-            return GetInternal();
+            return InternalGet();
         }
 
         /// <summary>
@@ -107,7 +117,7 @@ namespace Framework
         /// </summary>
         /// <param name="forceCreateNew"></param>
         /// <returns></returns>
-        private IPooledObject GetInternal(bool forceCreateNew = false)
+        private IPooledObject InternalGet(bool forceCreateNew = false)
         {
             MonoPooledObjectBase obj = null;
             if(forceCreateNew || m_DeactiveObjects.Count == 0)
@@ -223,6 +233,13 @@ namespace Framework
             }
             activeObjEnum.Dispose();
             m_ActivedObjects.Clear();
+
+#if UNITY_EDITOR
+            if(ScriptNewAdded && PrefabAsset != null)
+            { // 编辑器下可能会运行时添加脚本，为了保持资源的一致性需要还原之前状态
+                Object.DestroyImmediate(PrefabAsset, true);
+            }
+#endif
         }
 
         public override void Trim()

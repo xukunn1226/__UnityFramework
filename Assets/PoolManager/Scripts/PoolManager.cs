@@ -17,7 +17,7 @@ namespace Framework
 
 
         private static PoolManager                      m_kInstance;
-        static public PoolManager Instance
+        static public PoolManager                       Instance
         {
             get
             {
@@ -59,34 +59,115 @@ namespace Framework
         {
             RemoveAllMonoPools();
             UnregisterAllObjectPools();
+            m_kInstance = null;
         }
 
-        public static T GetOrCreatePool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
+
+
+        #region //////////////////////管理Mono对象接口—— GetOrCreate, RemoveMonoPool
+        static public PrefabObjectPool GetOrCreatePool<T>(GameObject asset) where T : MonoPooledObjectBase
         {
-            if (asset == null)
+            return GetOrCreatePool<T, PrefabObjectPool>(asset);
+        }
+
+        static public K GetOrCreatePool<T, K>(GameObject asset) where T : MonoPooledObjectBase where K : MonoPoolBase
+        {
+            bool scriptNewAdded = false;
+            T comp = asset.GetComponent<T>();
+            if (comp == null)
+            {
+                scriptNewAdded = true;
+                comp = asset.AddComponent<T>();
+            }
+            return (K)InternalGetOrCreatePool(comp, typeof(K), scriptNewAdded);
+        }
+
+        static public T GetOrCreatePool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
+        {
+            return (T)InternalGetOrCreatePool(asset, typeof(T), false);
+        }
+
+        static public PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase asset)
+        {
+            return (PrefabObjectPool)InternalGetOrCreatePool(asset, typeof(PrefabObjectPool), false);
+        }
+
+        static private MonoPoolBase InternalGetOrCreatePool(MonoPooledObjectBase asset, Type poolType, bool scriptNewAdded = true)
+        {
+            if (asset == null || poolType == null)
                 return null;
 
-            MonoPoolBase pool = GetMonoPool(asset, typeof(T));
-            if (pool != null)
-            {
-                //Debug.LogWarning($"PrefabAsset[{asset.gameObject.name}] managed with [{typeof(T).Name}] has already exist, plz check it");
-                return (T)pool;
-            }
+            MonoPoolBase pool = GetMonoPool(asset, poolType);
 
+            return pool != null ? pool : InternalCreatePool(asset, poolType, scriptNewAdded);
+        }
+
+        static private MonoPoolBase InternalCreatePool(MonoPooledObjectBase asset, Type poolType, bool scriptNewAdded = true)
+        {
             GameObject go = new GameObject();
-            go.transform.parent = m_kInstance?.transform;
+            go.transform.parent = Instance?.transform;
 #if UNITY_EDITOR
             go.name = "[Pool]" + asset.gameObject.name;
 #endif
-            T newPool = go.AddComponent<T>();
+            MonoPoolBase newPool = go.AddComponent(poolType) as MonoPoolBase;
             newPool.PrefabAsset = asset;
+            newPool.ScriptNewAdded = scriptNewAdded;
             newPool.Group = go.transform;
-            m_MonoPools.Add(GenerateKey(asset, typeof(T)), newPool);
-            
+            RegisterMonoPool(newPool);
+
             return newPool;
         }
 
-        public static void RemoveAllMonoPools()
+        /// <summary>
+        /// register new pool
+        /// </summary>
+        /// <param name="newPool"></param>
+        static public void RegisterMonoPool(MonoPoolBase newPool)
+        {
+            if (newPool == null || newPool.PrefabAsset == null)
+                throw new System.ArgumentNullException("newPool == null || newPool.PrefabAsset == null");
+
+            if(GetMonoPool(newPool.PrefabAsset, newPool.GetType()) == null)
+            {
+                m_MonoPools.Add(GenerateKey(newPool.PrefabAsset, newPool.GetType()), newPool);
+            }
+        }
+
+        static public void RemoveMonoPool(MonoPoolBase pool)
+        {
+            if (pool == null)
+                return;
+
+            InternalRemoveMonoPool(pool.PrefabAsset, pool.GetType());
+        }
+
+        static public void RemoveMonoPool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
+        {
+            if (asset == null)
+                return;
+
+            InternalRemoveMonoPool(asset, typeof(T));
+        }
+
+        static private void InternalRemoveMonoPool(MonoPooledObjectBase asset, Type poolType)
+        {
+            if (asset == null || poolType == null)
+                return;
+
+            long key = GenerateKey(asset, poolType);
+            MonoPoolBase pool;
+            if (!m_MonoPools.TryGetValue(key, out pool))
+            {
+                Debug.LogWarning($"Try to remove not exist pool, [{asset.gameObject.name}]  [{poolType.Name}]");
+                return;
+            }
+
+            pool.Clear();
+            UnityEngine.Object.Destroy(pool.gameObject);        // 删除dummy gameobject
+            m_MonoPools.Remove(key);
+        }
+
+        static public void RemoveAllMonoPools()
         {
             Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
             while (e.MoveNext())
@@ -99,44 +180,9 @@ namespace Framework
             m_MonoPools.Clear();
         }
 
-        public static void RemoveMonoPool(MonoPoolBase pool)
-        {
-            if (pool == null || pool.PrefabAsset == null)
-                return;
-
-            long key = GenerateKey(pool.PrefabAsset, pool.GetType());
-            if (!m_MonoPools.ContainsKey(key))
-            {
-                Debug.LogWarning($"Try to remove an inexistent pool, [{pool.PrefabAsset.gameObject.name}]  [{pool.GetType().Name}]");
-                return;
-            }
-
-            pool.Clear();
-            UnityEngine.Object.Destroy(pool.gameObject);        // 删除dummy gameobject
-            m_MonoPools.Remove(key);
-        }
-
-        public static void RemoveMonoPool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
-        {
-            if (asset == null)
-                return;
-
-            long key = GenerateKey(asset, typeof(T));
-            MonoPoolBase pool;
-            if(!m_MonoPools.TryGetValue(key, out pool))
-            {
-                Debug.LogWarning($"Try to remove not exist pool, [{asset.gameObject.name}]  [{typeof(T).Name}]");
-                return;
-            }
-
-            pool.Clear();
-            UnityEngine.Object.Destroy(pool.gameObject);        // 删除dummy gameobject
-            m_MonoPools.Remove(key);
-        }
-
         // 有必要提供此API吗？
         // 仅返回第一个符合查找条件的数据
-        public static MonoPoolBase GetMonoPool(MonoPooledObjectBase asset)
+        static public MonoPoolBase GetMonoPool(MonoPooledObjectBase asset)
         {
             if (asset == null)
                 return null;
@@ -158,18 +204,21 @@ namespace Framework
             return pool;
         }
 
-        private static MonoPoolBase GetMonoPool(MonoPooledObjectBase asset, Type poolType)
+        static private MonoPoolBase GetMonoPool(MonoPooledObjectBase asset, Type poolType)
         {
             if (asset == null || poolType == null)
-                return null;
+                throw new System.ArgumentNullException("GetMonoPool: asset == null || poolType == null");
 
             MonoPoolBase pool;
             m_MonoPools.TryGetValue(GenerateKey(asset, poolType), out pool);
             return pool;
         }
 
-        private static long GenerateKey(MonoPooledObjectBase asset, Type poolType)
+        static private long GenerateKey(MonoPooledObjectBase asset, Type poolType)
         {
+            if (asset == null || poolType == null)
+                throw new System.ArgumentNullException("GenerateKey: asset == null || poolType == null");
+
             long key1 = asset.gameObject.GetInstanceID();
             long key2 = (long)poolType.GetHashCode() << 32;
             long key = key1 | key2;
@@ -178,8 +227,11 @@ namespace Framework
 
             return key;
         }
+        #endregion
+        
+        #region //////////////////////管理非Mono对象接口——register, unregister, trim
 
-        public static void TrimAllObjectPools()
+        static public void TrimAllObjectPools()
         {
             foreach(var pool in m_Pools)
             {
@@ -187,7 +239,7 @@ namespace Framework
             }
         }
 
-        public static void UnregisterAllObjectPools()
+        static public void UnregisterAllObjectPools()
         {
             foreach(var pool in m_Pools)
             {
@@ -201,7 +253,7 @@ namespace Framework
         /// </summary>
         /// <param name="type"></param>
         /// <param name="pool"></param>
-        public static void RegisterObjectPool(Type type, IPool pool)
+        static public void RegisterObjectPool(Type type, IPool pool)
         {
             if(m_Pools.ContainsKey(type))
             {
@@ -216,7 +268,7 @@ namespace Framework
         /// 非Mono对象池注销接口
         /// </summary>
         /// <param name="type"></param>
-        public static void UnregisterObjectPool(Type type)
+        static public void UnregisterObjectPool(Type type)
         {
             if(!m_Pools.ContainsKey(type))
             {
@@ -227,13 +279,14 @@ namespace Framework
             m_Pools[type].Clear();
             m_Pools.Remove(type);
         }
+        #endregion
 
         /// <summary>
         /// 由对象池管理的UnityEngine.Object的实例化接口
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        new public static UnityEngine.Object Instantiate(UnityEngine.Object original)
+        new static public UnityEngine.Object Instantiate(UnityEngine.Object original)
         {
             //if(InstantiatePrefabDelegate != null)
             //{
@@ -249,7 +302,7 @@ namespace Framework
         /// 由对象池管理的UnityEngine.Object销毁接口
         /// </summary>
         /// <param name="obj"></param>
-        public static void Destroy(GameObject obj)
+        static public void Destroy(GameObject obj)
         {
             //if(DestroyPrefabDelegate != null)
             //{

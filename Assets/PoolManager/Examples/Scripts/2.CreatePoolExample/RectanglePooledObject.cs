@@ -4,7 +4,7 @@ namespace Framework
 {
     public class RectanglePooledObject : MonoPooledObjectBase
     {
-        public float m_LifeTime = 5;
+        public float m_LifeTime = 15;
 
         private float m_StartTime;
 
@@ -28,9 +28,10 @@ namespace Framework
             transform.localScale = new Vector3(Random.Range(0.5f, 3), Random.Range(0.5f, 3), Random.Range(0.5f, 3));
             transform.localRotation = Random.rotation;
             transform.localPosition = Random.insideUnitSphere * 5;
+            transform.parent = null;
 
             m_StartTime = Time.time;
-            m_LifeTime = Random.Range(5, 10);
+            m_LifeTime = Random.Range(2, 15);
         }
     }
 }

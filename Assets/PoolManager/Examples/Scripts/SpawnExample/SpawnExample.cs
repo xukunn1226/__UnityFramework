@@ -51,11 +51,11 @@ public class SpawnExample : MonoBehaviour
         Stuff prefab = Prefabs[Random.Range(0, Prefabs.Length)];
 
         // 内部查找操作影响性能，建议持有Pool对象
-        PrefabObjectPool pool = PoolManager.GetOrCreatePool<PrefabObjectPool>(prefab);
-        Stuff inst = (Stuff)pool.Get();
+        //PrefabObjectPool pool = PoolManager.GetOrCreatePool<PrefabObjectPool>(prefab);
+        //Stuff inst = (Stuff)pool.Get();
 
-        inst.transform.localPosition = Random.insideUnitSphere * 5;
-        inst.transform.localRotation = Random.rotation;
-        inst.Body.useGravity = false;
+        //inst.transform.localPosition = Random.insideUnitSphere * 5;
+        //inst.transform.localRotation = Random.rotation;
+        //inst.Body.useGravity = false;
     }
 }
