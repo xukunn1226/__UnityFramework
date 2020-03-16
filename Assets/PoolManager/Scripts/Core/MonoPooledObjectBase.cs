@@ -9,7 +9,7 @@ namespace Framework
     /// </summary>
     public abstract class MonoPooledObjectBase : MonoBehaviour, IPooledObject
     {
-        private IPool m_Pool;
+        protected IPool m_Pool;
 
         /// <summary>
         /// 获取缓存池

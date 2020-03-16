@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public sealed class PrefabObjectPool : MonoPoolBase
+    public class PrefabObjectPool : MonoPoolBase
     {
         [Tooltip("预实例化数量")]
         [Range(0, 100)]
@@ -25,9 +25,9 @@ namespace Framework
         public int                                  TrimAbove           = 10;               // 自动清理开启时至少保持deactive的数量
 
         // TODO: opt, use BetterLinkedList
-        private LinkedList<MonoPooledObjectBase>    m_ActivedObjects    = new LinkedList<MonoPooledObjectBase>();
+        protected LinkedList<MonoPooledObjectBase>  m_ActivedObjects    = new LinkedList<MonoPooledObjectBase>();
 
-        private List<MonoPooledObjectBase>          m_DeactiveObjects   = new List<MonoPooledObjectBase>();
+        protected List<MonoPooledObjectBase>        m_DeactiveObjects   = new List<MonoPooledObjectBase>();
 
         public int                                  countAll            { get { return countActive + countInactive; } }
 
@@ -64,7 +64,6 @@ namespace Framework
 
         private void OnDestroy()
         {
-            //Clear();
             PoolManager.RemoveMonoPool(this);
         }
 
@@ -248,9 +247,11 @@ namespace Framework
             m_DeactiveObjects.TrimExcess();
         }
 
+#if UNITY_EDITOR
         private void DisplayDebugInfo()
         {
             gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset.gameObject.name, m_DeactiveObjects.Count, countAll);
         }
+#endif
     }
 }

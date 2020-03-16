@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework;
 
-public class Decal : LivingMonoPooledObject
+public class Decal : LivingPooledObject
 {
     private ParticleSystem m_PS;
 

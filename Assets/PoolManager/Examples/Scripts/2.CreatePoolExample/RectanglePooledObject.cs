@@ -32,6 +32,14 @@ namespace Framework
 
             m_StartTime = Time.time;
             m_LifeTime = Random.Range(2, 15);
+            Debug.Log("OnGet");
         }
+
+        public override void OnRelease()
+        {
+            base.OnRelease();
+            Debug.Log("OnRelease");
+        }
+
     }
 }

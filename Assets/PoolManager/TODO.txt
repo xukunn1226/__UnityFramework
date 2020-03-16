@@ -1,4 +1,5 @@
 * LRU
 * BetterLinkedList
 * review LivingPrefabObjectPool
-* Pool支持可选是否DontDestroyOnLoad
+* Pool鏀寔鍙�夋槸鍚ontDestroyOnLoad
+* GetOrCreatePool(string assetPath)

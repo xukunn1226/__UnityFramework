@@ -79,30 +79,30 @@ namespace Framework
                 scriptNewAdded = true;
                 comp = asset.AddComponent<T>();
             }
-            return (K)InternalGetOrCreatePool(comp, typeof(K), scriptNewAdded);
+            return (K)GetOrCreatePoolInternal(comp, typeof(K), scriptNewAdded);
         }
 
         static public T GetOrCreatePool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
         {
-            return (T)InternalGetOrCreatePool(asset, typeof(T), false);
+            return (T)GetOrCreatePoolInternal(asset, typeof(T), false);
         }
 
         static public PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase asset)
         {
-            return (PrefabObjectPool)InternalGetOrCreatePool(asset, typeof(PrefabObjectPool), false);
+            return (PrefabObjectPool)GetOrCreatePoolInternal(asset, typeof(PrefabObjectPool), false);
         }
 
-        static private MonoPoolBase InternalGetOrCreatePool(MonoPooledObjectBase asset, Type poolType, bool scriptNewAdded = true)
+        static private MonoPoolBase GetOrCreatePoolInternal(MonoPooledObjectBase asset, Type poolType, bool scriptNewAdded = true)
         {
             if (asset == null || poolType == null)
                 return null;
 
             MonoPoolBase pool = GetMonoPool(asset, poolType);
 
-            return pool != null ? pool : InternalCreatePool(asset, poolType, scriptNewAdded);
+            return pool != null ? pool : CreatePoolInternal(asset, poolType, scriptNewAdded);
         }
 
-        static private MonoPoolBase InternalCreatePool(MonoPooledObjectBase asset, Type poolType, bool scriptNewAdded = true)
+        static private MonoPoolBase CreatePoolInternal(MonoPooledObjectBase asset, Type poolType, bool scriptNewAdded = true)
         {
             GameObject go = new GameObject();
             go.transform.parent = Instance?.transform;
@@ -138,7 +138,7 @@ namespace Framework
             if (pool == null)
                 return;
 
-            InternalRemoveMonoPool(pool.PrefabAsset, pool.GetType());
+            RemoveMonoPoolInternal(pool.PrefabAsset, pool.GetType());
         }
 
         static public void RemoveMonoPool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
@@ -146,10 +146,10 @@ namespace Framework
             if (asset == null)
                 return;
 
-            InternalRemoveMonoPool(asset, typeof(T));
+            RemoveMonoPoolInternal(asset, typeof(T));
         }
 
-        static private void InternalRemoveMonoPool(MonoPooledObjectBase asset, Type poolType)
+        static private void RemoveMonoPoolInternal(MonoPooledObjectBase asset, Type poolType)
         {
             if (asset == null || poolType == null)
                 return;
@@ -167,7 +167,7 @@ namespace Framework
             m_MonoPools.Remove(key);
         }
 
-        static public void RemoveAllMonoPools()
+        static private void RemoveAllMonoPools()
         {
             Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
             while (e.MoveNext())
@@ -182,7 +182,7 @@ namespace Framework
 
         // 有必要提供此API吗？
         // 仅返回第一个符合查找条件的数据
-        static public MonoPoolBase GetMonoPool(MonoPooledObjectBase asset)
+        static private MonoPoolBase GetMonoPool(MonoPooledObjectBase asset)
         {
             if (asset == null)
                 return null;

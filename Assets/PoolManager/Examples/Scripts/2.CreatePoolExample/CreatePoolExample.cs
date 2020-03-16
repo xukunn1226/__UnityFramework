@@ -11,15 +11,6 @@ public class CreatePoolExample : MonoBehaviour
     public GameObject               PrefabAsset;
     private PrefabObjectPool        Pool;
 
-    private GameObject inst;
-
-    private void Start()
-    {
-        //inst = Object.Instantiate(PrefabAsset);
-        //inst.name = "inst";
-        //DontDestroyOnLoad(inst);
-    }
-
     private void OnGUI()
     {
         if(GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
@@ -55,14 +46,6 @@ public class CreatePoolExample : MonoBehaviour
             // method 2.
             if(Pool != null)
                 PoolManager.RemoveMonoPool<PrefabObjectPool>(Pool.PrefabAsset);
-        }
-
-        if(GUI.Button(new Rect(100, 400, 150, 80), ""))
-        {
-            GameObject go = Object.Instantiate(inst);
-            go.name = "121212112";
-            go.transform.parent = inst.transform;
-            go.transform.parent = null;
         }
     }
 }

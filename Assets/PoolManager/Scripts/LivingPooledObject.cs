@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework
 {
-    public class LivingMonoPooledObject : MonoPooledObjectBase, ILifeTime
+    public class LivingPooledObject : MonoPooledObjectBase, ILifeTime
     {
         public float        LifeTime        { get; set; }                   // <= 0, 表示生命周期无限，不会自动回收
         private float       m_LifeTime;
@@ -14,7 +14,22 @@ namespace Framework
 
         private float       m_ElapsedTime;
 
-        
+        public override IPool Pool
+        {
+            get
+            {
+                if (m_Pool == null)
+                {
+                    m_Pool = PoolManager.GetOrCreatePool<LivingPrefabObjectPool>(this);
+                }
+                return m_Pool;
+            }
+            set
+            {
+                m_Pool = value;
+            }
+        }
+
         protected virtual void Update()
         {
             if (m_LifeTime > 0)
