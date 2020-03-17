@@ -7,14 +7,30 @@ public class Decal : LivingPooledObject
 {
     private ParticleSystem m_PS;
 
-    void Awake()
+    private float m_Speed;
+    public override float Speed
     {
-        LifeTime = 5;
+        get
+        {
+            return m_Speed;
+        }
+        set
+        {
+            m_Speed = value;
+
+            if (m_PS != null)
+            {
+                ParticleSystem.MainModule main = m_PS.main;
+                main.simulationSpeed = m_Speed;
+            }
+        }
     }
 
-    private void Start()
+    protected override void Awake()
     {
         m_PS = GetComponent<ParticleSystem>();
+
+        base.Awake();
     }
 
     public override void OnGet()
@@ -35,16 +51,5 @@ public class Decal : LivingPooledObject
         }
 
         base.OnRelease();
-    }
-
-    public override void SetSpeed(float speed)
-    {
-        base.SetSpeed(speed);
-
-        if(m_PS != null)
-        {
-            ParticleSystem.MainModule main = m_PS.main;
-            main.simulationSpeed = Speed;
-        }
     }
 }

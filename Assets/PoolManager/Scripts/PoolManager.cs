@@ -158,7 +158,8 @@ namespace Framework
             MonoPoolBase pool;
             if (!m_MonoPools.TryGetValue(key, out pool))
             {
-                Debug.LogWarning($"Try to remove not exist pool, [{asset.gameObject.name}]  [{poolType.Name}]");
+                // 为了安全可能重复销毁Pool，暂时屏蔽此Log
+                //Debug.LogWarning($"Try to remove not exist pool, [{asset.gameObject.name}]  [{poolType.Name}]");
                 return;
             }
 

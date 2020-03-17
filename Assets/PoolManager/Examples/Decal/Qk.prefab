@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8474386170713631267}
   - component: {fileID: 8474386170713631266}
   - component: {fileID: 8474386170713631269}
-  - component: {fileID: 8134776673880889921}
+  - component: {fileID: 5005950427104066075}
   m_Layer: 0
   m_Name: Qk
   m_TagString: Untagged
@@ -4764,6 +4764,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4776,6 +4777,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4811,7 +4813,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &8134776673880889921
+--- !u!114 &5005950427104066075
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4823,3 +4825,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98b11149630fa13438b7e7e892d20d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_LifeTime: 5
+  m_InitSpeed: 1

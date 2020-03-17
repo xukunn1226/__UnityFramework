@@ -9,27 +9,15 @@ namespace Framework
     /// </summary>
     public abstract class MonoPooledObjectBase : MonoBehaviour, IPooledObject
     {
-        protected IPool m_Pool;
-
         /// <summary>
-        /// 获取缓存池
+        /// 不提供默认对象池，防止资源错误的绑定此脚本会导致回收时创建一个新的Pool
         /// </summary>
         public virtual IPool Pool
         {
-            get
-            {
-                if(m_Pool == null)
-                { // create the default pool named "PrefabObjectPool", you can override it
-                    m_Pool = PoolManager.GetOrCreatePool<PrefabObjectPool>(this);
-                }
-                return m_Pool;
-            }
-            set
-            {
-                m_Pool = value;
-            }
+            get;
+            set;
         }
-
+        
         public void OnInit()
         {
             throw new System.NotImplementedException("MonoPooledObjectBase:OnInit not implemente");

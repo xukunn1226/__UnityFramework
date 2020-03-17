@@ -5,34 +5,42 @@ using Framework;
 
 public class DecalExample : MonoBehaviour
 {
-    public Decal Prefab;
+    public GameObject PrefabAsset;
 
-    private LivingPrefabObjectPool m_Pool;
+    private LivingPrefabObjectPool Pool;
 
-    private void Start()
+    private void OnGUI()
     {
-        if (Prefab != null)
+        if (GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
         {
-            //m_Pool = PoolManager.GetOrCreatePool<LivingPrefabObjectPool>(Prefab);
-            m_Pool.LimitAmount = 5;
-            m_Pool.Speed = 3;
+            // step 1. 创建对象池
+            Pool = PoolManager.GetOrCreatePool<Decal, LivingPrefabObjectPool>(PrefabAsset);
+            Pool.NormalSpeedLimitAmount = 5;
+            Pool.AmplifiedSpeed = 3;
+            Pool.PreAllocateAmount = 3;
+            Pool.Init();
+        }
+
+        if (GUI.Button(new Rect(100, 200, 150, 80), "Run"))
+        {
+            // step 2. get it
+            Spawn();
+        }
+
+        if (GUI.Button(new Rect(100, 300, 150, 80), "Stop"))
+        {
+            // step 3. remove pool
+            if (Pool != null)
+                PoolManager.RemoveMonoPool(Pool);
         }
     }
 
     private void Spawn()
     {
-        if (m_Pool == null)
+        if (Pool == null)
             return;
 
-        Decal d = (Decal)m_Pool.Get();
+        Decal d = (Decal)Pool.Get();
         d.transform.position = new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0);
-    }
-    
-    void Update()
-    {
-        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
-        {
-            Spawn();
-        }
-    }
+    }    
 }

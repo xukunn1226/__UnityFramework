@@ -6,10 +6,8 @@ namespace Framework
 {
     public interface ILifeTime
     {
-        float LifeTime { get; }
+        float LifeTime  { get; set; }
 
-        float Speed { get; }
-
-        void SetSpeed(float speed);
+        float Speed     { get; set; }
     }
 }

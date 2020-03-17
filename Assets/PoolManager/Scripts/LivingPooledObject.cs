@@ -6,37 +6,25 @@ namespace Framework
 {
     public class LivingPooledObject : MonoPooledObjectBase, ILifeTime
     {
-        public float        LifeTime        { get; set; }                   // <= 0, 表示生命周期无限，不会自动回收
-        private float       m_LifeTime;
+        public float            m_LifeTime;                                     // serialized field, if less than zero, mean it has unlimit life cycle, never recycle
+        public float            LifeTime        { get; set; }                   // remaindered life cycle
+        
+        public float            m_InitSpeed     = 1;                            // serialized field, init speed
+        public virtual float    Speed           { get; set; }
 
-        public float        Speed           { get { return m_Speed; } }
-        private float       m_Speed;
-
-        private float       m_ElapsedTime;
-
-        public override IPool Pool
+        protected virtual void Awake()
         {
-            get
-            {
-                if (m_Pool == null)
-                {
-                    m_Pool = PoolManager.GetOrCreatePool<LivingPrefabObjectPool>(this);
-                }
-                return m_Pool;
-            }
-            set
-            {
-                m_Pool = value;
-            }
+            Reset();
         }
 
         protected virtual void Update()
         {
-            if (m_LifeTime > 0)
+            if (LifeTime > 0)
             {
-                m_ElapsedTime += Time.deltaTime * m_Speed;
-                if (m_ElapsedTime > m_LifeTime)
+                LifeTime -= Time.deltaTime * Speed;
+                if(LifeTime < 0)
                 {
+                    LifeTime = 0;
                     ReturnToPool();
                 }
             }
@@ -46,15 +34,13 @@ namespace Framework
         {
             base.OnGet();
 
-            // reset variables
-            m_LifeTime = LifeTime;
-            m_ElapsedTime = 0;
-            SetSpeed(1);
+            Reset();
         }
 
-        public virtual void SetSpeed(float speed)
+        private void Reset()
         {
-            m_Speed = speed;
+            LifeTime = m_LifeTime;
+            Speed = m_InitSpeed;
         }
     }
 }

@@ -9,42 +9,22 @@ namespace Framework
     /// </summary>
     public class LivingPrefabObjectPool : PrefabObjectPool
     {
-        //public int LimitAmount = 20;
-        public float Speed = 1;
+        public int      NormalSpeedLimitAmount = 20;
 
-        //public override IPooledObject Get()
-        //{
-        //    if (PrefabAsset == null)
-        //    {
-        //        Debug.LogError("LivingPrefabObjectPool::Get() return null, because of PrefabAsset == null");
-        //        return null;
-        //    }
+        public float    AmplifiedSpeed = 1;
 
-        //    LivingPooledObject obj;
-        //    if (m_DeactiveObjects.Count > 0)
-        //    {
-        //        obj = m_DeactiveObjects[m_DeactiveObjects.Count - 1];
-        //        m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
-        //    }
-        //    else
-        //    {
-        //        obj = (LivingPooledObject)PoolManager.Instantiate(PrefabAsset);
-        //        obj.Pool = this;
-        //        ++countAll;
-        //    }
+        public override IPooledObject Get()
+        {
+            IPooledObject obj = base.Get();
 
-        //    if (obj != null)
-        //    {                
-        //        obj.transform.parent = Group;       // 每次取出时默认放置Group下，因为parent可能会被改变
-        //        obj.OnGet();
+            if(countActive > NormalSpeedLimitAmount)
+            {
+                ILifeTime lifeObj = obj as ILifeTime;
+                if (lifeObj != null)
+                    lifeObj.Speed = AmplifiedSpeed;
+            }
 
-        //        if(countActive > LimitAmount)
-        //        {
-        //            obj.SetSpeed(Speed);
-        //        }
-        //    }
-
-        //    return obj;
-        //}
+            return obj;
+        }
     }
 }

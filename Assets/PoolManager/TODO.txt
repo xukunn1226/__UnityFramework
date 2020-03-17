@@ -3,3 +3,4 @@
 * review LivingPrefabObjectPool
 * Pool支持可选是否DontDestroyOnLoad
 * GetOrCreatePool(string assetPath)
+* PoolManager inspector
