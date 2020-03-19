@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CacheMech
+namespace Cache
 {
     /// <summary>
     /// 基于Mono的可缓存对象基类

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using CacheMech;
+using Cache;
 
 public class RectanglePooledObject : MonoPooledObjectBase
 {

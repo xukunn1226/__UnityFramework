@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CacheMech;
+using Cache;
 
 public class Decal : LivingPooledObject
 {

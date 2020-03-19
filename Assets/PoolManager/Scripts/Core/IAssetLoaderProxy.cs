@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CacheMech
+namespace Cache
 {
     /// <summary>
     /// load asset by asset path

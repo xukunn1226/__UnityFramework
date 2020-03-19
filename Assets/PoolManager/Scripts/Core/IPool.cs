@@ -2,13 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CacheMech
+namespace Cache
 {
     /// <summary>
     /// 缓存池对象接口
     /// </summary>
     public interface IPool
     {
+        int countAll        { get; }
+
+        int countActive     { get; }
+
+        int countInactive   { get; }
+
         /// <summary>
         /// 获取缓存对象
         /// </summary>

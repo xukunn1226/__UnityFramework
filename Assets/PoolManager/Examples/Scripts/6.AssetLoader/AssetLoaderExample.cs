@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CacheMech;
+using Cache;
 
 /// <summary>
 /// 展示如何通过assetPath使用缓存对象

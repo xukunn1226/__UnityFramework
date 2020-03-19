@@ -1,5 +1,5 @@
 ﻿
-namespace CacheMech
+namespace Cache
 {
     /// <summary>
     /// 可缓存对象接口

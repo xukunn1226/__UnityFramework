@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CacheMech
+namespace Cache
 {
     /// <summary>
     /// prefab对象缓存池
@@ -35,6 +35,12 @@ namespace CacheMech
                 m_Group = value;
             }
         }
+
+        public abstract int countAll { get; }
+
+        public abstract int countActive { get; }
+
+        public abstract int countInactive { get; }
 
         public abstract IPooledObject  Get();
 

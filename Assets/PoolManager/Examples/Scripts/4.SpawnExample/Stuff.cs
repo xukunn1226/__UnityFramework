@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using CacheMech;
+using Cache;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Stuff : MonoPooledObjectBase

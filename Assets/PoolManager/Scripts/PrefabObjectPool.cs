@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CacheMech
+namespace Cache
 {
     public class PrefabObjectPool : MonoPoolBase
     {
@@ -29,11 +29,11 @@ namespace CacheMech
 
         protected List<MonoPooledObjectBase>        m_DeactiveObjects   = new List<MonoPooledObjectBase>();
 
-        public int                                  countAll            { get { return countActive + countInactive; } }
+        public override int                         countAll            { get { return countActive + countInactive; } }
 
-        public int                                  countActive         { get { return m_ActivedObjects.Count; } }
+        public override int                         countActive         { get { return m_ActivedObjects.Count; } }
 
-        public int                                  countInactive       { get { return m_DeactiveObjects.Count; } }
+        public override int                         countInactive       { get { return m_DeactiveObjects.Count; } }
 
         private void Awake()
         {

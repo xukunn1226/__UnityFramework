@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CacheMech;
+using Cache;
 
 /// <summary>
 /// 对象池静态创建、动态创建、释放、查找等范例
