@@ -1,8 +1,8 @@
 * LRU
 * BetterLinkedList
-* PoolManager inspector
 
 
+- PoolManager inspector
 - review LivingPrefabObjectPool
 - GetOrCreatePool(string assetPath)
 -- Pool支持可选是否DontDestroyOnLoad
