@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// 发射器
+/// </summary>
 public class StuffSpawner : MonoBehaviour
 {
     public FloatRange timeBetweenSpawns, scale, randomVelocity, angularVelocity;
@@ -26,8 +29,8 @@ public class StuffSpawner : MonoBehaviour
 
     void SpawnStuff()
     {
-        Stuff prefab = stuffPrefabs[Random.Range(0, stuffPrefabs.Length)];
-        Stuff spawn = (Stuff)prefab.Pool.Get();
+        Stuff prefabAsset = stuffPrefabs[Random.Range(0, stuffPrefabs.Length)];
+        Stuff spawn = (Stuff)prefabAsset.Pool.Get();
 
         spawn.transform.localPosition = transform.position;
         spawn.transform.localScale = Vector3.one * scale.RandomInRange;

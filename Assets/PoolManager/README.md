@@ -4,7 +4,7 @@
 	物理属性
 	UI（disable、enable、out of screen）
 
-	IPool——缓存策略的差异性
+	IPool——缓存策略的差异性、属性的差异性(PreAllocateAmount, LimitAmount, TrimAbove)
 
 * 四种使用方式
 	1、静态IPool + 静态IPooledObject

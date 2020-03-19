@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -155,6 +155,7 @@ MonoBehaviour:
   - {fileID: 11485054, guid: 0d3d25e291f64b54081a1716e39c9fa3, type: 3}
   - {fileID: 11499148, guid: a8bce237bf2322447bc981963c699da9, type: 3}
   - {fileID: 11474368, guid: 3a169e41bf3c09e4e951c26141d487e2, type: 3}
+  UseMethod1: 0
 --- !u!4 &272467199
 Transform:
   m_ObjectHideFlags: 0
@@ -274,7 +275,7 @@ GameObject:
   - component: {fileID: 893500409}
   - component: {fileID: 893500408}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Kill Zone
   m_TagString: Kill Zone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
