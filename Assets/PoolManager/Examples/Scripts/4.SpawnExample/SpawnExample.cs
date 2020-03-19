@@ -9,18 +9,12 @@ using Framework;
 public class SpawnExample : MonoBehaviour
 {
     public Stuff[]      Prefabs;
+    public bool         UseMethod1;
 
-    void Update()
+    IEnumerator Start()
     {
-        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Q))
-        {
-            //SpawnStuff();
-            SpawnStuff2();
-        }
-    }
+        yield return new WaitForSeconds(1);
 
-    void Start()
-    {
         StartCoroutine(Spawn());
     }
 
@@ -28,7 +22,10 @@ public class SpawnExample : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
 
-        SpawnStuff();
+        if(UseMethod1)
+            SpawnStuff();
+        else
+            SpawnStuff2();
 
         StartCoroutine(Spawn());
     }
@@ -36,26 +33,24 @@ public class SpawnExample : MonoBehaviour
     // Method1：不创建特定Pool，使用MonoPooledObjectBase.Poo.Get()
     void SpawnStuff()
     {
-        Stuff prefab = Prefabs[Random.Range(0, Prefabs.Length)];
-
-        Stuff inst = (Stuff)prefab.Pool.Get();      // 内部默认创建了PrefabObjectPool
+        Stuff prefabAsset = Prefabs[Random.Range(0, Prefabs.Length)];
+        
+        Stuff inst = (Stuff)PoolManager.GetOrCreatePool(prefabAsset).Get();
 
         inst.transform.localPosition = Random.insideUnitSphere * 5;
         inst.transform.localRotation = Random.rotation;
-        inst.Body.useGravity = false;
+        inst.Body.useGravity = true;
     }
 
-    // Method2：创建指定Pool，通过Pool实例化对象
+    // Method 2: 不显式的创建Pool，而是由PooledObject脚本中默认创建，见Stuff(public override IPool Pool)，但会带来使用上的隐患，见MonoPooledObjectBase.Pool
     void SpawnStuff2()
     {
-        Stuff prefab = Prefabs[Random.Range(0, Prefabs.Length)];
+        Stuff prefabAsset = Prefabs[Random.Range(0, Prefabs.Length)];
+        
+        Stuff inst = (Stuff)prefabAsset.Pool.Get();
 
-        // 内部查找操作影响性能，建议持有Pool对象
-        //PrefabObjectPool pool = PoolManager.GetOrCreatePool<PrefabObjectPool>(prefab);
-        //Stuff inst = (Stuff)pool.Get();
-
-        //inst.transform.localPosition = Random.insideUnitSphere * 5;
-        //inst.transform.localRotation = Random.rotation;
-        //inst.Body.useGravity = false;
+        inst.transform.localPosition = Random.insideUnitSphere * 5;
+        inst.transform.localRotation = Random.rotation;
+        inst.Body.useGravity = true;
     }
 }

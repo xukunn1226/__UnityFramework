@@ -10,7 +10,8 @@ namespace Framework
     public abstract class MonoPooledObjectBase : MonoBehaviour, IPooledObject
     {
         /// <summary>
-        /// 不提供默认对象池，防止资源错误的绑定此脚本会导致回收时创建一个新的Pool
+        /// 不提供默认对象池
+        /// WARNING: 当资源静态绑定此脚本，而使用时没有用对象池进行管理会导致回收时创建一个新的Pool
         /// </summary>
         public virtual IPool Pool
         {
