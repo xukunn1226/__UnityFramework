@@ -31,10 +31,12 @@ namespace Framework
             }
         }
 
-        private static Dictionary<long, MonoPoolBase>   m_MonoPools     = new Dictionary<long, MonoPoolBase>();         // key: instanceId | poolType.hashcode << 32
-                                                                                                                        // 同一个PrefabAsset支持由多个不同类型Pool
+        private static Dictionary<long, MonoPoolBase>           m_MonoPools         = new Dictionary<long, MonoPoolBase>();         // key: instanceId | poolType.hashcode << 32
+                                                                                                                                    // 同一个PrefabAsset支持由多个不同类型Pool
 
-        private static Dictionary<Type, IPool>          m_Pools         = new Dictionary<Type, IPool>();
+        private static Dictionary<Type, IPool>                  m_Pools             = new Dictionary<Type, IPool>();
+
+        static private Dictionary<string, IAssetLoaderProxy>    m_kAssetLoaderDict  = new Dictionary<string, IAssetLoaderProxy>();  // <key, value>: <assetPath, assetLoader>
 
         private void Awake()
         {
@@ -65,26 +67,46 @@ namespace Framework
 
 
         #region //////////////////////管理Mono对象接口—— GetOrCreate, RemoveMonoPool
-        static public PrefabObjectPool GetOrCreatePool<T>(GameObject asset) where T : MonoPooledObjectBase
+        static public TPool GetOrCreatePool<TPooledObject, TPool, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase where TLoaderType : IAssetLoaderProxy
         {
-            return GetOrCreatePool<T, PrefabObjectPool>(asset);
+            IAssetLoaderProxy loader;
+            if (m_kAssetLoaderDict.TryGetValue(assetPath, out loader))
+            {
+                return GetOrCreatePool<TPooledObject, TPool>(loader.asset as GameObject);
+            }
+
+            loader = (IAssetLoaderProxy)Activator.CreateInstance(typeof(TLoaderType));
+            loader.Load(assetPath);
+            m_kAssetLoaderDict.Add(assetPath, loader);
+
+            return GetOrCreatePool<TPooledObject, TPool>(loader.asset as GameObject);
         }
 
-        static public K GetOrCreatePool<T, K>(GameObject asset) where T : MonoPooledObjectBase where K : MonoPoolBase
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TLoaderType : IAssetLoaderProxy
+        {
+            return GetOrCreatePool<TPooledObject, PrefabObjectPool, TLoaderType>(assetPath);
+        }
+
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(GameObject asset) where TPooledObject : MonoPooledObjectBase
+        {
+            return GetOrCreatePool<TPooledObject, PrefabObjectPool>(asset);
+        }
+
+        static public TPool GetOrCreatePool<TPooledObject, TPool>(GameObject asset) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase
         {
             bool scriptNewAdded = false;
-            T comp = asset.GetComponent<T>();
+            TPooledObject comp = asset.GetComponent<TPooledObject>();
             if (comp == null)
             {
                 scriptNewAdded = true;
-                comp = asset.AddComponent<T>();
+                comp = asset.AddComponent<TPooledObject>();
             }
-            return (K)GetOrCreatePoolInternal(comp, typeof(K), scriptNewAdded);
+            return (TPool)GetOrCreatePoolInternal(comp, typeof(TPool), scriptNewAdded);
         }
 
-        static public T GetOrCreatePool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
+        static public TPool GetOrCreatePool<TPool>(MonoPooledObjectBase asset) where TPool : MonoPoolBase
         {
-            return (T)GetOrCreatePoolInternal(asset, typeof(T), false);
+            return (TPool)GetOrCreatePoolInternal(asset, typeof(TPool), false);
         }
 
         static public PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase asset)
@@ -133,6 +155,24 @@ namespace Framework
             }
         }
 
+        static public void RemoveMonoPool<TPool>(string assetPath) where TPool : MonoPoolBase
+        {
+            IAssetLoaderProxy loader;
+            if (!m_kAssetLoaderDict.TryGetValue(assetPath, out loader))
+            {
+                return;
+            }
+
+            RemoveMonoPool<TPool>(loader.asset as GameObject);
+            m_kAssetLoaderDict.Remove(assetPath);
+            loader.Unload();
+        }
+
+        static public void RemoveMonoPool(string assetPath)
+        {
+            RemoveMonoPool<PrefabObjectPool>(assetPath);
+        }
+
         static public void RemoveMonoPool(MonoPoolBase pool)
         {
             if (pool == null)
@@ -141,12 +181,32 @@ namespace Framework
             RemoveMonoPoolInternal(pool.PrefabAsset, pool.GetType());
         }
 
-        static public void RemoveMonoPool<T>(MonoPooledObjectBase asset) where T : MonoPoolBase
+        static public void RemoveMonoPool<TPool>(MonoPooledObjectBase asset) where TPool : MonoPoolBase
         {
             if (asset == null)
                 return;
 
-            RemoveMonoPoolInternal(asset, typeof(T));
+            RemoveMonoPoolInternal(asset, typeof(TPool));
+        }
+
+        static public void RemoveMonoPool(GameObject prefabAsset)
+        {
+            RemoveMonoPool<PrefabObjectPool>(prefabAsset);
+        }
+
+        static public void RemoveMonoPool<TPool>(GameObject prefabAsset) where TPool : MonoPoolBase
+        {
+            if (prefabAsset == null)
+                return;
+
+            MonoPooledObjectBase comp = prefabAsset.GetComponent<MonoPooledObjectBase>();
+            if(comp == null)
+            {
+                Debug.LogWarning("Can't find any script derived from MonoPooledObjectBase");
+                return;
+            }
+
+            RemoveMonoPool<TPool>(comp);
         }
 
         static private void RemoveMonoPoolInternal(MonoPooledObjectBase asset, Type poolType)
