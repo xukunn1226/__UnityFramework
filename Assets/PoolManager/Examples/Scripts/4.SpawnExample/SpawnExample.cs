@@ -53,4 +53,15 @@ public class SpawnExample : MonoBehaviour
         inst.transform.localRotation = Random.rotation;
         inst.Body.useGravity = true;
     }
+
+    private void OnGUI()
+    {
+        if (GUI.Button(new Rect(100, 100, 150, 80), "Clear Pool"))
+        {
+            foreach(var prefabAsset in Prefabs)
+            {
+                PoolManager.RemoveMonoPool((MonoPoolBase)prefabAsset.Pool);
+            }
+        }
+    }
 }

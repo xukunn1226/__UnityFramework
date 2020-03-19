@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework;
 
-public class AssetLoaderPoolExample : MonoBehaviour
+public class TNodePoolExample : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
-        AssetLoader f1 = AssetLoader.Get();
-        AssetLoader f2 = AssetLoader.Get();
+        TNode f1 = TNode.Get();
+        TNode f2 = TNode.Get();
 
-        AssetLoader.Release(f1);
+        TNode.Release(f1);
 
         // 并没有真正销毁对象池，仅从PoolManager注销，仍被AssetLoader持有
-        PoolManager.UnregisterObjectPool(typeof(AssetLoader));
+        PoolManager.UnregisterObjectPool(typeof(TNode));
 
         // dangerous call:out of control
-        AssetLoader.Get();
+        TNode.Get();
     }
 
     private void OnGUI()

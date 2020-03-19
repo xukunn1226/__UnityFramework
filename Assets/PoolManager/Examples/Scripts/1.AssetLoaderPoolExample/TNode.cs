@@ -4,9 +4,9 @@ using UnityEngine;
 using Framework;
 
 [System.Serializable]
-public class AssetLoader : IPooledObject
+public class TNode : IPooledObject
 {
-    static private ObjectPool<AssetLoader> m_Pool;
+    static private ObjectPool<TNode> m_Pool;
     static private int m_kInitSize = 20;
 
     [SerializeField] private int m_Value;
@@ -40,7 +40,7 @@ public class AssetLoader : IPooledObject
         {
             if (m_Pool == null)
             {
-                m_Pool = new ObjectPool<AssetLoader>(m_kInitSize);
+                m_Pool = new ObjectPool<TNode>(m_kInitSize);
             }
             return m_Pool;
         }
@@ -50,17 +50,17 @@ public class AssetLoader : IPooledObject
         }
     }
 
-    public static AssetLoader Get()
+    public static TNode Get()
     {
         if(m_Pool == null)
         {
-            m_Pool = new ObjectPool<AssetLoader>(m_kInitSize);
+            m_Pool = new ObjectPool<TNode>(m_kInitSize);
         }
 
-        return (AssetLoader)m_Pool.Get();
+        return (TNode)m_Pool.Get();
     }
 
-    public static void Release(AssetLoader f)
+    public static void Release(TNode f)
     {
         if (m_Pool == null)
         {

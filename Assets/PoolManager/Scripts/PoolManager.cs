@@ -7,7 +7,7 @@ namespace Framework
     /// <summary>
     /// 负责管理所有Mono及非Mono对象池
     /// </summary>
-    public class PoolManager : MonoBehaviour
+    public partial class PoolManager : MonoBehaviour
     {
         //public delegate UnityEngine.Object InstantiateDelegate(UnityEngine.Object original);
         //public delegate void DestroyDelegate(GameObject obj);
