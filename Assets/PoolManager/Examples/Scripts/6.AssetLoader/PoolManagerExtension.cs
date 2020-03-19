@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Framework;
+using CacheMech;
 using UnityEditor;
 
-namespace Framework
+namespace CacheMech
 {
     public partial class PoolManager
     {
@@ -27,23 +27,24 @@ namespace Framework
             return GetOrCreatePool<TPooledObject, AssetLoader>(assetPath);
         }
     }
+}
 
 
 
-    public class AssetLoader : IAssetLoaderProxy
+
+public class AssetLoader : IAssetLoaderProxy
+{
+    private UnityEngine.Object m_Asset;
+
+    public UnityEngine.Object asset { get { return m_Asset; } }
+
+    public UnityEngine.Object Load(string assetPath)
     {
-        private UnityEngine.Object m_Asset;
+        m_Asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+        return m_Asset;
+    }
 
-        public UnityEngine.Object asset { get { return m_Asset; } }
-
-        public UnityEngine.Object Load(string assetPath)
-        {
-            m_Asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
-            return m_Asset;
-        }
-
-        public void Unload()
-        {
-        }
+    public void Unload()
+    {
     }
 }

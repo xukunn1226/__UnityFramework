@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework
+namespace CacheMech
 {
     /// <summary>
     /// 负责管理所有Mono及非Mono对象池

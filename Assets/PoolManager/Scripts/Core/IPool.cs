@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework
+namespace CacheMech
 {
     /// <summary>
     /// 缓存池对象接口

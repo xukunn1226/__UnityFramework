@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework
+namespace CacheMech
 {
     /// <summary>
     /// prefab对象缓存池

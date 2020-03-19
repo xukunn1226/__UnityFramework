@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Framework;
+using CacheMech;
 
 /// <summary>
 /// 如何使用对象池实例化对象
