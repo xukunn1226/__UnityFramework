@@ -250,7 +250,7 @@ namespace Cache
 #if UNITY_EDITOR
         private void DisplayDebugInfo()
         {
-            gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset.gameObject.name, m_DeactiveObjects.Count, countAll);
+            gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset.gameObject.name, countActive, countAll);
         }
 #endif
     }

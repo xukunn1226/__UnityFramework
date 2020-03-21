@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using Cache;
 
-namespace Cache
+namespace CacheEditor
 {
     [CustomEditor(typeof(PoolManager))]
     public class PoolManagerEditor : Editor
