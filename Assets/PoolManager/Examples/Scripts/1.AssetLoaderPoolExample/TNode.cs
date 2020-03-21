@@ -9,9 +9,9 @@ public class TNode : IPooledObject
     static private ObjectPool<TNode> m_Pool;
     static private int m_kInitSize = 20;
 
-    [SerializeField] private int m_Value;
+    //[SerializeField] private int m_Value;
 
-    public int value { get { return m_Value; } set { m_Value = value; } }
+    //public int value { get { return m_Value; } set { m_Value = value; } }
 
     public void OnInit()
     {

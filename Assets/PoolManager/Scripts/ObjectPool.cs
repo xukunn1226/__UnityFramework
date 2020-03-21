@@ -18,7 +18,7 @@ namespace Cache
 
         public int                  countInactive   { get { return m_Stack.Count; } }
         
-        public ObjectPool(int initSize)
+        public ObjectPool(int initSize = 0)
         {
             PoolManager.RegisterObjectPool(typeof(T), this);
 
