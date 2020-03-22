@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class DummyTestScript
+    public class NewTestScript
     {
         // A Test behaves as an ordinary method
         [Test]
