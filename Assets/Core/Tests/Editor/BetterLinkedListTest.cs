@@ -8,23 +8,56 @@ using Cache;
 
 namespace Tests
 {
-
-    public class Foo<T> : IBetterLinkedListNode<T> where T : class, IBetterLinkedListNode<T>, IPooledObject, new()
+    public class Foo : IBetterLinkedListNode<Foo>, IPooledObject
     {
-        public BetterLinkedList<T> List { get; set; }
+        public BetterLinkedList<Foo>        List { get; set; }
 
-        public IBetterLinkedListNode<T> Next { get; set; }
+        public IBetterLinkedListNode<Foo>   Next { get; set; }
 
-        public IBetterLinkedListNode<T> Prev { get; set; }
+        public IBetterLinkedListNode<Foo>   Prev { get; set; }
+
+        public int Value;
+
+        public void OnInit() { }
+
+        /// <summary>
+        /// 从对象池中拿出时的回调
+        /// </summary>
+        public void OnGet() { }
+
+        /// <summary>
+        /// 放回对象池时的回调
+        /// </summary>
+        public void OnRelease() { }
+
+        /// <summary>
+        /// 放回对象池
+        /// </summary>
+        public void ReturnToPool() { }
+
+        public IPool Pool { get; set; }
     }
 
     public class BetterLinkedListTest
     {
-        // A Test behaves as an ordinary method
+        private BetterLinkedList<Foo> m_List;
+
+        [UnitySetUp]
+        public void SetupBetterLinkedList()
+        {
+
+        }
+
+        [UnityTearDown]
+        public void TearDownBetterLinkedList()
+        {
+
+        }
+
         [Test]
         public void BetterLinkedListTestSimplePasses()
         {
-            // Use the Assert class to test conditions
+
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
