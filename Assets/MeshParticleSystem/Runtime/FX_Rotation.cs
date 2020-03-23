@@ -6,83 +6,83 @@ namespace MeshParticleSystem
 {
     public class FX_Rotation : MonoBehaviour
     {
-        public bool             Addictive;
+        public bool             Addition;
 
-        public float            delay;
-        public float            duration;
+        public float            Delay;
+        public float            Duration;
         public bool             Loop;
 
-        public Vector3          target;
         public bool             WorldSpace;
-        public AnimationCurve   curve = new AnimationCurve(FX_Const.defaultKeyFrames);
+        public Vector3          Target;
+        public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
 
         public bool             lateUpdate;
 
-        private float           _duration;
-        private float           _delay;
-        private Vector3         _originalLocalEuler;
-        private Vector3         _originalWorldEuler;
-        private Vector3         _startLocalEuler;
-        private Vector3         _startWorldEuler;
-        private Vector3         _localEuler;
-        private Vector3         _worldEuler;
+        private float           m_Duration;
+        private float           m_Delay;
+        private Vector3         m_OriginalLocalEuler;
+        private Vector3         m_OriginalWorldEuler;
+        private Vector3         m_StartLocalEuler;
+        private Vector3         m_StartWorldEuler;
+        private Vector3         m_LocalEuler;
+        private Vector3         m_WorldEuler;
 
         private void Awake()
         {
-            _originalLocalEuler = transform.localEulerAngles;
-            _originalWorldEuler = transform.eulerAngles;
+            m_OriginalLocalEuler = transform.localEulerAngles;
+            m_OriginalWorldEuler = transform.eulerAngles;
         }
 
         private void OnEnable()
         {
-            transform.eulerAngles = _originalWorldEuler;
-            transform.localEulerAngles = _originalLocalEuler;
+            transform.eulerAngles = m_OriginalWorldEuler;
+            transform.localEulerAngles = m_OriginalLocalEuler;
 
             // 重复使用时需要先设置到正确位置，再active
-            _startLocalEuler = transform.localEulerAngles;
-            _startWorldEuler = transform.eulerAngles;
+            m_StartLocalEuler = transform.localEulerAngles;
+            m_StartWorldEuler = transform.eulerAngles;
 
-            _duration = duration;
-            _delay = delay;
+            m_Duration = Duration;
+            m_Delay = Delay;
         }
 
         void UpdateDataInternal()
         {
-            _delay -= Time.deltaTime;
-            if (_delay <= 0)
-            {
-                _duration -= Time.deltaTime;
-                float percent = 1;
-                if (_duration >= 0)
-                {
-                    percent = 1 - (_duration / duration);
-                }
-                else
-                {
-                    if (Loop)
-                    {
-                        _duration += duration;
-                        percent = 1 - (_duration / duration);
-                    }
-                }
+            m_Delay -= Time.deltaTime;
+            if (m_Delay > 0)
+                return;
 
-                float value = curve.Evaluate(percent);
-                if (WorldSpace)
+            m_Duration -= Time.deltaTime;
+            float percent = 1;
+            if (m_Duration >= 0)
+            {
+                percent = 1 - (m_Duration / Duration);
+            }
+            else
+            {
+                if (Loop)
                 {
-                    if (Addictive)
-                        _worldEuler = Vector3.Lerp(_startWorldEuler, _startWorldEuler + target, value);
-                    else
-                        _worldEuler = Vector3.Lerp(_startWorldEuler, target, value);
-                    transform.eulerAngles = _worldEuler;
+                    m_Duration += Duration;
+                    percent = 1 - (m_Duration / Duration);
                 }
+            }
+
+            float value = Curve.Evaluate(percent);
+            if (WorldSpace)
+            {
+                if (Addition)
+                    m_WorldEuler = Vector3.Lerp(m_StartWorldEuler, m_StartWorldEuler + Target, value);
                 else
-                {
-                    if (Addictive)
-                        _localEuler = Vector3.Lerp(_startLocalEuler, _startLocalEuler + target, value);
-                    else
-                        _localEuler = Vector3.Lerp(_startLocalEuler, target, value);
-                    transform.localEulerAngles = _localEuler;
-                }
+                    m_WorldEuler = Vector3.Lerp(m_StartWorldEuler, Target, value);
+                transform.eulerAngles = m_WorldEuler;
+            }
+            else
+            {
+                if (Addition)
+                    m_LocalEuler = Vector3.Lerp(m_StartLocalEuler, m_StartLocalEuler + Target, value);
+                else
+                    m_LocalEuler = Vector3.Lerp(m_StartLocalEuler, Target, value);
+                transform.localEulerAngles = m_LocalEuler;
             }
         }
 

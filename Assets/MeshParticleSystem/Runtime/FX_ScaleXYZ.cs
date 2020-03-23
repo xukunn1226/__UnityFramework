@@ -6,74 +6,74 @@ namespace MeshParticleSystem
 {
     public class FX_ScaleXYZ : MonoBehaviour
     {
-        public bool             Addictive;
+        public bool             Addition;
 
-        public float            delay;
-        public float            duration;
+        public float            Delay;
+        public float            Duration;
         public bool             Loop;
         
-        public Vector3          target = Vector3.one;
-        public AnimationCurve   curveX = new AnimationCurve(FX_Const.defaultKeyFrames);
-        public AnimationCurve   curveY = new AnimationCurve(FX_Const.defaultKeyFrames);
-        public AnimationCurve   curveZ = new AnimationCurve(FX_Const.defaultKeyFrames);
+        public Vector3          Target = Vector3.one;
+        public AnimationCurve   CurveX = new AnimationCurve(FX_Const.defaultKeyFrames);
+        public AnimationCurve   CurveY = new AnimationCurve(FX_Const.defaultKeyFrames);
+        public AnimationCurve   CurveZ = new AnimationCurve(FX_Const.defaultKeyFrames);
         
-        private float           _duration;
-        private float           _delay;
-        private Vector3         _orignalLocalScale;
-        private Vector3         _localScale = Vector3.one;
+        private float           m_Duration;
+        private float           m_Delay;
+        private Vector3         m_OrignalLocalScale;
+        static private Vector3  k_LocalScale = Vector3.one;
 
         private void Awake()
         {
-            _orignalLocalScale = transform.localScale;              // 记录初始localScale
+            m_OrignalLocalScale = transform.localScale;              // 记录初始localScale
         }
 
         private void OnEnable()
         {
-            transform.localScale = _orignalLocalScale;              // 恢复初始localScale
+            transform.localScale = m_OrignalLocalScale;              // 恢复初始localScale
 
-            _duration = duration;
-            _delay = delay;
+            m_Duration = Duration;
+            m_Delay = Delay;
         }
 
         void Update()
         {
-            _delay -= Time.deltaTime;
-            if (_delay <= 0)
+            m_Delay -= Time.deltaTime;
+            if (m_Delay > 0)
+                return;
+
+            m_Duration -= Time.deltaTime;
+            float percent = 1;
+            if (m_Duration >= 0)
             {
-                _duration -= Time.deltaTime;
-                float percent = 1;
-                if (_duration >= 0)
-                {
-                    percent = 1 - (_duration / duration);
-                }
-                else
-                {
-                    if (Loop)
-                    {
-                        _duration += duration;
-                        percent = 1 - (_duration / duration);
-                    }
-                }
-
-                float valueX = Mathf.Clamp01(curveX.Evaluate(percent));
-                float valueY = Mathf.Clamp01(curveY.Evaluate(percent));
-                float valueZ = Mathf.Clamp01(curveZ.Evaluate(percent));
-                
-                if (Addictive)
-                {
-                    _localScale.x = Mathf.Lerp(_orignalLocalScale.x, _orignalLocalScale.x + target.x, valueX);
-                    _localScale.y = Mathf.Lerp(_orignalLocalScale.y, _orignalLocalScale.y + target.y, valueY);
-                    _localScale.z = Mathf.Lerp(_orignalLocalScale.z, _orignalLocalScale.z + target.z, valueZ);
-                }
-                else
-                {
-                    _localScale.x = Mathf.Lerp(_orignalLocalScale.x, target.x, valueX);
-                    _localScale.y = Mathf.Lerp(_orignalLocalScale.y, target.y, valueY);
-                    _localScale.z = Mathf.Lerp(_orignalLocalScale.z, target.z, valueZ);
-                }
-
-                transform.localScale = _localScale;
+                percent = 1 - (m_Duration / Duration);
             }
+            else
+            {
+                if (Loop)
+                {
+                    m_Duration += Duration;
+                    percent = 1 - (m_Duration / Duration);
+                }
+            }
+
+            float valueX = Mathf.Clamp01(CurveX.Evaluate(percent));
+            float valueY = Mathf.Clamp01(CurveY.Evaluate(percent));
+            float valueZ = Mathf.Clamp01(CurveZ.Evaluate(percent));
+
+            if (Addition)
+            {
+                k_LocalScale.x = Mathf.Lerp(m_OrignalLocalScale.x, m_OrignalLocalScale.x + Target.x, valueX);
+                k_LocalScale.y = Mathf.Lerp(m_OrignalLocalScale.y, m_OrignalLocalScale.y + Target.y, valueY);
+                k_LocalScale.z = Mathf.Lerp(m_OrignalLocalScale.z, m_OrignalLocalScale.z + Target.z, valueZ);
+            }
+            else
+            {
+                k_LocalScale.x = Mathf.Lerp(m_OrignalLocalScale.x, Target.x, valueX);
+                k_LocalScale.y = Mathf.Lerp(m_OrignalLocalScale.y, Target.y, valueY);
+                k_LocalScale.z = Mathf.Lerp(m_OrignalLocalScale.z, Target.z, valueZ);
+            }
+
+            transform.localScale = k_LocalScale;
         }
     }
 }

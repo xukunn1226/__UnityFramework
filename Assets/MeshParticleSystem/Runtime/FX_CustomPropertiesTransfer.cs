@@ -275,11 +275,10 @@ namespace MeshParticleSystem
         }
 
 
-        [SerializeField] private List<CustomProp_Color>         m_CustomPropColorList;
-        [SerializeField] private List<CustomProp_Float>         m_CustomPropFloatList;
-        [SerializeField] private List<CustomProp_Vector4>       m_CustomPropVector4List;
-        [SerializeField] private CustomProp_UV                  m_CustomPropUV;
-        //public bool                                             useMeshProjection;
+        [SerializeField] private List<CustomProp_Color>         m_CustomPropColorList   = new List<CustomProp_Color>();
+        [SerializeField] private List<CustomProp_Float>         m_CustomPropFloatList   = new List<CustomProp_Float>();
+        [SerializeField] private List<CustomProp_Vector4>       m_CustomPropVector4List = new List<CustomProp_Vector4>();
+        [SerializeField] private CustomProp_UV                  m_CustomPropUV          = new CustomProp_UV();
 
         private void Awake()
         {
@@ -320,31 +319,22 @@ namespace MeshParticleSystem
 
         private void OnEnable()
         {
-            if (m_CustomPropColorList != null)
+            foreach (CustomProp_Color propColor in m_CustomPropColorList)
             {
-                foreach (CustomProp_Color propColor in m_CustomPropColorList)
-                {
-                    propColor.Reset(k_MaterialPropertyBlock);
-                }
+                propColor.Reset(k_MaterialPropertyBlock);
             }
 
-            if (m_CustomPropFloatList != null)
+            foreach (CustomProp_Float propFloat in m_CustomPropFloatList)
             {
-                foreach (CustomProp_Float propFloat in m_CustomPropFloatList)
-                {
-                    propFloat.Reset(k_MaterialPropertyBlock);
-                }
+                propFloat.Reset(k_MaterialPropertyBlock);
             }
 
-            if (m_CustomPropVector4List != null)
+            foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
             {
-                foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
-                {
-                    propVector4.Reset(k_MaterialPropertyBlock);
-                }
+                propVector4.Reset(k_MaterialPropertyBlock);
             }
 
-            if(m_CustomPropUV != null && m_CustomPropUV.Active)
+            if (m_CustomPropUV.Active)
             {
                 m_CustomPropUV.Reset(k_MaterialPropertyBlock);
             }
@@ -352,9 +342,6 @@ namespace MeshParticleSystem
 
         private void UpdateColor()
         {
-            if (m_CustomPropColorList == null)
-                return;
-
             foreach (CustomProp_Color propColor in m_CustomPropColorList)
             {
                 propColor.Update(k_MaterialPropertyBlock);
@@ -363,9 +350,6 @@ namespace MeshParticleSystem
 
         private void UpdateFloat()
         {
-            if (m_CustomPropFloatList == null)
-                return;
-
             foreach(CustomProp_Float propFloat in m_CustomPropFloatList)
             {
                 propFloat.Update(k_MaterialPropertyBlock);
@@ -374,9 +358,6 @@ namespace MeshParticleSystem
 
         private void UpdateVector4()
         {
-            if (m_CustomPropVector4List == null)
-                return;
-
             foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
             {
                 propVector4.Update(k_MaterialPropertyBlock);
@@ -385,34 +366,15 @@ namespace MeshParticleSystem
 
         private void UpdateUV()
         {
-            if (m_CustomPropUV == null || !m_CustomPropUV.Active)
+            if (!m_CustomPropUV.Active)
                 return;
 
             m_CustomPropUV.Update(k_MaterialPropertyBlock);
         }
 
-        //private void UpdateMeshProjection()
-        //{
-        //    k_MaterialPropertyBlock.SetMatrix(FX_Const.SerializedIDToPropID[50],        // "_ClipToLocal"
-        //        (GL.GetGPUProjectionMatrix(Camera.current.projectionMatrix, true) * Camera.current.worldToCameraMatrix * transform.localToWorldMatrix).inverse);
-        //}
-
-        //private void OnWillRenderObject()
-        //{
-        //    if (m_Renderer == null /*|| !useMeshProjection*/)
-        //        return;
-
-        //    k_MaterialPropertyBlock.Clear();
-
-        //    UpdateColor();
-        //    UpdateMeshProjection();
-
-        //    m_Renderer.SetPropertyBlock(k_MaterialPropertyBlock);
-        //}
-
         private void Update()
         {
-            if (m_Renderer == null /*|| useMeshProjection*/)
+            if (m_Renderer == null)
                 return;
 
             k_MaterialPropertyBlock.Clear();

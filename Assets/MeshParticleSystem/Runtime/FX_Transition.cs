@@ -6,79 +6,78 @@ namespace MeshParticleSystem
 {
     public class FX_Transition : MonoBehaviour
     {
-        public bool             addictive = true;
-        
-        public float            delay;
-        public float            duration;
+        public bool             Addition;
+        public float            Delay;
+        public float            Duration;
         public bool             Loop;
 
-        public Vector3          target;
         public bool             WorldSpace;        
-        public AnimationCurve   curve = new AnimationCurve(FX_Const.defaultKeyFrames);
+        public Vector3          Target;
+        public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
         
-        private float           _duration;
-        private float           _delay;
-        private Vector3         _originalLocalPos;
-        private Vector3         _originalWorldPos;
-        private Vector3         _startLocalPos;
-        private Vector3         _startWorldPos;
+        private float           m_Duration;
+        private float           m_Delay;
+        private Vector3         m_OriginalLocalPos;
+        private Vector3         m_OriginalWorldPos;
+        private Vector3         m_StartLocalPos;
+        private Vector3         m_StartWorldPos;
 
         private void Awake()
         {
-            _originalLocalPos = transform.localPosition;
-            _originalWorldPos = transform.position;
+            m_OriginalLocalPos = transform.localPosition;
+            m_OriginalWorldPos = transform.position;
         }
 
         void OnEnable()
         {
             // 恢复初始位置
-            transform.position = _originalWorldPos;
-            transform.localPosition = _originalLocalPos;
+            transform.position = m_OriginalWorldPos;
+            transform.localPosition = m_OriginalLocalPos;
 
             // 重复使用时需要先设置到正确位置，再active
-            _startLocalPos = transform.localPosition;
-            _startWorldPos = transform.position;
+            m_StartWorldPos = transform.position;
+            m_StartLocalPos = transform.localPosition;
 
-            _duration = duration;
-            _delay = delay;
+            m_Duration = Duration;
+            m_Delay = Delay;
         }
 
         void Update()
         {
-            _delay -= Time.deltaTime;
-            if (_delay <= 0)
+            m_Delay -= Time.deltaTime;
+            if (m_Delay > 0)
+                return;
+
+            m_Duration -= Time.deltaTime;
+            float percent = 1;
+            if (m_Duration >= 0)
             {
-                _duration -= Time.deltaTime;
-                float percent = 1;
-                if (_duration >= 0)
+                percent = 1 - (m_Duration / Duration);
+            }
+            else
+            {
+                if (Loop)
                 {
-                    percent = 1 - (_duration / duration);
+                    m_Duration += Duration;
+                    percent = 1 - (m_Duration / Duration);
                 }
-                else
-                {
-                    if (Loop)
-                    {
-                        _duration = duration;
-                        percent = 1 - (_duration / duration);
-                    }
-                }
+            }
 
-                float value = curve.Evaluate(percent);
+            float value = Curve.Evaluate(percent);
 
-                if (WorldSpace)
-                {
-                    if (addictive)
-                        transform.position = Vector3.Lerp(_startWorldPos, _startWorldPos + target, value);
-                    else
-                        transform.position = Vector3.Lerp(_startWorldPos, target, value);
-                }
+            if (WorldSpace)
+            {
+                if(Addition)
+                    transform.position = Vector3.Lerp(m_StartWorldPos, m_StartWorldPos + Target, value);
                 else
-                {
-                    if (addictive)
-                        transform.localPosition = Vector3.Lerp(_startLocalPos, _startLocalPos + target, value);
-                    else
-                        transform.localPosition = Vector3.Lerp(_startLocalPos, target, value);
-                }
+                    transform.position = Vector3.Lerp(m_StartWorldPos, Target, value);
+            }
+            else
+            {
+                if(Addition)
+                    transform.localPosition = Vector3.Lerp(m_StartLocalPos, m_StartLocalPos + Target, value);
+                else
+                    transform.localPosition = Vector3.Lerp(m_StartLocalPos, Target, value);
             }
         }
     }
