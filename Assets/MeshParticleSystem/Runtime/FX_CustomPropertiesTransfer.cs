@@ -7,7 +7,7 @@ namespace MeshParticleSystem
     /// <summary>
     /// 向材质传输参数（float, vector4, color, uv）
     /// </summary>
-    public class FX_CustomPropertiesTransfer : MonoBehaviour
+    public class FX_CustomPropertiesTransfer : FX_Component
     {
         private static MaterialPropertyBlock    k_MaterialPropertyBlock;
 

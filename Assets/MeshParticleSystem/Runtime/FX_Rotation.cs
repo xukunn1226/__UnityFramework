@@ -4,13 +4,12 @@ using UnityEngine;
 
 namespace MeshParticleSystem
 {
-    public class FX_Rotation : MonoBehaviour
+    public class FX_Rotation : FX_Component, IReplay
     {
         public float            Delay;
         [Min(0)]
         public float            Duration;
 
-        public bool             WorldSpace;
         public bool             Addition;
         public Vector3          Target;
         public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
@@ -18,37 +17,30 @@ namespace MeshParticleSystem
         private float           m_ElapsedTime;
         private float           m_Delay;
         private Vector3         m_OriginalLocalEuler;
-        private Vector3         m_OriginalWorldEuler;
-        private bool            m_isStarted;
+
+        private void Awake()
+        {
+            // 记录初始朝向
+            m_OriginalLocalEuler = transform.localEulerAngles;
+        }
 
         void OnEnable()
         {
-            if (!m_isStarted)
-                return;
-
-            Init();
-        }
-
-        private void Start()
-        {
-            m_isStarted = true;
-
-            // 记录初始位置
-            // 初始位置必须在Start中记录，Awake中rotation可能尚未初始化
-            m_OriginalLocalEuler = transform.localEulerAngles;
-            m_OriginalWorldEuler = transform.eulerAngles;
-
             Init();
         }
 
         private void Init()
         {
             // 恢复初始朝向
-            transform.eulerAngles = m_OriginalWorldEuler;
             transform.localEulerAngles = m_OriginalLocalEuler;
 
             m_ElapsedTime = 0;
             m_Delay = Delay;
+        }
+
+        public void Replay()
+        {
+            enabled = !enabled;
         }
 
         void Update()
@@ -65,19 +57,13 @@ namespace MeshParticleSystem
             }
             float value = Curve.Evaluate(percent);
 
-            if (WorldSpace)
+            if (Addition)
             {
-                if (Addition)
-                    transform.rotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalWorldEuler), Quaternion.Euler(m_OriginalWorldEuler + Target), value);
-                else
-                    transform.rotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalWorldEuler), Quaternion.Euler(Target), value);
+                transform.localRotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalLocalEuler), Quaternion.Euler(m_OriginalLocalEuler + Target), value);
             }
             else
             {
-                if (Addition)
-                    transform.localRotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalLocalEuler), Quaternion.Euler(m_OriginalLocalEuler + Target), value);
-                else
-                    transform.localRotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalLocalEuler), Quaternion.Euler(Target), value);
+                transform.localRotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalLocalEuler), Quaternion.Euler(Target), value);
             }
         }
     }

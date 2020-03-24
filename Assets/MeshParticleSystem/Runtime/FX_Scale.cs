@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MeshParticleSystem
 {
-    public class FX_Scale : MonoBehaviour
+    public class FX_Scale : FX_Component, IReplay
     {
         public float            Delay;
         [Min(0)]
@@ -17,23 +17,15 @@ namespace MeshParticleSystem
         private float           m_ElapsedTime;
         private float           m_Delay;
         private Vector3         m_OriginalLocalScale;
-        private bool            m_isStarted;
+
+        private void Awake()
+        {
+            // 记录初始localScale
+            m_OriginalLocalScale = transform.localScale;
+        }
 
         private void OnEnable()
         {
-            if (!m_isStarted)
-                return;
-
-            Init();
-        }
-
-        private void Start()
-        {
-            m_isStarted = true;
-
-            // 记录初始localScale
-            m_OriginalLocalScale = transform.localScale;
-
             Init();
         }
 
@@ -43,6 +35,11 @@ namespace MeshParticleSystem
 
             m_ElapsedTime = 0;
             m_Delay = Delay;
+        }
+
+        public void Replay()
+        {
+            enabled = !enabled;
         }
 
         void Update()
@@ -60,9 +57,13 @@ namespace MeshParticleSystem
             float value = Curve.Evaluate(percent);
 
             if (Addition)
+            {
                 transform.localScale = Vector3.Lerp(m_OriginalLocalScale, m_OriginalLocalScale + Target, value);
+            }
             else
+            {
                 transform.localScale = Vector3.Lerp(m_OriginalLocalScale, Target, value);
+            }
         }
     }
 }

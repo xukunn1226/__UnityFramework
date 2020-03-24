@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace MeshParticleSystem
 {
-    public class FX_DelayActive : MonoBehaviour
+    public class FX_DelayActive : FX_Component, IReplay
     {
-        [Min(0)]
+        [Min(0.01f)]
         public float Delay;                      // 相对父节点（FX_DelayActive）的延迟时间
 
         private bool isFinishActive              // 是否已激活
@@ -44,11 +44,16 @@ namespace MeshParticleSystem
             }
         }
 
+        public void Replay()
+        {
+            enabled = !enabled;
+        }
+
         private void OnEnable()
         {
-            //Debug.LogFormat("OnEnable: {0}     {1}      {2}", gameObject.name, Time.time, Time.frameCount);
-            
-            // 上层尚未执行完delayActive，则等待
+            //Debug.LogFormat("OnEnable: Name[{0}]     Time[{1}]      Frame[{2}]", gameObject.name, Time.time, Time.frameCount);
+
+            // 若有父节点（FX_DelayActive），且尚未active则等待
             if (parent != null && !parent.isFinishActive)
             {
                 return;
@@ -62,7 +67,7 @@ namespace MeshParticleSystem
 
             if (!isFinishActive)
             {
-                //Debug.LogFormat("Invoke: {0}     {1}      {2}", gameObject.name, Time.time, Time.frameCount);
+                //Debug.LogFormat("Invoke: Name[{0}]     Time[{1}]      Frame[{2}]", gameObject.name, Time.time, Time.frameCount);
 
                 Invoke("OnStartActive", Delay);
 
@@ -77,7 +82,7 @@ namespace MeshParticleSystem
 
         void OnStartActive()
         {
-            //Debug.LogFormat("OnStartActive: {0}     {1}      {2}", gameObject.name, Time.time, Time.frameCount);
+            //Debug.LogFormat("---------------OnStartActive: Name[{0}]     Time[{1}]      Frame[{2}]", gameObject.name, Time.time, Time.frameCount);
 
             if (parent == null || parent.isFinishActive)
             {

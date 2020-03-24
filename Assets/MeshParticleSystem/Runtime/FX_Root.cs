@@ -6,8 +6,25 @@ namespace MeshParticleSystem
 {
     public class FX_Root : MonoBehaviour
     {
-        public float    LifeTime;
-        private float   m_LifeTime;
+        [Min(0)]
+        public float            LifeTime;
+        private float           m_LifeTime;
+
+        private FX_Component[]  m_Components;
+        private bool            m_bInit;
+
+        private FX_Component[] Components
+        {
+            get
+            {
+                if (!m_bInit)
+                {
+                    m_Components = GetComponentsInChildren<FX_Component>(true);
+                    m_bInit = true;
+                }
+                return m_Components;
+            }
+        }
 
         private void OnEnable()
         {
@@ -29,7 +46,18 @@ namespace MeshParticleSystem
         // 重置特效所有状态(FX_Rotation, FX_Transition, FX_Animation, FX_CustomPropertiesTransfer, ParticleSystem, TrailRenderer)
         public void Replay()
         {
+            FX_Component[] comps = Components;
+            if (comps == null)
+                return;
 
+            foreach(var comp in comps)
+            {
+                IReplay rp = comp as IReplay;
+                if(rp != null)
+                {
+                    rp.Replay();
+                }
+            }
         }
     }
 }
