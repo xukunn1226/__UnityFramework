@@ -43,7 +43,10 @@ namespace MeshParticleSystem
             }
         }
 
-        // 重置特效所有状态(FX_Rotation, FX_Transition, FX_Animation, FX_CustomPropertiesTransfer, ParticleSystem, TrailRenderer)
+        /// <summary>
+        /// 特效被回收重新使用时的接口
+        /// 重置特效所有状态(FX_Component, ParticleSystem, TrailRenderer)
+        /// </summary>
         public void Replay()
         {
             FX_Component[] comps = Components;

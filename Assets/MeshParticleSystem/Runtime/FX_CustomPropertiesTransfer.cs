@@ -82,25 +82,24 @@ namespace MeshParticleSystem
             public int              Id;
             public float            Delay;
             public float            Duration;
-            public bool             Loop;
 
             public ControlMode      Mode;
             public float            Value;
             public AnimationCurve   Curve;
 
-            public float            m_Delay     { get; private set; }
-            public float            m_Duration  { get; private set; }
+            private float           m_Delay;
+            private float           m_ElapsedTime;
 
             public void Init()
             {
                 m_Delay = Delay;
-                m_Duration = Duration;
+                m_ElapsedTime = 0;
             }
 
             public void Reset(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
-                m_Duration = Duration;
+                m_ElapsedTime = 0;
 
                 // 恢复初始值
                 block.SetFloat(FX_Const.SerializedIDToPropID[Id], Mode == ControlMode.Constant ? Value : Curve.Evaluate(0));
@@ -120,13 +119,11 @@ namespace MeshParticleSystem
                 }
                 else
                 {
-                    m_Duration -= Time.deltaTime;
-
                     float percent = 1;
-                    if (m_Duration >= 0 || Loop)
+                    if(Duration > 0)
                     {
-                        m_Duration = (m_Duration < 0 && Loop) ? m_Duration + Duration : m_Duration;
-                        percent = Mathf.Clamp01(1 - (m_Duration / Duration));
+                        m_ElapsedTime += Time.deltaTime;
+                        percent = m_ElapsedTime / Duration;
                     }
                     block.SetFloat(FX_Const.SerializedIDToPropID[Id], Curve.Evaluate(percent));
                 }
@@ -139,7 +136,6 @@ namespace MeshParticleSystem
             public int              Id;
             public float            Delay;
             public float            Duration;
-            public bool             Loop;
 
             public ControlMode      ModeX;
             public float            ValueX;
@@ -157,20 +153,20 @@ namespace MeshParticleSystem
             public float            ValueW;
             public AnimationCurve   CurveW;
 
-            public float            m_Delay     { get; private set; }
-            public float            m_Duration  { get; private set; }
+            private float           m_Delay;
+            private float           m_ElapsedTime;
             private Vector4         m_Value;
 
             public void Init()
             {
                 m_Delay = Delay;
-                m_Duration = Duration;
+                m_ElapsedTime = Duration;
             }
 
             public void Reset(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
-                m_Duration = Duration;
+                m_ElapsedTime = Duration;
 
                 // 恢复初始值
                 m_Value.x = ModeX == ControlMode.Constant ? ValueX : CurveX.Evaluate(0);
@@ -188,13 +184,11 @@ namespace MeshParticleSystem
                     return;
                 }
 
-                m_Duration -= Time.deltaTime;
-
                 float percent = 1;
-                if (m_Duration >= 0 || Loop)
+                if (Duration > 0)
                 {
-                    m_Duration = (m_Duration < 0 && Loop) ? m_Duration + Duration : m_Duration;
-                    percent = Mathf.Clamp01(1 - (m_Duration / Duration));
+                    m_ElapsedTime += Time.deltaTime;
+                    percent = m_ElapsedTime / Duration;
                 }
 
                 m_Value.x = ModeX == ControlMode.Constant ? ValueX : CurveX.Evaluate(percent);
