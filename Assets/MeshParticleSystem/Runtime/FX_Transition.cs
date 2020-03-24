@@ -6,40 +6,49 @@ namespace MeshParticleSystem
 {
     public class FX_Transition : MonoBehaviour
     {
-        public bool             Addition;
         public float            Delay;
+        [Min(0)]
         public float            Duration;
-        public bool             Loop;
 
-        public bool             WorldSpace;        
+        public bool             WorldSpace;                     // 更新transform的世界坐标
+        public bool             Addition;
         public Vector3          Target;
         public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
         
-        private float           m_Duration;
+        private float           m_ElapsedTime;
         private float           m_Delay;
         private Vector3         m_OriginalLocalPos;
         private Vector3         m_OriginalWorldPos;
-        private Vector3         m_StartLocalPos;
-        private Vector3         m_StartWorldPos;
-
-        private void Awake()
-        {
-            m_OriginalLocalPos = transform.localPosition;
-            m_OriginalWorldPos = transform.position;
-        }
+        private bool            m_isStarted;
 
         void OnEnable()
+        {
+            if (!m_isStarted)
+                return;
+
+            Init();
+        }
+
+        private void Start()
+        {
+            m_isStarted = true;
+
+            // 记录初始位置
+            // 初始位置必须在Start中记录，Awake中position可能尚未初始化
+            m_OriginalLocalPos = transform.localPosition;
+            m_OriginalWorldPos = transform.position;
+
+            Init();
+        }
+
+        private void Init()
         {
             // 恢复初始位置
             transform.position = m_OriginalWorldPos;
             transform.localPosition = m_OriginalLocalPos;
 
-            // 重复使用时需要先设置到正确位置，再active
-            m_StartWorldPos = transform.position;
-            m_StartLocalPos = transform.localPosition;
-
-            m_Duration = Duration;
-            m_Delay = Delay;
+            m_ElapsedTime = 0;
+            m_Delay = Delay;            
         }
 
         void Update()
@@ -48,36 +57,27 @@ namespace MeshParticleSystem
             if (m_Delay > 0)
                 return;
 
-            m_Duration -= Time.deltaTime;
             float percent = 1;
-            if (m_Duration >= 0)
+            if (Duration > 0)
             {
-                percent = 1 - (m_Duration / Duration);
+                m_ElapsedTime += Time.deltaTime;
+                percent = m_ElapsedTime / Duration;
             }
-            else
-            {
-                if (Loop)
-                {
-                    m_Duration += Duration;
-                    percent = 1 - (m_Duration / Duration);
-                }
-            }
-
             float value = Curve.Evaluate(percent);
 
             if (WorldSpace)
             {
                 if(Addition)
-                    transform.position = Vector3.Lerp(m_StartWorldPos, m_StartWorldPos + Target, value);
+                    transform.position = Vector3.Lerp(m_OriginalWorldPos, m_OriginalWorldPos + Target, value);
                 else
-                    transform.position = Vector3.Lerp(m_StartWorldPos, Target, value);
+                    transform.position = Vector3.Lerp(m_OriginalWorldPos, Target, value);
             }
             else
             {
                 if(Addition)
-                    transform.localPosition = Vector3.Lerp(m_StartLocalPos, m_StartLocalPos + Target, value);
+                    transform.localPosition = Vector3.Lerp(m_OriginalLocalPos, m_OriginalLocalPos + Target, value);
                 else
-                    transform.localPosition = Vector3.Lerp(m_StartLocalPos, Target, value);
+                    transform.localPosition = Vector3.Lerp(m_OriginalLocalPos, Target, value);
             }
         }
     }

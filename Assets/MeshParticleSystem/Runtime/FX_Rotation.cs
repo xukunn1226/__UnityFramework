@@ -6,99 +6,78 @@ namespace MeshParticleSystem
 {
     public class FX_Rotation : MonoBehaviour
     {
-        public bool             Addition;
-
         public float            Delay;
+        [Min(0)]
         public float            Duration;
-        public bool             Loop;
 
         public bool             WorldSpace;
+        public bool             Addition;
         public Vector3          Target;
         public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
 
-        public bool             lateUpdate;
-
-        private float           m_Duration;
+        private float           m_ElapsedTime;
         private float           m_Delay;
         private Vector3         m_OriginalLocalEuler;
         private Vector3         m_OriginalWorldEuler;
-        private Vector3         m_StartLocalEuler;
-        private Vector3         m_StartWorldEuler;
-        private Vector3         m_LocalEuler;
-        private Vector3         m_WorldEuler;
+        private bool            m_isStarted;
 
-        private void Awake()
+        void OnEnable()
         {
-            m_OriginalLocalEuler = transform.localEulerAngles;
-            m_OriginalWorldEuler = transform.eulerAngles;
+            if (!m_isStarted)
+                return;
+
+            Init();
         }
 
-        private void OnEnable()
+        private void Start()
         {
+            m_isStarted = true;
+
+            // 记录初始位置
+            // 初始位置必须在Start中记录，Awake中rotation可能尚未初始化
+            m_OriginalLocalEuler = transform.localEulerAngles;
+            m_OriginalWorldEuler = transform.eulerAngles;
+
+            Init();
+        }
+
+        private void Init()
+        {
+            // 恢复初始朝向
             transform.eulerAngles = m_OriginalWorldEuler;
             transform.localEulerAngles = m_OriginalLocalEuler;
 
-            // 重复使用时需要先设置到正确位置，再active
-            m_StartLocalEuler = transform.localEulerAngles;
-            m_StartWorldEuler = transform.eulerAngles;
-
-            m_Duration = Duration;
+            m_ElapsedTime = 0;
             m_Delay = Delay;
         }
 
-        void UpdateDataInternal()
+        void Update()
         {
             m_Delay -= Time.deltaTime;
             if (m_Delay > 0)
                 return;
 
-            m_Duration -= Time.deltaTime;
             float percent = 1;
-            if (m_Duration >= 0)
+            if(Duration > 0)
             {
-                percent = 1 - (m_Duration / Duration);
+                m_ElapsedTime += Time.deltaTime;
+                percent = m_ElapsedTime / Duration;
             }
-            else
-            {
-                if (Loop)
-                {
-                    m_Duration += Duration;
-                    percent = 1 - (m_Duration / Duration);
-                }
-            }
-
             float value = Curve.Evaluate(percent);
+
             if (WorldSpace)
             {
                 if (Addition)
-                    m_WorldEuler = Vector3.Lerp(m_StartWorldEuler, m_StartWorldEuler + Target, value);
+                    transform.rotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalWorldEuler), Quaternion.Euler(m_OriginalWorldEuler + Target), value);
                 else
-                    m_WorldEuler = Vector3.Lerp(m_StartWorldEuler, Target, value);
-                transform.eulerAngles = m_WorldEuler;
+                    transform.rotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalWorldEuler), Quaternion.Euler(Target), value);
             }
             else
             {
                 if (Addition)
-                    m_LocalEuler = Vector3.Lerp(m_StartLocalEuler, m_StartLocalEuler + Target, value);
+                    transform.localRotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalLocalEuler), Quaternion.Euler(m_OriginalLocalEuler + Target), value);
                 else
-                    m_LocalEuler = Vector3.Lerp(m_StartLocalEuler, Target, value);
-                transform.localEulerAngles = m_LocalEuler;
-            }
-        }
-
-        void Update()
-        {
-            if (!lateUpdate)
-            {
-                UpdateDataInternal();
-            }            
-        }
-        
-        private void LateUpdate()
-        {
-            if (lateUpdate)
-            {
-                UpdateDataInternal();
+                    transform.localRotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalLocalEuler), Quaternion.Euler(Target), value);
             }
         }
     }

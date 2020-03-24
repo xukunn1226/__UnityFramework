@@ -1,0 +1,17 @@
+{
+    "name": "Unity.MeshParticleSystem.Editor",
+    "references": [
+        "GUID:770eb301604ee8e4da8dedd8e95f1b7b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

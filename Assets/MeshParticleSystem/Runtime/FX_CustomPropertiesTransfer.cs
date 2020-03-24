@@ -222,6 +222,7 @@ namespace MeshParticleSystem
             public float            m_Delay         { get; private set; }
             public float            m_Duration      { get; private set; }
             public Vector2          m_TotalSpeed    { get; private set; }
+
             private static Vector4  k_MainTex_ST    = new Vector4(1, 1, 0, 0);
 
             public void Init()

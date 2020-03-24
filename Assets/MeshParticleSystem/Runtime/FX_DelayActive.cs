@@ -6,6 +6,7 @@ namespace MeshParticleSystem
 {
     public class FX_DelayActive : MonoBehaviour
     {
+        [Min(0)]
         public float Delay;                      // 相对父节点（FX_DelayActive）的延迟时间
 
         private bool isFinishActive              // 是否已激活
