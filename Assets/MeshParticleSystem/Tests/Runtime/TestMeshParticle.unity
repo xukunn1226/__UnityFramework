@@ -408,7 +408,6 @@ MonoBehaviour:
   - Id: 0
     Delay: 0
     Duration: 0
-    Loop: 0
     Mode: 0
     Value: 0
     Curve:
@@ -421,7 +420,6 @@ MonoBehaviour:
   - Id: 0
     Delay: 0
     Duration: 0
-    Loop: 0
     ModeX: 0
     ValueX: 0
     CurveX:
@@ -743,7 +741,7 @@ PrefabInstance:
     - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
         type: 3}
       propertyPath: m_CustomPropVector4List.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
         type: 3}
@@ -758,7 +756,7 @@ PrefabInstance:
     - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
         type: 3}
       propertyPath: m_CustomPropVector4List.Array.data[0].ModeX
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
         type: 3}
