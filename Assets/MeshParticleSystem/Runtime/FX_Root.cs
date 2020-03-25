@@ -6,7 +6,9 @@ namespace MeshParticleSystem
 {
     public class FX_Root : MonoBehaviour
     {
+#if UNITY_2019_1_OR_NEWER
         [Min(0)]
+#endif
         public float            LifeTime;
         private float           m_LifeTime;
 

@@ -274,13 +274,19 @@ namespace MeshParticleSystem
         {
             public bool             Active;
 
+#if UNITY_2019_1_OR_NEWER
             [Min(1)]
+#endif
             public int              TileX;
 
+#if UNITY_2019_1_OR_NEWER
             [Min(1)]
+#endif
             public int              TileY;
 
+#if UNITY_2019_1_OR_NEWER
             [Min(0)]
+#endif
             public int              StartFrame;
 
             private Vector2         InvTiles;

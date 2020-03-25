@@ -7,7 +7,9 @@ namespace MeshParticleSystem
     public class FX_Rotation : FX_Component, IReplay
     {
         public float            Delay;
+#if UNITY_2019_1_OR_NEWER
         [Min(0)]
+#endif
         public float            Duration;
 
         public bool             Addition;

@@ -6,7 +6,9 @@ namespace MeshParticleSystem
 {
     public class FX_DelayActive : FX_Component, IReplay
     {
+#if UNITY_2019_1_OR_NEWER
         [Min(0.01f)]
+#endif
         public float Delay;                      // 相对父节点（FX_DelayActive）的延迟时间
 
         private bool isFinishActive              // 是否已激活
