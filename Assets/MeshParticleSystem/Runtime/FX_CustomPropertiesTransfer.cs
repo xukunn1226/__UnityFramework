@@ -375,27 +375,36 @@ namespace MeshParticleSystem
 
         private void OnEnable()
         {
-            foreach (CustomProp_Color propColor in m_CustomPropColorList)
+            if (m_CustomPropColorList != null)
             {
-                propColor.Reset(k_MaterialPropertyBlock);
+                foreach (CustomProp_Color propColor in m_CustomPropColorList)
+                {
+                    propColor.Reset(k_MaterialPropertyBlock);
+                }
             }
 
-            foreach (CustomProp_Float propFloat in m_CustomPropFloatList)
+            if (m_CustomPropFloatList != null)
             {
-                propFloat.Reset(k_MaterialPropertyBlock);
+                foreach (CustomProp_Float propFloat in m_CustomPropFloatList)
+                {
+                    propFloat.Reset(k_MaterialPropertyBlock);
+                }
             }
 
-            foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
+            if (m_CustomPropVector4List != null)
             {
-                propVector4.Reset(k_MaterialPropertyBlock);
+                foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
+                {
+                    propVector4.Reset(k_MaterialPropertyBlock);
+                }
             }
 
-            if (m_CustomPropUV.Active)
+            if (m_CustomPropUV != null && m_CustomPropUV.Active)
             {
                 m_CustomPropUV.Reset(k_MaterialPropertyBlock);
             }
 
-            if (m_CustomPropAtlas.Active)
+            if (m_CustomPropUV != null && m_CustomPropAtlas.Active)
             {
                 m_CustomPropAtlas.Reset(k_MaterialPropertyBlock);
             }
@@ -403,6 +412,9 @@ namespace MeshParticleSystem
 
         private void UpdateColor()
         {
+            if (m_CustomPropColorList == null)
+                return;
+
             foreach (CustomProp_Color propColor in m_CustomPropColorList)
             {
                 propColor.Update(k_MaterialPropertyBlock);
@@ -411,6 +423,9 @@ namespace MeshParticleSystem
 
         private void UpdateFloat()
         {
+            if (m_CustomPropFloatList == null)
+                return;
+
             foreach(CustomProp_Float propFloat in m_CustomPropFloatList)
             {
                 propFloat.Update(k_MaterialPropertyBlock);
@@ -419,6 +434,9 @@ namespace MeshParticleSystem
 
         private void UpdateVector4()
         {
+            if (m_CustomPropVector4List == null)
+                return;
+
             foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
             {
                 propVector4.Update(k_MaterialPropertyBlock);
@@ -427,7 +445,7 @@ namespace MeshParticleSystem
 
         private void UpdateUV()
         {
-            if (!m_CustomPropUV.Active)
+            if (m_CustomPropUV == null || !m_CustomPropUV.Active)
                 return;
 
             m_CustomPropUV.Update(k_MaterialPropertyBlock);
@@ -435,7 +453,7 @@ namespace MeshParticleSystem
 
         private void UpdateAtlas()
         {
-            if (!m_CustomPropAtlas.Active)
+            if (m_CustomPropAtlas == null || !m_CustomPropAtlas.Active)
                 return;
 
             m_CustomPropAtlas.Update(k_MaterialPropertyBlock);
