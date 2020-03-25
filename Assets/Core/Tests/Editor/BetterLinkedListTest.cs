@@ -40,24 +40,40 @@ namespace Tests
 
     public class BetterLinkedListTest
     {
-        private BetterLinkedList<Foo> m_List;
+        private BetterLinkedList<Foo> m_List = new BetterLinkedList<Foo>();
+        private Foo m_Value;
 
-        [UnitySetUp]
+        [SetUp]
         public void SetupBetterLinkedList()
         {
+            Foo f = m_List.AddFirst();
+            f.Value = 1;
 
+            f = m_List.AddFirst();
+            f.Value = 3;
+
+            m_Value = m_List.AddFirst();
+            m_Value.Value = 4;
+
+            f = m_List.AddFirst();
+            f.Value = 2;
+
+            Assert.AreEqual("m_List.Count == 4", m_List.Count == 4);
         }
 
-        [UnityTearDown]
+        [TearDown]
         public void TearDownBetterLinkedList()
         {
-
+            m_List.Clear();
+            PoolManager.UnregisterObjectPool(typeof(Foo));
         }
 
         [Test]
         public void BetterLinkedListTestSimplePasses()
         {
+            //m_List.Remove(m_Value);
 
+            //m_List.RemoveFirst();
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use

@@ -41,6 +41,11 @@ namespace Core
             node.List = this;
             node.Prev = null;
             node.Next = First;
+
+            if(First != null)
+            {
+                First.Prev = node;
+            }
             First = item;
 
             if (Last == null)
@@ -60,6 +65,11 @@ namespace Core
             node.List = this;
             node.Prev = Last;
             node.Next = null;
+
+            if (Last != null)
+            {
+                Last.Next = node;
+            }
             Last = item;
 
             if (First == null)
