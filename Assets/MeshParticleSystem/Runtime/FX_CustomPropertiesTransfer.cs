@@ -325,11 +325,11 @@ namespace MeshParticleSystem
             }
         }
 
-        [SerializeField] private List<CustomProp_Color>         m_CustomPropColorList   = new List<CustomProp_Color>();
-        [SerializeField] private List<CustomProp_Float>         m_CustomPropFloatList   = new List<CustomProp_Float>();
-        [SerializeField] private List<CustomProp_Vector4>       m_CustomPropVector4List = new List<CustomProp_Vector4>();
-        [SerializeField] private CustomProp_UV                  m_CustomPropUV          = new CustomProp_UV();
-        [SerializeField] private CustomProp_Atlas               m_CustomPropAtlas       = new CustomProp_Atlas();
+        [SerializeField] private List<CustomProp_Color>     m_CustomPropColorList = null;
+        [SerializeField] private List<CustomProp_Float>     m_CustomPropFloatList = null;
+        [SerializeField] private List<CustomProp_Vector4>   m_CustomPropVector4List = null;
+        [SerializeField] private CustomProp_UV              m_CustomPropUV = null;
+        [SerializeField] private CustomProp_Atlas           m_CustomPropAtlas = null;
 
         private void Awake()
         {
