@@ -11,7 +11,8 @@ namespace MeshParticleSystem
         SerializedProperty  m_CustomColorListProp;
         SerializedProperty  m_CustomFloatListProp;
         SerializedProperty  m_CustomVector4ListProp;
-        SerializedProperty  m_CustomUVProp;        
+        SerializedProperty  m_CustomUVProp;
+        SerializedProperty  m_CustomAtlasProp;
 
         const int           m_kIndent = 63;
 
@@ -21,6 +22,7 @@ namespace MeshParticleSystem
             m_CustomFloatListProp   = serializedObject.FindProperty("m_CustomPropFloatList");
             m_CustomVector4ListProp = serializedObject.FindProperty("m_CustomPropVector4List");
             m_CustomUVProp          = serializedObject.FindProperty("m_CustomPropUV");
+            m_CustomAtlasProp       = serializedObject.FindProperty("m_CustomPropAtlas");
         }
 
         public override void OnInspectorGUI()
@@ -34,6 +36,8 @@ namespace MeshParticleSystem
             DrawVector4PropList();
             EditorGUILayout.Space();
             DrawUVProp();
+            EditorGUILayout.Space();
+            DrawAtlasProp();
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -418,7 +422,7 @@ namespace MeshParticleSystem
                 EditorGUI.BeginDisabledGroup(!isActiveProp.boolValue);
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.IntPopup("Property", 0, new string[] { "_MainTexPropertyBlockST" }, new int[] { 0 });
+                    EditorGUILayout.IntPopup("Property", 0, new string[] { "_MainTex_ST" }, new int[] { 0 });
                     EditorGUILayout.EndHorizontal();
 
                     SerializedProperty delayProp = m_CustomUVProp.FindPropertyRelative("Delay");
@@ -444,6 +448,34 @@ namespace MeshParticleSystem
 
                     SerializedProperty curveProp = m_CustomUVProp.FindPropertyRelative("Curve");
                     EditorGUILayout.PropertyField(curveProp);
+                }
+                EditorGUI.EndDisabledGroup();
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawAtlasProp()
+        {
+            EditorGUILayout.LabelField("编辑Atlas", new GUIStyle("LargeLabel"));
+            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+            {
+                SerializedProperty isActiveProp = m_CustomAtlasProp.FindPropertyRelative("Active");
+                EditorGUILayout.PropertyField(isActiveProp);
+
+                EditorGUI.BeginDisabledGroup(!isActiveProp.boolValue);
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.IntPopup("Property", 0, new string[] { "_MainTex_ST" }, new int[] { 0 });
+                    EditorGUILayout.EndHorizontal();
+
+                    SerializedProperty tileXProp = m_CustomAtlasProp.FindPropertyRelative("TileX");
+                    EditorGUILayout.PropertyField(tileXProp);
+
+                    SerializedProperty tileYProp = m_CustomAtlasProp.FindPropertyRelative("TileY");
+                    EditorGUILayout.PropertyField(tileYProp);
+
+                    SerializedProperty startFrameProp = m_CustomAtlasProp.FindPropertyRelative("StartFrame");
+                    EditorGUILayout.PropertyField(startFrameProp);
                 }
                 EditorGUI.EndDisabledGroup();
             }

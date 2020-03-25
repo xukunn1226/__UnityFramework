@@ -13,7 +13,7 @@ namespace MeshParticleSystem
         public static Keyframe[] defaultKeyFrames           = { new Keyframe(0, 0), new Keyframe(1, 1) };
 
         // usual shader property id
-        public static int PropID_MainTexPropertyBlockST     = Shader.PropertyToID("_MainTexPropertyBlockST");           // Vector4      0
+        public static int PropID_MainTexST                  = Shader.PropertyToID("_MainTex_ST");                       // Vector4      0
         public static int PropID_TintColor                  = Shader.PropertyToID("_TintColor");                        // Color        1
         public static int PropID_Color                      = Shader.PropertyToID("_Color");                            // Color        2
         public static int PropID_PowerColor                 = Shader.PropertyToID("_PowerColor");                       // Color        3
@@ -96,7 +96,7 @@ namespace MeshParticleSystem
         // PropID动态生成，不唯一，不可序列化，所以需要映射
         public static int[] SerializedIDToPropID =
             {
-                PropID_MainTexPropertyBlockST,              // 0
+                PropID_MainTexST,                           // 0
                 PropID_TintColor,                           // 1
                 PropID_Color,                               // 2
                 PropID_PowerColor,                          // 3

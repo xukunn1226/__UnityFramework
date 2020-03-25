@@ -269,11 +269,61 @@ namespace MeshParticleSystem
             }
         }
 
+        [System.Serializable]
+        public class CustomProp_Atlas
+        {
+            public bool             Active;
+
+            [Min(1)]
+            public int              TileX;
+
+            [Min(1)]
+            public int              TileY;
+
+            [Min(0)]
+            public int              StartFrame;
+
+            private Vector2         InvTiles;
+            private Vector2         Offset;
+
+            private static Vector4  k_MainTex_ST = new Vector4(1, 1, 0, 0);
+
+            public void Init()
+            {
+            }
+
+            public void Reset(MaterialPropertyBlock block)
+            {
+                CalcTileOffset();
+                block.SetVector(FX_Const.SerializedIDToPropID[0], k_MainTex_ST);
+            }
+
+            private void CalcTileOffset()
+            {
+                InvTiles.x = 1.0f / TileX;
+                InvTiles.y = 1.0f / TileY;
+
+                Offset.x = StartFrame % TileX;
+                Offset.y = TileY - StartFrame / TileY - 1;
+
+                k_MainTex_ST.x = InvTiles.x;
+                k_MainTex_ST.y = InvTiles.y;
+                k_MainTex_ST.z = InvTiles.x * Offset.x;
+                k_MainTex_ST.w = InvTiles.y * Offset.y;
+            }
+
+            public void Update(MaterialPropertyBlock block)
+            {
+                CalcTileOffset();
+                block.SetVector(FX_Const.SerializedIDToPropID[0], k_MainTex_ST);
+            }
+        }
 
         [SerializeField] private List<CustomProp_Color>         m_CustomPropColorList   = new List<CustomProp_Color>();
         [SerializeField] private List<CustomProp_Float>         m_CustomPropFloatList   = new List<CustomProp_Float>();
         [SerializeField] private List<CustomProp_Vector4>       m_CustomPropVector4List = new List<CustomProp_Vector4>();
         [SerializeField] private CustomProp_UV                  m_CustomPropUV          = new CustomProp_UV();
+        [SerializeField] private CustomProp_Atlas               m_CustomPropAtlas       = new CustomProp_Atlas();
 
         private void Awake()
         {
@@ -310,6 +360,11 @@ namespace MeshParticleSystem
             {
                 m_CustomPropUV.Init();
             }
+
+            if(m_CustomPropAtlas != null && m_CustomPropAtlas.Active)
+            {
+                m_CustomPropAtlas.Init();
+            }
         }
 
         private void OnEnable()
@@ -332,6 +387,11 @@ namespace MeshParticleSystem
             if (m_CustomPropUV.Active)
             {
                 m_CustomPropUV.Reset(k_MaterialPropertyBlock);
+            }
+
+            if (m_CustomPropAtlas.Active)
+            {
+                m_CustomPropAtlas.Reset(k_MaterialPropertyBlock);
             }
         }
 
@@ -367,6 +427,14 @@ namespace MeshParticleSystem
             m_CustomPropUV.Update(k_MaterialPropertyBlock);
         }
 
+        private void UpdateAtlas()
+        {
+            if (!m_CustomPropAtlas.Active)
+                return;
+
+            m_CustomPropAtlas.Update(k_MaterialPropertyBlock);
+        }
+
         private void Update()
         {
             if (m_Renderer == null)
@@ -378,6 +446,7 @@ namespace MeshParticleSystem
             UpdateFloat();
             UpdateVector4();
             UpdateUV();
+            UpdateAtlas();
 
             m_Renderer.SetPropertyBlock(k_MaterialPropertyBlock);
         }

@@ -308,7 +308,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1219814403
 Transform:
   m_ObjectHideFlags: 0
@@ -467,6 +467,105 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  m_CustomPropAtlas:
+    Active: 0
+    TileX: 0
+    TileY: 0
+    StartFrame: 0
+--- !u!1 &1992402202 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7368071844082664147, guid: 4a296bee8b119bf4089de515e39d8271,
+    type: 3}
+  m_PrefabInstance: {fileID: 7368071843076830734}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1992402203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992402202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7294d515d44446144a5620ea44353ad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Delay: 0
+  Duration: 0
+  Addition: 0
+  Target: {x: 1, y: 1, z: 1}
+  CurveX:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CurveY:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CurveZ:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2041813643
 GameObject:
   m_ObjectHideFlags: 0
@@ -684,6 +783,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 974465858830433184, guid: 6022f275636dbce42acd33918f845147,
+        type: 3}
+      propertyPath: Curve.m_PostInfinity
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2632938547864858339, guid: 6022f275636dbce42acd33918f845147,
         type: 3}
       propertyPath: m_Name
@@ -740,28 +844,33 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
         type: 3}
-      propertyPath: m_CustomPropVector4List.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
-        type: 3}
-      propertyPath: m_CustomPropFloatList.Array.size
+      propertyPath: m_CustomPropColorList.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
         type: 3}
-      propertyPath: m_CustomPropColorList.Array.data[0].Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
-        type: 3}
-      propertyPath: m_CustomPropVector4List.Array.data[0].ModeX
+      propertyPath: m_CustomPropUV.Active
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
         type: 3}
-      propertyPath: m_CustomPropFloatList.Array.data[0].Mode
+      propertyPath: m_CustomPropAtlas.Active
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
+        type: 3}
+      propertyPath: m_CustomPropAtlas.TileX
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
+        type: 3}
+      propertyPath: m_CustomPropAtlas.TileY
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4738871379650024113, guid: f77d295c20839e64fbeba6b3ce2e6906,
+        type: 3}
+      propertyPath: m_CustomPropAtlas.StartFrame
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4738871381358199964, guid: f77d295c20839e64fbeba6b3ce2e6906,
         type: 3}
