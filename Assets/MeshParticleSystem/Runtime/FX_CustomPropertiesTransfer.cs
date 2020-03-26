@@ -310,7 +310,7 @@ namespace MeshParticleSystem
                 InvTiles.y = 1.0f / TileY;
 
                 Offset.x = StartFrame % TileX;
-                Offset.y = TileY - StartFrame / TileY - 1;
+                Offset.y = TileY - StartFrame / TileX - 1;
 
                 k_MainTex_ST.x = InvTiles.x;
                 k_MainTex_ST.y = InvTiles.y;
