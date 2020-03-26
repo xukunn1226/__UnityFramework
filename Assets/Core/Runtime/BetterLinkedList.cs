@@ -33,52 +33,9 @@ namespace Core
             Count = 0;
         }
 
-        public T AddFirst()
-        {
-            T item = (T)m_Pool.Get();
-
-            IBetterLinkedListNode<T> node = item;
-            node.List = this;
-            node.Prev = null;
-            node.Next = First;
-
-            if(First != null)
-            {
-                First.Prev = node;
-            }
-            First = item;
-
-            if (Last == null)
-            {
-                Last = First;
-            }
-
-            ++Count;
-            return item;
-        }
-
         public T AddLast()
         {
-            T item = (T)m_Pool.Get();
-
-            IBetterLinkedListNode<T> node = item;
-            node.List = this;
-            node.Prev = Last;
-            node.Next = null;
-
-            if (Last != null)
-            {
-                Last.Next = node;
-            }
-            Last = item;
-
-            if (First == null)
-            {
-                First = Last;
-            }
-
-            ++Count;
-            return item;
+            return InternalAddAfter(null);
         }
 
         /// <summary>
@@ -103,28 +60,50 @@ namespace Core
             if (node.Prev == null && node.Next == null)
                 throw new System.ArgumentException("BetterLinkedList.AddAfter, node.Prev == null && node.Next == null");
 
-            // new Node
-            T item = (T)m_Pool.Get();
+            return InternalAddAfter(node);
+        }
 
-            // insert new node
+        private T InternalAddAfter(T node)
+        {
+            // 允许node为null，此时认为添加至Last
+            if(node == null)
+            {
+                node = Last;
+            }
+
+            // node仍可能为null，小心处理
+            T item = (T)m_Pool.Get();
             IBetterLinkedListNode<T> newNode = item;
             newNode.List = this;
             newNode.Prev = node;
-            newNode.Next = node.Next;
+            newNode.Next = node?.Next ?? null;
 
-            if(node.Next != null)
+            if(node != null)
+            {
+                node.Next = newNode;
+            }
+            if(node != null && node.Next != null)
             {
                 node.Next.Prev = newNode;
             }
-            node.Next = newNode;
 
-            // update "Last"
-            if(node == Last)
-            {
-                Last = (T)newNode;
+            // update "First" & "Last"
+            if(First == null)
+            { // add after时newNode不可能为First，除非当前First为空（第一次加入）
+                First = item;
             }
+            if(newNode.Next == null)
+            {
+                Last = item;
+            }
+
             ++Count;
             return item;
+        }
+
+        public T AddFirst()
+        {
+            return InternalAddBefore(null);
         }
 
         /// <summary>
@@ -149,26 +128,43 @@ namespace Core
             if (node.Prev == null && node.Next == null)
                 throw new System.ArgumentException("BetterLinkedList.AddBefore, node.Prev == null && node.Next == null");
 
-            // new Node
-            T item = (T)m_Pool.Get();
+            return InternalAddBefore(node);
+        }
 
-            // insert new node
+        private T InternalAddBefore(T node)
+        {
+            // 允许node为null，此时认为添加至First
+            if (node == null)
+            {
+                node = First;
+            }
+
+            // node仍可能为null，小心处理
+            T item = (T)m_Pool.Get();
             IBetterLinkedListNode<T> newNode = item;
             newNode.List = this;
-            newNode.Prev = node.Prev;
+            newNode.Prev = node?.Prev ?? null;
             newNode.Next = node;
 
-            if (node.Prev != null)
+            if (node != null)
+            {
+                node.Prev = newNode;
+            }
+            if (node != null && node.Prev != null)
             {
                 node.Prev.Next = newNode;
             }
-            node.Prev = newNode;
 
-            // update "First"
-            if(node == First)
+            // update "First" & "Last"
+            if (newNode.Prev == null)
             {
-                First = (T)newNode;
+                First = item;
             }
+            if (Last == null)
+            { // add before时newNode不可能为Last，除非当前Last为空（第一次加入）
+                Last = item;
+            }
+
             ++Count;
             return item;
         }
