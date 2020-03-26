@@ -98,7 +98,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
-    - _TintColor: {r: 0.23584908, g: 0.22583662, b: 0.22583662, a: 0.5}
+    - _TintColor: {r: 0.6039216, g: 0.55629426, b: 0.30588236, a: 0.8352941}
 --- !u!114 &5894373422931614253
 MonoBehaviour:
   m_ObjectHideFlags: 11

@@ -7,6 +7,7 @@ namespace MeshParticleSystem
     /// <summary>
     /// 向材质传输参数（float, vector4, color, uv）
     /// </summary>
+    [ExecuteInEditMode]
     public class FX_CustomPropertiesTransfer : FX_Component
     {
         private static MaterialPropertyBlock    k_MaterialPropertyBlock;
@@ -277,20 +278,24 @@ namespace MeshParticleSystem
 #if UNITY_2019_1_OR_NEWER
             [Min(1)]
 #endif
-            public int              TileX;
+            public int              TileX = 1;
 
 #if UNITY_2019_1_OR_NEWER
             [Min(1)]
 #endif
-            public int              TileY;
+            public int              TileY = 1;
 
 #if UNITY_2019_1_OR_NEWER
             [Min(0)]
 #endif
             public int              StartFrame;
 
-            private Vector2         InvTiles;
-            private Vector2         Offset;
+#if UNITY_2019_1_OR_NEWER
+            [Min(0)]
+#endif
+            public Vector2          Speed;
+
+            public AnimationCurve   Curve;
 
             private static Vector4  k_MainTex_ST = new Vector4(1, 1, 0, 0);
 
@@ -300,22 +305,20 @@ namespace MeshParticleSystem
 
             public void Reset(MaterialPropertyBlock block)
             {
-                CalcTileOffset();
-                block.SetVector(FX_Const.SerializedIDToPropID[0], k_MainTex_ST);
             }
 
             private void CalcTileOffset()
             {
-                InvTiles.x = 1.0f / TileX;
-                InvTiles.y = 1.0f / TileY;
+                float InvTilesX = 1.0f / TileX;
+                float InvTilesY = 1.0f / TileY;
 
-                Offset.x = StartFrame % TileX;
-                Offset.y = TileY - StartFrame / TileX - 1;
+                float OffsetX = StartFrame % TileX;
+                float OffsetY = TileY - StartFrame / TileX - 1;
 
-                k_MainTex_ST.x = InvTiles.x;
-                k_MainTex_ST.y = InvTiles.y;
-                k_MainTex_ST.z = InvTiles.x * Offset.x;
-                k_MainTex_ST.w = InvTiles.y * Offset.y;
+                k_MainTex_ST.x = InvTilesX;
+                k_MainTex_ST.y = InvTilesY;
+                k_MainTex_ST.z = InvTilesX * OffsetX;
+                k_MainTex_ST.w = InvTilesY * OffsetY;
             }
 
             public void Update(MaterialPropertyBlock block)
@@ -333,9 +336,6 @@ namespace MeshParticleSystem
 
         private void Awake()
         {
-            if (k_MaterialPropertyBlock == null)
-                k_MaterialPropertyBlock = new MaterialPropertyBlock();
-
             m_Renderer = GetComponent<Renderer>();
 
             if (m_CustomPropColorList != null)
@@ -375,6 +375,9 @@ namespace MeshParticleSystem
 
         private void OnEnable()
         {
+            if (k_MaterialPropertyBlock == null)
+                k_MaterialPropertyBlock = new MaterialPropertyBlock();
+
             if (m_CustomPropColorList != null)
             {
                 foreach (CustomProp_Color propColor in m_CustomPropColorList)

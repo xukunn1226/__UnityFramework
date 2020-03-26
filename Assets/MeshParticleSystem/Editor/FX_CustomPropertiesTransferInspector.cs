@@ -476,6 +476,12 @@ namespace MeshParticleSystem
 
                     SerializedProperty startFrameProp = m_CustomAtlasProp.FindPropertyRelative("StartFrame");
                     EditorGUILayout.PropertyField(startFrameProp);
+
+                    SerializedProperty speedProp = m_CustomAtlasProp.FindPropertyRelative("Speed");
+                    EditorGUILayout.PropertyField(speedProp);
+
+                    SerializedProperty curveProp = m_CustomAtlasProp.FindPropertyRelative("Curve");
+                    EditorGUILayout.PropertyField(curveProp);
                 }
                 EditorGUI.EndDisabledGroup();
             }
