@@ -61,11 +61,11 @@ namespace MeshParticleSystem
 
             if (Addition)
             {
-                transform.localRotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalLocalEuler), Quaternion.Euler(m_OriginalLocalEuler + Target), value);
+                transform.localEulerAngles = Vector3.Lerp(m_OriginalLocalEuler, m_OriginalLocalEuler + Target, value);
             }
             else
             {
-                transform.localRotation = Quaternion.Lerp(Quaternion.Euler(m_OriginalLocalEuler), Quaternion.Euler(Target), value);
+                transform.localEulerAngles = Vector3.Lerp(m_OriginalLocalEuler, Target, value);
             }
         }
     }
