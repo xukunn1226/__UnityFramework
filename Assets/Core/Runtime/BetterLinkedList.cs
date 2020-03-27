@@ -78,13 +78,13 @@ namespace Core
             newNode.Prev = node;
             newNode.Next = node?.Next ?? null;
 
-            if(node != null)
-            {
-                node.Next = newNode;
-            }
             if(node != null && node.Next != null)
             {
                 node.Next.Prev = newNode;
+            }
+            if(node != null)
+            {
+                node.Next = newNode;
             }
 
             // update "First" & "Last"
@@ -146,13 +146,13 @@ namespace Core
             newNode.Prev = node?.Prev ?? null;
             newNode.Next = node;
 
-            if (node != null)
-            {
-                node.Prev = newNode;
-            }
             if (node != null && node.Prev != null)
             {
                 node.Prev.Next = newNode;
+            }
+            if (node != null)
+            {
+                node.Prev = newNode;
             }
 
             // update "First" & "Last"
@@ -182,9 +182,6 @@ namespace Core
 
             if (node.Next != null && node.Next.List != this)
                 throw new System.ArgumentException("BetterLinkedList.Remove, node.Next != null && node.Next.List != this");
-
-            if (node.Prev == null && node.Next == null)
-                throw new System.ArgumentException("BetterLinkedList.Remove, node.Prev == null && node.Next == null");
 
             // update "First" & "Last"
             if(node == First)

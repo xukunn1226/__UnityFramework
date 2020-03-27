@@ -46,31 +46,54 @@ namespace Tests
         [SetUp]
         public void SetupBetterLinkedList()
         {
-            Foo f = m_List.AddFirst();
-            f.Value = 1;
+            //Foo f = m_List.AddFirst();
+            //f.Value = 1;
 
-            f = m_List.AddFirst();
-            f.Value = 3;
+            //f = m_List.AddFirst();
+            //f.Value = 3;
 
-            m_Value = m_List.AddFirst();
-            m_Value.Value = 4;
+            //m_Value = m_List.AddFirst();
+            //m_Value.Value = 4;
 
-            f = m_List.AddFirst();
-            f.Value = 2;
+            //f = m_List.AddFirst();
+            //f.Value = 2;
 
-            Assert.AreEqual("m_List.Count == 4", m_List.Count == 4);
+            //Assert.AreEqual("m_List.Count == 4", m_List.Count == 4);
         }
 
         [TearDown]
         public void TearDownBetterLinkedList()
         {
-            m_List.Clear();
-            PoolManager.UnregisterObjectPool(typeof(Foo));
+            //m_List.Clear();
+            //PoolManager.UnregisterObjectPool(typeof(Foo));
         }
 
         [Test]
         public void BetterLinkedListTestSimplePasses()
         {
+            try
+            {
+                Foo f = m_List.AddFirst();
+                f.Value = 1;
+
+                f = m_List.AddFirst();
+                f.Value = 3;
+
+                m_Value = m_List.AddFirst();
+                m_Value.Value = 4;
+
+                f = m_List.AddFirst();
+                f.Value = 2;
+
+                Assert.AreEqual(4, m_List.Count, "m_List.Count == 4");
+
+                m_List.Clear();
+            }
+            finally
+            {
+                PoolManager.UnregisterObjectPool(typeof(Foo));
+            }
+
             //m_List.Remove(m_Value);
 
             //m_List.RemoveFirst();
