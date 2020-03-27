@@ -205,75 +205,64 @@ namespace MeshParticleSystem
         public class CustomProp_UV
         {
             public bool             Active;
+
             public float            Delay;
-            public float            Duration;
+
+            public Vector2          Tiling = new Vector2(1, 1);
+
+            public Vector2          Offset;
+
             public Vector2          Speed;
-            public Vector2          StartOffset;
-            public Vector2          TileScale       = Vector2.one;
-            public bool             Loop;
-            public bool             LoopReset;
-            public AnimationCurve   Curve;
 
-            public float            m_Delay         { get; private set; }
-            public float            m_Duration      { get; private set; }
-            public Vector2          m_TotalSpeed    { get; private set; }
+            public Vector2          m_AccumulatedSpeed;
 
-            private static Vector4  k_MainTex_ST    = new Vector4(1, 1, 0, 0);
+            private float           m_Delay;
+
+            private static Vector4  k_MainTex_ST = new Vector4(1, 1, 0, 0);
 
             public void Init()
             {
                 m_Delay = Delay;
-                m_Duration = Duration;
+                m_AccumulatedSpeed = new Vector2(0, 0);
             }
 
             public void Reset(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
-                m_Duration = Duration;
-                m_TotalSpeed = Vector2.zero;
+                m_AccumulatedSpeed = new Vector2(0, 0);
+
                 k_MainTex_ST = new Vector4(1, 1, 0, 0);
                 block.SetVector(FX_Const.SerializedIDToPropID[0], k_MainTex_ST);
             }
 
             public void Update(MaterialPropertyBlock block)
             {
-                if (m_Delay > 0)
+                if(m_Delay > 0)
                 {
                     m_Delay -= Time.deltaTime;
                     return;
                 }
 
-                m_Duration -= Time.deltaTime;
-                float percent = 1;
-                if (m_Duration >= 0)
-                {
-                    percent = 1 - (m_Duration / Duration);
-                    m_TotalSpeed += Curve.Evaluate(percent) * Speed * Time.deltaTime;
-                }
-                else
-                {
-                    if (Loop)
-                    {
-                        if (LoopReset)
-                            m_TotalSpeed = Vector2.zero;
-                        m_Duration += Duration;
-                        percent = 1 - (m_Duration / Duration);
-                        m_TotalSpeed += Curve.Evaluate(percent) * Speed * Time.deltaTime;
-                    }
-                }
+                m_AccumulatedSpeed += Speed * Time.deltaTime;
 
-                k_MainTex_ST.x = TileScale.x;
-                k_MainTex_ST.y = TileScale.y;
-                k_MainTex_ST.z = m_TotalSpeed.x + StartOffset.x;
-                k_MainTex_ST.w = m_TotalSpeed.y + StartOffset.y;
+                k_MainTex_ST.x = Tiling.x;
+                k_MainTex_ST.y = Tiling.y;
+                k_MainTex_ST.z = Offset.x + m_AccumulatedSpeed.x;
+                k_MainTex_ST.w = Offset.y + m_AccumulatedSpeed.y;
+
                 block.SetVector(FX_Const.SerializedIDToPropID[0], k_MainTex_ST);
             }
         }
 
         [System.Serializable]
-        public class CustomProp_Atlas
+        public class CustomProp_TextureSheet
         {
             public bool             Active;
+
+#if UNITY_2019_1_OR_NEWER
+            [Min(0)]
+#endif
+            public float            Duration;
 
 #if UNITY_2019_1_OR_NEWER
             [Min(1)]
@@ -293,27 +282,48 @@ namespace MeshParticleSystem
 #if UNITY_2019_1_OR_NEWER
             [Min(0)]
 #endif
-            public Vector2          Speed;
+            public int              FrameCount;
 
             public AnimationCurve   Curve;
+
+            private int             m_CurFrame;
+            private float           m_ElapsedTime;
 
             private static Vector4  k_MainTex_ST = new Vector4(1, 1, 0, 0);
 
             public void Init()
             {
+                m_CurFrame = StartFrame;
+                m_ElapsedTime = 0;
             }
 
             public void Reset(MaterialPropertyBlock block)
             {
+                m_CurFrame = StartFrame;
+                m_ElapsedTime = 0;
             }
 
-            private void CalcTileOffset()
+            private void UpdateFrame()
+            {
+                if (Duration > 0 && FrameCount > 0)
+                {
+                    m_ElapsedTime += Time.deltaTime;
+
+                    m_CurFrame = StartFrame + (int)((Curve.Evaluate(m_ElapsedTime / Duration) - 0.01f) * FrameCount);
+                }
+                else
+                {
+                    m_CurFrame = StartFrame;
+                }
+            }
+
+            private void PlayFrame()
             {
                 float InvTilesX = 1.0f / TileX;
                 float InvTilesY = 1.0f / TileY;
 
-                float OffsetX = StartFrame % TileX;
-                float OffsetY = TileY - StartFrame / TileX - 1;
+                float OffsetX = m_CurFrame % TileX;
+                float OffsetY = TileY - m_CurFrame / TileX - 1;
 
                 k_MainTex_ST.x = InvTilesX;
                 k_MainTex_ST.y = InvTilesY;
@@ -323,7 +333,10 @@ namespace MeshParticleSystem
 
             public void Update(MaterialPropertyBlock block)
             {
-                CalcTileOffset();
+                UpdateFrame();
+
+                PlayFrame();
+
                 block.SetVector(FX_Const.SerializedIDToPropID[0], k_MainTex_ST);
             }
         }
@@ -332,7 +345,7 @@ namespace MeshParticleSystem
         [SerializeField] private List<CustomProp_Float>     m_CustomPropFloatList = null;
         [SerializeField] private List<CustomProp_Vector4>   m_CustomPropVector4List = null;
         [SerializeField] private CustomProp_UV              m_CustomPropUV = null;
-        [SerializeField] private CustomProp_Atlas           m_CustomPropAtlas = null;
+        [SerializeField] private CustomProp_TextureSheet    m_CustomPropTextureSheet = null;
 
         private void Awake()
         {
@@ -367,9 +380,9 @@ namespace MeshParticleSystem
                 m_CustomPropUV.Init();
             }
 
-            if(m_CustomPropAtlas != null && m_CustomPropAtlas.Active)
+            if(m_CustomPropTextureSheet != null && m_CustomPropTextureSheet.Active)
             {
-                m_CustomPropAtlas.Init();
+                m_CustomPropTextureSheet.Init();
             }
         }
 
@@ -407,9 +420,9 @@ namespace MeshParticleSystem
                 m_CustomPropUV.Reset(k_MaterialPropertyBlock);
             }
 
-            if (m_CustomPropUV != null && m_CustomPropAtlas.Active)
+            if (m_CustomPropUV != null && m_CustomPropTextureSheet.Active)
             {
-                m_CustomPropAtlas.Reset(k_MaterialPropertyBlock);
+                m_CustomPropTextureSheet.Reset(k_MaterialPropertyBlock);
             }
         }
 
@@ -456,10 +469,10 @@ namespace MeshParticleSystem
 
         private void UpdateAtlas()
         {
-            if (m_CustomPropAtlas == null || !m_CustomPropAtlas.Active)
+            if (m_CustomPropTextureSheet == null || !m_CustomPropTextureSheet.Active)
                 return;
 
-            m_CustomPropAtlas.Update(k_MaterialPropertyBlock);
+            m_CustomPropTextureSheet.Update(k_MaterialPropertyBlock);
         }
 
         private void Update()

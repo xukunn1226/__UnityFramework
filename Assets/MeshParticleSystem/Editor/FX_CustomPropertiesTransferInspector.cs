@@ -12,17 +12,17 @@ namespace MeshParticleSystem
         SerializedProperty  m_CustomFloatListProp;
         SerializedProperty  m_CustomVector4ListProp;
         SerializedProperty  m_CustomUVProp;
-        SerializedProperty  m_CustomAtlasProp;
+        SerializedProperty  m_CustomTextureSheetProp;
 
         const int           m_kIndent = 63;
 
         private void OnEnable()
         {
-            m_CustomColorListProp   = serializedObject.FindProperty("m_CustomPropColorList");
-            m_CustomFloatListProp   = serializedObject.FindProperty("m_CustomPropFloatList");
-            m_CustomVector4ListProp = serializedObject.FindProperty("m_CustomPropVector4List");
-            m_CustomUVProp          = serializedObject.FindProperty("m_CustomPropUV");
-            m_CustomAtlasProp       = serializedObject.FindProperty("m_CustomPropAtlas");
+            m_CustomColorListProp       = serializedObject.FindProperty("m_CustomPropColorList");
+            m_CustomFloatListProp       = serializedObject.FindProperty("m_CustomPropFloatList");
+            m_CustomVector4ListProp     = serializedObject.FindProperty("m_CustomPropVector4List");
+            m_CustomUVProp              = serializedObject.FindProperty("m_CustomPropUV");
+            m_CustomTextureSheetProp    = serializedObject.FindProperty("m_CustomPropTextureSheet");
         }
 
         public override void OnInspectorGUI()
@@ -37,7 +37,7 @@ namespace MeshParticleSystem
             EditorGUILayout.Space();
             DrawUVProp();
             EditorGUILayout.Space();
-            DrawAtlasProp();
+            DrawTextureSheetProp();
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -428,38 +428,26 @@ namespace MeshParticleSystem
                     SerializedProperty delayProp = m_CustomUVProp.FindPropertyRelative("Delay");
                     EditorGUILayout.PropertyField(delayProp);
 
-                    SerializedProperty durationProp = m_CustomUVProp.FindPropertyRelative("Duration");
-                    EditorGUILayout.PropertyField(durationProp);
+                    SerializedProperty tilingProp = m_CustomUVProp.FindPropertyRelative("Tiling");
+                    EditorGUILayout.PropertyField(tilingProp);
 
+                    SerializedProperty offsetProp = m_CustomUVProp.FindPropertyRelative("Offset");
+                    EditorGUILayout.PropertyField(offsetProp);
+                    
                     SerializedProperty speedProp = m_CustomUVProp.FindPropertyRelative("Speed");
                     EditorGUILayout.PropertyField(speedProp);
-
-                    SerializedProperty startOffsetProp = m_CustomUVProp.FindPropertyRelative("StartOffset");
-                    EditorGUILayout.PropertyField(startOffsetProp);
-
-                    SerializedProperty tileScaleProp = m_CustomUVProp.FindPropertyRelative("TileScale");
-                    EditorGUILayout.PropertyField(tileScaleProp);
-
-                    SerializedProperty isLoopProp = m_CustomUVProp.FindPropertyRelative("Loop");
-                    EditorGUILayout.PropertyField(isLoopProp);
-
-                    SerializedProperty isLoopResetProp = m_CustomUVProp.FindPropertyRelative("LoopReset");
-                    EditorGUILayout.PropertyField(isLoopResetProp);
-
-                    SerializedProperty curveProp = m_CustomUVProp.FindPropertyRelative("Curve");
-                    EditorGUILayout.PropertyField(curveProp);
                 }
                 EditorGUI.EndDisabledGroup();
             }
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawAtlasProp()
+        private void DrawTextureSheetProp()
         {
-            EditorGUILayout.LabelField("编辑Atlas", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField("编辑Texture Sheet", new GUIStyle("LargeLabel"));
             GUILayout.BeginVertical(new GUIStyle("HelpBox"));
             {
-                SerializedProperty isActiveProp = m_CustomAtlasProp.FindPropertyRelative("Active");
+                SerializedProperty isActiveProp = m_CustomTextureSheetProp.FindPropertyRelative("Active");
                 EditorGUILayout.PropertyField(isActiveProp);
 
                 EditorGUI.BeginDisabledGroup(!isActiveProp.boolValue);
@@ -468,19 +456,22 @@ namespace MeshParticleSystem
                     EditorGUILayout.IntPopup("Property", 0, new string[] { "_MainTex_ST" }, new int[] { 0 });
                     EditorGUILayout.EndHorizontal();
 
-                    SerializedProperty tileXProp = m_CustomAtlasProp.FindPropertyRelative("TileX");
+                    SerializedProperty durationProp = m_CustomTextureSheetProp.FindPropertyRelative("Duration");
+                    EditorGUILayout.PropertyField(durationProp);
+
+                    SerializedProperty tileXProp = m_CustomTextureSheetProp.FindPropertyRelative("TileX");
                     EditorGUILayout.PropertyField(tileXProp);
 
-                    SerializedProperty tileYProp = m_CustomAtlasProp.FindPropertyRelative("TileY");
+                    SerializedProperty tileYProp = m_CustomTextureSheetProp.FindPropertyRelative("TileY");
                     EditorGUILayout.PropertyField(tileYProp);
 
-                    SerializedProperty startFrameProp = m_CustomAtlasProp.FindPropertyRelative("StartFrame");
+                    SerializedProperty startFrameProp = m_CustomTextureSheetProp.FindPropertyRelative("StartFrame");
                     EditorGUILayout.PropertyField(startFrameProp);
 
-                    SerializedProperty speedProp = m_CustomAtlasProp.FindPropertyRelative("Speed");
-                    EditorGUILayout.PropertyField(speedProp);
+                    SerializedProperty frameCountProp = m_CustomTextureSheetProp.FindPropertyRelative("FrameCount");
+                    EditorGUILayout.PropertyField(frameCountProp);
 
-                    SerializedProperty curveProp = m_CustomAtlasProp.FindPropertyRelative("Curve");
+                    SerializedProperty curveProp = m_CustomTextureSheetProp.FindPropertyRelative("Curve");
                     EditorGUILayout.PropertyField(curveProp);
                 }
                 EditorGUI.EndDisabledGroup();
