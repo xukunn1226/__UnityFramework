@@ -46,37 +46,27 @@ namespace Tests
         [SetUp]
         public void SetupBetterLinkedList()
         {
-            //Foo f = m_List.AddFirst();
-            //f.Value = 1;
-
-            //f = m_List.AddFirst();
-            //f.Value = 3;
-
-            //m_Value = m_List.AddFirst();
-            //m_Value.Value = 4;
-
-            //f = m_List.AddFirst();
-            //f.Value = 2;
-
-            //Assert.AreEqual("m_List.Count == 4", m_List.Count == 4);
         }
 
         [TearDown]
         public void TearDownBetterLinkedList()
         {
-            //m_List.Clear();
-            //PoolManager.UnregisterObjectPool(typeof(Foo));
         }
 
         [Test]
-        public void BetterLinkedListTestSimplePasses()
+        public void BetterLinkedListTest1()
         {
             try
             {
+                foreach (var foo in m_List)
+                {
+                    Debug.Log("-------" + foo.Value);
+                }
+
                 Foo f = m_List.AddFirst();
                 f.Value = 1;
 
-                f = m_List.AddFirst();
+                f = m_List.AddLast();
                 f.Value = 3;
 
                 m_Value = m_List.AddFirst();
@@ -85,7 +75,29 @@ namespace Tests
                 f = m_List.AddFirst();
                 f.Value = 2;
 
+                Foo b = m_List.AddBefore(m_Value);
+                b.Value = 5;
+
+                m_List.Remove(m_Value);
+
                 Assert.AreEqual(4, m_List.Count, "m_List.Count == 4");
+
+                foreach (var foo in m_List)
+                {
+                    Debug.Log(foo.Value);
+                }
+
+                BetterLinkedList<Foo>.Enumerator e = m_List.GetEnumerator();
+                while(e.MoveNext())
+                {
+                    Debug.Log("========" + e.Current.Value);
+                }
+                e.Reset();
+                while(e.MoveNext())
+                {
+                    Debug.Log("++++++++++" + e.Current.Value);
+                }
+                e.Dispose();
 
                 m_List.Clear();
             }
@@ -93,10 +105,6 @@ namespace Tests
             {
                 PoolManager.UnregisterObjectPool(typeof(Foo));
             }
-
-            //m_List.Remove(m_Value);
-
-            //m_List.RemoveFirst();
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use

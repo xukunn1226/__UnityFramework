@@ -225,11 +225,36 @@ namespace Core
             Remove(Last);
         }
 
+        public bool Contains(T node)
+        {
+            T item = First;
+            while(item != null)
+            {
+                if (item == node)
+                    return true;
+                item = (T)item.Next;
+            }
+            return false;
+        }
 
-        //public T[] ToArray()
-        //{
-        //    T[] arr = new T[Count];
-        //}
+        public void CopyTo(T[] array, int index)
+        {
+            if (array == null)
+                throw new ArgumentNullException("array");
+
+            if (index < 0 || index > array.Length)
+                throw new ArgumentOutOfRangeException("index");
+
+            if (index + Count > array.Length)
+                throw new ArgumentException("Insufficient Space");
+
+            T node = First;
+            while(node != null)
+            {
+                array[index++] = node;
+                node = (T)node.Next;
+            }
+        }
 
         public void Clear()
         {
@@ -306,7 +331,7 @@ namespace Core
                 return true;
             }
 
-            void IEnumerator.Reset()
+            public void Reset()
             {
                 m_Current = default(T);
                 m_Cursor = m_Buffer.First;
