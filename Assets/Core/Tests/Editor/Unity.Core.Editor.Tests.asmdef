@@ -4,7 +4,7 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Unity.Core.Runtime",
-        "Unity.PoolManager.Runtime"
+        "Unity.Core.Editor"
     ],
     "includePlatforms": [
         "Editor"

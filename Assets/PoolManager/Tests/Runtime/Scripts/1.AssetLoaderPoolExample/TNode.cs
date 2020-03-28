@@ -1,73 +1,75 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cache;
 
-[System.Serializable]
-public class TNode : IPooledObject
+namespace Cache.Tests
 {
-    static private ObjectPool<TNode> m_Pool;
-    static private int m_kInitSize = 20;
-
-    //[SerializeField] private int m_Value;
-
-    //public int value { get { return m_Value; } set { m_Value = value; } }
-
-    public void OnInit()
+    [System.Serializable]
+    public class TNode : IPooledObject
     {
-        Debug.Log("Foo::OnInit");
-    }
+        static private ObjectPool<TNode> m_Pool;
+        static private int m_kInitSize = 20;
 
-    public void OnGet()
-    {
-        Debug.Log("Foo::OnGet");
-    }
+        //[SerializeField] private int m_Value;
 
-    public void OnRelease()
-    {
-        Debug.Log("Foo::OnRelease");
-    }
+        //public int value { get { return m_Value; } set { m_Value = value; } }
 
-    public void ReturnToPool()
-    {
-        Debug.Log("Foo::ReturnPool");
-        Release(this);
-    }
+        public void OnInit()
+        {
+            Debug.Log("Foo::OnInit");
+        }
 
-    public IPool Pool
-    {
-        get
+        public void OnGet()
+        {
+            Debug.Log("Foo::OnGet");
+        }
+
+        public void OnRelease()
+        {
+            Debug.Log("Foo::OnRelease");
+        }
+
+        public void ReturnToPool()
+        {
+            Debug.Log("Foo::ReturnPool");
+            Release(this);
+        }
+
+        public IPool Pool
+        {
+            get
+            {
+                if (m_Pool == null)
+                {
+                    m_Pool = new ObjectPool<TNode>(m_kInitSize);
+                }
+                return m_Pool;
+            }
+            set
+            {
+                throw new System.AccessViolationException();
+            }
+        }
+
+        public static TNode Get()
         {
             if (m_Pool == null)
             {
                 m_Pool = new ObjectPool<TNode>(m_kInitSize);
             }
-            return m_Pool;
+
+            return (TNode)m_Pool.Get();
         }
-        set
+
+        public static void Release(TNode f)
         {
-            throw new System.AccessViolationException();
+            if (m_Pool == null)
+            {
+                Debug.LogError($"Pool[{f.GetType().Name}] not exist");
+                return;
+            }
+
+            m_Pool.Return(f);
         }
-    }
-
-    public static TNode Get()
-    {
-        if(m_Pool == null)
-        {
-            m_Pool = new ObjectPool<TNode>(m_kInitSize);
-        }
-
-        return (TNode)m_Pool.Get();
-    }
-
-    public static void Release(TNode f)
-    {
-        if (m_Pool == null)
-        {
-            Debug.LogError($"Pool[{f.GetType().Name}] not exist");
-            return;
-        }
-
-        m_Pool.Return(f);
     }
 }

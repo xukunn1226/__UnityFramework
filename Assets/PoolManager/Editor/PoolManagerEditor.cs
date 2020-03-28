@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
-using Cache;
 
-namespace CacheEditor
+namespace Cache.Editor
 {
     [CustomEditor(typeof(PoolManager))]
-    public class PoolManagerEditor : Editor
+    public class PoolManagerEditor : UnityEditor.Editor
     {
         private Dictionary<Type, IPool> Pools;
 
@@ -109,9 +108,13 @@ namespace CacheEditor
                         MonoPooledObjectBase comp = ((GameObject)e.Current.Value.asset).GetComponent<MonoPooledObjectBase>();
                         EditorGUILayout.LabelField(string.Format("[{0}]{1}", comp.name, e.Current.Key));
 
-                        MonoPoolBase pool = PoolManager.GetMonoPool(comp);
-                        string info = string.Format("({0}/{1})", pool.countActive, pool.countAll);
-                        EditorGUILayout.LabelField(info);
+                        // TODO: 把所有管理此对象的对象池显示出来
+                        MonoPoolBase[] pools = PoolManager.GetMonoPools(comp);
+                        if (pools.Length > 0)
+                        {
+                            string info = string.Format("({0}/{1})", pools[0].countActive, pools[0].countAll);
+                            EditorGUILayout.LabelField(info);
+                        }
                     }
                     EditorGUILayout.EndHorizontal();
                 }

@@ -39,7 +39,7 @@ namespace Cache
         {
             // 动态创建对象池时，PrefabAsset为空
             if(PrefabAsset != null)
-                PoolManager.RegisterMonoPool(this);
+                PoolManager.AddMonoPool(this);
 
             Init();
         }
@@ -235,7 +235,7 @@ namespace Cache
             m_ActivedObjects.Clear();
 
 #if UNITY_EDITOR
-            if(ScriptNewAdded && PrefabAsset != null)
+            if(ScriptDynamicAdded && PrefabAsset != null)
             { // 编辑器下可能会运行时添加脚本，为了保持资源的一致性需要还原之前状态
                 Object.DestroyImmediate(PrefabAsset, true);
             }

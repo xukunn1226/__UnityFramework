@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace MeshParticleSystem
+namespace MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_CustomPropertiesTransfer))]
-    public class FX_CustomPropertiesTransferInspector : Editor
+    public class FX_CustomPropertiesTransferInspector : UnityEditor.Editor
     {
         SerializedProperty  m_CustomColorListProp;
         SerializedProperty  m_CustomFloatListProp;

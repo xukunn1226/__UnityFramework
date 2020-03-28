@@ -20,7 +20,7 @@ namespace Cache
         
         public ObjectPool(int initSize = 0)
         {
-            PoolManager.RegisterObjectPool(typeof(T), this);
+            PoolManager.AddObjectPool(typeof(T), this);
 
             initSize = Mathf.Max(0, initSize);
 

@@ -1,7 +1,8 @@
 * LRU
-* BetterLinkedList
+* PoolManager EditorWindow, stat memory info
+* FSoftObjectPath(不支持Sub Asset)
 
-
+- BetterLinkedList
 - PoolManager inspector
 - review LivingPrefabObjectPool
 - GetOrCreatePool(string assetPath)

@@ -1,52 +1,54 @@
 ﻿using UnityEngine;
-using Cache;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Stuff : MonoPooledObjectBase
+namespace Cache.Tests
 {
-    public Rigidbody Body { get; private set; }
-
-    MeshRenderer[] meshRenderers;
-
-    private PrefabObjectPool m_Pool;
-
-    public override IPool Pool
+    [RequireComponent(typeof(Rigidbody))]
+    public class Stuff : MonoPooledObjectBase
     {
-        get
+        public Rigidbody Body { get; private set; }
+
+        MeshRenderer[] meshRenderers;
+
+        private PrefabObjectPool m_Pool;
+
+        public override IPool Pool
         {
-            if(m_Pool == null)
+            get
             {
-                m_Pool = PoolManager.GetOrCreatePool(this);
-                m_Pool.PreAllocateAmount = 1;
-                m_Pool.Init();
+                if (m_Pool == null)
+                {
+                    m_Pool = PoolManager.GetOrCreatePool(this);
+                    m_Pool.PreAllocateAmount = 1;
+                    m_Pool.Init();
+                }
+                return m_Pool;
             }
-            return m_Pool;
+            set
+            {
+                m_Pool = (PrefabObjectPool)value;
+            }
         }
-        set
+
+        public void SetMaterial(Material m)
         {
-            m_Pool = (PrefabObjectPool)value;
+            for (int i = 0; i < meshRenderers.Length; i++)
+            {
+                meshRenderers[i].material = m;
+            }
         }
-    }
 
-    public void SetMaterial(Material m)
-    {
-        for (int i = 0; i < meshRenderers.Length; i++)
+        void Awake()
         {
-            meshRenderers[i].material = m;
+            Body = GetComponent<Rigidbody>();
+            meshRenderers = GetComponentsInChildren<MeshRenderer>();
         }
-    }
 
-    void Awake()
-    {
-        Body = GetComponent<Rigidbody>();
-        meshRenderers = GetComponentsInChildren<MeshRenderer>();
-    }
-
-    void OnTriggerEnter(Collider enteredCollider)
-    {
-        if (enteredCollider.CompareTag("Kill Zone"))
+        void OnTriggerEnter(Collider enteredCollider)
         {
-            ReturnToPool();
+            if (enteredCollider.CompareTag("Kill Zone"))
+            {
+                ReturnToPool();
+            }
         }
     }
 }

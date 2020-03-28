@@ -2,7 +2,8 @@
     "name": "Unity.Core.Runtime.Tests",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Unity.Core.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -3,44 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cache;
 
-public class DecalExample : MonoBehaviour
+namespace Cache.Tests
 {
-    public GameObject PrefabAsset;
-
-    private LivingPrefabObjectPool Pool;
-
-    private void OnGUI()
+    public class DecalExample : MonoBehaviour
     {
-        if (GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
+        public GameObject PrefabAsset;
+
+        private LivingPrefabObjectPool Pool;
+
+        private void OnGUI()
         {
-            // step 1. 创建对象池
-            Pool = PoolManager.GetOrCreatePool<Decal, LivingPrefabObjectPool>(PrefabAsset);
-            Pool.NormalSpeedLimitAmount = 5;
-            Pool.AmplifiedSpeed = 3;
-            Pool.PreAllocateAmount = 3;
-            Pool.Init();
+            if (GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
+            {
+                // step 1. 创建对象池
+                Pool = PoolManager.GetOrCreatePool<Decal, LivingPrefabObjectPool>(PrefabAsset);
+                Pool.NormalSpeedLimitAmount = 5;
+                Pool.AmplifiedSpeed = 3;
+                Pool.PreAllocateAmount = 3;
+                Pool.Init();
+            }
+
+            if (GUI.Button(new Rect(100, 200, 150, 80), "Run"))
+            {
+                // step 2. get it
+                Spawn();
+            }
+
+            if (GUI.Button(new Rect(100, 300, 150, 80), "Stop"))
+            {
+                // step 3. remove pool
+                if (Pool != null)
+                    PoolManager.RemoveMonoPool(Pool);
+            }
         }
 
-        if (GUI.Button(new Rect(100, 200, 150, 80), "Run"))
+        private void Spawn()
         {
-            // step 2. get it
-            Spawn();
-        }
+            if (Pool == null)
+                return;
 
-        if (GUI.Button(new Rect(100, 300, 150, 80), "Stop"))
-        {
-            // step 3. remove pool
-            if (Pool != null)
-                PoolManager.RemoveMonoPool(Pool);
+            Decal d = (Decal)Pool.Get();
+            d.transform.position = new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0);
         }
     }
-
-    private void Spawn()
-    {
-        if (Pool == null)
-            return;
-
-        Decal d = (Decal)Pool.Get();
-        d.transform.position = new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0);
-    }    
 }

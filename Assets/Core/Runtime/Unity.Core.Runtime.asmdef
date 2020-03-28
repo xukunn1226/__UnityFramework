@@ -1,8 +1,6 @@
 {
     "name": "Unity.Core.Runtime",
-    "references": [
-        "GUID:2e9275e10d6736c4ca5fc2bad11e40dd"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

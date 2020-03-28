@@ -1,12 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Core;
 using Cache;
 
-namespace Tests
+namespace Core.Editor.Tests
 {
     public class Foo : IBetterLinkedListNode<Foo>, IPooledObject
     {
@@ -42,6 +40,8 @@ namespace Tests
     {
         private BetterLinkedList<Foo> m_List = new BetterLinkedList<Foo>();
         private Foo m_Value;
+
+        private DummyEditorScript m_Test = new DummyEditorScript();
 
         [SetUp]
         public void SetupBetterLinkedList()
@@ -103,7 +103,7 @@ namespace Tests
             }
             finally
             {
-                PoolManager.UnregisterObjectPool(typeof(Foo));
+                PoolManager.RemoveObjectPool(typeof(Foo));
             }
         }
 
