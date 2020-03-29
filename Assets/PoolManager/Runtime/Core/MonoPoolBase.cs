@@ -20,7 +20,7 @@ namespace Cache
 
         private Transform                   m_Group;
 
-        public  Transform                   Group                       // 缓存对象回收时的挂载处（不仅限于回收时）
+        public  Transform                   Group                           // 缓存对象回收时的挂载处（不仅限于回收时）
         {
             get
             {

@@ -5,6 +5,10 @@ using System;
 
 namespace Core
 {
+    /// <summary>
+    /// optimized linked list only for non monobehaviour object
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class BetterLinkedList<T> : IEnumerable<T> where T : class, IBetterLinkedListNode<T>, IPooledObject, new()
     {
         private ObjectPool<T> m_Pool;

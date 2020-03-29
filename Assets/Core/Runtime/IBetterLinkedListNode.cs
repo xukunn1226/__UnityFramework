@@ -9,7 +9,6 @@ namespace Core
     {
         BetterLinkedList<T>         List { get; set; }
         IBetterLinkedListNode<T>    Next { get; set; }
-
         IBetterLinkedListNode<T>    Prev { get; set; }
     }
 }
