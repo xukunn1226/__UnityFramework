@@ -1,5 +1,4 @@
 ﻿* 分析每个AB中引用了什么的资源，且来自于哪个AB包
-* 测试UNITY_INCLUDE_TESTS
 * 接入BuildReport
 * 使用BetterLinkedList优化GC
 * FSoftObjectPath
@@ -7,12 +6,15 @@
 * 分析场景是如何打包，如何热更的
 
 
+- 测试UNITY_INCLUDE_TESTS
+
+
+
+
 
 https://mp.weixin.qq.com/s/PvtHEeE4frZgDf_8FEGetA
-
 	* 
 About Async & Await
-
 
 https://github.com/Cysharp/UniTask  UniTask
 https://blog.csdn.net/u013986317/article/details/88719547    原生C# async await的几个注意点
