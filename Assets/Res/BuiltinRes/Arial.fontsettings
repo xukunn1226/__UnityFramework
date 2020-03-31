@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!128 &12800000
+Font:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Arial
+  serializedVersion: 5
+  m_LineSpacing: 14.94873
+  m_DefaultMaterial: {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  m_FontSize: 13
+  m_Texture: {fileID: 10103, guid: 0000000000000000e000000000000000, type: 0}
+  m_AsciiStartOffset: 0
+  m_Tracking: 1
+  m_CharacterSpacing: 0
+  m_CharacterPadding: 1
+  m_ConvertCase: -2
+  m_CharacterRects: []
+  m_KerningValues:
+  - first:
+      70: 44
+    second: -1
+  - first:
+      70: 46
+    second: -1
+  - first:
+      80: 44
+    second: -1
+  - first:
+      80: 46
+    second: -1
+  - first:
+      84: 44
+    second: -1
+  - first:
+      84: 46
+    second: -1
+  - first:
+      84: 58
+    second: -1
+  - first:
+      84: 59
+    second: -1
+  - first:
+      84: 97
+    second: -1
+  - first:
+      84: 99
+    second: -1
+  - first:
+      84: 101
+    second: -1
+  - first:
+      84: 111
+    second: -1
+  - first:
+      84: 115
+    second: -1
+  - first:
+      86: 44
+    second: -1
+  - first:
+      86: 46
+    second: -1
+  - first:
+      89: 44
+    second: -1
+  - first:
+      89: 45
+    second: -1
+  - first:
+      89: 46
+    second: -1
+  - first:
+      89: 101
+    second: -1
+  - first:
+      89: 111
+    second: -1
+  - first:
+      89: 113
+    second: -1
+  m_PixelScale: 0.1
+  m_FontData: 
+  m_Ascent: 11.768555
+  m_Descent: -2.7548828
+  m_DefaultStyle: 0
+  m_FontNames:
+  - Arial
+  m_FallbackFonts: []
+  m_FontRenderingMode: 0
+  m_UseLegacyBoundsCalculation: 0
+  m_ShouldRoundAdvanceValue: 1

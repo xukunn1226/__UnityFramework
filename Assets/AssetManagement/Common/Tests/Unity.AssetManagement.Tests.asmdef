@@ -1,0 +1,19 @@
+{
+    "name": "Unity.AssetManagement.Tests",
+    "references": [
+        "GUID:6e347d9ec887d0a4e9c02b27a0a34759"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

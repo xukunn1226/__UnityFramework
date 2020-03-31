@@ -1,0 +1,17 @@
+{
+    "name": "Unity.AssetManagement.Runtime.Editor",
+    "references": [
+        "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

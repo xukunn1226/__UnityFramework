@@ -1,0 +1,17 @@
+{
+    "name": "Unity.AssetBuilder",
+    "references": [
+        "GUID:6e347d9ec887d0a4e9c02b27a0a34759"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
