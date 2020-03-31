@@ -1,9 +1,7 @@
 {
     "name": "Unity.MeshParticleSystem.Runtime.Tests",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Unity.MeshParticleSystem.Runtime"
+        "GUID:770eb301604ee8e4da8dedd8e95f1b7b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

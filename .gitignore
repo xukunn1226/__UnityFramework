@@ -61,3 +61,20 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# StreamingAssets
+[Aa]ssets/StreamingAssets
+[Aa]ssets/StreamingAssets.meta
+
+# Deployment
+Deployment/
+
+# some plugins
+[Aa]ssets/AssetBundles-Browser-master
+[Aa]ssets/AssetBundles-Browser-master.meta
+[Aa]ssets/AssetUsageDetector
+[Aa]ssets/AssetUsageDetector.meta
+
+
+
+
+

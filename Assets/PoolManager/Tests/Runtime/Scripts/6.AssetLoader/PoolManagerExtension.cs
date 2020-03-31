@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace Cache.Tests
 {
@@ -26,7 +28,9 @@ namespace Cache.Tests
 
         public UnityEngine.Object Load(string assetPath)
         {
+#if UNITY_EDITOR
             m_Asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+#endif
             return m_Asset;
         }
 
