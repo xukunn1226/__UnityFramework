@@ -461,8 +461,9 @@ namespace Cache
         {
             if(m_Pools.ContainsKey(type))
             {
-                Debug.LogError($"RegisterObjectPool: Type[{type}] has already registered.");
-                return;
+                throw new Exception($"RegisterObjectPool: Type[{type}] has already registered.");
+                //Debug.LogError($"RegisterObjectPool: Type[{type}] has already registered.");
+                //return;
             }
 
             m_Pools.Add(type, pool);
@@ -476,8 +477,9 @@ namespace Cache
         {
             if(!m_Pools.ContainsKey(type))
             {
-                Debug.LogError($"UnregisterObjectPool: Type[{type}] can't find");
-                return;
+                throw new Exception($"UnregisterObjectPool: Type[{type}] can't find");
+                //Debug.LogError($"UnregisterObjectPool: Type[{type}] can't find");
+                //return;
             }
 
             m_Pools[type].Clear();

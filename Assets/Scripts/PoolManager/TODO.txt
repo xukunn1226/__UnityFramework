@@ -2,7 +2,7 @@
 * PoolManager EditorWindow, stat memory info
 * FSoftObjectPath(不支持Sub Asset)
 * PrefabObjectPool.m_ActivedObjects优化：使用LinkedListNode记录
-* 扩展ObjectPool，记录ActiveObject
+* LinkedObjectPool
 
 - BetterLinkedList
 - PoolManager inspector

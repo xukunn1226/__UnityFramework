@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Cache
 {
     /// <summary>
-    /// 非Mono对象缓存池，仅记录未使用的
+    /// 对象池（非Mono对象），仅记录未使用的
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public sealed class ObjectPool<T> : IPool where T : IPooledObject, new()
@@ -18,13 +18,11 @@ namespace Cache
 
         public int                  countInactive   { get { return m_DeactiveObjects.Count; } }
         
-        public ObjectPool(int initSize = 0)
+        public ObjectPool(int capacity = 0)
         {
             PoolManager.AddObjectPool(typeof(T), this);
 
-            initSize = Mathf.Max(0, initSize);
-
-            m_DeactiveObjects = new Stack<T>(initSize);
+            m_DeactiveObjects = new Stack<T>(Mathf.Max(0, capacity));
         }
 
         public IPooledObject Get()
