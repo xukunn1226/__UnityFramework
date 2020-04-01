@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Cache
 {
     /// <summary>
-    /// 非Mono对象缓存池，不支持扩展
+    /// 非Mono对象缓存池，仅记录未使用的
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public sealed class ObjectPool<T> : IPool where T : IPooledObject, new()
@@ -24,23 +24,7 @@ namespace Cache
 
             initSize = Mathf.Max(0, initSize);
 
-            InitPool(initSize);
-        }
-
-        private void InitPool(int initSize)
-        {
-            if (m_DeactiveObjects == null)
-            {
-                m_DeactiveObjects = new Stack<T>(initSize);
-            }
-
-            //for (int i = 0; i < initSize; ++i)
-            //{
-            //    T element = new T();
-            //    element.OnInit();
-            //    m_Stack.Push(element);
-            //    ++countAll;
-            //}
+            m_DeactiveObjects = new Stack<T>(initSize);
         }
 
         public IPooledObject Get()
@@ -64,7 +48,7 @@ namespace Cache
         public void Return(IPooledObject element)
         {
             if (element == null)
-                return;
+                throw new System.ArgumentNullException("element");
 
             m_DeactiveObjects.Push((T)element);
             element.OnRelease();

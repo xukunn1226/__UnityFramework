@@ -6,7 +6,8 @@ using System;
 namespace Core
 {
     /// <summary>
-    /// optimized linked list only for non monobehaviour object
+    /// optimized linked list only for non monobehaviour object, managed by object pool internally
+    /// WARNING: 一旦使用BetterLinkedList管理就不可用其他ObjectPool管理
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class BetterLinkedList<T> : IEnumerable<T> where T : class, IBetterLinkedListNode<T>, IPooledObject, new()

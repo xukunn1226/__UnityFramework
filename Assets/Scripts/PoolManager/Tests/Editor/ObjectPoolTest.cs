@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Cache.Editor.Tests
 {
-    public class NewTestScript
+    public class ObjectPoolTest
     {
         // A Test behaves as an ordinary method
         [Test]
