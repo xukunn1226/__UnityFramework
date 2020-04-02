@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Core;
 
 namespace Cache.Editor.Tests
 {
@@ -11,7 +10,7 @@ namespace Cache.Editor.Tests
     {
         public class Foo : IBetterLinkedListNode<Foo>, IPooledObject
         {
-            public BetterLinkedList<Foo> List { get; set; }
+            public LinkedObjectPool<Foo> List { get; set; }
 
             public IBetterLinkedListNode<Foo> Next { get; set; }
 
@@ -41,7 +40,7 @@ namespace Cache.Editor.Tests
 
         // A Test behaves as an ordinary method
         [Test]
-        public void TestLinkedObjectPool()
+        public void TestLinkedObjectPool_0()
         {
             // Use the Assert class to test conditions
             try
@@ -65,6 +64,62 @@ namespace Cache.Editor.Tests
 
                 pool.Return(f2);
                 pool.Return(f4);
+            }
+            finally
+            {
+                PoolManager.RemoveObjectPool(typeof(Foo));
+            }
+        }
+
+        [Test]
+        public void TestLinkedObjectPool_1()
+        {
+            try
+            {
+                LinkedObjectPool<Foo> pool = new LinkedObjectPool<Foo>(2);
+
+                foreach (var foo in pool)
+                {
+                    Debug.Log("-------" + foo.Value);
+                }
+
+                Foo f = pool.AddFirst();
+                f.Value = 1;
+
+                f = pool.AddLast();
+                f.Value = 3;
+
+                Foo m_Value = pool.AddFirst();
+                m_Value.Value = 4;
+
+                f = pool.AddFirst();
+                f.Value = 2;
+
+                Foo b = pool.AddBefore(m_Value);
+                b.Value = 5;
+
+                pool.Remove(m_Value);
+
+                Assert.AreEqual(4, pool.Count, "pool.Count == 4");
+
+                foreach (var foo in pool)
+                {
+                    Debug.Log(foo.Value);
+                }
+
+                LinkedObjectPool<Foo>.Enumerator e = pool.GetEnumerator();
+                while (e.MoveNext())
+                {
+                    Debug.Log("========" + e.Current.Value);
+                }
+                e.Reset();
+                while (e.MoveNext())
+                {
+                    Debug.Log("++++++++++" + e.Current.Value);
+                }
+                e.Dispose();
+
+                pool.Clear();
             }
             finally
             {

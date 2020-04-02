@@ -11,6 +11,7 @@ namespace Cache
     public sealed class ObjectPool<T> : IPool where T : IPooledObject, new()
     {
         private Stack<T>            m_UnusedObjects;
+        public Stack<T>             unusedObjects   { get { return m_UnusedObjects; } }
 
         public int                  countAll        { get; private set; }
 
@@ -61,7 +62,5 @@ namespace Cache
         {
             m_UnusedObjects.TrimExcess();
         }
-
-        public Stack<T> unusedObjects { get { return m_UnusedObjects; } }
     }
 }
