@@ -18,11 +18,11 @@ namespace Cache
         public int                                  LimitAmount         = 20;               // 最大实例化数量（激活与未激活）
 
         [Tooltip("是否开启清理未激活实例功能")]
-        public bool                                 TrimDeactived;                          // 是否开启清理未激活实例功能
+        public bool                                 TrimUnused;                             // 是否开启清理未激活实例功能
 
         [Tooltip("至少保持deactive的数量，当自动清理开启有效")]
         [Range(1, 100)]
-        public int                                  TrimAbove           = 10;               // 自动清理开启时至少保持deactive的数量
+        public int                                  TrimAbove           = 10;               // 自动清理开启时至少保持unused的数量
 
         // TODO: opt, use BetterLinkedList
         protected LinkedList<MonoPooledObjectBase>  m_UsedObjects       = new LinkedList<MonoPooledObjectBase>();
@@ -82,7 +82,7 @@ namespace Cache
             if (PrefabAsset == null)        // 动态创建Pool时可能相关参数仍未设置
                 return;
 
-            if(TrimDeactived)
+            if(TrimUnused)
             {
                 PreAllocateAmount = Mathf.Min(PreAllocateAmount, TrimAbove);
             }
@@ -186,7 +186,7 @@ namespace Cache
 
             monoObj.OnRelease();
 
-            if(TrimDeactived && m_UnusedObjects.Count > TrimAbove)
+            if(TrimUnused && m_UnusedObjects.Count > TrimAbove)
             {
                 TrimExcess();
             }
