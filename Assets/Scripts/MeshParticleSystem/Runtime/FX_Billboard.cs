@@ -66,17 +66,15 @@ namespace MeshParticleSystem
                     break;
                 case BillboardMode.StretchedBillboard:
                     {
-                        Vector3 right = transform.right;
-                        right.y = 0;
-                        right.Normalize();
+                        Vector3 right = Vector3.right;
                         Vector3 forward = (cam.position - transform.position).normalized;
                         float cosValue = Vector3.Dot(right, forward);
                         right = right * cosValue * Mathf.Sign(cosValue);
                         Vector3 normal = forward - right;
-                        if(cosValue > 0)
-                            transform.rotation = Quaternion.LookRotation(normal, Vector3.Cross(right, normal));
-                        else
+                        if (cosValue > 0)
                             transform.rotation = Quaternion.LookRotation(normal, Vector3.Cross(normal, right));
+                        else
+                            transform.rotation = Quaternion.LookRotation(normal, Vector3.Cross(right, normal));
                     }
                     break;
                 case BillboardMode.HorizontalBillboard:
