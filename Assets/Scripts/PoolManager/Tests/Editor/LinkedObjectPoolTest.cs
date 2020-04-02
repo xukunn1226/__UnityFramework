@@ -18,22 +18,25 @@ namespace Cache.Editor.Tests
 
             public int Value;
 
-            public void OnInit() { }
+            public void OnInit() { Debug.Log("Foo::OnInit"); }
 
             /// <summary>
             /// 从对象池中拿出时的回调
             /// </summary>
-            public void OnGet() { }
+            public void OnGet() { Debug.Log("Foo::OnGet"); }
 
             /// <summary>
             /// 放回对象池时的回调
             /// </summary>
-            public void OnRelease() { }
+            public void OnRelease() { Debug.Log("Foo::OnRelease"); }
 
             /// <summary>
             /// 放回对象池
             /// </summary>
-            public void ReturnToPool() { }
+            public void ReturnToPool()
+            {
+                Pool?.Return(this);
+            }
 
             public IPool Pool { get; set; }
         }
@@ -62,7 +65,8 @@ namespace Cache.Editor.Tests
                 Foo f5 = (Foo)pool.Get();
                 f5.Value = 5;
 
-                pool.Return(f2);
+                //pool.Return(f2);
+                f2.ReturnToPool();
                 pool.Return(f4);
             }
             finally

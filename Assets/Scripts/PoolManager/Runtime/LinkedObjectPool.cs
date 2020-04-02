@@ -116,10 +116,11 @@ namespace Cache
 
             // node仍可能为null，小心处理
             T item = (T)m_Pool.Get();
+            item.Pool = this;
             IBetterLinkedListNode<T> newNode = item;
             newNode.List = this;
             newNode.Prev = node;
-            newNode.Next = node?.Next ?? null;
+            newNode.Next = node?.Next ?? null;            
 
             if(node != null && node.Next != null)
             {
@@ -184,6 +185,7 @@ namespace Cache
 
             // node仍可能为null，小心处理
             T item = (T)m_Pool.Get();
+            item.Pool = this;
             IBetterLinkedListNode<T> newNode = item;
             newNode.List = this;
             newNode.Prev = node?.Prev ?? null;
@@ -250,6 +252,7 @@ namespace Cache
             node.List = null;
             node.Prev = null;
             node.Next = null;
+            node.Pool = null;
             m_Pool.Return(node);
             --Count;
         }

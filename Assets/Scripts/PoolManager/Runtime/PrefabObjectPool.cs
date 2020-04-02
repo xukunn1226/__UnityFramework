@@ -25,15 +25,15 @@ namespace Cache
         public int                                  TrimAbove           = 10;               // 自动清理开启时至少保持deactive的数量
 
         // TODO: opt, use BetterLinkedList
-        protected LinkedList<MonoPooledObjectBase>  m_ActivedObjects    = new LinkedList<MonoPooledObjectBase>();
+        protected LinkedList<MonoPooledObjectBase>  m_UsedObjects       = new LinkedList<MonoPooledObjectBase>();
 
-        protected List<MonoPooledObjectBase>        m_DeactiveObjects   = new List<MonoPooledObjectBase>();
+        protected List<MonoPooledObjectBase>        m_UnusedObjects     = new List<MonoPooledObjectBase>();
 
         public override int                         countAll            { get { return countOfUsed + countOfUnused; } }
 
-        public override int                         countOfUsed         { get { return m_ActivedObjects.Count; } }
+        public override int                         countOfUsed         { get { return m_UsedObjects.Count; } }
 
-        public override int                         countOfUnused       { get { return m_DeactiveObjects.Count; } }
+        public override int                         countOfUnused       { get { return m_UnusedObjects.Count; } }
 
         private void Awake()
         {
@@ -120,20 +120,20 @@ namespace Cache
         private IPooledObject InternalGet(bool forceCreateNew = false)
         {
             MonoPooledObjectBase obj = null;
-            if(forceCreateNew || m_DeactiveObjects.Count == 0)
+            if(forceCreateNew || m_UnusedObjects.Count == 0)
             {
                 obj = CreateNew();
             }
             else
             {
-                obj = m_DeactiveObjects[m_DeactiveObjects.Count - 1];
-                m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);                
+                obj = m_UnusedObjects[m_UnusedObjects.Count - 1];
+                m_UnusedObjects.RemoveAt(m_UnusedObjects.Count - 1);                
             }
 
             // 取出的对象默认放置在Group之下
             if (obj != null)
             {
-                m_ActivedObjects.AddLast(obj);
+                m_UsedObjects.AddLast(obj);
                 obj.transform.parent = Group;
                 obj.OnGet();
             }
@@ -180,13 +180,13 @@ namespace Cache
                 return;
 
             MonoPooledObjectBase monoObj = (MonoPooledObjectBase)item;
-            m_DeactiveObjects.Add(monoObj);
-            m_ActivedObjects.Remove(monoObj);
+            m_UnusedObjects.Add(monoObj);
+            m_UsedObjects.Remove(monoObj);
             monoObj.transform.parent = Group;           // 回收时放置Group下
 
             monoObj.OnRelease();
 
-            if(TrimDeactived && m_DeactiveObjects.Count > TrimAbove)
+            if(TrimDeactived && m_UnusedObjects.Count > TrimAbove)
             {
                 TrimExcess();
             }
@@ -198,10 +198,10 @@ namespace Cache
         /// </summary>
         public void TrimExcess()
         {
-            while(m_DeactiveObjects.Count > TrimAbove)
+            while(m_UnusedObjects.Count > TrimAbove)
             {
-                MonoPooledObjectBase inst = m_DeactiveObjects[m_DeactiveObjects.Count - 1];
-                m_DeactiveObjects.RemoveAt(m_DeactiveObjects.Count - 1);
+                MonoPooledObjectBase inst = m_UnusedObjects[m_UnusedObjects.Count - 1];
+                m_UnusedObjects.RemoveAt(m_UnusedObjects.Count - 1);
 
                 if (inst != null)
                 {
@@ -212,7 +212,7 @@ namespace Cache
 
         public override void Clear()
         {
-            List<MonoPooledObjectBase>.Enumerator deactiveObjEnum = m_DeactiveObjects.GetEnumerator();
+            List<MonoPooledObjectBase>.Enumerator deactiveObjEnum = m_UnusedObjects.GetEnumerator();
             while(deactiveObjEnum.MoveNext())
             {
                 if(deactiveObjEnum.Current != null)
@@ -221,9 +221,9 @@ namespace Cache
                 }
             }
             deactiveObjEnum.Dispose();
-            m_DeactiveObjects.Clear();
+            m_UnusedObjects.Clear();
 
-            LinkedList<MonoPooledObjectBase>.Enumerator activeObjEnum = m_ActivedObjects.GetEnumerator();
+            LinkedList<MonoPooledObjectBase>.Enumerator activeObjEnum = m_UsedObjects.GetEnumerator();
             while(activeObjEnum.MoveNext())
             {
                 if(activeObjEnum.Current != null)
@@ -232,7 +232,7 @@ namespace Cache
                 }
             }
             activeObjEnum.Dispose();
-            m_ActivedObjects.Clear();
+            m_UsedObjects.Clear();
 
 #if UNITY_EDITOR
             if(ScriptDynamicAdded && PrefabAsset != null)
@@ -244,7 +244,7 @@ namespace Cache
 
         public override void Trim()
         {
-            m_DeactiveObjects.TrimExcess();
+            m_UnusedObjects.TrimExcess();
         }
 
 #if UNITY_EDITOR
