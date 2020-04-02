@@ -10,25 +10,25 @@ namespace Cache
     /// <typeparam name="T"></typeparam>
     public sealed class ObjectPool<T> : IPool where T : IPooledObject, new()
     {
-        private Stack<T>            m_DeactiveObjects;
+        private Stack<T>            m_UnusedObjects;
 
         public int                  countAll        { get; private set; }
 
-        public int                  countActive     { get { return countAll - countInactive; } }
+        public int                  countOfUsed     { get { return countAll - countOfUnused; } }
 
-        public int                  countInactive   { get { return m_DeactiveObjects.Count; } }
+        public int                  countOfUnused   { get { return m_UnusedObjects.Count; } }
         
         public ObjectPool(int capacity = 0)
         {
             PoolManager.AddObjectPool(typeof(T), this);
 
-            m_DeactiveObjects = new Stack<T>(Mathf.Max(0, capacity));
+            m_UnusedObjects = new Stack<T>(Mathf.Max(0, capacity));
         }
 
         public IPooledObject Get()
         {
             T element;
-            if (m_DeactiveObjects.Count == 0)
+            if (m_UnusedObjects.Count == 0)
             {
                 element = new T();
                 element.OnInit();
@@ -36,7 +36,7 @@ namespace Cache
             }
             else
             {
-                element = m_DeactiveObjects.Pop();
+                element = m_UnusedObjects.Pop();
             }
             element.OnGet();
 
@@ -48,18 +48,20 @@ namespace Cache
             if (element == null)
                 throw new System.ArgumentNullException("element");
 
-            m_DeactiveObjects.Push((T)element);
+            m_UnusedObjects.Push((T)element);
             element.OnRelease();
         }
 
         public void Clear()
         {
-            m_DeactiveObjects.Clear();
+            m_UnusedObjects.Clear();
         }
 
         public void Trim()
         {
-            m_DeactiveObjects.TrimExcess();
+            m_UnusedObjects.TrimExcess();
         }
+
+        public Stack<T> unusedObjects { get { return m_UnusedObjects; } }
     }
 }

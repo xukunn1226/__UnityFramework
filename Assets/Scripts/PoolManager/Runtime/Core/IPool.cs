@@ -11,9 +11,9 @@ namespace Cache
     {
         int countAll        { get; }
 
-        int countActive     { get; }
+        int countOfUsed     { get; }
 
-        int countInactive   { get; }
+        int countOfUnused   { get; }
 
         /// <summary>
         /// 获取缓存对象

@@ -14,15 +14,16 @@ namespace Cache
     {
         private BetterLinkedList<T>     m_Buffer;
 
-        public int countAll             { get { return countActive + countInactive; } }
+        public int countAll             { get { return countOfUsed + countOfUnused; } }
 
-        public int countActive          { get { return m_Buffer.Count; } }
+        public int countOfUsed          { get { return m_Buffer.Count; } }
 
-        public int countInactive        { get { return m_Buffer.CountOfUnused; } }
+        public int countOfUnused        { get { return m_Buffer.CountOfUnused; } }
 
         public LinkedObjectPool(int capacity = 0)
         {
-            PoolManager.AddObjectPool(typeof(T), this);
+            // 本质是对BetterLinkedList的封装，对PoolManager的注册由BetterLinkedList完成
+            //PoolManager.AddObjectPool(typeof(T), this);
 
             m_Buffer = new BetterLinkedList<T>(capacity);
         }

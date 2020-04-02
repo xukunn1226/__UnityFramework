@@ -17,7 +17,7 @@ namespace Cache
         {
             IPooledObject obj = base.Get();
 
-            if(countActive > NormalSpeedLimitAmount)
+            if(countOfUsed > NormalSpeedLimitAmount)
             {
                 ILifeTime lifeObj = obj as ILifeTime;
                 if (lifeObj != null)

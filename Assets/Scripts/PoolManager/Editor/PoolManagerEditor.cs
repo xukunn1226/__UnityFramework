@@ -64,7 +64,7 @@ namespace Cache.Editor
                     {
                         EditorGUILayout.LabelField(e.Current.Key.Name);
 
-                        string info = string.Format("({0}/{1})", e.Current.Value.countActive, e.Current.Value.countAll);
+                        string info = string.Format("({0}/{1})", e.Current.Value.countOfUsed, e.Current.Value.countAll);
                         EditorGUILayout.LabelField(info);
                     }
                     EditorGUILayout.EndHorizontal();
@@ -86,7 +86,7 @@ namespace Cache.Editor
                         MonoPoolBase pool = e.Current.Value;
                         EditorGUILayout.LabelField(pool.PrefabAsset.name);
 
-                        string info = string.Format("({0}/{1})", pool.countActive, pool.countAll);
+                        string info = string.Format("({0}/{1})", pool.countOfUsed, pool.countAll);
                         EditorGUILayout.LabelField(info);
                     }
                     EditorGUILayout.EndHorizontal();
@@ -112,7 +112,7 @@ namespace Cache.Editor
                         MonoPoolBase[] pools = PoolManager.GetMonoPools(comp);
                         if (pools.Length > 0)
                         {
-                            string info = string.Format("({0}/{1})", pools[0].countActive, pools[0].countAll);
+                            string info = string.Format("({0}/{1})", pools[0].countOfUsed, pools[0].countAll);
                             EditorGUILayout.LabelField(info);
                         }
                     }

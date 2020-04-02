@@ -29,11 +29,11 @@ namespace Cache
 
         protected List<MonoPooledObjectBase>        m_DeactiveObjects   = new List<MonoPooledObjectBase>();
 
-        public override int                         countAll            { get { return countActive + countInactive; } }
+        public override int                         countAll            { get { return countOfUsed + countOfUnused; } }
 
-        public override int                         countActive         { get { return m_ActivedObjects.Count; } }
+        public override int                         countOfUsed         { get { return m_ActivedObjects.Count; } }
 
-        public override int                         countInactive       { get { return m_DeactiveObjects.Count; } }
+        public override int                         countOfUnused       { get { return m_DeactiveObjects.Count; } }
 
         private void Awake()
         {
@@ -250,7 +250,7 @@ namespace Cache
 #if UNITY_EDITOR
         private void DisplayDebugInfo()
         {
-            gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset.gameObject.name, countActive, countAll);
+            gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset.gameObject.name, countOfUsed, countAll);
         }
 #endif
     }

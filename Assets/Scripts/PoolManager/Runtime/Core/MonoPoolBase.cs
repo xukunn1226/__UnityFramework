@@ -38,9 +38,9 @@ namespace Cache
 
         public abstract int countAll { get; }
 
-        public abstract int countActive { get; }
+        public abstract int countOfUsed { get; }
 
-        public abstract int countInactive { get; }
+        public abstract int countOfUnused { get; }
 
         public abstract IPooledObject  Get();
 

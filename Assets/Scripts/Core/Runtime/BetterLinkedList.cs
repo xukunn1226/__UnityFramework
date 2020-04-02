@@ -20,7 +20,7 @@ namespace Core
 
         public int  Count { get; private set; }
 
-        public int  CountOfUnused { get { return m_Pool.countInactive; } }
+        public int  CountOfUnused { get { return m_Pool.countOfUnused; } }
 
 
         public BetterLinkedList()
