@@ -33,7 +33,7 @@ public static class SyncViewTool
 #endif
     }
 
-    [MenuItem(MenuName_EnableSync, false, 0)]
+    //[MenuItem(MenuName_EnableSync, false, 0)]
     private static void ToggleViewSync()
     {
         enableSync = !enableSync;
@@ -47,7 +47,7 @@ public static class SyncViewTool
         ApplyMenu();
     }
 
-    [MenuItem(MenuName_SyncGameViewToSceneView, false, 1)]
+    //[MenuItem(MenuName_SyncGameViewToSceneView, false, 1)]
     public static void SyncGameViewToSceneView()
     {
         enableSyncGameViewToSceneView = true;
@@ -56,13 +56,13 @@ public static class SyncViewTool
         ApplyMenu();
     }
 
-    [MenuItem(MenuName_SyncGameViewToSceneView, true)]
+    //[MenuItem(MenuName_SyncGameViewToSceneView, true)]
     public static bool VSyncGameViewToSceneView()
     {
         return enableSync;
     }
 
-    [MenuItem(MenuName_SyncSceneViewToGameView, false, 2)]
+    //[MenuItem(MenuName_SyncSceneViewToGameView, false, 2)]
     public static void SyncSceneViewToGameView()
     {
         enableSyncGameViewToSceneView = false;
@@ -71,7 +71,7 @@ public static class SyncViewTool
         ApplyMenu();
     }
 
-    [MenuItem(MenuName_SyncSceneViewToGameView, true)]
+    //[MenuItem(MenuName_SyncSceneViewToGameView, true)]
     public static bool VSyncSceneViewToGameView()
     {
         return enableSync;
