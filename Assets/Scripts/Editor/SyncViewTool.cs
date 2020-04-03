@@ -79,9 +79,9 @@ public static class SyncViewTool
 
     static private void ApplyMenu()
     {
-        Menu.SetChecked(MenuName_SyncGameViewToSceneView, enableSyncGameViewToSceneView);
-        Menu.SetChecked(MenuName_SyncSceneViewToGameView, !enableSyncGameViewToSceneView);
-        Menu.SetChecked(MenuName_EnableSync, enableSync);
+        //Menu.SetChecked(MenuName_SyncGameViewToSceneView, enableSyncGameViewToSceneView);
+        //Menu.SetChecked(MenuName_SyncSceneViewToGameView, !enableSyncGameViewToSceneView);
+        //Menu.SetChecked(MenuName_EnableSync, enableSync);
     }
 
     static void UpdateViewSync()
