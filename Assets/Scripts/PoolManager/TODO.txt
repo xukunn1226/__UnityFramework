@@ -1,7 +1,8 @@
 * LRU
 * PoolManager EditorWindow, stat memory info
 * FSoftObjectPath(不支持Sub Asset)
-* PrefabObjectPool.m_ActivedObjects优化：使用LinkedListNode记录
+* PrefabObjectPool.m_ActivedObjects无法优化，考虑加宏控制是否启用(还有一个思路：自定义BetterLinkedList)
+* 配置：所有缓存对象可配置化（初始化大小等）
 
 
 - LinkedObjectPool Testcase
