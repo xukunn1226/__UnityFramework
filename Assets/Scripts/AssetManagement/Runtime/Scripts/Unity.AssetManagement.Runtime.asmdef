@@ -1,7 +1,8 @@
 {
     "name": "Unity.AssetManagement.Runtime",
     "references": [
-        "GUID:6e347d9ec887d0a4e9c02b27a0a34759"
+        "GUID:6e347d9ec887d0a4e9c02b27a0a34759",
+        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

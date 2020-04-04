@@ -6,16 +6,23 @@ namespace AssetManagement.Runtime
 {
     public class GameObjectDestroyerEx : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
+        internal AssetLoaderEx<GameObject>          loader      { get; set; }
+
+        internal AssetLoaderAsyncEx<GameObject>     loaderAsync { get; set; }
+
+        void OnDestroy()
         {
+            if (loaderAsync != null)
+            {
+                AssetLoaderAsyncEx<GameObject>.Release(loaderAsync);
+                loaderAsync = null;
+            }
 
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            if (loader != null)
+            {
+                AssetLoaderEx<GameObject>.Release(loader);
+                loader = null;
+            }
         }
     }
 }

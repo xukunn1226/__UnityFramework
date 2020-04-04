@@ -119,7 +119,7 @@ namespace Cache
             IBetterLinkedListNode<T> newNode = item;
             newNode.List = this;
             newNode.Prev = node;
-            newNode.Next = node?.Next ?? null;            
+            newNode.Next = node?.Next ?? null;
 
             if(node != null && node.Next != null)
             {
