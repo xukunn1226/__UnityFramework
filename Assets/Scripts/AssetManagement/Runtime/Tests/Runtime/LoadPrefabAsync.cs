@@ -13,12 +13,12 @@ public class LoadPrefabAsync : MonoBehaviour
 
     private void Awake()
     {
-        AssetManager.Init(type);
+        AssetManagerEx.Init(type);
     }
 
     void OnDestroy()
     {
-        AssetManager.Uninit();
+        AssetManagerEx.Uninit();
     }
 
     private void OnGUI()
@@ -41,7 +41,7 @@ public class LoadPrefabAsync : MonoBehaviour
 
     IEnumerator StartTask()
     {
-        yield return AssetManager.InstantiatePrefabAsync(assetPath, (go) =>
+        yield return AssetManagerEx.InstantiatePrefabAsync(assetPath, (go) =>
         {
             inst = go;
         });

@@ -13,19 +13,19 @@ public class TestBundleUnload : MonoBehaviour
     public string assetPathA;
     public string assetPathB;
 
-    LinkedListNode<AssetLoader<UnityEngine.Object>> loaderA;
-    LinkedListNode<AssetLoader<UnityEngine.Object>> loaderB;
+    AssetLoaderEx<UnityEngine.Object> loaderA;
+    AssetLoaderEx<UnityEngine.Object> loaderB;
 
     string info;
 
     private void Awake()
     {
-        AssetManager.Init(type);
+        AssetManagerEx.Init(type);
     }
 
     void OnDestroy()
     {
-        AssetManager.Uninit();
+        AssetManagerEx.Uninit();
     }
 
     private void OnGUI()
@@ -63,28 +63,28 @@ public class TestBundleUnload : MonoBehaviour
 
     void LoadA()
     {
-        loaderA = AssetLoader<UnityEngine.Object>.Get(assetPathA);
+        loaderA = AssetManagerEx.LoadAsset<UnityEngine.Object>(assetPathA);
 
-        info = loaderA.Value.asset != null ? "sucess to load: " : "fail to load: ";
+        info = loaderA.asset != null ? "sucess to load: " : "fail to load: ";
         info += assetPathA;
     }
 
     void UnLoadA()
     {
-        AssetLoader<UnityEngine.Object>.Release(loaderA);
+        AssetManagerEx.UnloadAsset(loaderA);
     }
 
     void LoadB()
     {
-        loaderB = AssetLoader<UnityEngine.Object>.Get(assetPathB);
+        loaderB = AssetManagerEx.LoadAsset<Object>(assetPathB);
 
-        info = loaderB.Value.asset != null ? "sucess to load: " : "fail to load: ";
+        info = loaderB.asset != null ? "sucess to load: " : "fail to load: ";
         info += assetPathB;
     }
 
     void UnLoadB()
     {
-        AssetLoader<UnityEngine.Object>.Release(loaderB);
+        AssetManagerEx.UnloadAsset(loaderB);
     }
 
     void UnloadUnusedAssets()

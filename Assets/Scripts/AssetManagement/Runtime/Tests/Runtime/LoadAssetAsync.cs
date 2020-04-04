@@ -9,17 +9,17 @@ public class LoadAssetAsync : MonoBehaviour
     
     public string assetPath;
 
-    LinkedListNode<AssetLoaderAsync<Material>> loader;
+    AssetLoaderAsyncEx<Material> loader;
     string info;
 
     private void Awake()
     {
-        AssetManager.Init(type);
+        AssetManagerEx.Init(type);
     }
 
     void OnDestroy()
     {
-        AssetManager.Uninit();
+        AssetManagerEx.Uninit();
     }
 
     private void OnGUI()
@@ -42,10 +42,10 @@ public class LoadAssetAsync : MonoBehaviour
 
     IEnumerator StartTask()
     {
-        loader = AssetLoaderAsync<Material>.Get(assetPath);
-        yield return loader.Value;
+        loader = AssetManagerEx.LoadAssetAsync<Material>(assetPath);
+        yield return loader;
 
-        info = loader.Value.asset != null ? "sucess to load: " : "fail to load: ";
+        info = loader.asset != null ? "sucess to load: " : "fail to load: ";
         info += assetPath;
     }
 
@@ -53,7 +53,7 @@ public class LoadAssetAsync : MonoBehaviour
     {
         if(loader != null)
         {
-            AssetLoaderAsync<Material>.Release(loader);
+            AssetManagerEx.UnloadAsset(loader);
             loader = null;
         }
         info = null;

@@ -8,15 +8,15 @@ namespace AssetManagement.Runtime
     /// <summary>
     /// asset bundle reference info
     /// </summary>
-    internal class AssetBundleRefEx : IBetterLinkedListNode<AssetBundleRefEx>, IPooledObject
+    public class AssetBundleRefEx : IBetterLinkedListNode<AssetBundleRefEx>, IPooledObject
     {
         static private LinkedObjectPool<AssetBundleRefEx>   m_Pool;
 
         private int             m_Refs;
 
-        internal AssetBundle    AssetBundle         { get; set; }
+        public AssetBundle      assetBundle         { get; private set; }
 
-        internal string         AssetBundleName     { get; set; }
+        public string           assetBundleName     { get; private set; }
 
         public AssetBundleRefEx()
         {
@@ -41,8 +41,8 @@ namespace AssetManagement.Runtime
             }
 
             AssetBundleRefEx abRef = (AssetBundleRefEx)m_Pool.Get();
-            abRef.AssetBundleName = assetBundleName;
-            abRef.AssetBundle = assetBundle;
+            abRef.assetBundleName = assetBundleName;
+            abRef.assetBundle = assetBundle;
             abRef.Pool = m_Pool;
 
             return abRef;
@@ -59,8 +59,8 @@ namespace AssetManagement.Runtime
         private void Reset()
         {
             m_Refs = 1;
-            AssetBundle = null;
-            AssetBundleName = null;
+            assetBundle = null;
+            assetBundleName = null;
             Pool = null;
         }
 
@@ -82,7 +82,7 @@ namespace AssetManagement.Runtime
         /// </summary>
         public void OnRelease()
         {
-            AssetBundle?.Unload(true);
+            assetBundle?.Unload(true);
             Reset();
         }
 

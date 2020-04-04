@@ -12,11 +12,11 @@ namespace AssetManagement.Runtime
         private AssetBundleRefEx        m_MainAssetBundleRef;
         private List<AssetBundleRefEx>  m_DependentAssetBundleRefs  = new List<AssetBundleRefEx>();
 
-        internal AssetBundleRefEx       mainAssetBundleRef          { get { return m_MainAssetBundleRef; } }
+        public AssetBundleRefEx         mainAssetBundleRef          { get { return m_MainAssetBundleRef; } }
 
-        internal List<AssetBundleRefEx> dependentAssetBundleRefs    { get { return m_DependentAssetBundleRefs; } }
+        public List<AssetBundleRefEx>   dependentAssetBundleRefs    { get { return m_DependentAssetBundleRefs; } }
 
-        internal AssetBundle            assetBundle                 { get { return m_MainAssetBundleRef?.AssetBundle; } }
+        public AssetBundle            assetBundle                 { get { return m_MainAssetBundleRef?.assetBundle; } }
         
         static internal AssetBundleLoaderEx Get(string InAssetBundleName)
         {
@@ -50,7 +50,7 @@ namespace AssetManagement.Runtime
             bool exception = false;
 
             AssetBundleRefEx abRef = AssetBundleManagerEx.LoadAssetBundleFromFile(InAssetBundleName);
-            if (abRef != null && abRef.AssetBundle != null)
+            if (abRef != null && abRef.assetBundle != null)
             {
                 m_MainAssetBundleRef = abRef;
             }
@@ -65,7 +65,7 @@ namespace AssetManagement.Runtime
                 for (int i = 0; i < dependencies.Length; ++i)
                 {
                     abRef = AssetBundleManagerEx.LoadAssetBundleFromFile(dependencies[i]);
-                    if (abRef != null && abRef.AssetBundle != null)
+                    if (abRef != null && abRef.assetBundle != null)
                     {
                         m_DependentAssetBundleRefs.Add(abRef);
                     }
@@ -91,7 +91,7 @@ namespace AssetManagement.Runtime
         {
             if (m_MainAssetBundleRef != null)
             {
-                AssetBundleManager.Unload(m_MainAssetBundleRef.AssetBundleName);
+                AssetBundleManager.Unload(m_MainAssetBundleRef.assetBundleName);
                 m_MainAssetBundleRef = null;
             }
 
@@ -101,7 +101,7 @@ namespace AssetManagement.Runtime
                 {
                     if (abRef != null)
                     {
-                        AssetBundleManager.Unload(abRef.AssetBundleName);
+                        AssetBundleManager.Unload(abRef.assetBundleName);
                     }
                 }
                 m_DependentAssetBundleRefs.Clear();
@@ -114,7 +114,7 @@ namespace AssetManagement.Runtime
         /// <typeparam name="T"></typeparam>
         /// <param name="assetName"></param>
         /// <returns></returns>
-        internal T LoadAsset<T>(string assetName) where T : Object
+        public T LoadAsset<T>(string assetName) where T : Object
         {
             return assetBundle?.LoadAsset<T>(assetName);
         }
@@ -125,7 +125,7 @@ namespace AssetManagement.Runtime
         /// <typeparam name="T"></typeparam>
         /// <param name="assetName"></param>
         /// <returns></returns>
-        internal AssetBundleRequest LoadAssetAsync<T>(string assetName) where T : Object
+        public AssetBundleRequest LoadAssetAsync<T>(string assetName) where T : Object
         {
             return assetBundle?.LoadAssetAsync<T>(assetName);
         }

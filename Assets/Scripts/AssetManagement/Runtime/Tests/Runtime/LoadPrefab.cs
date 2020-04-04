@@ -12,12 +12,12 @@ public class LoadPrefab : MonoBehaviour
 
     private void Awake()
     {
-        AssetManager.Init(type);
+        AssetManagerEx.Init(type);
     }
 
     void OnDestroy()
     {
-        AssetManager.Uninit();
+        AssetManagerEx.Uninit();
     }
 
     private void OnGUI()
@@ -40,7 +40,7 @@ public class LoadPrefab : MonoBehaviour
 
     void StartTask()
     {
-        inst = AssetManager.InstantiatePrefab(assetPath);
+        inst = AssetManagerEx.InstantiatePrefab(assetPath);
 
         info = inst != null ? "sucess to load: " : "fail to load: ";
         info += assetPath;

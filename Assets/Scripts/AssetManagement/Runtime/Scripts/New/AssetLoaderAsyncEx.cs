@@ -12,7 +12,7 @@ namespace AssetManagement.Runtime
     {
         static private LinkedObjectPool<AssetLoaderAsyncEx<T>> m_Pool;
 
-        internal AssetBundleLoaderEx    abLoader    { get; private set; }
+        public AssetBundleLoaderEx      abLoader    { get; private set; }
 
         private AssetBundleRequest      m_Request;
 
@@ -20,6 +20,8 @@ namespace AssetManagement.Runtime
 
 #if UNITY_EDITOR
         public              string      assetPath   { get; private set; }       // display for debug
+
+        public static LinkedObjectPool<AssetLoaderAsyncEx<T>> kPool { get { return m_Pool; } }
 #endif
 
         public AssetLoaderAsyncEx()

@@ -12,12 +12,15 @@ namespace AssetManagement.Runtime
     {
         static private LinkedObjectPool<AssetLoaderEx<T>> m_Pool;
 
-        internal AssetBundleLoaderEx    abLoader    { get; private set; }
+
+        public AssetBundleLoaderEx      abLoader    { get; private set; }
 
         public                      T   asset       { get; private set; }
 
 #if UNITY_EDITOR
         public                  string  assetPath   { get; private set; }       // display for debug
+
+        public static LinkedObjectPool<AssetLoaderEx<T>> kPool { get { return m_Pool; } }
 #endif
 
         public AssetLoaderEx()
