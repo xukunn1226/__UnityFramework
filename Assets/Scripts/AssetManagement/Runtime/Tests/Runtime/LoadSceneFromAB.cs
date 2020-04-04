@@ -8,21 +8,21 @@ public class LoadSceneFromAB : MonoBehaviour
 {
     public LoaderType type = LoaderType.FromAB;
 
-    AssetBundleLoaderEx loader;
-    AssetLoaderEx<GameObject> cubeLoader;
+    AssetBundleLoader loader;
+    AssetLoader<GameObject> cubeLoader;
 
     string info = "";
 
     private void Awake()
     {
-        AssetManagerEx.Init(type);
+        AssetManager.Init(type);
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnUnloadSceneLoaded;
     }
 
     void OnDestroy()
     {
-        AssetManagerEx.Uninit();
+        AssetManager.Uninit();
     }
 
     private void OnGUI()
@@ -54,13 +54,13 @@ public class LoadSceneFromAB : MonoBehaviour
     }
     IEnumerator StartTask()
     {
-        loader = AssetManagerEx.LoadAssetBundle("scene.ab");
+        loader = AssetManager.LoadAssetBundle("scene.ab");
         //AssetManager.LoadAssetBundle("texture.ab");
         //AssetManager.LoadAssetBundle("material.ab");
         string[] sceneNames = loader.assetBundle.GetAllScenePaths();
         string sceneName = System.IO.Path.GetFileNameWithoutExtension(sceneNames[0]);
 
-        cubeLoader = AssetManagerEx.LoadAsset<GameObject>("texture/cube1.prefab");
+        cubeLoader = AssetManager.LoadAsset<GameObject>("texture/cube1.prefab");
 
         SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
         yield break;

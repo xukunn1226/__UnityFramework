@@ -8,9 +8,9 @@ namespace AssetManagement.Runtime
     /// <summary>
     /// asset bundle reference info
     /// </summary>
-    public class AssetBundleRefEx : IBetterLinkedListNode<AssetBundleRefEx>, IPooledObject
+    public class AssetBundleRef : IBetterLinkedListNode<AssetBundleRef>, IPooledObject
     {
-        static private LinkedObjectPool<AssetBundleRefEx>   m_Pool;
+        static private LinkedObjectPool<AssetBundleRef>   m_Pool;
 
         private int             m_Refs;
 
@@ -18,7 +18,7 @@ namespace AssetManagement.Runtime
 
         public string           assetBundleName     { get; private set; }
 
-        public AssetBundleRefEx()
+        public AssetBundleRef()
         {
             m_Refs = 1;
         }
@@ -33,14 +33,14 @@ namespace AssetManagement.Runtime
             return --m_Refs;
         }
 
-        static internal AssetBundleRefEx Get(string assetBundleName, AssetBundle assetBundle)
+        static internal AssetBundleRef Get(string assetBundleName, AssetBundle assetBundle)
         {
             if (m_Pool == null)
             {
-                m_Pool = new LinkedObjectPool<AssetBundleRefEx>(AssetManagerEx.PreAllocateAssetBundlePoolSize);
+                m_Pool = new LinkedObjectPool<AssetBundleRef>(AssetManager.PreAllocateAssetBundlePoolSize);
             }
 
-            AssetBundleRefEx abRef = (AssetBundleRefEx)m_Pool.Get();
+            AssetBundleRef abRef = (AssetBundleRef)m_Pool.Get();
             abRef.assetBundleName = assetBundleName;
             abRef.assetBundle = assetBundle;
             abRef.Pool = m_Pool;
@@ -48,7 +48,7 @@ namespace AssetManagement.Runtime
             return abRef;
         }
 
-        static internal void Release(AssetBundleRefEx abRef)
+        static internal void Release(AssetBundleRef abRef)
         {
             if (m_Pool == null || abRef == null)
                 return;
@@ -64,11 +64,11 @@ namespace AssetManagement.Runtime
             Pool = null;
         }
 
-        public LinkedObjectPool<AssetBundleRefEx>       List { get; set; }
+        public LinkedObjectPool<AssetBundleRef>       List { get; set; }
 
-        public IBetterLinkedListNode<AssetBundleRefEx>  Next { get; set; }
+        public IBetterLinkedListNode<AssetBundleRef>  Next { get; set; }
 
-        public IBetterLinkedListNode<AssetBundleRefEx>  Prev { get; set; }
+        public IBetterLinkedListNode<AssetBundleRef>  Prev { get; set; }
 
         public void OnInit() { }
 

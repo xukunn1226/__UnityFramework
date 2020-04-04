@@ -8,54 +8,54 @@ using UnityEditor;
 
 namespace AssetManagement.Runtime
 {
-    public class AssetLoaderEx<T> : IBetterLinkedListNode<AssetLoaderEx<T>>, IPooledObject where T : UnityEngine.Object
+    public class AssetLoader<T> : IBetterLinkedListNode<AssetLoader<T>>, IPooledObject where T : UnityEngine.Object
     {
-        static private LinkedObjectPool<AssetLoaderEx<T>> m_Pool;
+        static private LinkedObjectPool<AssetLoader<T>> m_Pool;
 
 
-        public AssetBundleLoaderEx      abLoader    { get; private set; }
+        public AssetBundleLoader      abLoader    { get; private set; }
 
         public                      T   asset       { get; private set; }
 
 #if UNITY_EDITOR
         public                  string  assetPath   { get; private set; }       // display for debug
 
-        public static LinkedObjectPool<AssetLoaderEx<T>> kPool { get { return m_Pool; } }
+        public static LinkedObjectPool<AssetLoader<T>> kPool { get { return m_Pool; } }
 #endif
 
-        public AssetLoaderEx()
+        public AssetLoader()
         {
             abLoader = null;
             asset = null;
         }
 
-        static internal AssetLoaderEx<T> Get(string assetPath)
+        static internal AssetLoader<T> Get(string assetPath)
         {
             if (m_Pool == null)
             {
-                m_Pool = new LinkedObjectPool<AssetLoaderEx<T>>(AssetManagerEx.PreAllocateAssetLoaderPoolSize);
+                m_Pool = new LinkedObjectPool<AssetLoader<T>>(AssetManager.PreAllocateAssetLoaderPoolSize);
             }
 
-            AssetLoaderEx<T> loader = (AssetLoaderEx<T>)m_Pool.Get();
+            AssetLoader<T> loader = (AssetLoader<T>)m_Pool.Get();
             loader.LoadAsset(assetPath);
             loader.Pool = m_Pool;
             return loader;
         }
 
-        static internal AssetLoaderEx<T> Get(string assetBundleName, string assetName)
+        static internal AssetLoader<T> Get(string assetBundleName, string assetName)
         {
             if (m_Pool == null)
             {
-                m_Pool = new LinkedObjectPool<AssetLoaderEx<T>>(AssetManagerEx.PreAllocateAssetLoaderPoolSize);
+                m_Pool = new LinkedObjectPool<AssetLoader<T>>(AssetManager.PreAllocateAssetLoaderPoolSize);
             }
 
-            AssetLoaderEx<T> loader = (AssetLoaderEx<T>)m_Pool.Get();
+            AssetLoader<T> loader = (AssetLoader<T>)m_Pool.Get();
             loader.LoadAsset(assetBundleName, assetName);
             loader.Pool = m_Pool;
             return loader;
         }
 
-        static public void Release(AssetLoaderEx<T> loader)
+        static public void Release(AssetLoader<T> loader)
         {
             if (m_Pool == null || loader == null)
                 return;
@@ -67,7 +67,7 @@ namespace AssetManagement.Runtime
         private void LoadAsset(string assetPath)
         {
 #if UNITY_EDITOR
-            switch (AssetManagerEx.loaderType)
+            switch (AssetManager.loaderType)
             {
                 case LoaderType.FromEditor:
                     asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
@@ -86,7 +86,7 @@ namespace AssetManagement.Runtime
         private void LoadAsset(string assetBundleName, string assetName)
         {
 #if UNITY_EDITOR
-            switch (AssetManagerEx.loaderType)
+            switch (AssetManager.loaderType)
             {
                 case LoaderType.FromEditor:
                     {
@@ -111,7 +111,7 @@ namespace AssetManagement.Runtime
         private void LoadAssetInternal(string assetPath)
         {
             string assetBundleName, assetName;
-            if (!AssetManagerEx.ParseAssetPath(assetPath, out assetBundleName, out assetName))
+            if (!AssetManager.ParseAssetPath(assetPath, out assetBundleName, out assetName))
             {
                 Debug.LogWarningFormat("AssetLoader -- Failed to reslove assetbundle name: {0} {1}", assetPath, typeof(T));
                 return;
@@ -122,7 +122,7 @@ namespace AssetManagement.Runtime
 
         private void LoadAssetInternal(string assetBundleName, string assetName)
         {
-            abLoader = AssetBundleLoaderEx.Get(assetBundleName);
+            abLoader = AssetBundleLoader.Get(assetBundleName);
             if (abLoader.assetBundle != null)
             {
                 asset = abLoader.assetBundle.LoadAsset<T>(assetName);
@@ -141,17 +141,17 @@ namespace AssetManagement.Runtime
         {
             if (abLoader != null)
             {
-                AssetBundleLoaderEx.Release(abLoader);
+                AssetBundleLoader.Release(abLoader);
                 abLoader = null;
             }
             asset = null;
         }
 
-        public LinkedObjectPool<AssetLoaderEx<T>>        List    { get; set; }
+        public LinkedObjectPool<AssetLoader<T>>        List    { get; set; }
 
-        public IBetterLinkedListNode<AssetLoaderEx<T>>   Next    { get; set; }
+        public IBetterLinkedListNode<AssetLoader<T>>   Next    { get; set; }
 
-        public IBetterLinkedListNode<AssetLoaderEx<T>>   Prev    { get; set; }
+        public IBetterLinkedListNode<AssetLoader<T>>   Prev    { get; set; }
 
         public void OnInit() { }
 

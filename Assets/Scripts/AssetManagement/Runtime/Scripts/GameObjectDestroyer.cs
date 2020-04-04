@@ -4,23 +4,23 @@ using UnityEngine;
 
 namespace AssetManagement.Runtime
 {
-    public class GameObjectDestroyerEx : MonoBehaviour
+    public class GameObjectDestroyer : MonoBehaviour
     {
-        internal AssetLoaderEx<GameObject>          loader      { get; set; }
+        internal AssetLoader<GameObject>          loader      { get; set; }
 
-        internal AssetLoaderAsyncEx<GameObject>     loaderAsync { get; set; }
+        internal AssetLoaderAsync<GameObject>     loaderAsync { get; set; }
 
         void OnDestroy()
         {
             if (loaderAsync != null)
             {
-                AssetLoaderAsyncEx<GameObject>.Release(loaderAsync);
+                AssetLoaderAsync<GameObject>.Release(loaderAsync);
                 loaderAsync = null;
             }
 
             if (loader != null)
             {
-                AssetLoaderEx<GameObject>.Release(loader);
+                AssetLoader<GameObject>.Release(loader);
                 loader = null;
             }
         }

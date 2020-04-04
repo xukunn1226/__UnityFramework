@@ -9,17 +9,17 @@ public class TestSerializedFile : MonoBehaviour
 
     public string   assetPath;
 
-    AssetLoaderEx<UnityEngine.Object> loader;
+    AssetLoader<UnityEngine.Object> loader;
     string          info;
 
     private void Awake()
     {
-        AssetManagerEx.Init(type);
+        AssetManager.Init(type);
     }
 
     void OnDestroy()
     {
-        AssetManagerEx.Uninit();
+        AssetManager.Uninit();
     }
 
     private void OnGUI()
@@ -42,7 +42,7 @@ public class TestSerializedFile : MonoBehaviour
 
     void StartTask()
     {
-        loader = AssetManagerEx.LoadAsset<Object>(assetPath);
+        loader = AssetManager.LoadAsset<Object>(assetPath);
 
         info = loader.asset != null ? "sucess to load: " : "fail to load: ";
         info += assetPath;
@@ -52,7 +52,7 @@ public class TestSerializedFile : MonoBehaviour
     {
         if(loader != null)
         {
-            AssetManagerEx.UnloadAsset(loader);
+            AssetManager.UnloadAsset(loader);
         }
         info = null;
         Resources.UnloadUnusedAssets();

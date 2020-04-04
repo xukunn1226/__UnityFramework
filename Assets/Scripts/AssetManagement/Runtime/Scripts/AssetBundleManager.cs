@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace AssetManagement.Runtime
 {
-    static internal class AssetBundleManagerEx
+    static internal class AssetBundleManager
     {
         static private string                                               m_RootPath;
         static private AssetBundleManifest                                  m_AssetBundleManifest;
-        static private Dictionary<string, AssetBundleRefEx>                 m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRefEx>();        // 已加载完成的assetbundle
+        static private Dictionary<string, AssetBundleRef>                 m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
         static private Dictionary<string, string[]>                         m_CachedDependencies        = new Dictionary<string, string[]>();
 
         static private bool bInit
@@ -39,9 +39,9 @@ namespace AssetManagement.Runtime
         static internal void Uninit()
         {
             // unload already loaded asset bundle
-            foreach (KeyValuePair<string, AssetBundleRefEx> kvp in m_DictAssetBundleRefs)
+            foreach (KeyValuePair<string, AssetBundleRef> kvp in m_DictAssetBundleRefs)
             {
-                AssetBundleRefEx.Release(kvp.Value);
+                AssetBundleRef.Release(kvp.Value);
             }
             m_DictAssetBundleRefs.Clear();
 
@@ -70,7 +70,7 @@ namespace AssetManagement.Runtime
             return dependencies;
         }
 
-        static internal AssetBundleRefEx LoadAssetBundleFromFile(string InAssetBundleName)
+        static internal AssetBundleRef LoadAssetBundleFromFile(string InAssetBundleName)
         {
             if (!bInit)
             {
@@ -78,7 +78,7 @@ namespace AssetManagement.Runtime
                 return null;
             }
 
-            AssetBundleRefEx ABRef;
+            AssetBundleRef ABRef;
             m_DictAssetBundleRefs.TryGetValue(InAssetBundleName, out ABRef);
 
             if (ABRef != null)
@@ -90,7 +90,7 @@ namespace AssetManagement.Runtime
                 AssetBundle ab = AssetBundle.LoadFromFile(GetRootPath(InAssetBundleName));
                 if(ab != null)
                 {
-                    ABRef = AssetBundleRefEx.Get(InAssetBundleName, ab);          // reference count equal to 1
+                    ABRef = AssetBundleRef.Get(InAssetBundleName, ab);          // reference count equal to 1
                     m_DictAssetBundleRefs.Add(InAssetBundleName, ABRef);
                 }
                 else
@@ -111,13 +111,13 @@ namespace AssetManagement.Runtime
                 return;
             }
 
-            AssetBundleRefEx ABRef;
+            AssetBundleRef ABRef;
             if (m_DictAssetBundleRefs.TryGetValue(InAssetBundleName, out ABRef))
             {
                 int Refs = ABRef.DecreaseRefs();
                 if (Refs <= 0)
                 {
-                    AssetBundleRefEx.Release(ABRef);
+                    AssetBundleRef.Release(ABRef);
                     m_DictAssetBundleRefs.Remove(InAssetBundleName);
                 }
             }

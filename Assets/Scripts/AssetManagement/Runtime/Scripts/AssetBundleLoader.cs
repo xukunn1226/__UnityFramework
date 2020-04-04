@@ -5,33 +5,33 @@ using Cache;
 
 namespace AssetManagement.Runtime
 {
-    public class AssetBundleLoaderEx : IBetterLinkedListNode<AssetBundleLoaderEx>, IPooledObject
+    public class AssetBundleLoader : IBetterLinkedListNode<AssetBundleLoader>, IPooledObject
     {
-        static private LinkedObjectPool<AssetBundleLoaderEx> m_Pool;
+        static private LinkedObjectPool<AssetBundleLoader> m_Pool;
 
-        private AssetBundleRefEx        m_MainAssetBundleRef;
-        private List<AssetBundleRefEx>  m_DependentAssetBundleRefs  = new List<AssetBundleRefEx>();
+        private AssetBundleRef        m_MainAssetBundleRef;
+        private List<AssetBundleRef>  m_DependentAssetBundleRefs  = new List<AssetBundleRef>();
 
-        public AssetBundleRefEx         mainAssetBundleRef          { get { return m_MainAssetBundleRef; } }
+        public AssetBundleRef         mainAssetBundleRef          { get { return m_MainAssetBundleRef; } }
 
-        public List<AssetBundleRefEx>   dependentAssetBundleRefs    { get { return m_DependentAssetBundleRefs; } }
+        public List<AssetBundleRef>   dependentAssetBundleRefs    { get { return m_DependentAssetBundleRefs; } }
 
         public AssetBundle            assetBundle                 { get { return m_MainAssetBundleRef?.assetBundle; } }
         
-        static internal AssetBundleLoaderEx Get(string InAssetBundleName)
+        static internal AssetBundleLoader Get(string InAssetBundleName)
         {
             if (m_Pool == null)
             {
-                m_Pool = new LinkedObjectPool<AssetBundleLoaderEx>(AssetManagerEx.PreAllocateAssetBundleLoaderPoolSize);
+                m_Pool = new LinkedObjectPool<AssetBundleLoader>(AssetManager.PreAllocateAssetBundleLoaderPoolSize);
             }
 
-            AssetBundleLoaderEx abLoader = (AssetBundleLoaderEx)m_Pool.Get();
+            AssetBundleLoader abLoader = (AssetBundleLoader)m_Pool.Get();
             abLoader.Load(InAssetBundleName);
             abLoader.Pool = m_Pool;
             return abLoader;
         }
 
-        static internal void Release(AssetBundleLoaderEx abloader)
+        static internal void Release(AssetBundleLoader abloader)
         {
             if (m_Pool == null || abloader == null)
                 throw new System.ArgumentNullException();
@@ -49,7 +49,7 @@ namespace AssetManagement.Runtime
         {
             bool exception = false;
 
-            AssetBundleRefEx abRef = AssetBundleManagerEx.LoadAssetBundleFromFile(InAssetBundleName);
+            AssetBundleRef abRef = AssetBundleManager.LoadAssetBundleFromFile(InAssetBundleName);
             if (abRef != null && abRef.assetBundle != null)
             {
                 m_MainAssetBundleRef = abRef;
@@ -59,12 +59,12 @@ namespace AssetManagement.Runtime
                 exception = true;
             }
 
-            string[] dependencies = AssetBundleManagerEx.GetAllDependencies(InAssetBundleName);
+            string[] dependencies = AssetBundleManager.GetAllDependencies(InAssetBundleName);
             if (!exception && dependencies != null && dependencies.Length > 0)
             {
                 for (int i = 0; i < dependencies.Length; ++i)
                 {
-                    abRef = AssetBundleManagerEx.LoadAssetBundleFromFile(dependencies[i]);
+                    abRef = AssetBundleManager.LoadAssetBundleFromFile(dependencies[i]);
                     if (abRef != null && abRef.assetBundle != null)
                     {
                         m_DependentAssetBundleRefs.Add(abRef);
@@ -91,17 +91,17 @@ namespace AssetManagement.Runtime
         {
             if (m_MainAssetBundleRef != null)
             {
-                AssetBundleManagerEx.Unload(m_MainAssetBundleRef.assetBundleName);
+                AssetBundleManager.Unload(m_MainAssetBundleRef.assetBundleName);
                 m_MainAssetBundleRef = null;
             }
 
             if (m_DependentAssetBundleRefs != null)
             {
-                foreach (AssetBundleRefEx abRef in m_DependentAssetBundleRefs)
+                foreach (AssetBundleRef abRef in m_DependentAssetBundleRefs)
                 {
                     if (abRef != null)
                     {
-                        AssetBundleManagerEx.Unload(abRef.assetBundleName);
+                        AssetBundleManager.Unload(abRef.assetBundleName);
                     }
                 }
                 m_DependentAssetBundleRefs.Clear();
@@ -130,11 +130,11 @@ namespace AssetManagement.Runtime
             return assetBundle?.LoadAssetAsync<T>(assetName);
         }
 
-        public LinkedObjectPool<AssetBundleLoaderEx>        List    { get; set; }
+        public LinkedObjectPool<AssetBundleLoader>        List    { get; set; }
 
-        public IBetterLinkedListNode<AssetBundleLoaderEx>   Next    { get; set; }
+        public IBetterLinkedListNode<AssetBundleLoader>   Next    { get; set; }
 
-        public IBetterLinkedListNode<AssetBundleLoaderEx>   Prev    { get; set; }
+        public IBetterLinkedListNode<AssetBundleLoader>   Prev    { get; set; }
 
         public void OnInit() { }
 

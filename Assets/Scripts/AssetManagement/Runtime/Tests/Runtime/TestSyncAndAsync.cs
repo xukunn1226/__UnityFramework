@@ -13,16 +13,16 @@ public class TestSyncAndAsync : MonoBehaviour
 
     GameObject inst;
     string info;
-    AssetBundleLoaderEx loader;
+    AssetBundleLoader loader;
 
     private void Awake()
     {
-        AssetManagerEx.Init(type);
+        AssetManager.Init(type);
     }
 
     void OnDestroy()
     {
-        AssetManagerEx.Uninit();
+        AssetManager.Uninit();
     }
 
     private void OnGUI()
@@ -47,7 +47,7 @@ public class TestSyncAndAsync : MonoBehaviour
     {
         int f1 = Time.frameCount;
 
-        AssetBundleLoaderEx loader = AssetManagerEx.LoadAssetBundle("prefab.ab");
+        AssetBundleLoader loader = AssetManager.LoadAssetBundle("prefab.ab");
         AssetBundleRequest abRequest = loader.LoadAssetAsync<GameObject>("cube.prefab");
         //if (abRequest.asset == null) { }      // 这行代码因为访问了asset，将异步改为同步
         yield return abRequest;
@@ -67,13 +67,13 @@ public class TestSyncAndAsync : MonoBehaviour
         int f1 = Time.frameCount;
 
         // 异步加载
-        IEnumerator e = AssetManagerEx.InstantiatePrefabAsync(assetPath, (go) =>
+        IEnumerator e = AssetManager.InstantiatePrefabAsync(assetPath, (go) =>
         {
             inst = go;
         });
 
         // 马上同步加载，将立即结束之前的异步流程
-        loader = AssetManagerEx.LoadAssetBundle("prefab.ab");
+        loader = AssetManager.LoadAssetBundle("prefab.ab");
         GameObject asset = loader.LoadAsset<GameObject>("cube.prefab");
 
         yield return e;
@@ -94,7 +94,7 @@ public class TestSyncAndAsync : MonoBehaviour
 
         if(loader != null)
         {
-            AssetManagerEx.UnloadAssetBundle(loader);
+            AssetManager.UnloadAssetBundle(loader);
         }
         loader = null;
     }

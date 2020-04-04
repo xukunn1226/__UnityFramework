@@ -7,8 +7,8 @@ using System;
 
 namespace AssetManagement.Runtime.Editor
 {
-    [CustomEditor(typeof(AssetManagerEx))]
-    public class AssetManagerExEditor : UnityEditor.Editor
+    [CustomEditor(typeof(AssetManager))]
+    public class AssetManagerEditor : UnityEditor.Editor
     {
         //SerializedProperty m_PreAllocateAssetBundlePoolSizeProp;
         //SerializedProperty m_PreAllocateAssetBundleLoaderPoolSizeProp;
@@ -80,14 +80,14 @@ namespace AssetManagement.Runtime.Editor
         {
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-            DrawAssetLoaderAsync(string.Format("{0}(Async)[{1}]", title, AssetLoaderAsyncEx<T>.kPool?.countAll ?? 0), AssetLoaderAsyncEx<T>.kPool);
+            DrawAssetLoaderAsync(string.Format("{0}(Async)[{1}]", title, AssetLoaderAsync<T>.kPool?.countAll ?? 0), AssetLoaderAsync<T>.kPool);
 
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-            DrawAssetLoader(string.Format("{0}[{1}]", title, AssetLoaderEx<T>.kPool?.countAll ?? 0), AssetLoaderEx<T>.kPool);
+            DrawAssetLoader(string.Format("{0}[{1}]", title, AssetLoader<T>.kPool?.countAll ?? 0), AssetLoader<T>.kPool);
         }
 
-        private void DrawAssetLoaderAsync<T>(string title, LinkedObjectPool<AssetLoaderAsyncEx<T>> Pool) where T : UnityEngine.Object
+        private void DrawAssetLoaderAsync<T>(string title, LinkedObjectPool<AssetLoaderAsync<T>> Pool) where T : UnityEngine.Object
         {
             EditorGUILayout.LabelField(title, TitleStyle);
             if (Pool != null)
@@ -99,11 +99,11 @@ namespace AssetManagement.Runtime.Editor
                     if (Pool.countOfUsed != 0)
                     {
                         ++EditorGUI.indentLevel;
-                        LinkedObjectPool<AssetLoaderAsyncEx<T>>.Enumerator e = Pool.GetEnumerator();
+                        LinkedObjectPool<AssetLoaderAsync<T>>.Enumerator e = Pool.GetEnumerator();
                         int index = 0;
                         while (e.MoveNext())
                         {
-                            AssetLoaderAsyncEx<T> loader = e.Current;
+                            AssetLoaderAsync<T> loader = e.Current;
 
                             DrawAssetLoaderAsync<T>(index, loader);
                             ++index;
@@ -116,11 +116,11 @@ namespace AssetManagement.Runtime.Editor
                     if (Pool.countOfUnused != 0)
                     {
                         ++EditorGUI.indentLevel;
-                        Stack<AssetLoaderAsyncEx<T>>.Enumerator e = Pool.unusedObjects.GetEnumerator();
+                        Stack<AssetLoaderAsync<T>>.Enumerator e = Pool.unusedObjects.GetEnumerator();
                         int index = 0;
                         while (e.MoveNext())
                         {
-                            AssetLoaderAsyncEx<T> loader = e.Current;
+                            AssetLoaderAsync<T> loader = e.Current;
 
                             DrawAssetLoaderAsync<T>(index, loader);
                             ++index;
@@ -133,7 +133,7 @@ namespace AssetManagement.Runtime.Editor
             }
         }
 
-        private void DrawAssetLoader<T>(string title, LinkedObjectPool<AssetLoaderEx<T>> Pool) where T : UnityEngine.Object
+        private void DrawAssetLoader<T>(string title, LinkedObjectPool<AssetLoader<T>> Pool) where T : UnityEngine.Object
         {
             EditorGUILayout.LabelField(title, TitleStyle);
             if (Pool != null)
@@ -145,11 +145,11 @@ namespace AssetManagement.Runtime.Editor
                     if (Pool.countOfUsed != 0)
                     {
                         ++EditorGUI.indentLevel;
-                        LinkedObjectPool<AssetLoaderEx<T>>.Enumerator e = Pool.GetEnumerator();
+                        LinkedObjectPool<AssetLoader<T>>.Enumerator e = Pool.GetEnumerator();
                         int index = 0;
                         while (e.MoveNext())
                         {
-                            AssetLoaderEx<T> loader = e.Current;
+                            AssetLoader<T> loader = e.Current;
 
                             DrawAssetLoader<T>(index, loader);
                             ++index;
@@ -162,11 +162,11 @@ namespace AssetManagement.Runtime.Editor
                     if (Pool.countOfUnused != 0)
                     {
                         ++EditorGUI.indentLevel;
-                        Stack<AssetLoaderEx<T>>.Enumerator e = Pool.unusedObjects.GetEnumerator();
+                        Stack<AssetLoader<T>>.Enumerator e = Pool.unusedObjects.GetEnumerator();
                         int index = 0;
                         while (e.MoveNext())
                         {
-                            AssetLoaderEx<T> loader = e.Current;
+                            AssetLoader<T> loader = e.Current;
 
                             DrawAssetLoader<T>(index, loader);
                             ++index;
@@ -179,7 +179,7 @@ namespace AssetManagement.Runtime.Editor
             }
         }
 
-        private void DrawAssetLoaderAsync<T>(int index, AssetLoaderAsyncEx<T> loader) where T : UnityEngine.Object
+        private void DrawAssetLoaderAsync<T>(int index, AssetLoaderAsync<T> loader) where T : UnityEngine.Object
         {
             EditorGUILayout.LabelField(string.Format("[{0}]  {1}", index, loader.assetPath), AssetStyle);
 
@@ -188,7 +188,7 @@ namespace AssetManagement.Runtime.Editor
             --EditorGUI.indentLevel;
         }
 
-        private void DrawAssetLoader<T>(int index, AssetLoaderEx<T> loader) where T : UnityEngine.Object
+        private void DrawAssetLoader<T>(int index, AssetLoader<T> loader) where T : UnityEngine.Object
         {
             EditorGUILayout.LabelField(string.Format("[{0}]  {1}", index, loader.assetPath), AssetStyle);
 
@@ -197,7 +197,7 @@ namespace AssetManagement.Runtime.Editor
             --EditorGUI.indentLevel;
         }
 
-        private void DrawAssetBundleLoader(AssetBundleLoaderEx abLoader)
+        private void DrawAssetBundleLoader(AssetBundleLoader abLoader)
         {
             if (abLoader == null)
                 return;
