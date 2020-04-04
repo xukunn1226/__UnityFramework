@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Cache;
 
@@ -9,14 +8,14 @@ namespace AssetManagement.Runtime
     {
         static private LinkedObjectPool<AssetBundleLoader> m_Pool;
 
-        private AssetBundleRef        m_MainAssetBundleRef;
-        private List<AssetBundleRef>  m_DependentAssetBundleRefs  = new List<AssetBundleRef>();
+        private AssetBundleRef          m_MainAssetBundleRef;
+        private List<AssetBundleRef>    m_DependentAssetBundleRefs  = new List<AssetBundleRef>();
 
-        public AssetBundleRef         mainAssetBundleRef          { get { return m_MainAssetBundleRef; } }
+        public AssetBundleRef           mainAssetBundleRef          { get { return m_MainAssetBundleRef; } }
 
-        public List<AssetBundleRef>   dependentAssetBundleRefs    { get { return m_DependentAssetBundleRefs; } }
+        public List<AssetBundleRef>     dependentAssetBundleRefs    { get { return m_DependentAssetBundleRefs; } }
 
-        public AssetBundle            assetBundle                 { get { return m_MainAssetBundleRef?.assetBundle; } }
+        public AssetBundle              assetBundle                 { get { return m_MainAssetBundleRef?.assetBundle; } }
         
         static internal AssetBundleLoader Get(string InAssetBundleName)
         {
@@ -36,8 +35,6 @@ namespace AssetManagement.Runtime
             if (m_Pool == null || abloader == null)
                 throw new System.ArgumentNullException();
 
-            //abloader.Unload();
-            //abloader.Pool = null;
             m_Pool.Return(abloader);
         }
 

@@ -6,7 +6,7 @@
 * 分析场景是如何打包，如何热更的
 * Override Build Scene
 * 测试LoadAssetAsync失败时会不会Unload所有已加载AB
-
+* 退出Play模式时报错
 
 
 - 测试UNITY_INCLUDE_TESTS

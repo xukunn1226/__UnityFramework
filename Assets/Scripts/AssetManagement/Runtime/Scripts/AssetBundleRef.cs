@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Cache;
 
 namespace AssetManagement.Runtime
@@ -12,7 +10,7 @@ namespace AssetManagement.Runtime
     {
         static private LinkedObjectPool<AssetBundleRef>   m_Pool;
 
-        private int             m_Refs;
+        public int              refs                { get; private set; }
 
         public AssetBundle      assetBundle         { get; private set; }
 
@@ -20,17 +18,17 @@ namespace AssetManagement.Runtime
 
         public AssetBundleRef()
         {
-            m_Refs = 1;
+            refs = 1;
         }
 
         internal int IncreaseRefs()
         {
-            return ++m_Refs;
+            return ++refs;
         }
 
         internal int DecreaseRefs()
         {
-            return --m_Refs;
+            return --refs;
         }
 
         static internal AssetBundleRef Get(string assetBundleName, AssetBundle assetBundle)
@@ -51,14 +49,14 @@ namespace AssetManagement.Runtime
         static internal void Release(AssetBundleRef abRef)
         {
             if (m_Pool == null || abRef == null)
-                return;
+                throw new System.ArgumentNullException();
 
             m_Pool.Return(abRef);
         }
 
         private void Reset()
         {
-            m_Refs = 1;
+            refs = 1;
             assetBundle = null;
             assetBundleName = null;
             Pool = null;

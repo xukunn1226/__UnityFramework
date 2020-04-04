@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AssetManagement.Runtime
 {
-    public class GameObjectDestroyer : MonoBehaviour
+    internal class GameObjectDestroyer : MonoBehaviour
     {
         internal AssetLoader<GameObject>          loader      { get; set; }
 

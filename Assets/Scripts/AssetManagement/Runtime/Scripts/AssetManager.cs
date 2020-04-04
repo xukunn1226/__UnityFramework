@@ -7,16 +7,32 @@ namespace AssetManagement.Runtime
 {
     public class AssetManager : MonoBehaviour
     {
-        static public AssetManager Instance { get; private set; }
+        static internal AssetManager    Instance { get; private set; }
 
-        static public int           PreAllocateAssetBundlePoolSize        = 200;                              // 预分配缓存AssetBundleRef对象池大小
-        static public int           PreAllocateAssetBundleLoaderPoolSize  = 100;                              // 预分配缓存AssetBundleLoader对象池大小
-        static public int           PreAllocateAssetLoaderPoolSize        = 50;                               // 预分配缓存AssetLoader对象池大小
-        static public int           PreAllocateAssetLoaderAsyncPoolSize   = 50;                               // 预分配缓存AssetLoaderAsync对象池大小
+        static public int               PreAllocateAssetBundlePoolSize        = 200;                              // 预分配缓存AssetBundleRef对象池大小
+        static public int               PreAllocateAssetBundleLoaderPoolSize  = 100;                              // 预分配缓存AssetBundleLoader对象池大小
+        static public int               PreAllocateAssetLoaderPoolSize        = 50;                               // 预分配缓存AssetLoader对象池大小
+        static public int               PreAllocateAssetLoaderAsyncPoolSize   = 50;                               // 预分配缓存AssetLoaderAsync对象池大小
         
-        static private LoaderType   m_LoaderType;
-        static private string       m_RootPath;
-        static private bool         m_bInit;
+        static private LoaderType       m_LoaderType;
+        static private string           m_RootPath;
+        static private bool             m_bInit;
+
+        static internal LoaderType      loaderType
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if (Instance != null)
+                {
+                    return m_LoaderType;
+                }
+                return LoaderType.FromEditor;
+#else
+                return LoaderType.FromAB;       // 移动平台强制AB加载
+#endif
+            }
+        }
 
         private void Start()
         {
@@ -237,21 +253,6 @@ namespace AssetManagement.Runtime
         }
 
 
-        static public LoaderType loaderType
-        {
-            get
-            {
-#if UNITY_EDITOR
-                if (Instance != null)
-                {
-                    return m_LoaderType;
-                }
-                return LoaderType.FromEditor;
-#else
-                return LoaderType.FromAB;       // 非编辑器模式强制AB加载
-#endif
-            }
-        }
 
         struct AssetName
         {

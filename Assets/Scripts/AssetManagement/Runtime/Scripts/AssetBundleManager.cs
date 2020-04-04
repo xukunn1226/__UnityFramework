@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace AssetManagement.Runtime
@@ -8,7 +7,7 @@ namespace AssetManagement.Runtime
     {
         static private string                                               m_RootPath;
         static private AssetBundleManifest                                  m_AssetBundleManifest;
-        static private Dictionary<string, AssetBundleRef>                 m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
+        static private Dictionary<string, AssetBundleRef>                   m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
         static private Dictionary<string, string[]>                         m_CachedDependencies        = new Dictionary<string, string[]>();
 
         static private bool bInit
@@ -102,7 +101,6 @@ namespace AssetManagement.Runtime
             return ABRef;
         }
 
-        // Unload an AssetBundle
         static internal void Unload(string InAssetBundleName)
         {
             if (!bInit)

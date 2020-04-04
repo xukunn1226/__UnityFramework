@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Cache;
 #if UNITY_EDITOR
@@ -12,14 +11,14 @@ namespace AssetManagement.Runtime
     {
         static private LinkedObjectPool<AssetLoaderAsync<T>> m_Pool;
 
-        public AssetBundleLoader      abLoader    { get; private set; }
+        public AssetBundleLoader        abLoader    { get; private set; }
 
         private AssetBundleRequest      m_Request;
 
-        public                  T       asset       { get; private set; }
+        public T                        asset       { get; private set; }
 
 #if UNITY_EDITOR
-        public              string      assetPath   { get; private set; }       // display for debug
+        public string                   assetPath   { get; private set; }       // display for debug
 
         public static LinkedObjectPool<AssetLoaderAsync<T>> kPool { get { return m_Pool; } }
 #endif
@@ -60,9 +59,8 @@ namespace AssetManagement.Runtime
         static internal void Release(AssetLoaderAsync<T> loader)
         {
             if (m_Pool == null || loader == null)
-                return;
+                throw new System.ArgumentNullException();
 
-            //loader.Unload();
             m_Pool.Return(loader);
         }
 

@@ -54,15 +54,15 @@ public class LoadSceneFromAB : MonoBehaviour
     }
     IEnumerator StartTask()
     {
-        loader = AssetManager.LoadAssetBundle("scene.ab");
-        //AssetManager.LoadAssetBundle("texture.ab");
-        //AssetManager.LoadAssetBundle("material.ab");
-        string[] sceneNames = loader.assetBundle.GetAllScenePaths();
-        string sceneName = System.IO.Path.GetFileNameWithoutExtension(sceneNames[0]);
+        //loader = AssetManager.LoadAssetBundle("scene.ab");
+        ////AssetManager.LoadAssetBundle("texture.ab");
+        ////AssetManager.LoadAssetBundle("material.ab");
+        //string[] sceneNames = loader.assetBundle.GetAllScenePaths();
+        //string sceneName = System.IO.Path.GetFileNameWithoutExtension(sceneNames[0]);
 
-        cubeLoader = AssetManager.LoadAsset<GameObject>("texture/cube1.prefab");
+        //cubeLoader = AssetManager.LoadAsset<GameObject>("texture/cube1.prefab");
 
-        SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+        //SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
         yield break;
 
 
