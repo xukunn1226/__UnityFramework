@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace AssetManagement.Runtime
 {
-    /// <summary>
-    /// 资源管理器
-    /// </summary>
-    public class AssetManager : MonoBehaviour
+    public class AssetManagerEx : MonoBehaviour
     {
-        static public AssetManager  Instance                                    { get; private set; }
+        static public AssetManagerEx Instance { get; private set; }
 
-        public int                  PreAllocateAssetBundlePoolSize              = 200;                              // 预分配缓存AssetBundleRef对象池大小
-        public int                  PreAllocateAssetBundleLoaderPoolSize        = 100;                              // 预分配缓存AssetBundleLoader对象池大小
-        public int                  PreAllocateAssetLoaderPoolSize              = 50;                               // 预分配缓存AssetLoader对象池大小
-        public int                  PreAllocateAssetLoaderAsyncPoolSize         = 50;                               // 预分配缓存AssetLoaderAsync对象池大小
-
-
+        static public int           PreAllocateAssetBundlePoolSize        = 200;                              // 预分配缓存AssetBundleRef对象池大小
+        static public int           PreAllocateAssetBundleLoaderPoolSize  = 100;                              // 预分配缓存AssetBundleLoader对象池大小
+        static public int           PreAllocateAssetLoaderPoolSize        = 50;                               // 预分配缓存AssetLoader对象池大小
+        static public int           PreAllocateAssetLoaderAsyncPoolSize   = 50;                               // 预分配缓存AssetLoaderAsync对象池大小
+        
         static private LoaderType   m_LoaderType;
         static private string       m_RootPath;
         static private bool         m_bInit;
@@ -25,7 +21,7 @@ namespace AssetManagement.Runtime
         private void Start()
         {
             // 已有AssetManager，则自毁
-            if (FindObjectsOfType<AssetManager>().Length > 1)
+            if (FindObjectsOfType<AssetManagerEx>().Length > 1)
             {
                 Debug.LogError($"AssetManager has already exist, destroy self");
                 DestroyImmediate(this);
@@ -42,7 +38,7 @@ namespace AssetManagement.Runtime
 
             if (loaderType == LoaderType.FromAB)
             {
-                AssetBundleManager.Init(m_RootPath, Utility.GetPlatformName());
+                AssetBundleManagerEx.Init(m_RootPath, Utility.GetPlatformName());
             }
             Debug.Log($"AssetManager.loaderType is {loaderType}");
         }
@@ -51,7 +47,7 @@ namespace AssetManagement.Runtime
         {
             if (loaderType == LoaderType.FromAB)
             {
-                AssetBundleManager.Uninit();
+                AssetBundleManagerEx.Uninit();
             }
             Instance = null;
         }
@@ -84,15 +80,15 @@ namespace AssetManagement.Runtime
 
             m_bInit = true;
 
-            if (GameObject.FindObjectOfType<AssetManager>() == null)
+            if (GameObject.FindObjectOfType<AssetManagerEx>() == null)
             {
-                DontDestroyOnLoad(new GameObject("AssetManager", typeof(AssetManager)));
+                DontDestroyOnLoad(new GameObject("[AssetManager]", typeof(AssetManagerEx)));
             }
         }
 
         static public void Uninit()
         {
-            if(Instance != null)
+            if (Instance != null)
             {
                 Destroy(Instance);
             }
@@ -109,12 +105,12 @@ namespace AssetManagement.Runtime
         {
             GameObject go = null;
 
-            LinkedListNode<AssetLoader<GameObject>> loader = LoadAsset<GameObject>(assetPath);
-            if (loader.Value.asset != null)
+            AssetLoaderEx<GameObject> loader = LoadAsset<GameObject>(assetPath);
+            if (loader.asset != null)
             {
-                go = UnityEngine.Object.Instantiate(loader.Value.asset);
+                go = UnityEngine.Object.Instantiate(loader.asset);
 
-                GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
+                GameObjectDestroyerEx destroyer = go.AddComponent<GameObjectDestroyerEx>();
                 destroyer.loader = loader;
             }
             else
@@ -129,12 +125,12 @@ namespace AssetManagement.Runtime
         {
             GameObject go = null;
 
-            LinkedListNode<AssetLoader<GameObject>> loader = LoadAsset<GameObject>(assetBundleName, assetName);
-            if (loader.Value.asset != null)
+            AssetLoaderEx<GameObject> loader = LoadAsset<GameObject>(assetBundleName, assetName);
+            if (loader.asset != null)
             {
-                go = UnityEngine.Object.Instantiate(loader.Value.asset);
+                go = UnityEngine.Object.Instantiate(loader.asset);
 
-                GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
+                GameObjectDestroyerEx destroyer = go.AddComponent<GameObjectDestroyerEx>();
                 destroyer.loader = loader;
             }
             else
@@ -149,13 +145,13 @@ namespace AssetManagement.Runtime
         {
             GameObject go = null;
 
-            LinkedListNode<AssetLoaderAsync<GameObject>> loaderAsync = LoadAssetAsync<GameObject>(assetPath);
-            yield return loaderAsync.Value;
-            if (loaderAsync.Value.asset != null)
+            AssetLoaderAsyncEx<GameObject> loaderAsync = LoadAssetAsync<GameObject>(assetPath);
+            yield return loaderAsync;
+            if (loaderAsync.asset != null)
             {
-                go = UnityEngine.Object.Instantiate(loaderAsync.Value.asset);
+                go = UnityEngine.Object.Instantiate(loaderAsync.asset);
 
-                GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
+                GameObjectDestroyerEx destroyer = go.AddComponent<GameObjectDestroyerEx>();
                 destroyer.loaderAsync = loaderAsync;
             }
             else
@@ -170,13 +166,13 @@ namespace AssetManagement.Runtime
         {
             GameObject go = null;
 
-            LinkedListNode<AssetLoaderAsync<GameObject>> loaderAsync = LoadAssetAsync<GameObject>(assetBundleName, assetName);
-            yield return loaderAsync.Value;
-            if (loaderAsync.Value.asset != null)
+            AssetLoaderAsyncEx<GameObject> loaderAsync = LoadAssetAsync<GameObject>(assetBundleName, assetName);
+            yield return loaderAsync;
+            if (loaderAsync.asset != null)
             {
-                go = UnityEngine.Object.Instantiate(loaderAsync.Value.asset);
+                go = UnityEngine.Object.Instantiate(loaderAsync.asset);
 
-                GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
+                GameObjectDestroyerEx destroyer = go.AddComponent<GameObjectDestroyerEx>();
                 destroyer.loaderAsync = loaderAsync;
             }
             else
@@ -193,41 +189,51 @@ namespace AssetManagement.Runtime
         /// <typeparam name="T"></typeparam>
         /// <param name="assetPath"></param>
         /// <returns></returns>
-        static public LinkedListNode<AssetLoader<T>> LoadAsset<T>(string assetPath) where T : UnityEngine.Object
+        static public AssetLoaderEx<T> LoadAsset<T>(string assetPath) where T : UnityEngine.Object
         {
-            return AssetLoader<T>.Get(assetPath);
+            return AssetLoaderEx<T>.Get(assetPath);
         }
 
-        static public LinkedListNode<AssetLoader<T>> LoadAsset<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
+        static public AssetLoaderEx<T> LoadAsset<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
         {
-            return AssetLoader<T>.Get(assetBundleName, assetName);
+            return AssetLoaderEx<T>.Get(assetBundleName, assetName);
         }
 
-        static public LinkedListNode<AssetLoaderAsync<T>> LoadAssetAsync<T>(string assetPath) where T : UnityEngine.Object
+        static public AssetLoaderAsyncEx<T> LoadAssetAsync<T>(string assetPath) where T : UnityEngine.Object
         {
-            return AssetLoaderAsync<T>.Get(assetPath);
+            return AssetLoaderAsyncEx<T>.Get(assetPath);
         }
 
-        static public LinkedListNode<AssetLoaderAsync<T>> LoadAssetAsync<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
+        static public AssetLoaderAsyncEx<T> LoadAssetAsync<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
         {
-            return AssetLoaderAsync<T>.Get(assetBundleName, assetName);
+            return AssetLoaderAsyncEx<T>.Get(assetBundleName, assetName);
+        }
+
+        static public void UnloadAsset<T>(AssetLoaderEx<T> loader) where T : UnityEngine.Object
+        {
+            AssetLoaderEx<T>.Release(loader);
+        }
+
+        static public void UnloadAsset<T>(AssetLoaderAsyncEx<T> loader) where T : UnityEngine.Object
+        {
+            AssetLoaderAsyncEx<T>.Release(loader);
         }
 
         /// <summary>
         /// ab加载接口
         /// </summary>
-        static public LinkedListNode<AssetBundleLoader> LoadAssetBundle(string assetBundleName)
+        static public AssetBundleLoaderEx LoadAssetBundle(string assetBundleName)
         {
-            return AssetBundleLoader.Get(assetBundleName);
+            return AssetBundleLoaderEx.Get(assetBundleName);
         }
 
         /// <summary>
         /// ab卸载接口
         /// </summary>
         /// <param name="abLoader"></param>
-        static public void UnloadAssetBundle(LinkedListNode<AssetBundleLoader> abLoader)
+        static public void UnloadAssetBundle(AssetBundleLoaderEx abLoader)
         {
-            AssetBundleLoader.Release(abLoader);
+            AssetBundleLoaderEx.Release(abLoader);
         }
 
 
@@ -236,7 +242,7 @@ namespace AssetManagement.Runtime
             get
             {
 #if UNITY_EDITOR
-                if(Instance != null)
+                if (Instance != null)
                 {
                     return m_LoaderType;
                 }
@@ -246,39 +252,6 @@ namespace AssetManagement.Runtime
 #endif
             }
         }
-
-        static public int preAllocateAssetBundlePoolSize
-        {
-            get
-            {
-                return Instance?.PreAllocateAssetBundlePoolSize ?? 200;
-            }
-        }
-
-        static public int preAllocateAssetBundleLoaderPoolSize
-        {
-            get
-            {
-                return Instance?.PreAllocateAssetBundleLoaderPoolSize ?? 100;
-            }
-        }
-
-        static public int preAllocateAssetLoaderPoolSize
-        {
-            get
-            {
-                return Instance?.PreAllocateAssetLoaderPoolSize ?? 50;
-            }
-        }
-
-        static public int preAllocateAssetLoaderAsyncPoolSize
-        {
-            get
-            {
-                return Instance?.PreAllocateAssetLoaderAsyncPoolSize ?? 50;
-            }
-        }
-
 
         struct AssetName
         {
@@ -294,7 +267,7 @@ namespace AssetManagement.Runtime
         /// <param name="assetBundleName">res/windows/test.ab</param>
         /// <param name="assetName">cube.prefab</param>
         /// <returns></returns>
-        static public bool ParseAssetPath(string assetPath, out string assetBundleName, out string assetName)
+        static internal bool ParseAssetPath(string assetPath, out string assetBundleName, out string assetName)
         {
             if (string.IsNullOrEmpty(assetPath))
             {
@@ -330,5 +303,3 @@ namespace AssetManagement.Runtime
         }
     }
 }
-
-

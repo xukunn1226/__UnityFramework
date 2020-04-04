@@ -59,7 +59,7 @@ namespace AssetManagement.Runtime
                 exception = true;
             }
 
-            string[] dependencies = AssetBundleManager.GetAllDependencies(InAssetBundleName);
+            string[] dependencies = AssetBundleManagerEx.GetAllDependencies(InAssetBundleName);
             if (!exception && dependencies != null && dependencies.Length > 0)
             {
                 for (int i = 0; i < dependencies.Length; ++i)
@@ -91,7 +91,7 @@ namespace AssetManagement.Runtime
         {
             if (m_MainAssetBundleRef != null)
             {
-                AssetBundleManager.Unload(m_MainAssetBundleRef.assetBundleName);
+                AssetBundleManagerEx.Unload(m_MainAssetBundleRef.assetBundleName);
                 m_MainAssetBundleRef = null;
             }
 
@@ -101,7 +101,7 @@ namespace AssetManagement.Runtime
                 {
                     if (abRef != null)
                     {
-                        AssetBundleManager.Unload(abRef.assetBundleName);
+                        AssetBundleManagerEx.Unload(abRef.assetBundleName);
                     }
                 }
                 m_DependentAssetBundleRefs.Clear();

@@ -67,7 +67,7 @@ public class TestSyncAndAsync : MonoBehaviour
         int f1 = Time.frameCount;
 
         // 异步加载
-        IEnumerator e = AssetManager.InstantiatePrefabAsync(assetPath, (go) =>
+        IEnumerator e = AssetManagerEx.InstantiatePrefabAsync(assetPath, (go) =>
         {
             inst = go;
         });
