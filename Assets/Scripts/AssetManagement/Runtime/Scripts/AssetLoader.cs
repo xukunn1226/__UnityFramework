@@ -8,7 +8,9 @@ namespace AssetManagement.Runtime
 {
     public class AssetLoader<T> : IBetterLinkedListNode<AssetLoader<T>>, IPooledObject where T : UnityEngine.Object
     {
-        static private LinkedObjectPool<AssetLoader<T>> m_Pool;
+        static private LinkedObjectPool<AssetLoader<T>>     m_Pool;
+
+        public static LinkedObjectPool<AssetLoader<T>>      kPool   { get { return m_Pool; } }
 
         public AssetBundleLoader        abLoader    { get; private set; }
 
@@ -17,7 +19,6 @@ namespace AssetManagement.Runtime
 #if UNITY_EDITOR
         public string                   assetPath   { get; private set; }       // display for debug
 
-        public static LinkedObjectPool<AssetLoader<T>> kPool { get { return m_Pool; } }
 #endif
 
         public AssetLoader()

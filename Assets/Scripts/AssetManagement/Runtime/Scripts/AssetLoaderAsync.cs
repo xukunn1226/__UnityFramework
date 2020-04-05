@@ -9,7 +9,9 @@ namespace AssetManagement.Runtime
 {
     public class AssetLoaderAsync<T> : IEnumerator, IBetterLinkedListNode<AssetLoaderAsync<T>>, IPooledObject where T : UnityEngine.Object
     {
-        static private LinkedObjectPool<AssetLoaderAsync<T>> m_Pool;
+        static private LinkedObjectPool<AssetLoaderAsync<T>>    m_Pool;
+
+        public static LinkedObjectPool<AssetLoaderAsync<T>>     kPool { get { return m_Pool; } }
 
         public AssetBundleLoader        abLoader    { get; private set; }
 
@@ -19,8 +21,6 @@ namespace AssetManagement.Runtime
 
 #if UNITY_EDITOR
         public string                   assetPath   { get; private set; }       // display for debug
-
-        public static LinkedObjectPool<AssetLoaderAsync<T>> kPool { get { return m_Pool; } }
 #endif
 
         public AssetLoaderAsync()
@@ -126,7 +126,7 @@ namespace AssetManagement.Runtime
             if (abLoader.assetBundle != null)
             {
                 m_Request = abLoader.assetBundle.LoadAssetAsync<T>(assetName);
-                if (m_Request == null)
+                if (m_Request == null || m_Request.asset == null)
                 {
                     Unload();           // asset加载失败则释放所有的AB包
                 }

@@ -9,7 +9,7 @@ namespace AssetManagement.Runtime
         static private AssetBundleManifest                                  m_AssetBundleManifest;
         static private Dictionary<string, AssetBundleRef>                   m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
         static private Dictionary<string, string[]>                         m_CachedDependencies        = new Dictionary<string, string[]>();
-
+        
         static private bool bInit
         {
             get
@@ -35,21 +35,25 @@ namespace AssetManagement.Runtime
                 Debug.LogError("AssetBundleManager init failed becase of asset bundle manifest == null");
         }
 
+        /// <summary>
+        /// 释放所有bundle，务必在应用层释放后再调用
+        /// 暂时屏蔽，否则退出时会报错
+        /// </summary>
         static internal void Uninit()
         {
-            // unload already loaded asset bundle
-            foreach (KeyValuePair<string, AssetBundleRef> kvp in m_DictAssetBundleRefs)
-            {
-                AssetBundleRef.Release(kvp.Value);
-            }
-            m_DictAssetBundleRefs.Clear();
+            //// unload already loaded asset bundle
+            //foreach (KeyValuePair<string, AssetBundleRef> kvp in m_DictAssetBundleRefs)
+            //{
+            //    AssetBundleRef.Release(kvp.Value);
+            //}
+            //m_DictAssetBundleRefs.Clear();
 
-            // unload manifest
-            if (m_AssetBundleManifest != null)
-            {
-                Resources.UnloadAsset(m_AssetBundleManifest);        // 卸载Asset-Object
-                m_AssetBundleManifest = null;
-            }
+            //// unload manifest
+            //if (m_AssetBundleManifest != null)
+            //{
+            //    Resources.UnloadAsset(m_AssetBundleManifest);        // 卸载Asset-Object
+            //    m_AssetBundleManifest = null;
+            //}
         }
         
         static internal string[] GetAllDependencies(string InAssetBundleName)

@@ -20,10 +20,22 @@ namespace AssetManagement.Runtime.Editor
             //m_PreAllocateAssetBundleLoaderPoolSizeProp = serializedObject.FindProperty("PreAllocateAssetBundleLoaderPoolSize");
             //m_PreAllocateAssetLoaderPoolSizeProp = serializedObject.FindProperty("PreAllocateAssetLoaderPoolSize");
             //m_PreAllocateAssetLoaderAsyncPoolSizeProp = serializedObject.FindProperty("PreAllocateAssetLoaderAsyncPoolSize");
-
+            
             AssetStyle = new GUIStyle();
             AssetStyle.fontSize = 12;
             AssetStyle.fontStyle = FontStyle.Bold;
+
+            EditorApplication.hierarchyChanged += ForceUpdate;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.hierarchyChanged -= ForceUpdate;
+        }
+
+        private void ForceUpdate()
+        {
+            Repaint();
         }
 
         public override void OnInspectorGUI()
@@ -37,6 +49,10 @@ namespace AssetManagement.Runtime.Editor
 
 
             DrawAssetInfo<GameObject>("<Prefab>");
+
+            EditorGUILayout.Space();
+
+            DrawAssetInfo<UnityEngine.Object>("<Object>");
 
             EditorGUILayout.Space();
 

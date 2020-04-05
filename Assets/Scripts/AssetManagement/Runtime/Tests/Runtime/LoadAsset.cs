@@ -44,7 +44,7 @@ public class LoadAsset : MonoBehaviour
     {
         loader = AssetManager.LoadAsset<UnityEngine.Object>(assetPath);
 
-        info = loader.asset != null ? "sucess to load: " : "fail to load: ";
+        info = loader == null ? "fail to load: " : "sucess to load: ";
         info += assetPath;
     }
 

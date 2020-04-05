@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Cache;
 
 namespace AssetManagement.Runtime
 {
@@ -63,6 +64,7 @@ namespace AssetManagement.Runtime
         {
             if (loaderType == LoaderType.FromAB)
             {
+                // 确保应用层持有的AssetLoader(Async)释放后再调用
                 AssetBundleManager.Uninit();
             }
             Instance = null;
@@ -132,6 +134,8 @@ namespace AssetManagement.Runtime
             else
             {
                 Debug.LogWarningFormat("InstantiatePrefab -- Failed to load asset[{0}]", assetPath);
+
+                UnloadAsset(loader);        // 加载失败回收AssetLoader
             }
 
             return go;
@@ -152,6 +156,8 @@ namespace AssetManagement.Runtime
             else
             {
                 Debug.LogWarningFormat("InstantiatePrefab -- Failed to load asset[{0}]", assetBundleName + "/" + assetName);
+
+                UnloadAsset(loader);        // 加载失败回收AssetLoader
             }
 
             return go;
@@ -169,13 +175,15 @@ namespace AssetManagement.Runtime
 
                 GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
                 destroyer.loaderAsync = loaderAsync;
+
+                handler?.Invoke(go);
             }
             else
             {
                 Debug.LogWarningFormat("InstantiatePrefabAsync -- Failed to load asset[{0}]", assetPath);
-            }
 
-            handler?.Invoke(go);
+                UnloadAsset(loaderAsync);        // 加载失败回收AssetLoaderAsync
+            }            
         }
 
         static public IEnumerator InstantiatePrefabAsync(string assetBundleName, string assetName, Action<GameObject> handler = null)
@@ -190,36 +198,70 @@ namespace AssetManagement.Runtime
 
                 GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
                 destroyer.loaderAsync = loaderAsync;
+
+                handler?.Invoke(go);
             }
             else
             {
                 Debug.LogWarningFormat("InstantiatePrefabAsync -- Failed to load asset[{0}]", assetBundleName + "/" + assetName);
-            }
 
-            handler?.Invoke(go);
+                UnloadAsset(loaderAsync);        // 加载失败回收AssetLoaderAsync
+            }            
         }
 
         /// <summary>
-        /// 加载非Prefab资源接口（同步、异步共4个）
+        /// 同步加载资源接口，如果加载失败则返回null，内部会自动回收loader
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="assetPath"></param>
         /// <returns></returns>
         static public AssetLoader<T> LoadAsset<T>(string assetPath) where T : UnityEngine.Object
         {
-            return AssetLoader<T>.Get(assetPath);
+            AssetLoader<T> loader = AssetLoader<T>.Get(assetPath);
+            if(loader.asset == null)
+            {
+                UnloadAsset(loader);
+                return null;
+            }
+            return loader;
         }
 
+        /// <summary>
+        /// 同上
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assetBundleName"></param>
+        /// <param name="assetName"></param>
+        /// <returns></returns>
         static public AssetLoader<T> LoadAsset<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
         {
-            return AssetLoader<T>.Get(assetBundleName, assetName);
+            AssetLoader<T> loader = AssetLoader<T>.Get(assetBundleName, assetName);
+            if(loader.asset == null)
+            {
+                UnloadAsset(loader);
+                return null;
+            }
+            return loader;
         }
 
+        /// <summary>
+        /// 异步加载资源接口，如果加载失败需应用层释放loader，因为异步内部无法判断是否加载成功
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assetPath"></param>
+        /// <returns></returns>
         static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetPath) where T : UnityEngine.Object
         {
             return AssetLoaderAsync<T>.Get(assetPath);
         }
 
+        /// <summary>
+        /// 同上
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="assetBundleName"></param>
+        /// <param name="assetName"></param>
+        /// <returns></returns>
         static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
         {
             return AssetLoaderAsync<T>.Get(assetBundleName, assetName);

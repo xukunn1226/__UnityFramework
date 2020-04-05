@@ -47,6 +47,12 @@ public class LoadAssetAsync : MonoBehaviour
 
         info = loader.asset != null ? "sucess to load: " : "fail to load: ";
         info += assetPath;
+
+        if(loader.asset == null)
+        {
+            AssetManager.UnloadAsset(loader);
+            loader = null;
+        }
     }
 
     void EndTask()
