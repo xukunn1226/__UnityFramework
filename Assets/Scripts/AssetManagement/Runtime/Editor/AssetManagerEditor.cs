@@ -14,6 +14,14 @@ namespace AssetManagement.Runtime.Editor
 
         GUIStyle AssetStyle;
 
+        bool bFoldout_Prefab = true;
+        bool bFoldout_Object = true;
+        bool bFoldout_Material = true;
+        bool bFoldout_Texture2D = true;
+        bool bFoldout_AnimationClip = true;
+        bool bFoldout_ScriptableObject = true;
+        bool bFoldout_AudioClip = true;
+
         private void OnEnable()
         {
             //m_PreAllocateAssetBundlePoolSizeProp = serializedObject.FindProperty("PreAllocateAssetBundlePoolSize");
@@ -48,51 +56,55 @@ namespace AssetManagement.Runtime.Editor
             //EditorGUILayout.PropertyField(m_PreAllocateAssetLoaderAsyncPoolSizeProp, new GUIContent("PreAllocate AssetLoaderAsync Pool Size"));
 
 
-            DrawAssetInfo<GameObject>("<Prefab>");
+            bFoldout_Prefab = DrawAssetInfo<GameObject>("<Prefab>", bFoldout_Prefab);
 
             EditorGUILayout.Space();
 
-            DrawAssetInfo<UnityEngine.Object>("<Object>");
+            bFoldout_Object = DrawAssetInfo<UnityEngine.Object>("<Object>", bFoldout_Object);
 
             EditorGUILayout.Space();
 
-            DrawAssetInfo<Material>("<Material>");
+            bFoldout_Material = DrawAssetInfo<Material>("<Material>", bFoldout_Material);
 
             EditorGUILayout.Space();
 
-            DrawAssetInfo<Texture2D>("<Texture2D>");
+            bFoldout_Texture2D = DrawAssetInfo<Texture2D>("<Texture2D>", bFoldout_Texture2D);
 
             EditorGUILayout.Space();
 
-            DrawAssetInfo<AnimationClip>("<AnimationClip>");
+            bFoldout_AnimationClip = DrawAssetInfo<AnimationClip>("<AnimationClip>", bFoldout_AnimationClip);
 
             EditorGUILayout.Space();
 
-            DrawAssetInfo<ScriptableObject>("<ScriptableObject>");
+            bFoldout_ScriptableObject = DrawAssetInfo<ScriptableObject>("<ScriptableObject>", bFoldout_ScriptableObject);
 
             EditorGUILayout.Space();
 
-            DrawAssetInfo<AudioClip>("<AudioClip>");
+            bFoldout_AudioClip = DrawAssetInfo<AudioClip>("<AudioClip>", bFoldout_AudioClip);
 
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void DrawAssetInfo<T>(string title) where T : UnityEngine.Object
+        private bool DrawAssetInfo<T>(string title, bool bFoldout) where T : UnityEngine.Object
         {
-            GUIStyle boldStyle = EditorStyles.boldLabel;
+            GUIStyle boldStyle = EditorStyles.foldout;
             boldStyle.alignment = TextAnchor.MiddleLeft;
             boldStyle.fontSize = 14;
-            EditorGUILayout.LabelField(title, boldStyle);
-
-            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+            bFoldout = EditorGUILayout.Foldout(bFoldout, title, boldStyle);
+            
+            if (bFoldout)
             {
-                DrawAssetLoader(AssetLoader<T>.kPool);
+                GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+                {
+                    DrawAssetLoader(AssetLoader<T>.kPool);
 
-                EditorGUILayout.Separator();
-             
-                DrawAssetLoaderAsync(AssetLoaderAsync<T>.kPool);
+                    EditorGUILayout.Separator();
+
+                    DrawAssetLoaderAsync(AssetLoaderAsync<T>.kPool);
+                }
+                GUILayout.EndVertical();
             }
-            GUILayout.EndVertical();
+            return bFoldout;
         }
 
         private void DrawAssetLoader<T>(LinkedObjectPool<AssetLoader<T>> Pool) where T : UnityEngine.Object
