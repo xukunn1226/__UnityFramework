@@ -114,20 +114,14 @@ namespace AssetManagement.Runtime.Editor
             if (Pool != null)
             {
                 // draw used loader
+                if (Pool.countOfUsed != 0)
                 {
-                    //EditorGUILayout.BeginFoldoutHeaderGroup(true, string.Format(@"      {0}[{1}]", "Used Loader", Pool.countOfUsed.ToString()), EditorStyles.label);
-                    if (Pool.countOfUsed != 0)
+                    int index = 0;
+                    foreach (var loader in Pool)
                     {
-                        LinkedObjectPool<AssetLoader<T>>.Enumerator e = Pool.GetEnumerator();
-                        int index = 0;
-                        while (e.MoveNext())
-                        {
-                            DrawAssetLoader<T>(index, e.Current);
-                            ++index;
-                        }
-                        e.Dispose();
+                        DrawAssetLoader<T>(index, loader);
+                        ++index;
                     }
-                    //EditorGUI.EndFoldoutHeaderGroup();
                 }
             }
         }
@@ -139,20 +133,14 @@ namespace AssetManagement.Runtime.Editor
             if (Pool != null)
             {
                 // draw used loader
+                if (Pool.countOfUsed != 0)
                 {
-                    //EditorGUILayout.BeginFoldoutHeaderGroup(true, string.Format("     {0}[{1}]", "Active Loader Pool", Pool.countOfUsed.ToString()), SubTitleStyle);
-                    if (Pool.countOfUsed != 0)
+                    int index = 0;
+                    foreach (var loader in Pool)
                     {
-                        LinkedObjectPool<AssetLoaderAsync<T>>.Enumerator e = Pool.GetEnumerator();
-                        int index = 0;
-                        while (e.MoveNext())
-                        {
-                            DrawAssetLoaderAsync<T>(index, e.Current);
-                            ++index;
-                        }
-                        e.Dispose();
+                        DrawAssetLoaderAsync<T>(index, loader);
+                        ++index;
                     }
-                    //EditorGUI.EndFoldoutHeaderGroup();
                 }
             }
         }

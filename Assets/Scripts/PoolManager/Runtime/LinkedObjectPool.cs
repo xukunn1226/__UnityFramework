@@ -316,7 +316,7 @@ namespace Cache
             return new Enumerator(this);
         }
 
-        public struct Enumerator : IEnumerator<T>, IEnumerator, IDisposable
+        public struct Enumerator : IEnumerator<T>, IEnumerator
         {
             private LinkedObjectPool<T> m_Buffer;
             private T m_Current;
