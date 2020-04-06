@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 340350210}
   - component: {fileID: 340350209}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: PoolManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -377,8 +377,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.048335586, y: -0.86802256, z: 0.08621545, w: 0.48658758}
-  m_LocalPosition: {x: 11.9774, y: 2.7277424, z: 7.446985}
+  m_LocalRotation: {x: 0.067613065, y: -0.867959, z: 0.12320161, w: 0.4763372}
+  m_LocalPosition: {x: 34.484093, y: 12.1201315, z: 20.845692}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

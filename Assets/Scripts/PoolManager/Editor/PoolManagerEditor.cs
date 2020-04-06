@@ -62,7 +62,7 @@ namespace Cache.Editor
                 {
                     EditorGUILayout.BeginHorizontal();
                     {
-                        EditorGUILayout.LabelField(e.Current.Key.Name);
+                        EditorGUILayout.LabelField(e.Current.Key.ToString().Substring(e.Current.Key.Namespace.Length + 1));
 
                         string info = string.Format("({0}/{1})", e.Current.Value.countOfUsed, e.Current.Value.countAll);
                         EditorGUILayout.LabelField(info);

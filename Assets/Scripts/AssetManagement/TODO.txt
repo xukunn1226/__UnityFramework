@@ -1,11 +1,11 @@
 ﻿* 分析每个AB中引用了什么的资源，且来自于哪个AB包
 * 接入BuildReport
-* FSoftObjectPath
+* FSoftObjectPath(不支持Sub Asset)
 * async,await的封装，统一同步、异步加载接口，AsyncTaskMethodBuilder，TaskCompletionSource
 * 分析场景是如何打包，如何热更的
 * Override Build Scene
 * 如何实现C#的WeakPoint
-* review ObjectPool inspector
+
 
 
 - 使用BetterLinkedList优化GC
