@@ -6,7 +6,7 @@ namespace AssetManagement.Runtime
     /// <summary>
     /// asset bundle reference info
     /// </summary>
-    public class AssetBundleRef : IBetterLinkedListNode<AssetBundleRef>, IPooledObject
+    public class AssetBundleRef : ILinkedObjectPoolNode<AssetBundleRef>, IPooledObject
     {
         static private LinkedObjectPool<AssetBundleRef>   m_Pool;
 
@@ -64,9 +64,9 @@ namespace AssetManagement.Runtime
 
         public LinkedObjectPool<AssetBundleRef>       List { get; set; }
 
-        public IBetterLinkedListNode<AssetBundleRef>  Next { get; set; }
+        public ILinkedObjectPoolNode<AssetBundleRef>  Next { get; set; }
 
-        public IBetterLinkedListNode<AssetBundleRef>  Prev { get; set; }
+        public ILinkedObjectPoolNode<AssetBundleRef>  Prev { get; set; }
 
         public void OnInit() { }
 

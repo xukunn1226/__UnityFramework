@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace AssetManagement.Runtime
 {
-    public class AssetLoader<T> : IBetterLinkedListNode<AssetLoader<T>>, IPooledObject where T : UnityEngine.Object
+    public class AssetLoader<T> : ILinkedObjectPoolNode<AssetLoader<T>>, IPooledObject where T : UnityEngine.Object
     {
         static private LinkedObjectPool<AssetLoader<T>>     m_Pool;
 
@@ -146,9 +146,9 @@ namespace AssetManagement.Runtime
 
         public LinkedObjectPool<AssetLoader<T>>        List    { get; set; }
 
-        public IBetterLinkedListNode<AssetLoader<T>>   Next    { get; set; }
+        public ILinkedObjectPoolNode<AssetLoader<T>>   Next    { get; set; }
 
-        public IBetterLinkedListNode<AssetLoader<T>>   Prev    { get; set; }
+        public ILinkedObjectPoolNode<AssetLoader<T>>   Prev    { get; set; }
 
         public void OnInit() { }
 

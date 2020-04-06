@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace AssetManagement.Runtime
 {
-    public class AssetLoaderAsync<T> : IEnumerator, IBetterLinkedListNode<AssetLoaderAsync<T>>, IPooledObject where T : UnityEngine.Object
+    public class AssetLoaderAsync<T> : IEnumerator, ILinkedObjectPoolNode<AssetLoaderAsync<T>>, IPooledObject where T : UnityEngine.Object
     {
         static private LinkedObjectPool<AssetLoaderAsync<T>>    m_Pool;
 
@@ -174,9 +174,9 @@ namespace AssetManagement.Runtime
 
         public LinkedObjectPool<AssetLoaderAsync<T>>          List    { get; set; }
 
-        public IBetterLinkedListNode<AssetLoaderAsync<T>>     Next    { get; set; }
+        public ILinkedObjectPoolNode<AssetLoaderAsync<T>>     Next    { get; set; }
 
-        public IBetterLinkedListNode<AssetLoaderAsync<T>>     Prev    { get; set; }
+        public ILinkedObjectPoolNode<AssetLoaderAsync<T>>     Prev    { get; set; }
 
         public void OnInit() { }
 

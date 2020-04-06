@@ -8,13 +8,13 @@ namespace Cache.Editor.Tests
 {
     public class LinkedObjectPoolTest
     {
-        public class Foo : IBetterLinkedListNode<Foo>, IPooledObject
+        public class Foo : ILinkedObjectPoolNode<Foo>, IPooledObject
         {
             public LinkedObjectPool<Foo> List { get; set; }
 
-            public IBetterLinkedListNode<Foo> Next { get; set; }
+            public ILinkedObjectPoolNode<Foo> Next { get; set; }
 
-            public IBetterLinkedListNode<Foo> Prev { get; set; }
+            public ILinkedObjectPoolNode<Foo> Prev { get; set; }
 
             public int Value;
 

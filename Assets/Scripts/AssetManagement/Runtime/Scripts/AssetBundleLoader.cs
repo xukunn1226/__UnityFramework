@@ -4,7 +4,7 @@ using Cache;
 
 namespace AssetManagement.Runtime
 {
-    public class AssetBundleLoader : IBetterLinkedListNode<AssetBundleLoader>, IPooledObject
+    public class AssetBundleLoader : ILinkedObjectPoolNode<AssetBundleLoader>, IPooledObject
     {
         static private LinkedObjectPool<AssetBundleLoader> m_Pool;
 
@@ -129,9 +129,9 @@ namespace AssetManagement.Runtime
 
         public LinkedObjectPool<AssetBundleLoader>        List    { get; set; }
 
-        public IBetterLinkedListNode<AssetBundleLoader>   Next    { get; set; }
+        public ILinkedObjectPoolNode<AssetBundleLoader>   Next    { get; set; }
 
-        public IBetterLinkedListNode<AssetBundleLoader>   Prev    { get; set; }
+        public ILinkedObjectPoolNode<AssetBundleLoader>   Prev    { get; set; }
 
         public void OnInit() { }
 

@@ -10,7 +10,7 @@ namespace Cache
     /// WARNING: 对象不能同时使用ObjectPool和LinkedObjectPool管理
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class LinkedObjectPool<T> : IEnumerable<T>, IPool where T : class, IBetterLinkedListNode<T>, IPooledObject, new()
+    public sealed class LinkedObjectPool<T> : IEnumerable<T>, IPool where T : class, ILinkedObjectPoolNode<T>, IPooledObject, new()
     {
         private ObjectPool<T>   m_Pool;
 
@@ -116,7 +116,7 @@ namespace Cache
             // node仍可能为null，小心处理
             T item = (T)m_Pool.Get();
             item.Pool = this;
-            IBetterLinkedListNode<T> newNode = item;
+            ILinkedObjectPoolNode<T> newNode = item;
             newNode.List = this;
             newNode.Prev = node;
             newNode.Next = node?.Next ?? null;
@@ -185,7 +185,7 @@ namespace Cache
             // node仍可能为null，小心处理
             T item = (T)m_Pool.Get();
             item.Pool = this;
-            IBetterLinkedListNode<T> newNode = item;
+            ILinkedObjectPoolNode<T> newNode = item;
             newNode.List = this;
             newNode.Prev = node?.Prev ?? null;
             newNode.Next = node;
