@@ -25,6 +25,9 @@ namespace AssetManagement.GameBuilder
         SerializedProperty              m_useAPKExpansionFilesProp;
         SerializedProperty              m_macroDefinesProp;
 
+        SerializedProperty              m_bOverrideBuildScenesProp;
+        SerializedProperty              m_overrideBuildScenesProp;
+
         private void Awake()
         {
             m_outputPathProp            = serializedObject.FindProperty("outputPath");
@@ -43,6 +46,9 @@ namespace AssetManagement.GameBuilder
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
             m_useAPKExpansionFilesProp  = serializedObject.FindProperty("useAPKExpansionFiles");
             m_macroDefinesProp          = serializedObject.FindProperty("macroDefines");
+
+            m_bOverrideBuildScenesProp  = serializedObject.FindProperty("bOverrideBuildScenes");
+            m_overrideBuildScenesProp   = serializedObject.FindProperty("overrideBuildScenes");
         }
 
         public override void OnInspectorGUI()
@@ -147,6 +153,14 @@ namespace AssetManagement.GameBuilder
         private void DrawBuildScenes()
         {
             EditorGUILayout.LabelField("Scenes In Build", EditorStyles.largeLabel);
+
+            m_bOverrideBuildScenesProp.boolValue = EditorGUILayout.Toggle(new GUIContent("Override Build Scenes"), m_bOverrideBuildScenesProp.boolValue, EditorStyles.toggle);
+
+            EditorGUI.BeginDisabledGroup(!m_bOverrideBuildScenesProp.boolValue);
+            EditorGUILayout.PropertyField(m_overrideBuildScenesProp);
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(m_bOverrideBuildScenesProp.boolValue);
             GUILayout.BeginVertical(new GUIStyle("HelpBox"));
             {
                 for (int i = 0; i < EditorBuildSettings.scenes.Length; ++i)
@@ -170,6 +184,7 @@ namespace AssetManagement.GameBuilder
                 }
             }
             GUILayout.EndVertical();
+            EditorGUI.EndDisabledGroup();
         }
 
         static private List<EditorBuildSettingsScene> CopyEditorBuildSettingsScene()

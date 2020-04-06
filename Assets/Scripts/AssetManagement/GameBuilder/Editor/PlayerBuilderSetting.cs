@@ -56,6 +56,11 @@ namespace AssetManagement.GameBuilder
 
         public string                       cachedMacroDefines                  { get; set; }
 
+        ////////////////////// Override Build Scenes
+        public bool                         bOverrideBuildScenes;               // 
+
+        public List<string>                 overrideBuildScenes;
+
         public override string ToString()
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -148,24 +153,40 @@ namespace AssetManagement.GameBuilder
         {
             BuildPlayerOptions opt = new BuildPlayerOptions();
             opt.locationPathName = para.GetLocalPathName();
-            opt.scenes = GetBuildScenes();
+            opt.scenes = GetBuildScenes(para);
             opt.target = EditorUserBuildSettings.activeBuildTarget;
             opt.options = para.GenerateBuildOptions();
             return opt;
         }
 
-        static string[] GetBuildScenes()
+        static string[] GetBuildScenes(PlayerBuilderSetting para)
         {
             List<string> names = new List<string>();
-            foreach (var scene in EditorBuildSettings.scenes)
+            if (para.bOverrideBuildScenes)
             {
-                if (scene == null || !scene.enabled)
-                    continue;
+                foreach(var scenePath in para.overrideBuildScenes)
+                {
+                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
+                    {
+                        Debug.LogWarning($"Can't find SceneAsset at [{scenePath}]");
+                        continue;
+                    }
 
-                if (AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(scene.guid.ToString())) == null)
-                    continue;
-                
-                names.Add(scene.path);
+                    names.Add(scenePath);
+                }
+            }
+            else
+            {
+                foreach (var scene in EditorBuildSettings.scenes)
+                {
+                    if (scene == null || !scene.enabled)
+                        continue;
+
+                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(scene.guid.ToString())) == null)
+                        continue;
+
+                    names.Add(scene.path);
+                }
             }
             return names.ToArray();
         }
