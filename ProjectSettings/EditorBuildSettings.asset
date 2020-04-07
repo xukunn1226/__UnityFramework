@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scripts/MeshParticleSystem/Tests/Runtime/TestMeshParticle.unity
+    guid: d16f841a5f68fd342a6146c5e6137f9a
+  - enabled: 1
     path: Assets/Scripts/AssetManagement/Runtime/Tests/Scenes/LoadAssetAsync.unity
     guid: 918bce0d9c0b6f3499cb08bc4a661bac
   - enabled: 1
