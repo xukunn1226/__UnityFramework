@@ -42,7 +42,7 @@ namespace Core
 
         static private ObjectPool<BetterLinkedListNode> m_Pool;
 
-        static private int k_NodePoolSize = 128;
+        static private int k_NodePoolSize = 16;
 
         static private BetterLinkedListNode Get()
         {
