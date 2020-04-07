@@ -76,7 +76,7 @@ namespace Cache
             RemoveAllAssetLoaders();
         }
 
-        static private void RemoveAllMonoPools()
+        static public void RemoveAllMonoPools()
         {
             Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
             while (e.MoveNext())
@@ -89,7 +89,7 @@ namespace Cache
             m_MonoPools.Clear();
         }
 
-        static private void RemoveAllObjectPools()
+        static public void RemoveAllObjectPools()
         {
             foreach (var pool in m_Pools)
             {
