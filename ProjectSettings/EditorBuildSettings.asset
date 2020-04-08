@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scripts/PoolManager/Tests/Runtime/Scenes/5_SpawnerRing.unity
+    path: Assets/Scripts/Core/PoolManager/Tests/Runtime/Scenes/5_SpawnerRing.unity
     guid: d582c8f1880ce5141b007b506bf9ef87
   - enabled: 0
     path: Assets/Scripts/MeshParticleSystem/Tests/Runtime/TestMeshParticle.unity

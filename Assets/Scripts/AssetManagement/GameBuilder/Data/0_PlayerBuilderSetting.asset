@@ -24,7 +24,7 @@ MonoBehaviour:
   strictMode: 1
   bundleVersion: 
   useIL2CPP: 0
-  il2CppCompilerConfiguration: 0
+  il2CppCompilerConfiguration: 2
   useMTRendering: 0
   useAPKExpansionFiles: 0
   macroDefines: 
