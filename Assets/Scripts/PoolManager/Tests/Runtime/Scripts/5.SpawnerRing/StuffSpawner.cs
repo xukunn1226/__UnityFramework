@@ -7,6 +7,8 @@ namespace Cache.Tests
     /// </summary>
     public class StuffSpawner : MonoBehaviour
     {
+        public StuffSpawnerRing Owner;
+
         public FloatRange timeBetweenSpawns, scale, randomVelocity, angularVelocity;
 
         public float velocity;
@@ -17,9 +19,12 @@ namespace Cache.Tests
 
         float timeSinceLastSpawn;
         float currentSpawnDelay;
-
+        
         void FixedUpdate()
         {
+            if (Owner.bPause)
+                return;
+
             timeSinceLastSpawn += Time.deltaTime;
             if (timeSinceLastSpawn >= currentSpawnDelay)
             {

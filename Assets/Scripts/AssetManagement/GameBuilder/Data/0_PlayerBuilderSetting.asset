@@ -16,8 +16,8 @@ MonoBehaviour:
   projectName: MyProject
   autoRunPlayer: 0
   development: 1
-  connectWithProfiler: 0
-  allowDebugging: 0
+  connectWithProfiler: 1
+  allowDebugging: 1
   buildScriptsOnly: 0
   compressWithLz4: 0
   compressWithLz4HC: 1

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Core;
 
 namespace Cache
 {
@@ -8,32 +9,31 @@ namespace Cache
     {
         [Tooltip("预实例化数量")]
         [Range(0, 100)]
-        public int                                  PreAllocateAmount   = 1;                // 预实例化数量
+        public int                                          PreAllocateAmount   = 1;                // 预实例化数量
 
         [Tooltip("是否设定实例化上限值")]
-        public bool                                 LimitInstance;                          // 是否设定实例化上限值
+        public bool                                         LimitInstance;                          // 是否设定实例化上限值
 
         [Tooltip("最大实例化数量（激活与未激活）")]
         [Range(1, 1000)]
-        public int                                  LimitAmount         = 20;               // 最大实例化数量（激活与未激活）
+        public int                                          LimitAmount         = 20;               // 最大实例化数量（激活与未激活）
 
         [Tooltip("是否开启清理未激活实例功能")]
-        public bool                                 TrimUnused;                             // 是否开启清理未激活实例功能
+        public bool                                         TrimUnused;                             // 是否开启清理未激活实例功能
 
         [Tooltip("至少保持deactive的数量，当自动清理开启有效")]
         [Range(1, 100)]
-        public int                                  TrimAbove           = 10;               // 自动清理开启时至少保持unused的数量
+        public int                                          TrimAbove           = 10;               // 自动清理开启时至少保持unused的数量
 
-        // TODO: opt, use BetterLinkedList
-        protected LinkedList<MonoPooledObjectBase>  m_UsedObjects       = new LinkedList<MonoPooledObjectBase>();
+        protected BetterLinkedList<MonoPooledObjectBase>    m_UsedObjects       = new BetterLinkedList<MonoPooledObjectBase>();
 
-        protected List<MonoPooledObjectBase>        m_UnusedObjects     = new List<MonoPooledObjectBase>();
+        protected Stack<MonoPooledObjectBase>               m_UnusedObjects     = new Stack<MonoPooledObjectBase>();
 
-        public override int                         countAll            { get { return countOfUsed + countOfUnused; } }
+        public override int                                 countAll            { get { return countOfUsed + countOfUnused; } }
 
-        public override int                         countOfUsed         { get { return m_UsedObjects.Count; } }
+        public override int                                 countOfUsed         { get { return m_UsedObjects.Count; } }
 
-        public override int                         countOfUnused       { get { return m_UnusedObjects.Count; } }
+        public override int                                 countOfUnused       { get { return m_UnusedObjects.Count; } }
 
         private void Awake()
         {
@@ -126,8 +126,7 @@ namespace Cache
             }
             else
             {
-                obj = m_UnusedObjects[m_UnusedObjects.Count - 1];
-                m_UnusedObjects.RemoveAt(m_UnusedObjects.Count - 1);                
+                obj = m_UnusedObjects.Pop();
             }
 
             // 取出的对象默认放置在Group之下
@@ -180,7 +179,7 @@ namespace Cache
                 return;
 
             MonoPooledObjectBase monoObj = (MonoPooledObjectBase)item;
-            m_UnusedObjects.Add(monoObj);
+            m_UnusedObjects.Push(monoObj);
             m_UsedObjects.Remove(monoObj);
             monoObj.transform.parent = Group;           // 回收时放置Group下
 
@@ -200,9 +199,7 @@ namespace Cache
         {
             while(m_UnusedObjects.Count > TrimAbove)
             {
-                MonoPooledObjectBase inst = m_UnusedObjects[m_UnusedObjects.Count - 1];
-                m_UnusedObjects.RemoveAt(m_UnusedObjects.Count - 1);
-
+                MonoPooledObjectBase inst = m_UnusedObjects.Pop();
                 if (inst != null)
                 {
                     PoolManager.Destroy(inst.gameObject);
@@ -212,7 +209,7 @@ namespace Cache
 
         public override void Clear()
         {
-            List<MonoPooledObjectBase>.Enumerator deactiveObjEnum = m_UnusedObjects.GetEnumerator();
+            Stack<MonoPooledObjectBase>.Enumerator deactiveObjEnum = m_UnusedObjects.GetEnumerator();
             while(deactiveObjEnum.MoveNext())
             {
                 if(deactiveObjEnum.Current != null)
@@ -223,7 +220,7 @@ namespace Cache
             deactiveObjEnum.Dispose();
             m_UnusedObjects.Clear();
 
-            LinkedList<MonoPooledObjectBase>.Enumerator activeObjEnum = m_UsedObjects.GetEnumerator();
+            BetterLinkedList<MonoPooledObjectBase>.Enumerator activeObjEnum = m_UsedObjects.GetEnumerator();
             while(activeObjEnum.MoveNext())
             {
                 if(activeObjEnum.Current != null)

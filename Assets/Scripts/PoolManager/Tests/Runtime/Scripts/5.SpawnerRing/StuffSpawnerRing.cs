@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace Cache.Tests
 {
@@ -12,11 +13,14 @@ namespace Cache.Tests
 
         public StuffSpawner spawnerPrefab;
 
-        void Awake()
+        public bool bPause;
+
+        IEnumerator Start()
         {
-            for (int i = 0; i < numberOfSpawners; i++)
+            for(int i = 0; i < numberOfSpawners; ++i)
             {
                 CreateSpawner(i);
+                yield return new WaitForSeconds(1);
             }
         }
 
@@ -28,11 +32,20 @@ namespace Cache.Tests
                 Quaternion.Euler(0f, index * 360f / numberOfSpawners, 0f);
 
             StuffSpawner spawner = Instantiate<StuffSpawner>(spawnerPrefab);
+            spawner.Owner = this;
             spawner.transform.SetParent(rotater, false);
             spawner.transform.localPosition = new Vector3(0f, 0f, radius);
             spawner.transform.localRotation = Quaternion.Euler(tiltAngle, 0f, 0f);
 
             spawner.stuffMaterial = stuffMaterials[index % stuffMaterials.Length];
+        }
+
+        private void OnGUI()
+        {
+            if(GUI.Button(new Rect(100, 100, 120, 80), "Pause"))
+            {
+                bPause = !bPause;
+            }
         }
     }
 }

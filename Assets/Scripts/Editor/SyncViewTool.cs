@@ -86,13 +86,12 @@ public static class SyncViewTool
 
     static void UpdateViewSync()
     {
-        if (Camera.main == null)
+        if (Camera.main == null || SceneView.lastActiveSceneView == null)
             return;
 
         if(enableSyncGameViewToSceneView)
         {
-            if(SceneView.lastActiveSceneView != null)
-                SceneView.lastActiveSceneView.AlignViewToObject(Camera.main.transform);
+            SceneView.lastActiveSceneView.AlignViewToObject(Camera.main.transform);
         }
         else
         {

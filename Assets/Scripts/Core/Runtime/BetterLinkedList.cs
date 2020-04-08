@@ -42,13 +42,13 @@ namespace Core
 
         static private ObjectPool<BetterLinkedListNode> m_Pool;
 
-        static private int k_NodePoolSize = 16;
+        static private int k_DefaultNodePoolCapacity = 8;
 
         static private BetterLinkedListNode Get()
         {
             if(m_Pool == null)
             {
-                m_Pool = new ObjectPool<BetterLinkedListNode>(k_NodePoolSize);
+                m_Pool = new ObjectPool<BetterLinkedListNode>(k_DefaultNodePoolCapacity);
             }
             return (BetterLinkedListNode)m_Pool.Get();
         }
