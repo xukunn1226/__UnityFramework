@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using Core;
 
 namespace AssetManagement.GameBuilder
 {
@@ -27,7 +28,7 @@ namespace AssetManagement.GameBuilder
             }
 
             // clear previous directory and create new one
-            string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + AssetManagement.Utility.GetPlatformName();
+            string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
             if (Directory.Exists(outputPath))
                 Directory.Delete(outputPath, true);
             Directory.CreateDirectory(outputPath);

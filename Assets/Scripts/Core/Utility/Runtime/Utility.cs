@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace AssetManagement
+namespace Core
 {
     static public class Utility
     {

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
+using Core;
 
-namespace AssetManagement.Tests
+namespace Tests
 {
     [TestFixture]
     public class CommandLineTest

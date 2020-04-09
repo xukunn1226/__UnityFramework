@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using Core;
 
 namespace AssetManagement.GameBuilder
 {
@@ -28,7 +29,7 @@ namespace AssetManagement.GameBuilder
             Debug.Log("Begin Build AssetBundles");
 
             // step 1. create directory
-            string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + AssetManagement.Utility.GetPlatformName();
+            string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
             if (Directory.Exists(outputPath))
                 Directory.Delete(outputPath, true);
             Directory.CreateDirectory(outputPath);
@@ -77,12 +78,12 @@ namespace AssetManagement.GameBuilder
             {
                 Directory.CreateDirectory(targetPath);
             }
-            Directory.CreateDirectory(targetPath + "/" + AssetManagement.Utility.GetPlatformName());
+            Directory.CreateDirectory(targetPath + "/" + Utility.GetPlatformName());
 
             // 把源目录文件复制到目标目录
             if (Directory.Exists(srcPath))
             {
-                CopyDirectory(srcPath, targetPath + "/" + AssetManagement.Utility.GetPlatformName());
+                CopyDirectory(srcPath, targetPath + "/" + Utility.GetPlatformName());
             }
             else
             {

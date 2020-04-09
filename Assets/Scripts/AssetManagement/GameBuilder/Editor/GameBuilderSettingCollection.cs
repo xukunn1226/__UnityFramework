@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Core;
 
 namespace AssetManagement.GameBuilder
 {
@@ -129,7 +130,7 @@ namespace AssetManagement.GameBuilder
 
         static public GameBuilderSettingCollection GetDefault()
         {
-            return AssetManagement.Utility.GetOrCreateEditorConfigObject<GameBuilderSettingCollection>(GameBuilderUtil.kDefaultSettingPath);
+            return Utility.GetOrCreateEditorConfigObject<GameBuilderSettingCollection>(GameBuilderUtil.kDefaultSettingPath);
         }
     }
 }

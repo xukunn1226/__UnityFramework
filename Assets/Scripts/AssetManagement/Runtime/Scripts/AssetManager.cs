@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Cache;
+using Core;
 
 namespace AssetManagement.Runtime
 {

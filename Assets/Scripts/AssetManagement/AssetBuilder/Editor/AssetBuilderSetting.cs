@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Core;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -31,7 +32,7 @@ namespace AssetManagement.AssetBuilder
 
         static public AssetBuilderSetting GetDefault()
         {
-            return AssetManagement.Utility.GetOrCreateEditorConfigObject<AssetBuilderSetting>(m_kSavedPath);
+            return Utility.GetOrCreateEditorConfigObject<AssetBuilderSetting>(m_kSavedPath);
         }
 #endif
     }

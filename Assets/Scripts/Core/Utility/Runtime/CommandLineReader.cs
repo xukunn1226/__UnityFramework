@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AssetManagement
+namespace Core
 {
     /// <summary>
     /// 命令行工具类
