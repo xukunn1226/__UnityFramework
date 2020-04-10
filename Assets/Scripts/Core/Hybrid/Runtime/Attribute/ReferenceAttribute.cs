@@ -38,6 +38,7 @@ namespace Core
             }
         }
 
+        // 仅string类型，且属性为RerferenceType.Prefab的才处理
         private void HandlePrefabReference(Rect position, SerializedProperty property, GUIContent label)
         {
             if (SerializedPropertyType.String != property.propertyType)
@@ -49,15 +50,16 @@ namespace Core
             {
                 //根据路径得到一个类型为GameObject的对象
                 var prefab = (GameObject)AssetDatabase.LoadAssetAtPath(property.stringValue, typeof(GameObject));
-                //ObjectField会在Inspector面板中显示一个框，后面带一个小按钮，点击后弹出面板选择prefab
-                Rect rc = new Rect(position.x, position.y, 400, position.height);
+                
+                Rect rc = new Rect(position.x, position.y, position.width - 80 - 10, position.height);
                 var obj = (GameObject)EditorGUI.ObjectField(rc, property.displayName, prefab, typeof(GameObject), false);
+                
                 //得到prefab的路径
                 string newPath = AssetDatabase.GetAssetPath(obj);
                 //设置路径
                 property.stringValue = newPath;
 
-                rc = new Rect(position.x + 420, position.y, 80, position.height);
+                rc = new Rect(position.x + position.width - 80, position.y, 80, position.height);
                 GUI.Button(rc, "Apply");
             }
         }
