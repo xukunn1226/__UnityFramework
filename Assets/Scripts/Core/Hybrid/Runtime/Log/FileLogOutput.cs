@@ -21,6 +21,7 @@ namespace Core
             m_FileStream = new FileStream(Application.persistentDataPath + "/" + Application.productName + "_log.txt", FileMode.Create, FileAccess.ReadWrite);
             m_Writer = new StreamWriter(m_FileStream);
             m_BufWrittenBytes = 0;
+            Debug.Log($"File log output: {Application.persistentDataPath + "/" + Application.productName + "_log.txt"}");
         }
 
         public void Output(string logString, string stackTrace, LogType type)

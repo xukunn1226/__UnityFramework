@@ -5,6 +5,11 @@ using UnityEngine;
 
 namespace Core
 {
+    /// <summary>
+    /// 基于CircularBuffer实现的无锁FIFO(first-in first-out queue)
+    /// 单生产、单消费模式时线程安全
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class RingBuffer
     {
         private byte[]          m_Buffer;

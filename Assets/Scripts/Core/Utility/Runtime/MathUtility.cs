@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Core
 {
-    public static class MathUtility
+    public class MathUtility
     {
         // http://mathworld.wolfram.com/SpherePointPicking.html
         //public static Vector3 RandCone(Vector3 dir, float coneHalfAngleRad)
@@ -42,9 +42,24 @@ namespace Core
             return dir - 2 * Vector3.Dot(dir, normal) * normal;
         }
 
-        public static bool IsPowerOfTwo(int v)
+        static public int NextPowerOfTwo(int n)
         {
-            return (v & (v - 1)) == 0;
+            if (IsPowerOfTwo(n))
+            {
+                return n;
+            }
+
+            int p = 1;
+            while (p < n)
+                p <<= 1;
+            return p;
+        }
+
+        static public bool IsPowerOfTwo(int n)
+        {
+            if (n > 0 && (n & (n - 1)) == 0)
+                return true;
+            return false;
         }
 
         public static float GridSnap(float location, float grid)

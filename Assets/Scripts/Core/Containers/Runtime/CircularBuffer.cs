@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Core
 {
     /// <summary>
     /// 圆形缓冲区
-    /// 缓冲区大小取整至2的幂，为了加速索引操作（使用位与替代耗时的取余）
+    /// 缓冲区大小取整至2的幂，为了加速索引操作使用位与替代耗时的取余
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class CircularBuffer<T>
@@ -15,7 +16,30 @@ namespace Core
 
         private int         m_IndexMask;
         
-        public int          Capacity        { get; private set; }
+        public int          Capacity
+        {
+            get
+            {
+                return m_Buffer.Length;
+            }
+            set
+            {
+                if (m_Buffer.Length < value)
+                {
+                    int newCapacity = MathUtility.NextPowerOfTwo(value);
+                    if (newCapacity != m_Buffer.Length)
+                    {
+                        T[] newItems = new T[newCapacity];
+                        if (m_Buffer.Length > 0)
+                        {
+                            Array.Copy(m_Buffer, 0, newItems, 0, m_Buffer.Length);
+                        }
+                        m_Buffer = newItems;
+                        m_IndexMask = m_Buffer.Length - 1;
+                    }
+                }
+            }
+        }
 
         public T this[int index]
         {
@@ -31,8 +55,7 @@ namespace Core
 
         public CircularBuffer(int capacity)
         {
-            Capacity = Mathf.NextPowerOfTwo(capacity);
-            m_Buffer = new T[Capacity];
+            m_Buffer = new T[MathUtility.NextPowerOfTwo(capacity)];
             m_IndexMask = Capacity - 1;
         }
 
