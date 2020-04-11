@@ -28,9 +28,6 @@ namespace Core
                 if (m_Buffer.Length == value)
                     throw new System.ArgumentOutOfRangeException("Capacity");
 
-                if (!IsFull())
-                    throw new System.InvalidOperationException("buffer has space, no expansion required");
-
                 T[] newBuffer = new T[value];
                 if(m_Head > m_Tail)
                 {

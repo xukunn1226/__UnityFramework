@@ -11,7 +11,7 @@ public class DebugRingBuffer : MonoBehaviour
 {
     void Start()
     {
-        Test();
+        //Test();
         //TestDataSwitch();
         //Test1();
         //Test2();
@@ -22,30 +22,30 @@ public class DebugRingBuffer : MonoBehaviour
         //LRUQueue<string, float> lru = new LRUQueue<string, float>(1);
     }
 
-    private void Test()
-    {
-        RingBuffer rb = new RingBuffer(16);
+    //private void Test()
+    //{
+    //    RingBuffer rb = new RingBuffer(16);
 
-        byte[] w = System.Text.Encoding.UTF8.GetBytes("a我们bc");
-        rb.Write(w);
+    //    byte[] w = System.Text.Encoding.UTF8.GetBytes("a我们bc");
+    //    rb.Write(w);
 
-        byte[] r = new byte[w.Length];
-        rb.Read(r);
-        string s = System.Text.Encoding.UTF8.GetString(r);
-        Debug.Log(s);
-
-
-        byte[] w1 = System.Text.Encoding.UTF8.GetBytes("EFGABCDEFFF");
-        rb.Write(w1);
+    //    byte[] r = new byte[w.Length];
+    //    rb.Read(r);
+    //    string s = System.Text.Encoding.UTF8.GetString(r);
+    //    Debug.Log(s);
 
 
+    //    byte[] w1 = System.Text.Encoding.UTF8.GetBytes("EFGABCDEFFF");
+    //    rb.Write(w1);
 
 
-        byte[] r1 = new byte[w1.Length];
-        rb.Read(r1);
-        s = System.Text.Encoding.UTF8.GetString(r1);
-        Debug.Log(s);
-    }
+
+
+    //    byte[] r1 = new byte[w1.Length];
+    //    rb.Read(r1);
+    //    s = System.Text.Encoding.UTF8.GetString(r1);
+    //    Debug.Log(s);
+    //}
 
     [System.Serializable]
     class Foo
