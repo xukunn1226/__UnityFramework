@@ -88,44 +88,4 @@ public class DebugRingBuffer : MonoBehaviour
             return formatter.Deserialize(ms);
         }
     }
-
-    private void Test5()
-    {
-        CircularQueue<int> cq = new CircularQueue<int>(3);
-
-        cq.Push(1);
-        cq.Push(2);
-        cq.Push(3);
-
-        Debug.Assert(cq[0] == 1);
-        Debug.Assert(cq[1] == 2);
-        Debug.Assert(!cq.IsFull());
-        Debug.Assert(cq.Size() == 2);
-        Debug.Assert(cq.Capacity() == 3);
-
-        cq.Push(4);
-        PrintCQ(cq);
-        cq.Push(5);
-        PrintCQ(cq);
-
-        // 断言
-        Debug.Assert(cq[0] == 2);
-        Debug.Assert(cq[1] == 3);
-        Debug.Assert(cq[2] == 4);
-        Debug.Assert(cq.Peek() == 4);
-        Debug.Assert(cq.IsFull());
-        Debug.Assert(cq.Size() == 3);
-        Debug.Assert(cq.Capacity() == 3);
-    }
-
-    private void PrintCQ<T>(CircularQueue<T> cq)
-    {
-        string msg = "";
-        for (int i = 0; i < cq.Size(); ++i)
-        {
-            msg += cq[i].ToString() + "   ";
-        }
-
-        Debug.Log(msg);
-    }
 }
