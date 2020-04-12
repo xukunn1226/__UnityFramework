@@ -34,7 +34,7 @@ namespace Core
                 {
                     Buffer.BlockCopy(m_Buffer, 0, newBuffer, 0, m_Buffer.Length);
                 }
-                else
+                else if(m_Head < m_Tail)
                 {
                     // copy [0, m_Head] to newBuffer
                     Buffer.BlockCopy(m_Buffer, 0, newBuffer, 0, m_Head + 1);
@@ -121,19 +121,6 @@ namespace Core
                 }
             }
             m_Head = (m_Head + length) & m_IndexMask;
-
-
-            //if(m_Head + length <= m_Buffer.Length - 1)              // buffer最后一个字节留空
-            //{
-            //    System.Buffer.BlockCopy(data, offset, m_Buffer, m_Head, length);
-            //}
-            //else
-            //{
-            //    int countToEnd = m_Buffer.Length - 1 - m_Head;      // 到buffer末尾的剩余空间，最后一个字节留空
-            //    System.Buffer.BlockCopy(data, offset, m_Buffer, m_Head, countToEnd);
-            //    System.Buffer.BlockCopy(data, countToEnd, m_Buffer, 0, length - countToEnd);
-            //}
-            //m_Head = (m_Head + length) & m_IndexMask;
         }
 
         public void Write(byte[] data)
@@ -175,18 +162,6 @@ namespace Core
                 }
             }
             m_Tail = (m_Tail + realLen) & m_IndexMask;
-
-            //if (m_Tail + length <= m_Buffer.Length - 1)              // buffer最后一个字节为空
-            //{
-            //    System.Buffer.BlockCopy(m_Buffer, m_Tail, data, offset, length);
-            //}
-            //else
-            //{
-            //    int countToEnd = m_Buffer.Length - 1 - m_Tail;      // 到buffer末尾的剩余空间，最后一个字节留空
-            //    System.Buffer.BlockCopy(m_Buffer, m_Tail, data, offset, countToEnd);
-            //    System.Buffer.BlockCopy(m_Buffer, 0, data, countToEnd, length - countToEnd);
-            //}
-            //m_Tail = (m_Tail + length) & m_IndexMask;
 
             return realLen;
         }

@@ -33,7 +33,7 @@ namespace Core
                 {
                     Array.Copy(m_Buffer, 0, newBuffer, 0, m_Buffer.Length);
                 }
-                else
+                else if(m_Head < m_Tail)
                 {
                     // copy [0, m_Head] to newBuffer
                     Array.Copy(m_Buffer, 0, newBuffer, 0, m_Head + 1);

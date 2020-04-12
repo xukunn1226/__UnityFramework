@@ -13,22 +13,21 @@ namespace Tests
         [Test]
         public void TestRingBufferSimplePasses()
         {
-            RingBuffer rb = new RingBuffer(4);
+            RingBuffer rb = new RingBuffer(16);
 
-            byte[] w = System.Text.Encoding.UTF8.GetBytes("a我们bc");
+            byte[] w1 = System.Text.Encoding.UTF8.GetBytes("EFGABCDEFF");
+            rb.Write(w1);
+
+            byte[] w = System.Text.Encoding.UTF8.GetBytes("我c");
             rb.Write(w);
+
+
+
 
             byte[] r = new byte[w.Length];
             rb.Read(r);
             string s = System.Text.Encoding.UTF8.GetString(r);
             Debug.Log(s);
-
-
-            byte[] w1 = System.Text.Encoding.UTF8.GetBytes("EFGABCDEFFF");
-            rb.Write(w1);
-
-
-
 
             byte[] r1 = new byte[w1.Length];
             rb.Read(r1);
