@@ -94,7 +94,7 @@ namespace Cache
             return default(V);
         }
 
-        public void Return(K key, V value)
+        public void Cache(K key, V value)
         {
             if (value == null)
                 throw new System.ArgumentNullException();
