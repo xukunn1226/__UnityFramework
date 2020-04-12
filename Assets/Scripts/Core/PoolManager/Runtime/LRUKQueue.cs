@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Core
+namespace Cache
 {
     /// <summary>
     /// LRU-K algorithm

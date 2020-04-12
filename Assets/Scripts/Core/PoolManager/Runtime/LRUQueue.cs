@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Core
+namespace Cache
 {
-    public class LRUQueue<K, V>
+    public class LRUQueue<K, V> : IPool where V : IPooledObject
     {
         public delegate void DiscardCallback(K key, V value);
         public event DiscardCallback OnDiscard;
@@ -24,6 +24,54 @@ namespace Core
 
         public int Capacity { get; private set; }
 
+        public int Count { get { return m_Buffer.Count; } }
+
+        int IPool.countAll { get; }
+
+        int IPool.countOfUsed { get; }
+
+        int IPool.countOfUnused { get; }
+
+        /// <summary>
+        /// 获取缓存对象
+        /// </summary>
+        /// <returns></returns>
+        IPooledObject IPool.Get()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// 返回缓存对象
+        /// </summary>
+        /// <param name="item"></param>
+        void IPool.Return(IPooledObject item)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// 清空缓存池对象
+        /// </summary>
+        public void Clear()
+        {
+            foreach (var item in m_Buffer)
+            {
+                OnDiscard?.Invoke(item.Key, item.Value);
+            }
+            m_Buffer.Clear();
+            m_Dic.Clear();
+            OnDiscard = null;
+        }
+
+        /// <summary>
+        /// trim excess data
+        /// </summary>
+        void IPool.Trim()
+        {
+            throw new System.NotImplementedException();
+        }
+
 
         public LRUQueue(int capacity)
         {
@@ -31,9 +79,22 @@ namespace Core
             m_Dic = new Dictionary<K, LinkedListNode<TNode<K, V>>>(capacity);
 
             Capacity = capacity;
+
+            // register to pool manager
+            PoolManager.AddObjectPool(typeof(V), this);
         }
 
-        public void GetOrCreate(K key, V value)
+        public V Exist(K key)
+        {
+            LinkedListNode<TNode<K, V>> node;
+            if(m_Dic.TryGetValue(key, out node))
+            {
+                return node.Value.Value;
+            }
+            return default(V);
+        }
+
+        public void Return(K key, V value)
         {
             if (value == null)
                 throw new System.ArgumentNullException();
@@ -42,7 +103,7 @@ namespace Core
             m_Dic.TryGetValue(key, out node);
             if(node != null)
             { // 已缓存对象
-                // 更新至First
+                // move to first
                 m_Buffer.Remove(node);
                 m_Buffer.AddFirst(node);
             }
@@ -62,17 +123,6 @@ namespace Core
                 LinkedListNode<TNode<K, V>> listNode = m_Buffer.AddFirst(new TNode<K, V>(key, value));
                 m_Dic.Add(key, listNode);
             }
-        }
-
-        public void Clear()
-        {
-            foreach(var item in m_Buffer)
-            {
-                OnDiscard?.Invoke(item.Key, item.Value);
-            }
-            m_Buffer.Clear();
-            m_Dic.Clear();
-            OnDiscard = null;
         }
 
         public void PrintIt()

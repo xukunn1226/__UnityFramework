@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Core;
+using Cache;
 
 namespace Tests
 {
@@ -14,26 +14,26 @@ namespace Tests
         public void TestLRUSimplePasses()
         {
             // Use the Assert class to test conditions
-            LRUQueue<int, string> lru = new LRUQueue<int, string>(3);
-            lru.OnDiscard += OnDiscard;
+            //LRUQueue<int, string> lru = new LRUQueue<int, string>(3);
+            //lru.OnDiscard += OnDiscard;
 
-            lru.GetOrCreate(1, "aa");
-            lru.PrintIt();
+            //lru.GetOrCreate(1, "aa");
+            //lru.PrintIt();
 
-            lru.GetOrCreate(2, "bb");
-            lru.PrintIt();
+            //lru.GetOrCreate(2, "bb");
+            //lru.PrintIt();
 
-            lru.GetOrCreate(3, "cc");
-            lru.PrintIt();
+            //lru.GetOrCreate(3, "cc");
+            //lru.PrintIt();
 
-            lru.GetOrCreate(2, "bb");
-            lru.PrintIt();
+            //lru.GetOrCreate(2, "bb");
+            //lru.PrintIt();
 
-            lru.GetOrCreate(2, "ssf");
-            lru.PrintIt();
+            //lru.GetOrCreate(2, "ssf");
+            //lru.PrintIt();
 
-            lru.GetOrCreate(4, "dd");
-            lru.PrintIt();
+            //lru.GetOrCreate(4, "dd");
+            //lru.PrintIt();
         }
         
         private void OnDiscard(int key, string value)
