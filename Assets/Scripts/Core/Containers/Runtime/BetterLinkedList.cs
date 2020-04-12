@@ -4,6 +4,10 @@ using Cache;
 
 namespace Core
 {
+    /// <summary>
+    /// 相比LinkedList优化了LinkedListNode生成的GC
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class BetterLinkedList<T> : ICollection<T>
     {
         public class BetterLinkedListNode : IPooledObject
