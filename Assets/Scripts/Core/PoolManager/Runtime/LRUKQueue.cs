@@ -3,11 +3,11 @@
 namespace Cache
 {
     /// <summary>
-    /// LRU-K algorithm
+    /// LRU-K algorithm, K means Hit Count
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class LRUKQueue<K, V>
+    public class LRUKQueue<K, V> : IPool where V : IPooledObject
     {
         public delegate void DiscardCallback(K key, V value);
         public event DiscardCallback OnDiscard;
@@ -33,6 +33,51 @@ namespace Cache
 
         public int Capacity { get; private set; }
 
+        public int Count { get { return m_Buffer.Count; } }
+
+        public int countAll { get { return Capacity; } }
+
+        public int countOfUsed { get { return Count; } }
+
+        int IPool.countOfUnused { get; }
+
+        /// <summary>
+        /// 获取缓存对象
+        /// </summary>
+        /// <returns></returns>
+        IPooledObject IPool.Get()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// 返回缓存对象
+        /// </summary>
+        /// <param name="item"></param>
+        void IPool.Return(IPooledObject item)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            foreach (var item in m_Buffer)
+            {
+                OnDiscard?.Invoke(item.Key, item.Value);
+            }
+
+            m_History.Clear();
+            m_Buffer.Clear();
+            m_Dic.Clear();
+        }
+
+        /// <summary>
+        /// trim excess data
+        /// </summary>
+        void IPool.Trim()
+        {
+            throw new System.NotImplementedException();
+        }
 
         public LRUKQueue(int capacity, int k = 2)
         {
@@ -42,16 +87,18 @@ namespace Cache
             m_Hit = System.Math.Max(1, k);
 
             Capacity = capacity;
+
+            // register to pool manager
+            PoolManager.AddObjectPool(typeof(V), this);
         }
-        
-        public V GetOrCreate(K key, V value)
+
+        public void Cache(K key, V value)
         {
             LinkedListNode<TNode<K, V>> node;
             m_Dic.TryGetValue(key, out node);
             if (node != null)
             { // 已在历史队列或缓存队列中
-                value = node.Value.Value;
-
+                
                 if (InHistory(node))
                 {
                     node.Value.Hit += 1;
@@ -70,7 +117,6 @@ namespace Cache
             {
                  MoveToHistory(key, value);
             }
-            return value;
         }
 
         private bool InHistory(LinkedListNode<TNode<K, V>> node)
@@ -107,13 +153,6 @@ namespace Cache
                 m_Buffer.RemoveLast();
             }
             m_Buffer.AddFirst(node);
-        }
-
-        public void Clear()
-        {
-            m_History.Clear();
-            m_Buffer.Clear();
-            m_Dic.Clear();
         }
 
         public void PrintIt()

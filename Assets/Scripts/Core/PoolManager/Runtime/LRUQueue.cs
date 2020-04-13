@@ -2,6 +2,11 @@
 
 namespace Cache
 {
+    /// <summary>
+    /// Least Recently Used
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
     public class LRUQueue<K, V> : IPool where V : IPooledObject
     {
         public delegate void DiscardCallback(K key, V value);
