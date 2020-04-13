@@ -26,9 +26,9 @@ namespace Cache
 
         public int Count { get { return m_Buffer.Count; } }
 
-        int IPool.countAll { get; }
+        public int countAll { get { return Capacity; } }
 
-        int IPool.countOfUsed { get; }
+        public int countOfUsed { get { return Count; } }
 
         int IPool.countOfUnused { get; }
 
