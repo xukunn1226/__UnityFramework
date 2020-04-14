@@ -6,13 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scripts/Core/PoolManager/Tests/Runtime/Scenes/5_SpawnerRing.unity
+    path: Assets/Framework/Core/PoolManager/Tests/Runtime/Scenes/5_SpawnerRing.unity
     guid: d582c8f1880ce5141b007b506bf9ef87
   - enabled: 0
-    path: Assets/Scripts/MeshParticleSystem/Tests/Runtime/TestMeshParticle.unity
+    path: Assets/Framework/MeshParticleSystem/Tests/Runtime/TestMeshParticle.unity
     guid: d16f841a5f68fd342a6146c5e6137f9a
   - enabled: 0
-    path: Assets/Scripts/AssetManagement/Runtime/Tests/Scenes/LoadAssetAsync.unity
+    path: Assets/Framework/AssetManagement/Runtime/Tests/Scenes/LoadAssetAsync.unity
     guid: 918bce0d9c0b6f3499cb08bc4a661bac
   m_configObjects:
     com.myproject.AssetBuilderSetting: {fileID: 11400000, guid: 97bdc094262e65746b5990a4103c113e,
