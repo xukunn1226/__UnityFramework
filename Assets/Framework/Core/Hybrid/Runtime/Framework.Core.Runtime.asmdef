@@ -1,11 +1,7 @@
 {
-    "name": "Unity.Core.Editor",
-    "references": [
-        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "name": "Framework.Core.Runtime",
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

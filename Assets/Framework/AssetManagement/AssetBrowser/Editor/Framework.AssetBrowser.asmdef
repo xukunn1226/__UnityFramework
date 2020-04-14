@@ -1,9 +1,9 @@
 {
-    "name": "Unity.AssetManagement.Runtime",
-    "references": [
-        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
+    "name": "Framework.AssetBrowser",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
     ],
-    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

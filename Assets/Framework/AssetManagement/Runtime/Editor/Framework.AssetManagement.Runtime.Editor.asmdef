@@ -1,9 +1,12 @@
 {
-    "name": "Unity.AssetManagement.Runtime.Tests",
+    "name": "Framework.AssetManagement.Runtime.Editor",
     "references": [
-        "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138"
+        "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138",
+        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

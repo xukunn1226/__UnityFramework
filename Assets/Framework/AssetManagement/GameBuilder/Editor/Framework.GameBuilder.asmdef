@@ -1,7 +1,7 @@
 {
-    "name": "Unity.MeshParticleSystem.Editor",
+    "name": "Framework.GameBuilder",
     "references": [
-        "GUID:770eb301604ee8e4da8dedd8e95f1b7b"
+        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
     ],
     "includePlatforms": [
         "Editor"
