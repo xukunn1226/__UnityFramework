@@ -1,6 +1,9 @@
 syntax = "proto3";//标明proto版本
  
 package NetProtocol;//包名
+
+import "msg2.proto";
+import "google/protobuf/Timestamp.proto";
  
 //一个message相当于一个类
 //1,2,3不代表参数默认值，而是参数标签
@@ -11,4 +14,13 @@ message StoreRequest {
   int32 num = 2;
   int32 result = 3;
   repeated string myList=4;
+  map<string, int32> dic = 5;
+  
+  google.protobuf.Timestamp last_update = 6;
+}
+
+message MapField
+{
+	int32 key = 1;
+	StoreRequest2 value = 2;
 }

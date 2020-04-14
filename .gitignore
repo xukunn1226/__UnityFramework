@@ -74,5 +74,3 @@ Deployment/
 [Aa]ssets/AssetUsageDetector
 [Aa]ssets/AssetUsageDetector.meta
 
-# temp files
-ProtobufTool/Src/*.cs
