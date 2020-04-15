@@ -1,14 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 using NetProtocol;
 using Google.Protobuf;
 
 namespace Tests
 {
-    public class NewTestScript
+    public class TestProtobufScript
     {
         [Test]
         public void TestProto()
@@ -28,7 +26,7 @@ namespace Tests
             toServer.Dic.Add("b", 2);
             toServer.Dic.Add("aa", 1);
             byte[] data = toServer.ToByteArray();
-            using (var output = System.IO.File.Create("Assets/scripts/protocol/tests/editor/test_proto.bytes"))
+            using (var output = System.IO.File.Create("assets/gameplay/tests/editor/test_proto.bytes"))
             {
                 toServer.WriteTo(output);
             }
@@ -40,20 +38,10 @@ namespace Tests
             StoreRequest toClient = new StoreRequest();
             toClient = StoreRequest.Parser.ParseFrom(data);
 
-            using (var input = System.IO.File.OpenRead("Assets/scripts/protocol/tests/editor/test_proto.bytes"))
+            using (var input = System.IO.File.OpenRead("assets/gameplay/tests/editor/test_proto.bytes"))
             {
                 StoreRequest client2 = StoreRequest.Parser.ParseFrom(input);
             }
-        }
-
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator NewTestScriptWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
         }
     }
 }
