@@ -58,6 +58,8 @@ namespace Framework.AssetManagement.Runtime
             }
 
             Instance = this;
+
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
@@ -85,7 +87,7 @@ namespace Framework.AssetManagement.Runtime
         static public void Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
         {
             // 将触发AssetManager.Awake的调用，此时数据还未准备好，故Awake中不能调用InternalInit
-            DontDestroyOnLoad(new GameObject("[AssetManager]", typeof(AssetManager)));
+            new GameObject("[AssetManager]", typeof(AssetManager));
 
             Instance.InternalInit(type, bundleRootPath);
         }
