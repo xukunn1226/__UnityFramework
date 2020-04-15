@@ -2,7 +2,7 @@
 using UnityEditor;
 using Cache;
 
-namespace AssetManagement.Runtime.Editor
+namespace Framework.AssetManagement.Runtime.Editor
 {
     [CustomEditor(typeof(AssetManager))]
     public class AssetManagerEditor : UnityEditor.Editor

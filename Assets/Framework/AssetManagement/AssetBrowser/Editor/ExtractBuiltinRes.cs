@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace AssetManagement.AssetBrowser
+namespace Framework.AssetBrowser
 {
     internal class ExtractBuiltinRes
     {

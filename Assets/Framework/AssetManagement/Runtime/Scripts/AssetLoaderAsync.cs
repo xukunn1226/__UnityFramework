@@ -5,7 +5,7 @@ using Cache;
 using UnityEditor;
 #endif
 
-namespace AssetManagement.Runtime
+namespace Framework.AssetManagement.Runtime
 {
     public class AssetLoaderAsync<T> : IEnumerator, ILinkedObjectPoolNode<AssetLoaderAsync<T>>, IPooledObject where T : UnityEngine.Object
     {

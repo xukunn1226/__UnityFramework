@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Linq;
 using System.IO;
 
-namespace AssetManagement.AssetBrowser
+namespace Framework.AssetBrowser
 {
     static internal class AssetBrowserUtil
     {

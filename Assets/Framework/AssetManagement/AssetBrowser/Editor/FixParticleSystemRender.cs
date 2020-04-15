@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace AssetManagement.AssetBrowser
+namespace Framework.AssetBrowser
 {
     /// <summary>
     /// 修复特效冗余mesh

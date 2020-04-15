@@ -1,67 +1,69 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using AssetManagement.Runtime;
 
-public class LoadAssetAsync : MonoBehaviour
+namespace Framework.AssetManagement.Runtime.Tests
 {
-    public LoaderType type;
-    
-    public string assetPath;
-
-    AssetLoaderAsync<Material> loader;
-    string info;
-
-    private void Awake()
+    public class LoadAssetAsync : MonoBehaviour
     {
-        AssetManager.Init(type);
-    }
+        public LoaderType type;
 
-    void OnDestroy()
-    {
-        AssetManager.Uninit();
-    }
+        public string assetPath;
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(100, 100, 200, 80), "Load"))
+        AssetLoaderAsync<Material> loader;
+        string info;
+
+        private void Awake()
         {
-            StartCoroutine(StartTask());
+            AssetManager.Init(type);
         }
 
-        if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+        void OnDestroy()
         {
-            EndTask();
+            AssetManager.Uninit();
         }
 
-        if (!string.IsNullOrEmpty(info))
+        private void OnGUI()
         {
-            GUI.Label(new Rect(100, 600, 500, 100), info);
+            if (GUI.Button(new Rect(100, 100, 200, 80), "Load"))
+            {
+                StartCoroutine(StartTask());
+            }
+
+            if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+            {
+                EndTask();
+            }
+
+            if (!string.IsNullOrEmpty(info))
+            {
+                GUI.Label(new Rect(100, 600, 500, 100), info);
+            }
         }
-    }
 
-    IEnumerator StartTask()
-    {
-        loader = AssetManager.LoadAssetAsync<Material>(assetPath);
-        yield return loader;
-
-        info = loader.asset != null ? "sucess to load: " : "fail to load: ";
-        info += assetPath;
-
-        if(loader.asset == null)
+        IEnumerator StartTask()
         {
-            AssetManager.UnloadAsset(loader);
-            loader = null;
-        }
-    }
+            loader = AssetManager.LoadAssetAsync<Material>(assetPath);
+            yield return loader;
 
-    void EndTask()
-    {
-        if(loader != null)
-        {
-            AssetManager.UnloadAsset(loader);
-            loader = null;
+            info = loader.asset != null ? "sucess to load: " : "fail to load: ";
+            info += assetPath;
+
+            if (loader.asset == null)
+            {
+                AssetManager.UnloadAsset(loader);
+                loader = null;
+            }
         }
-        info = null;
+
+        void EndTask()
+        {
+            if (loader != null)
+            {
+                AssetManager.UnloadAsset(loader);
+                loader = null;
+            }
+            info = null;
+        }
     }
 }

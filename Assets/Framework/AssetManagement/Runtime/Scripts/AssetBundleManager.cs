@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace AssetManagement.Runtime
+namespace Framework.AssetManagement.Runtime
 {
     static internal class AssetBundleManager
     {

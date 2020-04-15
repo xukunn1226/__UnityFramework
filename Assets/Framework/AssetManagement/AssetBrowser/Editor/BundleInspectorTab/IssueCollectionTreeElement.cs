@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UITreeView;
 
-namespace AssetManagement.AssetBrowser
+namespace Framework.AssetBrowser
 {
     internal class IssueCollectionTreeElement : TreeElement
     {

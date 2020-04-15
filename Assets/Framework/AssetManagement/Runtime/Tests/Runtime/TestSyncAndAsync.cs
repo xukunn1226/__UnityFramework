@@ -1,101 +1,103 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using AssetManagement.Runtime;
 
-public class TestSyncAndAsync : MonoBehaviour
+namespace Framework.AssetManagement.Runtime.Tests
 {
-    public LoaderType type;
-
-    public string assetPath;
-
-    public Material Mat;
-
-    GameObject inst;
-    string info;
-    AssetBundleLoader loader;
-
-    private void Awake()
+    public class TestSyncAndAsync : MonoBehaviour
     {
-        AssetManager.Init(type);
-    }
+        public LoaderType type;
 
-    void OnDestroy()
-    {
-        AssetManager.Uninit();
-    }
+        public string assetPath;
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(100, 100, 200, 80), "Load -- TestSyncAndAsync"))
+        public Material Mat;
+
+        GameObject inst;
+        string info;
+        AssetBundleLoader loader;
+
+        private void Awake()
         {
-            StartCoroutine(StartTaskEx());
+            AssetManager.Init(type);
         }
 
-        if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+        void OnDestroy()
         {
-            EndTask();
+            AssetManager.Uninit();
         }
 
-        if (!string.IsNullOrEmpty(info))
+        private void OnGUI()
         {
-            GUI.Label(new Rect(100, 600, 500, 100), info);
-        }
-    }
-    
-    IEnumerator StartTaskEx()
-    {
-        int f1 = Time.frameCount;
+            if (GUI.Button(new Rect(100, 100, 200, 80), "Load -- TestSyncAndAsync"))
+            {
+                StartCoroutine(StartTaskEx());
+            }
 
-        AssetBundleLoader loader = AssetManager.LoadAssetBundle("prefab.ab");
-        AssetBundleRequest abRequest = loader.LoadAssetAsync<GameObject>("cube.prefab");
-        //if (abRequest.asset == null) { }      // 这行代码因为访问了asset，将异步改为同步
-        yield return abRequest;
+            if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+            {
+                EndTask();
+            }
 
-        if(abRequest.asset != null)
-        {
-            inst = Instantiate<GameObject>(abRequest.asset as GameObject);
+            if (!string.IsNullOrEmpty(info))
+            {
+                GUI.Label(new Rect(100, 600, 500, 100), info);
+            }
         }
 
-        info = inst != null ? "sucess to load: " : "fail to load: ";
-        info += assetPath;
-        info += Time.frameCount - f1;
-    }
-
-    IEnumerator StartTask()
-    {
-        int f1 = Time.frameCount;
-
-        // 异步加载
-        IEnumerator e = AssetManager.InstantiatePrefabAsync(assetPath, (go) =>
+        IEnumerator StartTaskEx()
         {
-            inst = go;
-        });
+            int f1 = Time.frameCount;
 
-        // 马上同步加载，将立即结束之前的异步流程
-        loader = AssetManager.LoadAssetBundle("prefab.ab");
-        GameObject asset = loader.LoadAsset<GameObject>("cube.prefab");
+            AssetBundleLoader loader = AssetManager.LoadAssetBundle("prefab.ab");
+            AssetBundleRequest abRequest = loader.LoadAssetAsync<GameObject>("cube.prefab");
+            //if (abRequest.asset == null) { }      // 这行代码因为访问了asset，将异步改为同步
+            yield return abRequest;
 
-        yield return e;
+            if (abRequest.asset != null)
+            {
+                inst = Instantiate<GameObject>(abRequest.asset as GameObject);
+            }
 
-        info = inst != null ? "sucess to load: " : "fail to load: ";
-        info += assetPath;
-        info += Time.frameCount - f1;
-    }
-
-    void EndTask()
-    {
-        if (inst != null)
-        {
-            Destroy(inst);
-            inst = null;
+            info = inst != null ? "sucess to load: " : "fail to load: ";
+            info += assetPath;
+            info += Time.frameCount - f1;
         }
-        info = null;
 
-        if(loader != null)
+        IEnumerator StartTask()
         {
-            AssetManager.UnloadAssetBundle(loader);
+            int f1 = Time.frameCount;
+
+            // 异步加载
+            IEnumerator e = AssetManager.InstantiatePrefabAsync(assetPath, (go) =>
+            {
+                inst = go;
+            });
+
+            // 马上同步加载，将立即结束之前的异步流程
+            loader = AssetManager.LoadAssetBundle("prefab.ab");
+            GameObject asset = loader.LoadAsset<GameObject>("cube.prefab");
+
+            yield return e;
+
+            info = inst != null ? "sucess to load: " : "fail to load: ";
+            info += assetPath;
+            info += Time.frameCount - f1;
         }
-        loader = null;
+
+        void EndTask()
+        {
+            if (inst != null)
+            {
+                Destroy(inst);
+                inst = null;
+            }
+            info = null;
+
+            if (loader != null)
+            {
+                AssetManager.UnloadAssetBundle(loader);
+            }
+            loader = null;
+        }
     }
 }

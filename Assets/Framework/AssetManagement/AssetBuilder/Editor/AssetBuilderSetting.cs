@@ -7,7 +7,7 @@ using Core;
 using UnityEditor;
 #endif
 
-namespace AssetManagement.AssetBuilder
+namespace Framework.AssetBuilder
 {
     public class AssetBuilderSetting : ScriptableObject
     {

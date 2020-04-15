@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEditor;
 
-namespace AssetManagement.AssetBuilder
+namespace Framework.AssetBuilder
 {
     class AutoGenAssetBundleName : AssetPostprocessor
     {

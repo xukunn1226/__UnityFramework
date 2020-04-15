@@ -4,7 +4,7 @@ using Cache;
 using UnityEditor;
 #endif
 
-namespace AssetManagement.Runtime
+namespace Framework.AssetManagement.Runtime
 {
     public class AssetLoader<T> : ILinkedObjectPoolNode<AssetLoader<T>>, IPooledObject where T : UnityEngine.Object
     {

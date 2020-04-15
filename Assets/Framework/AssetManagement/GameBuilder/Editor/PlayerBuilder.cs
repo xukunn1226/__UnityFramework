@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using Core;
 
-namespace AssetManagement.GameBuilder
+namespace Framework.GameBuilder
 {
     public class PlayerBuilder
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Core;
 
-namespace AssetManagement.GameBuilder
+namespace Framework.GameBuilder
 {
     [CustomEditor(typeof(BundleBuilderSetting))]
     public class BundleBuilderSettingEditor : Editor

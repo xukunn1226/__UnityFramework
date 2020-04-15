@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace AssetManagement.Runtime
+namespace Framework.AssetManagement.Runtime
 {
     internal class GameObjectDestroyer : MonoBehaviour
     {

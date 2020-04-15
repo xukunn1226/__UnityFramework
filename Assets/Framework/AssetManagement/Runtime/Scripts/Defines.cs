@@ -1,5 +1,5 @@
 ﻿
-namespace AssetManagement.Runtime
+namespace Framework.AssetManagement.Runtime
 {
     public enum LoaderType
     {

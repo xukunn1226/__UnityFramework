@@ -2,7 +2,7 @@
 using UnityEngine;
 using Cache;
 
-namespace AssetManagement.Runtime
+namespace Framework.AssetManagement.Runtime
 {
     public class AssetBundleLoader : ILinkedObjectPoolNode<AssetBundleLoader>, IPooledObject
     {

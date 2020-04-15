@@ -1,58 +1,60 @@
 ﻿using UnityEngine;
-using AssetManagement.Runtime;
 
-public class LoadPrefab : MonoBehaviour
+namespace Framework.AssetManagement.Runtime.Tests
 {
-    public LoaderType type;
-
-    public string           assetPath;
-
-    GameObject              inst;
-    string                  info;
-
-    private void Awake()
+    public class LoadPrefab : MonoBehaviour
     {
-        AssetManager.Init(type);
-    }
+        public LoaderType type;
 
-    void OnDestroy()
-    {
-        AssetManager.Uninit();
-    }
+        public string assetPath;
 
-    private void OnGUI()
-    {
-        if(GUI.Button(new Rect(100, 100, 200, 80), "Load"))
+        GameObject inst;
+        string info;
+
+        private void Awake()
         {
-            StartTask();
+            AssetManager.Init(type);
         }
 
-        if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+        void OnDestroy()
         {
-            EndTask();
+            AssetManager.Uninit();
         }
 
-        if(!string.IsNullOrEmpty(info))
+        private void OnGUI()
         {
-            GUI.Label(new Rect(100, 600, 500, 100), info);
+            if (GUI.Button(new Rect(100, 100, 200, 80), "Load"))
+            {
+                StartTask();
+            }
+
+            if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+            {
+                EndTask();
+            }
+
+            if (!string.IsNullOrEmpty(info))
+            {
+                GUI.Label(new Rect(100, 600, 500, 100), info);
+            }
         }
-    }
 
-    void StartTask()
-    {
-        inst = AssetManager.InstantiatePrefab(assetPath);
-
-        info = inst != null ? "sucess to load: " : "fail to load: ";
-        info += assetPath;
-    }
-
-    void EndTask()
-    {
-        if(inst != null)
+        void StartTask()
         {
-            Destroy(inst);
-            inst = null;
+            inst = AssetManager.InstantiatePrefab(assetPath);
+
+            info = inst != null ? "sucess to load: " : "fail to load: ";
+            info += assetPath;
         }
-        info = null;
+
+        void EndTask()
+        {
+            if (inst != null)
+            {
+                Destroy(inst);
+                inst = null;
+            }
+            info = null;
+        }
     }
 }

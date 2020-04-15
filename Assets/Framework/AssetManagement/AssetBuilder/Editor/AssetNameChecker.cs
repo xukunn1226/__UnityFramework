@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.Text.RegularExpressions;
 
-namespace AssetManagement.AssetBuilder
+namespace Framework.AssetBuilder
 {
     internal class AssetNameChecker : AssetPostprocessor
     {

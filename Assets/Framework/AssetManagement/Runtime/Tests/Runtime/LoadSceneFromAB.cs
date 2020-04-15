@@ -2,77 +2,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using AssetManagement.Runtime;
 
-public class LoadSceneFromAB : MonoBehaviour
+namespace Framework.AssetManagement.Runtime.Tests
 {
-    public LoaderType type = LoaderType.FromAB;
-
-    AssetBundleLoader loader;
-    AssetLoader<GameObject> cubeLoader;
-
-    string info = "";
-
-    private void Awake()
+    public class LoadSceneFromAB : MonoBehaviour
     {
-        AssetManager.Init(type);
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.sceneUnloaded += OnUnloadSceneLoaded;
-    }
+        public LoaderType type = LoaderType.FromAB;
 
-    void OnDestroy()
-    {
-        AssetManager.Uninit();
-    }
+        AssetBundleLoader loader;
+        AssetLoader<GameObject> cubeLoader;
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(100, 100, 200, 80), "Load -- LoadSceneFromAB"))
+        string info = "";
+
+        private void Awake()
         {
-            StartCoroutine(StartTask());
+            AssetManager.Init(type);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnUnloadSceneLoaded;
         }
 
-        if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+        void OnDestroy()
         {
-            EndTask();
+            AssetManager.Uninit();
         }
 
-        if (!string.IsNullOrEmpty(info))
+        private void OnGUI()
         {
-            GUI.Label(new Rect(100, 600, 500, 100), info);
+            if (GUI.Button(new Rect(100, 100, 200, 80), "Load -- LoadSceneFromAB"))
+            {
+                StartCoroutine(StartTask());
+            }
+
+            if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+            {
+                EndTask();
+            }
+
+            if (!string.IsNullOrEmpty(info))
+            {
+                GUI.Label(new Rect(100, 600, 500, 100), info);
+            }
         }
-    }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Debug.Log("load scene: " + scene.name);
-    }
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log("load scene: " + scene.name);
+        }
 
-    void OnUnloadSceneLoaded(Scene scene)
-    {
-        Debug.Log("-----Unload scene: " + scene.name);
-    }
-    IEnumerator StartTask()
-    {
-        //loader = AssetManager.LoadAssetBundle("scene.ab");
-        ////AssetManager.LoadAssetBundle("texture.ab");
-        ////AssetManager.LoadAssetBundle("material.ab");
-        //string[] sceneNames = loader.assetBundle.GetAllScenePaths();
-        //string sceneName = System.IO.Path.GetFileNameWithoutExtension(sceneNames[0]);
+        void OnUnloadSceneLoaded(Scene scene)
+        {
+            Debug.Log("-----Unload scene: " + scene.name);
+        }
+        IEnumerator StartTask()
+        {
+            //loader = AssetManager.LoadAssetBundle("scene.ab");
+            ////AssetManager.LoadAssetBundle("texture.ab");
+            ////AssetManager.LoadAssetBundle("material.ab");
+            //string[] sceneNames = loader.assetBundle.GetAllScenePaths();
+            //string sceneName = System.IO.Path.GetFileNameWithoutExtension(sceneNames[0]);
 
-        //cubeLoader = AssetManager.LoadAsset<GameObject>("texture/cube1.prefab");
+            //cubeLoader = AssetManager.LoadAsset<GameObject>("texture/cube1.prefab");
 
-        //SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
-        yield break;
+            //SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+            yield break;
 
 
-         //AsyncOperation op = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneNames[0], LoadSceneMode.Additive);
-        //op.allowSceneActivation = true;
-        //yield return op;
-   }
+            //AsyncOperation op = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneNames[0], LoadSceneMode.Additive);
+            //op.allowSceneActivation = true;
+            //yield return op;
+        }
 
-    void EndTask()
-    {
+        void EndTask()
+        {
 
+        }
     }
 }

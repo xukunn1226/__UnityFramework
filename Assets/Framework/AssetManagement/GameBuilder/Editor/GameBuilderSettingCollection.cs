@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using Core;
 
-namespace AssetManagement.GameBuilder
+namespace Framework.GameBuilder
 {
     internal class GameBuilderSettingCollection : ScriptableObject
     {

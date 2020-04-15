@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-using AssetManagement.Runtime;
+using Framework.AssetManagement.Runtime;
 
 namespace MeshParticleSystem.Editor.Tests
 {

@@ -1,95 +1,97 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using AssetManagement.Runtime;
 
-/// <summary>
-/// 测试ABload asset、unload asset前后内存变化
-/// </summary>
-public class TestBundleUnload : MonoBehaviour
+namespace Framework.AssetManagement.Runtime.Tests
 {
-    public LoaderType type;
-
-    public string assetPathA;
-    public string assetPathB;
-
-    AssetLoader<UnityEngine.Object> loaderA;
-    AssetLoader<UnityEngine.Object> loaderB;
-
-    string info;
-
-    private void Awake()
+    /// <summary>
+    /// 测试ABload asset、unload asset前后内存变化
+    /// </summary>
+    public class TestBundleUnload : MonoBehaviour
     {
-        AssetManager.Init(type);
-    }
+        public LoaderType type;
 
-    void OnDestroy()
-    {
-        AssetManager.Uninit();
-    }
+        public string assetPathA;
+        public string assetPathB;
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(100, 100, 150, 80), "LoadA"))
+        AssetLoader<UnityEngine.Object> loaderA;
+        AssetLoader<UnityEngine.Object> loaderB;
+
+        string info;
+
+        private void Awake()
         {
-            LoadA();
+            AssetManager.Init(type);
         }
 
-        if (GUI.Button(new Rect(100, 200, 150, 80), "LoadB"))
+        void OnDestroy()
         {
-            LoadB();
+            AssetManager.Uninit();
         }
 
-        if (GUI.Button(new Rect(100, 300, 150, 80), "UnloadA"))
+        private void OnGUI()
         {
-            UnLoadA();
+            if (GUI.Button(new Rect(100, 100, 150, 80), "LoadA"))
+            {
+                LoadA();
+            }
+
+            if (GUI.Button(new Rect(100, 200, 150, 80), "LoadB"))
+            {
+                LoadB();
+            }
+
+            if (GUI.Button(new Rect(100, 300, 150, 80), "UnloadA"))
+            {
+                UnLoadA();
+            }
+
+            if (GUI.Button(new Rect(100, 400, 150, 80), "UnloadB"))
+            {
+                UnLoadB();
+            }
+
+            if (GUI.Button(new Rect(100, 500, 150, 80), "UnloadUnusedAssets"))
+            {
+                UnloadUnusedAssets();
+            }
+
+            if (!string.IsNullOrEmpty(info))
+            {
+                GUI.Label(new Rect(100, 600, 500, 100), info);
+            }
         }
 
-        if (GUI.Button(new Rect(100, 400, 150, 80), "UnloadB"))
+        void LoadA()
         {
-            UnLoadB();
+            loaderA = AssetManager.LoadAsset<UnityEngine.Object>(assetPathA);
+
+            info = loaderA.asset != null ? "sucess to load: " : "fail to load: ";
+            info += assetPathA;
         }
 
-        if (GUI.Button(new Rect(100, 500, 150, 80), "UnloadUnusedAssets"))
+        void UnLoadA()
         {
-            UnloadUnusedAssets();
+            AssetManager.UnloadAsset(loaderA);
         }
 
-        if (!string.IsNullOrEmpty(info))
+        void LoadB()
         {
-            GUI.Label(new Rect(100, 600, 500, 100), info);
+            loaderB = AssetManager.LoadAsset<Object>(assetPathB);
+
+            info = loaderB.asset != null ? "sucess to load: " : "fail to load: ";
+            info += assetPathB;
         }
-    }
 
-    void LoadA()
-    {
-        loaderA = AssetManager.LoadAsset<UnityEngine.Object>(assetPathA);
+        void UnLoadB()
+        {
+            AssetManager.UnloadAsset(loaderB);
+        }
 
-        info = loaderA.asset != null ? "sucess to load: " : "fail to load: ";
-        info += assetPathA;
-    }
-
-    void UnLoadA()
-    {
-        AssetManager.UnloadAsset(loaderA);
-    }
-
-    void LoadB()
-    {
-        loaderB = AssetManager.LoadAsset<Object>(assetPathB);
-
-        info = loaderB.asset != null ? "sucess to load: " : "fail to load: ";
-        info += assetPathB;
-    }
-
-    void UnLoadB()
-    {
-        AssetManager.UnloadAsset(loaderB);
-    }
-
-    void UnloadUnusedAssets()
-    {        
-        info = null;
-        Resources.UnloadUnusedAssets();
+        void UnloadUnusedAssets()
+        {
+            info = null;
+            Resources.UnloadUnusedAssets();
+        }
     }
 }

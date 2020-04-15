@@ -8,7 +8,7 @@ using UnityEngine.Assertions;
 using System;
 using System.Linq;
 
-namespace AssetManagement.AssetBrowser
+namespace Framework.AssetBrowser
 {
     internal class AssetListTreeView : TreeViewWithTreeModel<AssetListTreeElement>
     {

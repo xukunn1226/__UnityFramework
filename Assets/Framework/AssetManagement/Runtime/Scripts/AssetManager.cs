@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using Core;
 
-namespace AssetManagement.Runtime
+namespace Framework.AssetManagement.Runtime
 {
     public class AssetManager : MonoBehaviour
     {

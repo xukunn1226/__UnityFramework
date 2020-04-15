@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Core;
 
-namespace AssetManagement.GameBuilder
+namespace Framework.GameBuilder
 {
     /// <summary>
     /// Player打包配置数据

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Cache;
 
-namespace AssetManagement.Runtime
+namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
     /// asset bundle reference info

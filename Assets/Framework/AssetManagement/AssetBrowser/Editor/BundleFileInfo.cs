@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace AssetManagement.AssetBrowser
+namespace Framework.AssetBrowser
 {
     internal class BundleFileInfo
     {

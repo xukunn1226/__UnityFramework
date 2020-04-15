@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace AssetManagement.AssetBuilder
+namespace Framework.AssetBuilder
 {
     public class ModelPostprocessor : AssetPostprocessor
     {
