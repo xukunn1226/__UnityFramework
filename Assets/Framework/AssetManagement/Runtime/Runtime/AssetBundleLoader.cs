@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Cache;
+using Framework.Cache;
 
 namespace Framework.AssetManagement.Runtime
 {

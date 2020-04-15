@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Framework.Cache;
 
-namespace Cache.Editor.Tests
+namespace Tests
 {
     public class LinkedObjectPoolTest
     {

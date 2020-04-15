@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Cache;
+using Framework.Cache;
 
-namespace Core
+namespace Framework.Core
 {
     /// <summary>
     /// 相比LinkedList优化了LinkedListNode生成的GC

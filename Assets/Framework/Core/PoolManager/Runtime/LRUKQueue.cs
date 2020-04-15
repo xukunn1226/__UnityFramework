@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Cache
+namespace Framework.Cache
 {
     /// <summary>
     /// LRU-K algorithm, K means Hit Count

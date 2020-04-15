@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cache;
+using Framework.Cache;
 
 namespace Tests
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cache
+namespace Framework.Cache
 {
     /// <summary>
     /// 具有生命周期Prefab的缓存池

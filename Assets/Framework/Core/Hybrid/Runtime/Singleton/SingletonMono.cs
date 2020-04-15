@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core
+namespace Framework.Core
 {
     /// <summary>
     /// Be aware this will not prevent a non singleton constructor

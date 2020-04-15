@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Cache
+namespace Framework.Cache
 {
     /// <summary>
     /// Least Recently Used

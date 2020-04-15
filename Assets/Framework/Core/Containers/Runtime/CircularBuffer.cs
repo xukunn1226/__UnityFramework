@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Core
+namespace Framework.Core
 {
     /// <summary>
     /// 圆形缓冲区

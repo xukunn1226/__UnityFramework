@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Cache;
+using Framework.Cache;
+using Framework.Core;
 
-namespace Core.Runtime.Tests
+namespace Tests
 {
     public class Foo
     {

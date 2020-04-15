@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Core.Editor
+namespace Framework.Core.Editor
 {
     [InitializeOnLoad]
     public static class SyncViewTool

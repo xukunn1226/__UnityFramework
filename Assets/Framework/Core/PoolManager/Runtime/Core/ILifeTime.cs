@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cache
+namespace Framework.Cache
 {
     public interface ILifeTime
     {

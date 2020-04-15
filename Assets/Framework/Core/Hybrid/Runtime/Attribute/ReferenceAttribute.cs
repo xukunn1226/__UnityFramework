@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace Core
+namespace Framework.Core
 {
     public enum ReferenceType : int
     {

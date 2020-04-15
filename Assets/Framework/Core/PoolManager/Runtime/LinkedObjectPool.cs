@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace Cache
+namespace Framework.Cache
 {
     /// <summary>
     /// 对象池（非Mono对象），记录使用中和未使用的数据状况，方便跟踪记录

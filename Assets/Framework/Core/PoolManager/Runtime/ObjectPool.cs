@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cache
+namespace Framework.Cache
 {
     /// <summary>
     /// 对象池（非Mono对象），仅记录未使用的

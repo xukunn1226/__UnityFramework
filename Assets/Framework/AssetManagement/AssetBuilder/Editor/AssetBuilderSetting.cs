@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using Core;
+using Framework.Core;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

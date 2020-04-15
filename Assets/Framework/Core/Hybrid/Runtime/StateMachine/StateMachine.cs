@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core
+namespace Framework.Core
 {
     public class StateMachine<T> where T : System.Enum
     {

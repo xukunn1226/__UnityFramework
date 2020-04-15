@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Core
+namespace Framework.Core
 {
     public sealed class SimpleState<T> : IState<T> where T : System.Enum
     {

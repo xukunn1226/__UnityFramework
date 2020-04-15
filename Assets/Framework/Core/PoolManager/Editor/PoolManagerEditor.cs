@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 
-namespace Cache.Editor
+namespace Framework.Cache.Editor
 {
     [CustomEditor(typeof(PoolManager))]
     public class PoolManagerEditor : UnityEditor.Editor

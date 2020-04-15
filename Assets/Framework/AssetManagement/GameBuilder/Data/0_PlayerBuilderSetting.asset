@@ -23,7 +23,7 @@ MonoBehaviour:
   compressWithLz4HC: 1
   strictMode: 1
   bundleVersion: 
-  useIL2CPP: 0
+  useIL2CPP: 1
   il2CppCompilerConfiguration: 2
   useMTRendering: 0
   useAPKExpansionFiles: 0

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework.Cache;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

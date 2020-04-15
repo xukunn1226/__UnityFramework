@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Cache;
+using Framework.Cache;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

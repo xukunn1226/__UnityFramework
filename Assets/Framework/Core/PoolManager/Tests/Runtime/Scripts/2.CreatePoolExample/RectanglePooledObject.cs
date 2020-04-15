@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Framework.Cache;
 
 namespace Cache.Tests
 {

@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace Core
+namespace Framework.Core
 {
     public interface ILogOutput : IDisposable
     {

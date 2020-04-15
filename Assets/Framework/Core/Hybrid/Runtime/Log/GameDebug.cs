@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace Core
+namespace Framework.Core
 {
     public static class GameDebug
     {

@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
-using Core;
+using Framework.Core;
 
 namespace Framework.GameBuilder
 {

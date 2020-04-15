@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using System;
 
-namespace Core
+namespace Framework.Core
 {
     /// <summary>
     /// 基于CircularBuffer实现的无锁FIFO(first-in first-out queue)

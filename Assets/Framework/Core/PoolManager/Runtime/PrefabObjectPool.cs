@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Core;
+using Framework.Core;
 
-namespace Cache
+namespace Framework.Cache
 {
     public class PrefabObjectPool : MonoPoolBase
     {

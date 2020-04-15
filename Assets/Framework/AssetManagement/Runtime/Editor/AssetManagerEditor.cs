@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using Cache;
+using Framework.Cache;
 
 namespace Framework.AssetManagement.Runtime.Editor
 {
