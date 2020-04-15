@@ -64,7 +64,7 @@ namespace Framework.AssetManagement.Runtime
         private void LoadAsset(string assetPath)
         {
 #if UNITY_EDITOR
-            switch (AssetManager.loaderType)
+            switch (AssetManager.Instance.loaderType)
             {
                 case LoaderType.FromEditor:
                     asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
@@ -83,7 +83,7 @@ namespace Framework.AssetManagement.Runtime
         private void LoadAsset(string assetBundleName, string assetName)
         {
 #if UNITY_EDITOR
-            switch (AssetManager.loaderType)
+            switch (AssetManager.Instance.loaderType)
             {
                 case LoaderType.FromEditor:
                     {

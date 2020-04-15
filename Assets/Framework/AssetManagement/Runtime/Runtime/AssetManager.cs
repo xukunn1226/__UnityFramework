@@ -6,6 +6,19 @@ using Framework.Core;
 
 namespace Framework.AssetManagement.Runtime
 {
+    /// 设计目标：
+    /// 1、即可动态生成又可静态挂载；
+    /// 2、初始化后立即可用；
+    /// 3、只允许一个AssetManager存在
+    
+    /// <summary>
+    /// 生成AssetManager有两种方式：
+    /// 1、脚本动态生成：AssetManager.Init();
+    /// 2、静态挂载
+    /// 注意事项：
+    /// 1、两种方式只能选其一，同时使用概不负责
+    /// 2、AssetManager.Init必须在Awake调用
+    /// </summary>
     public sealed class AssetManager : MonoBehaviour
     {
         static internal AssetManager    Instance { get; private set; }
@@ -15,11 +28,11 @@ namespace Framework.AssetManagement.Runtime
         static internal int             PreAllocateAssetLoaderPoolSize        = 50;                               // 预分配缓存AssetLoader对象池大小
         static internal int             PreAllocateAssetLoaderAsyncPoolSize   = 50;                               // 预分配缓存AssetLoaderAsync对象池大小
         
-        static private LoaderType       m_LoaderType;
-        static private string           m_RootPath;
-        static private bool             m_bInit;
+        public LoaderType               m_LoaderType;
+        public string                   m_RootPath;
+        private bool                    m_bInit;
 
-        static internal LoaderType      loaderType
+        internal LoaderType             loaderType
         {
             get
             {
@@ -35,29 +48,22 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        private void Start()
+        private void Awake()
         {
             // 已有AssetManager，则自毁
             if (FindObjectsOfType<AssetManager>().Length > 1)
             {
-                Debug.LogError($"AssetManager has already exist, destroy self");
                 DestroyImmediate(this);
-                return;
-            }
-
-            if (!m_bInit)
-            {
-                Debug.LogError($"AssetManager.m_bInit == false, plz call AssetManager.Init() first");
-                return;
+                throw new Exception("AssetManager has already exist...");
             }
 
             Instance = this;
+        }
 
-            if (loaderType == LoaderType.FromAB)
-            {
-                AssetBundleManager.Init(m_RootPath, Utility.GetPlatformName());
-            }
-            Debug.Log($"AssetManager.loaderType is {loaderType}");
+        private void Start()
+        {
+            // 动态生成时因无法确定Init与Awake的调用顺序，可能导致异常
+            InternalInit(m_LoaderType, m_RootPath);
         }
 
         private void OnDestroy()
@@ -78,6 +84,19 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="bundleRootPath">bundle资源路径，仅限AB加载模式时有效</param>
         static public void Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
         {
+            // 将触发AssetManager.Awake的调用，此时数据还未准备好，故Awake中不能调用InternalInit
+            DontDestroyOnLoad(new GameObject("[AssetManager]", typeof(AssetManager)));
+
+            Instance.InternalInit(type, bundleRootPath);
+        }
+
+        private void InternalInit(LoaderType type, string bundleRootPath)
+        {
+            if (m_bInit)
+                return;
+
+            m_bInit = true;
+
             m_LoaderType = type;
 
             // 根据不同应用环境初始化资源路径，e.g. 编辑器、开发环境、正式发布环境
@@ -95,13 +114,11 @@ namespace Framework.AssetManagement.Runtime
             m_RootPath = Application.streamingAssetsPath;
 #endif
 #endif
-
-            m_bInit = true;
-
-            if (GameObject.FindObjectOfType<AssetManager>() == null)
+            if (m_LoaderType == LoaderType.FromAB)
             {
-                DontDestroyOnLoad(new GameObject("[AssetManager]", typeof(AssetManager)));
+                AssetBundleManager.Init(m_RootPath, Utility.GetPlatformName());
             }
+            Debug.Log($"AssetManager.loaderType is {m_LoaderType}");
         }
 
         static public void Uninit()
@@ -121,6 +138,9 @@ namespace Framework.AssetManagement.Runtime
         /// <returns></returns>
         static public GameObject InstantiatePrefab(string assetPath)
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
             GameObject go = null;
 
             AssetLoader<GameObject> loader = LoadAsset<GameObject>(assetPath);
@@ -143,6 +163,9 @@ namespace Framework.AssetManagement.Runtime
 
         static public GameObject InstantiatePrefab(string assetBundleName, string assetName)
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
             GameObject go = null;
 
             AssetLoader<GameObject> loader = LoadAsset<GameObject>(assetBundleName, assetName);
@@ -165,6 +188,9 @@ namespace Framework.AssetManagement.Runtime
 
         static public IEnumerator InstantiatePrefabAsync(string assetPath, Action<GameObject> handler = null)
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             GameObject go = null;
 
             AssetLoaderAsync<GameObject> loaderAsync = LoadAssetAsync<GameObject>(assetPath);
@@ -188,6 +214,9 @@ namespace Framework.AssetManagement.Runtime
 
         static public IEnumerator InstantiatePrefabAsync(string assetBundleName, string assetName, Action<GameObject> handler = null)
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             GameObject go = null;
 
             AssetLoaderAsync<GameObject> loaderAsync = LoadAssetAsync<GameObject>(assetBundleName, assetName);
@@ -217,6 +246,9 @@ namespace Framework.AssetManagement.Runtime
         /// <returns></returns>
         static public AssetLoader<T> LoadAsset<T>(string assetPath) where T : UnityEngine.Object
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             AssetLoader<T> loader = AssetLoader<T>.Get(assetPath);
             if(loader.asset == null)
             {
@@ -235,6 +267,9 @@ namespace Framework.AssetManagement.Runtime
         /// <returns></returns>
         static public AssetLoader<T> LoadAsset<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             AssetLoader<T> loader = AssetLoader<T>.Get(assetBundleName, assetName);
             if(loader.asset == null)
             {
@@ -252,6 +287,9 @@ namespace Framework.AssetManagement.Runtime
         /// <returns></returns>
         static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetPath) where T : UnityEngine.Object
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             return AssetLoaderAsync<T>.Get(assetPath);
         }
 
@@ -264,16 +302,25 @@ namespace Framework.AssetManagement.Runtime
         /// <returns></returns>
         static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             return AssetLoaderAsync<T>.Get(assetBundleName, assetName);
         }
 
         static public void UnloadAsset<T>(AssetLoader<T> loader) where T : UnityEngine.Object
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             AssetLoader<T>.Release(loader);
         }
 
         static public void UnloadAsset<T>(AssetLoaderAsync<T> loader) where T : UnityEngine.Object
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             AssetLoaderAsync<T>.Release(loader);
         }
 
@@ -282,6 +329,9 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         static public AssetBundleLoader LoadAssetBundle(string assetBundleName)
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             return AssetBundleLoader.Get(assetBundleName);
         }
 
@@ -291,6 +341,9 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="abLoader"></param>
         static public void UnloadAssetBundle(AssetBundleLoader abLoader)
         {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
             AssetBundleLoader.Release(abLoader);
         }
 
