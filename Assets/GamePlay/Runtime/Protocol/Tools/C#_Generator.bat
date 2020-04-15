@@ -42,10 +42,3 @@ echo success
 pause
 
 
-
-
-
-
-
-::https://developers.google.com/protocol-buffers/docs/proto3
-::https://developers.google.com/protocol-buffers/docs/reference/csharp-generated

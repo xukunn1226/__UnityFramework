@@ -1,11 +1,7 @@
 {
-    "name": "Unity.GameFramework.Editor",
-    "references": [
-        "GUID:0a41242e49780c942891d313c8a7dc8e"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "name": "Framework.MeshParticleSystem.Runtime",
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
