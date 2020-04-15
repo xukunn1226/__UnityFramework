@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace MeshParticleSystem
+namespace Framework.MeshParticleSystem
 {
     public static class FX_Const
     {

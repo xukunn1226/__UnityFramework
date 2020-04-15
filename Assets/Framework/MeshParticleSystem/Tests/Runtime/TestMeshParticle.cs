@@ -2,7 +2,7 @@
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 
-namespace MeshParticleSystem.Editor.Tests
+namespace Framework.MeshParticleSystem.Runtime.Tests
 {
     public class TestMeshParticle : MonoBehaviour
     {

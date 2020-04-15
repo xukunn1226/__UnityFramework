@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MeshParticleSystem
+namespace Framework.MeshParticleSystem
 {
     public interface IReplay
     {

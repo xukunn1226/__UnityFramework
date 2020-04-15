@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MeshParticleSystem
+namespace Framework.MeshParticleSystem
 {
     public class FX_Rotation : FX_Component, IReplay
     {

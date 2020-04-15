@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace MeshParticleSystem.Editor
+namespace Framework.MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_CustomPropertiesTransfer))]
     public class FX_CustomPropertiesTransferInspector : UnityEditor.Editor
