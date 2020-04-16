@@ -71,9 +71,14 @@ namespace Framework.Core.Editor
 
             int vertexCount = 0;
             int triangleCount = 0;
+            HashSet<int> meshInstanceIDs = new HashSet<int>();
             foreach(var mf in mfs)
             {
                 if (mf.sharedMesh == null) continue;
+
+                if (meshInstanceIDs.Contains(mf.sharedMesh.GetInstanceID())) continue;
+
+                meshInstanceIDs.Add(mf.sharedMesh.GetInstanceID());
 
                 vertexCount += mf.sharedMesh.vertexCount;
                 triangleCount += mf.sharedMesh.triangles.Length;
@@ -82,6 +87,10 @@ namespace Framework.Core.Editor
             foreach (var smr in smrs)
             {
                 if (smr.sharedMesh == null) continue;
+
+                if (meshInstanceIDs.Contains(smr.sharedMesh.GetInstanceID())) continue;
+
+                meshInstanceIDs.Add(smr.sharedMesh.GetInstanceID());
 
                 vertexCount += smr.sharedMesh.vertexCount;
                 triangleCount += smr.sharedMesh.triangles.Length;
@@ -92,6 +101,7 @@ namespace Framework.Core.Editor
 
 
             float megaBytes = 0;
+            HashSet<int> texInstanceIDs = new HashSet<int>();
             Renderer[] rdrs = asset.GetComponentsInChildren<Renderer>(true);
             foreach(var rdr in rdrs)
             {
@@ -107,6 +117,9 @@ namespace Framework.Core.Editor
                         {
                             if (it.objectReferenceValue is Texture2D)
                             {
+                                if (texInstanceIDs.Contains(it.objectReferenceInstanceIDValue)) continue;
+                                texInstanceIDs.Add(it.objectReferenceInstanceIDValue);
+
                                 string assetPath = AssetDatabase.GetAssetPath(it.objectReferenceValue);
                                 Texture2D tex = it.objectReferenceValue as Texture2D;
                                 TextureImporter ti = TextureImporter.GetAtPath(assetPath) as TextureImporter;
