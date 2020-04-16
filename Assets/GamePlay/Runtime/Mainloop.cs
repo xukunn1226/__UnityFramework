@@ -9,12 +9,12 @@ public class Mainloop : MonoBehaviour
 
     private void Awake()
     {
-        AssetManager.Init(m_LoaderType);
+        //ResourceManager.Init(m_LoaderType);
     }
 
     private void OnDestroy()
     {
-        AssetManager.Uninit();
+        //ResourceManager.Uninit();
     }
 
     // Start is called before the first frame update

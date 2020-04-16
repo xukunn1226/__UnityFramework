@@ -5,4 +5,5 @@ using Framework.AssetManagement.Runtime;
 
 public class ResourceManager : MonoBehaviour
 {
+    private AssetManager m_AssetManager;
 }

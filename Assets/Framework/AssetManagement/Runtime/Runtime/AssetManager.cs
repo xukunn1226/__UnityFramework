@@ -18,14 +18,14 @@ namespace Framework.AssetManagement.Runtime
     /// 注意事项：
     /// 1、两种方式只能选其一，同时使用概不负责
     /// </summary>
-    public class AssetManager : MonoBehaviour
+    public sealed class AssetManager : MonoBehaviour
     {
         static internal AssetManager    Instance { get; private set; }
 
-        static internal int             PreAllocateAssetBundlePoolSize        = 200;                              // 预分配缓存AssetBundleRef对象池大小
-        static internal int             PreAllocateAssetBundleLoaderPoolSize  = 100;                              // 预分配缓存AssetBundleLoader对象池大小
-        static internal int             PreAllocateAssetLoaderPoolSize        = 50;                               // 预分配缓存AssetLoader对象池大小
-        static internal int             PreAllocateAssetLoaderAsyncPoolSize   = 50;                               // 预分配缓存AssetLoaderAsync对象池大小
+        static internal int             PreAllocateAssetBundlePoolSize        = 200;                                // 预分配缓存AssetBundleRef对象池大小
+        static internal int             PreAllocateAssetBundleLoaderPoolSize  = 100;                                // 预分配缓存AssetBundleLoader对象池大小
+        static internal int             PreAllocateAssetLoaderPoolSize        = 50;                                 // 预分配缓存AssetLoader对象池大小
+        static internal int             PreAllocateAssetLoaderAsyncPoolSize   = 50;                                 // 预分配缓存AssetLoaderAsync对象池大小
 
         [SerializeField]
         private LoaderType              m_LoaderType;
