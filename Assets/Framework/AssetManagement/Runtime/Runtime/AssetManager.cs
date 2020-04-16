@@ -17,9 +17,8 @@ namespace Framework.AssetManagement.Runtime
     /// 2、静态挂载
     /// 注意事项：
     /// 1、两种方式只能选其一，同时使用概不负责
-    /// 2、AssetManager.Init必须在Awake调用
     /// </summary>
-    public sealed class AssetManager : MonoBehaviour
+    public class AssetManager : MonoBehaviour
     {
         static internal AssetManager    Instance { get; private set; }
 
@@ -27,10 +26,14 @@ namespace Framework.AssetManagement.Runtime
         static internal int             PreAllocateAssetBundleLoaderPoolSize  = 100;                              // 预分配缓存AssetBundleLoader对象池大小
         static internal int             PreAllocateAssetLoaderPoolSize        = 50;                               // 预分配缓存AssetLoader对象池大小
         static internal int             PreAllocateAssetLoaderAsyncPoolSize   = 50;                               // 预分配缓存AssetLoaderAsync对象池大小
+
+        [SerializeField]
+        private LoaderType              m_LoaderType;
+
+        [SerializeField]
+        private string                  m_RootPath = "Deployment/AssetBundles";
         
-        public LoaderType               m_LoaderType;
-        public string                   m_RootPath;
-        private bool                    m_bInit;
+        static private bool             k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
 
         internal LoaderType             loaderType
         {
@@ -59,13 +62,10 @@ namespace Framework.AssetManagement.Runtime
 
             Instance = this;
 
-            DontDestroyOnLoad(gameObject);
-        }
+            if(!k_bDynamicLoad)
+                InternalInit(m_LoaderType, m_RootPath);
 
-        private void Start()
-        {
-            // 动态生成时因无法确定Init与Awake的调用顺序，可能导致异常
-            InternalInit(m_LoaderType, m_RootPath);
+            DontDestroyOnLoad(gameObject);
         }
 
         private void OnDestroy()
@@ -80,12 +80,13 @@ namespace Framework.AssetManagement.Runtime
 
         /// <summary>
         /// 资源管理器初始化
-        /// WARNING： 务必在AssetManager.Start()之前调用
         /// </summary>
         /// <param name="type">AB加载模式或直接从project中加载资源</param>
         /// <param name="bundleRootPath">bundle资源路径，仅限AB加载模式时有效</param>
         static public void Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
         {
+            k_bDynamicLoad = true;
+
             // 将触发AssetManager.Awake的调用，此时数据还未准备好，故Awake中不能调用InternalInit
             new GameObject("[AssetManager]", typeof(AssetManager));
 
@@ -94,11 +95,6 @@ namespace Framework.AssetManagement.Runtime
 
         private void InternalInit(LoaderType type, string bundleRootPath)
         {
-            if (m_bInit)
-                return;
-
-            m_bInit = true;
-
             m_LoaderType = type;
 
             // 根据不同应用环境初始化资源路径，e.g. 编辑器、开发环境、正式发布环境
@@ -129,6 +125,7 @@ namespace Framework.AssetManagement.Runtime
             {
                 Destroy(Instance);
             }
+            k_bDynamicLoad = false;
         }
 
 

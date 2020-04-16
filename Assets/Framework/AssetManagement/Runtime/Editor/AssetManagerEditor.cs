@@ -12,6 +12,9 @@ namespace Framework.AssetManagement.Runtime.Editor
         //SerializedProperty m_PreAllocateAssetLoaderPoolSizeProp;
         //SerializedProperty m_PreAllocateAssetLoaderAsyncPoolSizeProp;
 
+        SerializedProperty m_LoaderTypeProp;
+        SerializedProperty m_RootPathProp;
+
         GUIStyle AssetStyle;
 
         bool bFoldout_Prefab = true;
@@ -28,7 +31,10 @@ namespace Framework.AssetManagement.Runtime.Editor
             //m_PreAllocateAssetBundleLoaderPoolSizeProp = serializedObject.FindProperty("PreAllocateAssetBundleLoaderPoolSize");
             //m_PreAllocateAssetLoaderPoolSizeProp = serializedObject.FindProperty("PreAllocateAssetLoaderPoolSize");
             //m_PreAllocateAssetLoaderAsyncPoolSizeProp = serializedObject.FindProperty("PreAllocateAssetLoaderAsyncPoolSize");
-            
+
+            m_LoaderTypeProp = serializedObject.FindProperty("m_LoaderType");
+            m_RootPathProp = serializedObject.FindProperty("m_RootPath");
+
             AssetStyle = new GUIStyle();
             AssetStyle.fontSize = 12;
             AssetStyle.fontStyle = FontStyle.Bold;
@@ -55,6 +61,8 @@ namespace Framework.AssetManagement.Runtime.Editor
             //EditorGUILayout.PropertyField(m_PreAllocateAssetLoaderPoolSizeProp, new GUIContent("Pre Allocate AssetLoader Pool Size"));
             //EditorGUILayout.PropertyField(m_PreAllocateAssetLoaderAsyncPoolSizeProp, new GUIContent("PreAllocate AssetLoaderAsync Pool Size"));
 
+            EditorGUILayout.PropertyField(m_LoaderTypeProp);
+            EditorGUILayout.PropertyField(m_RootPathProp);
 
             bFoldout_Prefab = DrawAssetInfo<GameObject>("<Prefab>", bFoldout_Prefab);
 
