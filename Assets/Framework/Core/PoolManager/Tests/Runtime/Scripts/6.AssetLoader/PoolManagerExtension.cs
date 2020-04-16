@@ -21,16 +21,16 @@ namespace Cache.Tests
         }
     }
 
-    public class AssetLoader : IAssetLoaderProxy
+    public class AssetLoader : IAssetLoader
     {
-        private UnityEngine.Object m_Asset;
+        private UnityEngine.GameObject m_Asset;
 
-        public UnityEngine.Object asset { get { return m_Asset; } }
+        public UnityEngine.GameObject asset { get { return m_Asset; } }
 
-        public UnityEngine.Object Load(string assetPath)
+        public UnityEngine.GameObject Load(string assetPath)
         {
 #if UNITY_EDITOR
-            m_Asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+            m_Asset = AssetDatabase.LoadAssetAtPath<UnityEngine.GameObject>(assetPath);
 #endif
             return m_Asset;
         }

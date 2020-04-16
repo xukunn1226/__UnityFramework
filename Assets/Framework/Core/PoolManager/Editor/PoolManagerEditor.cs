@@ -13,7 +13,7 @@ namespace Framework.Cache.Editor
 
         private Dictionary<long, MonoPoolBase> MonoPools;
 
-        private Dictionary<string, IAssetLoaderProxy> AssetLoaders;
+        private Dictionary<string, IAssetLoader> AssetLoaders;
 
         private void OnEnable()
         {
@@ -100,7 +100,7 @@ namespace Framework.Cache.Editor
             EditorGUILayout.LabelField(string.Format("AssetLoaders[{0}]", AssetLoaders.Count), EditorStyles.largeLabel);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                Dictionary<string, IAssetLoaderProxy>.Enumerator e = AssetLoaders.GetEnumerator();
+                Dictionary<string, IAssetLoader>.Enumerator e = AssetLoaders.GetEnumerator();
                 while (e.MoveNext())
                 {
                     EditorGUILayout.BeginHorizontal();

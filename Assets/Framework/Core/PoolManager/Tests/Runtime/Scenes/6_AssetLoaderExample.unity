@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59d62e8f01bb9584d9de0c229e37da90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  assetPath: assets/poolmanager/tests/runtime/decal/qk.prefab
+  assetPath: assets/framework/core/poolmanager/tests/runtime/decal/qk.prefab
 --- !u!1 &1001591045
 GameObject:
   m_ObjectHideFlags: 0

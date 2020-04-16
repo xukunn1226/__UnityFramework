@@ -7,11 +7,11 @@ namespace Framework.Cache
     /// <summary>
     /// load asset by asset path
     /// </summary>
-    public interface IAssetLoaderProxy
+    public interface IAssetLoader
     {
-        UnityEngine.Object asset { get; }
+        GameObject asset { get; }
 
-        UnityEngine.Object Load(string assetPath);
+        GameObject Load(string assetPath);
 
         void Unload();
     }

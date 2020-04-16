@@ -36,13 +36,13 @@ namespace Framework.Cache
 
         private static Dictionary<Type, IPool>                  m_Pools             = new Dictionary<Type, IPool>();
 
-        static private Dictionary<string, IAssetLoaderProxy>    m_AssetLoaderDict   = new Dictionary<string, IAssetLoaderProxy>();  // <key, value>: <assetPath, assetLoader>
+        static private Dictionary<string, IAssetLoader>    m_AssetLoaderDict   = new Dictionary<string, IAssetLoader>();  // <key, value>: <assetPath, assetLoader>
         
         static public Dictionary<Type, IPool>                   Pools               { get { return m_Pools; } }
 
         static public Dictionary<long, MonoPoolBase>            MonoPools           { get { return m_MonoPools; } }
 
-        static public Dictionary<string, IAssetLoaderProxy>     AssetLoaders        { get { return m_AssetLoaderDict; } }
+        static public Dictionary<string, IAssetLoader>     AssetLoaders        { get { return m_AssetLoaderDict; } }
 
         private void Awake()
         {
@@ -102,8 +102,8 @@ namespace Framework.Cache
         {
             foreach (var item in m_AssetLoaderDict)
             {
-                IAssetLoaderProxy loader = item.Value;
-                MonoPooledObjectBase comp = ((GameObject)loader.asset).GetComponent<MonoPooledObjectBase>();
+                IAssetLoader loader = item.Value;
+                MonoPooledObjectBase comp = (loader.asset).GetComponent<MonoPooledObjectBase>();
                 MonoPoolBase[] pools = GetMonoPools(comp);      // 获取管理此对象的所有对象池
                 foreach (var pool in pools)
                 {
@@ -115,7 +115,7 @@ namespace Framework.Cache
         }
 
         #region //////////////////////管理Mono对象接口—— GetOrCreate, RemoveMonoPool
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TLoaderType : IAssetLoaderProxy
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TLoaderType : IAssetLoader
         {
             return GetOrCreatePool<TPooledObject, PrefabObjectPool, TLoaderType>(assetPath);
         }
@@ -128,12 +128,12 @@ namespace Framework.Cache
         /// <typeparam name="TLoaderType"></typeparam>
         /// <param name="assetPath"></param>
         /// <returns></returns>
-        static public TPool GetOrCreatePool<TPooledObject, TPool, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase where TLoaderType : IAssetLoaderProxy
+        static public TPool GetOrCreatePool<TPooledObject, TPool, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase where TLoaderType : IAssetLoader
         {
-            IAssetLoaderProxy loader;
+            IAssetLoader loader;
             if (!m_AssetLoaderDict.TryGetValue(assetPath, out loader))
             {
-                loader = (IAssetLoaderProxy)Activator.CreateInstance(typeof(TLoaderType));
+                loader = (IAssetLoader)Activator.CreateInstance(typeof(TLoaderType));
                 loader.Load(assetPath);
                 if(loader.asset == null)
                 {
@@ -143,7 +143,7 @@ namespace Framework.Cache
                 m_AssetLoaderDict.Add(assetPath, loader);
             }
 
-            return GetOrCreatePool<TPooledObject, TPool>(loader.asset as GameObject);
+            return GetOrCreatePool<TPooledObject, TPool>(loader.asset);
         }
 
         /// <summary>
@@ -246,13 +246,13 @@ namespace Framework.Cache
         /// <param name="assetPath"></param>
         static public void RemoveMonoPool<TPool>(string assetPath) where TPool : MonoPoolBase
         {
-            IAssetLoaderProxy loader;
+            IAssetLoader loader;
             if (!m_AssetLoaderDict.TryGetValue(assetPath, out loader))
             {
                 return;
             }
 
-            RemoveMonoPool<TPool>(loader.asset as GameObject);
+            RemoveMonoPool<TPool>(loader.asset);
             m_AssetLoaderDict.Remove(assetPath);
             loader.Unload();
         }
