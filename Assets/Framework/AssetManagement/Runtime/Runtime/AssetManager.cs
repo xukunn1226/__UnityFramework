@@ -60,12 +60,14 @@ namespace Framework.AssetManagement.Runtime
                 throw new Exception("AssetManager has already exist...");
             }
 
+            gameObject.name = "[AssetManager]";
+
             Instance = this;
+
+            DontDestroyOnLoad(gameObject);
 
             if(!k_bDynamicLoad)
                 InternalInit(m_LoaderType, m_RootPath);
-
-            DontDestroyOnLoad(gameObject);
         }
 
         private void OnDestroy()
@@ -75,7 +77,6 @@ namespace Framework.AssetManagement.Runtime
                 // 确保应用层持有的AssetLoader(Async)释放后再调用
                 AssetBundleManager.Uninit();
             }
-            Instance = null;
         }
 
         /// <summary>
@@ -83,14 +84,15 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         /// <param name="type">AB加载模式或直接从project中加载资源</param>
         /// <param name="bundleRootPath">bundle资源路径，仅限AB加载模式时有效</param>
-        static public void Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
+        static public AssetManager Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
         {
             k_bDynamicLoad = true;
 
-            // 将触发AssetManager.Awake的调用，此时数据还未准备好，故Awake中不能调用InternalInit
-            new GameObject("[AssetManager]", typeof(AssetManager));
+            GameObject go = new GameObject("[AssetManager]", typeof(AssetManager));
 
             Instance.InternalInit(type, bundleRootPath);
+
+            return go.GetComponent<AssetManager>();
         }
 
         private void InternalInit(LoaderType type, string bundleRootPath)
@@ -124,6 +126,7 @@ namespace Framework.AssetManagement.Runtime
             if (Instance != null)
             {
                 Destroy(Instance);
+                Instance = null;
             }
             k_bDynamicLoad = false;
         }

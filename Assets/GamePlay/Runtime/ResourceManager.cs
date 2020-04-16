@@ -6,59 +6,123 @@ using System;
 
 public class ResourceManager : MonoBehaviour
 {
-    static internal ResourceManager Instance { get; private set; }
+    static private ResourceManager  Instance { get; set; }
 
-    private AssetManager    m_AssetManager;
-
-    [SerializeField]
-    private LoaderType      m_LoaderType;
+    static private AssetManager     m_AssetManager;
 
     [SerializeField]
-    private string          m_RootPath          = "Deployment/AssetBundles";
+    private LoaderType              m_LoaderType        = LoaderType.FromEditor;
 
-    static private bool     k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
+    [SerializeField]
+    private string                  m_RootPath          = "Deployment/AssetBundles";
 
-    internal LoaderType     loaderType
-    {
-        get
-        {
-#if UNITY_EDITOR
-            if (Instance != null)
-            {
-                return m_LoaderType;
-            }
-            return LoaderType.FromEditor;
-#else
-            return LoaderType.FromAB;       // 移动平台强制AB加载
-#endif
-        }
-    }
-
+    static private bool             k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
 
     private void Awake()
     {
-        // 已有AssetManager，则自毁
+        // 已有ResourceManager，则自毁
         if (FindObjectsOfType<ResourceManager>().Length > 1)
         {
             DestroyImmediate(this);
-            throw new Exception("AssetManager has already exist...");
+            throw new Exception("ResourceManager has already exist...");
         }
+
+        gameObject.name = "[ResourceManager]";
 
         Instance = this;
 
-        //if (!k_bDynamicLoad)
-        //    InternalInit(m_LoaderType, m_RootPath);
-
+        gameObject.transform.parent = null;
         DontDestroyOnLoad(gameObject);
+
+        if(!k_bDynamicLoad)
+        {
+            m_AssetManager = AssetManager.Init(m_LoaderType, m_RootPath);
+            m_AssetManager.transform.parent = transform;
+        }
     }
 
-    private void OnDestroy()
+    static public void Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
     {
-        if (loaderType == LoaderType.FromAB)
+        m_AssetManager = AssetManager.Init(type, bundleRootPath);
+
+        k_bDynamicLoad = true;
+        GameObject go = new GameObject();
+        go.AddComponent<ResourceManager>();
+
+        m_AssetManager.transform.parent = go.transform;
+
+        Instance.m_LoaderType = type;
+        Instance.m_RootPath = bundleRootPath;
+    }
+
+    static public void Uninit()
+    {
+        AssetManager.Uninit();
+        if (Instance != null)
         {
-            // 确保应用层持有的AssetLoader(Async)释放后再调用
-            //AssetBundleManager.Uninit();
+            Destroy(Instance);
+            Instance = null;
         }
-        Instance = null;
+        k_bDynamicLoad = false;
+    }
+
+    static public GameObject InstantiatePrefab(string assetPath)
+    {
+        return AssetManager.InstantiatePrefab(assetPath);
+    }
+
+    static public GameObject InstantiatePrefab(string assetBundleName, string assetName)
+    {
+        return AssetManager.InstantiatePrefab(assetBundleName, assetName);
+    }
+
+    static public IEnumerator InstantiatePrefabAsync(string assetPath, Action<GameObject> handler = null)
+    {
+        return AssetManager.InstantiatePrefabAsync(assetPath, handler);
+    }
+
+    static public IEnumerator InstantiatePrefabAsync(string assetBundleName, string assetName, Action<GameObject> handler = null)
+    {
+        return AssetManager.InstantiatePrefabAsync(assetBundleName, assetName, handler);
+    }
+
+    static public AssetLoader<T> LoadAsset<T>(string assetPath) where T : UnityEngine.Object
+    {
+        return AssetManager.LoadAsset<T>(assetPath);
+    }
+
+    static public AssetLoader<T> LoadAsset<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
+    {
+        return AssetManager.LoadAsset<T>(assetBundleName, assetName);
+    }
+
+    static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetPath) where T : UnityEngine.Object
+    {
+        return AssetManager.LoadAssetAsync<T>(assetPath);
+    }
+
+    static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
+    {
+        return AssetManager.LoadAssetAsync<T>(assetBundleName, assetName);
+    }
+
+    static public void UnloadAsset<T>(AssetLoader<T> loader) where T : UnityEngine.Object
+    {
+        AssetManager.UnloadAsset<T>(loader);
+    }
+
+    static public void UnloadAsset<T>(AssetLoaderAsync<T> loader) where T : UnityEngine.Object
+    {
+        AssetManager.UnloadAsset<T>(loader);
+    }
+
+    static public AssetBundleLoader LoadAssetBundle(string assetBundleName)
+    {
+        return AssetManager.LoadAssetBundle(assetBundleName);
+    }
+
+    static public void UnloadAssetBundle(AssetBundleLoader abLoader)
+    {
+        AssetManager.UnloadAssetBundle(abLoader);
     }
 }
