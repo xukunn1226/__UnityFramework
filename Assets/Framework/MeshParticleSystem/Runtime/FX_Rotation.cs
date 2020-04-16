@@ -16,6 +16,9 @@ namespace Framework.MeshParticleSystem
         public Vector3          Target;
         public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
 
+        public bool             RandomRotation;
+        public Vector2          ZStartRotation;
+
         private float           m_ElapsedTime;
         private float           m_Delay;
         private Vector3         m_OriginalLocalEuler;
@@ -24,6 +27,7 @@ namespace Framework.MeshParticleSystem
         {
             // 记录初始朝向
             m_OriginalLocalEuler = transform.localEulerAngles;
+            m_OriginalLocalEuler.z = RandomRotation ? Random.Range(ZStartRotation.x, ZStartRotation.y) : m_OriginalLocalEuler.z;
         }
 
         void OnEnable()
@@ -35,6 +39,7 @@ namespace Framework.MeshParticleSystem
         {
             // 恢复初始朝向
             transform.localEulerAngles = m_OriginalLocalEuler;
+            m_OriginalLocalEuler.z = RandomRotation ? Random.Range(ZStartRotation.x, ZStartRotation.y) : m_OriginalLocalEuler.z;
 
             m_ElapsedTime = 0;
             m_Delay = Delay;
