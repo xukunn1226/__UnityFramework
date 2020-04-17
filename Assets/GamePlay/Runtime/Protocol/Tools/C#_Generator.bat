@@ -8,7 +8,7 @@ del ..\*.cs
 cd .\Proto
 rem step3. compile cs
 ::protoc -I=源地址     --csharp_out=目标地址      源地址/xxx.proto
-for %%i in (".\*.proto") do protoc -I=.\ --csharp_out=..\..\ %%i
+for %%i in (".\*.proto") do ..\protoc -I=.\ --csharp_out=..\..\ %%i
 
 
 

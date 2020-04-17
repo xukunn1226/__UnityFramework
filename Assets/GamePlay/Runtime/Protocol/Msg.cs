@@ -35,9 +35,9 @@ namespace NetProtocol {
             "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::NetProtocol.Msg2Reflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::NetProtocol.StoreRequest), global::NetProtocol.StoreRequest.Parser, new[]{ "Name", "Num", "Result", "MyList", "Dic", "LastUpdate" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::NetProtocol.MapField), global::NetProtocol.MapField.Parser, new[]{ "Key", "Value" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::NetProtocol.StoreRequest), global::NetProtocol.StoreRequest.Parser, new[]{ "Name", "Num", "Result", "MyList", "Dic", "LastUpdate" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::NetProtocol.MapField), global::NetProtocol.MapField.Parser, new[]{ "Key", "Value" }, null, null, null, null)
           }));
     }
     #endregion
@@ -129,7 +129,7 @@ namespace NetProtocol {
     /// <summary>Field number for the "dic" field.</summary>
     public const int DicFieldNumber = 5;
     private static readonly pbc::MapField<string, int>.Codec _map_dic_codec
-        = new pbc::MapField<string, int>.Codec(pb::FieldCodec.ForString(10), pb::FieldCodec.ForInt32(16), 42);
+        = new pbc::MapField<string, int>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForInt32(16, 0), 42);
     private readonly pbc::MapField<string, int> dic_ = new pbc::MapField<string, int>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pbc::MapField<string, int> Dic {

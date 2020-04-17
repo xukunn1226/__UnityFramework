@@ -29,8 +29,8 @@ namespace NetProtocol {
             "eUxpc3QYBCADKAliBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::NetProtocol.StoreRequest2), global::NetProtocol.StoreRequest2.Parser, new[]{ "Name", "Num", "Result", "MyList" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::NetProtocol.StoreRequest2), global::NetProtocol.StoreRequest2.Parser, new[]{ "Name", "Num", "Result", "MyList" }, null, null, null, null)
           }));
     }
     #endregion
