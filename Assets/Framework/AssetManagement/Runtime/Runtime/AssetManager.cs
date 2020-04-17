@@ -68,6 +68,10 @@ namespace Framework.AssetManagement.Runtime
 
             if(!k_bDynamicLoad)
                 InternalInit(m_LoaderType, m_RootPath);
+
+            transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
         }
 
         private void OnDestroy()

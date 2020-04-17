@@ -37,9 +37,13 @@ namespace Framework.Cache
 
         private void Awake()
         {
+            transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+
             // 静态创建对象池时，此时注册PoolManager
             // 动态创建对象池时，PrefabAsset一定为空，skip
-            if(PrefabAsset != null)
+            if (PrefabAsset != null)
                 PoolManager.AddMonoPool(this);
 
             Init();

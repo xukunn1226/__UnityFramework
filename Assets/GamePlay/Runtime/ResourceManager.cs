@@ -39,6 +39,10 @@ public class ResourceManager : MonoBehaviour
             m_AssetManager = AssetManager.Init(m_LoaderType, m_RootPath);
             m_AssetManager.transform.parent = transform;
         }
+
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        transform.localScale = Vector3.one;
     }
 
     private void OnDestroy()
