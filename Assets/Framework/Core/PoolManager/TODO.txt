@@ -1,5 +1,7 @@
 * 配置：所有缓存对象可配置化（初始化大小等）
-* PoolManager可配置Pool
+* PoolManager可配置Pool   Pool = PoolManagerExtension.GetOrCreatePool<Decal, LivingPrefabObjectPool>(assetPath);
+* 退出Play Mode时PoolManager数据清除干净
+
 
 
 - LRU

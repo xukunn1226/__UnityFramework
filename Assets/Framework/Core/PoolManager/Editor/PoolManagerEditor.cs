@@ -103,6 +103,8 @@ namespace Framework.Cache.Editor
                 Dictionary<string, IAssetLoader>.Enumerator e = AssetLoaders.GetEnumerator();
                 while (e.MoveNext())
                 {
+                    if (e.Current.Value.asset == null) continue;
+
                     EditorGUILayout.BeginHorizontal();
                     {
                         MonoPooledObjectBase comp = ((GameObject)e.Current.Value.asset).GetComponent<MonoPooledObjectBase>();
