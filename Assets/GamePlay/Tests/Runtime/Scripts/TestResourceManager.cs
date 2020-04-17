@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 
-public class Mainloop : MonoBehaviour
+public class TestResourceManager : MonoBehaviour
 {
     public LoaderType   m_LoaderType;
 
