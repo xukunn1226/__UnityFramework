@@ -9,22 +9,9 @@ using Framework.AssetManagement.Runtime;
 /// </summary>
 public class TestAssetReference : MonoBehaviour
 {
-    public LoaderType m_LoaderType;
-
     public string assetPath;
 
     private LivingPrefabObjectPool Pool;
-
-
-    private void Awake()
-    {
-        ResourceManager.Init(m_LoaderType);
-    }
-
-    private void OnDestroy()
-    {
-        ResourceManager.Uninit();
-    }
 
     private void OnGUI()
     {

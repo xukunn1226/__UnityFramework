@@ -7,7 +7,7 @@ namespace Framework.Cache
     /// <summary>
     /// 负责管理所有Mono及非Mono对象池
     /// </summary>
-    public class PoolManager : MonoBehaviour
+    public sealed class PoolManager : MonoBehaviour
     {
         //public delegate UnityEngine.Object InstantiateDelegate(UnityEngine.Object original);
         //public delegate void DestroyDelegate(GameObject obj);
@@ -23,9 +23,8 @@ namespace Framework.Cache
             {
                 if(m_kInstance == null)
                 {
-                    GameObject go = new GameObject("[PoolManager]");
+                    GameObject go = new GameObject();
                     m_kInstance = go.AddComponent<PoolManager>();
-                    DontDestroyOnLoad(go);
                 }
                 return m_kInstance;
             }
@@ -36,13 +35,13 @@ namespace Framework.Cache
 
         private static Dictionary<Type, IPool>                  m_Pools             = new Dictionary<Type, IPool>();
 
-        static private Dictionary<string, IAssetLoader>    m_AssetLoaderDict   = new Dictionary<string, IAssetLoader>();  // <key, value>: <assetPath, assetLoader>
+        static private Dictionary<string, IAssetLoader>         m_AssetLoaderDict   = new Dictionary<string, IAssetLoader>();       // <key, value>: <assetPath, assetLoader>
         
         static public Dictionary<Type, IPool>                   Pools               { get { return m_Pools; } }
 
         static public Dictionary<long, MonoPoolBase>            MonoPools           { get { return m_MonoPools; } }
 
-        static public Dictionary<string, IAssetLoader>     AssetLoaders        { get { return m_AssetLoaderDict; } }
+        static public Dictionary<string, IAssetLoader>          AssetLoaders        { get { return m_AssetLoaderDict; } }
 
         private void Awake()
         {
@@ -50,7 +49,7 @@ namespace Framework.Cache
             {
                 Debug.LogErrorFormat("PoolManager has already exist [{0}], kill it", name);
                 DestroyImmediate(gameObject);
-                return;
+                throw new Exception("PoolManager has already exist...");
             }
 
             m_kInstance = this;
@@ -71,9 +70,9 @@ namespace Framework.Cache
 
         static public void Clear()
         {
+            RemoveAllAssetLoaders();
             RemoveAllMonoPools();
             RemoveAllObjectPools();
-            RemoveAllAssetLoaders();
         }
 
         static public void RemoveAllMonoPools()
