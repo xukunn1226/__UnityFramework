@@ -37,7 +37,8 @@ namespace Framework.Cache
 
         private void Awake()
         {
-            // 动态创建对象池时，PrefabAsset为空
+            // 静态创建对象池时，此时注册PoolManager
+            // 动态创建对象池时，PrefabAsset一定为空，skip
             if(PrefabAsset != null)
                 PoolManager.AddMonoPool(this);
 
@@ -79,7 +80,7 @@ namespace Framework.Cache
         /// </summary>
         public override void Warmup()
         {
-            if (PrefabAsset == null)        // 动态创建Pool时可能相关参数仍未设置
+            if (PrefabAsset == null)        // 动态创建Pool时PrefabAsset参数仍未设置
                 return;
 
             if(TrimUnused)
