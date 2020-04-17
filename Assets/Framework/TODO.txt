@@ -1,4 +1,6 @@
 * 使用各种性能分析工具：GOT、URP并整合
+* SpawnerRing使用AB，PoolManager方式重制
+
 
 - 参考GameFramework设置目录结构
 - 打包出现modified的问题
