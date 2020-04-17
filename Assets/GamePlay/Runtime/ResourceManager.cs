@@ -41,6 +41,13 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        AssetManager.Uninit();
+        k_bDynamicLoad = false;
+        Instance = null;        
+    }
+
     static public void Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
     {
         m_AssetManager = AssetManager.Init(type, bundleRootPath);
@@ -57,13 +64,10 @@ public class ResourceManager : MonoBehaviour
 
     static public void Uninit()
     {
-        AssetManager.Uninit();
         if (Instance != null)
         {
             Destroy(Instance);
-            Instance = null;
         }
-        k_bDynamicLoad = false;
     }
 
     static public GameObject InstantiatePrefab(string assetPath)

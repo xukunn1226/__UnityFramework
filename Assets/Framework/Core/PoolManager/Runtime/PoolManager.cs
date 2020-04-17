@@ -101,14 +101,16 @@ namespace Framework.Cache
         {
             foreach (var item in m_AssetLoaderDict)
             {
-                IAssetLoader loader = item.Value;
-                MonoPooledObjectBase comp = (loader.asset).GetComponent<MonoPooledObjectBase>();
+                if (item.Value.asset == null)
+                    continue;
+
+                MonoPooledObjectBase comp = (item.Value.asset).GetComponent<MonoPooledObjectBase>();
                 MonoPoolBase[] pools = GetMonoPools(comp);      // 获取管理此对象的所有对象池
                 foreach (var pool in pools)
                 {
                     RemoveMonoPool(pool);
                 }
-                loader.Unload();
+                item.Value.Unload();
             }
             m_AssetLoaderDict.Clear();
         }

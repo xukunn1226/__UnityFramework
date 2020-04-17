@@ -41,19 +41,19 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         static internal void Uninit()
         {
-            //// unload already loaded asset bundle
-            //foreach (KeyValuePair<string, AssetBundleRef> kvp in m_DictAssetBundleRefs)
-            //{
-            //    AssetBundleRef.Release(kvp.Value);
-            //}
-            //m_DictAssetBundleRefs.Clear();
+            // unload already loaded asset bundle
+            foreach (KeyValuePair<string, AssetBundleRef> kvp in m_DictAssetBundleRefs)
+            {
+                AssetBundleRef.Release(kvp.Value);
+            }
+            m_DictAssetBundleRefs.Clear();
 
-            //// unload manifest
-            //if (m_AssetBundleManifest != null)
-            //{
-            //    Resources.UnloadAsset(m_AssetBundleManifest);        // 卸载Asset-Object
-            //    m_AssetBundleManifest = null;
-            //}
+            // unload manifest
+            if (m_AssetBundleManifest != null)
+            {
+                Resources.UnloadAsset(m_AssetBundleManifest);        // 卸载Asset-Object
+                m_AssetBundleManifest = null;
+            }
         }
         
         static internal string[] GetAllDependencies(string InAssetBundleName)

@@ -77,6 +77,8 @@ namespace Framework.AssetManagement.Runtime
                 // 确保应用层持有的AssetLoader(Async)释放后再调用
                 AssetBundleManager.Uninit();
             }
+            k_bDynamicLoad = false;
+            Instance = null;
         }
 
         /// <summary>
@@ -126,9 +128,7 @@ namespace Framework.AssetManagement.Runtime
             if (Instance != null)
             {
                 Destroy(Instance);
-                Instance = null;
             }
-            k_bDynamicLoad = false;
         }
 
 
