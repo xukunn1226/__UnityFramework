@@ -16,6 +16,7 @@ namespace Framework.Cache
         /// </summary>
         public MonoPooledObjectBase         PrefabAsset;
 
+        [HideInInspector]
         public bool                         ScriptDynamicAdded = false;     // MonoPooledObjectBase是否是运行时Add
 
         private Transform                   m_Group;

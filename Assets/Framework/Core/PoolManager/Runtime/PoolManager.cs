@@ -336,8 +336,9 @@ namespace Framework.Cache
 
             if (GetMonoPool(newPool.PrefabAsset, newPool.GetType()) != null)
             {
-                Debug.LogWarning($"RegisterMonoPool: {newPool} has already exist in mono pools");
-                return;
+                throw new Exception($"RegisterMonoPool: {newPool} has already exist in mono pools");
+                //Debug.LogWarning($"RegisterMonoPool: {newPool} has already exist in mono pools");
+                //return;
             }
             m_MonoPools.Add(GetMonoPoolHashCode(newPool.PrefabAsset, newPool.GetType()), newPool);
         }

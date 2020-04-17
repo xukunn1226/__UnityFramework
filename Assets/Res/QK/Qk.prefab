@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8474386170713631267}
   - component: {fileID: 8474386170713631266}
   - component: {fileID: 8474386170713631269}
-  - component: {fileID: 4615882993473126657}
+  - component: {fileID: -9192943844447947820}
   m_Layer: 0
   m_Name: Qk
   m_TagString: Untagged
@@ -4813,7 +4813,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &4615882993473126657
+--- !u!114 &-9192943844447947820
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
