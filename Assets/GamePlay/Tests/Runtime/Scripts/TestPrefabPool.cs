@@ -5,7 +5,9 @@ using Framework.Cache;
 using Framework.AssetManagement.Runtime;
 
 /// <summary>
-/// 把对象池作为Prefab动态加载
+/// 把对象池製作Prefab的幾個優勢：
+/// 1、配置Pool參數
+/// 2、动态加载
 /// </summary>
 public class TestPrefabPool : MonoBehaviour
 {
