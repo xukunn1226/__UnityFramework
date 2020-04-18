@@ -11,6 +11,7 @@ public class StuffSpawnerRing : MonoBehaviour
 
     public StuffSpawner spawnerPrefab;
 
+    [HideInInspector]
     public bool bPause;
 
     IEnumerator Start()

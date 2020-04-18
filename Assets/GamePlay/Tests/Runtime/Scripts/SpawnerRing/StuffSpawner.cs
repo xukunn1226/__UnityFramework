@@ -5,6 +5,7 @@
 /// </summary>
 public class StuffSpawner : MonoBehaviour
 {
+    [HideInInspector]
     public StuffSpawnerRing Owner;
 
     public FloatRange timeBetweenSpawns, scale, randomVelocity, angularVelocity;
