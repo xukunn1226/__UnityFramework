@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Framework.Core
 {
     /// <summary>
     /// 命令行工具类
     /// 格式同Unity：-COMMAND PARAMETER -COMMAND PARAMETER
-    /// "C:\Program Files\Unity\Editor\Unity.exe" -quit -batchmode -projectPath "C:\Users\UserName\Documents\MyProject" -executeMethod MyEditorScript.PerformBuild
+    /// "C:\Program Files\Unity\Editor\Unity.exe" -quit -batchmode -projectPath "C:\Users\UserName\Documents\MyProject" -executeMethod MyEditorScript.PerformBuild -UseAPKExpansionFiles
     /// </summary>
     public class CommandLineReader
     {
@@ -39,7 +40,7 @@ namespace Framework.Core
                     string parameter = string.Empty;
 
                     // check next "args" whether or not is the "parameter"
-                    int nextCmdIndex = System.Math.Min(cmdIndex + 1, args.Length);
+                    int nextCmdIndex = System.Math.Min(cmdIndex + 1, args.Length - 1);
                     if (!args[nextCmdIndex].StartsWith("-"))
                     {
                         parameter = args[nextCmdIndex];

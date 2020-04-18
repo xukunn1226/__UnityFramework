@@ -59,14 +59,14 @@ namespace Framework.GameBuilder
 
             // get the named GameBuilder
             string whichSetting = "win64";
-            if(!CommandLineReader.GetCommand("BuilderProfier", ref whichSetting))
+            if(!CommandLineReader.GetCommand("BuilderProfile", ref whichSetting))
             {
-                Debug.Log(@"     Error: Missing Command: BuilderProfier ");
+                Debug.Log(@"     Error: Missing Command: BuilderProfile ");
                 EditorApplication.Exit(1);
                 return;
             }
 
-            Debug.Log("     BuilderProfier: " + whichSetting);
+            Debug.Log("     BuilderProfile: " + whichSetting);
             GameBuilderSetting setting = GameBuilderSettingCollection.GetDefault().GetData(whichSetting);
             if(setting == null)
             {

@@ -28,3 +28,5 @@ MonoBehaviour:
   useMTRendering: 0
   useAPKExpansionFiles: 0
   macroDefines: 
+  bOverrideBuildScenes: 0
+  overrideBuildScenes: []

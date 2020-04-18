@@ -12,7 +12,7 @@ namespace Tests
         [Test]
         public void TestCmdLine()
         {
-            string commandLine = @"C:\Program Files\Unity\Editor\Unity.exe -quit -batchmode -projectPath C:\Users\UserName\Documents\MyProject -executeMethod MyEditorScript.PerformBuild";
+            string commandLine = @"C:\Program Files\Unity\Editor\Unity.exe -quit -batchmode -projectPath C:\Users\UserName\Documents\MyProject -executeMethod MyEditorScript.PerformBuild -UseAPKExpansionFiles";
             CommandLineReader.ParseCommandLine(ToArray(commandLine, ' '));
 
             string v1 = string.Empty;
