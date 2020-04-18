@@ -1,4 +1,4 @@
-* 使用各种性能分析工具：GOT、URP并整合
+* 使用各种性能分析工具：GOT、GPM、URP并整合
 
 
 - build from script
