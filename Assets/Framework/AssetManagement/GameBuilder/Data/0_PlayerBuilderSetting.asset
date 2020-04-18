@@ -16,14 +16,14 @@ MonoBehaviour:
   projectName: MyProject
   autoRunPlayer: 0
   development: 1
-  connectWithProfiler: 1
-  allowDebugging: 1
+  connectWithProfiler: 0
+  allowDebugging: 0
   buildScriptsOnly: 0
   compressWithLz4: 0
   compressWithLz4HC: 1
   strictMode: 1
   bundleVersion: 
-  useIL2CPP: 1
+  useIL2CPP: 0
   il2CppCompilerConfiguration: 2
   useMTRendering: 0
   useAPKExpansionFiles: 0

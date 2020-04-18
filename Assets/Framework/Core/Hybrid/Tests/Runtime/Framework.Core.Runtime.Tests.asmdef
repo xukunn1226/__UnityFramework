@@ -15,7 +15,9 @@
         "Google.Protobuf.dll"
     ],
     "autoReferenced": false,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "ENABLE_PROFILER"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

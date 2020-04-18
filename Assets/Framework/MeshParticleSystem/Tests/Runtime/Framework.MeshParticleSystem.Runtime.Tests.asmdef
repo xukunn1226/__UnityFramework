@@ -10,7 +10,9 @@
     "overrideReferences": true,
     "precompiledReferences": [],
     "autoReferenced": false,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "ENABLE_PROFILER"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
