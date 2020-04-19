@@ -6,9 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/GamePlay/Tests/Runtime/Scenes/TestSpawnerRing.unity
+    path: Assets/Res/scene1/TestSpawnerEntry.unity
+    guid: 6debd4449d9d6fd459e9ef9717a23d5e
+  - enabled: 0
+    path: Assets/Res/scene1/TestSpawnerRing.unity
     guid: ff9d69c1b7cef3646866f0abde25e5e8
-  - enabled: 1
+  - enabled: 0
     path: Assets/Framework/Core/PoolManager/Tests/Runtime/Scenes/5_SpawnerRing.unity
     guid: d582c8f1880ce5141b007b506bf9ef87
   - enabled: 0

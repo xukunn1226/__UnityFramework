@@ -4,6 +4,19 @@
 * async,await的封装，统一同步、异步加载接口，AsyncTaskMethodBuilder，TaskCompletionSource
 * 分析场景是如何打包，如何热更的
 * 如何实现C#的WeakPoint
+* 加载场景接口（动态、静态）
+
+	* 场景不打AB时
+		* 必须加入Build Settings
+		* 调用方式：LoadScene(sceneName)  OR  LoadScene(scenePath)，前者不带后缀名，后者带后缀名
+		* sceneName or scenePath大小写均不敏感
+	* 场景打AB时
+		* 无需加入Build Settings
+		* 调用LoadScene之前必须把场景所在AB及依赖AB先载入
+		* 调用方式：LoadScene(sceneName)  OR  LoadScene(scenePath)，前者不带后缀名，后者带后缀名
+		* sceneName or scenePath大小写均敏感
+
+
 
 
 
