@@ -219,10 +219,11 @@ namespace Framework.AssetBrowser
                 }
                 else
                 {
+                    roi.assetBundleName = AssetDatabase.GetImplicitAssetBundleName(roi.assetPath);
                     if (ShouldExclude(roi.assetPath))
                         roi.isExternal = false;
                     else
-                        roi.isExternal = string.IsNullOrEmpty(AssetDatabase.GetImplicitAssetBundleName(roi.assetPath));
+                        roi.isExternal = string.IsNullOrEmpty(roi.assetBundleName);
                 }
 
                 //Debug.Log($"        {roi.name}  {roi.type}  {roi.assetPath}  {roi.isBuiltIn}    {roi.isExternal}");
@@ -345,9 +346,9 @@ namespace Framework.AssetBrowser
 
         public Type                         type;
 
-        public bool                         isBuiltIn;          // 内置资产
+        public bool                         isBuiltIn;              // 内置资产
 
-        public bool                         isExternal;         // 外部资源，即没有被打包的资产
+        public bool                         isExternal;             // 外部资源，即没有被打包的资产
 
         /// <summary>
         /// 不是内置资产，也不是外部资产即为有效资产
@@ -359,5 +360,7 @@ namespace Framework.AssetBrowser
                 return !isBuiltIn && !isExternal;
             }
         }
+
+        public string                       assetBundleName;        // 资源所属AB name
     }
 }

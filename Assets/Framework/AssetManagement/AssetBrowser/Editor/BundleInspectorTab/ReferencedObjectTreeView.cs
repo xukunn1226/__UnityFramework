@@ -25,6 +25,7 @@ namespace Framework.AssetBrowser
             Value1,
             Icon2,
             Icon3,
+            Value3,
         }
 
         enum SortOption
@@ -34,6 +35,7 @@ namespace Framework.AssetBrowser
             Name3,
             Value1,
             Value2,
+            Value3,
         }
 
         // Sort options per column
@@ -44,6 +46,7 @@ namespace Framework.AssetBrowser
             SortOption.Name3,
             SortOption.Value1,
             SortOption.Value2,
+            SortOption.Value3,
         };
 
         private BundleInspectorTab m_Owner;
@@ -173,6 +176,9 @@ namespace Framework.AssetBrowser
                     case SortOption.Value2:
                         orderedQuery = orderedQuery.ThenBy(l => l.data.referencedObjectInfo.isExternal, ascending);
                         break;
+                    case SortOption.Value3:
+                        orderedQuery = orderedQuery.ThenBy(l => l.data.referencedObjectInfo.assetBundleName, ascending);
+                        break;
                 }
             }
 
@@ -195,6 +201,8 @@ namespace Framework.AssetBrowser
                     return myTypes.Order(l => l.data.referencedObjectInfo.isBuiltIn, ascending);
                 case SortOption.Value2:
                     return myTypes.Order(l => l.data.referencedObjectInfo.isExternal, ascending);
+                case SortOption.Value3:
+                    return myTypes.Order(l => l.data.referencedObjectInfo.assetBundleName, ascending);
                 default:
                     Assert.IsTrue(false, "Unhandled enum");
                     break;
@@ -239,6 +247,9 @@ namespace Framework.AssetBrowser
                 case MyColumns.Icon3:       // isExternal
                     if (element.data.referencedObjectInfo.isExternal)
                         GUI.DrawTexture(cellRect, m_Icons[1], ScaleMode.ScaleToFit);
+                    break;
+                case MyColumns.Value3:
+                    GUI.Label(cellRect, new GUIContent(element.data.referencedObjectInfo.assetBundleName, element.data.referencedObjectInfo.assetBundleName));
                     break;
             }
         }
@@ -370,6 +381,21 @@ namespace Framework.AssetBrowser
                     allowToggleVisibility = false,
                     canSort = true
                 },
+                new MultiColumnHeaderState.Column
+                {
+                    headerContent = new GUIContent("AssetBundle Name"),
+                    contextMenuText = "Info",
+                    headerTextAlignment = TextAlignment.Left,
+                    sortedAscending = true,
+                    sortingArrowAlignment = TextAlignment.Right,
+                    width = 200,
+                    minWidth = 50,
+                    //maxWidth = 250,
+                    autoResize = false,
+                    allowToggleVisibility = true,
+                    canSort = true
+                },
+
             };
 
             Assert.AreEqual(columns.Length, Enum.GetValues(typeof(MyColumns)).Length, "Number of columns should match number of enum values: You probably forgot to update one of them.");
