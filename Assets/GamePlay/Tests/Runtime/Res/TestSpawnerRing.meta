@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 105d1b42c1f64c047b06e950a113e0d3
+guid: 6c09d2d9337431c4288adc426d833fbc
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
   userData: 
-  assetBundleName: assets/res/scene.ab
+  assetBundleName: assets/gameplay/tests/runtime/res/testspawnerring.ab
   assetBundleVariant: 

@@ -22,7 +22,7 @@ public class TestSpawnerEntryStartup : MonoBehaviour
         if(GUI.Button(new Rect(100, 100, 120, 80), "Load Scene"))
         {
             //ResourceManager.LoadAssetBundle("assets/res/testspawnerring.ab");
-            AssetBundleLoader abLoader = ResourceManager.LoadAssetBundle("assets/res/scene1.ab");
+            AssetBundleLoader abLoader = ResourceManager.LoadAssetBundle("assets/gameplay/tests/runtime/res/scene1.ab");
             abLoader.assetBundle.GetAllScenePaths();
 
             UnityEngine.SceneManagement.SceneManager.LoadScene("TestSpawnerRing");
