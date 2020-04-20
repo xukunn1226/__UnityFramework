@@ -4,6 +4,7 @@
 * async,await的封装，统一同步、异步加载接口，AsyncTaskMethodBuilder，TaskCompletionSource
 * 分析场景是如何打包，如何热更的
 * 如何实现C#的WeakPoint
+* 对SoftObjectPath的封装，提供可视化组件选择使用方式（延时载入、直接实例化、池化管理（对象池还是LRU））
 * 加载场景接口（动态、静态）
 
 	* 场景不打AB时
