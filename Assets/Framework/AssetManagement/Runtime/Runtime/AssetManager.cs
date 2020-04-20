@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Framework.Core;
+using UnityEngine.SceneManagement;
 
 namespace Framework.AssetManagement.Runtime
 {
@@ -353,6 +354,43 @@ namespace Framework.AssetManagement.Runtime
             AssetBundleLoader.Release(abLoader);
         }
 
+        /// <summary>
+        /// 静态加载同步场景接口
+        /// 1、场景必须加入Build settings
+        /// 2、不可热更
+        /// 3、sceneName不带后缀名，scenePath带后缀名
+        /// 4、sceneName, scenePath大小写不敏感
+        /// </summary>
+        /// <param name="sceneName"></param>
+        static public void LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            SceneManager.LoadScene(sceneName, mode);
+        }
+
+        static public void LoadScene(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            SceneManager.LoadScene(sceneBuildIndex, mode);
+        }
+
+        /// <summary>
+        /// 静态场景异步加载接口
+        /// 1、场景必须加入Build settings
+        /// 2、不可热更
+        /// 3、sceneName不带后缀名，scenePath带后缀名
+        /// 4、sceneName, scenePath大小写不敏感
+        /// </summary>
+        /// <param name="sceneName"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        static public AsyncOperation LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            return SceneManager.LoadSceneAsync(sceneName, mode);
+        }
+
+        static public AsyncOperation LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            return SceneManager.LoadSceneAsync(sceneBuildIndex, mode);
+        }
 
 
         struct AssetName
