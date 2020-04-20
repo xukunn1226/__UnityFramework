@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LoaderType: 1
-  assetPath: assets/gameplay/tests/runtime/res/cube.prefab
+  assetPath: assets/gameplay/tests/runtime/res/qk/cube.prefab
 --- !u!4 &77352593
 Transform:
   m_ObjectHideFlags: 0
@@ -242,8 +242,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1176924195}
-  m_LocalRotation: {x: -0.0036132007, y: 0.9958717, z: -0.07814565, w: -0.0460407}
-  m_LocalPosition: {x: 0.3080969, y: 0.6650952, z: 12.211201}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

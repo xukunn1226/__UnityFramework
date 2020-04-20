@@ -15,7 +15,8 @@ MonoBehaviour:
   ForceDisplayDialogWhenAssetNameNotMetSpec: 0
   WhiteListOfPath:
   - Assets/Res/
-  - Assets/GamePlay/Tests/Runtime/Res/
+  - Assets/GamePlay/Tests/Runtime/Res
+  - Assets/Framework/AssetManagement/Runtime/Tests/Res/
   BlackListOfFolder:
   - Resources
   - Scenes

@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -165,8 +165,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  assetPathA: assets/res/testunload/a.asset
-  assetPathB: assets/res/testunload/b.asset
+  assetPathA: assets/framework/assetmanagement/runtime/tests/res/testunload/a.asset
+  assetPathB: assets/framework/assetmanagement/runtime/tests/res/testunload/b.asset
 --- !u!1 &688187353
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,7 +16,9 @@ namespace Framework.AssetBuilder
         {
             for (int i = 0; i < AssetBuilderSetting.GetDefault().WhiteListOfPath.Length; ++i)
             {
-                if (assetPath.Contains(AssetBuilderSetting.GetDefault().WhiteListOfPath[i]))
+                string whitePath = AssetBuilderSetting.GetDefault().WhiteListOfPath[i];
+                whitePath = whitePath.TrimEnd(new char[] { '/' }) + "/";
+                if (assetPath.Contains(whitePath))
                     return true;
             }
 

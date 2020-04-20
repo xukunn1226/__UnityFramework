@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  assetPath: assets/res/prefab/cube.prefab
+  assetPath: assets/framework/assetmanagement/runtime/tests/res/prefab/cube.prefab
 --- !u!4 &621498211
 Transform:
   m_ObjectHideFlags: 0
