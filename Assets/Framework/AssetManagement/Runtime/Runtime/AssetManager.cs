@@ -392,6 +392,15 @@ namespace Framework.AssetManagement.Runtime
             return SceneManager.LoadSceneAsync(sceneBuildIndex, mode);
         }
 
+        static public AsyncOperation UnloadSceneAsync(string sceneName)
+        {
+            return SceneManager.UnloadSceneAsync(sceneName);
+        }
+
+        static public AsyncOperation UnloadSceneAsync(int sceneBuildIndex)
+        {
+            return SceneManager.UnloadSceneAsync(sceneBuildIndex);
+        }
 
         struct AssetName
         {

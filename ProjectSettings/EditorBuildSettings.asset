@@ -6,11 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Framework/AssetManagement/Runtime/Tests/Scenes/LoadScene.unity
+    path: Assets/Framework/AssetManagement/Runtime/Tests/Scenes/TestLoadScene.unity
     guid: f2b5e6eeef4517b4f99c9096a6896933
-  - enabled: 0
-    path: Assets/Framework/AssetManagement/Runtime/Tests/Scenes/TestWorld.unity
-    guid: 3d4dac8f55eb1384c90463192cb9955b
   - enabled: 0
     path: Assets/GamePlay/Tests/Runtime/Res/scene1/TestSpawnerEntry.unity
     guid: 6debd4449d9d6fd459e9ef9717a23d5e
