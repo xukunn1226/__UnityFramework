@@ -6,11 +6,17 @@ using UnityEngine.SceneManagement;
 
 namespace Framework.AssetManagement.Runtime
 {
+    /// <summary>
+    /// 同步加载“静态场景”和“动态场景”
+    /// </summary>
     public class SceneLoader : ILinkedObjectPoolNode<SceneLoader>, IPooledObject
     {
         static private LinkedObjectPool<SceneLoader> m_Pool;
+        static private int k_InitPoolSize = 4;
 
         private AssetBundleLoader   m_BundleLoader;
+
+        private bool                m_bFromBundle;          // true: load scene from bundle; false: load scene from build settings
 
         public string               sceneName       { get; private set; }
 
@@ -32,12 +38,37 @@ namespace Framework.AssetManagement.Runtime
         {
             if(m_Pool == null)
             {
-                m_Pool = new LinkedObjectPool<SceneLoader>(4);
+                m_Pool = new LinkedObjectPool<SceneLoader>(k_InitPoolSize);
             }
 
             SceneLoader loader = (SceneLoader)m_Pool.Get();
-            loader.InternalLoadScene(bundlePath, sceneName, mode);
+            loader.InternalLoadSceneFromBundle(bundlePath, sceneName, mode);
             loader.Pool = m_Pool;
+            loader.sceneName = sceneName;
+            loader.mode = mode;
+            loader.m_bFromBundle = true;
+            return loader;
+        }
+
+        /// <summary>
+        /// 从Build Settings加载场景接口
+        /// </summary>
+        /// <param name="sceneName">大小写不敏感，但为了与其他Get接口一致务必与资源名严格一致</param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        static internal SceneLoader Get(string sceneName, LoadSceneMode mode)
+        {
+            if (m_Pool == null)
+            {
+                m_Pool = new LinkedObjectPool<SceneLoader>(k_InitPoolSize);
+            }
+
+            SceneLoader loader = (SceneLoader)m_Pool.Get();
+            loader.InternalLoadScene(sceneName, mode);
+            loader.Pool = m_Pool;
+            loader.sceneName = sceneName;
+            loader.mode = mode;
+            loader.m_bFromBundle = false;
             return loader;
         }
 
@@ -50,7 +81,7 @@ namespace Framework.AssetManagement.Runtime
             return loader.unloadAsyncOp;      // Return后m_UnloadAsyncOp会失效吗？
         }
 
-        private void InternalLoadScene(string bundlePath, string sceneName, LoadSceneMode mode)
+        private void InternalLoadSceneFromBundle(string bundlePath, string sceneName, LoadSceneMode mode)
         {
             m_BundleLoader = AssetManager.LoadAssetBundle(bundlePath);
             if (m_BundleLoader.assetBundle == null)
@@ -58,8 +89,11 @@ namespace Framework.AssetManagement.Runtime
             if (!m_BundleLoader.assetBundle.isStreamedSceneAssetBundle)
                 throw new System.Exception($"{bundlePath} is not streamed scene asset bundle");
 
-            this.sceneName = sceneName;
-            this.mode = mode;
+            SceneManager.LoadScene(sceneName, mode);
+        }
+
+        private void InternalLoadScene(string sceneName, LoadSceneMode mode)
+        {
             SceneManager.LoadScene(sceneName, mode);
         }
 
@@ -89,10 +123,9 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         void IPooledObject.OnGet()
         {
-            if (m_BundleLoader != null)
+            if (m_bFromBundle && m_BundleLoader != null)
                 throw new System.Exception("Previous Bundle Loader not Release!!");
-
-            unloadAsyncOp = null;
+            unloadAsyncOp = null;       // OnRelease时不释放，因为卸载是异步
         }
 
         /// <summary>

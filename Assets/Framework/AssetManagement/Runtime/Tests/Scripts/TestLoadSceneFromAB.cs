@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace Framework.AssetManagement.Runtime.Tests
 {
@@ -12,7 +11,6 @@ namespace Framework.AssetManagement.Runtime.Tests
     /// 2、不可热更
     /// 3、sceneName不带后缀名，scenePath带后缀名
     /// 4、sceneName, scenePath大小写不敏感
-    /// 5、allowSceneActivation
     /// </summary>
     public class TestLoadSceneFromAB : MonoBehaviour
     {
@@ -50,7 +48,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
             if (GUI.Button(new Rect(300, 100, 150, 60), "Unload Scene1"))
             {
-                StartCoroutine(UnloadSceneAsync("TestScene1"));
+                //StartCoroutine(UnloadSceneAsync("TestScene1"));
             }
 
             if (GUI.Button(new Rect(100, 200, 150, 60), "Load Scene2"))
@@ -60,7 +58,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
             if (GUI.Button(new Rect(300, 200, 150, 60), "Unload Scene2"))
             {
-                StartCoroutine(UnloadSceneAsync("TestScene2"));
+                //StartCoroutine(UnloadSceneAsync("TestScene2"));
             }
 
             ////////////////// Async Load Scene
@@ -72,7 +70,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
             if (GUI.Button(new Rect(300, 300, 150, 60), "Unload Scene1"))
             {
-                StartCoroutine(UnloadSceneAsync("TestScene1"));
+                //StartCoroutine(UnloadSceneAsync("TestScene1"));
             }
 
             if (GUI.Button(new Rect(100, 400, 150, 60), "Load Scene2 Async"))
@@ -82,7 +80,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
             if (GUI.Button(new Rect(300, 400, 150, 60), "Unload Scene2"))
             {
-                StartCoroutine(UnloadSceneAsync("TestScene2"));
+                //StartCoroutine(UnloadSceneAsync("TestScene2"));
             }
 
             //////////////////// Async Load Scene allow actived
@@ -152,15 +150,15 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             Debug.Log($"----Begin LoadScene: [{Time.frameCount}]");
             //AssetManager.LoadScene(sceneName, mode);
-            AssetManager.LoadSceneFromBundle("assets/framework/assetmanagement/runtime/tests/res/scenes.ab", sceneName, mode);
+            AssetManager.LoadScene("assets/framework/assetmanagement/runtime/tests/res/scenes.ab", sceneName, mode);
             Debug.Log($"----End LoadScene: [{Time.frameCount}]");
         }
 
-        IEnumerator UnloadSceneAsync(string sceneName)
-        {
-            Debug.Log($"----Begin UnloadSceneAsync: [{Time.frameCount}]");
-            yield return AssetManager.UnloadSceneAsync(sceneName);
-            Debug.Log($"----End UnloadSceneAsync: [{Time.frameCount}]");
-        }
+        //IEnumerator UnloadSceneAsync(string sceneName)
+        //{
+        //    Debug.Log($"----Begin UnloadSceneAsync: [{Time.frameCount}]");
+        //    yield return AssetManager.UnloadSceneAsync(sceneName);
+        //    Debug.Log($"----End UnloadSceneAsync: [{Time.frameCount}]");
+        //}
     }
 }

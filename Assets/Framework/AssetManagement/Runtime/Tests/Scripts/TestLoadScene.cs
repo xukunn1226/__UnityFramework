@@ -18,6 +18,9 @@ namespace Framework.AssetManagement.Runtime.Tests
     {
         private bool m_bContinue;
 
+        private SceneLoader m_sceneLoader1;
+        private SceneLoader m_sceneLoader2;
+
         private void Start()
         {
             // 场景的加载、卸载完成都已回调为准
@@ -45,45 +48,45 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             if (GUI.Button(new Rect(100, 100, 150, 60), "Load Scene1"))
             {
-                LoadScene("testscene1", LoadSceneMode.Additive);
+                m_sceneLoader1 = LoadScene("testscene1", LoadSceneMode.Additive);
             }
 
             if (GUI.Button(new Rect(300, 100, 150, 60), "Unload Scene1"))
             {
-                StartCoroutine(UnloadSceneAsync("testscene1"));
+                StartCoroutine(UnloadSceneAsync(m_sceneLoader1));
             }
 
             if (GUI.Button(new Rect(100, 200, 150, 60), "Load Scene2"))
             {
-                LoadScene("testscene2", LoadSceneMode.Additive);
+                m_sceneLoader2 = LoadScene("testscene2", LoadSceneMode.Additive);
             }
 
             if (GUI.Button(new Rect(300, 200, 150, 60), "Unload Scene2"))
             {
-                StartCoroutine(UnloadSceneAsync("testscene2"));
+                StartCoroutine(UnloadSceneAsync(m_sceneLoader2));
             }
 
             ////////////////// Async Load Scene
 
-            if (GUI.Button(new Rect(100, 300, 150, 60), "Load Scene1 Async"))
-            {
-                StartCoroutine(LoadSceneAsync("testscene1", LoadSceneMode.Additive));
-            }
+            //if (GUI.Button(new Rect(100, 300, 150, 60), "Load Scene1 Async"))
+            //{
+            //    StartCoroutine(LoadSceneAsync("testscene1", LoadSceneMode.Additive));
+            //}
 
-            if (GUI.Button(new Rect(300, 300, 150, 60), "Unload Scene1"))
-            {
-                StartCoroutine(UnloadSceneAsync("testscene1"));
-            }
+            //if (GUI.Button(new Rect(300, 300, 150, 60), "Unload Scene1"))
+            //{
+            //    StartCoroutine(UnloadSceneAsync(m_sceneLoader1));
+            //}
 
-            if (GUI.Button(new Rect(100, 400, 150, 60), "Load Scene2 Async"))
-            {
-                StartCoroutine(LoadSceneAsync("testscene2", LoadSceneMode.Additive));
-            }
+            //if (GUI.Button(new Rect(100, 400, 150, 60), "Load Scene2 Async"))
+            //{
+            //    StartCoroutine(LoadSceneAsync("testscene2", LoadSceneMode.Additive));
+            //}
 
-            if (GUI.Button(new Rect(300, 400, 150, 60), "Unload Scene2"))
-            {
-                StartCoroutine(UnloadSceneAsync("testscene2"));
-            }
+            //if (GUI.Button(new Rect(300, 400, 150, 60), "Unload Scene2"))
+            //{
+            //    StartCoroutine(UnloadSceneAsync(m_sceneLoader2));
+            //}
 
             //////////////////// Async Load Scene allow actived
             if (GUI.Button(new Rect(100, 500, 220, 60), "Load Scene1 Allow Activation"))
@@ -128,37 +131,39 @@ namespace Framework.AssetManagement.Runtime.Tests
             }
         }
 
-        IEnumerator LoadSceneAsync(string sceneName, LoadSceneMode mode)
-        {
-            Debug.Log($"----Begin LoadSceneAsync: [{Time.frameCount}]");
-            //yield return AssetManager.LoadSceneAsync(sceneName, mode);
+        //IEnumerator LoadSceneAsync(string sceneName, LoadSceneMode mode)
+        //{
+        //    Debug.Log($"----Begin LoadSceneAsync: [{Time.frameCount}]");
+        //    //yield return AssetManager.LoadSceneAsync(sceneName, mode);
 
-            AsyncOperation op = AssetManager.LoadSceneAsync(sceneName, mode);
-            while(!op.isDone)
-            {
-                Debug.Log($"[{Time.frameCount}]  {op.progress}");
-                yield return null;
-            }
+        //    AsyncOperation op = AssetManager.LoadSceneAsync(sceneName, mode);
+        //    while(!op.isDone)
+        //    {
+        //        Debug.Log($"[{Time.frameCount}]  {op.progress}");
+        //        yield return null;
+        //    }
 
-            Debug.Log($"----End LoadSceneAsync: [{Time.frameCount}]");
-        }
+        //    Debug.Log($"----End LoadSceneAsync: [{Time.frameCount}]");
+        //}
 
         /// <summary>
         /// 下一帧加载完成，即触发回调OnSceneLoaded
         /// </summary>
         /// <param name="sceneName"></param>
         /// <param name="mode"></param>
-        void LoadScene(string sceneName, LoadSceneMode mode)
+        SceneLoader LoadScene(string sceneName, LoadSceneMode mode)
         {
             Debug.Log($"----Begin LoadScene: [{Time.frameCount}]");
-            AssetManager.LoadScene(sceneName, mode);
+            SceneLoader loader = AssetManager.LoadScene(sceneName, mode);
             Debug.Log($"----End LoadScene: [{Time.frameCount}]");
+
+            return loader;
         }
 
-        IEnumerator UnloadSceneAsync(string sceneName)
+        IEnumerator UnloadSceneAsync(SceneLoader loader)
         {
             Debug.Log($"----Begin UnloadSceneAsync: [{Time.frameCount}]");
-            yield return AssetManager.UnloadSceneAsync(sceneName);
+            yield return AssetManager.UnloadSceneAsync(loader);
             Debug.Log($"----End UnloadSceneAsync: [{Time.frameCount}]");
         }
     }

@@ -146,15 +146,15 @@ public class ResourceManager : MonoBehaviour
     /// 4、sceneName, scenePath大小写不敏感
     /// </summary>
     /// <param name="sceneName"></param>
-    static public void LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
-    {
-        AssetManager.LoadScene(sceneName, mode);
-    }
+    //static public void LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+    //{
+    //    AssetManager.LoadScene(sceneName, mode);
+    //}
 
-    static public void LoadScene(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
-    {
-        AssetManager.LoadScene(sceneBuildIndex, mode);
-    }
+    //static public void LoadScene(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
+    //{
+    //    AssetManager.LoadScene(sceneBuildIndex, mode);
+    //}
 
     /// <summary>
     /// 静态场景异步加载接口
@@ -166,28 +166,28 @@ public class ResourceManager : MonoBehaviour
     /// <param name="sceneName"></param>
     /// <param name="mode"></param>
     /// <returns></returns>
-    static public AsyncOperation LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
-    {
-        return AssetManager.LoadSceneAsync(sceneName, mode);
-    }
+    //static public AsyncOperation LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+    //{
+    //    return AssetManager.LoadSceneAsync(sceneName, mode);
+    //}
 
-    static public AsyncOperation LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
-    {
-        return AssetManager.LoadSceneAsync(sceneBuildIndex, mode);
-    }
-
-
+    //static public AsyncOperation LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
+    //{
+    //    return AssetManager.LoadSceneAsync(sceneBuildIndex, mode);
+    //}
 
 
 
 
-    static public AsyncOperation UnloadSceneAsync(string sceneName)
-    {
-        return AssetManager.UnloadSceneAsync(sceneName);
-    }
 
-    static public AsyncOperation UnloadSceneAsync(int sceneBuildIndex)
-    {
-        return AssetManager.UnloadSceneAsync(sceneBuildIndex);
-    }
+
+    //static public AsyncOperation UnloadSceneAsync(string sceneName)
+    //{
+    //    return AssetManager.UnloadSceneAsync(sceneName);
+    //}
+
+    //static public AsyncOperation UnloadSceneAsync(int sceneBuildIndex)
+    //{
+    //    return AssetManager.UnloadSceneAsync(sceneBuildIndex);
+    //}
 }

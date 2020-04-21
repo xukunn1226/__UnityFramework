@@ -362,14 +362,12 @@ namespace Framework.AssetManagement.Runtime
         /// 4、sceneName, scenePath大小写不敏感
         /// </summary>
         /// <param name="sceneName"></param>
-        static public void LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        static public SceneLoader LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            SceneManager.LoadScene(sceneName, mode);
-        }
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
 
-        static public void LoadScene(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
-        {
-            SceneManager.LoadScene(sceneBuildIndex, mode);
+            return SceneLoader.Get(sceneName, mode);
         }
 
         /// <summary>
@@ -387,23 +385,18 @@ namespace Framework.AssetManagement.Runtime
             return SceneManager.LoadSceneAsync(sceneName, mode);
         }
 
-        static public AsyncOperation LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
-        {
-            return SceneManager.LoadSceneAsync(sceneBuildIndex, mode);
-        }
-
         /// <summary>
         /// “动态场景”同步加载接口
         /// 1、无需加入Build Settings
         /// 2、调用LoadScene之前必须把场景所在AB及依赖AB先载入
         /// 3、调用方式：LoadScene(sceneName)  OR  LoadScene(scenePath)，前者不带后缀名，后者带后缀名
-        /// 4、sceneName or scenePath大小写均敏感
+        /// 4、sceneName or scenePath大小写敏感
         /// </summary>
         /// <param name="bundlePath"></param>
         /// <param name="sceneName"></param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        static public SceneLoader LoadSceneFromBundle(string bundlePath, string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        static public SceneLoader LoadScene(string bundlePath, string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
@@ -420,17 +413,6 @@ namespace Framework.AssetManagement.Runtime
         }
 
 
-
-
-        static public AsyncOperation UnloadSceneAsync(string sceneName)
-        {
-            return SceneManager.UnloadSceneAsync(sceneName);
-        }
-
-        static public AsyncOperation UnloadSceneAsync(int sceneBuildIndex)
-        {
-            return SceneManager.UnloadSceneAsync(sceneBuildIndex);
-        }
 
         struct AssetName
         {
