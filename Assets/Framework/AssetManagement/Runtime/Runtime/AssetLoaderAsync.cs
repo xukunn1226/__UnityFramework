@@ -158,17 +158,17 @@ namespace Framework.AssetManagement.Runtime
             return m_Request.isDone;
         }
 
-        public object Current
+        object IEnumerator.Current
         {
             get { return asset; }
         }
 
-        public bool MoveNext()
+        bool IEnumerator.MoveNext()
         {
             return !IsDone();
         }
 
-        public void Reset()
+        void IEnumerator.Reset()
         {
         }
 
