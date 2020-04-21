@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
+using UnityEngine.SceneManagement;
 using System;
 
 public class ResourceManager : MonoBehaviour
 {
-    static private ResourceManager  Instance { get; set; }
+    static private ResourceManager  Instance            { get; set; }
 
     static private AssetManager     m_AssetManager;
 
@@ -132,5 +133,61 @@ public class ResourceManager : MonoBehaviour
     static public void UnloadAssetBundle(AssetBundleLoader abLoader)
     {
         AssetManager.UnloadAssetBundle(abLoader);
+    }
+
+
+
+
+    /// <summary>
+    /// 静态加载同步场景接口
+    /// 1、场景必须加入Build settings
+    /// 2、不可热更
+    /// 3、sceneName不带后缀名，scenePath带后缀名
+    /// 4、sceneName, scenePath大小写不敏感
+    /// </summary>
+    /// <param name="sceneName"></param>
+    static public void LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+    {
+        AssetManager.LoadScene(sceneName, mode);
+    }
+
+    static public void LoadScene(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
+    {
+        AssetManager.LoadScene(sceneBuildIndex, mode);
+    }
+
+    /// <summary>
+    /// 静态场景异步加载接口
+    /// 1、场景必须加入Build settings
+    /// 2、不可热更
+    /// 3、sceneName不带后缀名，scenePath带后缀名
+    /// 4、sceneName, scenePath大小写不敏感
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <param name="mode"></param>
+    /// <returns></returns>
+    static public AsyncOperation LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+    {
+        return AssetManager.LoadSceneAsync(sceneName, mode);
+    }
+
+    static public AsyncOperation LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
+    {
+        return AssetManager.LoadSceneAsync(sceneBuildIndex, mode);
+    }
+
+
+
+
+
+
+    static public AsyncOperation UnloadSceneAsync(string sceneName)
+    {
+        return AssetManager.UnloadSceneAsync(sceneName);
+    }
+
+    static public AsyncOperation UnloadSceneAsync(int sceneBuildIndex)
+    {
+        return AssetManager.UnloadSceneAsync(sceneBuildIndex);
     }
 }

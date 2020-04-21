@@ -62,23 +62,23 @@ namespace Framework.AssetManagement.Runtime
             Pool = null;
         }
 
-        public LinkedObjectPool<AssetBundleRef>       List { get; set; }
+        LinkedObjectPool<AssetBundleRef>        ILinkedObjectPoolNode<AssetBundleRef>.List  { get; set; }
 
-        public ILinkedObjectPoolNode<AssetBundleRef>  Next { get; set; }
+        ILinkedObjectPoolNode<AssetBundleRef>   ILinkedObjectPoolNode<AssetBundleRef>.Next  { get; set; }
 
-        public ILinkedObjectPoolNode<AssetBundleRef>  Prev { get; set; }
+        ILinkedObjectPoolNode<AssetBundleRef>   ILinkedObjectPoolNode<AssetBundleRef>.Prev  { get; set; }
 
-        public void OnInit() { }
+        void IPooledObject.OnInit() { }
 
         /// <summary>
         /// 从对象池中拿出时的回调
         /// </summary>
-        public void OnGet() { }
+        void IPooledObject.OnGet() { }
 
         /// <summary>
         /// 放回对象池时的回调
         /// </summary>
-        public void OnRelease()
+        void IPooledObject.OnRelease()
         {
             assetBundle?.Unload(true);
             Reset();
@@ -87,7 +87,7 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
         /// 放回对象池
         /// </summary>
-        public void ReturnToPool()
+        void IPooledObject.ReturnToPool()
         {
             Pool?.Return(this);
         }

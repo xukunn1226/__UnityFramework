@@ -14,7 +14,7 @@ namespace Framework.AssetManagement.Runtime.Tests
     /// 4、sceneName, scenePath大小写不敏感
     /// 5、allowSceneActivation
     /// </summary>
-    public class TestLoadScene : MonoBehaviour
+    public class TestLoadSceneFromAB : MonoBehaviour
     {
         private bool m_bContinue;
 
@@ -45,58 +45,58 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             if (GUI.Button(new Rect(100, 100, 150, 60), "Load Scene1"))
             {
-                LoadScene("testscene1", LoadSceneMode.Additive);
+                LoadScene("TestScene1", LoadSceneMode.Additive);
             }
 
             if (GUI.Button(new Rect(300, 100, 150, 60), "Unload Scene1"))
             {
-                StartCoroutine(UnloadSceneAsync("testscene1"));
+                StartCoroutine(UnloadSceneAsync("TestScene1"));
             }
 
             if (GUI.Button(new Rect(100, 200, 150, 60), "Load Scene2"))
             {
-                LoadScene("testscene2", LoadSceneMode.Additive);
+                LoadScene("TestScene2", LoadSceneMode.Additive);
             }
 
             if (GUI.Button(new Rect(300, 200, 150, 60), "Unload Scene2"))
             {
-                StartCoroutine(UnloadSceneAsync("testscene2"));
+                StartCoroutine(UnloadSceneAsync("TestScene2"));
             }
 
             ////////////////// Async Load Scene
 
             if (GUI.Button(new Rect(100, 300, 150, 60), "Load Scene1 Async"))
             {
-                StartCoroutine(LoadSceneAsync("testscene1", LoadSceneMode.Additive));
+                StartCoroutine(LoadSceneAsync("TestScene1", LoadSceneMode.Additive));
             }
 
             if (GUI.Button(new Rect(300, 300, 150, 60), "Unload Scene1"))
             {
-                StartCoroutine(UnloadSceneAsync("testscene1"));
+                StartCoroutine(UnloadSceneAsync("TestScene1"));
             }
 
             if (GUI.Button(new Rect(100, 400, 150, 60), "Load Scene2 Async"))
             {
-                StartCoroutine(LoadSceneAsync("testscene2", LoadSceneMode.Additive));
+                StartCoroutine(LoadSceneAsync("TestScene2", LoadSceneMode.Additive));
             }
 
             if (GUI.Button(new Rect(300, 400, 150, 60), "Unload Scene2"))
             {
-                StartCoroutine(UnloadSceneAsync("testscene2"));
+                StartCoroutine(UnloadSceneAsync("TestScene2"));
             }
 
             //////////////////// Async Load Scene allow actived
             if (GUI.Button(new Rect(100, 500, 220, 60), "Load Scene1 Allow Activation"))
             {
-                StartCoroutine(LoadSceneAsync_AllowActivation("testscene1"));
+                StartCoroutine(LoadSceneAsync_AllowActivation("TestScene1"));
             }
 
-            if(GUI.Button(new Rect(350, 500, 100, 60), "Continue"))
+            if (GUI.Button(new Rect(350, 500, 100, 60), "Continue"))
             {
                 m_bContinue = true;
             }
         }
-        
+
         IEnumerator LoadSceneAsync_AllowActivation(string sceneName)
         {
             yield return null;
@@ -134,7 +134,7 @@ namespace Framework.AssetManagement.Runtime.Tests
             //yield return AssetManager.LoadSceneAsync(sceneName, mode);
 
             AsyncOperation op = AssetManager.LoadSceneAsync(sceneName, mode);
-            while(!op.isDone)
+            while (!op.isDone)
             {
                 Debug.Log($"[{Time.frameCount}]  {op.progress}");
                 yield return null;
@@ -151,7 +151,8 @@ namespace Framework.AssetManagement.Runtime.Tests
         void LoadScene(string sceneName, LoadSceneMode mode)
         {
             Debug.Log($"----Begin LoadScene: [{Time.frameCount}]");
-            AssetManager.LoadScene(sceneName, mode);
+            //AssetManager.LoadScene(sceneName, mode);
+            AssetManager.LoadSceneFromBundle("assets/framework/assetmanagement/runtime/tests/res/scenes.ab", sceneName, mode);
             Debug.Log($"----End LoadScene: [{Time.frameCount}]");
         }
 

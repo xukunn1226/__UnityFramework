@@ -1,6 +1,7 @@
 * 使用各种性能分析工具：GOT、GPM、URP并整合
 * 不同平台代码库公用方案（前后端代码公用）
-
+* 完善日志系统
+	https://www.jianshu.com/p/5163b0a0180e
 
 
 - build from script

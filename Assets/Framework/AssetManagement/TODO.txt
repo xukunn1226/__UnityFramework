@@ -17,6 +17,7 @@
 		* 调用方式：LoadScene(sceneName)  OR  LoadScene(scenePath)，前者不带后缀名，后者带后缀名
 		* sceneName or scenePath大小写均敏感
 
+* 提供接口扩展解析函数：assetPath为AB路径和assetName
 
 
 

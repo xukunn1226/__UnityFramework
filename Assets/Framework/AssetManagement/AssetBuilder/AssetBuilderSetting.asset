@@ -19,10 +19,9 @@ MonoBehaviour:
   - Assets/Framework/AssetManagement/Runtime/Tests/Res/
   BlackListOfFolder:
   - Resources
-  - Scenes
+  - Temp
   - Scripts
   - RawData
   - Editor
   - StreamingAssets
   - Examples
-  - Temp

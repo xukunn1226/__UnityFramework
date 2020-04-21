@@ -392,6 +392,36 @@ namespace Framework.AssetManagement.Runtime
             return SceneManager.LoadSceneAsync(sceneBuildIndex, mode);
         }
 
+        /// <summary>
+        /// “动态场景”同步加载接口
+        /// 1、无需加入Build Settings
+        /// 2、调用LoadScene之前必须把场景所在AB及依赖AB先载入
+        /// 3、调用方式：LoadScene(sceneName)  OR  LoadScene(scenePath)，前者不带后缀名，后者带后缀名
+        /// 4、sceneName or scenePath大小写均敏感
+        /// </summary>
+        /// <param name="bundlePath"></param>
+        /// <param name="sceneName"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        static public SceneLoader LoadSceneFromBundle(string bundlePath, string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
+            return SceneLoader.Get(bundlePath, sceneName, mode);
+        }
+
+        static public AsyncOperation UnloadSceneAsync(SceneLoader loader)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
+            return SceneLoader.Release(loader);
+        }
+
+
+
+
         static public AsyncOperation UnloadSceneAsync(string sceneName)
         {
             return SceneManager.UnloadSceneAsync(sceneName);

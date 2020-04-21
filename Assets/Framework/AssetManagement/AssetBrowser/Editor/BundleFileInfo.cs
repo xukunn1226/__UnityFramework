@@ -208,6 +208,8 @@ namespace Framework.AssetBrowser
             UnityEngine.Object[] objs = UnityEditor.EditorUtility.CollectDependencies(new UnityEngine.Object[] { asset });
             foreach (UnityEngine.Object obj in objs)
             {
+                if (obj == null) continue;
+
                 ReferencedObjectInfo roi = new ReferencedObjectInfo();
                 roi.name = obj.name;
                 roi.type = obj.GetType();
