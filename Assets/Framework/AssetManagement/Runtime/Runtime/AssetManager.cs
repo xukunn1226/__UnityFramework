@@ -21,7 +21,13 @@ namespace Framework.AssetManagement.Runtime
     /// </summary>
     public sealed class AssetManager : MonoBehaviour
     {
-        static internal AssetManager    Instance { get; private set; }
+        public delegate bool AssetPathToBundleAndAsset_EventHandler(string assetPath, out string assetBundleName, out string assetName);
+        public event AssetPathToBundleAndAsset_EventHandler CustomizedParser_AssetPathToBundleAndAsset;
+
+        public delegate bool BundleAndAssetToAssetPath_EventHandler(string assetBundleName, string assetName, out string assetPath);
+        public event BundleAndAssetToAssetPath_EventHandler CustomizedParser_BundleAndAssetToAssetPath;
+
+        static public AssetManager      Instance { get; private set; }
 
         static internal int             PreAllocateAssetBundlePoolSize        = 200;                                // 预分配缓存AssetBundleRef对象池大小
         static internal int             PreAllocateAssetBundleLoaderPoolSize  = 100;                                // 预分配缓存AssetBundleLoader对象池大小
@@ -134,6 +140,21 @@ namespace Framework.AssetManagement.Runtime
             {
                 Destroy(Instance);
             }
+        }
+
+        static public void RegisterCustomizedParser(AssetPathToBundleAndAsset_EventHandler parser1, BundleAndAssetToAssetPath_EventHandler parser2)
+        {
+            if (parser1 == null)
+                throw new ArgumentNullException("parser1");
+
+            if (parser2 == null)
+                throw new ArgumentNullException("parser2");
+
+            if (Instance == null)
+                throw new ArgumentNullException("Instance", "AssetManager not init");
+
+            Instance.CustomizedParser_AssetPathToBundleAndAsset += parser1;
+            Instance.CustomizedParser_BundleAndAssetToAssetPath += parser2;
         }
 
 
@@ -446,14 +467,12 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="assetBundleName">res/windows/test.ab</param>
         /// <param name="assetName">cube.prefab</param>
         /// <returns></returns>
-        static internal bool ParseAssetPath(string assetPath, out string assetBundleName, out string assetName)
+        internal bool ParseAssetPath(string assetPath, out string assetBundleName, out string assetName)
         {
             if (string.IsNullOrEmpty(assetPath))
             {
-                assetBundleName = null;
-                assetName = null;
-                return false;
-            }
+                throw new System.ArgumentNullException(assetPath);
+            }            
 
             AssetName an;
             if (s_dic.TryGetValue(assetPath, out an))
@@ -463,6 +482,47 @@ namespace Framework.AssetManagement.Runtime
                 return true;
             }
 
+            bool bSucess;
+            if (CustomizedParser_AssetPathToBundleAndAsset != null)
+            {
+                bSucess = CustomizedParser_AssetPathToBundleAndAsset(assetPath, out assetBundleName, out assetName);
+            }
+            else
+            {
+                bSucess = DefaultParser_AssetPathToBundleAndAsset(assetPath, out assetBundleName, out assetName);
+            }
+            if (!bSucess)
+                return false;
+
+            an = new AssetName();
+            an.assetBundleName = assetBundleName;
+            an.assetName = assetName;
+            s_dic.Add(assetPath, an);
+
+            return true;
+        }
+
+        internal void ParseBundleAndAssetName(string assetBundleName, string assetName, out string assetPath)
+        {
+            if(CustomizedParser_BundleAndAssetToAssetPath != null)
+            {
+                CustomizedParser_BundleAndAssetToAssetPath(assetBundleName, assetName, out assetPath);
+            }
+            else
+            {
+                DefaultParser_BundleAndAssetToAssetPath(assetBundleName, assetName, out assetPath);
+            }
+        }
+
+        /// <summary>
+        /// 默认解析器——从assetPath解析出bundleName和assetName
+        /// </summary>
+        /// <param name="assetPath">"res/windows/test/cube.prefab"</param>
+        /// <param name="assetBundleName">"res/windows/test.ab"</param>
+        /// <param name="assetName">"cube.prefab"</param>
+        /// <returns></returns>
+        static private bool DefaultParser_AssetPathToBundleAndAsset(string assetPath, out string assetBundleName, out string assetName)
+        {
             assetBundleName = null;
             assetName = null;
 
@@ -473,12 +533,16 @@ namespace Framework.AssetManagement.Runtime
             assetName = assetPath.Substring(index + 1);
             assetBundleName = assetPath.Substring(0, index) + ".ab";
 
-            an = new AssetName();
-            an.assetBundleName = assetBundleName;
-            an.assetName = assetName;
-            s_dic.Add(assetPath, an);
-
             return true;
+        }
+
+        static private void DefaultParser_BundleAndAssetToAssetPath(string assetBundleName, string assetName, out string assetPath)
+        {
+            if (assetBundleName.EndsWith(".ab", System.StringComparison.OrdinalIgnoreCase))
+            {
+                assetBundleName = assetBundleName.Substring(0, assetBundleName.Length - 3);
+            }
+            assetPath = assetBundleName + "/" + assetName;
         }
     }
 }

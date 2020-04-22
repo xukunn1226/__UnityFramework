@@ -1,27 +1,15 @@
-﻿* 分析每个AB中引用了什么的资源，且来自于哪个AB包
-* 接入BuildReport
-* FSoftObjectPath(不支持Sub Asset)
+﻿* FSoftObjectPath(不支持Sub Asset)
 * async,await的封装，统一同步、异步加载接口，AsyncTaskMethodBuilder，TaskCompletionSource
-* 分析场景是如何打包，如何热更的
-* 如何实现C#的WeakPoint
+* 研究C#WeakReference的使用
 * 对SoftObjectPath的封装，提供可视化组件选择使用方式（延时载入、直接实例化、池化管理（对象池还是LRU））
-* 加载场景接口（动态、静态）
-
-	* 场景不打AB时
-		* 必须加入Build Settings
-		* 调用方式：LoadScene(sceneName)  OR  LoadScene(scenePath)，前者不带后缀名，后者带后缀名
-		* sceneName or scenePath大小写均不敏感
-	* 场景打AB时
-		* 无需加入Build Settings
-		* 调用LoadScene之前必须把场景所在AB及依赖AB先载入
-		* 调用方式：LoadScene(sceneName)  OR  LoadScene(scenePath)，前者不带后缀名，后者带后缀名
-		* sceneName or scenePath大小写均敏感
-
-* 提供接口扩展解析函数：assetPath为AB路径和assetName
 
 
 
 
+- 提供接口扩展解析函数：assetPath为AB路径和assetName
+- 分析每个AB中引用了什么的资源，且来自于哪个AB包
+- 分析场景是如何打包，如何热更的
+- 加载场景接口（动态、静态）
 - Override Build Scene
 - 使用BetterLinkedList优化GC
 - AssetManagerEditor foldout

@@ -75,6 +75,16 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    static public void RegisterCustomizedAssetPathParser(AssetManager.AssetPathToBundleAndAsset_EventHandler parser1, AssetManager.BundleAndAssetToAssetPath_EventHandler parser2)
+    {
+        if (parser1 == null)
+            throw new System.ArgumentNullException("parser1");
+        if (parser2 == null)
+            throw new System.ArgumentNullException("parser2");
+
+        AssetManager.RegisterCustomizedParser(parser1, parser2);
+    }
+
     static public GameObject InstantiatePrefab(string assetPath)
     {
         return AssetManager.InstantiatePrefab(assetPath);
@@ -136,58 +146,33 @@ public class ResourceManager : MonoBehaviour
     }
 
 
+    static public SceneLoader LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+    {
+        return AssetManager.LoadScene(sceneName, mode);
+    }
 
+    static public SceneLoaderAsync LoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+    {
+        return AssetManager.LoadSceneAsync(sceneName, mode, allowSceneActivation);
+    }
 
-    /// <summary>
-    /// 静态加载同步场景接口
-    /// 1、场景必须加入Build settings
-    /// 2、不可热更
-    /// 3、sceneName不带后缀名，scenePath带后缀名
-    /// 4、sceneName, scenePath大小写不敏感
-    /// </summary>
-    /// <param name="sceneName"></param>
-    //static public void LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
-    //{
-    //    AssetManager.LoadScene(sceneName, mode);
-    //}
+    static public SceneLoader LoadScene(string bundlePath, string sceneName, LoadSceneMode mode)
+    {
+        return AssetManager.LoadScene(bundlePath, sceneName, mode);
+    }
 
-    //static public void LoadScene(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
-    //{
-    //    AssetManager.LoadScene(sceneBuildIndex, mode);
-    //}
+    static public SceneLoaderAsync LoadSceneAsync(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+    {
+        return AssetManager.LoadSceneAsync(bundlePath, sceneName, mode, allowSceneActivation);
+    }
 
-    /// <summary>
-    /// 静态场景异步加载接口
-    /// 1、场景必须加入Build settings
-    /// 2、不可热更
-    /// 3、sceneName不带后缀名，scenePath带后缀名
-    /// 4、sceneName, scenePath大小写不敏感
-    /// </summary>
-    /// <param name="sceneName"></param>
-    /// <param name="mode"></param>
-    /// <returns></returns>
-    //static public AsyncOperation LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
-    //{
-    //    return AssetManager.LoadSceneAsync(sceneName, mode);
-    //}
+    static public AsyncOperation UnloadSceneAsync(SceneLoader loader)
+    {
+        return AssetManager.UnloadSceneAsync(loader);
+    }
 
-    //static public AsyncOperation LoadSceneAsync(int sceneBuildIndex, LoadSceneMode mode = LoadSceneMode.Single)
-    //{
-    //    return AssetManager.LoadSceneAsync(sceneBuildIndex, mode);
-    //}
-
-
-
-
-
-
-    //static public AsyncOperation UnloadSceneAsync(string sceneName)
-    //{
-    //    return AssetManager.UnloadSceneAsync(sceneName);
-    //}
-
-    //static public AsyncOperation UnloadSceneAsync(int sceneBuildIndex)
-    //{
-    //    return AssetManager.UnloadSceneAsync(sceneBuildIndex);
-    //}
+    static public AsyncOperation UnloadSceneAsync(SceneLoaderAsync loader)
+    {
+        return AssetManager.UnloadSceneAsync(loader);
+    }
 }

@@ -17,8 +17,7 @@ namespace Framework.AssetManagement.Runtime
         public T                        asset       { get; private set; }
 
 #if UNITY_EDITOR
-        public string                   assetPath   { get; private set; }       // display for debug
-
+        public string                   assetPath;
 #endif
 
         public AssetLoader()
@@ -83,21 +82,18 @@ namespace Framework.AssetManagement.Runtime
         private void LoadAsset(string assetBundleName, string assetName)
         {
 #if UNITY_EDITOR
+            AssetManager.Instance.ParseBundleAndAssetName(assetBundleName, assetName, out assetPath);
             switch (AssetManager.Instance.loaderType)
             {
                 case LoaderType.FromEditor:
                     {
-                        if (assetBundleName.EndsWith(".ab", System.StringComparison.OrdinalIgnoreCase))
-                        {
-                            assetBundleName = assetBundleName.Substring(0, assetBundleName.Length - 3);
-                        }
-                        asset = AssetDatabase.LoadAssetAtPath<T>(assetBundleName + "/" + assetName);
-                        assetPath = assetBundleName + "/" + assetName;
+                        asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
                     }
                     break;
                 case LoaderType.FromAB:
-                    LoadAssetInternal(assetBundleName, assetName);
-                    assetPath = assetBundleName.Replace(".ab", "") + "/" + assetName;
+                    {
+                        LoadAssetInternal(assetBundleName, assetName);
+                    }
                     break;
             }
 #else
@@ -108,7 +104,7 @@ namespace Framework.AssetManagement.Runtime
         private void LoadAssetInternal(string assetPath)
         {
             string assetBundleName, assetName;
-            if (!AssetManager.ParseAssetPath(assetPath, out assetBundleName, out assetName))
+            if (!AssetManager.Instance.ParseAssetPath(assetPath, out assetBundleName, out assetName))
             {
                 Debug.LogWarningFormat("AssetLoader -- Failed to reslove assetbundle name: {0} {1}", assetPath, typeof(T));
                 return;
