@@ -69,3 +69,14 @@ MonoBehaviour:
   - {fileID: 2955337896246230976, guid: 80f6128d5eb957d48ab555b3254fb438, type: 3}
   - {fileID: 2955337896246230976, guid: 80f6128d5eb957d48ab555b3254fb438, type: 3}
   - {fileID: 6913160990258079399, guid: 0d8359b3d75c1df47a0095728519555d, type: 3}
+  PoolList:
+  - assets/gameplay/tests/runtime/res/testspawnerring/cubepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/cubepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/cubepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/cubepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/spherepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/spherepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/spherepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/cross.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/cross.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/caltroppool.prefab

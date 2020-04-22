@@ -8,6 +8,7 @@ using Framework.AssetManagement.Runtime;
 /// 把对象池製作Prefab的幾個優勢：
 /// 1、配置Pool參數
 /// 2、动态加载
+/// 3、WARNING: 挂载PrefabObjectPool的Prefab只能实例化一次，每次实例化等于向PoolManager注册一次，多次注册将抛出异常
 /// </summary>
 public class TestPrefabPool : MonoBehaviour
 {

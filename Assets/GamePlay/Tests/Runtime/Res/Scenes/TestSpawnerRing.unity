@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -160,6 +160,12 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 355e2c63fd971a94aa11936e2d15f449, type: 2}
   spawnerPrefab: {fileID: 7126054184081680070, guid: c449fca880be6944d8f6b22d9b825b51,
     type: 3}
+  PoolPathList:
+  - assets/gameplay/tests/runtime/res/testspawnerring/cubepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/spherepool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/crosspool.prefab
+  - assets/gameplay/tests/runtime/res/testspawnerring/caltroppool.prefab
+  PoolList: []
   bPause: 0
 --- !u!4 &218739217
 Transform:
@@ -436,8 +442,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.020359397, y: 0.9593859, z: -0.27204636, w: -0.07179886}
-  m_LocalPosition: {x: 3.6822343, y: 25.10907, z: 41.784447}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -486,4 +492,49 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1671749593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1671749595}
+  - component: {fileID: 1671749594}
+  m_Layer: 0
+  m_Name: ResourceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1671749594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671749593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9bb3b2a7d5e7f4d9bd1b4a9dde7735, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LoaderType: 1
+  m_RootPath: Deployment/AssetBundles
+--- !u!4 &1671749595
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671749593}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.0861995, y: 7.9196377, z: 37.222637}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

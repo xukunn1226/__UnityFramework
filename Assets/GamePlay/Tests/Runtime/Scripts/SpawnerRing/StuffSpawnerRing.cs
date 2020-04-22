@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Framework.Cache;
+using System.Collections.Generic;
 
 public class StuffSpawnerRing : MonoBehaviour
 {
@@ -11,11 +13,25 @@ public class StuffSpawnerRing : MonoBehaviour
 
     public StuffSpawner spawnerPrefab;
 
+    public List<string> PoolPathList = new List<string>();
+
+    [HideInInspector]
+    public List<PrefabObjectPool> PoolList = new List<PrefabObjectPool>();
+
     [HideInInspector]
     public bool bPause;
 
     IEnumerator Start()
     {
+        foreach(var assetPath in PoolPathList)
+        {
+            GameObject go = ResourceManager.InstantiatePrefab(assetPath);
+            PrefabObjectPool pool = go.GetComponent<PrefabObjectPool>();
+            if(pool != null)
+            {
+                PoolList.Add(pool);
+            }
+        }
         for (int i = 0; i < numberOfSpawners; ++i)
         {
             CreateSpawner(i);
