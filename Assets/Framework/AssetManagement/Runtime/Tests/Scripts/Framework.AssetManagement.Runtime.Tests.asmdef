@@ -1,7 +1,8 @@
 {
     "name": "Framework.AssetManagement.Runtime.Tests",
     "references": [
-        "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138"
+        "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138",
+        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

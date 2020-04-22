@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// 同步加载“静态场景”和“动态场景”
+    /// 异步加载“静态场景”和“动态场景”
     /// </summary>
     public class SceneLoaderAsync : IEnumerator, ILinkedObjectPoolNode<SceneLoaderAsync>, IPooledObject
     {
@@ -18,11 +18,13 @@ namespace Framework.AssetManagement.Runtime
 
         private bool                m_bFromBundle;          // true: load scene from bundle; false: load scene from build settings
 
-        public string               sceneName       { get; private set; }
+        public string               sceneName               { get; private set; }
 
-        public LoadSceneMode        mode            { get; private set; }
+        public LoadSceneMode        mode                    { get; private set; }
 
-        public AsyncOperation       unloadAsyncOp   { get; private set; }
+        public AsyncOperation       loadAsyncOp             { get; private set; }
+
+        public AsyncOperation       unloadAsyncOp           { get; private set; }
 
         public SceneLoaderAsync()
         { }
@@ -34,7 +36,7 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="sceneName">不带后缀名，大小写敏感，与资源名严格一致</param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        static internal SceneLoaderAsync Get(string bundlePath, string sceneName, LoadSceneMode mode)
+        static internal SceneLoaderAsync Get(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             if(m_Pool == null)
             {
@@ -42,7 +44,7 @@ namespace Framework.AssetManagement.Runtime
             }
 
             SceneLoaderAsync loader = (SceneLoaderAsync)m_Pool.Get();
-            loader.InternalLoadSceneAsyncFromBundle(bundlePath, sceneName, mode);
+            loader.InternalLoadSceneAsyncFromBundle(bundlePath, sceneName, mode, allowSceneActivation);
             loader.Pool = m_Pool;
             loader.sceneName = sceneName;
             loader.mode = mode;
@@ -56,7 +58,7 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="sceneName">大小写不敏感，但为了与其他Get接口一致务必与资源名严格一致</param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        static internal SceneLoaderAsync Get(string sceneName, LoadSceneMode mode)
+        static internal SceneLoaderAsync Get(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             if (m_Pool == null)
             {
@@ -64,7 +66,7 @@ namespace Framework.AssetManagement.Runtime
             }
 
             SceneLoaderAsync loader = (SceneLoaderAsync)m_Pool.Get();
-            loader.InternalLoadSceneAsync(sceneName, mode);
+            loader.InternalLoadSceneAsync(sceneName, mode, allowSceneActivation);
             loader.Pool = m_Pool;
             loader.sceneName = sceneName;
             loader.mode = mode;
@@ -78,10 +80,10 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.ArgumentNullException();
 
             m_Pool.Return(loader);
-            return loader.unloadAsyncOp;      // Return后m_UnloadAsyncOp会失效吗？
+            return loader.unloadAsyncOp;
         }
 
-        private void InternalLoadSceneAsyncFromBundle(string bundlePath, string sceneName, LoadSceneMode mode)
+        private void InternalLoadSceneAsyncFromBundle(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation)
         {
             m_BundleLoader = AssetManager.LoadAssetBundle(bundlePath);
             if (m_BundleLoader.assetBundle == null)
@@ -89,12 +91,14 @@ namespace Framework.AssetManagement.Runtime
             if (!m_BundleLoader.assetBundle.isStreamedSceneAssetBundle)
                 throw new System.Exception($"{bundlePath} is not streamed scene asset bundle");
 
-            SceneManager.LoadScene(sceneName, mode);
+            loadAsyncOp = SceneManager.LoadSceneAsync(sceneName, mode);
+            loadAsyncOp.allowSceneActivation = allowSceneActivation;
         }
 
-        private void InternalLoadSceneAsync(string sceneName, LoadSceneMode mode)
+        private void InternalLoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation)
         {
-            SceneManager.LoadScene(sceneName, mode);
+            loadAsyncOp = SceneManager.LoadSceneAsync(sceneName, mode);
+            loadAsyncOp.allowSceneActivation = allowSceneActivation;
         }
 
         private void InternalUnloadScene()
@@ -110,13 +114,11 @@ namespace Framework.AssetManagement.Runtime
 
         private bool IsDone()
         {
-            //if (m_Request == null)
-            //    return true;
+            if (loadAsyncOp == null)
+                throw new System.Exception("loadAsyncOp == null");
 
-            //if (m_Request.isDone)
-            //    asset = m_Request.asset as T;
-            //return m_Request.isDone;
-            return true;
+            //Debug.Log($"[{Time.frameCount}]  {loadAsyncOp.progress}     {loadAsyncOp.isDone}");
+            return loadAsyncOp.isDone;
         }
 
         object IEnumerator.Current
@@ -151,6 +153,7 @@ namespace Framework.AssetManagement.Runtime
             if (m_bFromBundle && m_BundleLoader != null)
                 throw new System.Exception("Previous Bundle Loader not Release!!");
             unloadAsyncOp = null;       // OnRelease时不释放，因为卸载是异步
+            loadAsyncOp = null;
         }
 
         /// <summary>

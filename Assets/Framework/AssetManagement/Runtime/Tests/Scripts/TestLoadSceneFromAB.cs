@@ -65,7 +65,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
             if (GUI.Button(new Rect(100, 300, 150, 60), "Load Scene1 Async"))
             {
-                StartCoroutine(LoadSceneAsync("TestScene1", LoadSceneMode.Additive));
+                //StartCoroutine(LoadSceneAsync("TestScene1", LoadSceneMode.Additive));
             }
 
             if (GUI.Button(new Rect(300, 300, 150, 60), "Unload Scene1"))
@@ -75,7 +75,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
             if (GUI.Button(new Rect(100, 400, 150, 60), "Load Scene2 Async"))
             {
-                StartCoroutine(LoadSceneAsync("TestScene2", LoadSceneMode.Additive));
+                //StartCoroutine(LoadSceneAsync("TestScene2", LoadSceneMode.Additive));
             }
 
             if (GUI.Button(new Rect(300, 400, 150, 60), "Unload Scene2"))
@@ -126,20 +126,20 @@ namespace Framework.AssetManagement.Runtime.Tests
             }
         }
 
-        IEnumerator LoadSceneAsync(string sceneName, LoadSceneMode mode)
-        {
-            Debug.Log($"----Begin LoadSceneAsync: [{Time.frameCount}]");
-            //yield return AssetManager.LoadSceneAsync(sceneName, mode);
+        //IEnumerator LoadSceneAsync(string sceneName, LoadSceneMode mode)
+        //{
+        //    Debug.Log($"----Begin LoadSceneAsync: [{Time.frameCount}]");
+        //    //yield return AssetManager.LoadSceneAsync(sceneName, mode);
 
-            AsyncOperation op = AssetManager.LoadSceneAsync(sceneName, mode);
-            while (!op.isDone)
-            {
-                Debug.Log($"[{Time.frameCount}]  {op.progress}");
-                yield return null;
-            }
+        //    AsyncOperation op = AssetManager.LoadSceneAsync(sceneName, mode);
+        //    while (!op.isDone)
+        //    {
+        //        Debug.Log($"[{Time.frameCount}]  {op.progress}");
+        //        yield return null;
+        //    }
 
-            Debug.Log($"----End LoadSceneAsync: [{Time.frameCount}]");
-        }
+        //    Debug.Log($"----End LoadSceneAsync: [{Time.frameCount}]");
+        //}
 
         /// <summary>
         /// 下一帧加载完成，即触发回调OnSceneLoaded

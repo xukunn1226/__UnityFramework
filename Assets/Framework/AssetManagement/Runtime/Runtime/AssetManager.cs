@@ -380,9 +380,12 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="sceneName"></param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        static public AsyncOperation LoadSceneAsync(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        static public SceneLoaderAsync LoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
         {
-            return SceneManager.LoadSceneAsync(sceneName, mode);
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
+            return SceneLoaderAsync.Get(sceneName, mode, allowSceneActivation);
         }
 
         /// <summary>
@@ -396,12 +399,20 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="sceneName"></param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        static public SceneLoader LoadScene(string bundlePath, string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        static public SceneLoader LoadScene(string bundlePath, string sceneName, LoadSceneMode mode)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
 
             return SceneLoader.Get(bundlePath, sceneName, mode);
+        }
+
+        static public SceneLoaderAsync LoadSceneAsync(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
+            return SceneLoaderAsync.Get(bundlePath, sceneName, mode, allowSceneActivation);
         }
 
         static public AsyncOperation UnloadSceneAsync(SceneLoader loader)
@@ -412,6 +423,13 @@ namespace Framework.AssetManagement.Runtime
             return SceneLoader.Release(loader);
         }
 
+        static public AsyncOperation UnloadSceneAsync(SceneLoaderAsync loader)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
+            return SceneLoaderAsync.Release(loader);
+        }
 
 
         struct AssetName

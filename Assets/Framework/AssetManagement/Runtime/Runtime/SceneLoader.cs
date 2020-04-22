@@ -78,7 +78,7 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.ArgumentNullException();
 
             m_Pool.Return(loader);
-            return loader.unloadAsyncOp;      // Return后m_UnloadAsyncOp会失效吗？
+            return loader.unloadAsyncOp;
         }
 
         private void InternalLoadSceneFromBundle(string bundlePath, string sceneName, LoadSceneMode mode)

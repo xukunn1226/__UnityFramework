@@ -17,6 +17,11 @@ namespace Framework.AssetManagement.Runtime.Tests
             AssetManager.Init(type);
         }
 
+        //IEnumerator Start()
+        //{
+        //    yield return StartCoroutine(StartTask());
+        //}
+
         void OnDestroy()
         {
             AssetManager.Uninit();
