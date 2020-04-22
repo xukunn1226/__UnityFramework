@@ -5,7 +5,7 @@ using Framework.Cache;
 using Framework.AssetManagement.Runtime;
 
 /// <summary>
-/// 展示如何通过assetPath使用缓存对象
+/// 展示如何通过assetPath创建对象池
 /// </summary>
 public class TestAssetReference : MonoBehaviour
 {

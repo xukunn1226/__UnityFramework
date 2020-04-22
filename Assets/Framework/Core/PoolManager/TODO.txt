@@ -1,3 +1,7 @@
+* 使用ResourceManager的标准用法重构SpawnRing
+
+
+
 - 配置：所有缓存对象可配置化（初始化大小等）
   PrefabObjectPool支持可视化配置，非MonoPool暂不支持
 - PoolManager可配置Pool   Pool = PoolManagerExtension.GetOrCreatePool<Decal, LivingPrefabObjectPool>(assetPath);
