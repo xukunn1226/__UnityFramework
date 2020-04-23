@@ -9,9 +9,6 @@ EditorBuildSettings:
     path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestLoadScene.unity
     guid: f2b5e6eeef4517b4f99c9096a6896933
   - enabled: 0
-    path: Assets/GamePlay/Tests/Runtime/Res/scene1/TestSpawnerEntry.unity
-    guid: 6debd4449d9d6fd459e9ef9717a23d5e
-  - enabled: 0
     path: Assets/GamePlay/Tests/Runtime/Res/Scenes/TestSpawnerRing.unity
     guid: ff9d69c1b7cef3646866f0abde25e5e8
   - enabled: 0
