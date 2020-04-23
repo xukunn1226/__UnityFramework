@@ -6,7 +6,7 @@ using System;
 namespace Framework.Core
 {
     /// <summary>
-    /// WARNING: 拥有SoftObjectPath的GameObject不能放置在场景中，否则会打包失败
+    /// 
     /// </summary>
     [ExecuteInEditMode]
     public class PrefabSoftObject : MonoBehaviour
@@ -21,7 +21,7 @@ namespace Framework.Core
 
         private void OnDestroy()
         {
-            SoftObjectPath.Remove(gameObject, ref m_SoftReference);
+            //SoftObjectPath.Remove(gameObject, ref m_SoftReference);
         }
     }
 }
