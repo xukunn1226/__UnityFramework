@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.SoftObjectPath
+namespace Framework.Core
 {
     public class SoftObjectPath : MonoBehaviour
     {
