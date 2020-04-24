@@ -23,7 +23,7 @@ namespace Cache.Tests
 
     public class AssetLoader : IAssetLoader
     {
-        private UnityEngine.GameObject m_Asset;
+        private UnityEngine.GameObject m_Asset = null;
 
         public UnityEngine.GameObject asset { get { return m_Asset; } }
 

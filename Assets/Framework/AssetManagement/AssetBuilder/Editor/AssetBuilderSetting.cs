@@ -54,6 +54,8 @@ namespace Framework.AssetBuilder
 
         public override void OnInspectorGUI()
         {
+            EditorGUI.BeginChangeCheck();
+
             serializedObject.Update();
 
             GUIStyle newStyle = EditorStyles.boldLabel;
@@ -86,6 +88,11 @@ namespace Framework.AssetBuilder
             GUILayout.EndVertical();
 
             serializedObject.ApplyModifiedProperties();
+
+            if(EditorGUI.EndChangeCheck())
+            {
+                AssetDatabase.SaveAssets();
+            }
         }
     }
 #endif

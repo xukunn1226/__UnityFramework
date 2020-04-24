@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace Framework.Core
 {
-    public class SoftObjectPath : MonoBehaviour
+    public sealed class SoftObjectPath : MonoBehaviour
     {
 #if UNITY_EDITOR
         public string m_GUID;
@@ -17,6 +17,11 @@ namespace Framework.Core
         public string m_AssetPath;
 
         public string assetPath { get { return m_AssetPath; } }
+
+
+
+
+
 
         [Conditional("UNITY_EDITOR")]
         static public void Add(GameObject owner, ref SoftObjectPath comp)
