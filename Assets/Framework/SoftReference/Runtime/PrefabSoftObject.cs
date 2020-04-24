@@ -11,7 +11,7 @@ namespace Framework.Core
     [ExecuteInEditMode]
     public class PrefabSoftObject : MonoBehaviour
     {
-        [ReadOnly]
+        //[ReadOnly]
         public SoftObjectPath m_SoftReference;
 
         private void Awake()

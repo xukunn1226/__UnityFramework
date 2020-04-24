@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1237652909959145937}
-  - component: {fileID: 1237652909959145943}
-  - component: {fileID: 1237652909959145936}
+  - component: {fileID: -4089942812727522358}
+  - component: {fileID: 3064039251059610178}
   m_Layer: 0
   m_Name: TestSoft
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1237652909959145943
+--- !u!114 &-4089942812727522358
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b2d41bd958d884cb6b2e4d5a89df21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SoftReference: {fileID: 1237652909959145936}
---- !u!114 &1237652909959145936
+  m_SoftReference: {fileID: 3064039251059610178}
+--- !u!114 &3064039251059610178
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,5 +57,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56fa9a21fe1ba864086c2d3328d79985, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GUID: bc3f5e632d2ca1843aece9c662a3c4d2
-  m_AssetPath: 22
+  m_GUID: 
+  m_AssetPath: 

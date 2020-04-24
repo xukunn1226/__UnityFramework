@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace Framework.Core
 {
-    public sealed class SoftObjectPath : MonoBehaviour
+    public class SoftObjectPath : MonoBehaviour
     {
 #if UNITY_EDITOR
         public string m_GUID;

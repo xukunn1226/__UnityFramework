@@ -19,70 +19,72 @@ namespace Framework.Core.Editor
             for (int i = 0; i < importedAssets.Length; ++i)
             {
                 Debug.Log($"importedAsset: {importedAssets[i]}");
-                //SoftReferencesDB.ImportAsset(importedAssets[i]);
+                SoftReferencesDB.ImportAsset(importedAssets[i]);
             }
 
             for (int i = 0; i < deletedAssets.Length; ++i)
             {
                 Debug.Log($"deletedAssets: {deletedAssets[i]}");
+                SoftReferencesDB.DeleteAsset(deletedAssets[i]);
+
+                if(i == deletedAssets.Length - 1)
+                {
+                    AssetDatabase.SaveAssets();
+                }
             }
 
             for (int i = 0; i < movedAssets.Length; ++i)
             {
-                Debug.Log($"movedAssets: {movedAssets[i]}");
-            }
-
-            for (int i = 0; i < movedFromAssetPaths.Length; ++i)
-            {
-                Debug.Log($"movedFromAssetPaths: {movedFromAssetPaths[i]}");
+                Debug.Log($"movedAssets: {movedAssets[i]}       movedFromAssetPaths: {movedFromAssetPaths[i]}");
+                SoftReferencesDB.MoveAsset(movedFromAssetPaths[i], movedAssets[i]);
             }
         }
     }
 
-    public class SoftReferenceDBModificationProcessor : UnityEditor.AssetModificationProcessor
-    {
-        static void OnWillCreateAsset(string assetName)
-        {
-            if (Application.isBatchMode)
-                return;
+    //public class SoftReferenceDBModificationProcessor : UnityEditor.AssetModificationProcessor
+    //{
+    //    static void OnWillCreateAsset(string assetName)
+    //    {
+    //        if (Application.isBatchMode)
+    //            return;
 
-            Debug.Log("OnWillCreateAsset - is being called with the following asset: " + assetName + ".");
-        }
+    //        Debug.Log("OnWillCreateAsset - is being called with the following asset: " + assetName + ".");
+    //    }
 
-        public static AssetDeleteResult OnWillDeleteAsset(string AssetPath, RemoveAssetOptions rao)
-        {
-            if (Application.isBatchMode)
-                return AssetDeleteResult.DidNotDelete;
+    //    public static AssetDeleteResult OnWillDeleteAsset(string AssetPath, RemoveAssetOptions rao)
+    //    {
+    //        if (Application.isBatchMode)
+    //            return AssetDeleteResult.DidNotDelete;
 
-            Debug.Log("OnWillDeleteAsset - unity callback: " + AssetPath);
+    //        Debug.Log("OnWillDeleteAsset - unity callback: " + AssetPath);
 
-            return AssetDeleteResult.DidNotDelete;
-        }
+    //        return AssetDeleteResult.DidNotDelete;
+    //    }
 
-        private static AssetMoveResult OnWillMoveAsset(string sourcePath, string destinationPath)
-        {
-            if (Application.isBatchMode)
-                return AssetMoveResult.DidMove;
+    //    private static AssetMoveResult OnWillMoveAsset(string sourcePath, string destinationPath)
+    //    {
+    //        if (Application.isBatchMode)
+    //            return AssetMoveResult.DidMove;
 
-            Debug.Log("OnWillMoveAsset - Source path: " + sourcePath + ". Destination path: " + destinationPath + ".");
-            AssetMoveResult assetMoveResult = AssetMoveResult.DidMove;
+    //        Debug.Log("OnWillMoveAsset - Source path: " + sourcePath + ". Destination path: " + destinationPath + ".");
+    //        AssetMoveResult assetMoveResult = AssetMoveResult.DidMove;
 
-            // Perform operations on the asset and set the value of 'assetMoveResult' accordingly.
+    //        // Perform operations on the asset and set the value of 'assetMoveResult' accordingly.
 
-            return assetMoveResult;
-        }
+    //        return assetMoveResult;
+    //    }
 
-        static string[] OnWillSaveAssets(string[] paths)
-        {
-            if (Application.isBatchMode)
-                return paths;
+    //    static string[] OnWillSaveAssets(string[] paths)
+    //    {
+    //        if (Application.isBatchMode)
+    //            return paths;
 
-            Debug.Log("OnWillSaveAssets: " + paths.Length);
-            foreach (string path in paths)
-                Debug.Log("---OnWillSaveAssets:" + path);
-            return paths;
-        }
-    }
+    //        Debug.Log("OnWillSaveAssets: " + paths.Length);
+    //        foreach (string path in paths)
+    //            Debug.Log("---OnWillSaveAssets:" + path);
+    //        return paths;
+    //    }
+    //}
 
     [System.Serializable]
     public class SoftReferenceInfo
@@ -94,15 +96,25 @@ namespace Framework.Core.Editor
         {
             public string       m_GUID;                 // 使用此资源的GUID
             public long         m_FileID;               // FileID，用于定位SoftObjectPath
+            public string       m_AssetPath;            // 资源路径（与GUID对应，方便DEBUG）
         }
-        public List<UserInfo>   m_UserInfoList = new List<UserInfo>();
+        public SortedList<string, UserInfo> m_UserInfoList = new SortedList<string, UserInfo>();
 
-        public void AddUser(string guid, long fileID)
+        public void AddOrUpdateUser(string guid, long fileID)
         {
-            int index = FindUser(guid, fileID);
-            if(index != -1)
+            if(m_UserInfoList.ContainsKey(guid))
             {
-                Debug.LogError($"{guid} & {fileID} has already exist.");
+                // 多次导入属正常情况
+                //Debug.LogError($"{guid} & {fileID} has already exist.");
+
+                UserInfo userInfo;
+                if(m_UserInfoList.TryGetValue(guid, out userInfo))
+                {
+                    userInfo.m_GUID = guid;
+                    userInfo.m_FileID = fileID;
+                    userInfo.m_AssetPath = AssetDatabase.GUIDToAssetPath(guid);
+                }
+                
                 return;
             }
 
@@ -113,40 +125,19 @@ namespace Framework.Core.Editor
                 return;
             }
 
-            m_UserInfoList.Add(new UserInfo() { m_GUID = guid, m_FileID = fileID });
+            m_UserInfoList.Add(guid, new UserInfo() { m_GUID = guid, m_FileID = fileID, m_AssetPath = AssetDatabase.GUIDToAssetPath(guid) });
         }
 
         public int RemoveUser(string guid, long fileID)
         {
-            int index = FindUser(guid, fileID);
-            if (index == -1)
+            if (!m_UserInfoList.ContainsKey(guid))
             {
                 Debug.LogError($"{guid} & {fileID} not exist.");
                 return m_UserInfoList.Count;
             }
 
-            m_UserInfoList.RemoveAt(index);
+            m_UserInfoList.Remove(guid);
             return m_UserInfoList.Count;
-        }
-
-        // 当资源发生移动时通知引用对象
-        public void UpdateUsers()
-        {
-            m_AssetPath = AssetDatabase.GUIDToAssetPath(m_GUID);
-
-            // todo: update users
-        }
-
-        // 当资源发生删除时通知引用对象
-        public void Clear()
-        {
-            // todo: update users
-
-        }
-
-        private int FindUser(string guid, long fileID)
-        {
-            return m_UserInfoList.FindIndex((item) => (item.m_GUID == guid && item.m_FileID == fileID));
         }
     }
 
@@ -223,7 +214,7 @@ namespace Framework.Core.Editor
                 throw new System.ArgumentNullException("newGUID");
 
             SoftReferenceInfo newData = GetOrCreateData(newGUID);
-            newData.AddUser(userGUID, userFileID);
+            newData.AddOrUpdateUser(userGUID, userFileID);
         }
 
         static public void Flush(string guid)
@@ -245,11 +236,11 @@ namespace Framework.Core.Editor
         /// <summary>
         /// 资源导入时根据SoftObjectPath组件信息更新DB
         /// </summary>
-        /// <param name="assetPath"></param>
-        static public void ImportAsset(string assetPath)
+        /// <param name="userAssetPath"></param>
+        static public void ImportAsset(string userAssetPath)
         {
             // todo: 目前仅支持GameObject上挂载SoftReferencePath
-            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(userAssetPath);
             if (asset == null)
                 return;
 
@@ -257,7 +248,7 @@ namespace Framework.Core.Editor
             if (sopList.Length == 0)
                 return;
 
-            string userGUID = AssetDatabase.AssetPathToGUID(assetPath);
+            string userGUID = AssetDatabase.AssetPathToGUID(userAssetPath);
             foreach (var sop in sopList)
             {
                 string referencedAssetPath = AssetDatabase.GUIDToAssetPath(sop.m_GUID);         // 被引用资源路径
@@ -269,19 +260,11 @@ namespace Framework.Core.Editor
                 string filePath = string.Format("{0}/{1}.json", k_SavedPath, sop.m_GUID);
                 if (File.Exists(filePath))
                 {
-                    //FileStream reader = new FileStream(filePath, FileMode.Open);
-                    //byte[] bs_reader = new byte[reader.Length];
-                    //reader.Read(bs_reader, 0, bs_reader.Length);
-                    //reader.Close();
-                    //string json_reader = System.Text.Encoding.UTF8.GetString(bs_reader);
-
-                    //sri = JsonConvert.DeserializeObject<SoftReferenceInfo>(json_reader);
-
                     sri = DeserializeSoftReference(sop.m_GUID);
                 }
                 else
                 {
-                    sri = new SoftReferenceInfo() { m_GUID = sop.m_GUID, m_AssetPath = assetPath };
+                    sri = new SoftReferenceInfo() { m_GUID = sop.m_GUID, m_AssetPath = referencedAssetPath };
                 }
 
                 // get fileID
@@ -290,18 +273,64 @@ namespace Framework.Core.Editor
                 AssetDatabase.TryGetGUIDAndLocalFileIdentifier(sop, out guid, out fileID);
                 if (guid != userGUID)
                     throw new System.Exception("guid != userGUID");
-                sri.AddUser(userGUID, fileID);
-
-                // save to disk
-                //string json_writer = JsonConvert.SerializeObject(sri, Formatting.Indented);
-                //byte[] bs_writer = System.Text.Encoding.UTF8.GetBytes(json_writer);
-
-                //FileStream writer = new FileStream(filePath, FileMode.Open);
-                //writer.Write(bs_writer, 0, bs_writer.Length);
-                //writer.Close();
+                sri.AddOrUpdateUser(userGUID, fileID);
 
                 SerializeSoftReference(sop.m_GUID, sri);
             }
+        }
+
+        /// <summary>
+        /// 删除资源触发DB更新，把正在引用此资源的SoftObjectPath清空
+        /// </summary>
+        /// <param name="deletedAssetPath"></param>
+        static public void DeleteAsset(string deletedAssetPath)
+        {
+            string guid = AssetDatabase.AssetPathToGUID(deletedAssetPath);
+
+            string filePath = string.Format("{0}/{1}.json", k_SavedPath, guid);
+            if (!File.Exists(filePath))
+                return;
+
+            // 根据json记录的引用数据更新
+            SoftReferenceInfo sri = DeserializeSoftReference(guid);
+            foreach(var item in sri.m_UserInfoList)
+            {
+                SoftReferenceInfo.UserInfo userInfo = item.Value;
+                string userAssetPath = AssetDatabase.GUIDToAssetPath(userInfo.m_GUID);
+                if (string.IsNullOrEmpty(userAssetPath))        // 被删除资源的GUID仍会返回一个路径
+                    continue;
+
+                GameObject userGameObject = AssetDatabase.LoadAssetAtPath<GameObject>(userAssetPath);
+                if (userGameObject == null)
+                    continue;       // 可能userAssetPath有值，但对应的资源已删除
+
+                SoftObjectPath[] sopList = userGameObject.GetComponentsInChildren<SoftObjectPath>(true);
+                foreach(var sop in sopList)
+                {
+                    string userGUID;
+                    long fileID;
+                    if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(sop, out userGUID, out fileID))
+                        continue;
+
+                    if (fileID != userInfo.m_FileID)
+                        continue;
+
+                    sop.m_GUID = null;
+                    sop.m_AssetPath = null;
+
+                    UnityEditor.EditorUtility.SetDirty(sop.transform.root.gameObject);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 移动、改名触发DB更新
+        /// </summary>
+        /// <param name="oldAssetPath"></param>
+        /// <param name="newAssetPath"></param>
+        static public void MoveAsset(string oldAssetPath, string newAssetPath)
+        {
+
         }
 
         private static SoftReferenceInfo DeserializeSoftReference(string filename)
@@ -327,22 +356,6 @@ namespace Framework.Core.Editor
             FileStream writer = new FileStream(filePath, FileMode.Create);
             writer.Write(bs_writer, 0, bs_writer.Length);
             writer.Close();
-        }
-
-        public static long GetObjectLocalIdInFile(Object _object)
-        {
-            SerializedObject serialize = new SerializedObject(_object);
-
-            PropertyInfo inspectorModeInfo = typeof(SerializedObject).GetProperty("inspectorMode", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (inspectorModeInfo != null)
-                inspectorModeInfo.SetValue(serialize, InspectorMode.Debug, null);
-
-            return serialize.FindProperty("m_LocalIdentfierInFile")?.longValue ?? 0;
-        }
-
-        static public void MoveAsset(string oldAssetPath, string newAssetPath)
-        {
-
         }
     }
 }
