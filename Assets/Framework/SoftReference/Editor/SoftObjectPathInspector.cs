@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace Framework.Core.Editor
 {
-    [CustomEditor(typeof(SoftObjectPath))]
+    [CustomEditor(typeof(SoftObjectPath), true)]
     public class SoftObjectPathInspector : UnityEditor.Editor
     {
         private SerializedProperty m_GUIDProp;
