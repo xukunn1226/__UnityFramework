@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using Newtonsoft.Json;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Framework.Core.Editor
 {
@@ -16,20 +18,20 @@ namespace Framework.Core.Editor
 
             for (int i = 0; i < importedAssets.Length; ++i)
             {
-                //Debug.Log($"importedAsset: {importedAssets[i]}");
+                Debug.Log($"importedAsset: {importedAssets[i]}");
                 RedirectorDB.ImportAsset(importedAssets[i]);
             }
 
             bool bDirty = false;
             for (int i = 0; i < deletedAssets.Length; ++i)
             {
-                //Debug.Log($"deletedAssets: {deletedAssets[i]}");
+                Debug.Log($"deletedAssets: {deletedAssets[i]}");
                 bDirty |= RedirectorDB.DeleteAsset(deletedAssets[i]);
             }
 
             for (int i = 0; i < movedAssets.Length; ++i)
             {
-                //Debug.Log($"movedAssets: {movedAssets[i]}       movedFromAssetPaths: {movedFromAssetPaths[i]}");
+                Debug.Log($"movedAssets: {movedAssets[i]}       movedFromAssetPaths: {movedFromAssetPaths[i]}");
                 bDirty |= RedirectorDB.MoveAsset(movedAssets[i]);
             }
 
@@ -37,57 +39,6 @@ namespace Framework.Core.Editor
             {
                 AssetDatabase.SaveAssets();
             }
-        }
-    }
-
-    /// <summary>
-    /// 重定向器，记录资源被引用信息
-    /// </summary>
-    public class SoftRefRedirector
-    {
-        public string           m_RefObjectGUID;                // 被引用资源的GUID
-        public string           m_RefObjectAssetPath;           // 资源路径（与GUID对应，方便DEBUG）
-        
-        public class UserInfo
-        {
-            public string       m_UserObjectGUID;               // 使用此资源的GUID
-            public long         m_FileID;                       // FileID，用于定位SoftObjectPath
-            public string       m_UserObjectAssetPath;          // 资源路径（与GUID对应，方便DEBUG）
-        }
-        public SortedList<string, UserInfo> m_UserInfoList = new SortedList<string, UserInfo>();        // key: m_UserObjectGUID | m_FileID
-
-        public void AddOrUpdateUserInfo(string userGUID, long fileID)
-        {
-            string key = MakeKey(userGUID, fileID);
-            if (m_UserInfoList.ContainsKey(key))
-            {
-                // 多次导入属正常情况
-                //Debug.LogError($"{guid} & {fileID} has already exist.");
-
-                UserInfo userInfo;
-                if(m_UserInfoList.TryGetValue(key, out userInfo))
-                {
-                    userInfo.m_UserObjectGUID = userGUID;
-                    userInfo.m_FileID = fileID;
-                    userInfo.m_UserObjectAssetPath = AssetDatabase.GUIDToAssetPath(userGUID);
-                }
-                
-                return;
-            }
-
-            string assetPath = AssetDatabase.GUIDToAssetPath(userGUID);
-            if(string.IsNullOrEmpty(assetPath))
-            {
-                Debug.LogError($"{userGUID} is not valid");
-                return;
-            }
-
-            m_UserInfoList.Add(key, new UserInfo() { m_UserObjectGUID = userGUID, m_FileID = fileID, m_UserObjectAssetPath = assetPath });
-        }
-
-        public string MakeKey(string guid, long fileID)
-        {
-            return string.Format($"{guid}|{fileID}");
         }
     }
 
@@ -100,7 +51,58 @@ namespace Framework.Core.Editor
         {
             Directory.CreateDirectory(k_SavedPath);
         }
-        
+
+        /// <summary>
+        /// 重定向器，记录资源被引用信息
+        /// </summary>
+        public class SoftRefRedirector
+        {
+            public string       m_RefObjectGUID;                // 被引用资源的GUID
+            public string       m_RefObjectAssetPath;           // 资源路径（与GUID对应，方便DEBUG）
+
+            public class UserInfo
+            {
+                public string   m_UserObjectGUID;               // 使用此资源的GUID
+                public long     m_FileID;                       // FileID，用于定位SoftObjectPath
+                public string   m_UserObjectAssetPath;          // 资源路径（与GUID对应，方便DEBUG）
+            }
+            public SortedList<string, UserInfo> m_UserInfoList = new SortedList<string, UserInfo>();        // key: m_UserObjectGUID | m_FileID
+
+            public void AddOrUpdateUserInfo(string userGUID, long fileID)
+            {
+                string key = MakeKey(userGUID, fileID);
+                if (m_UserInfoList.ContainsKey(key))
+                {
+                    // 多次导入属正常情况
+                    //Debug.LogError($"{guid} & {fileID} has already exist.");
+
+                    UserInfo userInfo;
+                    if (m_UserInfoList.TryGetValue(key, out userInfo))
+                    {
+                        userInfo.m_UserObjectGUID = userGUID;
+                        userInfo.m_FileID = fileID;
+                        userInfo.m_UserObjectAssetPath = AssetDatabase.GUIDToAssetPath(userGUID);
+                    }
+
+                    return;
+                }
+
+                string assetPath = AssetDatabase.GUIDToAssetPath(userGUID);
+                if (string.IsNullOrEmpty(assetPath))
+                {
+                    Debug.LogError($"{userGUID} is not valid");
+                    return;
+                }
+
+                m_UserInfoList.Add(key, new UserInfo() { m_UserObjectGUID = userGUID, m_FileID = fileID, m_UserObjectAssetPath = assetPath });
+            }
+
+            public string MakeKey(string guid, long fileID)
+            {
+                return string.Format($"{guid}|{fileID}");
+            }
+        }
+
         /// <summary>
         /// 资源导入时根据SoftObjectPath组件信息更新DB
         /// </summary>
@@ -275,6 +277,59 @@ namespace Framework.Core.Editor
             writer.Close();
 
             AssetDatabase.ImportAsset(filePath);
+        }
+
+
+        //[MenuItem("Assets/Reimport All Redirectors")]
+        static void MenuItem_ReimportAllRedirectors()
+        {
+            if (UnityEditor.EditorUtility.DisplayDialog("Reimport All Redirectors", "Are you sure, about 2 mins", "OK", "Cancel"))
+            {
+                ReimportAllRedirectors("56fa9a21fe1ba864086c2d3328d79985", new string[] { ".prefab", ".unity", ".mat", ".asset" });
+            }
+        }
+
+        /// <summary>
+        /// reimport all assets which reference the asset(guid)
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="filters"></param>
+        /// <returns></returns>
+        static private void ReimportAllRedirectors(string guid, string[] filters)
+        {
+            string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories)
+                .Where(s => filters.Contains(Path.GetExtension(s).ToLower())).ToArray();
+
+            int startIndex = 0;
+
+            EditorApplication.update = delegate ()
+            {
+                string file = files[startIndex];
+
+                bool isCancel = UnityEditor.EditorUtility.DisplayCancelableProgressBar("资源查找中", file, (float)startIndex / (float)files.Length);
+
+                if (Regex.IsMatch(File.ReadAllText(file), guid))
+                {
+                    string assetPath = GetRelativeAssetsPath(file);
+                    AssetDatabase.ImportAsset(assetPath);
+
+                    //Debug.Log(file, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath));
+                }
+
+                startIndex++;
+                if (isCancel || startIndex >= files.Length)
+                {
+                    UnityEditor.EditorUtility.ClearProgressBar();
+                    EditorApplication.update = null;
+                    startIndex = 0;
+                    Debug.Log("重导结束 in (*.prefab, *.unity, *.mat, *.asset)");
+                }
+            };
+        }
+
+        static private string GetRelativeAssetsPath(string path)
+        {
+            return "Assets" + Path.GetFullPath(path).Replace(Path.GetFullPath(Application.dataPath), "").Replace('\\', '/');
         }
     }
 }

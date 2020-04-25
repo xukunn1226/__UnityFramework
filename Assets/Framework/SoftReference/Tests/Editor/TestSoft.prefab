@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: bc3f5e632d2ca1843aece9c662a3c4d2
-  m_AssetPath: assets/framework/softreference/tests/editor/sphere12.prefab
+  m_AssetPath: Assets/Framework/SoftReference/Tests/Editor/sphere12.prefab
 --- !u!114 &6540285085653604370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,5 +86,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56fa9a21fe1ba864086c2d3328d79985, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GUID: bc14a199bfe85454c962b23acf9e9135
-  m_AssetPath: assets/framework/softreference/tests/editor/cube221.prefab
+  m_GUID: bc3f5e632d2ca1843aece9c662a3c4d2
+  m_AssetPath: assets/framework/softreference/tests/editor/sphere12.prefab
