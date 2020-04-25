@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1237652909959145937}
   - component: {fileID: -4089942812727522358}
   - component: {fileID: 3064039251059610178}
+  - component: {fileID: 6540285085653604370}
+  - component: {fileID: -2584998473882351303}
   m_Layer: 0
   m_Name: TestSoft
   m_TagString: Untagged
@@ -57,5 +59,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56fa9a21fe1ba864086c2d3328d79985, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GUID: 
-  m_AssetPath: 
+  m_GUID: bc3f5e632d2ca1843aece9c662a3c4d2
+  m_AssetPath: assets/framework/softreference/tests/editor/sphere12.prefab
+--- !u!114 &6540285085653604370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237652909959145938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86b2d41bd958d884cb6b2e4d5a89df21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SoftReference: {fileID: -2584998473882351303}
+--- !u!114 &-2584998473882351303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237652909959145938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56fa9a21fe1ba864086c2d3328d79985, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GUID: bc14a199bfe85454c962b23acf9e9135
+  m_AssetPath: assets/framework/softreference/tests/editor/cube221.prefab

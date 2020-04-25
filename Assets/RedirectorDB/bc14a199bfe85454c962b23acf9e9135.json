@@ -1,0 +1,11 @@
+{
+  "m_RefObjectGUID": "bc14a199bfe85454c962b23acf9e9135",
+  "m_RefObjectAssetPath": "Assets/Framework/SoftReference/Tests/Editor/Cube221.prefab",
+  "m_UserInfoList": {
+    "dbd49dd61bce04e4bb1eb017c38e1707|-2584998473882351303": {
+      "m_UserObjectGUID": "dbd49dd61bce04e4bb1eb017c38e1707",
+      "m_FileID": -2584998473882351303,
+      "m_UserObjectAssetPath": "Assets/Framework/SoftReference/Tests/Editor/TestSoft.prefab"
+    }
+  }
+}
