@@ -37,10 +37,26 @@ namespace Framework.Core.Editor
                 bDirty |= RedirectorDB.MoveAsset(movedAssets[i]);
             }
 
-            if(bDirty)
+            if (bDirty)
             {
                 AssetDatabase.SaveAssets();
             }
+        }
+
+        [MenuItem("Assets/Test SetDirty")]
+        static void TestSetDirty()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
+            Scene scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(assetPath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
+            if (scene.IsValid())
+            {
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
+                UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
+            }
+
+            // for GameObject
+            //UnityEditor.EditorUtility.SetDirty(Selection.activeObject);
+            //AssetDatabase.SaveAssets();
         }
     }
 
@@ -275,8 +291,7 @@ namespace Framework.Core.Editor
                             sop.m_GUID = bDelete ? null : guid;
                             sop.m_AssetPath = bDelete ? null : referencedObjectAssetPath.ToLower();
 
-                            UnityEditor.EditorUtility.SetDirty(sop);
-                            UnityEditor.EditorUtility.SetDirty(userObject);
+                            Debug.Log($"MarkSceneDirty:    {UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene)}");
                             bModified = true;
                             bFind = true;
 
