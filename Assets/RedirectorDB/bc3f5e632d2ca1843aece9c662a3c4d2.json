@@ -1,11 +1,5 @@
 {
   "m_RefObjectGUID": "bc3f5e632d2ca1843aece9c662a3c4d2",
-  "m_RefObjectAssetPath": "Assets/Framework/SoftReference/Tests/Editor/sphere12.prefab",
-  "m_UserInfoList": {
-    "dbd49dd61bce04e4bb1eb017c38e1707|3064039251059610178": {
-      "m_UserObjectGUID": "dbd49dd61bce04e4bb1eb017c38e1707",
-      "m_FileID": 3064039251059610178,
-      "m_UserObjectAssetPath": "Assets/Framework/SoftReference/Tests/Editor/TestSoft.prefab"
-    }
-  }
+  "m_RefObjectAssetPath": "Assets/Framework/SoftReference/Tests/Editor/square.prefab",
+  "m_UserInfoList": {}
 }

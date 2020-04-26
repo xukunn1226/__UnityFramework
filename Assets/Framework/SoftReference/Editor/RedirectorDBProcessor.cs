@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
 using System.Reflection;
+using UnityEditor.SceneManagement;
 
 namespace Framework.Core.Editor
 {
@@ -41,22 +42,6 @@ namespace Framework.Core.Editor
             {
                 AssetDatabase.SaveAssets();
             }
-        }
-
-        [MenuItem("Assets/Test SetDirty")]
-        static void TestSetDirty()
-        {
-            string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
-            Scene scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(assetPath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
-            if (scene.IsValid())
-            {
-                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
-                UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
-            }
-
-            // for GameObject
-            //UnityEditor.EditorUtility.SetDirty(Selection.activeObject);
-            //AssetDatabase.SaveAssets();
         }
     }
 
@@ -115,6 +100,11 @@ namespace Framework.Core.Editor
                 m_UserInfoList.Add(key, new UserInfo() { m_UserObjectGUID = userGUID, m_FileID = fileID, m_UserObjectAssetPath = assetPath });
             }
 
+            public void Remove(string userGUID, long fileID)
+            {
+                m_UserInfoList.Remove(MakeKey(userGUID, fileID));
+            }
+
             public string MakeKey(string guid, long fileID)
             {
                 return string.Format($"{guid}|{fileID}");
@@ -129,31 +119,36 @@ namespace Framework.Core.Editor
         {
             if (userAssetPath.EndsWith(".unity"))
             {
-                Scene scene = SceneManager.GetSceneByPath(userAssetPath);
+                Scene activeScene = EditorSceneManager.GetActiveScene();
+
+                Scene scene = EditorSceneManager.OpenScene(userAssetPath, OpenSceneMode.Additive);
                 if (!scene.IsValid())
                     return;
-
-                string userGUID = AssetDatabase.AssetPathToGUID(userAssetPath);
 
                 GameObject[] gos = scene.GetRootGameObjects();
                 foreach (var go in gos)
                 {
-                    UpdateSoftRefRedirector(go, userGUID);
+                    InternalImportAsset(go, AssetDatabase.AssetPathToGUID(userAssetPath));
+                }
+
+                if(scene != activeScene)
+                {
+                    EditorSceneManager.CloseScene(scene, true);
                 }
             }
             else if (userAssetPath.EndsWith(".prefab"))
             {
-                UpdateSoftRefRedirector(AssetDatabase.LoadAssetAtPath<GameObject>(userAssetPath), AssetDatabase.AssetPathToGUID(userAssetPath));
+                InternalImportAsset(AssetDatabase.LoadAssetAtPath<GameObject>(userAssetPath), AssetDatabase.AssetPathToGUID(userAssetPath));
             }
         }
 
         /// <summary>
-        /// 资源导入、保存时更新redirector
+        /// 资源导入、保存时把其所有SoftObjectPath数据更新至redirector
         /// 遍历asset中的所有SoftObjectPath，更新其GUID,FILEID
         /// </summary>
         /// <param name="asset"></param>
         /// <param name="userGUID"></param>
-        static private void UpdateSoftRefRedirector(GameObject asset, string userGUID)
+        static private void InternalImportAsset(GameObject asset, string userGUID)
         {
             if (asset == null)
                 return;
@@ -195,7 +190,7 @@ namespace Framework.Core.Editor
         /// <param name="deletedAssetPath"></param>
         static public bool DeleteAsset(string deletedAssetPath)
         {
-            return UpdateSoftRefRedirector(deletedAssetPath, true);
+            return InternalDeleteOrMoveAsset(deletedAssetPath, true);
         }
 
         /// <summary>
@@ -204,18 +199,18 @@ namespace Framework.Core.Editor
         /// <param name="newAssetPath"></param>
         static public bool MoveAsset(string newAssetPath)
         {
-            return UpdateSoftRefRedirector(newAssetPath, false);
+            return InternalDeleteOrMoveAsset(newAssetPath, false);
         }
 
         /// <summary>
         /// 被引用资源删除、移动、改名时触发引用资源更新数据(*.prefab, *.unity)
         /// </summary>
-        /// <param name="referencedObjectAssetPath"></param>
-        /// <param name="bDelete"></param>
+        /// <param name="refObjectAssetPath"></param>
+        /// <param name="bDelete">true: 删除；false: 更新</param>
         /// <returns></returns>
-        static private bool UpdateSoftRefRedirector(string referencedObjectAssetPath, bool bDelete)
+        static private bool InternalDeleteOrMoveAsset(string refObjectAssetPath, bool bDelete)
         {
-            string guid = AssetDatabase.AssetPathToGUID(referencedObjectAssetPath);
+            string guid = AssetDatabase.AssetPathToGUID(refObjectAssetPath);
 
             string filePath = string.Format("{0}/{1}.json", k_SavedPath, guid);
             if (!File.Exists(filePath))
@@ -224,7 +219,7 @@ namespace Framework.Core.Editor
             // deserialize redirector and update
             SoftRefRedirector sri = DeserializeSoftReference(guid);
             sri.m_RefObjectGUID = guid;
-            sri.m_RefObjectAssetPath = referencedObjectAssetPath;
+            sri.m_RefObjectAssetPath = refObjectAssetPath;
 
             // 根据redirector记录的userInfo，逐个更新user data
             List<string> removeList = new List<string>();
@@ -258,7 +253,7 @@ namespace Framework.Core.Editor
                             continue;
 
                         sop.m_GUID = bDelete ? null : guid;
-                        sop.m_AssetPath = bDelete ? null : referencedObjectAssetPath.ToLower();
+                        sop.m_AssetPath = bDelete ? null : refObjectAssetPath.ToLower();
 
                         UnityEditor.EditorUtility.SetDirty(userObject);
                         bModified = true;
@@ -273,13 +268,15 @@ namespace Framework.Core.Editor
                     }
                 }
                 else if(userObject is SceneAsset)
-                { // SceneAsset
-                    Scene scene = SceneManager.GetSceneByPath(userAssetPath);
+                { // SceneAsset   
+                    Scene activeScene = EditorSceneManager.GetActiveScene();
+
+                    Scene scene = EditorSceneManager.OpenScene(userAssetPath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
                     if (!scene.IsValid())
                         continue;
-
-                    GameObject[] gos = scene.GetRootGameObjects();
+                    
                     bool bFind = false;
+                    GameObject[] gos = scene.GetRootGameObjects();
                     foreach (var go in gos)
                     {
                         SoftObjectPath[] sopList = go.GetComponentsInChildren<SoftObjectPath>(true);
@@ -289,14 +286,24 @@ namespace Framework.Core.Editor
                                 continue;
 
                             sop.m_GUID = bDelete ? null : guid;
-                            sop.m_AssetPath = bDelete ? null : referencedObjectAssetPath.ToLower();
+                            sop.m_AssetPath = bDelete ? null : refObjectAssetPath.ToLower();
 
-                            Debug.Log($"MarkSceneDirty:    {UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene)}");
                             bModified = true;
                             bFind = true;
 
                             break;
                         }
+                    }
+
+                    if(bFind)
+                    {
+                        Debug.Log($"MarkSceneDirty:    {UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene)}");
+                        Debug.Log($"SaveScene:    {UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene)}");
+                    }
+
+                    if(activeScene != scene)
+                    {
+                        Debug.Log($"CloseScene: {UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true)}");
                     }
 
                     // 场景内所有对象找不到再删除
@@ -327,6 +334,24 @@ namespace Framework.Core.Editor
             }
             return bModified;
         }
+
+        static public void UnloadRefObject(string refObjectGUID, string userGUID, long fileID)
+        {
+            string filePath = string.Format("{0}/{1}.json", k_SavedPath, refObjectGUID);
+            if (!File.Exists(filePath))
+                return;
+
+            // deserialize redirector and update
+            SoftRefRedirector sri = DeserializeSoftReference(refObjectGUID);
+            sri.m_RefObjectGUID = refObjectGUID;
+            sri.m_RefObjectAssetPath = AssetDatabase.GUIDToAssetPath(refObjectGUID);
+
+            sri.Remove(userGUID, fileID);
+
+            SerializeSoftReference(refObjectGUID, sri);
+        }
+
+
 
         private static SoftRefRedirector DeserializeSoftReference(string filename)
         {
@@ -373,22 +398,31 @@ namespace Framework.Core.Editor
             }
         }
 
-        //[MenuItem("Assets/Reimport All Redirectors")]
+        [MenuItem("Assets/Reimport All Redirectors")]
         static void MenuItem_ReimportAllRedirectors()
         {
             if (UnityEditor.EditorUtility.DisplayDialog("Reimport All Redirectors", "Are you sure, about 2 mins", "OK", "Cancel"))
             {
-                ReimportAllRedirectors("56fa9a21fe1ba864086c2d3328d79985", new string[] { ".prefab", ".unity" });
+                // delete all redirectors
+                Directory.Delete(k_SavedPath, true);
+                Directory.CreateDirectory(k_SavedPath);
+
+                // reimport
+                // 56fa9a21fe1ba864086c2d3328d79985 : SoftObjectPath
+                // 5526957ebeb07bd4299f5213397a148b : SoftObject
+                ReimportAllRedirectors(new string[] { "56fa9a21fe1ba864086c2d3328d79985", "5526957ebeb07bd4299f5213397a148b" }, new string[] { ".prefab", ".unity" });
+
+                AssetDatabase.Refresh();
             }
         }
 
         /// <summary>
         /// reimport all assets which reference the asset(guid)
         /// </summary>
-        /// <param name="guid"></param>
+        /// <param name="guids"></param>
         /// <param name="filters"></param>
         /// <returns></returns>
-        static private void ReimportAllRedirectors(string guid, string[] filters)
+        static private void ReimportAllRedirectors(string[] guids, string[] filters)
         {
             string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories)
                 .Where(s => filters.Contains(Path.GetExtension(s).ToLower())).ToArray();
@@ -401,12 +435,15 @@ namespace Framework.Core.Editor
 
                 bool isCancel = UnityEditor.EditorUtility.DisplayCancelableProgressBar("资源查找中", file, (float)startIndex / (float)files.Length);
 
-                if (Regex.IsMatch(File.ReadAllText(file), guid))
+                foreach (var guid in guids)
                 {
-                    string assetPath = GetRelativeAssetsPath(file);
-                    AssetDatabase.ImportAsset(assetPath);
+                    if (Regex.IsMatch(File.ReadAllText(file), guid))
+                    {
+                        string assetPath = GetRelativeAssetsPath(file);
+                        AssetDatabase.ImportAsset(assetPath);
 
-                    //Debug.Log(file, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath));
+                        //Debug.Log(file, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath));
+                    }
                 }
 
                 startIndex++;

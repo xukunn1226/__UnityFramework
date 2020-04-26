@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 namespace Framework.Core.Editor
 {
@@ -15,11 +16,10 @@ namespace Framework.Core.Editor
 
         private void OnEnable()
         {
-            m_GUIDProp      = serializedObject.FindProperty("m_GUID");
+            m_GUIDProp = serializedObject.FindProperty("m_GUID");
             m_AssetPathProp = serializedObject.FindProperty("m_AssetPath");
-            
-            string guid;
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(serializedObject.targetObject, out guid, out m_FileID);
+
+            m_FileID = RedirectorDB.GetLocalID(serializedObject.targetObject);
         }
 
         public override void OnInspectorGUI()
@@ -28,6 +28,7 @@ namespace Framework.Core.Editor
 
             string assetPath = AssetDatabase.GUIDToAssetPath(m_GUIDProp.stringValue);
             Object obj = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+            Object oldObj = obj;
 
             EditorGUI.BeginChangeCheck();
             obj = EditorGUILayout.ObjectField("Ref Object", obj, typeof(Object), false);
@@ -42,6 +43,26 @@ namespace Framework.Core.Editor
                 {
                     m_AssetPathProp.stringValue = AssetDatabase.GetAssetPath(obj).ToLower();
                     m_GUIDProp.stringValue = AssetDatabase.AssetPathToGUID(m_AssetPathProp.stringValue);
+                }
+
+                if (oldObj != null)
+                {
+                    string oldAssetPath = AssetDatabase.GetAssetPath(oldObj);
+                    string oldGUID = AssetDatabase.AssetPathToGUID(oldAssetPath);
+
+                    string userAssetPath = AssetDatabase.GetAssetPath(target);
+                    if (string.IsNullOrEmpty(userAssetPath))
+                    { // scene object
+                        Scene scene = SceneManager.GetActiveScene();
+                        if (!scene.IsValid())
+                            return;
+
+                        RedirectorDB.UnloadRefObject(oldGUID, AssetDatabase.AssetPathToGUID(scene.path), m_FileID);
+                    }
+                    else
+                    {
+                        RedirectorDB.UnloadRefObject(oldGUID, AssetDatabase.AssetPathToGUID(userAssetPath), m_FileID);
+                    }
                 }
             }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using Framework.Core;
 using Framework.AssetManagement.Runtime;
 
-public class SoftObject : SoftObjectPath
+public sealed class SoftObject : SoftObjectPath
 {
     private AssetLoader<UnityEngine.Object>         m_Loader;
     private AssetLoaderAsync<UnityEngine.Object>    m_LoaderAsync;

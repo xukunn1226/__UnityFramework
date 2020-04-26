@@ -289,8 +289,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 911175865}
-  m_LocalRotation: {x: -0.000966585, y: 0.993774, z: -0.11107521, w: -0.008644744}
-  m_LocalPosition: {x: 2.6333854, y: 13.636185, z: 52.20677}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -307,6 +307,7 @@ GameObject:
   - component: {fileID: 1960723465}
   - component: {fileID: 1960723466}
   - component: {fileID: 1960723467}
+  - component: {fileID: 1960723468}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -354,5 +355,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GUID: 49e8242c5e1e1b34a8b9153e1cc2c41f
-  m_AssetPath: assets/gameplay/tests/runtime/res/qk/cube111.prefab
+  m_GUID: 
+  m_AssetPath: 
+--- !u!114 &1960723468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960723464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GUID: 55c9ae3306bd4d54fa216f16be8ad6bc
+  m_AssetPath: assets/framework/softreference/tests/editor/sphere1.prefab
