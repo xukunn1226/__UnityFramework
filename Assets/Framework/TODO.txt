@@ -10,6 +10,9 @@
 
 
 
+
+
+- 支持SceneAsset的redirector
 - SoftObject添加延时加载功能
 - build from script
 - SpawnerRing使用AB，PoolManager方式重制
