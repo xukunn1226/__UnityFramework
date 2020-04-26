@@ -218,14 +218,12 @@ namespace Framework.AssetManagement.Runtime
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-            GameObject go = null;
 
             AssetLoaderAsync<GameObject> loaderAsync = LoadAssetAsync<GameObject>(assetPath);
             yield return loaderAsync;
             if (loaderAsync.asset != null)
             {
-                go = UnityEngine.Object.Instantiate(loaderAsync.asset);
+                GameObject go = UnityEngine.Object.Instantiate(loaderAsync.asset);
 
                 GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
                 destroyer.loaderAsync = loaderAsync;

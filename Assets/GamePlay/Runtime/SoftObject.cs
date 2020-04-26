@@ -50,7 +50,7 @@ public class SoftObject : SoftObjectPath
         // 已同步加载，不能再次加载
         if (m_Loader != null)
             throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
-        
+
         m_LoaderAsync = ResourceManager.LoadAssetAsync<UnityEngine.Object>(assetPath);
         return m_LoaderAsync;
     }
