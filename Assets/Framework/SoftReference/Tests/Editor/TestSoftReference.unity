@@ -287,6 +287,26 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: dbd49dd61bce04e4bb1eb017c38e1707, type: 3}
+--- !u!1 &900641839 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1237652909959145938, guid: dbd49dd61bce04e4bb1eb017c38e1707,
+    type: 3}
+  m_PrefabInstance: {fileID: 900641838}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &900641840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900641839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GUID: 4821597d05f0b1b4d95f0ff8bbbba59c
+  m_AssetPath: assets/framework/softreference/tests/editor/plane1.prefab
 --- !u!1 &940770093
 GameObject:
   m_ObjectHideFlags: 0

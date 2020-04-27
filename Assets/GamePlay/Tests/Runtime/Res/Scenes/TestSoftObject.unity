@@ -369,5 +369,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GUID: 55c9ae3306bd4d54fa216f16be8ad6bc
-  m_AssetPath: assets/framework/softreference/tests/editor/sphere1.prefab
+  m_GUID: 
+  m_AssetPath: 
