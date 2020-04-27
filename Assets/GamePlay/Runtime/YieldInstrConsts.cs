@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-static public class YieldInstructionConsts
+static public class YieldInstrConsts
 {
     static private int k_CacheSize = 10;
     static private WaitForSeconds[] k_WaitForSecondsCache = new WaitForSeconds[k_CacheSize];

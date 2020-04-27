@@ -12,7 +12,11 @@ namespace Framework.Core
     public class PrefabSoftObject : MonoBehaviour
     {
         //[ReadOnly]
-        public SoftObjectPath m_SoftReference;
+        [SoftObject]
+        public SoftObjectPath m_BuildingVillage;
+
+        [SoftObject]
+        public SoftObject m_Smoke;
 
         //private void Awake()
         //{

@@ -224,6 +224,21 @@ PrefabInstance:
       propertyPath: m_SoftReference
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: -4089942812727522358, guid: dbd49dd61bce04e4bb1eb017c38e1707,
+        type: 3}
+      propertyPath: m_SoftReference1
+      value: 
+      objectReference: {fileID: 900641841}
+    - target: {fileID: -4089942812727522358, guid: dbd49dd61bce04e4bb1eb017c38e1707,
+        type: 3}
+      propertyPath: m_SoftObjectPath
+      value: 
+      objectReference: {fileID: 900641842}
+    - target: {fileID: -4089942812727522358, guid: dbd49dd61bce04e4bb1eb017c38e1707,
+        type: 3}
+      propertyPath: m_SoftObject
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1237652909959145937, guid: dbd49dd61bce04e4bb1eb017c38e1707,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -307,6 +322,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: 4821597d05f0b1b4d95f0ff8bbbba59c
   m_AssetPath: assets/framework/softreference/tests/editor/plane1.prefab
+--- !u!114 &900641841 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -2385830913515302333, guid: dbd49dd61bce04e4bb1eb017c38e1707,
+    type: 3}
+  m_PrefabInstance: {fileID: 900641838}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900641839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &900641842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900641839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56fa9a21fe1ba864086c2d3328d79985, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GUID: 
+  m_AssetPath: 
 --- !u!1 &940770093
 GameObject:
   m_ObjectHideFlags: 0
@@ -383,8 +424,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 940770093}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.000966585, y: 0.993774, z: -0.11107521, w: -0.008644744}
+  m_LocalPosition: {x: 2.6333854, y: 13.636185, z: 52.20677}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
