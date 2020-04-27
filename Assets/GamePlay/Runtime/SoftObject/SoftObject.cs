@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
 using Framework.AssetManagement.Runtime;
+using Framework.Cache;
 
 public sealed class SoftObject : SoftObjectPath
 {
     private AssetLoader<UnityEngine.Object>         m_Loader;
     private AssetLoaderAsync<UnityEngine.Object>    m_LoaderAsync;
+
+    public MonoPoolBase Pool { get; private set; }
 
     public GameObject Instantiate()
     {
@@ -72,5 +75,23 @@ public sealed class SoftObject : SoftObjectPath
             ResourceManager.UnloadAsset(m_LoaderAsync);
             m_LoaderAsync = null;
         }
+    }
+
+    public IPooledObject SpawnFromPool<TPooledObject, TPool>() where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase
+    {
+        if (Pool == null)
+        {
+            Pool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(assetPath);
+            //Pool.Warmup();
+        }
+        return Pool.Get();
+    }
+
+    public void DestroyPool<TPool>() where TPool : MonoPoolBase
+    {
+        if (Pool == null)
+            throw new System.ArgumentNullException("Pool", "Pool not initialize");
+        PoolManager.RemoveMonoPool<TPool>(assetPath);
+        Destroy(Pool);
     }
 }

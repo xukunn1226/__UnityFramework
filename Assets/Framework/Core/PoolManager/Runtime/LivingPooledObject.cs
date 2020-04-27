@@ -6,7 +6,7 @@ namespace Framework.Cache
 {
     public class LivingPooledObject : MonoPooledObjectBase, ILifeTime
     {
-        public float            m_LifeTime;                                     // serialized field, if less than zero, mean it has unlimit life cycle, never recycle
+        public float            m_LifeTime;                                     // serialized field, if less than zero, mean that it has unlimit life cycle, would never return to pool
         public float            LifeTime        { get; set; }                   // remaindered life cycle
         
         public float            m_InitSpeed     = 1;                            // serialized field, init speed

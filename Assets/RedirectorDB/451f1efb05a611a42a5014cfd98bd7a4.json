@@ -1,0 +1,11 @@
+{
+  "m_RefObjectGUID": "451f1efb05a611a42a5014cfd98bd7a4",
+  "m_RefObjectAssetPath": "Assets/Res/11/Capsule.prefab",
+  "m_UserInfoList": {
+    "cace8c87e27828f418d1819831e9d53e|1960723467": {
+      "m_UserObjectGUID": "cace8c87e27828f418d1819831e9d53e",
+      "m_FileID": 1960723467,
+      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/SoftReference/TestSoftObjectUsePool.unity"
+    }
+  }
+}

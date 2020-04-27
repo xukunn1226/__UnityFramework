@@ -1,7 +1,6 @@
-﻿* FSoftObjectPath(不支持Sub Asset)
-* async,await的封装，统一同步、异步加载接口，AsyncTaskMethodBuilder，TaskCompletionSource
+﻿* async,await的封装，统一同步、异步加载接口，AsyncTaskMethodBuilder，TaskCompletionSource
 * 研究C#WeakReference的使用
-* 对SoftObjectPath的封装，提供可视化组件选择使用方式（延时载入、直接实例化、池化管理（对象池还是LRU））
+
 
 
 
