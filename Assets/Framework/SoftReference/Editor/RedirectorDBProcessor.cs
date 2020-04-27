@@ -404,7 +404,8 @@ namespace Framework.Core.Editor
             if (UnityEditor.EditorUtility.DisplayDialog("Reimport All Redirectors", "Are you sure, about 2 mins", "OK", "Cancel"))
             {
                 // delete all redirectors
-                Directory.Delete(k_SavedPath, true);
+                if(Directory.Exists(k_SavedPath))
+                    Directory.Delete(k_SavedPath, true);
                 Directory.CreateDirectory(k_SavedPath);
 
                 // reimport

@@ -72,5 +72,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GUID: 
-  m_AssetPath: 
+  m_GUID: bc14a199bfe85454c962b23acf9e9135
+  m_AssetPath: assets/framework/softreference/tests/editor/cube221.prefab
