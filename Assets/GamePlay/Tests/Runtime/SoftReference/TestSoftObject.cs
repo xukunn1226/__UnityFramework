@@ -9,23 +9,12 @@ namespace Framework.Core
     /// 
     /// </summary>
     [ExecuteInEditMode]
-    public class PrefabSoftObject : MonoBehaviour
+    public class TestSoftObject : MonoBehaviour
     {
-        //[ReadOnly]
         [SoftObject]
         public SoftObjectPath m_BuildingVillage;
 
         [SoftObject]
         public SoftObject m_Smoke;
-
-        //private void Awake()
-        //{
-        //    SoftObjectPath.Add(gameObject, ref m_SoftReference);
-        //}
-
-        //private void OnDestroy()
-        //{
-        //    SoftObjectPath.Remove(gameObject, ref m_SoftReference);
-        //}
     }
 }

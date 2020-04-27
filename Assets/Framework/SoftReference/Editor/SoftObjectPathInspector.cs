@@ -67,9 +67,9 @@ namespace Framework.Core.Editor
             }
 
             GUI.enabled = false;
-            EditorGUILayout.TextField("GUID", m_GUIDProp.stringValue);
+            EditorGUILayout.TextField("GUID",       m_GUIDProp.stringValue);
             EditorGUILayout.TextField("Asset Path", m_AssetPathProp.stringValue);
-            EditorGUILayout.TextField("FileID", m_FileID.ToString());
+            EditorGUILayout.TextField("FileID",     m_FileID.ToString());
             GUI.enabled = true;
 
             serializedObject.ApplyModifiedProperties();

@@ -27,7 +27,7 @@ namespace Framework.Core
                 long fileID = 0;
                 if(property.objectReferenceValue != null)
                 {
-                    UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(((SoftObjectPath)property.objectReferenceValue).m_AssetPath);
+                    UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(((SoftObjectPath)property.objectReferenceValue).assetPath);
                     if(obj != null)
                     {
                         objName = obj.name;

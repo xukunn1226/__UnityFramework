@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
+using Framework.Core;
 
 public class TestPrefabSoftObject : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class TestPrefabSoftObject : MonoBehaviour
     GameObject inst;
     string info;
 
+    [SoftObject]
     public SoftObject m_SoftObject;
 
     private void Awake()
