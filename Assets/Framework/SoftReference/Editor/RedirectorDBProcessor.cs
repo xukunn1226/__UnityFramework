@@ -418,7 +418,7 @@ namespace Framework.Core.Editor
         }
 
         /// <summary>
-        /// reimport all assets which reference the asset(guid)
+        /// reimport all redirectors
         /// </summary>
         /// <param name="guids"></param>
         /// <param name="filters"></param>
