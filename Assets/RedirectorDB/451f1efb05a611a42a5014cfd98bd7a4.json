@@ -2,6 +2,11 @@
   "m_RefObjectGUID": "451f1efb05a611a42a5014cfd98bd7a4",
   "m_RefObjectAssetPath": "Assets/Res/11/Capsule.prefab",
   "m_UserInfoList": {
+    "c9520eaf0555a76468fec9121135fb94|1960723467": {
+      "m_UserObjectGUID": "c9520eaf0555a76468fec9121135fb94",
+      "m_FileID": 1960723467,
+      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/SoftReference/TestSoftObject.unity"
+    },
     "cace8c87e27828f418d1819831e9d53e|1960723467": {
       "m_UserObjectGUID": "cace8c87e27828f418d1819831e9d53e",
       "m_FileID": 1960723467,

@@ -92,6 +92,5 @@ public sealed class SoftObject : SoftObjectPath
         if (Pool == null)
             throw new System.ArgumentNullException("Pool", "Pool not initialize");
         PoolManager.RemoveMonoPool<TPool>(assetPath);
-        Destroy(Pool);
     }
 }
