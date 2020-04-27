@@ -406,7 +406,10 @@ namespace Framework.Core.Editor
                 // delete all redirectors
                 if(Directory.Exists(k_SavedPath))
                     Directory.Delete(k_SavedPath, true);
+
                 Directory.CreateDirectory(k_SavedPath);
+                StreamWriter sw = File.CreateText(string.Format("{0}/{1}", k_SavedPath, "DONTDELETEME.txt"));
+                sw.Close();
 
                 // reimport
                 // 56fa9a21fe1ba864086c2d3328d79985 : SoftObjectPath
