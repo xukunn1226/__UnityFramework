@@ -9,13 +9,6 @@ namespace Framework.Cache
     /// </summary>
     public sealed class PoolManager : MonoBehaviour
     {
-        //public delegate UnityEngine.Object InstantiateDelegate(UnityEngine.Object original);
-        //public delegate void DestroyDelegate(GameObject obj);
-
-        //public static InstantiateDelegate               InstantiatePrefabDelegate;
-        //public static DestroyDelegate                   DestroyPrefabDelegate;
-
-
         private static PoolManager                      m_kInstance;
         static public PoolManager                       Instance
         {
@@ -113,6 +106,19 @@ namespace Framework.Cache
                 item.Value.Unload();
             }
             m_AssetLoaderDict.Clear();
+        }
+
+        static public void TrimAllObjectPools()
+        {
+            foreach (var pool in m_Pools)
+            {
+                pool.Value.Trim();
+            }
+
+            foreach (var pool in m_MonoPools)
+            {
+                pool.Value.Trim();
+            }
         }
 
         #region //////////////////////管理Mono对象接口—— GetOrCreate, RemoveMonoPool
@@ -439,21 +445,7 @@ namespace Framework.Cache
         }
         #endregion
         
-        #region //////////////////////管理非Mono对象接口——register, unregister, trim
-
-        static public void TrimAllObjectPools()
-        {
-            foreach(var pool in m_Pools)
-            {
-                pool.Value.Trim();
-            }
-
-            foreach(var pool in m_MonoPools)
-            {
-                pool.Value.Trim();
-            }
-        }
-
+        #region //////////////////////管理非Mono对象接口
         /// <summary>
         /// 非Mono对象池注册接口
         /// </summary>
@@ -490,36 +482,22 @@ namespace Framework.Cache
         #endregion
 
         /// <summary>
-        /// 由对象池管理的UnityEngine.Object的实例化接口
+        /// 由对象池管理的对象实例化接口
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
         new static public UnityEngine.Object Instantiate(UnityEngine.Object original)
         {
-            //if(InstantiatePrefabDelegate != null)
-            //{
-            //    return InstantiatePrefabDelegate(original);
-            //}
-            //else
-            {
-                return UnityEngine.Object.Instantiate(original);
-            }
+            return UnityEngine.Object.Instantiate(original);
         }
 
         /// <summary>
-        /// 由对象池管理的UnityEngine.Object销毁接口
+        /// 由对象池管理的对象销毁接口
         /// </summary>
         /// <param name="obj"></param>
         static public void Destroy(GameObject obj)
         {
-            //if(DestroyPrefabDelegate != null)
-            //{
-            //    DestroyPrefabDelegate(obj);
-            //}
-            //else
-            {
-                UnityEngine.Object.Destroy(obj);
-            }
+            UnityEngine.Object.Destroy(obj);
         }
     }
 }
