@@ -2,11 +2,6 @@
   "m_RefObjectGUID": "025e691cf2939024682405e1f8a19fe3",
   "m_RefObjectAssetPath": "Assets/GamePlay/Tests/Runtime/Res/PrefabPooledObject/CapsulePool.prefab",
   "m_UserInfoList": {
-    "cace8c87e27828f418d1819831e9d53e|0": {
-      "m_UserObjectGUID": "cace8c87e27828f418d1819831e9d53e",
-      "m_FileID": 0,
-      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/SoftReference/TestSoftObjectUsePool.unity"
-    },
     "cace8c87e27828f418d1819831e9d53e|1960723468": {
       "m_UserObjectGUID": "cace8c87e27828f418d1819831e9d53e",
       "m_FileID": 1960723468,
