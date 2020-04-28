@@ -289,8 +289,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 911175865}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.000966585, y: 0.993774, z: -0.11107521, w: -0.008644744}
+  m_LocalPosition: {x: 2.6333854, y: 13.636185, z: 52.20677}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -307,8 +307,9 @@ GameObject:
   - component: {fileID: 1960723465}
   - component: {fileID: 1960723466}
   - component: {fileID: 1960723467}
+  - component: {fileID: 1960723468}
   m_Layer: 0
-  m_Name: GameObject11
+  m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -341,7 +342,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  m_SoftObject: {fileID: 1960723467}
+  m_PooledObject: {fileID: 1960723467}
+  m_PoolPrefab: {fileID: 1960723468}
 --- !u!114 &1960723467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,4 +357,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: 451f1efb05a611a42a5014cfd98bd7a4
-  m_AssetPath: assets/res/11/capsule.prefab
+  m_AssetPath: assets/gameplay/tests/runtime/res/prefabpooledobject/capsulepooledobject.prefab
+--- !u!114 &1960723468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960723464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GUID: 025e691cf2939024682405e1f8a19fe3
+  m_AssetPath: assets/gameplay/tests/runtime/res/prefabpooledobject/capsulepool.prefab

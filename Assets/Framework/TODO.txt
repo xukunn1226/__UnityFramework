@@ -5,12 +5,14 @@
 * UWorld, ULevel
 * SortedArray
 * QuadTree
-* SoftObject增加对IPooledObject对象加载的支持
 * 添加MonoLRU，可制作为prefab，可视化配置
+* GetOrCreatePoolInst RemoveMonoPoolInst重构至PoolManager
 
 
 
 
+
+- SoftObject增加对IPooledObject对象加载的支持
 - 增强显示：SoftObjectAttribute
 - 支持SceneAsset的redirector
 - SoftObject添加延时加载功能

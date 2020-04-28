@@ -4,13 +4,15 @@ using UnityEngine;
 using Framework.Core;
 using Framework.AssetManagement.Runtime;
 using Framework.Cache;
+using Object = UnityEngine.Object;
 
 public sealed class SoftObject : SoftObjectPath
 {
-    private AssetLoader<UnityEngine.Object>         m_Loader;
-    private AssetLoaderAsync<UnityEngine.Object>    m_LoaderAsync;
+    private AssetLoader<Object>         m_Loader;
+    private AssetLoaderAsync<Object>    m_LoaderAsync;
 
-    public MonoPoolBase Pool { get; private set; }
+    private MonoPoolBase                m_PoolScripted;         // 脚本创建的对象池
+    private MonoPoolBase                m_PoolPrefabed;
 
     public GameObject Instantiate()
     {
@@ -40,11 +42,11 @@ public sealed class SoftObject : SoftObjectPath
         if (m_LoaderAsync != null)
             throw new System.InvalidOperationException($"{assetPath} has already loaded async");
 
-        m_Loader = ResourceManager.LoadAsset<UnityEngine.Object>(assetPath);
+        m_Loader = ResourceManager.LoadAsset<Object>(assetPath);
         return m_Loader.asset;
     }
 
-    public AssetLoaderAsync<UnityEngine.Object> LoadAssetAsync()
+    public AssetLoaderAsync<Object> LoadAssetAsync()
     {
         // 已异步加载，不能再次加载
         if (m_LoaderAsync != null)
@@ -54,7 +56,7 @@ public sealed class SoftObject : SoftObjectPath
         if (m_Loader != null)
             throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
 
-        m_LoaderAsync = ResourceManager.LoadAssetAsync<UnityEngine.Object>(assetPath);
+        m_LoaderAsync = ResourceManager.LoadAssetAsync<Object>(assetPath);
         return m_LoaderAsync;
     }
 
@@ -77,20 +79,56 @@ public sealed class SoftObject : SoftObjectPath
         }
     }
 
+    /// <summary>
+    /// 从对象池中创建对象（对象池由脚本创建）
+    /// NOTE: 对象池的创建不够友好，无法设置对象池参数，建议使用SpawnFromPrefabedPool接口，把对象池制作为Prefab，然后配置池参数
+    /// </summary>
+    /// <typeparam name="TPooledObject"></typeparam>
+    /// <typeparam name="TPool"></typeparam>
+    /// <returns></returns>
     public IPooledObject SpawnFromPool<TPooledObject, TPool>() where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase
     {
-        if (Pool == null)
+        if (m_PoolScripted == null)
         {
-            Pool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(assetPath);
-            //Pool.Warmup();
+            m_PoolScripted = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(assetPath);
+            m_PoolScripted.Warmup();
         }
-        return Pool.Get();
+        return m_PoolScripted.Get();
     }
 
+    /// <summary>
+    /// 销毁对象池，与SpawnFromPool对应
+    /// </summary>
+    /// <typeparam name="TPool"></typeparam>
     public void DestroyPool<TPool>() where TPool : MonoPoolBase
     {
-        if (Pool == null)
-            throw new System.ArgumentNullException("Pool", "Pool not initialize");
+        if (m_PoolScripted == null)
+            throw new System.ArgumentNullException("Pool", "Scripted Pool not initialize");
+
         PoolManager.RemoveMonoPool<TPool>(assetPath);
+    }
+
+    /// <summary>
+    /// 从对象池中创建对象（对象池制作成Prefab）
+    /// </summary>
+    /// <returns></returns>
+    public IPooledObject SpawnFromPrefabedPool()
+    {
+        if(m_PoolPrefabed == null)
+        {
+            m_PoolPrefabed = PoolManagerExtension.GetOrCreatePoolInst(assetPath);
+        }
+        return m_PoolPrefabed.Get();
+    }
+
+    /// <summary>
+    /// 销毁对象池，与SpawnFromPrefabedPool对应
+    /// </summary>
+    public void DestroyPrefabedPool()
+    {
+        if (m_PoolPrefabed == null)
+            throw new System.ArgumentNullException("Pool", "Prefabed Pool not initialize");
+
+        PoolManagerExtension.RemoveMonoPoolInst(assetPath);
     }
 }
