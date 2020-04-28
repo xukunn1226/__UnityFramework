@@ -32,7 +32,7 @@ public sealed class SoftObject : SoftObjectPath
         Destroy(inst);
     }
 
-    public UnityEngine.Object LoadAsset()
+    public Object LoadAsset()
     {
         // 已同步加载，不能再次加载
         if (m_Loader != null)
@@ -116,7 +116,7 @@ public sealed class SoftObject : SoftObjectPath
     {
         if(m_PoolPrefabed == null)
         {
-            m_PoolPrefabed = PoolManagerExtension.GetOrCreatePoolInst(assetPath);
+            m_PoolPrefabed = PoolManager.GetOrCreatePrefabedPool<AssetLoaderEx>(assetPath);
         }
         return m_PoolPrefabed.Get();
     }
@@ -129,6 +129,6 @@ public sealed class SoftObject : SoftObjectPath
         if (m_PoolPrefabed == null)
             throw new System.ArgumentNullException("Pool", "Prefabed Pool not initialize");
 
-        PoolManagerExtension.RemoveMonoPoolInst(assetPath);
+        PoolManager.RemoveMonoPrefabedPool(assetPath);
     }
 }
