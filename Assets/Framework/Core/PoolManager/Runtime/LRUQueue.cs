@@ -3,7 +3,7 @@
 namespace Framework.Cache
 {
     /// <summary>
-    /// Least Recently Used
+    /// Least Recently Used Algorithm
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
@@ -74,7 +74,7 @@ namespace Framework.Cache
         /// </summary>
         void IPool.Trim()
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
 
