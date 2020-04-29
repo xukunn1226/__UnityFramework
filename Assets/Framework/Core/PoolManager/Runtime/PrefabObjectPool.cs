@@ -69,7 +69,8 @@ namespace Framework.Cache
 
         private void OnDestroy()
         {
-            PoolManager.RemoveMonoPool(this);
+            if(!manualUnregisterPool)
+                PoolManager.RemoveMonoPool(this);
         }
 
 #if UNITY_EDITOR

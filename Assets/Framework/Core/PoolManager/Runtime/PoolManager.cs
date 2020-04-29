@@ -321,8 +321,16 @@ namespace Framework.Cache
             info.m_RefCount -= 1;
             if (info.m_RefCount == 0)
             {
+                // 正确的删除顺序是：1、m_Loader.Unload; 2、Destroy Pool GameObject(内部会RemoveMonoPool); 3、k_PrefabPoolDict.Remove
+                // 但step 2依赖step 1的数据，且Destroy是下一帧、无序执行
+                // ugly code! 需要在PrefabAsset删除前Remove MonoPool
+                RemoveMonoPool(info.m_Pool);
                 info.m_Loader.Unload();
+
+                // Remove MonoPool已手动执行
+                info.m_Pool.manualUnregisterPool = true;
                 Object.Destroy(info.m_Pool.gameObject);
+
                 k_PrefabPoolDict.Remove(assetPath);
             }
         }
@@ -346,6 +354,7 @@ namespace Framework.Cache
             IAssetLoader loader;
             if (!m_AssetLoaderDict.TryGetValue(assetPath, out loader))
             {
+                Debug.LogError($"RemoveMonoPool: can't find {assetPath} in m_AssetLoaderDict");
                 return;
             }
 
@@ -373,15 +382,14 @@ namespace Framework.Cache
         {
             if (prefabAsset == null)
             {
-                // 为了健壮性可能重复删除Pool，故不抛出异常
-                //throw new System.ArgumentNullException($"RemoveMonoPool: prefabAsset == null");
+                Debug.LogError("RemoveMonoPool: prefabAsset == null");
                 return;
-            }                
+            }
 
             MonoPooledObjectBase comp = prefabAsset.GetComponent<MonoPooledObjectBase>();
-            if(comp == null)
+            if (comp == null)
             {
-                Debug.LogWarning("Can't find any script derived from MonoPooledObjectBase");
+                Debug.LogError("Can't find any script derived from MonoPooledObjectBase");
                 return;
             }
 
@@ -396,8 +404,7 @@ namespace Framework.Cache
         {
             if (pool == null || pool.PrefabAsset == null)
             {
-                // 为了健壮性可能重复删除Pool，故不抛出异常
-                //throw new System.ArgumentNullException($"RemoveMonoPool: pool == null || pool.PrefabAsset == null");
+                Debug.LogError("RemoveMonoPool: pool == null || pool.PrefabAsset == null");
                 return;
             }
 
@@ -413,8 +420,7 @@ namespace Framework.Cache
         {
             if (prefabAsset == null)
             {
-                // 为了健壮性可能重复删除Pool，故不抛出异常
-                //throw new System.ArgumentNullException($"RemoveMonoPool: prefabAsset == null  poolType[{typeof(TPool)}]");
+                Debug.LogError($"RemoveMonoPool: prefabAsset == null  poolType[{typeof(TPool)}]");
                 return;
             }
 
@@ -436,7 +442,7 @@ namespace Framework.Cache
             if (!m_MonoPools.TryGetValue(key, out pool))
             {
                 // 为了安全可能重复销毁Pool，暂时屏蔽此Log
-                //Debug.LogWarning($"Try to remove not exist pool, [{asset.gameObject.name}]  [{poolType.Name}]");
+                Debug.LogError($"Try to remove not exist pool, [{prefabAsset.gameObject.name}]  [{poolType.Name}]");
                 return;
             }
 

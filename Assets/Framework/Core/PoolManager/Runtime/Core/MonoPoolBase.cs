@@ -37,6 +37,8 @@ namespace Framework.Cache
             }
         }
 
+        public bool manualUnregisterPool { get; set; }                        // 是否手动从PoolManager释放，否则OnDestroy时自动释放
+
         public abstract int countAll { get; }
 
         public abstract int countOfUsed { get; }
