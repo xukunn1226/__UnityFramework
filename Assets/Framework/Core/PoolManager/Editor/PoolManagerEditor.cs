@@ -15,6 +15,8 @@ namespace Framework.Cache.Editor
 
         private Dictionary<string, IAssetLoader> AssetLoaders;
 
+        private Dictionary<string, PoolManager.PrefabedPoolInfo> PrefabedPools;
+
         private void OnEnable()
         {
             Pools = PoolManager.Pools;
@@ -22,6 +24,8 @@ namespace Framework.Cache.Editor
             MonoPools = PoolManager.MonoPools;
 
             AssetLoaders = PoolManager.AssetLoaders;
+
+            PrefabedPools = PoolManager.PrefabedPools;
         }
 
         public override void OnInspectorGUI()
@@ -33,21 +37,30 @@ namespace Framework.Cache.Editor
             DrawMonoPools();
 
             EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
 
             DrawAssetLoaders();
 
             EditorGUILayout.Space();
 
+            DrawPrefabedPools();
+
+            EditorGUILayout.Space();
+
             EditorGUILayout.BeginHorizontal();
-
-            if(GUILayout.Button("Trim"))
             {
-                PoolManager.TrimAllObjectPools();
-            }
+                if (GUILayout.Button("Trim"))
+                {
+                    PoolManager.TrimAllObjectPools();
+                }
 
-            if(GUILayout.Button("Clear"))
-            {
-                PoolManager.Clear();
+                if (GUILayout.Button("Clear"))
+                {
+                    PoolManager.Clear();
+                }
             }
             EditorGUILayout.EndHorizontal();
         }
@@ -81,6 +94,8 @@ namespace Framework.Cache.Editor
                 Dictionary<long, MonoPoolBase>.Enumerator e = MonoPools.GetEnumerator();
                 while (e.MoveNext())
                 {
+                    //if (e.Current.Value.PrefabAsset == null) continue;
+
                     EditorGUILayout.BeginHorizontal();
                     {
                         MonoPoolBase pool = e.Current.Value;
@@ -103,7 +118,7 @@ namespace Framework.Cache.Editor
                 Dictionary<string, IAssetLoader>.Enumerator e = AssetLoaders.GetEnumerator();
                 while (e.MoveNext())
                 {
-                    if (e.Current.Value.asset == null) continue;
+                    //if (e.Current.Value.asset == null) continue;
 
                     EditorGUILayout.BeginHorizontal();
                     {
@@ -117,6 +132,29 @@ namespace Framework.Cache.Editor
                             string info = string.Format("({0}/{1})", pools[0].countOfUsed, pools[0].countAll);
                             EditorGUILayout.LabelField(info);
                         }
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawPrefabedPools()
+        {
+            EditorGUILayout.LabelField(string.Format("PrefabedPools[{0}]", PrefabedPools.Count), EditorStyles.largeLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                Dictionary<string, PoolManager.PrefabedPoolInfo>.Enumerator e = PrefabedPools.GetEnumerator();
+                while (e.MoveNext())
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        string displayName = e.Current.Key;
+                        displayName = displayName.Substring(displayName.LastIndexOf("/") + 1);
+                        EditorGUILayout.LabelField(new GUIContent(string.Format("{0}   [refCount:{1}]", displayName, e.Current.Value.m_RefCount), e.Current.Key));
+
+                        string info = string.Format("({0}/{1})", e.Current.Value.m_Pool.countOfUsed, e.Current.Value.m_Pool.countAll);
+                        EditorGUILayout.LabelField(info);
                     }
                     EditorGUILayout.EndHorizontal();
                 }

@@ -31,21 +31,22 @@ namespace Framework.Cache
 
         static private Dictionary<string, IAssetLoader>         m_AssetLoaderDict   = new Dictionary<string, IAssetLoader>();       // <key, value>: <assetPath, assetLoader>
 
-        class PrefabPoolInfo
+        public class PrefabedPoolInfo
         {
             public MonoPoolBase     m_Pool;
             public int              m_RefCount;
             public IAssetLoader     m_Loader;
         }
-        static private Dictionary<string, PrefabPoolInfo>       k_PrefabPoolDict    = new Dictionary<string, PrefabPoolInfo>();       // [assetPath, MonoPoolBase]   instantiated prefab pool
-        static private Dictionary<string, int>                  k_PoolRefCountDict  = new Dictionary<string, int>();                // [assetPath, refCount]
-
+        static private Dictionary<string, PrefabedPoolInfo>     m_PrefabedPoolDict  = new Dictionary<string, PrefabedPoolInfo>();     // [assetPath, MonoPoolBase]   instantiated prefab pool
+        
 #if UNITY_EDITOR
         static public Dictionary<Type, IPool>                   Pools               { get { return m_Pools; } }
 
         static public Dictionary<long, MonoPoolBase>            MonoPools           { get { return m_MonoPools; } }
 
         static public Dictionary<string, IAssetLoader>          AssetLoaders        { get { return m_AssetLoaderDict; } }
+
+        static public Dictionary<string, PrefabedPoolInfo>      PrefabedPools       { get { return m_PrefabedPoolDict; } }
 #endif
 
         private void Awake()
@@ -76,6 +77,9 @@ namespace Framework.Cache
         static public void Clear()
         {
             RemoveAllAssetLoaders();
+            RemoveAllPrefabedPools();
+
+            // 基础数据最后清除
             RemoveAllMonoPools();
             RemoveAllObjectPools();
         }
@@ -120,6 +124,27 @@ namespace Framework.Cache
             m_AssetLoaderDict.Clear();
         }
 
+        // 见RemoveMonoPrefabedPool
+        static public void RemoveAllPrefabedPools()
+        {
+            foreach(var item in m_PrefabedPoolDict)
+            {
+                PrefabedPoolInfo info = item.Value;
+
+                if(info.m_RefCount > 1)
+                {
+                    Debug.LogWarning($"RemoveAllPrefabedPools: refCount:{info.m_RefCount} greater than 1. AssetPath: {item.Key}");
+                }
+
+                RemoveMonoPool(info.m_Pool);
+                info.m_Loader.Unload();
+
+                info.m_Pool.manualUnregisterPool = true;
+                Object.Destroy(info.m_Pool.gameObject);
+            }
+            m_PrefabedPoolDict.Clear();
+        }
+
         static public void TrimAllObjectPools()
         {
             foreach (var pool in m_Pools)
@@ -143,8 +168,8 @@ namespace Framework.Cache
         /// <returns></returns>
         static public MonoPoolBase GetOrCreatePrefabedPool<TLoaderType>(string assetPath) where TLoaderType : IAssetLoader
         {
-            PrefabPoolInfo info;
-            if (k_PrefabPoolDict.TryGetValue(assetPath, out info))
+            PrefabedPoolInfo info;
+            if (m_PrefabedPoolDict.TryGetValue(assetPath, out info))
             {
                 info.m_RefCount += 1;
                 return info.m_Pool;
@@ -163,11 +188,11 @@ namespace Framework.Cache
             if (pool == null)
                 throw new System.ArgumentNullException("MonoPoolBase", "not found MonoPoolBase");
 
-            info = new PrefabPoolInfo();
+            info = new PrefabedPoolInfo();
             info.m_Pool = pool;
             info.m_RefCount = 1;
             info.m_Loader = loader;
-            k_PrefabPoolDict.Add(assetPath, info);
+            m_PrefabedPoolDict.Add(assetPath, info);
             return pool;
         }
 
@@ -311,8 +336,8 @@ namespace Framework.Cache
         /// <param name="assetPath"></param>
         static public void RemoveMonoPrefabedPool(string assetPath)
         {
-            PrefabPoolInfo info;
-            if (!k_PrefabPoolDict.TryGetValue(assetPath, out info))
+            PrefabedPoolInfo info;
+            if (!m_PrefabedPoolDict.TryGetValue(assetPath, out info))
             {
                 Debug.LogError($"RemoveMonoPool: {assetPath} deduplication!");
                 return;
@@ -331,7 +356,7 @@ namespace Framework.Cache
                 info.m_Pool.manualUnregisterPool = true;
                 Object.Destroy(info.m_Pool.gameObject);
 
-                k_PrefabPoolDict.Remove(assetPath);
+                m_PrefabedPoolDict.Remove(assetPath);
             }
         }
 
