@@ -88,7 +88,6 @@ namespace Framework.Cache
 
             Capacity = capacity;
 
-            // register to pool manager
             PoolManager.AddObjectPool(typeof(V), this);
         }
 

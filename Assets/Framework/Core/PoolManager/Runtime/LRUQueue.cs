@@ -66,7 +66,6 @@ namespace Framework.Cache
             }
             m_Buffer.Clear();
             m_Dic.Clear();
-            OnDiscard = null;
         }
 
         /// <summary>
@@ -77,7 +76,6 @@ namespace Framework.Cache
             //throw new System.NotImplementedException();
         }
 
-
         public LRUQueue(int capacity)
         {
             m_Buffer = new LinkedList<TNode<K, V>>();
@@ -85,7 +83,6 @@ namespace Framework.Cache
 
             Capacity = capacity;
 
-            // register to pool manager
             PoolManager.AddObjectPool(typeof(V), this);
         }
 

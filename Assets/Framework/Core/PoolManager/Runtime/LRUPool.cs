@@ -1,65 +1,48 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Framework.Cache
 {
-    public class LRUPool : MonoBehaviour, IPool
+    public abstract class LRUPool : MonoBehaviour, IPool
     {
         [Range(1, 100)]
-        public int Capacity;
+        public int Capacity = 1;
 
-        int IPool.countAll { get; }
+        public int countAll { get { return Capacity; } }
 
         int IPool.countOfUsed { get; }
 
         int IPool.countOfUnused { get; }
 
-        public IPooledObject Get() { return null; }
+        IPooledObject IPool.Get() { throw new System.NotImplementedException(); }
 
-        public void Return(IPooledObject item) { }
+        void IPool.Return(IPooledObject item) { throw new System.NotImplementedException(); }
 
-        public void Clear()
-        {
-        }
+        void IPool.Clear() { }
 
         void IPool.Trim() { }
+
+        protected abstract void InitLRU();
+
+        protected abstract void UninitLRU();
 
         private void Awake()
         {
             transform.position = Vector3.zero;
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
-        }
 
-        private void Start()
-        {
-            // 
-            if (PoolManager.Instance.gameObject != transform.root.gameObject)
-            {
-                transform.parent = PoolManager.Instance.transform;
-            }
-        }
-        
-        private void OnDestroy()
-        {
-            //if (!manualUnregisterPool)
-            //    PoolManager.RemoveMonoPool(this);
-        }
-    }
+            InitLRU();
 
 #if UNITY_EDITOR
-    [CustomEditor(typeof(LRUPool))]
-    public class LRUPoolEditor : Editor
-    {
-        public override void OnInspectorGUI()
+            gameObject.name = string.Format($"[LRUPool]{gameObject.name}");
+#endif
+        }
+
+        private void OnDestroy()
         {
-            base.OnInspectorGUI();
+            UninitLRU();
         }
     }
-#endif
 }
