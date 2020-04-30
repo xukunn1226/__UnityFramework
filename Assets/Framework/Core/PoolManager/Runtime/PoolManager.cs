@@ -29,7 +29,8 @@ namespace Framework.Cache
 
         private static Dictionary<Type, IPool>                  m_Pools             = new Dictionary<Type, IPool>();
 
-        static private Dictionary<string, IAssetLoader>         m_AssetLoaderDict   = new Dictionary<string, IAssetLoader>();       // <key, value>: <assetPath, assetLoader>
+        static private Dictionary<string, IAssetLoader>         m_ScriptedPoolDict  = new Dictionary<string, IAssetLoader>();       // 脚本动态生成的对象池集合
+                                                                                                                                    // <key, value>: <assetPath, assetLoader>
 
         public class PrefabedPoolInfo
         {
@@ -37,14 +38,15 @@ namespace Framework.Cache
             public int              m_RefCount;
             public IAssetLoader     m_Loader;
         }
-        static private Dictionary<string, PrefabedPoolInfo>     m_PrefabedPoolDict  = new Dictionary<string, PrefabedPoolInfo>();     // [assetPath, MonoPoolBase]   instantiated prefab pool
-        
+        static private Dictionary<string, PrefabedPoolInfo>     m_PrefabedPoolDict  = new Dictionary<string, PrefabedPoolInfo>();   // Prefab对象池集合
+                                                                                                                                    // <key, value> : <对象池Prefab资源路径, PrefabedPoolInfo>
+
 #if UNITY_EDITOR
         static public Dictionary<Type, IPool>                   Pools               { get { return m_Pools; } }
 
         static public Dictionary<long, MonoPoolBase>            MonoPools           { get { return m_MonoPools; } }
 
-        static public Dictionary<string, IAssetLoader>          AssetLoaders        { get { return m_AssetLoaderDict; } }
+        static public Dictionary<string, IAssetLoader>          ScriptedPools       { get { return m_ScriptedPoolDict; } }
 
         static public Dictionary<string, PrefabedPoolInfo>      PrefabedPools       { get { return m_PrefabedPoolDict; } }
 #endif
@@ -84,67 +86,6 @@ namespace Framework.Cache
             RemoveAllObjectPools();
         }
 
-        static public void RemoveAllMonoPools()
-        {
-            Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
-            while (e.MoveNext())
-            {
-                e.Current.Value.Clear();
-                Object.Destroy(e.Current.Value.gameObject);
-            }
-            e.Dispose();
-
-            m_MonoPools.Clear();
-        }
-
-        static public void RemoveAllObjectPools()
-        {
-            foreach (var pool in m_Pools)
-            {
-                pool.Value.Clear();
-            }
-            m_Pools.Clear();
-        }
-
-        static public void RemoveAllAssetLoaders()
-        {
-            foreach (var item in m_AssetLoaderDict)
-            {
-                if (item.Value.asset == null)
-                    continue;
-
-                MonoPooledObjectBase comp = (item.Value.asset).GetComponent<MonoPooledObjectBase>();
-                MonoPoolBase[] pools = GetMonoPools(comp);      // 获取管理此对象的所有对象池
-                foreach (var pool in pools)
-                {
-                    RemoveMonoPool(pool);
-                }
-                item.Value.Unload();
-            }
-            m_AssetLoaderDict.Clear();
-        }
-
-        // 见RemoveMonoPrefabedPool
-        static public void RemoveAllPrefabedPools()
-        {
-            foreach(var item in m_PrefabedPoolDict)
-            {
-                PrefabedPoolInfo info = item.Value;
-
-                if(info.m_RefCount > 1)
-                {
-                    Debug.LogWarning($"RemoveAllPrefabedPools: refCount:{info.m_RefCount} greater than 1. AssetPath: {item.Key}");
-                }
-
-                RemoveMonoPool(info.m_Pool);
-                info.m_Loader.Unload();
-
-                info.m_Pool.manualUnregisterPool = true;
-                Object.Destroy(info.m_Pool.gameObject);
-            }
-            m_PrefabedPoolDict.Clear();
-        }
-
         static public void TrimAllObjectPools()
         {
             foreach (var pool in m_Pools)
@@ -158,7 +99,7 @@ namespace Framework.Cache
             }
         }
 
-        #region //////////////////////管理Mono对象接口—— GetOrCreate, RemoveMonoPool
+        #region ////////////////////// 创建、销毁Prefabed Pool接口
         /// <summary>
         /// 获取或创建对象池Prefab
         /// WARNING: 不同于其他GetOrCreatePool接口，每次获取使得对象池引用计数自增
@@ -196,11 +137,59 @@ namespace Framework.Cache
             return pool;
         }
 
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TLoaderType : IAssetLoader
+        /// <summary>
+        /// 释放对象池Prefab，与GetOrCreatePrefabedPool对应
+        /// </summary>
+        /// <param name="assetPath"></param>
+        static public void RemoveMonoPrefabedPool(string assetPath)
         {
-            return GetOrCreatePool<TPooledObject, PrefabObjectPool, TLoaderType>(assetPath);
-        }
+            PrefabedPoolInfo info;
+            if (!m_PrefabedPoolDict.TryGetValue(assetPath, out info))
+            {
+                Debug.LogError($"RemoveMonoPool: {assetPath} deduplication!");
+                return;
+            }
 
+            info.m_RefCount -= 1;
+            if (info.m_RefCount == 0)
+            {
+                // 正确的删除顺序是：1、m_Loader.Unload; 2、Destroy Pool GameObject(内部会RemoveMonoPool); 3、k_PrefabPoolDict.Remove
+                // 但step 2依赖step 1的数据，且Destroy是下一帧、无序执行
+                // ugly code! 需要在PrefabAsset删除前Remove MonoPool
+                RemoveMonoPool(info.m_Pool);
+                info.m_Loader.Unload();
+
+                // Remove MonoPool已手动执行
+                info.m_Pool.manualUnregisterPool = true;
+                Object.Destroy(info.m_Pool.gameObject);
+
+                m_PrefabedPoolDict.Remove(assetPath);
+            }
+        }
+        
+        // 见RemoveMonoPrefabedPool
+        static public void RemoveAllPrefabedPools()
+        {
+            foreach (var item in m_PrefabedPoolDict)
+            {
+                PrefabedPoolInfo info = item.Value;
+
+                if (info.m_RefCount > 1)
+                {
+                    Debug.LogWarning($"RemoveAllPrefabedPools: refCount:{info.m_RefCount} greater than 1. AssetPath: {item.Key}");
+                }
+
+                RemoveMonoPool(info.m_Pool);
+                info.m_Loader.Unload();
+
+                info.m_Pool.manualUnregisterPool = true;
+                Object.Destroy(info.m_Pool.gameObject);
+            }
+            m_PrefabedPoolDict.Clear();
+        }
+        #endregion
+
+        #region ////////////////////// 根据待缓存对象的资源路径管理对象池接口（创建、销毁等）
         /// <summary>
         /// 根据资源路径创建对象池
         /// </summary>
@@ -212,32 +201,74 @@ namespace Framework.Cache
         static public TPool GetOrCreatePool<TPooledObject, TPool, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase where TLoaderType : IAssetLoader
         {
             IAssetLoader loader;
-            if (!m_AssetLoaderDict.TryGetValue(assetPath, out loader))
+            if (!m_ScriptedPoolDict.TryGetValue(assetPath, out loader))
             {
                 loader = (IAssetLoader)Activator.CreateInstance(typeof(TLoaderType));
                 loader.Load(assetPath);
-                if(loader.asset == null)
+                if (loader.asset == null)
                 {
                     Debug.LogError($"Failed to GetOrCreatePool from {assetPath}");
                     return null;
                 }
-                m_AssetLoaderDict.Add(assetPath, loader);
+                m_ScriptedPoolDict.Add(assetPath, loader);
             }
 
             return GetOrCreatePool<TPooledObject, TPool>(loader.asset);
         }
 
-        /// <summary>
-        /// 创建对象池，默认以PrefabObjectPool管理
-        /// </summary>
-        /// <typeparam name="TPooledObject">缓存对象脚本</typeparam>
-        /// <param name="prefabAsset">缓存对象</param>
-        /// <returns></returns>
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(GameObject prefabAsset) where TPooledObject : MonoPooledObjectBase
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TLoaderType : IAssetLoader
         {
-            return GetOrCreatePool<TPooledObject, PrefabObjectPool>(prefabAsset);
+            return GetOrCreatePool<TPooledObject, PrefabObjectPool, TLoaderType>(assetPath);
         }
 
+        /// <summary>
+        /// 根据资源路径删除对象池
+        /// </summary>
+        /// <typeparam name="TPool"></typeparam>
+        /// <param name="assetPath"></param>
+        static public void RemoveMonoPool<TPool>(string assetPath) where TPool : MonoPoolBase
+        {
+            IAssetLoader loader;
+            if (!m_ScriptedPoolDict.TryGetValue(assetPath, out loader))
+            {
+                Debug.LogError($"RemoveMonoPool: can't find {assetPath} in m_AssetLoaderDict");
+                return;
+            }
+
+            RemoveMonoPool<TPool>(loader.asset);
+            m_ScriptedPoolDict.Remove(assetPath);
+            loader.Unload();
+        }
+
+        /// <summary>
+        /// 根据资源路径删除内建对象池PrefabObjectPool
+        /// </summary>
+        /// <param name="assetPath"></param>
+        static public void RemoveMonoPool(string assetPath)
+        {
+            RemoveMonoPool<PrefabObjectPool>(assetPath);
+        }
+
+        static public void RemoveAllAssetLoaders()
+        {
+            foreach (var item in m_ScriptedPoolDict)
+            {
+                if (item.Value.asset == null)
+                    continue;
+
+                MonoPooledObjectBase comp = (item.Value.asset).GetComponent<MonoPooledObjectBase>();
+                MonoPoolBase[] pools = GetMonoPools(comp);      // 获取管理此对象的所有对象池
+                foreach (var pool in pools)
+                {
+                    RemoveMonoPool(pool);
+                }
+                item.Value.Unload();
+            }
+            m_ScriptedPoolDict.Clear();
+        }
+        #endregion
+
+        #region ////////////////////// 管理Mono对象接口—— GetOrCreate, RemoveMonoPool
         /// <summary>
         /// 创建对象池
         /// </summary>
@@ -255,6 +286,17 @@ namespace Framework.Cache
                 comp = prefabAsset.AddComponent<TPooledObject>();
             }
             return (TPool)InternalGetOrCreatePool(comp, typeof(TPool), scriptNewAdded);
+        }
+
+        /// <summary>
+        /// 创建对象池，默认以PrefabObjectPool管理
+        /// </summary>
+        /// <typeparam name="TPooledObject">缓存对象脚本</typeparam>
+        /// <param name="prefabAsset">缓存对象</param>
+        /// <returns></returns>
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(GameObject prefabAsset) where TPooledObject : MonoPooledObjectBase
+        {
+            return GetOrCreatePool<TPooledObject, PrefabObjectPool>(prefabAsset);
         }
 
         /// <summary>
@@ -312,6 +354,7 @@ namespace Framework.Cache
 
         /// <summary>
         /// 添加对象池
+        /// NOTE: 为了兼容把对象池制作为Prefab，故开放此接口，见PrefabObjectPool
         /// </summary>
         /// <param name="newPool"></param>
         static public void AddMonoPool(MonoPoolBase newPool)
@@ -327,67 +370,6 @@ namespace Framework.Cache
             }
             m_MonoPools.Add(GetMonoPoolHashCode(newPool.PrefabAsset, newPool.GetType()), newPool);
         }
-
-
-
-        /// <summary>
-        /// 释放对象池Prefab，与GetOrCreatePrefabedPool对应
-        /// </summary>
-        /// <param name="assetPath"></param>
-        static public void RemoveMonoPrefabedPool(string assetPath)
-        {
-            PrefabedPoolInfo info;
-            if (!m_PrefabedPoolDict.TryGetValue(assetPath, out info))
-            {
-                Debug.LogError($"RemoveMonoPool: {assetPath} deduplication!");
-                return;
-            }
-
-            info.m_RefCount -= 1;
-            if (info.m_RefCount == 0)
-            {
-                // 正确的删除顺序是：1、m_Loader.Unload; 2、Destroy Pool GameObject(内部会RemoveMonoPool); 3、k_PrefabPoolDict.Remove
-                // 但step 2依赖step 1的数据，且Destroy是下一帧、无序执行
-                // ugly code! 需要在PrefabAsset删除前Remove MonoPool
-                RemoveMonoPool(info.m_Pool);
-                info.m_Loader.Unload();
-
-                // Remove MonoPool已手动执行
-                info.m_Pool.manualUnregisterPool = true;
-                Object.Destroy(info.m_Pool.gameObject);
-
-                m_PrefabedPoolDict.Remove(assetPath);
-            }
-        }
-
-        /// <summary>
-        /// 根据资源路径删除内建对象池PrefabObjectPool
-        /// </summary>
-        /// <param name="assetPath"></param>
-        static public void RemoveMonoPool(string assetPath)
-        {
-            RemoveMonoPool<PrefabObjectPool>(assetPath);
-        }
-
-        /// <summary>
-        /// 根据资源路径删除对象池
-        /// </summary>
-        /// <typeparam name="TPool"></typeparam>
-        /// <param name="assetPath"></param>
-        static public void RemoveMonoPool<TPool>(string assetPath) where TPool : MonoPoolBase
-        {
-            IAssetLoader loader;
-            if (!m_AssetLoaderDict.TryGetValue(assetPath, out loader))
-            {
-                Debug.LogError($"RemoveMonoPool: can't find {assetPath} in m_AssetLoaderDict");
-                return;
-            }
-
-            RemoveMonoPool<TPool>(loader.asset);
-            m_AssetLoaderDict.Remove(assetPath);
-            loader.Unload();
-        }
-
 
         /// <summary>
         /// 删除内建对象池PrefabObjectPool
@@ -474,6 +456,19 @@ namespace Framework.Cache
             pool.Clear();
             Object.Destroy(pool.gameObject);        // 删除dummy gameobject
             m_MonoPools.Remove(key);
+        }
+
+        static public void RemoveAllMonoPools()
+        {
+            Dictionary<long, MonoPoolBase>.Enumerator e = m_MonoPools.GetEnumerator();
+            while (e.MoveNext())
+            {
+                e.Current.Value.Clear();
+                Object.Destroy(e.Current.Value.gameObject);
+            }
+            e.Dispose();
+
+            m_MonoPools.Clear();
         }
 
         /// <summary>
@@ -581,6 +576,15 @@ namespace Framework.Cache
 
             m_Pools[type].Clear();
             m_Pools.Remove(type);
+        }
+
+        static public void RemoveAllObjectPools()
+        {
+            foreach (var pool in m_Pools)
+            {
+                pool.Value.Clear();
+            }
+            m_Pools.Clear();
         }
         #endregion
 

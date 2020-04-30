@@ -9,6 +9,8 @@ namespace Framework.Cache
         [Range(1, 100)]
         public int Capacity = 1;
 
+        public bool GroupByPoolManager = true;
+
         public int countAll { get { return Capacity; } }
 
         int IPool.countOfUsed { get; }
@@ -34,6 +36,11 @@ namespace Framework.Cache
             transform.localScale = Vector3.one;
 
             InitLRU();
+
+            if(GroupByPoolManager)
+            {
+                transform.parent = PoolManager.Instance.transform;
+            }
 
 #if UNITY_EDITOR
             gameObject.name = string.Format($"[LRUPool]{gameObject.name}");

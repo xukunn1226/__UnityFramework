@@ -9,13 +9,13 @@ namespace Framework.Cache.Editor
     [CustomEditor(typeof(PoolManager))]
     public class PoolManagerEditor : UnityEditor.Editor
     {
-        private Dictionary<Type, IPool> Pools;
+        private Dictionary<Type, IPool>                             Pools;
 
-        private Dictionary<long, MonoPoolBase> MonoPools;
+        private Dictionary<long, MonoPoolBase>                      MonoPools;
 
-        private Dictionary<string, IAssetLoader> AssetLoaders;
+        private Dictionary<string, IAssetLoader>                    ScriptedPools;
 
-        private Dictionary<string, PoolManager.PrefabedPoolInfo> PrefabedPools;
+        private Dictionary<string, PoolManager.PrefabedPoolInfo>    PrefabedPools;
 
         private void OnEnable()
         {
@@ -23,7 +23,7 @@ namespace Framework.Cache.Editor
 
             MonoPools = PoolManager.MonoPools;
 
-            AssetLoaders = PoolManager.AssetLoaders;
+            ScriptedPools = PoolManager.ScriptedPools;
 
             PrefabedPools = PoolManager.PrefabedPools;
         }
@@ -112,10 +112,10 @@ namespace Framework.Cache.Editor
 
         private void DrawAssetLoaders()
         {
-            EditorGUILayout.LabelField(string.Format("AssetLoaders[{0}]", AssetLoaders.Count), EditorStyles.largeLabel);
+            EditorGUILayout.LabelField(string.Format("AssetLoaders[{0}]", ScriptedPools.Count), EditorStyles.largeLabel);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                Dictionary<string, IAssetLoader>.Enumerator e = AssetLoaders.GetEnumerator();
+                Dictionary<string, IAssetLoader>.Enumerator e = ScriptedPools.GetEnumerator();
                 while (e.MoveNext())
                 {
                     //if (e.Current.Value.asset == null) continue;
