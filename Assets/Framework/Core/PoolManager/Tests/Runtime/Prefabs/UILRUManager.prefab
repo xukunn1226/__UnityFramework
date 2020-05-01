@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4640899611333673542}
-  - component: {fileID: 4640899611333673543}
+  - component: {fileID: 3046824991671990277}
   m_Layer: 0
   m_Name: UILRUManager
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4640899611333673543
+--- !u!114 &3046824991671990277
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,7 +40,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 4640899611333673541}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e3ffca5c5244f64a95318aae610e715, type: 3}
+  m_Script: {fileID: 11500000, guid: c579a4e6c40412344bd21fb2406e53b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Capacity: 3
+  GroupByPoolManager: 1

@@ -41,6 +41,14 @@ namespace Framework.Cache
         static private Dictionary<string, PrefabedPoolInfo>     m_PrefabedPoolDict  = new Dictionary<string, PrefabedPoolInfo>();   // Prefab对象池集合
                                                                                                                                     // <key, value> : <对象池Prefab资源路径, PrefabedPoolInfo>
 
+        public class LRUPoolInfo
+        {
+            public LRUPoolBase      m_Pool;
+            public int              m_RefCount;
+            public IAssetLoader     m_Loader;
+        }
+        static private Dictionary<string, LRUPoolInfo>          m_LRUPoolDict       = new Dictionary<string, LRUPoolInfo>();        // LRU对象池集合
+                                                                                                                                    // <key, value> : <LRU池Prefab资源路径, LRUPoolInfo>
 #if UNITY_EDITOR
         static public Dictionary<Type, IPool>                   Pools               { get { return m_Pools; } }
 
@@ -49,6 +57,8 @@ namespace Framework.Cache
         static public Dictionary<string, IAssetLoader>          ScriptedPools       { get { return m_ScriptedPoolDict; } }
 
         static public Dictionary<string, PrefabedPoolInfo>      PrefabedPools       { get { return m_PrefabedPoolDict; } }
+
+        static public Dictionary<string, LRUPoolInfo>           LRUPools            { get { return m_LRUPoolDict; } }
 #endif
 
         private void Awake()
@@ -72,18 +82,24 @@ namespace Framework.Cache
 
         private void OnDestroy()
         {
-            Clear();
+            Destroy();
             m_kInstance = null;
         }
 
-        static public void Clear()
+        static public void Destroy()
         {
             RemoveAllAssetLoaders();
             RemoveAllPrefabedPools();
+            RemoveAllLRUPools();
 
             // 基础数据最后清除
             RemoveAllMonoPools();
             RemoveAllObjectPools();
+        }
+
+        static public void Clear()
+        {
+
         }
 
         static public void TrimAllObjectPools()
@@ -99,7 +115,77 @@ namespace Framework.Cache
             }
         }
 
-        #region ////////////////////// 创建、销毁Prefabed Pool接口
+        #region ////////////////////// LRU Pool管理接口
+        static public LRUPoolBase GetOrCreateLRUPool<TLoaderType>(string assetPath) where TLoaderType : IAssetLoader
+        {
+            LRUPoolInfo info;
+            if(m_LRUPoolDict.TryGetValue(assetPath, out info))
+            {
+                info.m_RefCount += 1;
+                return info.m_Pool;
+            }
+
+            IAssetLoader loader = (IAssetLoader)Activator.CreateInstance(typeof(TLoaderType));
+            loader.Load(assetPath);
+            if(loader.asset == null)
+                throw new System.ArgumentNullException("poolInst", $"failed to inst prefab pool: {assetPath}");
+
+            GameObject poolInst = Object.Instantiate<GameObject>(loader.asset);
+            if (poolInst == null)
+                throw new System.ArgumentNullException("poolInst", $"failed to inst prefab pool: {assetPath}");
+
+            LRUPoolBase pool = poolInst.GetComponent<LRUPoolBase>();
+            if (pool == null)
+                throw new System.ArgumentNullException("LRUPoolBase", "not found LRUPoolBase");
+
+            info = new LRUPoolInfo();
+            info.m_Pool = pool;
+            info.m_RefCount = 1;
+            info.m_Loader = loader;
+            m_LRUPoolDict.Add(assetPath, info);
+            return pool;
+        }
+
+        static public void RemoveLRUPool(string assetPath)
+        {
+            LRUPoolInfo info;
+            if (!m_LRUPoolDict.TryGetValue(assetPath, out info))
+            {
+                Debug.LogError($"RemoveMonoLRUPool: {assetPath} deduplication!");
+                return;
+            }
+
+            info.m_RefCount -= 1;
+            if (info.m_RefCount == 0)
+            {
+                info.m_Loader.Unload();
+
+                Object.Destroy(info.m_Pool.gameObject);
+
+                m_LRUPoolDict.Remove(assetPath);
+            }
+        }
+
+        static public void RemoveAllLRUPools()
+        {
+            foreach (var item in m_LRUPoolDict)
+            {
+                LRUPoolInfo info = item.Value;
+
+                if (info.m_RefCount > 1)
+                {
+                    Debug.LogWarning($"RemoveAllLRUPools: refCount:{info.m_RefCount} greater than 1. AssetPath: {item.Key}");
+                }
+
+                info.m_Loader.Unload();
+
+                Object.Destroy(info.m_Pool.gameObject);
+            }
+            m_LRUPoolDict.Clear();
+        }
+        #endregion
+
+        #region ////////////////////// Prefabed Pool管理接口
         /// <summary>
         /// 获取或创建对象池Prefab
         /// WARNING: 不同于其他GetOrCreatePool接口，每次获取使得对象池引用计数自增

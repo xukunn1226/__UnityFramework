@@ -5,11 +5,16 @@ using Framework.Cache;
 
 namespace Tests
 {
-    public class UILRUManager : LRUPool
+    public class LRUPool_UI : LRUPoolBase
     {
         static private LRUQueue<string, UILRUPooledObject> m_UIPrefabs;
 
-        public int countOfUsed { get { return m_UIPrefabs.Count; } }
+        public override int countOfUsed { get { return m_UIPrefabs.Count; } }
+
+        public override void Clear()
+        {
+            m_UIPrefabs?.Clear();
+        }
 
         protected override void InitLRU()
         {
@@ -28,6 +33,11 @@ namespace Tests
             m_UIPrefabs.OnDiscard -= OnDiscard;
             PoolManager.RemoveObjectPool(typeof(UILRUPooledObject));
         }
+
+
+
+
+
 
         public UILRUPooledObject LoadUI(string assetPath)
         {

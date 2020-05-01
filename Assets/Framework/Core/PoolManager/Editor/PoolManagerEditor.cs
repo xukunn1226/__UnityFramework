@@ -57,9 +57,14 @@ namespace Framework.Cache.Editor
                     PoolManager.TrimAllObjectPools();
                 }
 
-                if (GUILayout.Button("Clear"))
+                if(GUILayout.Button("Clear"))
                 {
                     PoolManager.Clear();
+                }
+
+                if (GUILayout.Button("Destroy"))
+                {
+                    PoolManager.Destroy();
                 }
             }
             EditorGUILayout.EndHorizontal();

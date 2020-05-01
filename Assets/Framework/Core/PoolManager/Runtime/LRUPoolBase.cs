@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.Cache
 {
-    public abstract class LRUPool : MonoBehaviour, IPool
+    public abstract class LRUPoolBase : MonoBehaviour
     {
         [Range(1, 100)]
         public int Capacity = 1;
@@ -12,18 +12,9 @@ namespace Framework.Cache
         public bool GroupByPoolManager = true;
 
         public int countAll { get { return Capacity; } }
+        public abstract int countOfUsed { get; }
 
-        int IPool.countOfUsed { get; }
-
-        int IPool.countOfUnused { get; }
-
-        IPooledObject IPool.Get() { throw new System.NotImplementedException(); }
-
-        void IPool.Return(IPooledObject item) { throw new System.NotImplementedException(); }
-
-        void IPool.Clear() { }
-
-        void IPool.Trim() { }
+        public abstract void Clear();
 
         protected abstract void InitLRU();
 

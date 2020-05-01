@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework.Core;
 
 namespace Tests
 {
     public class LRUPoolSample : MonoBehaviour
     {
-        public UILRUManager LRUPrefab;
-        private UILRUManager m_LRUInst;
+        public LRUPool_UI LRUPrefab;
+        private LRUPool_UI m_LRUInst;
 
         private UILRUPooledObject m_UI1;
         private UILRUPooledObject m_UI2;
@@ -27,7 +28,7 @@ namespace Tests
         {
             if(m_LRUInst != null)
             {
-                Destroy(LRUPrefab);
+                Destroy(m_LRUInst);
             }
         }
 
