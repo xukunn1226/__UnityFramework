@@ -35,7 +35,7 @@ namespace Framework.MeshParticleSystem
                         }
                         else
                         {
-                            if (p.GetComponent<FX_Root>() != null)
+                            if (p.GetComponent<IFX_Root>() != null)
                                 break;      // 根节点停止查询
                             p = p.transform.parent;
                         }
@@ -44,11 +44,6 @@ namespace Framework.MeshParticleSystem
                 }
                 return m_Parent;
             }
-        }
-
-        public void Replay()
-        {
-            enabled = !enabled;
         }
 
         private void OnEnable()
@@ -91,6 +86,12 @@ namespace Framework.MeshParticleSystem
                 isFinishActive = true;
                 gameObject.SetActive(true);
             }
+        }
+
+        public void Replay()
+        {
+            enabled = !enabled;
+            enabled = !enabled;
         }
     }
 }

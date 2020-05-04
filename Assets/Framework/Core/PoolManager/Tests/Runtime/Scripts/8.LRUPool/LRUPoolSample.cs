@@ -18,10 +18,12 @@ namespace Tests
         // Start is called before the first frame update
         void Start()
         {
-            if(LRUPrefab != null)
-            {
-                m_LRUInst = Instantiate(LRUPrefab);
-            }
+            //if(LRUPrefab != null)
+            //{
+            //    m_LRUInst = Instantiate(LRUPrefab);
+            //}
+
+            m_LRUInst = FindObjectOfType<LRUPool_UI>();
         }
 
         private void OnDestroy()

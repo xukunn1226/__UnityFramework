@@ -5,7 +5,6 @@
 * UWorld, ULevel
 * SortedArray
 * QuadTree
-* 整理所有Clear接口，仅清空数据，仍可用
 
 
 
@@ -13,6 +12,7 @@
 
 
 
+- 整理所有Clear接口，仅清空数据，仍可用
 - 添加MonoLRU，可制作为prefab，可视化配置
 - GetOrCreatePoolInst RemoveMonoPoolInst重构至PoolManager
 - SoftObject增加对IPooledObject对象加载的支持

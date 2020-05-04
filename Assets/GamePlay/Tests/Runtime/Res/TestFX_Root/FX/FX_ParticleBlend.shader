@@ -27,7 +27,8 @@ Shader "WGame Particle/Alpha Blended" {
 				#pragma target 3.0
 				#pragma multi_compile_instancing
 				#include "UnityCG.cginc"
-				#include "Assets/Res/FX/CurvedRenderCommon.cginc"
+				//#include "Assets/Res/FX/CurvedRenderCommon.cginc"
+				#include "assets/gameplay/tests/runtime/res/testfx_root/fx/curvedrendercommon.cginc"
 
 				sampler2D _MainTex;
 				float4 _MainTex_ST;

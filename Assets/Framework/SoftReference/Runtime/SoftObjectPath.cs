@@ -17,5 +17,10 @@ namespace Framework.Core
         public string m_AssetPath;
 
         public string assetPath { get { return m_AssetPath; } }
+
+        static public bool IsValid(SoftObjectPath sop)
+        {
+            return sop != null && !string.IsNullOrEmpty(sop.assetPath);
+        }
     }
 }

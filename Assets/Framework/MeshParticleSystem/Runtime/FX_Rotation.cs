@@ -51,11 +51,6 @@ namespace Framework.MeshParticleSystem
             m_Delay = Delay;
         }
 
-        public void Replay()
-        {
-            enabled = !enabled;
-        }
-
         void Update()
         {
             m_Delay -= Time.deltaTime;
@@ -78,6 +73,12 @@ namespace Framework.MeshParticleSystem
             {
                 transform.localEulerAngles = Vector3.Lerp(m_OriginalLocalEuler, Target + m_RandomZEndRotation, value);
             }
+        }
+
+        public void Replay()
+        {
+            enabled = !enabled;
+            enabled = !enabled;
         }
     }
 }

@@ -40,11 +40,6 @@ namespace Framework.MeshParticleSystem
             m_Delay = Delay;            
         }
 
-        public void Replay()
-        {
-            enabled = !enabled;
-        }
-
         void Update()
         {
             m_Delay -= Time.deltaTime;
@@ -67,6 +62,12 @@ namespace Framework.MeshParticleSystem
             {
                 transform.localPosition = Vector3.Lerp(m_OriginalLocalPos, Target, value);
             }
+        }
+
+        public void Replay()
+        {
+            enabled = !enabled;
+            enabled = !enabled;
         }
     }
 }

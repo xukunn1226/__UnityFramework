@@ -28,14 +28,17 @@ namespace Framework.Cache
 
             InitLRU();
 
-            if(GroupByPoolManager)
-            {
-                transform.parent = PoolManager.Instance.transform;
-            }
-
 #if UNITY_EDITOR
             gameObject.name = string.Format($"[LRUPool]{gameObject.name}");
 #endif
+        }
+
+        private void Start()
+        {
+            if (GroupByPoolManager)
+            {
+                transform.parent = PoolManager.Instance.transform;
+            }
         }
 
         private void OnDestroy()

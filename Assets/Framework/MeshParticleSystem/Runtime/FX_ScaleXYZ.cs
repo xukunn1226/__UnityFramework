@@ -42,11 +42,6 @@ namespace Framework.MeshParticleSystem
             m_Delay = Delay;
         }
 
-        public void Replay()
-        {
-            enabled = !enabled;
-        }
-
         void Update()
         {
             m_Delay -= Time.deltaTime;
@@ -77,6 +72,12 @@ namespace Framework.MeshParticleSystem
             }
 
             transform.localScale = k_LocalScale;
+        }
+
+        public void Replay()
+        {
+            enabled = !enabled;
+            enabled = !enabled;
         }
     }
 }

@@ -17,6 +17,8 @@ namespace Framework.Cache.Editor
 
         private Dictionary<string, PoolManager.PrefabedPoolInfo>    PrefabedPools;
 
+        private Dictionary<string, PoolManager.LRUPoolInfo>         LRUPools;
+
         private void OnEnable()
         {
             Pools = PoolManager.Pools;
@@ -26,6 +28,8 @@ namespace Framework.Cache.Editor
             ScriptedPools = PoolManager.ScriptedPools;
 
             PrefabedPools = PoolManager.PrefabedPools;
+
+            LRUPools = PoolManager.LRUPools;
         }
 
         public override void OnInspectorGUI()
@@ -47,6 +51,10 @@ namespace Framework.Cache.Editor
             EditorGUILayout.Space();
 
             DrawPrefabedPools();
+
+            EditorGUILayout.Space();
+
+            DrawLRUPools();
 
             EditorGUILayout.Space();
 
@@ -99,7 +107,7 @@ namespace Framework.Cache.Editor
                 Dictionary<long, MonoPoolBase>.Enumerator e = MonoPools.GetEnumerator();
                 while (e.MoveNext())
                 {
-                    //if (e.Current.Value.PrefabAsset == null) continue;
+                    if (e.Current.Value.PrefabAsset == null) continue;
 
                     EditorGUILayout.BeginHorizontal();
                     {
@@ -150,6 +158,29 @@ namespace Framework.Cache.Editor
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 Dictionary<string, PoolManager.PrefabedPoolInfo>.Enumerator e = PrefabedPools.GetEnumerator();
+                while (e.MoveNext())
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        string displayName = e.Current.Key;
+                        displayName = displayName.Substring(displayName.LastIndexOf("/") + 1);
+                        EditorGUILayout.LabelField(new GUIContent(string.Format("{0}   [refCount:{1}]", displayName, e.Current.Value.m_RefCount), e.Current.Key));
+
+                        string info = string.Format("({0}/{1})", e.Current.Value.m_Pool.countOfUsed, e.Current.Value.m_Pool.countAll);
+                        EditorGUILayout.LabelField(info);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawLRUPools()
+        {
+            EditorGUILayout.LabelField(string.Format("LRU Pools[{0}]", LRUPools.Count), EditorStyles.largeLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                Dictionary<string, PoolManager.LRUPoolInfo>.Enumerator e = LRUPools.GetEnumerator();
                 while (e.MoveNext())
                 {
                     EditorGUILayout.BeginHorizontal();
