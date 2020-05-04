@@ -4,17 +4,26 @@ using UnityEngine;
 
 namespace Framework.Cache
 {
-    public abstract class LRUPoolBase : MonoBehaviour
+    public abstract class LRUPoolBase : MonoBehaviour, IPool
     {
         [Range(1, 100)]
-        public int Capacity = 1;
+        public int          Capacity = 1;
 
-        public bool GroupByPoolManager = true;
+        public bool         GroupByPoolManager = true;
 
-        public int countAll { get { return Capacity; } }
-        public abstract int countOfUsed { get; }
+        public int          countAll        { get { return Capacity; } }
+        public abstract int countOfUsed     { get; }
+        public int          countOfUnused   { get; }
 
         public abstract void Clear();
+
+        public IPooledObject Get() { throw new System.NotImplementedException(); }
+
+        public abstract IPooledObject Get(string assetPath);
+
+        public abstract void Return(IPooledObject obj);
+
+        public void Trim() { }
 
         protected abstract void InitLRU();
 

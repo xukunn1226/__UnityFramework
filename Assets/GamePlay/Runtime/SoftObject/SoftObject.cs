@@ -5,14 +5,26 @@ using Framework.Core;
 using Framework.AssetManagement.Runtime;
 using Framework.Cache;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using UnityEditor;
+using Framework.Core.Editor;
+#endif
 
 public sealed class SoftObject : SoftObjectPath
 {
     private AssetLoader<Object>         m_Loader;
     private AssetLoaderAsync<Object>    m_LoaderAsync;
 
-    private MonoPoolBase                m_PoolScripted;         // 脚本创建的对象池
-    private MonoPoolBase                m_PoolPrefabed;
+    private MonoPoolBase                m_ScriptedPool;         // 脚本创建的对象池
+    private MonoPoolBase                m_PrefabedPool;
+
+#if UNITY_EDITOR
+    public bool                         m_UseLRUManage;         // 使用LRU管理
+#endif
+
+    [SerializeField][SoftObject]
+    private SoftObject                  m_LRUedPoolAsset = null;
+    private LRUPoolBase                 m_LRUedPool;
 
     public GameObject Instantiate()
     {
@@ -88,12 +100,12 @@ public sealed class SoftObject : SoftObjectPath
     /// <returns></returns>
     public IPooledObject SpawnFromPool<TPooledObject, TPool>() where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase
     {
-        if (m_PoolScripted == null)
+        if (m_ScriptedPool == null)
         {
-            m_PoolScripted = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(assetPath);
-            m_PoolScripted.Warmup();
+            m_ScriptedPool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(assetPath);
+            m_ScriptedPool.Warmup();
         }
-        return m_PoolScripted.Get();
+        return m_ScriptedPool.Get();
     }
 
     /// <summary>
@@ -102,7 +114,7 @@ public sealed class SoftObject : SoftObjectPath
     /// <typeparam name="TPool"></typeparam>
     public void DestroyPool<TPool>() where TPool : MonoPoolBase
     {
-        if (m_PoolScripted == null)
+        if (m_ScriptedPool == null)
             throw new System.ArgumentNullException("Pool", "Scripted Pool not initialize");
 
         PoolManager.RemoveMonoPool<TPool>(assetPath);
@@ -114,11 +126,11 @@ public sealed class SoftObject : SoftObjectPath
     /// <returns></returns>
     public IPooledObject SpawnFromPrefabedPool()
     {
-        if(m_PoolPrefabed == null)
+        if(m_PrefabedPool == null)
         {
-            m_PoolPrefabed = PoolManager.GetOrCreatePrefabedPool<AssetLoaderEx>(assetPath);
+            m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoaderEx>(assetPath);
         }
-        return m_PoolPrefabed.Get();
+        return m_PrefabedPool.Get();
     }
 
     /// <summary>
@@ -126,9 +138,65 @@ public sealed class SoftObject : SoftObjectPath
     /// </summary>
     public void DestroyPrefabedPool()
     {
-        if (m_PoolPrefabed == null)
+        if (m_PrefabedPool == null)
             throw new System.ArgumentNullException("Pool", "Prefabed Pool not initialize");
 
         PoolManager.RemoveMonoPrefabedPool(assetPath);
     }
+
+    public IPooledObject SpawnFromLRUPool()
+    {
+        if (m_LRUedPool == null)
+        {
+            if (!IsValid(m_LRUedPoolAsset))
+                throw new System.ArgumentNullException("m_LRUedPoolAsset");
+
+            m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_LRUedPoolAsset.assetPath);
+        }
+        return m_LRUedPool.Get(assetPath);
+    }
+
+    public void DestroyLRUedPool()
+    {
+        if (m_LRUedPool == null)
+            throw new System.ArgumentNullException("LRUedPool", "LRUed Pool not initialize");
+
+        if (!IsValid(m_LRUedPoolAsset))
+            throw new System.ArgumentNullException("m_LRUedPoolAsset", "m_LRUedPoolAsset is not valid");
+        
+        PoolManager.RemoveLRUPool(m_LRUedPoolAsset.assetPath);
+    }
 }
+
+#if UNITY_EDITOR
+
+[CustomEditor(typeof(SoftObject))]
+public class SoftObjectInspector : SoftObjectPathInspector
+{
+    private SerializedProperty m_LRUedPoolAssetProp;
+    private SerializedProperty m_UseLRUManageProp;
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        m_LRUedPoolAssetProp = serializedObject.FindProperty("m_LRUedPoolAsset");
+        m_UseLRUManageProp = serializedObject.FindProperty("m_UseLRUManage");
+    }
+
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+
+        serializedObject.Update();
+
+        m_UseLRUManageProp.boolValue = EditorGUILayout.Toggle("Use LRU", m_UseLRUManageProp.boolValue);
+
+        EditorGUI.BeginDisabledGroup(!m_UseLRUManageProp.boolValue);
+        EditorGUILayout.ObjectField(m_LRUedPoolAssetProp, new GUIContent("LRU Pool", "If you would use LRU Pool manage the asset"));
+        EditorGUI.EndDisabledGroup();
+
+        serializedObject.ApplyModifiedProperties();
+    }
+}
+
+#endif

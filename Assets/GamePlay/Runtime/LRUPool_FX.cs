@@ -17,9 +17,6 @@ public class LRUPool_FX : LRUPoolBase
 
     protected override void InitLRU()
     {
-        if (k_FXPool != null)
-            throw new System.Exception("k_FXPool != null");
-
         k_FXPool = new LRUQueue<string, FX_Root>(Capacity);        // 自动注册到PoolManager
         k_FXPool.OnDiscard += OnDiscard;
     }
@@ -38,27 +35,28 @@ public class LRUPool_FX : LRUPoolBase
         Destroy(fx.gameObject);
     }
 
-    public FX_Root Get(string assetPath)
+    public override IPooledObject Get(string assetPath)
     {
         FX_Root fx = k_FXPool.Exist(assetPath);
         if(fx == null)
         {
             GameObject go = ResourceManager.InstantiatePrefab(assetPath);
             fx = go.GetComponent<FX_Root>();
+            if (fx == null)
+                throw new System.ArgumentNullException("FX_Root", "no FX_Root script attached to prefab");
+            fx.Pool = this;
         }
-        else
-        {
-            fx.OnGet();
-        }
+
+        fx.OnGet();
         k_FXPool.Cache(assetPath, fx);
         return fx;
     }
 
-    public void ReturnToPool(FX_Root fx)
+    public override void Return(IPooledObject obj)
     {
-        if (fx == null)
-            throw new System.ArgumentNullException("fx");
+        if (obj == null)
+            throw new System.ArgumentNullException("obj");
 
-        fx.ReturnToPool();
+        obj.OnRelease();
     }
 }

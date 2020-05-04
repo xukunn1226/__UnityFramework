@@ -27,9 +27,6 @@ namespace Framework.MeshParticleSystem
         [SerializeField]
         private RecyclingType m_RecyclingType = RecyclingType.Destroy;
 
-        [SerializeField]
-        private SoftObject m_LRUPool = null;
-
         public float lifeTime { get { return m_LifeTime; } }
 
         [SerializeField]
@@ -84,6 +81,7 @@ namespace Framework.MeshParticleSystem
                     ReturnToPool();
                     break;
                 case RecyclingType.LRUPool:
+                    ReturnToPool();
                     break;
             }
         }
@@ -92,7 +90,16 @@ namespace Framework.MeshParticleSystem
         {
             ElapsedLifeTime = 0;
 
+            transform.parent = null;
+
             base.OnGet();
+        }
+
+        public override void OnRelease()
+        {
+            transform.parent = ((LRUPoolBase)Pool).transform;
+
+            base.OnRelease();
         }
 
         public void Play()

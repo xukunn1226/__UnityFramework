@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
+using Framework.Cache;
 
 namespace Tests
 {
@@ -10,10 +11,10 @@ namespace Tests
         public LRUPool_UI LRUPrefab;
         private LRUPool_UI m_LRUInst;
 
-        private UILRUPooledObject m_UI1;
-        private UILRUPooledObject m_UI2;
-        private UILRUPooledObject m_UI3;
-        private UILRUPooledObject m_UI4;
+        private IPooledObject m_UI1;
+        private IPooledObject m_UI2;
+        private IPooledObject m_UI3;
+        private IPooledObject m_UI4;
 
         // Start is called before the first frame update
         void Start()
@@ -81,12 +82,12 @@ namespace Tests
             }
         }
 
-        private UILRUPooledObject Load(string assetPath)
+        private IPooledObject Load(string assetPath)
         {
-            return m_LRUInst?.LoadUI(assetPath) ?? null;
+            return m_LRUInst?.Get(assetPath) ?? null;
         }
 
-        private void Unload(string assetPath, UILRUPooledObject ui)
+        private void Unload(string assetPath, IPooledObject ui)
         {
             m_LRUInst?.UnloadUI(assetPath, ui);
         }

@@ -19291,7 +19291,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4851142668940636}
   - component: {fileID: 8134927584843600512}
-  - component: {fileID: -6723919701748766148}
   m_Layer: 1
   m_Name: FX_Artillery_AttackMiss_Desert_LRU2
   m_TagString: Untagged
@@ -19327,22 +19326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RecyclingType: 2
-  m_LRUPool: {fileID: -6723919701748766148}
   m_LifeTime: 5.1
---- !u!114 &-6723919701748766148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1787744098626452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_GUID: 1b377d2d1acf2b1428ce6d8b59edb17d
-  m_AssetPath: assets/gameplay/tests/runtime/res/testfx_root/fx/lrupool_fx.prefab
 --- !u!1 &1806869806299788
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ namespace Framework.Core.Editor
 
         private long m_FileID;
 
-        private void OnEnable()
+        public virtual void OnEnable()
         {
             m_GUIDProp = serializedObject.FindProperty("m_GUID");
             m_AssetPathProp = serializedObject.FindProperty("m_AssetPath");

@@ -37,9 +37,7 @@ namespace Tests
 
 
 
-
-
-        public UILRUPooledObject LoadUI(string assetPath)
+        public override IPooledObject Get(string assetPath)
         {
             UILRUPooledObject ui = m_UIPrefabs.Exist(assetPath);
             if (ui == null)
@@ -54,9 +52,14 @@ namespace Tests
             return ui;
         }
 
-        public void UnloadUI(string assetPath, UILRUPooledObject ui)
+        public override void Return(IPooledObject obj)
         {
-            ui.OnRelease();
+            obj.OnRelease();
+        }
+
+        public void UnloadUI(string assetPath, IPooledObject ui)
+        {
+            Return(ui);
         }
 
         private void OnDiscard(string assetPath, UILRUPooledObject ui)

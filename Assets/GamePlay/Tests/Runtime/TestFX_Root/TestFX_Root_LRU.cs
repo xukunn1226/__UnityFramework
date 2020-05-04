@@ -12,13 +12,16 @@ namespace Tests
         public LoaderType m_Type;
 
         [SoftObject]
-        public SoftObject m_FX1;
+        public SoftObject m_FXAsset1;
+        private FX_Root m_FX1;
 
         [SoftObject]
-        public SoftObject m_FX2;
+        public SoftObject m_FXAsset2;
+        private FX_Root m_FX2;
 
         [SoftObject]
-        public SoftObject m_FX3;
+        public SoftObject m_FXAsset3;
+        private FX_Root m_FX3;
 
         private void Awake()
         {
@@ -35,60 +38,71 @@ namespace Tests
         {
             if (GUI.Button(new Rect(100, 100, 120, 60), "Load FX1"))
             {
-                StartTask(m_FX1);
+                m_FX1 = StartTask(m_FXAsset1);
             }
 
             if (GUI.Button(new Rect(240, 100, 120, 60), "Return To Pool"))
             {
-                ReturnToPool();
+                ReturnToPool(m_FX1);
+            }
+
+            if (GUI.Button(new Rect(380, 100, 120, 60), "Unload FX1"))
+            {
+                EndTask(m_FXAsset1);
             }
 
             if (GUI.Button(new Rect(100, 200, 120, 60), "Load FX2"))
             {
-                StartTask(m_FX2);
+                m_FX2 = StartTask(m_FXAsset2);
             }
 
             if (GUI.Button(new Rect(240, 200, 120, 60), "Return To Pool"))
             {
-                ReturnToPool();
+                ReturnToPool(m_FX2);
+            }
+
+            if (GUI.Button(new Rect(380, 200, 120, 60), "Unload FX2"))
+            {
+                EndTask(m_FXAsset2);
             }
 
             if (GUI.Button(new Rect(100, 300, 120, 60), "Load FX3"))
             {
-                StartTask(m_FX3);
+                m_FX3 = StartTask(m_FXAsset3);
             }
 
             if (GUI.Button(new Rect(240, 300, 120, 60), "Return To Pool"))
             {
-                ReturnToPool();
+                ReturnToPool(m_FX3);
             }
 
-            //if (GUI.Button(new Rect(100, 300, 180, 80), "Unload"))
-            //{
-            //    EndTask(m_FX1);
-            //}
+            if (GUI.Button(new Rect(380, 300, 120, 60), "Unload FX3"))
+            {
+                EndTask(m_FXAsset3);
+            }
         }
 
-        private void StartTask(SoftObject so)
+        private FX_Root StartTask(SoftObject so)
         {
             if (!SoftObject.IsValid(so))
-                return;
+                return null;
 
-            FX_Root obj = (FX_Root)so.SpawnFromPrefabedPool();
+            FX_Root obj = (FX_Root)so.SpawnFromLRUPool();
             if (obj == null)
-                return;
+                return null;
 
             obj.transform.position = Random.insideUnitSphere * 3;
+            return obj;
         }
 
-        private void ReturnToPool()
+        private void ReturnToPool(FX_Root fx)
         {
-
+            fx.ReturnToPool();
         }
 
         private void EndTask(SoftObject so)
         {
-            so.DestroyPrefabedPool();
+            so.DestroyLRUedPool();
         }
     }
 }
