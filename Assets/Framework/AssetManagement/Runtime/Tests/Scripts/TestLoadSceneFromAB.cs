@@ -29,6 +29,8 @@ namespace Framework.AssetManagement.Runtime.Tests
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
+
+            DontDestroyOnLoad(gameObject);
         }
 
         void OnActiveSceneChanged(Scene oldScene, Scene newScene)
@@ -83,7 +85,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
             if (GUI.Button(new Rect(100, 400, 150, 60), "Load Scene2 Async"))
             {
-                m_SceneLoaderAsync2 = LoadSceneAsync("TestScene2", LoadSceneMode.Additive);
+                m_SceneLoaderAsync2 = LoadSceneAsync("TestScene2", LoadSceneMode.Single);
                 StartCoroutine(m_SceneLoaderAsync2);
             }
 
