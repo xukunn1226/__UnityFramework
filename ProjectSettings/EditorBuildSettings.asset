@@ -8,16 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestLoadScene.unity
     guid: f2b5e6eeef4517b4f99c9096a6896933
-  - enabled: 0
-    path: Assets/GamePlay/Tests/Runtime/Res/Scenes/TestSpawnerRing.unity
-    guid: ff9d69c1b7cef3646866f0abde25e5e8
-  - enabled: 0
-    path: Assets/Framework/Core/PoolManager/Tests/Runtime/Scenes/5_SpawnerRing.unity
-    guid: d582c8f1880ce5141b007b506bf9ef87
-  - enabled: 0
+  - enabled: 1
     path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestScene1.unity
     guid: 2d23d647760ee3947a07ed861ff5b61e
-  - enabled: 0
+  - enabled: 1
     path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestScene2.unity
     guid: 3327b6557228ff1418e3986a00074321
   m_configObjects:

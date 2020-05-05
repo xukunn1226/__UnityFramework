@@ -377,7 +377,7 @@ namespace Framework.AssetManagement.Runtime
         /// 静态加载同步场景接口
         /// 1、场景必须加入Build settings
         /// 2、不可热更
-        /// 3、sceneName不带后缀名，scenePath带后缀名
+        /// 3、sceneName不能带后缀名，scenePath必须带后缀名
         /// 4、sceneName, scenePath大小写不敏感
         /// </summary>
         /// <param name="sceneName"></param>
@@ -389,16 +389,6 @@ namespace Framework.AssetManagement.Runtime
             return SceneLoader.Get(sceneName, mode);
         }
 
-        /// <summary>
-        /// 静态场景异步加载接口
-        /// 1、场景必须加入Build settings
-        /// 2、不可热更
-        /// 3、sceneName不带后缀名，scenePath带后缀名
-        /// 4、sceneName, scenePath大小写不敏感
-        /// </summary>
-        /// <param name="sceneName"></param>
-        /// <param name="mode"></param>
-        /// <returns></returns>
         static public SceneLoaderAsync LoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             if (Instance == null)
@@ -411,7 +401,7 @@ namespace Framework.AssetManagement.Runtime
         /// “动态场景”同步加载接口
         /// 1、无需加入Build Settings
         /// 2、调用LoadScene之前必须把场景所在AB及依赖AB先载入
-        /// 3、调用方式：LoadScene(sceneName)  OR  LoadScene(scenePath)，前者不带后缀名，后者带后缀名
+        /// 3、调用方式：LoadScene(sceneName) 不能带后缀名 OR  LoadScene(scenePath) 可带可不带后缀名
         /// 4、sceneName or scenePath大小写敏感
         /// </summary>
         /// <param name="bundlePath"></param>
