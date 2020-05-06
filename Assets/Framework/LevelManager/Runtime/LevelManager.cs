@@ -12,14 +12,12 @@ namespace Framework.LevelManager
     /// </summary>
     public sealed class LevelManager : MonoBehaviour
     {
-        public delegate void BeginLevelLoading(string levelIdentifier);
-        public delegate void EndLevelLoading(string levelIdentifier);
-        public delegate void UpdateLevelLoading(string levelIdentifier, float progress);
-
-        public event BeginLevelLoading                  beginLevelLoading;
-        public event EndLevelLoading                    endLevelLoading;
-        public event UpdateLevelLoading                 updateLevelLoading;
-
+        public delegate void LevelCommandBegin(string identifier, bool isLoaded);
+        public delegate void LevelCommandEnd(string identifier, bool isLoaded);
+        
+        static public event LevelCommandBegin           levelCommandBegin;
+        static public event LevelCommandEnd             levelCommandEnd;
+        
         public class LoadLevelContext
         {
             public string                               identifier;                 // for display or identifying
@@ -28,8 +26,6 @@ namespace Framework.LevelManager
             public string                               bundlePath;
             public bool                                 additive;                   // true: add模式加载场景；false：替换之前场景
             
-
-            public bool                                 isMaster    { get; set; }   // is actived level
             public SceneLoaderAsync                     loader      { get; set; }
         }
 
@@ -106,80 +102,39 @@ namespace Framework.LevelManager
             Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
         }
 
-        public void LoadAsync(LoadLevelContext parameters)
+        public void LoadAsync(LoadLevelContext context)
         {
-            if (parameters == null)
+            if (m_Commands.Count != 0)
+                throw new System.InvalidOperationException("load commands havn't finished.");
+            
+            if (context == null)
                 throw new System.ArgumentNullException("parameters");
 
-            if(parameters.additive)
-            {
-                SceneLoaderAsync loader = null;
-                if (parameters.fromBundle)
-                    loader = AssetManager.LoadSceneAsync(parameters.bundlePath, parameters.levelPath, LoadSceneMode.Additive);
-                else
-                    loader = AssetManager.LoadSceneAsync(parameters.levelPath, LoadSceneMode.Additive);
-                parameters.loader = loader;
-                //m_SlaveLevel.AddLast(parameters);
+            if (m_LevelsDict.ContainsKey(context.identifier))
+                throw new Exception($"{context.identifier} has already loaded");
 
-                //InternalBeginLevelLoading(parameters);
+            if(m_MasterLevel == null)
+            { // 首次加载场景时强制以single方式加载
+                context.additive = false;
+            }
+
+            if(context.additive)
+            {
+                m_Commands.AddLast(new LevelCommand(false, context));
             }
             else
             {
-
+                context.additive = m_MasterLevel == null ? false : true;        // 非首次加载强制以add方式加载
+                m_Commands.AddLast(new LevelCommand(false, context));
+                foreach(var ctx in m_LevelsDict)
+                {
+                    m_Commands.AddLast(new LevelCommand(true, ctx.Value));
+                }
+                m_MasterLevel = context;
             }
+
+            StartCoroutine(ExecuteCommands(context.identifier, true));
         }
-
-        //private void InternalBeginLevelLoading(LoadLevelContext context)
-        //{
-        //    beginLevelLoading?.Invoke(context.identifier);
-        //    //m_LoadingContext = context;
-        //    StartCoroutine(context.loader);
-        //}
-
-        //private void InternalUpdateLevelLoading()
-        //{
-        //    if (m_LoadingContext == null)
-        //        return;
-
-        //    updateLevelLoading?.Invoke(m_LoadingContext.identifier, m_LoadingContext.loader.loadAsyncOp.progress);
-        //}
-
-        //private void InternalEndLevelLoading()
-        //{
-        //    if (m_LoadingContext == null)
-        //        return;
-
-        //    if(m_LoadingContext.loader.loadAsyncOp.isDone)
-        //    {
-        //        endLevelLoading?.Invoke(m_LoadingContext.identifier);
-        //        m_LoadingContext = null;
-        //    }
-        //}
-
-        //private void Update()
-        //{
-        //    InternalUpdateLevelLoading();
-
-        //    InternalEndLevelLoading();
-        //}
-
-
-        //private IEnumerator UnloadAllSlaveLevelAsync()
-        //{
-        //    while(m_SlaveLevel.Count > 0)
-        //    {
-        //        yield return UnloadSlaveLevelAsync(m_SlaveLevel.First.Value);
-        //    }
-        //}
-
-        //private IEnumerator UnloadSlaveLevelAsync(LoadLevelContext context)
-        //{
-        //    if (context == null || context.loader == null)
-        //        throw new ArgumentNullException("context or context.loader");
-
-        //    yield return AssetManager.UnloadSceneAsync(context.loader);
-        //    m_SlaveLevel.Remove(context);
-        //}
 
         public void UnloadLevelAsync(string identifier)
         {
@@ -189,7 +144,7 @@ namespace Framework.LevelManager
             if (m_MasterLevel == null)
                 throw new System.ArgumentNullException("m_MasterLevel");
 
-            if (m_LevelsDict.Count == 0)
+            if (m_LevelsDict.Count == 1)
                 throw new System.Exception("Unloading the last loaded scene is not supported");
 
             LoadLevelContext context;
@@ -198,11 +153,13 @@ namespace Framework.LevelManager
 
             m_Commands.AddLast(new LevelCommand(true, context));
 
-            StartCoroutine(ExecuteCommands());
+            StartCoroutine(ExecuteCommands(identifier, false));
         }
 
-        private IEnumerator ExecuteCommands()
+        private IEnumerator ExecuteCommands(string identifier, bool isLoaded)
         {
+            levelCommandBegin?.Invoke(identifier, isLoaded);
+
             while(m_Commands.Count > 0)
             {
                 LevelCommand cmd = m_Commands.First.Value;
@@ -224,6 +181,8 @@ namespace Framework.LevelManager
                     m_Commands.RemoveFirst();
                 }
             }
+
+            levelCommandEnd?.Invoke(identifier, isLoaded);
         }
 
         // 执行异步卸载场景

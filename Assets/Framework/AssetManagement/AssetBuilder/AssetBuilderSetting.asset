@@ -17,6 +17,7 @@ MonoBehaviour:
   - Assets/Res/
   - Assets/GamePlay/Tests/Runtime/Res
   - Assets/Framework/AssetManagement/Runtime/Tests/Res/
+  - Assets/Framework/LevelManager/Tests/Res
   BlackListOfFolder:
   - Resources
   - Temp
