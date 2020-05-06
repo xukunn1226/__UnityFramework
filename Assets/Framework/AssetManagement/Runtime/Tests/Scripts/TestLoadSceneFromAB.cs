@@ -82,6 +82,12 @@ namespace Framework.AssetManagement.Runtime.Tests
             {
                 StartCoroutine(UnloadSceneAsync(m_SceneLoaderAsync1));
             }
+            //if (GUI.Button(new Rect(500, 300, 150, 60), "Unload Scene1"))
+            //{
+            //    SceneManager.UnloadSceneAsync("TestScene1");
+            //}
+
+
 
             if (GUI.Button(new Rect(100, 400, 150, 60), "Load Scene2 Async"))
             {

@@ -117,7 +117,8 @@ namespace Framework.AssetManagement.Runtime
             if (loadAsyncOp == null)
                 throw new System.Exception("loadAsyncOp == null");
 
-            //Debug.Log($"[{Time.frameCount}]  {loadAsyncOp.progress}     {loadAsyncOp.isDone}");
+            Debug.Log($"[{Time.frameCount}]  {loadAsyncOp.progress}     {loadAsyncOp.isDone}");
+
             return loadAsyncOp.isDone;
         }
 
