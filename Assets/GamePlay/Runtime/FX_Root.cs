@@ -23,6 +23,7 @@ namespace Framework.MeshParticleSystem
             Destroy,                // 直接销毁
             ObjectPool,             // 放置到对象池
             LRUPool,                // 放置到LRU池
+            DontHandle,             // 不处理，由owner控制
         }
         [SerializeField]
         private RecyclingType m_RecyclingType = RecyclingType.Destroy;
@@ -82,6 +83,9 @@ namespace Framework.MeshParticleSystem
                     break;
                 case RecyclingType.LRUPool:
                     ReturnToPool();
+                    break;
+                case RecyclingType.DontHandle:
+                    gameObject.SetActive(false);
                     break;
             }
         }
