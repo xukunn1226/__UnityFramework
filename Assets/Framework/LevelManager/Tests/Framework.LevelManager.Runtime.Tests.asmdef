@@ -1,7 +1,7 @@
 {
-    "name": "Framework.LevelManager.Runtime",
+    "name": "Framework.LevelManager.Runtime.Tests",
     "references": [
-        "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138"
+        "GUID:9b5aa2d6ee708464f87f5746dfc7686a"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

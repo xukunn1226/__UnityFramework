@@ -47,10 +47,10 @@ namespace Framework.GameBuilder
             selectedSettingIndex = pendingIndex;
             selectedSettingIndex = toolbarLabels.Count == 0 ? -1 : Mathf.Clamp(selectedSettingIndex, 0, toolbarLabels.Count - 1);
             GameBuilderSetting selectedSetting = selectedSettingIndex != -1 ? target.GetData(toolbarLabels[selectedSettingIndex]) : null;
-            if(selectedSetting != null)
-            {
-                Selection.activeObject = selectedSetting;
-            }
+            //if(selectedSetting != null)
+            //{
+            //    Selection.activeObject = selectedSetting;
+            //}
 
             // create a new Editor
             selectedEditor = selectedSetting != null ? Editor.CreateEditor(selectedSetting) : null;
