@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using UnityEngine;
-using Framework.AssetManagement.Runtime;
+﻿using UnityEngine;
 
 namespace Framework.MeshParticleSystem.Runtime.Tests
 {
     public class TestMeshParticle : MonoBehaviour
     {
-        public LoaderType type;
+        //public LoaderType type;
 
         //public string           assetPath;
 
@@ -15,12 +13,12 @@ namespace Framework.MeshParticleSystem.Runtime.Tests
 
         private void Awake()
         {
-            AssetManager.Init(type);
+            //AssetManager.Init(type);
         }
 
         void OnDestroy()
         {
-            AssetManager.Uninit();
+            //AssetManager.Uninit();
         }
 
         private void OnGUI()
@@ -44,7 +42,7 @@ namespace Framework.MeshParticleSystem.Runtime.Tests
         void StartTask(string assetPath)
         {
             UnityEngine.Profiling.Profiler.BeginSample("11111111111");
-            inst = AssetManager.InstantiatePrefab(assetPath);
+            //inst = AssetManager.InstantiatePrefab(assetPath);
             UnityEngine.Profiling.Profiler.EndSample();
 
             info = inst != null ? "sucess to load: " : "fail to load: ";

@@ -1,8 +1,7 @@
 {
     "name": "Framework.MeshParticleSystem.Runtime.Tests",
     "references": [
-        "GUID:770eb301604ee8e4da8dedd8e95f1b7b",
-        "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138"
+        "GUID:770eb301604ee8e4da8dedd8e95f1b7b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
