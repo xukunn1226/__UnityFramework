@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Res/Scenes/entry.unity
+    guid: ebb84cbf2ecd5ac45b7e6bc0c721d550
+  - enabled: 1
+    path: Assets/Res/Scenes/wormhole.unity
+    guid: e41a822c1b16f6749bd7d66598252b9e
+  - enabled: 1
     path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestLoadScene.unity
     guid: f2b5e6eeef4517b4f99c9096a6896933
   - enabled: 1

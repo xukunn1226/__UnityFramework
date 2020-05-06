@@ -9,7 +9,7 @@ namespace Framework.WorldManager
     /// <summary>
     /// 场景管理器，负责场景之间切换逻辑
     /// </summary>
-    public sealed class WorldManager : MonoBehaviour
+    public sealed class LevelManager : MonoBehaviour
     {
         public delegate void BeginWorldLoading(string worldIdentifier);
         public delegate void EndWorldLoading(string worldIdentifier);
@@ -36,15 +36,15 @@ namespace Framework.WorldManager
         private LoadWorldContext        m_MasterWorld;
         private List<LoadWorldContext>  m_SlaveWorld;
 
-        private static WorldManager m_kInstance;
-        static public WorldManager Instance
+        private static LevelManager m_kInstance;
+        static public LevelManager Instance
         {
             get
             {
                 if (m_kInstance == null)
                 {
                     GameObject go = new GameObject();
-                    m_kInstance = go.AddComponent<WorldManager>();
+                    m_kInstance = go.AddComponent<LevelManager>();
                 }
                 return m_kInstance;
             }
@@ -53,7 +53,7 @@ namespace Framework.WorldManager
         private void Awake()
         {
             // 已有AssetManager，则自毁
-            if (FindObjectsOfType<WorldManager>().Length > 1)
+            if (FindObjectsOfType<LevelManager>().Length > 1)
             {
                 DestroyImmediate(this);
                 throw new Exception("WorldManager has already exist...");
