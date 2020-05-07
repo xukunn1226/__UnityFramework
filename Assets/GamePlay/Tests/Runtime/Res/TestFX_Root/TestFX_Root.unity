@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -181,6 +181,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: 9796c6fc59c8645488795d8fa89d8d2e
   m_AssetPath: assets/gameplay/tests/runtime/res/testfx_root/fx/objectpool_fx.prefab
+  m_UseLRUManage: 0
+  m_LRUedPoolAsset: {fileID: 0}
 --- !u!1 &622389204
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,8 +259,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 622389204}
-  m_LocalRotation: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
-  m_LocalPosition: {x: 24.707846, y: 17.29549, z: 24.707848}
+  m_LocalRotation: {x: -0.0685597, y: 0.92160195, z: -0.19095671, w: -0.3308853}
+  m_LocalPosition: {x: 6.3372426, y: 4.4360695, z: 6.337243}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -356,3 +358,60 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1001 &1868895019
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1787744098626452, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_Name
+      value: FX_Artillery_AttackMiss_Desert
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851142668940636, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: afa942ab8d984bf4aac445f02c5bba8a, type: 3}

@@ -16,6 +16,7 @@ using Framework.Core;
 
 namespace Framework.MeshParticleSystem
 {
+    [ExecuteInEditMode]
     public class FX_Root : MonoPooledObjectBase, IFX_Root
     {
         public enum RecyclingType
@@ -76,7 +77,11 @@ namespace Framework.MeshParticleSystem
             switch(m_RecyclingType)
             {
                 case RecyclingType.Destroy:
+#if UNITY_EDITOR
+                    GameObject.DestroyImmediate(gameObject);
+#else
                     GameObject.Destroy(gameObject);
+#endif
                     break;
                 case RecyclingType.ObjectPool:
                     ReturnToPool();
@@ -92,18 +97,22 @@ namespace Framework.MeshParticleSystem
 
         public override void OnGet()
         {
-            ElapsedLifeTime = 0;
-
-            transform.parent = null;
-
+            Reset();
             base.OnGet();
         }
 
         public override void OnRelease()
         {
-            transform.parent = ((LRUPoolBase)Pool).transform;
-
+            transform.parent = ((MonoBehaviour)Pool)?.transform ?? null;
+            
             base.OnRelease();
+        }
+
+        private void Reset()
+        {
+            ElapsedLifeTime = 0;
+
+            transform.parent = null;
         }
 
         public void Play()
@@ -117,6 +126,9 @@ namespace Framework.MeshParticleSystem
             OnEffectEnd();
         }
 
+        /// <summary>
+        /// 重置特效所有状态(FX_Component, ParticleSystem, TrailRenderer)
+        /// </summary>
         public void Restart()
         {
             m_LifeTime = m_CachedLifeTime;

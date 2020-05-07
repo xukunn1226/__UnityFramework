@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Framework.MeshParticleSystem
 {
+    //[ExecuteInEditMode]
     public class FX_DelayActive : FX_Component, IReplay
     {
 #if UNITY_2019_1_OR_NEWER

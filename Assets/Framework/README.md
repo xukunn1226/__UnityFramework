@@ -1,4 +1,4 @@
-每个文件夹（Top folder）代表一个程序集，程序集间依赖关系如下：
+姣忎釜鏂囦欢澶癸紙Top folder锛変唬琛ㄤ竴涓▼搴忛泦锛岀▼搴忛泦闂翠緷璧栧叧绯诲涓嬶細
 
 Core
  |__ AssetManagement

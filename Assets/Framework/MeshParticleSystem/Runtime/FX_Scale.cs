@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Framework.MeshParticleSystem
 {
+    [ExecuteInEditMode]
     public class FX_Scale : FX_Component, IReplay
     {
         public float            Delay;
