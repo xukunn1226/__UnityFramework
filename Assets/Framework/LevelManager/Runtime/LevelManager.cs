@@ -77,9 +77,9 @@ namespace Framework.LevelManager
             transform.localScale = Vector3.one;
             DontDestroyOnLoad(gameObject);
 
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
-            SceneManager.activeSceneChanged += OnActiveSceneChanged;
+            //SceneManager.sceneLoaded += OnSceneLoaded;
+            //SceneManager.sceneUnloaded += OnSceneUnloaded;
+            //SceneManager.activeSceneChanged += OnActiveSceneChanged;
         }
 
         private void OnDestroy()
@@ -87,20 +87,20 @@ namespace Framework.LevelManager
             m_kInstance = null;
         }
 
-        void OnActiveSceneChanged(Scene oldScene, Scene newScene)
-        {
-            Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
-        }
+        //void OnActiveSceneChanged(Scene oldScene, Scene newScene)
+        //{
+        //    Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
+        //}
 
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
-        }
+        //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        //{
+        //    Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
+        //}
 
-        void OnSceneUnloaded(Scene scene)
-        {
-            Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
-        }
+        //void OnSceneUnloaded(Scene scene)
+        //{
+        //    Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
+        //}
 
         public void LoadAsync(LoadLevelContext context)
         {
