@@ -7,6 +7,19 @@
 * QuadTree
 * 二分图、二叉堆
 * FX AUTOLOD
+* 消息系统：
+	https://blog.csdn.net/qq_33413868/article/details/104725966  
+	https://blog.csdn.net/qq_33413868/article/details/104725268  
+	https://blog.csdn.net/qq_33413868/article/details/104721686
+	https://blog.csdn.net/luoyikun/article/details/79442201
+* 配表方案：https://blog.csdn.net/linshuhe1/article/details/52062969
+* UI框架设计：
+	* 隐藏所有业务逻辑不需要关心的加载、卸载，界面流转等逻辑
+	* 提供界面易用接口
+
+	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
+
+
 
 
 
