@@ -15,7 +15,12 @@
 * 配表方案：https://blog.csdn.net/linshuhe1/article/details/52062969
 * UI框架设计：
 	* 隐藏所有业务逻辑不需要关心的加载、卸载，界面流转等逻辑
-	* 提供界面易用接口
+	* 完整的业务流程
+	* 提供界面扩展接口
+	* Atlas流程
+	* Event是否发生在UI
+	* 支持横竖屏
+	* 支持自定义UI控件位置
 
 	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
 
