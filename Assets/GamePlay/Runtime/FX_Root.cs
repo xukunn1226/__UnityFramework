@@ -74,6 +74,10 @@ namespace Framework.MeshParticleSystem
 
         private void OnEffectEnd()
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)     // 方便美术编辑，编辑器非运行模式下不处理回收
+                return;
+#endif
             switch(m_RecyclingType)
             {
                 case RecyclingType.Destroy:
@@ -90,7 +94,7 @@ namespace Framework.MeshParticleSystem
                     ReturnToPool();
                     break;
                 case RecyclingType.DontHandle:
-                    gameObject.SetActive(false);
+                    //gameObject.SetActive(false);
                     break;
             }
         }

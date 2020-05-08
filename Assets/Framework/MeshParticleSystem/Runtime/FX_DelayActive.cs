@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Framework.MeshParticleSystem
 {
-    //[ExecuteInEditMode]
-    public class FX_DelayActive : FX_Component, IReplay
+    [ExecuteInEditMode]
+    public class FX_DelayActive : FX_Component
     {
 #if UNITY_2019_1_OR_NEWER
         [Min(0.01f)]
@@ -47,8 +47,10 @@ namespace Framework.MeshParticleSystem
             }
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             //Debug.LogFormat("OnEnable: Name[{0}]     Time[{1}]      Frame[{2}]", gameObject.name, Time.time, Time.frameCount);
 
             // 若有父节点（FX_DelayActive），且尚未active则等待
@@ -87,12 +89,6 @@ namespace Framework.MeshParticleSystem
                 isFinishActive = true;
                 gameObject.SetActive(true);
             }
-        }
-
-        public void Replay()
-        {
-            enabled = !enabled;
-            enabled = !enabled;
         }
     }
 }

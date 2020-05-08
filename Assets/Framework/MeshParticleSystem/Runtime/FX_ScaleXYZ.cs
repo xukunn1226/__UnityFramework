@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Framework.MeshParticleSystem
 {
-    //[ExecuteInEditMode]
-    public class FX_ScaleXYZ : FX_Component, IReplay
+    [ExecuteInEditMode]
+    public class FX_ScaleXYZ : FX_Component
     {
         public float            Delay;
 #if UNITY_2019_1_OR_NEWER
@@ -19,7 +19,6 @@ namespace Framework.MeshParticleSystem
         public AnimationCurve   CurveY = new AnimationCurve(FX_Const.defaultKeyFrames);
         public AnimationCurve   CurveZ = new AnimationCurve(FX_Const.defaultKeyFrames);
         
-        private float           m_ElapsedTime;
         private float           m_Delay;
         private Vector3         m_OriginalLocalScale;
         static private Vector3  k_LocalScale = Vector3.one;
@@ -30,30 +29,26 @@ namespace Framework.MeshParticleSystem
             m_OriginalLocalScale = transform.localScale;            
         }
 
-        private void OnEnable()
+        protected override void InitEx()
         {
-            Init();
-        }
+            base.InitEx();
 
-        private void Init()
-        {
             transform.localScale = m_OriginalLocalScale;         // 恢复初始localScale
 
-            m_ElapsedTime = 0;
             m_Delay = Delay;
         }
 
         void Update()
         {
-            m_Delay -= Time.deltaTime;
+            m_Delay -= deltaTime;
             if (m_Delay > 0)
                 return;
 
             float percent = 1;
             if (Duration > 0)
             {
-                m_ElapsedTime += Time.deltaTime;
-                percent = m_ElapsedTime / Duration;
+                elapsedTime += deltaTime;
+                percent = elapsedTime / Duration;
             }
             float valueX = CurveX.Evaluate(percent);
             float valueY = CurveY.Evaluate(percent);
@@ -73,12 +68,6 @@ namespace Framework.MeshParticleSystem
             }
 
             transform.localScale = k_LocalScale;
-        }
-
-        public void Replay()
-        {
-            enabled = !enabled;
-            enabled = !enabled;
         }
     }
 }

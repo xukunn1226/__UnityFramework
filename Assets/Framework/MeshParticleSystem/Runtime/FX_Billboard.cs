@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Framework.MeshParticleSystem
 {
     [ExecuteInEditMode]
-    public class FX_Billboard : FX_Component, IReplay
+    public class FX_Billboard : FX_Component
     {
         public enum BillboardMode
         {
@@ -90,12 +90,6 @@ namespace Framework.MeshParticleSystem
                     }
                     break;
             }
-        }
-
-        public void Replay()
-        {
-            enabled = !enabled;
-            enabled = !enabled;
         }
     }
 }

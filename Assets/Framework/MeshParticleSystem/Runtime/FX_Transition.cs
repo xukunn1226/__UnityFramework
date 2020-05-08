@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Framework.MeshParticleSystem
 {
     [ExecuteInEditMode]
-    public class FX_Transition : FX_Component, IReplay
+    public class FX_Transition : FX_Component
     {
         public float            Delay;
 #if UNITY_2019_1_OR_NEWER
@@ -17,7 +17,6 @@ namespace Framework.MeshParticleSystem
         public Vector3          Target;
         public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
         
-        private float           m_ElapsedTime;
         private float           m_Delay;
         private Vector3         m_OriginalLocalPos;
 
@@ -27,31 +26,26 @@ namespace Framework.MeshParticleSystem
             m_OriginalLocalPos = transform.localPosition;
         }
 
-        void OnEnable()
+        protected override void InitEx()
         {
-            Init();
-        }
+            base.InitEx();
 
-        private void Init()
-        {
-            // 恢复初始位置
             transform.localPosition = m_OriginalLocalPos;
 
-            m_ElapsedTime = 0;
-            m_Delay = Delay;            
+            m_Delay = Delay;
         }
 
         void Update()
         {
-            m_Delay -= Time.deltaTime;
+            m_Delay -= deltaTime;
             if (m_Delay > 0)
                 return;
 
             float percent = 1;
             if (Duration > 0)
             {
-                m_ElapsedTime += Time.deltaTime;
-                percent = m_ElapsedTime / Duration;
+                elapsedTime += deltaTime;
+                percent = elapsedTime / Duration;
             }
             float value = Curve.Evaluate(percent);
 
@@ -63,12 +57,6 @@ namespace Framework.MeshParticleSystem
             {
                 transform.localPosition = Vector3.Lerp(m_OriginalLocalPos, Target, value);
             }
-        }
-
-        public void Replay()
-        {
-            enabled = !enabled;
-            enabled = !enabled;
         }
     }
 }

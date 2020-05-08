@@ -8,7 +8,7 @@ namespace Framework.MeshParticleSystem
     /// 向材质传输参数（float, vector4, color, uv）
     /// </summary>
     [ExecuteInEditMode]
-    public class FX_CustomPropertiesTransfer : FX_Component, IReplay
+    public class FX_CustomPropertiesTransfer : FX_Component
     {
         private static MaterialPropertyBlock    k_MaterialPropertyBlock;
 
@@ -386,8 +386,10 @@ namespace Framework.MeshParticleSystem
             }
         }
 
-        private void OnEnable()
+        protected override void InitEx()
         {
+            base.InitEx();
+
             if (k_MaterialPropertyBlock == null)
                 k_MaterialPropertyBlock = new MaterialPropertyBlock();
 
@@ -489,12 +491,6 @@ namespace Framework.MeshParticleSystem
             UpdateAtlas();
 
             m_Renderer.SetPropertyBlock(k_MaterialPropertyBlock);
-        }
-
-        public void Replay()
-        {
-            enabled = !enabled;
-            enabled = !enabled;
         }
     }
 }
