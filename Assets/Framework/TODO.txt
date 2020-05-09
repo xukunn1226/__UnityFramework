@@ -17,13 +17,19 @@
 	* 隐藏所有业务逻辑不需要关心的加载、卸载，界面流转等逻辑
 	* 完整的业务流程
 	* 提供界面扩展接口
-	* Atlas流程
+	* Sprite Atlas流程：SpriteAtlasManager
+	* MVVM，单向、双向数据绑定
 	* Event是否发生在UI
 	* 支持横竖屏
 	* 支持自定义UI控件位置
+	* 各种UI效果支持（羽化，描边等）
+	* 特效挂载UI流程，资源分离，方便美术预览效果
+	* 多种字体的支持，WGame只支持一种字体大小，且添加其他语种不友好，字体静态生成容易产生冗余，限制策划的使用
+	* Sprite能同时被多个SpriteAtlas引用吗？
 
 	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
 
+* Sprite各个属性含义
 
 
 
