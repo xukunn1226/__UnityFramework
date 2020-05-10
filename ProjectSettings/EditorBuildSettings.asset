@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/GamePlay/Tests/Runtime/Res/Scenes/TestSpriteAtlasManager.unity
+    guid: 1a5492a7f5e6f48499f980ab58830bbe
+  - enabled: 1
     path: Assets/Res/Scenes/entry.unity
     guid: ebb84cbf2ecd5ac45b7e6bc0c721d550
   - enabled: 1
