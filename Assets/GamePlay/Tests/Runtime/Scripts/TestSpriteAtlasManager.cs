@@ -11,8 +11,7 @@ namespace Tests
         public LoaderType m_Type;
         string info;
 
-        public SpriteAtlas m_AtlasHD;
-        public SpriteAtlas m_AtlasSD;
+        private AssetLoader<SpriteAtlas> m_AtlasLoader;
 
         private void Awake()
         {
@@ -47,6 +46,11 @@ namespace Tests
                 Load2();
             }
 
+            if (GUI.Button(new Rect(100, 460, 200, 80), "Unload Atlas"))
+            {
+                UnloadAtlasLoader();
+            }
+
             if (!string.IsNullOrEmpty(info))
             {
                 GUI.Label(new Rect(100, 600, 500, 100), info);
@@ -67,12 +71,19 @@ namespace Tests
             Debug.LogFormat($"{Time.frameCount}     Registered {spriteAtlas.name}.");
         }
 
+        private void UnloadAtlasLoader()
+        {
+            //Resources.UnloadAsset(m_AtlasLoader.asset);
+            ResourceManager.UnloadAsset(m_AtlasLoader);
+            //Resources.UnloadUnusedAssets();
+        }
+
         private void DoLoadSprite(string tag, System.Action<SpriteAtlas> callback)
         {
             if (tag == "NewSpriteAtlas1")
             {
-                AssetLoader<SpriteAtlas> st = ResourceManager.LoadAsset<SpriteAtlas>("assets/gameplay/tests/runtime/res/atlas/newspriteatlas1.spriteatlas");
-                callback(st.asset);
+                m_AtlasLoader = ResourceManager.LoadAsset<SpriteAtlas>("assets/gameplay/tests/runtime/res/atlas/newspriteatlas1.spriteatlas");
+                callback(m_AtlasLoader.asset);
             }
 
             if (tag == "NewSpriteAtlas2")
@@ -128,24 +139,6 @@ namespace Tests
                 info = string.Format($"{st.asset.spriteCount}  {s?.name}    {s?.texture.name}");
                 Debug.Log($"{info}");
             }
-        }
-
-        private void Load4()
-        {
-            if (m_AtlasHD == null)
-                return;
-
-            m_AtlasHD.GetSprite("icon1");
-        }
-
-        private void LoadHD()
-        {
-            m_AtlasHD.GetSprite("Icon1");
-        }
-
-        private void LoadSD()
-        {
-            m_AtlasSD.GetSprite("Icon1");
         }
     }
 }

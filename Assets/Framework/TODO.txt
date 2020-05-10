@@ -27,6 +27,10 @@
 	* 多种字体的支持，WGame只支持一种字体大小，且添加其他语种不友好，字体静态生成容易产生冗余，限制策划的使用
 	* Sprite能同时被多个SpriteAtlas引用吗？
 	* ResourceManager添加SpriteAtlas的管理
+	* 如何卸载Atlas？https://github.com/jconstable/SpriteSleeper
+		1、彻底卸载atlas ab：AssetBundle.unload（true）
+		2、使用此atlas的gameobject被删除
+	* 搭建美术UI制作环境
 
 	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
 
