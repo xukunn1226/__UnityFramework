@@ -26,6 +26,7 @@
 	* 特效挂载UI流程，资源分离，方便美术预览效果
 	* 多种字体的支持，WGame只支持一种字体大小，且添加其他语种不友好，字体静态生成容易产生冗余，限制策划的使用
 	* Sprite能同时被多个SpriteAtlas引用吗？
+	* ResourceManager添加SpriteAtlas的管理
 
 	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
 

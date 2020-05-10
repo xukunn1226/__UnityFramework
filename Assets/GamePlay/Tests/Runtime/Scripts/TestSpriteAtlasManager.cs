@@ -11,7 +11,8 @@ namespace Tests
         public LoaderType m_Type;
         string info;
 
-        public SpriteAtlas m_Atlas;
+        public SpriteAtlas m_AtlasHD;
+        public SpriteAtlas m_AtlasSD;
 
         private void Awake()
         {
@@ -56,9 +57,9 @@ namespace Tests
         {
             Debug.Log($"{Time.frameCount}   RequestAtlas： {tag}");
 
-            //DoLoadSprite(tag, callback);
+            DoLoadSprite(tag, callback);
 
-            StartCoroutine(DoLoadSpriteAsync(tag, callback));
+            //StartCoroutine(DoLoadSpriteAsync(tag, callback));
         }
 
         void AtlasRegistered(SpriteAtlas spriteAtlas)
@@ -131,10 +132,20 @@ namespace Tests
 
         private void Load4()
         {
-            if (m_Atlas == null)
+            if (m_AtlasHD == null)
                 return;
 
-            m_Atlas.GetSprite("icon1");
+            m_AtlasHD.GetSprite("icon1");
+        }
+
+        private void LoadHD()
+        {
+            m_AtlasHD.GetSprite("Icon1");
+        }
+
+        private void LoadSD()
+        {
+            m_AtlasSD.GetSprite("Icon1");
         }
     }
 }
