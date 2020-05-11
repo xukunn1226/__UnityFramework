@@ -6,7 +6,7 @@ using UnityEditor;
 namespace Framework.MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_CustomPropertiesTransfer))]
-    public class FX_CustomPropertiesTransferInspector : UnityEditor.Editor
+    public class FX_CustomPropertiesTransferInspector : FX_ComponentInspector
     {
         SerializedProperty  m_CustomColorListProp;
         SerializedProperty  m_CustomFloatListProp;
@@ -16,8 +16,10 @@ namespace Framework.MeshParticleSystem.Editor
 
         const int           m_kIndent = 63;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             m_CustomColorListProp       = serializedObject.FindProperty("m_CustomPropColorList");
             m_CustomFloatListProp       = serializedObject.FindProperty("m_CustomPropFloatList");
             m_CustomVector4ListProp     = serializedObject.FindProperty("m_CustomPropVector4List");
@@ -38,6 +40,23 @@ namespace Framework.MeshParticleSystem.Editor
             DrawUVProp();
             EditorGUILayout.Space();
             DrawTextureSheetProp();
+
+            if (GUILayout.Button("Play"))
+            {
+                ((FX_Component)target).Play();
+            }
+            if (GUILayout.Button("Pause"))
+            {
+                ((FX_Component)target).Pause();
+            }
+            if (GUILayout.Button("Stop"))
+            {
+                ((FX_Component)target).Stop();
+            }
+            if (GUILayout.Button("Restart"))
+            {
+                ((FX_Component)target).Restart();
+            }
 
             serializedObject.ApplyModifiedProperties();
         }

@@ -28,8 +28,10 @@
 	* Sprite能同时被多个SpriteAtlas引用吗？
 	* ResourceManager添加SpriteAtlas的管理
 	* 如何卸载Atlas？https://github.com/jconstable/SpriteSleeper
+		** 思考：prefab静态使用的散图可以预存为依赖图集，程序动态使用的图集需要用接口来约束
 		1、彻底卸载atlas ab：AssetBundle.unload（true）
 		2、使用此atlas的gameobject被删除
+
 	* 搭建美术UI制作环境
 
 	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI

@@ -1,9 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Framework.MeshParticleSystem
 {
@@ -11,7 +8,7 @@ namespace Framework.MeshParticleSystem
     {
         public float speed { get; set; } = 1;
 
-        public float elapsedTime { get; protected set; }
+        protected float elapsedTime { get; set; }           // 由各组件内部使用，重置时强制设置为0
 
         public float deltaTime
         {
@@ -32,19 +29,28 @@ namespace Framework.MeshParticleSystem
         }
         private PlayState m_State = PlayState.Play;
 
-        public bool isPlaying()
+        public bool isPlaying
         {
-            return (m_State & PlayState.Play) != 0;
+            get
+            {
+                return (m_State & PlayState.Play) != 0;
+            }
         }
 
-        public bool isPaused()
+        public bool isPaused
         {
-            return (m_State & PlayState.Pause) != 0;
+            get
+            {
+                return (m_State & PlayState.Pause) != 0;
+            }
         }
 
-        public bool isStoped()
+        public bool isStoped
         {
-            return (m_State & PlayState.Stop) != 0;
+            get
+            {
+                return (m_State & PlayState.Stop) != 0;
+            }
         }
 
         public void Play()
@@ -60,7 +66,7 @@ namespace Framework.MeshParticleSystem
         public void Stop()
         {
             m_State = PlayState.Stop;
-            InitEx();
+            Init();
         }
 
         public void Restart()
@@ -73,53 +79,17 @@ namespace Framework.MeshParticleSystem
         // 通过SetActive重置状态
         protected virtual void OnEnable()
         {
-            InitEx();
+            Init();
         }
 
-        protected virtual void InitEx()
+        // 初始化（重置）组件状态
+        protected virtual void Init()
         {
             elapsedTime = 0;
         }
+
+        // 记录初始信息，有些组件无需记录，视组件功能而定
+        public virtual void RecordInit()
+        { }
     }
-
-
-#if UNITY_EDITOR
-    [CustomEditor(typeof(FX_Component), true)]
-    public class FX_ComponentInspector : UnityEditor.Editor
-    {
-        private void OnEnable()
-        {
-            if (!Application.isPlaying)
-                UnityEditor.EditorApplication.update += UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
-        }
-
-        private void OnDisable()
-        {
-            if (!Application.isPlaying)
-                UnityEditor.EditorApplication.update -= UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
-        }
-
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-            if (GUILayout.Button("Play"))
-            {
-                ((FX_Component)target).Play();
-            }
-            if (GUILayout.Button("Pause"))
-            {
-                ((FX_Component)target).Pause();
-            }
-            if (GUILayout.Button("Stop"))
-            {
-                ((FX_Component)target).Stop();
-            }
-            if (GUILayout.Button("Restart"))
-            {
-                ((FX_Component)target).Restart();
-            }
-        }
-    }
-#endif
 }

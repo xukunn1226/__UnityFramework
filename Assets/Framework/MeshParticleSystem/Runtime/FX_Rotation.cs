@@ -29,14 +29,12 @@ namespace Framework.MeshParticleSystem
 
         private void Awake()
         {
-            // 记录初始朝向
-            m_OriginalLocalEuler = transform.localEulerAngles;
-            m_OriginalLocalEuler.z = RandomStartRotation ? Random.Range(ZStartRotation.x, ZStartRotation.y) : m_OriginalLocalEuler.z;
+            RecordInit();
         }
 
-        protected override void InitEx()
+        protected override void Init()
         {
-            base.InitEx();
+            base.Init();
 
             // 恢复初始朝向
             m_OriginalLocalEuler.z = RandomStartRotation ? Random.Range(ZStartRotation.x, ZStartRotation.y) : m_OriginalLocalEuler.z;
@@ -49,6 +47,8 @@ namespace Framework.MeshParticleSystem
 
         void Update()
         {
+            if (isStoped) return;
+
             m_Delay -= deltaTime;
             if (m_Delay > 0)
                 return;
@@ -69,6 +69,13 @@ namespace Framework.MeshParticleSystem
             {
                 transform.localEulerAngles = Vector3.Lerp(m_OriginalLocalEuler, Target + m_RandomZEndRotation, value);
             }
+        }
+
+        public override void RecordInit()
+        {
+            // 记录初始朝向
+            m_OriginalLocalEuler = transform.localEulerAngles;
+            m_OriginalLocalEuler.z = RandomStartRotation ? Random.Range(ZStartRotation.x, ZStartRotation.y) : m_OriginalLocalEuler.z;
         }
     }
 }

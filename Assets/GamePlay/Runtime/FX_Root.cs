@@ -142,14 +142,14 @@ namespace Framework.MeshParticleSystem
             if (comps == null)
                 return;
 
-            foreach (var comp in comps)
-            {
-                IReplay rp = comp as IReplay;
-                if (rp != null)
-                {
-                    rp.Replay();
-                }
-            }
+            //foreach (var comp in comps)
+            //{
+            //    IReplay rp = comp as IReplay;
+            //    if (rp != null)
+            //    {
+            //        rp.Replay();
+            //    }
+            //}
         }
     }
 }

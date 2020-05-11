@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4738871379650024076}
   - component: {fileID: 4738871379650024078}
   - component: {fileID: 4738871379650024079}
-  - component: {fileID: 4738871379650024113}
   m_Layer: 0
   m_Name: 1
   m_TagString: Untagged
@@ -80,48 +79,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &4738871379650024113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4738871379650024077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0addbbe25e11cf4f88cac46a8e4e4fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_CustomPropColorList: []
-  m_CustomPropFloatList: []
-  m_CustomPropVector4List: []
-  m_CustomPropUV:
-    Active: 0
-    Delay: 0
-    Duration: 0
-    Speed: {x: 0, y: 0}
-    StartOffset: {x: 0, y: 0}
-    TileScale: {x: 1, y: 1}
-    Loop: 0
-    LoopReset: 0
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  m_CustomPropAtlas:
-    Active: 1
-    TileX: 3
-    TileY: 3
-    StartFrame: 2
-    Speed: {x: 0, y: 0}
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
 --- !u!1 &4738871381358199965
 GameObject:
   m_ObjectHideFlags: 0

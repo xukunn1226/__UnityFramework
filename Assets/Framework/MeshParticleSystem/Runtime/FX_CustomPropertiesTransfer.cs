@@ -35,13 +35,13 @@ namespace Framework.MeshParticleSystem
             public float            m_Delay         { get; private set; }
             public float            m_Duration      { get; private set; }
 
-            public void Init()
-            {
-                m_Delay = Delay;
-                m_Duration = Duration;
-            }
+            //public void Awake()
+            //{
+            //    m_Delay = Delay;
+            //    m_Duration = Duration;
+            //}
 
-            public void Reset(MaterialPropertyBlock block)
+            public void Init(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
                 m_Duration = Duration;
@@ -50,11 +50,11 @@ namespace Framework.MeshParticleSystem
                 block.SetColor(FX_Const.SerializedIDToPropID[Id], Mode == ControlMode.Constant ? Color : Gradient.Evaluate(0));
             }
 
-            public void Update(MaterialPropertyBlock block)
+            public void Update(MaterialPropertyBlock block, float deltaTime)
             {
                 if(m_Delay > 0)
                 {
-                    m_Delay -= Time.deltaTime;
+                    m_Delay -= deltaTime;
                     return;
                 }
 
@@ -64,7 +64,7 @@ namespace Framework.MeshParticleSystem
                 }
                 else
                 {
-                    m_Duration -= Time.deltaTime;
+                    m_Duration -= deltaTime;
 
                     float percent = 1;
                     if (m_Duration >= 0 || Loop)
@@ -91,13 +91,13 @@ namespace Framework.MeshParticleSystem
             private float           m_Delay;
             private float           m_ElapsedTime;
 
-            public void Init()
-            {
-                m_Delay = Delay;
-                m_ElapsedTime = 0;
-            }
+            //public void Awake()
+            //{
+            //    m_Delay = Delay;
+            //    m_ElapsedTime = 0;
+            //}
 
-            public void Reset(MaterialPropertyBlock block)
+            public void Init(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
                 m_ElapsedTime = 0;
@@ -106,11 +106,11 @@ namespace Framework.MeshParticleSystem
                 block.SetFloat(FX_Const.SerializedIDToPropID[Id], Mode == ControlMode.Constant ? Value : Curve.Evaluate(0));
             }
 
-            public void Update(MaterialPropertyBlock block)
+            public void Update(MaterialPropertyBlock block, float deltaTime)
             {
                 if(m_Delay > 0)
                 {
-                    m_Delay -= Time.deltaTime;
+                    m_Delay -= deltaTime;
                     return;
                 }
 
@@ -123,7 +123,7 @@ namespace Framework.MeshParticleSystem
                     float percent = 1;
                     if(Duration > 0)
                     {
-                        m_ElapsedTime += Time.deltaTime;
+                        m_ElapsedTime += deltaTime;
                         percent = m_ElapsedTime / Duration;
                     }
                     block.SetFloat(FX_Const.SerializedIDToPropID[Id], Curve.Evaluate(percent));
@@ -158,16 +158,16 @@ namespace Framework.MeshParticleSystem
             private float           m_ElapsedTime;
             private Vector4         m_Value;
 
-            public void Init()
-            {
-                m_Delay = Delay;
-                m_ElapsedTime = Duration;
-            }
+            //public void Awake()
+            //{
+            //    m_Delay = Delay;
+            //    m_ElapsedTime = 0;
+            //}
 
-            public void Reset(MaterialPropertyBlock block)
+            public void Init(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
-                m_ElapsedTime = Duration;
+                m_ElapsedTime = 0;
 
                 // 恢复初始值
                 m_Value.x = ModeX == ControlMode.Constant ? ValueX : CurveX.Evaluate(0);
@@ -177,18 +177,18 @@ namespace Framework.MeshParticleSystem
                 block.SetVector(FX_Const.SerializedIDToPropID[Id], m_Value);
             }
 
-            public void Update(MaterialPropertyBlock block)
+            public void Update(MaterialPropertyBlock block, float deltaTime)
             {
                 if(m_Delay > 0)
                 {
-                    m_Delay -= Time.deltaTime;
+                    m_Delay -= deltaTime;
                     return;
                 }
 
                 float percent = 1;
                 if (Duration > 0)
                 {
-                    m_ElapsedTime += Time.deltaTime;
+                    m_ElapsedTime += deltaTime;
                     percent = m_ElapsedTime / Duration;
                 }
 
@@ -220,13 +220,13 @@ namespace Framework.MeshParticleSystem
 
             private static Vector4  k_MainTex_ST = new Vector4(1, 1, 0, 0);
 
-            public void Init()
-            {
-                m_Delay = Delay;
-                m_AccumulatedSpeed = new Vector2(0, 0);
-            }
+            //public void Awake()
+            //{
+            //    m_Delay = Delay;
+            //    m_AccumulatedSpeed = new Vector2(0, 0);
+            //}
 
-            public void Reset(MaterialPropertyBlock block)
+            public void Init(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
                 m_AccumulatedSpeed = new Vector2(0, 0);
@@ -235,15 +235,15 @@ namespace Framework.MeshParticleSystem
                 block.SetVector(FX_Const.SerializedIDToPropID[0], k_MainTex_ST);
             }
 
-            public void Update(MaterialPropertyBlock block)
+            public void Update(MaterialPropertyBlock block, float deltaTime)
             {
                 if(m_Delay > 0)
                 {
-                    m_Delay -= Time.deltaTime;
+                    m_Delay -= deltaTime;
                     return;
                 }
 
-                m_AccumulatedSpeed += Speed * Time.deltaTime;
+                m_AccumulatedSpeed += Speed * deltaTime;
 
                 k_MainTex_ST.x = Tiling.x;
                 k_MainTex_ST.y = Tiling.y;
@@ -291,23 +291,17 @@ namespace Framework.MeshParticleSystem
 
             private static Vector4  k_MainTex_ST = new Vector4(1, 1, 0, 0);
 
-            public void Init()
+            public void Init(MaterialPropertyBlock block)
             {
                 m_CurFrame = StartFrame;
                 m_ElapsedTime = 0;
             }
 
-            public void Reset(MaterialPropertyBlock block)
-            {
-                m_CurFrame = StartFrame;
-                m_ElapsedTime = 0;
-            }
-
-            private void UpdateFrame()
+            private void UpdateFrame(float deltaTime)
             {
                 if (Duration > 0 && FrameCount > 0)
                 {
-                    m_ElapsedTime += Time.deltaTime;
+                    m_ElapsedTime += deltaTime;
 
                     m_CurFrame = StartFrame + (int)((Curve.Evaluate(m_ElapsedTime / Duration) - 0.01f) * FrameCount);
                 }
@@ -331,9 +325,9 @@ namespace Framework.MeshParticleSystem
                 k_MainTex_ST.w = InvTilesY * OffsetY;
             }
 
-            public void Update(MaterialPropertyBlock block)
+            public void Update(MaterialPropertyBlock block, float deltaTime)
             {
-                UpdateFrame();
+                UpdateFrame(deltaTime);
 
                 PlayFrame();
 
@@ -350,45 +344,11 @@ namespace Framework.MeshParticleSystem
         private void Awake()
         {
             m_Renderer = GetComponent<Renderer>();
-
-            if (m_CustomPropColorList != null)
-            {
-                foreach (CustomProp_Color propColor in m_CustomPropColorList)
-                {
-                    propColor.Init();
-                }
-            }
-
-            if (m_CustomPropFloatList != null)
-            {
-                foreach (CustomProp_Float propFloat in m_CustomPropFloatList)
-                {
-                    propFloat.Init();
-                }
-            }
-
-            if (m_CustomPropVector4List != null)
-            {
-                foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
-                {
-                    propVector4.Init();
-                }
-            }
-
-            if(m_CustomPropUV != null && m_CustomPropUV.Active)
-            {
-                m_CustomPropUV.Init();
-            }
-
-            if(m_CustomPropTextureSheet != null && m_CustomPropTextureSheet.Active)
-            {
-                m_CustomPropTextureSheet.Init();
-            }
         }
 
-        protected override void InitEx()
+        protected override void Init()
         {
-            base.InitEx();
+            base.Init();
 
             if (k_MaterialPropertyBlock == null)
                 k_MaterialPropertyBlock = new MaterialPropertyBlock();
@@ -397,7 +357,7 @@ namespace Framework.MeshParticleSystem
             {
                 foreach (CustomProp_Color propColor in m_CustomPropColorList)
                 {
-                    propColor.Reset(k_MaterialPropertyBlock);
+                    propColor.Init(k_MaterialPropertyBlock);
                 }
             }
 
@@ -405,7 +365,7 @@ namespace Framework.MeshParticleSystem
             {
                 foreach (CustomProp_Float propFloat in m_CustomPropFloatList)
                 {
-                    propFloat.Reset(k_MaterialPropertyBlock);
+                    propFloat.Init(k_MaterialPropertyBlock);
                 }
             }
 
@@ -413,18 +373,18 @@ namespace Framework.MeshParticleSystem
             {
                 foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
                 {
-                    propVector4.Reset(k_MaterialPropertyBlock);
+                    propVector4.Init(k_MaterialPropertyBlock);
                 }
             }
 
             if (m_CustomPropUV != null && m_CustomPropUV.Active)
             {
-                m_CustomPropUV.Reset(k_MaterialPropertyBlock);
+                m_CustomPropUV.Init(k_MaterialPropertyBlock);
             }
 
             if (m_CustomPropUV != null && m_CustomPropTextureSheet.Active)
             {
-                m_CustomPropTextureSheet.Reset(k_MaterialPropertyBlock);
+                m_CustomPropTextureSheet.Init(k_MaterialPropertyBlock);
             }
         }
 
@@ -435,7 +395,7 @@ namespace Framework.MeshParticleSystem
 
             foreach (CustomProp_Color propColor in m_CustomPropColorList)
             {
-                propColor.Update(k_MaterialPropertyBlock);
+                propColor.Update(k_MaterialPropertyBlock, deltaTime);
             }
         }
 
@@ -446,7 +406,7 @@ namespace Framework.MeshParticleSystem
 
             foreach(CustomProp_Float propFloat in m_CustomPropFloatList)
             {
-                propFloat.Update(k_MaterialPropertyBlock);
+                propFloat.Update(k_MaterialPropertyBlock, deltaTime);
             }
         }
 
@@ -457,7 +417,7 @@ namespace Framework.MeshParticleSystem
 
             foreach (CustomProp_Vector4 propVector4 in m_CustomPropVector4List)
             {
-                propVector4.Update(k_MaterialPropertyBlock);
+                propVector4.Update(k_MaterialPropertyBlock, deltaTime);
             }
         }
 
@@ -466,7 +426,7 @@ namespace Framework.MeshParticleSystem
             if (m_CustomPropUV == null || !m_CustomPropUV.Active)
                 return;
 
-            m_CustomPropUV.Update(k_MaterialPropertyBlock);
+            m_CustomPropUV.Update(k_MaterialPropertyBlock, deltaTime);
         }
 
         private void UpdateAtlas()
@@ -474,7 +434,7 @@ namespace Framework.MeshParticleSystem
             if (m_CustomPropTextureSheet == null || !m_CustomPropTextureSheet.Active)
                 return;
 
-            m_CustomPropTextureSheet.Update(k_MaterialPropertyBlock);
+            m_CustomPropTextureSheet.Update(k_MaterialPropertyBlock, deltaTime);
         }
 
         private void Update()

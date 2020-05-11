@@ -22,13 +22,12 @@ namespace Framework.MeshParticleSystem
 
         private void Awake()
         {
-            // 记录初始位置
-            m_OriginalLocalPos = transform.localPosition;
+            RecordInit();
         }
 
-        protected override void InitEx()
+        protected override void Init()
         {
-            base.InitEx();
+            base.Init();
 
             transform.localPosition = m_OriginalLocalPos;
 
@@ -37,6 +36,8 @@ namespace Framework.MeshParticleSystem
 
         void Update()
         {
+            if (isStoped) return;
+
             m_Delay -= deltaTime;
             if (m_Delay > 0)
                 return;
@@ -57,6 +58,12 @@ namespace Framework.MeshParticleSystem
             {
                 transform.localPosition = Vector3.Lerp(m_OriginalLocalPos, Target, value);
             }
+        }
+
+        public override void RecordInit()
+        {
+            // 记录初始位置
+            m_OriginalLocalPos = transform.localPosition;
         }
     }
 }

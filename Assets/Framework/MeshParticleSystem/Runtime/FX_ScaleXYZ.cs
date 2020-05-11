@@ -25,13 +25,12 @@ namespace Framework.MeshParticleSystem
 
         private void Awake()
         {
-            // 记录初始localScale
-            m_OriginalLocalScale = transform.localScale;            
+            RecordInit();
         }
 
-        protected override void InitEx()
+        protected override void Init()
         {
-            base.InitEx();
+            base.Init();
 
             transform.localScale = m_OriginalLocalScale;         // 恢复初始localScale
 
@@ -40,6 +39,8 @@ namespace Framework.MeshParticleSystem
 
         void Update()
         {
+            if (isStoped) return;
+
             m_Delay -= deltaTime;
             if (m_Delay > 0)
                 return;
@@ -68,6 +69,12 @@ namespace Framework.MeshParticleSystem
             }
 
             transform.localScale = k_LocalScale;
+        }
+
+        public override void RecordInit()
+        {
+            // 记录初始localScale
+            m_OriginalLocalScale = transform.localScale;
         }
     }
 }
