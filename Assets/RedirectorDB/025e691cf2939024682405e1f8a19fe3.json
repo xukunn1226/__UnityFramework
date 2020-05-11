@@ -5,7 +5,7 @@
     "cace8c87e27828f418d1819831e9d53e|1960723468": {
       "m_UserObjectGUID": "cace8c87e27828f418d1819831e9d53e",
       "m_FileID": 1960723468,
-      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/SoftReference/TestSoftObjectUsePool.unity"
+      "m_UserObjectAssetPath": "Assets/GamePlay/SoftObject/Tests/SoftReference/TestSoftObjectUsePool.unity"
     }
   }
 }

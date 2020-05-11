@@ -5,12 +5,12 @@
     "c9520eaf0555a76468fec9121135fb94|1960723467": {
       "m_UserObjectGUID": "c9520eaf0555a76468fec9121135fb94",
       "m_FileID": 1960723467,
-      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/SoftReference/TestSoftObject.unity"
+      "m_UserObjectAssetPath": "Assets/GamePlay/SoftObject/Tests/SoftReference/TestSoftObject.unity"
     },
     "cace8c87e27828f418d1819831e9d53e|1960723467": {
       "m_UserObjectGUID": "cace8c87e27828f418d1819831e9d53e",
       "m_FileID": 1960723467,
-      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/SoftReference/TestSoftObjectUsePool.unity"
+      "m_UserObjectAssetPath": "Assets/GamePlay/SoftObject/Tests/SoftReference/TestSoftObjectUsePool.unity"
     }
   }
 }
