@@ -5,5 +5,3 @@ Core
 			|__ LevelManager
 
 
-MeshParticleSystem
-
