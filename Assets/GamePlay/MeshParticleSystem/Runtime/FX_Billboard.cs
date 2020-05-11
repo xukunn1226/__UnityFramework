@@ -33,9 +33,10 @@ namespace MeshParticleSystem
                 }
                 else
                 {
-                    if (m_Cam == null || UnityEditor.SceneView.lastActiveSceneView.camera.transform != m_Cam)
+                    if (m_Cam == null || (UnityEditor.SceneView.lastActiveSceneView != null && UnityEditor.SceneView.lastActiveSceneView.camera.transform != m_Cam))
                     {
-                        m_Cam = UnityEditor.SceneView.lastActiveSceneView.camera.transform;
+                        if(UnityEditor.SceneView.lastActiveSceneView != null)
+                            m_Cam = UnityEditor.SceneView.lastActiveSceneView.camera.transform;
                     }
                 }
 #else
