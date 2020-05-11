@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.MeshParticleSystem
+namespace MeshParticleSystem
 {
     /// <summary>
     /// 向材质传输参数（float, vector4, color, uv）

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.MeshParticleSystem
+namespace MeshParticleSystem
 {
     [ExecuteInEditMode]
     public class FX_Billboard : FX_Component
@@ -24,7 +24,7 @@ namespace Framework.MeshParticleSystem
             get
             {
 #if UNITY_EDITOR
-                if(UnityEditor.EditorApplication.isPlaying)
+                if (UnityEditor.EditorApplication.isPlaying)
                 {
                     if (m_Cam == null && Camera.main != null)
                     {
@@ -33,7 +33,7 @@ namespace Framework.MeshParticleSystem
                 }
                 else
                 {
-                    if(m_Cam == null || UnityEditor.SceneView.lastActiveSceneView.camera.transform != m_Cam)
+                    if (m_Cam == null || UnityEditor.SceneView.lastActiveSceneView.camera.transform != m_Cam)
                     {
                         m_Cam = UnityEditor.SceneView.lastActiveSceneView.camera.transform;
                     }
@@ -53,7 +53,7 @@ namespace Framework.MeshParticleSystem
             if (cam == null)
                 return;
 
-            switch(Mode)
+            switch (Mode)
             {
                 case BillboardMode.Billboard:
                     {

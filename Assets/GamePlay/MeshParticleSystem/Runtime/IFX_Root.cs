@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-namespace Framework.MeshParticleSystem
+namespace MeshParticleSystem
 {
     public interface IFX_Root
     {

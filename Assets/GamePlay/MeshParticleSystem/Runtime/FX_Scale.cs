@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.MeshParticleSystem
+namespace MeshParticleSystem
 {
     [ExecuteInEditMode]
-    public class FX_Transition : FX_Component
+    public class FX_Scale : FX_Component
     {
         public float            Delay;
 #if UNITY_2019_1_OR_NEWER
@@ -14,11 +14,11 @@ namespace Framework.MeshParticleSystem
         public float            Duration;
 
         public bool             Addition;
-        public Vector3          Target;
+        public Vector3          Target = Vector3.one;
         public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
-        
+
         private float           m_Delay;
-        private Vector3         m_OriginalLocalPos;
+        private Vector3         m_OriginalLocalScale;
 
         private void Awake()
         {
@@ -29,7 +29,7 @@ namespace Framework.MeshParticleSystem
         {
             base.Init();
 
-            transform.localPosition = m_OriginalLocalPos;
+            transform.localScale = m_OriginalLocalScale;         // 恢复初始localScale
 
             m_Delay = Delay;
         }
@@ -52,18 +52,18 @@ namespace Framework.MeshParticleSystem
 
             if (Addition)
             {
-                transform.localPosition = Vector3.Lerp(m_OriginalLocalPos, m_OriginalLocalPos + Target, value);
+                transform.localScale = Vector3.Lerp(m_OriginalLocalScale, m_OriginalLocalScale + Target, value);
             }
             else
             {
-                transform.localPosition = Vector3.Lerp(m_OriginalLocalPos, Target, value);
+                transform.localScale = Vector3.Lerp(m_OriginalLocalScale, Target, value);
             }
         }
 
         public override void RecordInit()
         {
-            // 记录初始位置
-            m_OriginalLocalPos = transform.localPosition;
+            // 记录初始localScale
+            m_OriginalLocalScale = transform.localScale;
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Cache;
-using Framework.MeshParticleSystem;
+using MeshParticleSystem;
 
 public class LRUPool_FX : LRUPoolBase
 {

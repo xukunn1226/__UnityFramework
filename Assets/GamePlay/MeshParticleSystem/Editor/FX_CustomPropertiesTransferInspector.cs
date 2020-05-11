@@ -2,29 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using MeshParticleSystem;
 
-namespace Framework.MeshParticleSystem.Editor
+namespace MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_CustomPropertiesTransfer))]
     public class FX_CustomPropertiesTransferInspector : FX_ComponentInspector
     {
-        SerializedProperty  m_CustomColorListProp;
-        SerializedProperty  m_CustomFloatListProp;
-        SerializedProperty  m_CustomVector4ListProp;
-        SerializedProperty  m_CustomUVProp;
-        SerializedProperty  m_CustomTextureSheetProp;
+        SerializedProperty m_CustomColorListProp;
+        SerializedProperty m_CustomFloatListProp;
+        SerializedProperty m_CustomVector4ListProp;
+        SerializedProperty m_CustomUVProp;
+        SerializedProperty m_CustomTextureSheetProp;
 
-        const int           m_kIndent = 63;
+        const int m_kIndent = 63;
 
         protected override void OnEnable()
         {
             base.OnEnable();
 
-            m_CustomColorListProp       = serializedObject.FindProperty("m_CustomPropColorList");
-            m_CustomFloatListProp       = serializedObject.FindProperty("m_CustomPropFloatList");
-            m_CustomVector4ListProp     = serializedObject.FindProperty("m_CustomPropVector4List");
-            m_CustomUVProp              = serializedObject.FindProperty("m_CustomPropUV");
-            m_CustomTextureSheetProp    = serializedObject.FindProperty("m_CustomPropTextureSheet");
+            m_CustomColorListProp = serializedObject.FindProperty("m_CustomPropColorList");
+            m_CustomFloatListProp = serializedObject.FindProperty("m_CustomPropFloatList");
+            m_CustomVector4ListProp = serializedObject.FindProperty("m_CustomPropVector4List");
+            m_CustomUVProp = serializedObject.FindProperty("m_CustomPropUV");
+            m_CustomTextureSheetProp = serializedObject.FindProperty("m_CustomPropTextureSheet");
         }
 
         public override void OnInspectorGUI()
@@ -300,7 +301,7 @@ namespace Framework.MeshParticleSystem.Editor
             }
             GUILayout.EndVertical();
         }
-        
+
         private void DrawCustomVector4Prop(SerializedProperty customVector4Prop, int index)
         {
             EditorGUILayout.BeginHorizontal();
@@ -452,7 +453,7 @@ namespace Framework.MeshParticleSystem.Editor
 
                     SerializedProperty offsetProp = m_CustomUVProp.FindPropertyRelative("Offset");
                     EditorGUILayout.PropertyField(offsetProp);
-                    
+
                     SerializedProperty speedProp = m_CustomUVProp.FindPropertyRelative("Speed");
                     EditorGUILayout.PropertyField(speedProp);
                 }

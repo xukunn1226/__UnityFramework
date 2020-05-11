@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.MeshParticleSystem
+namespace MeshParticleSystem
 {
     [ExecuteInEditMode]
     public class FX_DelayActive : FX_Component
@@ -17,9 +17,9 @@ namespace Framework.MeshParticleSystem
             get; set;
         }
 
-        private bool               m_isFoundParent;
-        private FX_DelayActive     m_Parent;
-        private FX_DelayActive     parent
+        private bool m_isFoundParent;
+        private FX_DelayActive m_Parent;
+        private FX_DelayActive parent
         {
             get
             {
@@ -58,7 +58,7 @@ namespace Framework.MeshParticleSystem
             {
                 return;
             }
-            
+
             if (Delay <= 0)
             {
                 isFinishActive = true;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.MeshParticleSystem.Editor
+namespace MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_Root), true)]
     public class FX_RootInspector : UnityEditor.Editor

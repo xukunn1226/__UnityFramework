@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.MeshParticleSystem.Editor
+namespace MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_Component), true)]
     public class FX_ComponentInspector : UnityEditor.Editor
@@ -42,7 +42,7 @@ namespace Framework.MeshParticleSystem.Editor
             }
 
             EditorGUI.BeginDisabledGroup(!((FX_Component)target).isStoped);
-            if(GUILayout.Button("Apply"))
+            if (GUILayout.Button("Apply"))
             {
                 ((FX_Component)target).RecordInit();
             }

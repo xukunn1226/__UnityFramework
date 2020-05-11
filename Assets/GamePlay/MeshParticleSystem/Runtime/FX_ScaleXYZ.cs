@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.MeshParticleSystem
+namespace MeshParticleSystem
 {
     [ExecuteInEditMode]
     public class FX_ScaleXYZ : FX_Component

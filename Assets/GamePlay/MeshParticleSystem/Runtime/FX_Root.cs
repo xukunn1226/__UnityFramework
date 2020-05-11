@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Cache;
-using Framework.Core;
 
 //[MenuItem("Tools/Apply PrefabInstance")]
 //static private void TestPrefab()
@@ -13,8 +12,7 @@ using Framework.Core;
 
 //    //PrefabUtility.ApplyPrefabInstance(Selection.activeGameObject, InteractionMode.UserAction);
 //}
-
-namespace Framework.MeshParticleSystem
+namespace MeshParticleSystem
 {
     [ExecuteInEditMode]
     public class FX_Root : MonoPooledObjectBase, IFX_Root
@@ -78,7 +76,7 @@ namespace Framework.MeshParticleSystem
             if (!Application.isPlaying)     // 方便美术编辑，编辑器非运行模式下不处理回收
                 return;
 #endif
-            switch(m_RecyclingType)
+            switch (m_RecyclingType)
             {
                 case RecyclingType.Destroy:
 #if UNITY_EDITOR
@@ -108,7 +106,7 @@ namespace Framework.MeshParticleSystem
         public override void OnRelease()
         {
             transform.parent = ((MonoBehaviour)Pool)?.transform ?? null;
-            
+
             base.OnRelease();
         }
 
