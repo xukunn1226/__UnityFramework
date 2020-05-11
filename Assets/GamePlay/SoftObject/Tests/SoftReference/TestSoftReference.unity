@@ -321,7 +321,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: 4821597d05f0b1b4d95f0ff8bbbba59c
-  m_AssetPath: assets/gameplay/tests/runtime/softreference/plane1.prefab
+  m_AssetPath: assets/gameplay/softobject/tests/softreference/plane1.prefab
+  m_UseLRUManage: 0
+  m_LRUedPoolAsset: {fileID: 0}
 --- !u!114 &900641841 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -2385830913515302333, guid: dbd49dd61bce04e4bb1eb017c38e1707,

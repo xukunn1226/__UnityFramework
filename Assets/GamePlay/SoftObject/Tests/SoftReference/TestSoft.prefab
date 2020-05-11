@@ -60,7 +60,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: bc14a199bfe85454c962b23acf9e9135
-  m_AssetPath: assets/gameplay/tests/runtime/softreference/cube221.prefab
+  m_AssetPath: assets/gameplay/softobject/tests/softreference/cube221.prefab
+  m_UseLRUManage: 0
+  m_LRUedPoolAsset: {fileID: 0}
 --- !u!114 &5911553339366115662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,4 +76,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: bc14a199bfe85454c962b23acf9e9135
-  m_AssetPath: assets/gameplay/tests/runtime/softreference/cube221.prefab
+  m_AssetPath: assets/gameplay/softobject/tests/softreference/cube221.prefab

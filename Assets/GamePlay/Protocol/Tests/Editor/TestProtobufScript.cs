@@ -26,7 +26,7 @@ namespace Tests
             toServer.Dic.Add("b", 2);
             toServer.Dic.Add("aa", 1);
             byte[] data = toServer.ToByteArray();
-            using (var output = System.IO.File.Create("assets/gameplay/tests/editor/test_proto.bytes"))
+            using (var output = System.IO.File.Create("assets/gameplay/protocol/tests/editor/test_proto.bytes"))
             {
                 toServer.WriteTo(output);
             }
@@ -38,7 +38,7 @@ namespace Tests
             StoreRequest toClient = new StoreRequest();
             toClient = StoreRequest.Parser.ParseFrom(data);
 
-            using (var input = System.IO.File.OpenRead("assets/gameplay/tests/editor/test_proto.bytes"))
+            using (var input = System.IO.File.OpenRead("assets/gameplay/protocol/tests/editor/test_proto.bytes"))
             {
                 StoreRequest client2 = StoreRequest.Parser.ParseFrom(input);
             }
