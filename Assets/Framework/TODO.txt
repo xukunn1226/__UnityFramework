@@ -29,6 +29,7 @@
 	* ResourceManager添加SpriteAtlas的管理
 	* 如何卸载Atlas？https://github.com/jconstable/SpriteSleeper
 		** 思考：prefab静态使用的散图可以预存为依赖图集，程序动态使用的图集需要用接口来约束
+		** 只要Atlas被注册过，再次被引用到时不会调用RequestAtlas
 		1、彻底卸载atlas ab：AssetBundle.unload（true）
 		2、使用此atlas的gameobject被删除
 
