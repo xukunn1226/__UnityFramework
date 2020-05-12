@@ -25,14 +25,19 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         private void OnGUI()
         {
-            if (GUI.Button(new Rect(100, 100, 200, 80), "Load"))
+            if (GUI.Button(new Rect(100, 100, 120, 60), "Load"))
             {
                 StartTask();
             }
 
-            if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+            if (GUI.Button(new Rect(100, 200, 120, 60), "Unload"))
             {
                 EndTask();
+            }
+
+            if (GUI.Button(new Rect(100, 300, 120, 60), "UnloadUnusedAssets"))
+            {
+                UnloadUnusedAssets();
             }
 
             if (!string.IsNullOrEmpty(info))
@@ -56,6 +61,11 @@ namespace Framework.AssetManagement.Runtime.Tests
                 AssetManager.UnloadAsset(loader);
             }
             info = null;
+        }
+
+        void UnloadUnusedAssets()
+        {
+            Resources.UnloadUnusedAssets();
         }
     }
 }
