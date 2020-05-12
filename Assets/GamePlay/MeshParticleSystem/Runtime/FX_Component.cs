@@ -6,9 +6,16 @@ namespace MeshParticleSystem
 {
     public abstract class FX_Component : MonoBehaviour
     {
-        public float speed { get; set; } = 1;
+        [SerializeField][HideInInspector]
+        private float m_Speed = 1;
 
-        protected float elapsedTime { get; set; }           // 由各组件内部使用，重置时强制设置为0
+        public float speed
+        {
+            get { return m_Speed; }
+            set { m_Speed = value; }
+        }
+
+        public float elapsedTime { get; protected set; }           // 由各组件内部使用，重置时强制设置为0
 
         public float deltaTime
         {
@@ -21,7 +28,7 @@ namespace MeshParticleSystem
             }
         }
 
-        public enum PlayState
+        enum PlayState
         {
             Play    = 1,
             Pause   = 2,

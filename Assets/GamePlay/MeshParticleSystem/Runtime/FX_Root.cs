@@ -17,6 +17,75 @@ namespace MeshParticleSystem
     [ExecuteInEditMode]
     public class FX_Root : MonoPooledObjectBase, IFX_Root
     {
+        [SerializeField][HideInInspector]
+        private float m_Speed = 1;
+
+        public float speed
+        {
+            get { return m_Speed; }
+            set
+            {
+                if(m_Speed != value)
+                {
+                    m_Speed = value;
+
+                    InitComps();
+                    foreach(var fx in m_FXComps)
+                    {
+                        fx.speed = value;
+                    }
+                    foreach(var ps in m_ParticleComps)
+                    {
+                        ParticleSystem.MainModule main = ps.main;
+                        main.simulationSpeed = value;
+                    }
+                }
+            }
+        }
+
+        private float deltaTime
+        {
+            get
+            {
+                if (m_State == PlayState.Play)
+                    return Time.deltaTime * speed;
+
+                return 0;
+            }
+        }
+
+        enum PlayState
+        {
+            Play    = 1,
+            Pause   = 2,
+            Stop    = 4,
+        }
+        private PlayState m_State = PlayState.Play;
+
+        public bool isPlaying
+        {
+            get
+            {
+                return (m_State & PlayState.Play) != 0;
+            }
+        }
+
+        public bool isPaused
+        {
+            get
+            {
+                return (m_State & PlayState.Pause) != 0;
+            }
+        }
+
+        public bool isStoped
+        {
+            get
+            {
+                return (m_State & PlayState.Stop) != 0;
+            }
+        }
+
         public enum RecyclingType
         {
             Destroy,                // 直接销毁
@@ -30,43 +99,33 @@ namespace MeshParticleSystem
         public float lifeTime { get { return m_LifeTime; } }
 
         [SerializeField]
-        private float m_LifeTime;
-
-        private float m_CachedLifeTime;
+        private float m_LifeTime = 0;
 
         public float ElapsedLifeTime { get; private set; }
 
-        private FX_Component[] m_Components;
-        private bool m_bInit;
+        private FX_Component[]      m_FXComps;
+        private ParticleSystem[]    m_ParticleComps;
+        private bool                m_bInit;
 
-        private FX_Component[] Components
+        private void InitComps()
         {
-            get
+            if(!m_bInit)
             {
-                if (!m_bInit)
-                {
-                    m_Components = GetComponentsInChildren<FX_Component>(true);
-                    m_bInit = true;
-                }
-                return m_Components;
-            }
-        }
+                m_bInit = true;
 
-        void Awake()
-        {
-            m_CachedLifeTime = m_LifeTime;
-            ElapsedLifeTime = 0;
+                m_FXComps = GetComponentsInChildren<FX_Component>(true);
+                m_ParticleComps = GetComponentsInChildren<ParticleSystem>(true);
+            }
         }
 
         void Update()
         {
-            if (lifeTime <= 0) { return; }
+            if (isStoped) return;
 
-            ElapsedLifeTime += Time.deltaTime;
-
-            if (ElapsedLifeTime > lifeTime)
+            ElapsedLifeTime += deltaTime;            
+            if (lifeTime > 0 && ElapsedLifeTime > lifeTime)
             {
-                OnEffectEnd();
+                Stop();
             }
         }
 
@@ -105,6 +164,7 @@ namespace MeshParticleSystem
 
         public override void OnRelease()
         {
+            // 回收时统一放置Pool下
             transform.parent = ((MonoBehaviour)Pool)?.transform ?? null;
 
             base.OnRelease();
@@ -113,18 +173,52 @@ namespace MeshParticleSystem
         private void Reset()
         {
             ElapsedLifeTime = 0;
-
             transform.parent = null;
         }
 
         public void Play()
-        { }
+        {
+            InitComps();
+
+            m_State = PlayState.Play;
+            foreach(var fx in m_FXComps)
+            {
+                fx.Play();
+            }
+            foreach(var ps in m_ParticleComps)
+            {
+                ps.Play();
+            }
+        }
 
         public void Pause()
-        { }
+        {
+            InitComps();
+
+            m_State = PlayState.Pause;
+            foreach(var fx in m_FXComps)
+            {
+                fx.Pause();
+            }
+            foreach(var ps in m_ParticleComps)
+            {
+                ps.Pause();
+            }
+        }
 
         public void Stop()
         {
+            InitComps();
+
+            m_State = PlayState.Stop;
+            foreach(var fx in m_FXComps)
+            {
+                fx.Stop();
+            }
+            foreach(var ps in m_ParticleComps)
+            {
+                ps.Stop();
+            }
             OnEffectEnd();
         }
 
@@ -133,21 +227,20 @@ namespace MeshParticleSystem
         /// </summary>
         public void Restart()
         {
-            m_LifeTime = m_CachedLifeTime;
+            InitComps();
+
             ElapsedLifeTime = 0;
+            m_State = PlayState.Play;
 
-            FX_Component[] comps = Components;
-            if (comps == null)
-                return;
-
-            //foreach (var comp in comps)
-            //{
-            //    IReplay rp = comp as IReplay;
-            //    if (rp != null)
-            //    {
-            //        rp.Replay();
-            //    }
-            //}
+            foreach(var fx in m_FXComps)
+            {
+                fx.Restart();
+            }
+            foreach(var ps in m_ParticleComps)
+            {
+                ps.Stop();
+                ps.Play();
+            }
         }
     }
 }

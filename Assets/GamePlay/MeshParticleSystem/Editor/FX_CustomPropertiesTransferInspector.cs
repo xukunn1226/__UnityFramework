@@ -14,7 +14,7 @@ namespace MeshParticleSystem.Editor
         SerializedProperty m_CustomVector4ListProp;
         SerializedProperty m_CustomUVProp;
         SerializedProperty m_CustomTextureSheetProp;
-
+        
         const int m_kIndent = 63;
 
         protected override void OnEnable()
@@ -27,7 +27,7 @@ namespace MeshParticleSystem.Editor
             m_CustomUVProp = serializedObject.FindProperty("m_CustomPropUV");
             m_CustomTextureSheetProp = serializedObject.FindProperty("m_CustomPropTextureSheet");
         }
-
+        
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
@@ -41,6 +41,19 @@ namespace MeshParticleSystem.Editor
             DrawUVProp();
             EditorGUILayout.Space();
             DrawTextureSheetProp();
+
+            EditorGUILayout.Separator();
+            EditorGUILayout.Separator();
+
+
+            EditorGUI.BeginChangeCheck();
+            float speed = EditorGUILayout.DelayedFloatField("Speed", ((FX_Component)target).speed);
+            if (EditorGUI.EndChangeCheck())
+            {
+                ((FX_Component)target).speed = Mathf.Max(0, speed);
+            }
+
+            EditorGUILayout.TextField("Time", ((FX_Component)target).elapsedTime.ToString());
 
             if (GUILayout.Button("Play"))
             {

@@ -35,12 +35,6 @@ namespace MeshParticleSystem
             public float            m_Delay         { get; private set; }
             public float            m_Duration      { get; private set; }
 
-            //public void Awake()
-            //{
-            //    m_Delay = Delay;
-            //    m_Duration = Duration;
-            //}
-
             public void Init(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
@@ -90,12 +84,6 @@ namespace MeshParticleSystem
 
             private float           m_Delay;
             private float           m_ElapsedTime;
-
-            //public void Awake()
-            //{
-            //    m_Delay = Delay;
-            //    m_ElapsedTime = 0;
-            //}
 
             public void Init(MaterialPropertyBlock block)
             {
@@ -158,12 +146,6 @@ namespace MeshParticleSystem
             private float           m_ElapsedTime;
             private Vector4         m_Value;
 
-            //public void Awake()
-            //{
-            //    m_Delay = Delay;
-            //    m_ElapsedTime = 0;
-            //}
-
             public void Init(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
@@ -219,12 +201,6 @@ namespace MeshParticleSystem
             private float           m_Delay;
 
             private static Vector4  k_MainTex_ST = new Vector4(1, 1, 0, 0);
-
-            //public void Awake()
-            //{
-            //    m_Delay = Delay;
-            //    m_AccumulatedSpeed = new Vector2(0, 0);
-            //}
 
             public void Init(MaterialPropertyBlock block)
             {
