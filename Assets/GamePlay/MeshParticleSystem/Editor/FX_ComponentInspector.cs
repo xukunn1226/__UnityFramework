@@ -22,45 +22,45 @@ namespace MeshParticleSystem.Editor
                 UnityEditor.EditorApplication.update -= UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
         }
 
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
+        //public override void OnInspectorGUI()
+        //{
+        //    base.OnInspectorGUI();
 
-            EditorGUILayout.Separator();
-            EditorGUILayout.Separator();
+        //    EditorGUILayout.Separator();
+        //    EditorGUILayout.Separator();
 
-            EditorGUI.BeginChangeCheck();
-            float speed = EditorGUILayout.DelayedFloatField("Speed", ((FX_Component)target).speed);
-            if(EditorGUI.EndChangeCheck())
-            {
-                ((FX_Component)target).speed = Mathf.Max(0, speed);
-            }
+        //    EditorGUI.BeginChangeCheck();
+        //    float speed = EditorGUILayout.DelayedFloatField("Speed", ((FX_Component)target).speed);
+        //    if(EditorGUI.EndChangeCheck())
+        //    {
+        //        ((FX_Component)target).speed = Mathf.Max(0, speed);
+        //    }
 
-            EditorGUILayout.TextField("Time", ((FX_Component)target).elapsedTime.ToString());
+        //    EditorGUILayout.TextField("Time", ((FX_Component)target).elapsedTime.ToString());
 
-            if (GUILayout.Button("Play"))
-            {
-                ((FX_Component)target).Play();
-            }
-            if (GUILayout.Button("Pause"))
-            {
-                ((FX_Component)target).Pause();
-            }
-            if (GUILayout.Button("Stop"))
-            {
-                ((FX_Component)target).Stop();
-            }
-            if (GUILayout.Button("Restart"))
-            {
-                ((FX_Component)target).Restart();
-            }
+        //    if (GUILayout.Button("Play"))
+        //    {
+        //        ((FX_Component)target).Play();
+        //    }
+        //    if (GUILayout.Button("Pause"))
+        //    {
+        //        ((FX_Component)target).Pause();
+        //    }
+        //    if (GUILayout.Button("Stop"))
+        //    {
+        //        ((FX_Component)target).Stop();
+        //    }
+        //    if (GUILayout.Button("Restart"))
+        //    {
+        //        ((FX_Component)target).Restart();
+        //    }
 
-            EditorGUI.BeginDisabledGroup(!((FX_Component)target).isStoped);
-            if (GUILayout.Button("Apply"))
-            {
-                ((FX_Component)target).RecordInit();
-            }
-            EditorGUI.EndDisabledGroup();
-        }
+        //    EditorGUI.BeginDisabledGroup(!((FX_Component)target).isStoped);
+        //    if (GUILayout.Button("Apply"))
+        //    {
+        //        ((FX_Component)target).RecordInit();
+        //    }
+        //    EditorGUI.EndDisabledGroup();
+        //}
     }
 }

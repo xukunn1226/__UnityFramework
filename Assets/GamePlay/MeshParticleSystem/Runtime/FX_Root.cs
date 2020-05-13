@@ -109,13 +109,19 @@ namespace MeshParticleSystem
 
         private void InitComps()
         {
-            if(!m_bInit)
+#if UNITY_EDITOR    // 编辑模式下为了适应组件增删改，不考虑性能总是获取
+            m_FXComps = GetComponentsInChildren<FX_Component>(true);
+            m_ParticleComps = GetComponentsInChildren<ParticleSystem>(true);
+
+#else
+            if (!m_bInit)
             {
                 m_bInit = true;
 
                 m_FXComps = GetComponentsInChildren<FX_Component>(true);
                 m_ParticleComps = GetComponentsInChildren<ParticleSystem>(true);
             }
+#endif
         }
 
         void Update()

@@ -1,5 +1,6 @@
 ﻿* async,await的封装，统一同步、异步加载接口，AsyncTaskMethodBuilder，TaskCompletionSource
 * 研究C#WeakReference的使用
+* 整合BuildReport，https://github.com/Unity-Technologies/BuildReportInspector
 
 
 

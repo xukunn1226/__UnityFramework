@@ -34,6 +34,7 @@
 		2、使用此atlas的gameobject被删除
 
 	* 搭建美术UI制作环境
+	* UIView跳转流程，参照新闻app的用户习惯设计
 
 	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
 
