@@ -64,6 +64,12 @@ namespace MeshParticleSystem.Editor
                 return;
             }
             DrawPreview();
+
+            Event currentEvent = Event.current;
+            if(currentEvent.type == EventType.MouseDown && currentEvent.button == 0)
+            {
+                currentEvent.Use();
+            }
         }
 
         private void DrawPreview()
