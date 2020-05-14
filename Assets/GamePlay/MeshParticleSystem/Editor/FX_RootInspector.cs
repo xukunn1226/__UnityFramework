@@ -12,7 +12,6 @@ namespace MeshParticleSystem.Editor
         private SerializedProperty m_LifeTimeProp;
         private SerializedProperty m_RecyclingTypeProp;
 
-        private float m_Time;
         private FX_Root m_FX;
 
         private void OnEnable()
@@ -21,13 +20,16 @@ namespace MeshParticleSystem.Editor
             m_LifeTimeProp = serializedObject.FindProperty("m_LifeTime");
             m_RecyclingTypeProp = serializedObject.FindProperty("m_RecyclingType");
             m_FX = (FX_Root)target;
-
+            m_FX.m_SimulatedMode = true;
+            
             if (!Application.isPlaying)
                 UnityEditor.EditorApplication.update += UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
         }
 
         private void OnDisable()
         {
+            m_FX.m_SimulatedMode = false;
+
             if (!Application.isPlaying)
                 UnityEditor.EditorApplication.update -= UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
         }

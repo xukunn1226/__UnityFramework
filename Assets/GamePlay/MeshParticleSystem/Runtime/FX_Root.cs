@@ -107,6 +107,9 @@ namespace MeshParticleSystem
         private ParticleSystem[]    m_ParticleComps;
         private bool                m_bInit;
 
+        [System.NonSerialized]
+        public bool                 m_SimulatedMode;
+
         private void InitComps()
         {
 #if UNITY_EDITOR    // 编辑模式下为了适应组件增删改，不考虑性能总是获取
@@ -133,12 +136,22 @@ namespace MeshParticleSystem
             {
                 Stop();
             }
+
+#if UNITY_EDITOR
+            if (m_SimulatedMode && !Application.isPlaying && m_ParticleComps != null)
+            { // 模拟模式且非运行时才执行
+                foreach (var ps in m_ParticleComps)
+                {
+                    ps.Simulate(deltaTime, false, false, false);
+                }
+            }
+#endif
         }
 
         private void OnEffectEnd()
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying)     // 方便美术编辑，编辑器非运行模式下不处理回收
+            if (!Application.isPlaying)     // 方便美术编辑，非运行模式下不处理回收
                 return;
 #endif
             switch (m_RecyclingType)
@@ -217,12 +230,15 @@ namespace MeshParticleSystem
             InitComps();
 
             m_State = PlayState.Stop;
-            foreach(var fx in m_FXComps)
+            ElapsedLifeTime = 0;
+
+            foreach (var fx in m_FXComps)
             {
                 fx.Stop();
             }
             foreach(var ps in m_ParticleComps)
             {
+                ps.Clear();
                 ps.Stop();
             }
             OnEffectEnd();
@@ -235,8 +251,8 @@ namespace MeshParticleSystem
         {
             InitComps();
 
-            ElapsedLifeTime = 0;
             m_State = PlayState.Play;
+            ElapsedLifeTime = 0;
 
             foreach(var fx in m_FXComps)
             {
@@ -244,6 +260,7 @@ namespace MeshParticleSystem
             }
             foreach(var ps in m_ParticleComps)
             {
+                ps.Clear();
                 ps.Stop();
                 ps.Play();
             }
