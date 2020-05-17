@@ -6,7 +6,7 @@ using UnityEditor;
 namespace MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_Root), true)]
-    public class FX_RootInspector : UnityEditor.Editor
+    public class FX_RootEditor : UnityEditor.Editor
     {
         private SerializedProperty m_SpeedProp;
         private SerializedProperty m_LifeTimeProp;
@@ -20,7 +20,7 @@ namespace MeshParticleSystem.Editor
             m_LifeTimeProp = serializedObject.FindProperty("m_LifeTime");
             m_RecyclingTypeProp = serializedObject.FindProperty("m_RecyclingType");
             m_FX = (FX_Root)target;
-            m_FX.m_SimulatedMode = true;
+            m_FX.SimulatedMode = true;
             
             if (!Application.isPlaying)
                 UnityEditor.EditorApplication.update += UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
@@ -28,7 +28,7 @@ namespace MeshParticleSystem.Editor
 
         private void OnDisable()
         {
-            m_FX.m_SimulatedMode = false;
+            m_FX.SimulatedMode = false;
 
             if (!Application.isPlaying)
                 UnityEditor.EditorApplication.update -= UnityEditor.EditorApplication.QueuePlayerLoopUpdate;

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 namespace Framework.Core.Editor
 {
     [CustomEditor(typeof(SoftObjectPath), true)]
-    public class SoftObjectPathInspector : UnityEditor.Editor
+    public class SoftObjectPathEditor : UnityEditor.Editor
     {
         private SerializedProperty m_GUIDProp;
         private SerializedProperty m_AssetPathProp;

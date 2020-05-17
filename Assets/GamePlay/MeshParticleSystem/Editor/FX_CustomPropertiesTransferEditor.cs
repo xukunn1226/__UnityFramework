@@ -7,7 +7,7 @@ using MeshParticleSystem;
 namespace MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_CustomPropertiesTransfer))]
-    public class FX_CustomPropertiesTransferInspector : FX_ComponentInspector
+    public class FX_CustomPropertiesTransferEditor : FX_ComponentEditor
     {
         SerializedProperty m_CustomColorListProp;
         SerializedProperty m_CustomFloatListProp;

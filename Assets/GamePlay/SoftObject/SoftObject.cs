@@ -171,7 +171,7 @@ public sealed class SoftObject : SoftObjectPath
 #if UNITY_EDITOR
 
 [CustomEditor(typeof(SoftObject))]
-public class SoftObjectInspector : SoftObjectPathInspector
+public class SoftObjectEditor : SoftObjectPathEditor
 {
     private SerializedProperty m_LRUedPoolAssetProp;
     private SerializedProperty m_UseLRUManageProp;

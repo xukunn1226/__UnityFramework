@@ -6,7 +6,7 @@ using UnityEditor;
 namespace MeshParticleSystem.Editor
 {
     [CustomEditor(typeof(FX_Component), true)]
-    public class FX_ComponentInspector : UnityEditor.Editor
+    public class FX_ComponentEditor : UnityEditor.Editor
     {
         private float m_Time;
 

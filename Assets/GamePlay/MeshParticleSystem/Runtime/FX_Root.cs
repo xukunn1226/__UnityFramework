@@ -108,7 +108,7 @@ namespace MeshParticleSystem
         private bool                m_bInit;
 
         [System.NonSerialized]
-        public bool                 m_SimulatedMode;
+        public bool                 SimulatedMode;
 
         private void InitComps()
         {
@@ -138,7 +138,7 @@ namespace MeshParticleSystem
             }
 
 #if UNITY_EDITOR
-            if (m_SimulatedMode && !Application.isPlaying && m_ParticleComps != null)
+            if (SimulatedMode && !Application.isPlaying && m_ParticleComps != null)
             { // 模拟模式且非运行时才执行
                 foreach (var ps in m_ParticleComps)
                 {
