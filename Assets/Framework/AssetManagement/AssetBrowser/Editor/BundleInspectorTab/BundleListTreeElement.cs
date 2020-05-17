@@ -2,7 +2,7 @@
 using UITreeView;
 using System;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     internal class BundleListTreeElement : TreeElement
     {

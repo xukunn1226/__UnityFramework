@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     internal class IssueCollection
     {

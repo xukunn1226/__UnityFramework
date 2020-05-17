@@ -8,7 +8,7 @@ using UnityEngine.Assertions;
 using System;
 using System.Linq;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     internal class IssueCollectionTreeView : TreeViewWithTreeModel<IssueCollectionTreeElement>
     {

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     static public class AssetChecker
     {

@@ -1,5 +1,5 @@
 {
-    "name": "Framework.AssetBrowser",
+    "name": "Framework.AssetManagement.AssetBrowser",
     "references": [],
     "includePlatforms": [
         "Editor"

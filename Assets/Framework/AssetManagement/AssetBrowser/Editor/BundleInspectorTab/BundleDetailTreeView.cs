@@ -6,7 +6,7 @@ using UnityEditor.IMGUI.Controls;
 using UITreeView;
 using System.IO;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     internal class BundleDetailTreeView : TreeViewWithTreeModel<BundleDetailTreeElement>
     {

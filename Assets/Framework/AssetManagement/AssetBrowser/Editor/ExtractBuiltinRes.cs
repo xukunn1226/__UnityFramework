@@ -2,25 +2,25 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     internal class ExtractBuiltinRes
     {
-        static private string k_commonPath      = "Assets/BuiltinRes";
-        static private string k_pathOfMaterial  = k_commonPath + "/Material";
-        static private string k_pathOfTexture   = k_commonPath + "/Texture";
-        static private string k_pathOfSprite    = k_commonPath + "/Sprite";
-        static private string k_pathOfMesh      = k_commonPath + "/Mesh";
-        static private string k_pathOfFont      = k_commonPath + "/Font";
+        static private string s_commonPath      = "Assets/BuiltinRes";
+        static private string s_pathOfMaterial  = s_commonPath + "/Material";
+        static private string s_pathOfTexture   = s_commonPath + "/Texture";
+        static private string s_pathOfSprite    = s_commonPath + "/Sprite";
+        static private string s_pathOfMesh      = s_commonPath + "/Mesh";
+        static private string s_pathOfFont      = s_commonPath + "/Font";
 
         [MenuItem("Assets/AssetBrowser/Extract Builtin Res")]
         static private void BuiltinExtract()
         {
-            Directory.CreateDirectory(k_pathOfMaterial);
-            Directory.CreateDirectory(k_pathOfTexture);
-            Directory.CreateDirectory(k_pathOfSprite);
-            Directory.CreateDirectory(k_pathOfMesh);
-            Directory.CreateDirectory(k_pathOfFont);
+            Directory.CreateDirectory(s_pathOfMaterial);
+            Directory.CreateDirectory(s_pathOfTexture);
+            Directory.CreateDirectory(s_pathOfSprite);
+            Directory.CreateDirectory(s_pathOfMesh);
+            Directory.CreateDirectory(s_pathOfFont);
 
             UnityEngine.Object[] builtinExtra = AssetDatabase.LoadAllAssetsAtPath("Resources/unity_builtin_extra");         // shader, material, texture2D, sprite, lightmapParameters
             foreach (var obj in builtinExtra)
@@ -29,19 +29,19 @@ namespace Framework.AssetBrowser
 
                 if(typeName == "Material")
                 {
-                    ExtractBuiltin_Generic(obj, k_pathOfMaterial, ".mat");
+                    ExtractBuiltin_Generic(obj, s_pathOfMaterial, ".mat");
                 }
                 else if(typeName == "Mesh")
                 {
-                    ExtractBuiltin_Generic(obj, k_pathOfMesh, ".asset");
+                    ExtractBuiltin_Generic(obj, s_pathOfMesh, ".asset");
                 }
                 else if(typeName == "Sprite")
                 {
-                    ExtractBuiltin_Generic(obj, k_pathOfSprite, ".asset");
+                    ExtractBuiltin_Generic(obj, s_pathOfSprite, ".asset");
                 }
                 else if(typeName == "Texture2D")
                 {
-                    ExtractBuiltin_Texture2D(obj as Texture2D, k_pathOfTexture);
+                    ExtractBuiltin_Texture2D(obj as Texture2D, s_pathOfTexture);
                 }
             }
 
@@ -52,23 +52,23 @@ namespace Framework.AssetBrowser
 
                 if(typeName == "Material")
                 {
-                    ExtractBuiltin_Generic(obj, k_pathOfMaterial, ".mat");
+                    ExtractBuiltin_Generic(obj, s_pathOfMaterial, ".mat");
                 }
                 else if (typeName == "Mesh")
                 {
-                    ExtractBuiltin_Generic(obj, k_pathOfMesh, ".asset");
+                    ExtractBuiltin_Generic(obj, s_pathOfMesh, ".asset");
                 }
                 else if(typeName == "Font")
                 {
-                    ExtractBuiltin_Generic(obj, k_pathOfFont, ".fontsettings");
+                    ExtractBuiltin_Generic(obj, s_pathOfFont, ".fontsettings");
                 }
                 else if (typeName == "Sprite")
                 {
-                    ExtractBuiltin_Generic(obj, k_pathOfSprite, ".asset");
+                    ExtractBuiltin_Generic(obj, s_pathOfSprite, ".asset");
                 }
                 else if (typeName == "Texture2D")
                 {
-                    ExtractBuiltin_Texture2D(obj as Texture2D, k_pathOfTexture);
+                    ExtractBuiltin_Texture2D(obj as Texture2D, s_pathOfTexture);
                 }
             }
 

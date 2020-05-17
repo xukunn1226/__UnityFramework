@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     public class AssetBrowserMain : EditorWindow
     {
@@ -17,9 +17,9 @@ namespace Framework.AssetBrowser
         }
 
         private Texture2D   m_RefreshTexture;
-        const float         k_ToolbarPadding    = 15;
-        const float         k_MenubarPadding    = 32;
-        const float         k_StatusbarPadding  = 20;
+        const float         kToolbarPadding     = 15;
+        const float         kMenubarPadding     = 32;
+        const float         kStatusbarPadding   = 20;
 
         enum Mode
         {
@@ -64,7 +64,7 @@ namespace Framework.AssetBrowser
         {
             using (new EditorGUILayout.HorizontalScope())
             {
-                GUILayout.Space(k_ToolbarPadding);
+                GUILayout.Space(kToolbarPadding);
                 switch (m_Mode)
                 {
                     case Mode.AssetInspect:
@@ -80,7 +80,7 @@ namespace Framework.AssetBrowser
                         }
                         break;
                 }
-                float toolbarWidth = position.width - k_ToolbarPadding * 3 - m_RefreshTexture.width * 2;
+                float toolbarWidth = position.width - kToolbarPadding * 3 - m_RefreshTexture.width * 2;
                 string[] labels = new string[2] { "Asset", "Scene" };
                 m_Mode = (Mode)GUILayout.Toolbar((int)m_Mode, labels, "LargeButton", GUILayout.Width(toolbarWidth));
             }            
@@ -88,7 +88,7 @@ namespace Framework.AssetBrowser
 
         void DrawStatusBar()
         {
-            Rect rc = new Rect(0, position.height - k_StatusbarPadding, position.width, k_StatusbarPadding);
+            Rect rc = new Rect(0, position.height - kStatusbarPadding, position.width, kStatusbarPadding);
             GUILayout.BeginArea(rc);
 
             GUILayout.Label(status, "LargeLabel");
@@ -108,7 +108,7 @@ namespace Framework.AssetBrowser
 
         private Rect GetSubWindowArea()
         {
-            return new Rect(0, k_MenubarPadding, position.width, position.height - k_MenubarPadding - k_StatusbarPadding);
+            return new Rect(0, kMenubarPadding, position.width, position.height - kMenubarPadding - kStatusbarPadding);
         }
     }
 }

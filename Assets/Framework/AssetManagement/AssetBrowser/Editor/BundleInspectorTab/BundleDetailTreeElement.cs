@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UITreeView;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     public class BundleDetailTreeElement : TreeElement
     {

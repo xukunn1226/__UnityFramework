@@ -7,7 +7,7 @@ using UITreeView;
 using UnityEngine.Assertions;
 using System.Linq;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     internal class BundleListTreeView : TreeViewWithTreeModel<BundleListTreeElement>
     {

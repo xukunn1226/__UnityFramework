@@ -7,7 +7,7 @@ using UnityEditor.IMGUI.Controls;
 using NUnit.Framework;
 using System.IO;
 
-namespace Framework.AssetBrowser
+namespace Framework.AssetManagement.AssetBrowser
 {
     public class BundleInspectorTab
     {
