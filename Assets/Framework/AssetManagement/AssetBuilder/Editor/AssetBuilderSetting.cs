@@ -7,17 +7,17 @@ using Framework.Core;
 using UnityEditor;
 #endif
 
-namespace Framework.AssetBuilder
+namespace Framework.AssetManagement.AssetBuilder
 {
     public class AssetBuilderSetting : ScriptableObject
     {
 #pragma warning disable CS0414
-        static private string m_kSavedPath = "Assets/AssetManagement/AssetBuilder";
+        static private string s_SavedPath = "Assets/AssetManagement/AssetBuilder";
 #pragma warning restore CS0414
 
-        public bool             ForceDisplayDialogWhenAssetNameNotMetSpec;                  // 资源名称不符合规范是否强制提示
+        public bool             ForceDisplayDialogWhenAssetNameNotMet;                          // 资源名称不符合规范是否强制提示
         
-        public string[]         WhiteListOfPath         = new string[] { "Assets/Res/" };   // 路径白名单（ab name生成规则）
+        public string[]         WhiteListOfPath         = new string[] { "Assets/Res/" };       // 路径白名单（ab name生成规则）
 
         public string[]         BlackListOfFolder       = new string[] { "Resources", "Scenes", "Scripts", "RawData", "Editor", "StreamingAssets", "Examples", "Temp" };   // 文件夹黑名单
 
@@ -32,7 +32,7 @@ namespace Framework.AssetBuilder
 
         static public AssetBuilderSetting GetDefault()
         {
-            return Utility.GetOrCreateEditorConfigObject<AssetBuilderSetting>(m_kSavedPath);
+            return Utility.GetOrCreateEditorConfigObject<AssetBuilderSetting>(s_SavedPath);
         }
 #endif
     }
@@ -41,13 +41,13 @@ namespace Framework.AssetBuilder
     [CustomEditor(typeof(AssetBuilderSetting))]
     public class AssetBuilderSettingEditor : Editor
     {
-        SerializedProperty m_ForceDisplayDialogWhenAssetNameNotMetSpecProp;
+        SerializedProperty m_ForceDisplayDialogWhenAssetNameNotMetProp;
         SerializedProperty m_WhiteListOfPathProp;
         SerializedProperty m_BlackListOfPathProp;
 
         private void OnEnable()
         {
-            m_ForceDisplayDialogWhenAssetNameNotMetSpecProp = serializedObject.FindProperty("ForceDisplayDialogWhenAssetNameNotMetSpec");
+            m_ForceDisplayDialogWhenAssetNameNotMetProp = serializedObject.FindProperty("ForceDisplayDialogWhenAssetNameNotMet");
             m_WhiteListOfPathProp = serializedObject.FindProperty("WhiteListOfPath");
             m_BlackListOfPathProp = serializedObject.FindProperty("BlackListOfFolder");
         }
@@ -63,7 +63,7 @@ namespace Framework.AssetBuilder
             EditorGUILayout.LabelField("Asset Builder Setting", newStyle);
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                m_ForceDisplayDialogWhenAssetNameNotMetSpecProp.boolValue = EditorGUILayout.ToggleLeft(new GUIContent("Force Display Dialog", ""), m_ForceDisplayDialogWhenAssetNameNotMetSpecProp.boolValue);
+                m_ForceDisplayDialogWhenAssetNameNotMetProp.boolValue = EditorGUILayout.ToggleLeft(new GUIContent("Force Display Dialog", ""), m_ForceDisplayDialogWhenAssetNameNotMetProp.boolValue);
 
                 EditorGUILayout.HelpBox("当资源命名不规则时强制对话框提示", MessageType.Info);
 

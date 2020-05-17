@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace Framework.AssetBuilder
+namespace Framework.AssetManagement.AssetBuilder
 {
     public class MaterialPostprocessor : AssetPostprocessor
     {

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-namespace Framework.AssetBuilder
+namespace Framework.AssetManagement.AssetBuilder
 {
     static internal class AssetBuilderUtil
     {

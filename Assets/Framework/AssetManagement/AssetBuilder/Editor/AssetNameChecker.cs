@@ -2,12 +2,12 @@
 using UnityEditor;
 using System.Text.RegularExpressions;
 
-namespace Framework.AssetBuilder
+namespace Framework.AssetManagement.AssetBuilder
 {
     internal class AssetNameChecker : AssetPostprocessor
     {
-        static private string k_Pattern = @"\s|[#\$%\^&()-\+{}\?*|\[\]]";
-        static private Regex k_NameRegex = new Regex(k_Pattern, RegexOptions.IgnoreCase);
+        static private string s_Pattern = @"\s|[#\$%\^&()-\+{}\?*|\[\]]";
+        static private Regex s_NameRegex = new Regex(s_Pattern, RegexOptions.IgnoreCase);
 
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
@@ -18,8 +18,8 @@ namespace Framework.AssetBuilder
                 {
                     if(!CheckNameRuler(assetPath))
                     {
-                        string message = string.Format("{0} 命名不能包含如下特殊字符{1},请修正", assetPath, k_Pattern.Replace("\\", ""));
-                        if(AssetBuilderSetting.GetDefault().ForceDisplayDialogWhenAssetNameNotMetSpec)
+                        string message = string.Format("{0} 命名不能包含如下特殊字符{1},请修正", assetPath, s_Pattern.Replace("\\", ""));
+                        if(AssetBuilderSetting.GetDefault().ForceDisplayDialogWhenAssetNameNotMet)
                             EditorUtility.DisplayDialog("错误", message, "OK");
                         Debug.LogError(message, AssetDatabase.LoadAssetAtPath<Object>(assetPath));
                     }
@@ -34,7 +34,7 @@ namespace Framework.AssetBuilder
         /// <returns>true: 符合；false: 不符合</returns>
         static internal bool CheckNameRuler(string name)
         {
-            return !k_NameRegex.IsMatch(name);
+            return !s_NameRegex.IsMatch(name);
         }
     }
 }
