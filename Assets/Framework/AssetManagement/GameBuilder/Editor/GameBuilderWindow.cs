@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.GameBuilder
+namespace Framework.AssetManagement.GameBuilder
 {
     public class GameBuilderWindow : EditorWindow
     {
@@ -79,7 +79,7 @@ namespace Framework.GameBuilder
 
                 if(GUILayout.Button(new GUIContent("Add", ""), new GUIStyle("LargeButton"), GUILayout.Width(100)))
                 {
-                    target.Add(GameBuilderUtil.kDefaultSettingPath);
+                    target.Add(GameBuilderUtil.s_DefaultSettingPath);
                     UpdateToolbar(toolbarLabels.Count);
                 }
 

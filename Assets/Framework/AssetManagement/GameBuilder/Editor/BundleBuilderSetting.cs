@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.GameBuilder
+namespace Framework.AssetManagement.GameBuilder
 {
     /// <summary>
     /// Bundle打包配置数据

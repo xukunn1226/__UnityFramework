@@ -5,7 +5,7 @@ using UnityEditor;
 using System.IO;
 using Framework.Core;
 
-namespace Framework.GameBuilder
+namespace Framework.AssetManagement.GameBuilder
 {
     public class BundleBuilder
     {

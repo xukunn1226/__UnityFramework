@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.GameBuilder
+namespace Framework.AssetManagement.GameBuilder
 {
     /// <summary>
     /// app打包配置数据

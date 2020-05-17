@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using Framework.Core;
 
-namespace Framework.GameBuilder
+namespace Framework.AssetManagement.GameBuilder
 {
     internal class GameBuilderSettingCollection : ScriptableObject
     {
@@ -130,7 +130,7 @@ namespace Framework.GameBuilder
 
         static public GameBuilderSettingCollection GetDefault()
         {
-            return Utility.GetOrCreateEditorConfigObject<GameBuilderSettingCollection>(GameBuilderUtil.kDefaultSettingPath);
+            return Utility.GetOrCreateEditorConfigObject<GameBuilderSettingCollection>(GameBuilderUtil.s_DefaultSettingPath);
         }
     }
 }

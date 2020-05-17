@@ -1,5 +1,5 @@
 {
-    "name": "Framework.GameBuilder",
+    "name": "Framework.AssetManagement.GameBuilder",
     "references": [
         "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
     ],
