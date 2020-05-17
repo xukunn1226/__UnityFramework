@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Framework.Core;
+using Framework.Core.Editor;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -52,8 +53,8 @@ namespace Framework.AssetManagement.GameBuilder
             gameSetting.playerSetting = playerSetting;
             m_settings.Add(gameSetting);
 
-            EditorUtility.SetDirty(gameSetting);
-            EditorUtility.SetDirty(this);
+            UnityEditor.EditorUtility.SetDirty(gameSetting);
+            UnityEditor.EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
 
@@ -74,7 +75,7 @@ namespace Framework.AssetManagement.GameBuilder
             AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(gameSetting));
             m_settings.Remove(gameSetting);
 
-            EditorUtility.SetDirty(this);
+            UnityEditor.EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssets();
         }
 
@@ -94,7 +95,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             pendingRenameSetting.displayName = newName;
 
-            EditorUtility.SetDirty(pendingRenameSetting);
+            UnityEditor.EditorUtility.SetDirty(pendingRenameSetting);
             AssetDatabase.SaveAssets();
             return true;
         }
@@ -130,7 +131,7 @@ namespace Framework.AssetManagement.GameBuilder
 
         static public GameBuilderSettingCollection GetDefault()
         {
-            return Utility.GetOrCreateEditorConfigObject<GameBuilderSettingCollection>(GameBuilderUtil.s_DefaultSettingPath);
+            return Core.Editor.EditorUtility.GetOrCreateEditorConfigObject<GameBuilderSettingCollection>(GameBuilderUtil.s_DefaultSettingPath);
         }
     }
 }

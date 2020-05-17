@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using System;
 
-namespace Tests
+namespace Framework.Core.Tests
 {
     enum KeyEnum
     {

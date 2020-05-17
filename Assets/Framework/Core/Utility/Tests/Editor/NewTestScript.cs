@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using System.Linq;
 
-namespace Tests
+namespace Framework.Core.Tests
 {
     public class NewTestScript
     {

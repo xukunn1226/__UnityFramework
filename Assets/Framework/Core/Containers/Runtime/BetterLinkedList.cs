@@ -46,13 +46,13 @@ namespace Framework.Core
 
         static private ObjectPool<BetterLinkedListNode> m_Pool;
 
-        static private int k_DefaultNodePoolCapacity = 8;
+        static private int s_DefaultNodePoolCapacity = 8;
 
         static private BetterLinkedListNode Get()
         {
             if(m_Pool == null)
             {
-                m_Pool = new ObjectPool<BetterLinkedListNode>(k_DefaultNodePoolCapacity);
+                m_Pool = new ObjectPool<BetterLinkedListNode>(s_DefaultNodePoolCapacity);
             }
             return (BetterLinkedListNode)m_Pool.Get();
         }

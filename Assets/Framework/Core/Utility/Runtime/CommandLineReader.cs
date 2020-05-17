@@ -12,7 +12,7 @@ namespace Framework.Core
     /// </summary>
     public class CommandLineReader
     {
-        static private Dictionary<string, string> m_kCommandArgsDict;
+        static private Dictionary<string, string> s_CommandArgsDict;
 
         static public string[] GetCommandLineArgs()
         {
@@ -26,7 +26,7 @@ namespace Framework.Core
 
         static public void ParseCommandLine(string[] args)
         {
-            m_kCommandArgsDict = new Dictionary<string, string>();
+            s_CommandArgsDict = new Dictionary<string, string>();
 
             int cmdIndex = 0;
             while (cmdIndex < args.Length)
@@ -54,12 +54,12 @@ namespace Framework.Core
 
         static private void AddCommand(string command, string parameter)
         {
-            if(m_kCommandArgsDict.ContainsKey(command.ToLower()))
+            if(s_CommandArgsDict.ContainsKey(command.ToLower()))
             {
                 Debug.LogWarning($"AddCommand: {command} has already exist, plz check it");
                 return;
             }
-            m_kCommandArgsDict.Add(command.ToLower(), parameter.ToLower());
+            s_CommandArgsDict.Add(command.ToLower(), parameter.ToLower());
         }
 
         /// <summary>
@@ -70,13 +70,13 @@ namespace Framework.Core
         /// <returns>true: 有此命令；false，反之没有</returns>
         static public bool GetCommand(string command, ref string para)
         {
-            if(m_kCommandArgsDict == null)
+            if(s_CommandArgsDict == null)
             {
                 ParseCommandLine();
             }
 
             string value;
-            if(!m_kCommandArgsDict.TryGetValue(command.ToLower(), out value))
+            if(!s_CommandArgsDict.TryGetValue(command.ToLower(), out value))
             {
                 return false;
             }
@@ -90,13 +90,13 @@ namespace Framework.Core
 
         static public bool GetCommand(string command, ref bool para)
         {
-            if (m_kCommandArgsDict == null)
+            if (s_CommandArgsDict == null)
             {
                 ParseCommandLine();
             }
 
             string value;
-            if (!m_kCommandArgsDict.TryGetValue(command.ToLower(), out value))
+            if (!s_CommandArgsDict.TryGetValue(command.ToLower(), out value))
             {
                 return false;
             }

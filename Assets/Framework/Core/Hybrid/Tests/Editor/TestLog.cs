@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Framework.Core;
 
-namespace Tests
+namespace Framework.Core.Tests
 {
     public class TestLog
     {

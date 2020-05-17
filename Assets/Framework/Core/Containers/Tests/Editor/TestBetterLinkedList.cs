@@ -4,9 +4,8 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Framework.Cache;
-using Framework.Core;
 
-namespace Tests
+namespace Framework.Core.Tests
 {
     public class Foo
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tests
+namespace Framework.Core.Tests
 {
     public class IEnumerableTest : MonoBehaviour
     {

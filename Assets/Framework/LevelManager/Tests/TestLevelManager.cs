@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using Framework.LevelManager;
 
-namespace Tests
+namespace Framework.LevelManager.Tests
 {
     public class TestLevelManager : MonoBehaviour
     {

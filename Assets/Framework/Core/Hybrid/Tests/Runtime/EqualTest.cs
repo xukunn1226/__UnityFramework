@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Tests
+namespace Framework.Core.Tests
 {
     public class EqualTest : MonoBehaviour
     {

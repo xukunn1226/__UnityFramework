@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Tests
+namespace Framework.Core.Tests
 {
     public class JsonNetSample : MonoBehaviour
     {

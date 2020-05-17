@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Framework.Core;
-using System.Threading;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-namespace Tests
+namespace Framework.Core.Tests
 {
     public class DebugRingBuffer : MonoBehaviour
     {
