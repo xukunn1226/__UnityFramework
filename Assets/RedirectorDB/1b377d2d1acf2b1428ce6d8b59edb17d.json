@@ -1,11 +1,11 @@
 {
   "m_RefObjectGUID": "1b377d2d1acf2b1428ce6d8b59edb17d",
-  "m_RefObjectAssetPath": "Assets/GamePlay/Tests/Runtime/Res/TestFX_Root/FX/LRUPool_FX.prefab",
+  "m_RefObjectAssetPath": "Assets/Application/Tests/Runtime/Res/TestFX_Root/FX/LRUPool_FX.prefab",
   "m_UserInfoList": {
     "fe3a668b12d733f4eb0999ec0432a7a2|56452931": {
       "m_UserObjectGUID": "fe3a668b12d733f4eb0999ec0432a7a2",
       "m_FileID": 56452931,
-      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/Res/TestFX_Root/TestLRUFX_Root.unity"
+      "m_UserObjectAssetPath": "Assets/Application/Tests/Runtime/Res/TestFX_Root/TestLRUFX_Root.unity"
     }
   }
 }

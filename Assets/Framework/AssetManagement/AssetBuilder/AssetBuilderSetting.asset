@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f896b7870b8faa240897c0058f4b83de, type: 3}
   m_Name: AssetBuilderSetting
   m_EditorClassIdentifier: 
-  ForceDisplayDialogWhenAssetNameNotMetSpec: 0
+  ForceDisplayDialogWhenAssetNameNotMet: 0
   WhiteListOfPath:
   - Assets/Res/
-  - Assets/GamePlay/Tests/Runtime/Res
+  - Assets/Application/Tests/Runtime/Res
   - Assets/Framework/AssetManagement/Runtime/Tests/Res/
   - Assets/Framework/LevelManager/Tests/Res
   BlackListOfFolder:

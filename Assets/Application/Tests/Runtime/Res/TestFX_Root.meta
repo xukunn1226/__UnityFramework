@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 2023e8439895643448c28476145c44a8
+guid: 18d6a992cce6b9640adf825ca1aedfa2
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
   userData: 
-  assetBundleName: assets/gameplay/tests/runtime/res/testfx_root/fx.ab
+  assetBundleName: assets/application/tests/runtime/res/testfx_root.ab
   assetBundleVariant: 

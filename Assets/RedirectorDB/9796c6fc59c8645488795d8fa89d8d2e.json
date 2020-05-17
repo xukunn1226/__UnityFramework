@@ -1,11 +1,11 @@
 {
   "m_RefObjectGUID": "9796c6fc59c8645488795d8fa89d8d2e",
-  "m_RefObjectAssetPath": "Assets/GamePlay/Tests/Runtime/Res/TestFX_Root/FX/ObjectPool_FX.prefab",
+  "m_RefObjectAssetPath": "Assets/Application/Tests/Runtime/Res/TestFX_Root/FX/ObjectPool_FX.prefab",
   "m_UserInfoList": {
     "c16637535ed5b2d49902196f72a39ba3|56452928": {
       "m_UserObjectGUID": "c16637535ed5b2d49902196f72a39ba3",
       "m_FileID": 56452928,
-      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/Res/TestFX_Root/TestFX_Root.unity"
+      "m_UserObjectAssetPath": "Assets/Application/Tests/Runtime/Res/TestFX_Root/TestFX_Root.unity"
     }
   }
 }

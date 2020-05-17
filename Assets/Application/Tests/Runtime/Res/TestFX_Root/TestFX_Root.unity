@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: 9796c6fc59c8645488795d8fa89d8d2e
-  m_AssetPath: assets/gameplay/tests/runtime/res/testfx_root/fx/objectpool_fx.prefab
+  m_AssetPath: assets/application/tests/runtime/res/testfx_root/fx/objectpool_fx.prefab
   m_UseLRUManage: 0
   m_LRUedPoolAsset: {fileID: 0}
 --- !u!1 &622389204

@@ -161,10 +161,10 @@ MonoBehaviour:
   spawnerPrefab: {fileID: 7126054184081680070, guid: c449fca880be6944d8f6b22d9b825b51,
     type: 3}
   PoolPathList:
-  - assets/gameplay/tests/runtime/res/testspawnerring/cubepool.prefab
-  - assets/gameplay/tests/runtime/res/testspawnerring/spherepool.prefab
-  - assets/gameplay/tests/runtime/res/testspawnerring/crosspool.prefab
-  - assets/gameplay/tests/runtime/res/testspawnerring/caltroppool.prefab
+  - assets/application/tests/runtime/res/testspawnerring/cubepool.prefab
+  - assets/application/tests/runtime/res/testspawnerring/spherepool.prefab
+  - assets/application/tests/runtime/res/testspawnerring/crosspool.prefab
+  - assets/application/tests/runtime/res/testspawnerring/caltroppool.prefab
   PoolList: []
   bPause: 0
 --- !u!4 &218739217

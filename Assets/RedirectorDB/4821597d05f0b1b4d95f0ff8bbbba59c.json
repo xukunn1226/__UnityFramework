@@ -1,11 +1,11 @@
 {
   "m_RefObjectGUID": "4821597d05f0b1b4d95f0ff8bbbba59c",
-  "m_RefObjectAssetPath": "Assets/GamePlay/SoftObject/Tests/SoftReference/Plane1.prefab",
+  "m_RefObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/Plane1.prefab",
   "m_UserInfoList": {
     "bf4dffa650f4fe044997df4b087d1a5a|900641840": {
       "m_UserObjectGUID": "bf4dffa650f4fe044997df4b087d1a5a",
       "m_FileID": 900641840,
-      "m_UserObjectAssetPath": "Assets/GamePlay/SoftObject/Tests/SoftReference/TestSoftReference.unity"
+      "m_UserObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/TestSoftReference.unity"
     }
   }
 }

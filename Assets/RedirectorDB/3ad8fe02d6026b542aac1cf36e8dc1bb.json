@@ -1,11 +1,11 @@
 {
   "m_RefObjectGUID": "3ad8fe02d6026b542aac1cf36e8dc1bb",
-  "m_RefObjectAssetPath": "Assets/GamePlay/Tests/Runtime/Res/TestFX_Root/FX/FX_Artillery_AttackMiss_Desert_LRU3.prefab",
+  "m_RefObjectAssetPath": "Assets/Application/Tests/Runtime/Res/TestFX_Root/FX/FX_Artillery_AttackMiss_Desert_LRU3.prefab",
   "m_UserInfoList": {
     "fe3a668b12d733f4eb0999ec0432a7a2|56452929": {
       "m_UserObjectGUID": "fe3a668b12d733f4eb0999ec0432a7a2",
       "m_FileID": 56452929,
-      "m_UserObjectAssetPath": "Assets/GamePlay/Tests/Runtime/Res/TestFX_Root/TestLRUFX_Root.unity"
+      "m_UserObjectAssetPath": "Assets/Application/Tests/Runtime/Res/TestFX_Root/TestLRUFX_Root.unity"
     }
   }
 }

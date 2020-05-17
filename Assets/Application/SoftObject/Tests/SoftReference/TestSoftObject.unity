@@ -355,4 +355,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: 451f1efb05a611a42a5014cfd98bd7a4
-  m_AssetPath: assets/gameplay/tests/runtime/res/prefabpooledobject/capsulepooledobject.prefab
+  m_AssetPath: assets/application/tests/runtime/res/prefabpooledobject/capsulepooledobject.prefab
+  m_UseLRUManage: 0
+  m_LRUedPoolAsset: {fileID: 0}
