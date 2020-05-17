@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using Framework.Core;
 
-namespace Framework.Core
+namespace Tests
 {
     /// <summary>
     /// 

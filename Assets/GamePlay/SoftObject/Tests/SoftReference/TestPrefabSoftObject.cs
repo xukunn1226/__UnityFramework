@@ -4,76 +4,79 @@ using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using Framework.Core;
 
-public class TestPrefabSoftObject : MonoBehaviour
+namespace Tests
 {
-    public LoaderType type;
-
-    GameObject inst;
-    string info;
-
-    [SoftObject]
-    public SoftObject m_SoftObject;
-
-    private void Awake()
+    public class TestPrefabSoftObject : MonoBehaviour
     {
-        AssetManager.Init(type);
-    }
+        public LoaderType type;
 
-    void OnDestroy()
-    {
-        AssetManager.Uninit();
-    }
+        GameObject inst;
+        string info;
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(100, 100, 200, 80), "Load"))
+        [SoftObject]
+        public SoftObject m_SoftObject;
+
+        private void Awake()
         {
-            //StartTask();
-            StartCoroutine(StartTaskAsync());
+            AssetManager.Init(type);
         }
 
-        if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+        void OnDestroy()
         {
-            EndTask();
+            AssetManager.Uninit();
         }
 
-        if (!string.IsNullOrEmpty(info))
+        private void OnGUI()
         {
-            GUI.Label(new Rect(100, 600, 500, 100), info);
+            if (GUI.Button(new Rect(100, 100, 200, 80), "Load"))
+            {
+                //StartTask();
+                StartCoroutine(StartTaskAsync());
+            }
+
+            if (GUI.Button(new Rect(100, 280, 200, 80), "Unload"))
+            {
+                EndTask();
+            }
+
+            if (!string.IsNullOrEmpty(info))
+            {
+                GUI.Label(new Rect(100, 600, 500, 100), info);
+            }
         }
-    }
 
-    void StartTask()
-    {
-        if (m_SoftObject == null)
-            return;
-
-        inst = m_SoftObject.Instantiate();
-
-        info = inst != null ? "sucess to load: " : "fail to load: ";
-        info += m_SoftObject.assetPath;
-    }
-
-    IEnumerator StartTaskAsync()
-    {
-        if (m_SoftObject == null)
-            yield break;
-
-        yield return m_SoftObject.InstantiateAsync((go) =>
+        void StartTask()
         {
-            inst = go;
-        });
-        info = inst != null ? "sucess to load: " : "fail to load: ";
-        info += m_SoftObject.assetPath;
-    }
+            if (m_SoftObject == null)
+                return;
 
-    void EndTask()
-    {
-        if (inst != null)
-        {
-            m_SoftObject.ReleaseInst(inst);
-            inst = null;
+            inst = m_SoftObject.Instantiate();
+
+            info = inst != null ? "sucess to load: " : "fail to load: ";
+            info += m_SoftObject.assetPath;
         }
-        info = null;
+
+        IEnumerator StartTaskAsync()
+        {
+            if (m_SoftObject == null)
+                yield break;
+
+            yield return m_SoftObject.InstantiateAsync((go) =>
+            {
+                inst = go;
+            });
+            info = inst != null ? "sucess to load: " : "fail to load: ";
+            info += m_SoftObject.assetPath;
+        }
+
+        void EndTask()
+        {
+            if (inst != null)
+            {
+                m_SoftObject.ReleaseInst(inst);
+                inst = null;
+            }
+            info = null;
+        }
     }
 }

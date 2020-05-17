@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Tests
+namespace MeshParticleSystem.Tests
 {
     public class TestMeshParticle : MonoBehaviour
     {
