@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.U2D;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using UnityEngine.SceneManagement;
@@ -44,13 +45,18 @@ public class ResourceManager : MonoBehaviour
         transform.position = Vector3.zero;
         transform.rotation = Quaternion.identity;
         transform.localScale = Vector3.one;
+
+        SpriteAtlasManager.atlasRequested += RequestAtlas;
     }
 
     private void OnDestroy()
     {
-        AssetManager.Uninit();
+        SpriteAtlasManager.atlasRequested -= RequestAtlas;
+
         k_bDynamicLoad = false;
-        Instance = null;        
+        Instance = null;
+
+        AssetManager.Uninit();
     }
 
     static public void Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
@@ -174,5 +180,23 @@ public class ResourceManager : MonoBehaviour
     static public AsyncOperation UnloadSceneAsync(SceneLoaderAsync loader)
     {
         return AssetManager.UnloadSceneAsync(loader);
+    }
+
+    static private Dictionary<string, AssetLoaderAsync<SpriteAtlas>> s_SpriteAtlasDic = new Dictionary<string, AssetLoaderAsync<SpriteAtlas>>();
+
+    void RequestAtlas(string tag, Action<SpriteAtlas> callback)
+    {
+        //Debug.Log($"{string.Format($"{Time.frameCount}   RequestAtlas： {tag}")}");
+
+        //DoLoadSprite(tag, callback);
+
+        StartCoroutine(DoLoadSpriteAsync(tag, callback));
+    }
+
+    private IEnumerator DoLoadSpriteAsync(string tag, Action<SpriteAtlas> callback)
+    {
+        if (s_SpriteAtlasDic.ContainsKey(tag))
+            throw new System.Exception($"Sprite {tag} ");
+        yield return null;
     }
 }
