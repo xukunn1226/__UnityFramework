@@ -1,33 +1,34 @@
-::@echo off
+@echo off
 :LOOP
-    :: ä½¿ç”¨æ–¹å¼ï¼šå°†è„šæœ¬ç›´æ¥æ”¾åˆ°C:\Users\lin\AppData\Roaming\Microsoft\Windows\SendToç›®å½•ä¸‹ï¼Œåç»­å³å¯é€šè¿‡å³é”®ABï¼Œç‚¹å‡»â€œå‘é€åˆ°â€ é€‰æ‹©å¯¹åº”çš„è„šæœ¬
-    rem å‰ææ˜¯å°†ä¸‹æ–¹çš„webExtractPathå’Œbinary2testPathå˜é‡çš„unityè·¯å¾„æ›¿æ¢æˆä½ æœ¬åœ°unityå®‰è£…ç›®å½•
+    :: Ê¹ÓÃ·½Ê½£º½«½Å±¾Ö±½Ó·Åµ½C:\Users\lin\AppData\Roaming\Microsoft\Windows\SendToÄ¿Â¼ÏÂ£¬ºóĞø¼´¿ÉÍ¨¹ıÓÒ¼üAB£¬µã»÷¡°·¢ËÍµ½¡± Ñ¡Ôñ¶ÔÓ¦µÄ½Å±¾
+    rem Ç°ÌáÊÇ½«ÏÂ·½µÄwebExtractPathºÍbinary2testPath±äÁ¿µÄunityÂ·¾¶Ìæ»»³ÉÄã±¾µØunity°²×°Ä¿Â¼
 
     set webExtractPath="D:\Program Files\2019.3.3f1\Editor\Data\Tools\WebExtract.exe"
     set binary2testPath="D:\Program Files\2019.3.3f1\Editor\Data\Tools\binary2text.exe"
-    set filePath=%1
+    set /p filePath="ÇëÊäÈëBundle Path: "
     set transitionFolder=%filePath%_data
-    
+	
     if not exist %webExtractPath% (
-        echo ä¸å­˜åœ¨%webExtractPath%
+        echo ²»´æÔÚ%webExtractPath%
         goto END
     )	
 	
     if not exist %binary2testPath% (
-        echo ä¸å­˜åœ¨%binary2testPath%
+        echo ²»´æÔÚ%binary2testPath%
         goto END
-    )   
+    )
+	
     if %filePath%! == ! (
         goto END
     )
     call %webExtractPath% %filePath%
-    echo ç”Ÿæˆæ–‡æœ¬æ–‡ä»¶
+    echo Éú³ÉÎÄ±¾ÎÄ¼ş
     choice /t 1 /d y
 
     for /f "delims=" %%i in ('dir /b/a-d/s %transitionFolder%\*') do (
         call %binary2testPath% %%i
     )
-    echo å·²ç”Ÿæˆåˆ°åŒç›®å½•%~nx1%_dataä¸‹
+    echo ÒÑÉú³Éµ½Í¬Ä¿Â¼%~nx1%_dataÏÂ
     shift
     goto LOOP
 

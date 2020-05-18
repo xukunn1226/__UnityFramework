@@ -1,6 +1,6 @@
 ::@echo off
 
-goto Test1
+::goto Test1
 
 Setlocal enabledelayedexpansion
 
