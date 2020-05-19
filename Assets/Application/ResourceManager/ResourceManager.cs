@@ -248,7 +248,7 @@ public class ResourceManager : MonoBehaviour
         if (atlasRef.Loader != null)
             throw new System.ArgumentException("atlasRef.Loader != null", "atlasRef.Loader");
 
-        atlasRef.Loader = LoadAssetAsync<SpriteAtlas>(string.Format($"{m_UIAtlasPath}/{atlasName}.spriteatlas"));
+        atlasRef.Loader = LoadAssetAsync<SpriteAtlas>(GetAtlasPath(atlasName));
         yield return atlasRef.Loader;
 
         callback(atlasRef.Loader.asset);
@@ -263,7 +263,7 @@ public class ResourceManager : MonoBehaviour
         if(atlasRef.Loader == null)
             throw new System.ArgumentException("atlasRef.Loader == null", "atlasRef.Loader");
 
-        // 运行时动态加载图集已由GetAtlas完成载入，这里仅callback即可
+        // 运行时动态加载图集已由GetAtlas完成载入，这里仅执行callback
         callback(atlasRef.Loader.asset);
     }
 
@@ -282,13 +282,21 @@ public class ResourceManager : MonoBehaviour
         { // 因为异步原因，atlas可能正在加载
             atlasRef.RefCount += 1;
             atlasRef.UsersList.Add(userTag);
+            return;
         }
-        else
-        {
+
+        if(s_RuntimeAtlasDic.ContainsKey(atlasName))
+        { // 已被加载，不会进入RequestAtlas
             atlasRef = new PersistentSpriteAtlas(atlasName);
             atlasRef.UsersList.Add(userTag);
+            atlasRef.Loader = LoadAssetAsync<SpriteAtlas>(GetAtlasPath(atlasName));
             s_PersistentAtlasDic.Add(atlasName, atlasRef);
+            return;
         }
+
+        atlasRef = new PersistentSpriteAtlas(atlasName);
+        atlasRef.UsersList.Add(userTag);
+        s_PersistentAtlasDic.Add(atlasName, atlasRef);
     }
 
     /// <summary>
@@ -318,6 +326,9 @@ public class ResourceManager : MonoBehaviour
 
     public SpriteAtlas GetAtlas(string atlasName, string userTag)
     {
+        if (string.IsNullOrEmpty(userTag))
+            throw new ArgumentNullException(userTag);
+
         RuntimeSpriteAtlas runtimeAtlas;
         if(s_RuntimeAtlasDic.TryGetValue(atlasName, out runtimeAtlas))
         {
@@ -329,31 +340,40 @@ public class ResourceManager : MonoBehaviour
             return runtimeAtlas.Loader.asset;
         }
 
-        PersistentSpriteAtlas persistentAtlas;
-        if(s_PersistentAtlasDic.TryGetValue(atlasName, out persistentAtlas))
-        { // 说明图集已被加载，不会进入RequestAtlas
-            //if (persistentAtlas.Loader == null)
-            //    throw new ArgumentNullException("persistentAtlas.Loader");      // 异步可能导致尚未加载好，上层避免这种情况
-
-            runtimeAtlas = new RuntimeSpriteAtlas(atlasName);
-            runtimeAtlas.Loader = LoadAsset<SpriteAtlas>(string.Format($"{m_UIAtlasPath}/{atlasName}.spriteatlas"));
-            runtimeAtlas.UsersList.Add(userTag);
-            s_RuntimeAtlasDic.Add(atlasName, runtimeAtlas);
-            return runtimeAtlas.Loader.asset;
+        if(!s_PersistentAtlasDic.ContainsKey(atlasName))
+        { // 图集未被加载，将进入RequestAtlas
+            s_RuntimeAtlasLoading = true;
         }
 
-        // 图集尚未加载，进入RequestAtlas
         runtimeAtlas = new RuntimeSpriteAtlas(atlasName);
-        runtimeAtlas.Loader = LoadAsset<SpriteAtlas>(string.Format($"{m_UIAtlasPath}/{atlasName}.spriteatlas"));
+        runtimeAtlas.Loader = LoadAsset<SpriteAtlas>(GetAtlasPath(atlasName));
         runtimeAtlas.UsersList.Add(userTag);
         s_RuntimeAtlasDic.Add(atlasName, runtimeAtlas);
-        s_RuntimeAtlasLoading = true;
         return runtimeAtlas.Loader.asset;
     }
 
     public void ReleaseAtlas(string atlasName, string userTag)
     {
+        RuntimeSpriteAtlas runtimeAtlas;
+        if (!s_RuntimeAtlasDic.TryGetValue(atlasName, out runtimeAtlas))
+            throw new Exception($"Can't find atlasName [{atlasName}] in s_RuntimeAtlasDic");
 
+        if (runtimeAtlas.Loader == null)
+            throw new System.InvalidOperationException($"{atlasName} can't unload, because it has not been loaded");
+
+        runtimeAtlas.RefCount -= 1;
+        runtimeAtlas.UsersList.Remove(userTag);
+
+        if(runtimeAtlas.RefCount == 0)
+        {
+            UnloadAsset(runtimeAtlas.Loader);
+            s_RuntimeAtlasDic.Remove(atlasName);
+        }
+    }
+
+    private string GetAtlasPath(string atlasName)
+    {
+        return string.Format($"{m_UIAtlasPath}/{atlasName}.spriteatlas");
     }
 }
 
