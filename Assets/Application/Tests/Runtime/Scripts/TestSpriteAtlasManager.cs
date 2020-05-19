@@ -133,18 +133,20 @@ namespace Tests
         {
             if (GUI.Button(new Rect(100, 100, 120, 60), "InstantiateCanvas"))
             {
-                //InstantiateCanvas(1);
-                LoadAtlas(1);
-                LoadAtlas(1);
+                //m_SkipRequest = false;
+                InstantiateCanvas(1);
             }
 
-            //if (GUI.Button(new Rect(100, 200, 120, 60), "InstantiateCanvas2"))
-            //{
-            //    InstantiateCanvas(2);
-            //}
+            if (GUI.Button(new Rect(100, 200, 120, 60), "InstantiateCanvas2"))
+            {
+                //m_SkipRequest = false;
+                InstantiateCanvas(2);
+            }
 
             if (GUI.Button(new Rect(100, 300, 120, 60), "Load Atlas"))
             {
+                //m_SkipRequest = true;
+                //StartCoroutine(LoadAtlasAsync(1));
                 LoadAtlas(1);
             }
 
@@ -161,19 +163,18 @@ namespace Tests
             }
         }
 
+        private bool m_SkipRequest;
+
         void RequestAtlas(string tag, System.Action<SpriteAtlas> callback)
         {
             info = string.Format($"{Time.frameCount}   RequestAtlas： {tag}");
             Debug.Log($"{info}");
 
-            //DoLoadSprite(tag, callback);
+            //if (m_SkipRequest)
+            //    return;
 
-            StartCoroutine(DoLoadSpriteAsync(tag, callback));
-        }
-
-        void AtlasRegistered(SpriteAtlas spriteAtlas)
-        {
-            Debug.LogFormat($"{Time.frameCount}     Registered {spriteAtlas.name}.");
+            DoLoadSprite(tag, callback);
+            //StartCoroutine(DoLoadSpriteAsync(tag, callback));
         }
 
         private void UnloadCanvas(int flag = 1)
@@ -225,10 +226,13 @@ namespace Tests
 
         private void DoLoadSprite(string tag, System.Action<SpriteAtlas> callback)
         {
+            Debug.Log($"DoLoadSprite Begin: {Time.frameCount}");
+
             if (tag == "NewSpriteAtlas1")
             {
                 if(m_AtlasLoader == null)
                     m_AtlasLoader = ResourceManager.LoadAsset<SpriteAtlas>("assets/application/tests/runtime/res/atlas/newspriteatlas1.spriteatlas");
+
                 callback(m_AtlasLoader.asset);
             }
 
@@ -242,7 +246,7 @@ namespace Tests
 
         private IEnumerator DoLoadSpriteAsync(string tag, System.Action<SpriteAtlas> callback)
         {
-            yield return new WaitForSeconds(3);
+            Debug.Log($"DoLoadSpriteAsync Begin: {Time.frameCount}");
 
             if (tag == "NewSpriteAtlas1")
             {
@@ -251,6 +255,7 @@ namespace Tests
                     m_AtlasLoaderAsync = ResourceManager.LoadAssetAsync<SpriteAtlas>("assets/application/tests/runtime/res/atlas/newspriteatlas1.spriteatlas");
                     yield return m_AtlasLoaderAsync;
                 }
+                yield return new WaitForSeconds(2);
                 callback(m_AtlasLoaderAsync.asset);
             }
 
@@ -264,7 +269,7 @@ namespace Tests
                 callback(m_AtlasLoaderAsync2.asset);
             }
 
-            Debug.Log("DoLoadSpriteAsync Done.");
+            Debug.Log($"DoLoadSpriteAsync Done.     {Time.frameCount}");
         }
 
         private void InstantiateCanvas(int flag = 1)
@@ -283,6 +288,22 @@ namespace Tests
                 m_AtlasLoader = ResourceManager.LoadAsset<SpriteAtlas>("assets/application/tests/runtime/res/atlas/newspriteatlas1.spriteatlas");
             else if(flag == 2)
                 m_AtlasLoader2 = ResourceManager.LoadAsset<SpriteAtlas>("assets/application/tests/runtime/res/atlas2/newspriteatlas2.spriteatlas");
+        }
+
+        private IEnumerator LoadAtlasAsync(int flag = 1)
+        {
+            Debug.Log($"LoadAtlasAsync        {Time.frameCount}   flag: {flag}");
+            if (flag == 1)
+            {
+                //AssetLoaderAsync<SpriteAtlas> loader;
+                m_AtlasLoaderAsync = ResourceManager.LoadAssetAsync<SpriteAtlas>("assets/application/tests/runtime/res/atlas/newspriteatlas1.spriteatlas");
+                yield return m_AtlasLoaderAsync;
+            }
+            else if (flag == 2)
+            {
+                m_AtlasLoaderAsync2 = ResourceManager.LoadAssetAsync<SpriteAtlas>("assets/application/tests/runtime/res/atlas2/newspriteatlas2.spriteatlas");
+                yield return m_AtlasLoaderAsync2;
+            }
         }
     }
 }

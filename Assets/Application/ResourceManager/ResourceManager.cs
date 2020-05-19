@@ -20,6 +20,9 @@ public class ResourceManager : MonoBehaviour
 
     static private bool             k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
 
+    [SerializeField]
+    private string                  m_UIAtlasPath       = "res/ui/atlases";
+
     private void Awake()
     {
         // 已有ResourceManager，则自毁
@@ -182,21 +185,177 @@ public class ResourceManager : MonoBehaviour
         return AssetManager.UnloadSceneAsync(loader);
     }
 
-    static private Dictionary<string, AssetLoaderAsync<SpriteAtlas>> s_SpriteAtlasDic = new Dictionary<string, AssetLoaderAsync<SpriteAtlas>>();
-
-    void RequestAtlas(string tag, Action<SpriteAtlas> callback)
+    class PersistentSpriteAtlas
     {
-        //Debug.Log($"{string.Format($"{Time.frameCount}   RequestAtlas： {tag}")}");
+        public string                           AtlasName;
+        public int                              RefCount;
+        public AssetLoaderAsync<SpriteAtlas>    Loader;
+        public List<string>                     UsersList = new List<string>();
 
-        //DoLoadSprite(tag, callback);
+        protected PersistentSpriteAtlas() { }
 
-        StartCoroutine(DoLoadSpriteAsync(tag, callback));
+        public PersistentSpriteAtlas(string atlasName)
+        {
+            AtlasName = atlasName;
+            RefCount = 1;
+            Loader = null;
+        }
+    }
+    static private Dictionary<string, PersistentSpriteAtlas> s_PersistentAtlasDic = new Dictionary<string, PersistentSpriteAtlas>();
+    
+    class RuntimeSpriteAtlas
+    {
+        public string                           AtlasName;
+        public int                              RefCount;
+        public AssetLoader<SpriteAtlas>         Loader;
+        public List<string>                     UsersList = new List<string>();
+
+        protected RuntimeSpriteAtlas() { }
+
+        public RuntimeSpriteAtlas(string atlasName)
+        {
+            AtlasName = atlasName;
+            RefCount = 1;
+            Loader = null;
+        }
+    }
+    static private bool s_RuntimeAtlasLoading;
+    static private Dictionary<string, RuntimeSpriteAtlas> s_RuntimeAtlasDic = new Dictionary<string, RuntimeSpriteAtlas>();
+
+
+    // Atlas没在内存中将触发request
+    void RequestAtlas(string atlasName, Action<SpriteAtlas> callback)
+    {
+        Debug.Log($"{string.Format($"ResourceManager        {Time.frameCount}   RequestAtlas： {tag}")}");
+
+        if (s_RuntimeAtlasLoading)
+        {
+            DoLoadRuntimeSpriteAtlas(atlasName, callback);
+            s_RuntimeAtlasLoading = false;
+        }
+        else
+        {
+            StartCoroutine(DoLoadPersistentSpriteAtlasAsync(atlasName, callback));
+        }
     }
 
-    private IEnumerator DoLoadSpriteAsync(string tag, Action<SpriteAtlas> callback)
+    private IEnumerator DoLoadPersistentSpriteAtlasAsync(string atlasName, Action<SpriteAtlas> callback)
     {
-        if (s_SpriteAtlasDic.ContainsKey(tag))
-            throw new System.Exception($"Sprite {tag} ");
-        yield return null;
+        PersistentSpriteAtlas atlasRef;
+        if (!s_PersistentAtlasDic.TryGetValue(atlasName, out atlasRef))
+            throw new System.Exception($"AtlasRef[{atlasName}] not allocated, plz call RegisterPersistentAtlas or GetAtlas");
+
+        if (atlasRef.Loader != null)
+            throw new System.ArgumentException("atlasRef.Loader != null", "atlasRef.Loader");
+
+        atlasRef.Loader = LoadAssetAsync<SpriteAtlas>(string.Format($"{m_UIAtlasPath}/{atlasName}.spriteatlas"));
+        yield return atlasRef.Loader;
+
+        callback(atlasRef.Loader.asset);
+    }
+
+    private void DoLoadRuntimeSpriteAtlas(string atlasName, Action<SpriteAtlas> callback)
+    {
+        RuntimeSpriteAtlas atlasRef;
+        if (!s_RuntimeAtlasDic.TryGetValue(atlasName, out atlasRef))
+            throw new System.Exception($"AtlasRef[{atlasName}] not allocated, plz call RegisterPersistentAtlas or GetAtlas");
+
+        if(atlasRef.Loader == null)
+            throw new System.ArgumentException("atlasRef.Loader == null", "atlasRef.Loader");
+
+        // 运行时动态加载图集已由GetAtlas完成载入，这里仅callback即可
+        callback(atlasRef.Loader.asset);
+    }
+
+    /// <summary>
+    /// register persistent atlas
+    /// WARNING: 务必在Awake中调用
+    /// </summary>
+    /// <param name="atlasName"></param>
+    public void RegisterPersistentAtlas(string atlasName, string userTag)
+    {
+        if (string.IsNullOrEmpty(userTag))
+            throw new ArgumentNullException(userTag);
+
+        PersistentSpriteAtlas atlasRef;
+        if(s_PersistentAtlasDic.TryGetValue(atlasName, out atlasRef))
+        { // 因为异步原因，atlas可能正在加载
+            atlasRef.RefCount += 1;
+            atlasRef.UsersList.Add(userTag);
+        }
+        else
+        {
+            atlasRef = new PersistentSpriteAtlas(atlasName);
+            atlasRef.UsersList.Add(userTag);
+            s_PersistentAtlasDic.Add(atlasName, atlasRef);
+        }
+    }
+
+    /// <summary>
+    /// unregister persistent atlas
+    /// WARNING: 务必在OnDestroy中调用
+    /// </summary>
+    /// <param name="atlasName"></param>
+    public void UnregisterPersistentAtlas(string atlasName, string userTag)
+    {
+        PersistentSpriteAtlas atlasRef;
+        if (!s_PersistentAtlasDic.TryGetValue(atlasName, out atlasRef))
+            throw new System.InvalidOperationException($"{atlasName} has already unloaded, userTag: {userTag}");
+
+        // 因为异步原因，极端情况下可能卸载尚未加载好的atlas，避免这样的调用
+        if (atlasRef.Loader == null)
+            throw new System.InvalidOperationException($"{atlasName} can't unload, because it has not been loaded");
+
+        atlasRef.RefCount -= 1;
+        atlasRef.UsersList.Remove(userTag);
+
+        if(atlasRef.RefCount == 0)
+        {
+            UnloadAsset(atlasRef.Loader);
+            s_PersistentAtlasDic.Remove(atlasName);
+        }
+    }
+
+    public SpriteAtlas GetAtlas(string atlasName, string userTag)
+    {
+        RuntimeSpriteAtlas runtimeAtlas;
+        if(s_RuntimeAtlasDic.TryGetValue(atlasName, out runtimeAtlas))
+        {
+            if (runtimeAtlas.Loader == null)
+                throw new ArgumentNullException("runtimeAtlas.Loader");
+
+            runtimeAtlas.RefCount += 1;
+            runtimeAtlas.UsersList.Add(userTag);
+            return runtimeAtlas.Loader.asset;
+        }
+
+        PersistentSpriteAtlas persistentAtlas;
+        if(s_PersistentAtlasDic.TryGetValue(atlasName, out persistentAtlas))
+        { // 说明图集已被加载，不会进入RequestAtlas
+            //if (persistentAtlas.Loader == null)
+            //    throw new ArgumentNullException("persistentAtlas.Loader");      // 异步可能导致尚未加载好，上层避免这种情况
+
+            runtimeAtlas = new RuntimeSpriteAtlas(atlasName);
+            runtimeAtlas.Loader = LoadAsset<SpriteAtlas>(string.Format($"{m_UIAtlasPath}/{atlasName}.spriteatlas"));
+            runtimeAtlas.UsersList.Add(userTag);
+            s_RuntimeAtlasDic.Add(atlasName, runtimeAtlas);
+            return runtimeAtlas.Loader.asset;
+        }
+
+        // 图集尚未加载，进入RequestAtlas
+        runtimeAtlas = new RuntimeSpriteAtlas(atlasName);
+        runtimeAtlas.Loader = LoadAsset<SpriteAtlas>(string.Format($"{m_UIAtlasPath}/{atlasName}.spriteatlas"));
+        runtimeAtlas.UsersList.Add(userTag);
+        s_RuntimeAtlasDic.Add(atlasName, runtimeAtlas);
+        s_RuntimeAtlasLoading = true;
+        return runtimeAtlas.Loader.asset;
+    }
+
+    public void ReleaseAtlas(string atlasName, string userTag)
+    {
+
     }
 }
+
+// test case
+// 实例化UIPrefab（依赖AtlasA），在其Awake中调用GetAtlas加载AtlasA
