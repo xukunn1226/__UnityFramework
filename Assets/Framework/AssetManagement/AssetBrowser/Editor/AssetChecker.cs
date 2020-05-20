@@ -21,13 +21,32 @@ namespace Framework.AssetManagement.AssetBrowser
             string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
             string assetBundleName = AssetDatabase.GetImplicitAssetBundleName(assetPath);
 
-            string[] dependencies = AssetBrowserUtil.GetAllAssetBundleDependencies(assetBundleName);
+            string[] dependencies = AssetBrowserUtil.GetAllAssetBundleDependencies(assetBundleName, true);
             if(dependencies == null)
             {
                 return;
             }
 
             Debug.LogFormat("Display All Dependencies of AssetBundle: [{0}]    count:[{1}]", assetBundleName, dependencies.Length);
+            foreach (string dependency in dependencies)
+            {
+                Debug.LogFormat("---- AssetBundle Dependencies: {0}", dependency);
+            }
+        }
+
+        [MenuItem("Assets/AssetBrowser/Display Direct AssetBundle Dependencies", false, 30)]
+        public static void MenuItem_GetDirectAssetBundleDependencies()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
+            string assetBundleName = AssetDatabase.GetImplicitAssetBundleName(assetPath);
+
+            string[] dependencies = AssetBrowserUtil.GetAllAssetBundleDependencies(assetBundleName, false);
+            if (dependencies == null)
+            {
+                return;
+            }
+
+            Debug.LogFormat("Display Direct Dependencies of AssetBundle: [{0}]    count:[{1}]", assetBundleName, dependencies.Length);
             foreach (string dependency in dependencies)
             {
                 Debug.LogFormat("---- AssetBundle Dependencies: {0}", dependency);

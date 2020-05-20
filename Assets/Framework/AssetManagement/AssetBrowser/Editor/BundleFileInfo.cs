@@ -162,7 +162,7 @@ namespace Framework.AssetManagement.AssetBrowser
                 bundleFileInfo.guid = AssetDatabase.AssetPathToGUID(nameWithoutExtensionAndLastSlash);
                 bundleFileInfo.assetBundleName = (i == pathList.Length - 1 ? nameWithoutLastSlash : null);
                 bundleFileInfo.size = GetTotalSize(bundleFileInfo.assetBundleName);
-                bundleFileInfo.dependentOnBundleList = string.IsNullOrEmpty(bundleFileInfo.assetBundleName) ? new string[0] : AssetBrowserUtil.GetAllAssetBundleDependencies(bundleFileInfo.assetBundleName);
+                bundleFileInfo.dependentOnBundleList = string.IsNullOrEmpty(bundleFileInfo.assetBundleName) ? new string[0] : AssetBrowserUtil.GetAllAssetBundleDependencies(bundleFileInfo.assetBundleName, true);
                 ParseAllAssets(ref bundleFileInfo);
 
                 //Debug.Log($"{bundleFileInfo.depth}  {bundleFileInfo.hashName}");

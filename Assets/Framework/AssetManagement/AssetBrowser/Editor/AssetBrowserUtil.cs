@@ -14,9 +14,9 @@ namespace Framework.AssetManagement.AssetBrowser
         /// </summary>
         /// <param name="assetPath"></param>
         /// <returns></returns>
-        static public string[] GetAllAssetBundleDependencies(string assetBundleName)
+        static public string[] GetAllAssetBundleDependencies(string assetBundleName, bool recursive)
         {
-            return AssetDatabase.GetAssetBundleDependencies(assetBundleName, true);
+            return AssetDatabase.GetAssetBundleDependencies(assetBundleName, recursive);
         }
 
         /// <summary>
