@@ -239,7 +239,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    private IEnumerator DoLoadPersistentSpriteAtlasAsync(string atlasName, Action<SpriteAtlas> callback)
+    static private IEnumerator DoLoadPersistentSpriteAtlasAsync(string atlasName, Action<SpriteAtlas> callback)
     {
         PersistentSpriteAtlas atlasRef;
         if (!s_PersistentAtlasDic.TryGetValue(atlasName, out atlasRef))
@@ -254,7 +254,7 @@ public class ResourceManager : MonoBehaviour
         callback(atlasRef.Loader.asset);
     }
 
-    private void DoLoadRuntimeSpriteAtlas(string atlasName, Action<SpriteAtlas> callback)
+    static private void DoLoadRuntimeSpriteAtlas(string atlasName, Action<SpriteAtlas> callback)
     {
         RuntimeSpriteAtlas atlasRef;
         if (!s_RuntimeAtlasDic.TryGetValue(atlasName, out atlasRef))
@@ -272,7 +272,7 @@ public class ResourceManager : MonoBehaviour
     /// WARNING: 务必在Awake中调用
     /// </summary>
     /// <param name="atlasName"></param>
-    public void RegisterPersistentAtlas(string atlasName, string userTag)
+    static public void RegisterPersistentAtlas(string atlasName, string userTag)
     {
         if (string.IsNullOrEmpty(userTag))
             throw new ArgumentNullException(userTag);
@@ -304,7 +304,7 @@ public class ResourceManager : MonoBehaviour
     /// WARNING: 务必在OnDestroy中调用
     /// </summary>
     /// <param name="atlasName"></param>
-    public void UnregisterPersistentAtlas(string atlasName, string userTag)
+    static public void UnregisterPersistentAtlas(string atlasName, string userTag)
     {
         PersistentSpriteAtlas atlasRef;
         if (!s_PersistentAtlasDic.TryGetValue(atlasName, out atlasRef))
@@ -324,7 +324,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    public SpriteAtlas GetAtlas(string atlasName, string userTag)
+    static public SpriteAtlas GetAtlas(string atlasName, string userTag)
     {
         if (string.IsNullOrEmpty(userTag))
             throw new ArgumentNullException(userTag);
@@ -352,7 +352,7 @@ public class ResourceManager : MonoBehaviour
         return runtimeAtlas.Loader.asset;
     }
 
-    public void ReleaseAtlas(string atlasName, string userTag)
+    static public void ReleaseAtlas(string atlasName, string userTag)
     {
         RuntimeSpriteAtlas runtimeAtlas;
         if (!s_RuntimeAtlasDic.TryGetValue(atlasName, out runtimeAtlas))
@@ -371,9 +371,9 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    private string GetAtlasPath(string atlasName)
+    static private string GetAtlasPath(string atlasName)
     {
-        return string.Format($"{m_UIAtlasPath}/{atlasName}.spriteatlas");
+        return string.Format($"{Instance.m_UIAtlasPath}/{atlasName}.spriteatlas");
     }
 }
 
