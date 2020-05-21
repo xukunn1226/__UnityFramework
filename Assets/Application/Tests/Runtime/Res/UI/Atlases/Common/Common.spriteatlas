@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: 0.Common
+  m_Name: Common
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -31,12 +31,12 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 905a4c4f42710314a8ee0efcb63e9821, type: 3}
-    totalSpriteSurfaceArea: 16384
-    bindAsDefault: 0
+    totalSpriteSurfaceArea: 49152
+    bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: c40ce192eff355044b99ed5c379175ec, type: 3}
   m_PackedSpriteNamesToIndex:
   - Icon1
-  m_Tag: 0.Common
+  m_Tag: Common
   m_IsVariant: 0

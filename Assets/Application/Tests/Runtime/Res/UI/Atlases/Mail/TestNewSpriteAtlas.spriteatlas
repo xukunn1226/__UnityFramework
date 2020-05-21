@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: 1.Bag
+  m_Name: TestNewSpriteAtlas
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -30,13 +30,13 @@ SpriteAtlas:
       enableTightPacking: 1
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: e0bced8f9ed1828468393d9cc5e609f4, type: 3}
+    - {fileID: 2800000, guid: 8bece56970b188846905ccc778220f06, type: 3}
     totalSpriteSurfaceArea: 16384
-    bindAsDefault: 0
+    bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 1cc9b39c4a81c794795edd63a13b2b43, type: 3}
+  - {fileID: 21300000, guid: 8bece56970b188846905ccc778220f06, type: 3}
   m_PackedSpriteNamesToIndex:
   - Icon2
-  m_Tag: 1.Bag
+  m_Tag: TestNewSpriteAtlas
   m_IsVariant: 0
