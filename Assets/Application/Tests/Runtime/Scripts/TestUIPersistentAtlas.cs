@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 namespace Tests
 {
@@ -8,17 +9,26 @@ namespace Tests
     {
         public List<string> m_SpriteAtlases;
 
-        private void OnEnable()
+        private void Awake()
         {
-            foreach(var atlasName in m_SpriteAtlases)
+            ResourceManager.GetAtlas("1.Bag", "sdsdf");
+            foreach (var atlasName in m_SpriteAtlases)
             {
                 ResourceManager.RegisterPersistentAtlas(atlasName, gameObject.name);
-            }
+            }            
         }
 
-        private void OnDisable()
+        private IEnumerator Start()
         {
-            foreach(var atlasName in m_SpriteAtlases)
+            yield return null;
+
+            //ResourceManager.GetAtlas("1.Bag", "sdsdf");
+        }
+
+        private void OnDestroy()
+        {
+            ResourceManager.ReleaseAtlas("1.Bag", "sdsdf");
+            foreach (var atlasName in m_SpriteAtlases)
             {
                 ResourceManager.UnregisterPersistentAtlas(atlasName, gameObject.name);
             }

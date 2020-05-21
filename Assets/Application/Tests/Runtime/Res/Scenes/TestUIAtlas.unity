@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -199,7 +199,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848194690}
   m_LocalRotation: {x: -0.15810162, y: 0.38733238, z: -0.06760906, w: -0.90576303}
-  m_LocalPosition: {x: 15.874116, y: -16.925817, z: -15.166391}
+  m_LocalPosition: {x: 16.588451, y: -16.57008, z: -15.84888}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -247,7 +247,6 @@ GameObject:
   - component: {fileID: 929807798}
   - component: {fileID: 929807799}
   - component: {fileID: 929807801}
-  - component: {fileID: 929807800}
   m_Layer: 0
   m_Name: Start
   m_TagString: Untagged
@@ -283,23 +282,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Type: 1
   m_SoftObject: {fileID: 929807801}
-  m_SoftObject2: {fileID: 929807800}
---- !u!114 &929807800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 929807797}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_GUID: 0087c1a625e30c7499ec2ce653f207a5
-  m_AssetPath: assets/application/tests/runtime/res/ui/prefabs/canvas3.prefab
-  m_UseLRUManage: 0
-  m_LRUedPoolAsset: {fileID: 0}
 --- !u!114 &929807801
 MonoBehaviour:
   m_ObjectHideFlags: 0

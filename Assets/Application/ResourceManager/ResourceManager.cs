@@ -191,6 +191,7 @@ public class ResourceManager : MonoBehaviour
         public int                              RefCount;
         public AssetLoaderAsync<SpriteAtlas>    Loader;
         public List<string>                     UsersList = new List<string>();
+        public bool                             PendingRequest;
 
         protected PersistentSpriteAtlas() { }
 
@@ -209,6 +210,7 @@ public class ResourceManager : MonoBehaviour
         public int                              RefCount;
         public AssetLoader<SpriteAtlas>         Loader;
         public List<string>                     UsersList = new List<string>();
+        public bool                             PendingRequest;
 
         protected RuntimeSpriteAtlas() { }
 
@@ -219,61 +221,76 @@ public class ResourceManager : MonoBehaviour
             Loader = null;
         }
     }
-    static private bool s_RuntimeAtlasLoading;
     static private Dictionary<string, RuntimeSpriteAtlas> s_RuntimeAtlasDic = new Dictionary<string, RuntimeSpriteAtlas>();
+    static private bool m_DoCallback;
 
 
     // Atlas没在内存中将触发request
     void RequestAtlas(string atlasName, Action<SpriteAtlas> callback)
     {
-        Debug.Log($"{string.Format($"ResourceManager        {Time.frameCount}   RequestAtlas： {tag}")}");
+        Debug.LogError($"{string.Format($"ResourceManager        {Time.frameCount}   RequestAtlas： {atlasName}")}");
 
-        if (s_RuntimeAtlasLoading)
-        {
-            DoLoadRuntimeSpriteAtlas(atlasName, callback);
-            s_RuntimeAtlasLoading = false;
-        }
-        else
+        m_DoCallback = false;
+
+        // 图集加载请求必定来自于runtime或persistent
+        DoLoadRuntimeSpriteAtlas(atlasName, callback);
+        if(!m_DoCallback)
         {
             StartCoroutine(DoLoadPersistentSpriteAtlasAsync(atlasName, callback));
         }
+
+        if (!m_DoCallback)
+            throw new InvalidOperationException("PersistentAtlas and RuntimeAtlas have no PendingRequest, there are something wrong");
     }
 
     static private IEnumerator DoLoadPersistentSpriteAtlasAsync(string atlasName, Action<SpriteAtlas> callback)
     {
         PersistentSpriteAtlas atlasRef;
-        if (!s_PersistentAtlasDic.TryGetValue(atlasName, out atlasRef))
-            throw new System.Exception($"AtlasRef[{atlasName}] not allocated, plz call RegisterPersistentAtlas or GetAtlas");
+        if (!s_PersistentAtlasDic.TryGetValue(atlasName, out atlasRef))             // 查找不到属正常情况，待载入图集请求可能在s_RuntimeAtlasDic
+            yield break;
 
-        if (atlasRef.Loader != null)
+        if (atlasRef.Loader == null)
             throw new System.ArgumentException("atlasRef.Loader != null", "atlasRef.Loader");
 
-        atlasRef.Loader = LoadAssetAsync<SpriteAtlas>(GetAtlasPath(atlasName));
-        yield return atlasRef.Loader;
+        if (atlasRef.PendingRequest)
+        {
+            m_DoCallback = true;
+            yield return atlasRef.Loader;
 
-        callback(atlasRef.Loader.asset);
+            callback(atlasRef.Loader.asset);
+        }
     }
 
     static private void DoLoadRuntimeSpriteAtlas(string atlasName, Action<SpriteAtlas> callback)
     {
         RuntimeSpriteAtlas atlasRef;
-        if (!s_RuntimeAtlasDic.TryGetValue(atlasName, out atlasRef))
-            throw new System.Exception($"AtlasRef[{atlasName}] not allocated, plz call RegisterPersistentAtlas or GetAtlas");
-
+        if (!s_RuntimeAtlasDic.TryGetValue(atlasName, out atlasRef))                // 查找不到属正常情况，待载入图集请求可能在s_PersistentAtlasDic
+            return;
+            
         if(atlasRef.Loader == null)
             throw new System.ArgumentException("atlasRef.Loader == null", "atlasRef.Loader");
 
-        // 运行时动态加载图集已由GetAtlas完成载入，这里仅执行callback
-        callback(atlasRef.Loader.asset);
+        if (atlasRef.Loader.asset == null)
+            throw new System.ArgumentException("atlasRef.Loader.asset == null", "atlasRef.Loader.asset");
+
+        if (atlasRef.PendingRequest)
+        {
+            // 运行时动态加载图集已由GetAtlas完成载入，这里仅执行callback
+            callback(atlasRef.Loader.asset);
+            m_DoCallback = true;
+        }
     }
 
     /// <summary>
     /// register persistent atlas
-    /// WARNING: 务必在Awake中调用
+    /// WARNING: 1、务必在Awake中调用，因为要先于RequestAtlas调用之前记录数据
+    ///          2、不可在OnEnable中调用，原因见UnregisterPersistentAtlas
     /// </summary>
     /// <param name="atlasName"></param>
     static public void RegisterPersistentAtlas(string atlasName, string userTag)
     {
+        //Debug.LogError($"RegisterPersistentAtlas:    {Time.frameCount}       {atlasName}     {userTag}");
+
         if (string.IsNullOrEmpty(userTag))
             throw new ArgumentNullException(userTag);
 
@@ -285,23 +302,16 @@ public class ResourceManager : MonoBehaviour
             return;
         }
 
-        if(s_RuntimeAtlasDic.ContainsKey(atlasName))
-        { // 已被加载，不会进入RequestAtlas
-            atlasRef = new PersistentSpriteAtlas(atlasName);
-            atlasRef.UsersList.Add(userTag);
-            atlasRef.Loader = LoadAssetAsync<SpriteAtlas>(GetAtlasPath(atlasName));
-            s_PersistentAtlasDic.Add(atlasName, atlasRef);
-            return;
-        }
-
         atlasRef = new PersistentSpriteAtlas(atlasName);
         atlasRef.UsersList.Add(userTag);
+        atlasRef.Loader = LoadAssetAsync<SpriteAtlas>(GetAtlasPath(atlasName));
+        atlasRef.PendingRequest = !s_RuntimeAtlasDic.ContainsKey(atlasName);             // 已被RuntimeAtlas记录表示不会进入RequestAtlas
         s_PersistentAtlasDic.Add(atlasName, atlasRef);
     }
 
     /// <summary>
     /// unregister persistent atlas
-    /// WARNING: 务必在OnDestroy中调用
+    /// WARNING: 务必在OnDestroy中调用，不可在OnDisable中调用，因为仅deactive卸载不干净sprite，仍被Image持有，需要持有sprite的对象删除才能清除干净
     /// </summary>
     /// <param name="atlasName"></param>
     static public void UnregisterPersistentAtlas(string atlasName, string userTag)
@@ -310,9 +320,8 @@ public class ResourceManager : MonoBehaviour
         if (!s_PersistentAtlasDic.TryGetValue(atlasName, out atlasRef))
             throw new System.InvalidOperationException($"{atlasName} has already unloaded, userTag: {userTag}");
 
-        // 因为异步原因，极端情况下可能卸载尚未加载好的atlas，避免这样的调用
         if (atlasRef.Loader == null)
-            throw new System.InvalidOperationException($"{atlasName} can't unload, because it has not been loaded");
+            throw new System.ArgumentNullException("atlasRef.Loader");
 
         atlasRef.RefCount -= 1;
         atlasRef.UsersList.Remove(userTag);
@@ -326,6 +335,8 @@ public class ResourceManager : MonoBehaviour
 
     static public SpriteAtlas GetAtlas(string atlasName, string userTag)
     {
+        //Debug.LogError($"{string.Format($"-------------GetAtlas     {Time.frameCount}   ")}");
+
         if (string.IsNullOrEmpty(userTag))
             throw new ArgumentNullException(userTag);
 
@@ -340,14 +351,10 @@ public class ResourceManager : MonoBehaviour
             return runtimeAtlas.Loader.asset;
         }
 
-        if(!s_PersistentAtlasDic.ContainsKey(atlasName))
-        { // 图集未被加载，将进入RequestAtlas
-            s_RuntimeAtlasLoading = true;
-        }
-
         runtimeAtlas = new RuntimeSpriteAtlas(atlasName);
         runtimeAtlas.Loader = LoadAsset<SpriteAtlas>(GetAtlasPath(atlasName));
         runtimeAtlas.UsersList.Add(userTag);
+        runtimeAtlas.PendingRequest = !s_PersistentAtlasDic.ContainsKey(atlasName);             // 已被PersistentAtlas记录表示不会进入RequestAtlas
         s_RuntimeAtlasDic.Add(atlasName, runtimeAtlas);
         return runtimeAtlas.Loader.asset;
     }
@@ -376,6 +383,3 @@ public class ResourceManager : MonoBehaviour
         return string.Format($"{Instance.m_UIAtlasPath}/{atlasName}.spriteatlas");
     }
 }
-
-// test case
-// 实例化UIPrefab（依赖AtlasA），在其Awake中调用GetAtlas加载AtlasA
