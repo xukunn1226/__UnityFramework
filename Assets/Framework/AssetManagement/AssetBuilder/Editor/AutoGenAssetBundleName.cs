@@ -105,6 +105,14 @@ namespace Framework.AssetManagement.AssetBuilder
             {
                 ti.assetBundleName = directory.ToLower() + ".ab";
             }
+
+            // step 4. 处理特殊子文件夹bundle name与父文件夹保持一致的情况
+            //string directoryName = Path.GetDirectoryName(assetPath);
+            string[] folderNames = directory.Split('/');
+
+            //string parentDirctoryName = Path.GetDirectoryName(directory);
+
+            //Path.GetDirectoryName
         }
     }
 }

@@ -41,6 +41,14 @@
 
 * Sprite各个属性含义
 
+* 提供子文件夹的bundle name与父文件夹保持一致的功能
+* 可视化图集引用关系
+* 尝试其他图集管理方法
+1、check ”include in build"
+2、图集和散图均打AB
+3、不需要监听spriteAtlasManager
+4、替换散图AB能热更
+
 
 
 
