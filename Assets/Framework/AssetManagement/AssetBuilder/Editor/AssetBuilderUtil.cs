@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Linq;
 
 namespace Framework.AssetManagement.AssetBuilder
 {
@@ -42,6 +43,11 @@ namespace Framework.AssetManagement.AssetBuilder
                 }
             }
             return false;
+        }
+
+        static internal bool IsSpecialFolderName(string folderName)
+        {
+            return AssetBuilderSetting.GetDefault().BundleNameWithParent.Count( t =>  string.Compare(t, folderName, true) == 0 ) > 0;
         }
 
         // 根据扩展名筛选文件 e.g. ".fbx", ".prefab", ".asset", "*.*"

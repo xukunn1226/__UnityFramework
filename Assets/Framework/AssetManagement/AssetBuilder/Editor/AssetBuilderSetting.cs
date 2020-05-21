@@ -19,6 +19,8 @@ namespace Framework.AssetManagement.AssetBuilder
 
         public string[]         BlackListOfFolder       = new string[] { "Resources", "Scenes", "Scripts", "RawData", "Editor", "StreamingAssets", "Examples", "Temp" };   // 文件夹黑名单
 
+        public string[]         BundleNameWithParent    = new string[] { };
+
 #if UNITY_EDITOR
         [MenuItem("Assets Management/Create AssetBuilder Setting", false, 1)]
         static private void CreateSetting()
@@ -42,12 +44,14 @@ namespace Framework.AssetManagement.AssetBuilder
         SerializedProperty m_ForceDisplayDialogWhenAssetNameNotMetProp;
         SerializedProperty m_WhiteListOfPathProp;
         SerializedProperty m_BlackListOfPathProp;
+        SerializedProperty m_BundleNameWithParentProp;
 
         private void OnEnable()
         {
             m_ForceDisplayDialogWhenAssetNameNotMetProp = serializedObject.FindProperty("ForceDisplayDialogWhenAssetNameNotMet");
             m_WhiteListOfPathProp = serializedObject.FindProperty("WhiteListOfPath");
             m_BlackListOfPathProp = serializedObject.FindProperty("BlackListOfFolder");
+            m_BundleNameWithParentProp = serializedObject.FindProperty("BundleNameWithParent");
         }
 
         public override void OnInspectorGUI()
@@ -82,6 +86,15 @@ namespace Framework.AssetManagement.AssetBuilder
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.HelpBox("在路径白名单之下，且不在文件夹黑名单之内的资源将自动设置AssetBundle Name", MessageType.Info);
+
+                EditorGUILayout.Separator();
+                EditorGUILayout.Separator();
+
+                EditorGUILayout.BeginHorizontal();
+                ++EditorGUI.indentLevel;
+                EditorGUILayout.PropertyField(m_BundleNameWithParentProp, new GUIContent("以下文件夹将保持与父文件夹一致的BundleName"), true);
+                --EditorGUI.indentLevel;
+                EditorGUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
 

@@ -107,12 +107,19 @@ namespace Framework.AssetManagement.AssetBuilder
             }
 
             // step 4. 处理特殊子文件夹bundle name与父文件夹保持一致的情况
-            //string directoryName = Path.GetDirectoryName(assetPath);
             string[] folderNames = directory.Split('/');
+            if (folderNames.Length < 2)
+                return;
 
-            //string parentDirctoryName = Path.GetDirectoryName(directory);
-
-            //Path.GetDirectoryName
+            if (!AssetBuilderUtil.IsSpecialFolderName(folderNames[folderNames.Length - 1]))
+                return;
+            
+            string parentDirectory = directory.Substring(0, directory.LastIndexOf("/"));
+            AssetImporter parentTi = AssetImporter.GetAtPath(parentDirectory);
+            if(parentTi != null)
+            {
+                ti.assetBundleName = parentTi.assetBundleName;
+            }
         }
     }
 }

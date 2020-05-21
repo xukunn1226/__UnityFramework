@@ -26,3 +26,5 @@ MonoBehaviour:
   - Editor
   - StreamingAssets
   - Examples
+  BundleNameWithParent:
+  - SameToParent
