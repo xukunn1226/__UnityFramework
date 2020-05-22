@@ -49,12 +49,12 @@ public class ResourceManager : MonoBehaviour
         transform.rotation = Quaternion.identity;
         transform.localScale = Vector3.one;
 
-        SpriteAtlasManager.atlasRequested += RequestAtlas;
+        //UnityEngine.U2D.SpriteAtlasManager.atlasRequested += RequestAtlas;
     }
 
     private void OnDestroy()
     {
-        SpriteAtlasManager.atlasRequested -= RequestAtlas;
+        //UnityEngine.U2D.SpriteAtlasManager.atlasRequested -= RequestAtlas;
 
         k_bDynamicLoad = false;
         Instance = null;

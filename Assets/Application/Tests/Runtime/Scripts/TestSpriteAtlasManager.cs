@@ -30,12 +30,12 @@ namespace Tests
         }
         void OnEnable()
         {
-            SpriteAtlasManager.atlasRequested += RequestAtlas;
+            UnityEngine.U2D.SpriteAtlasManager.atlasRequested += RequestAtlas;
         }
 
         void OnDisable()
         {
-            SpriteAtlasManager.atlasRequested -= RequestAtlas;
+            UnityEngine.U2D.SpriteAtlasManager.atlasRequested -= RequestAtlas;
         }
 
         // case 1: 通过实例化UI Prefab验证spriteAtlas加载、释放
