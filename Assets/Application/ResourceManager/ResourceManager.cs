@@ -380,6 +380,6 @@ public class ResourceManager : MonoBehaviour
 
     static private string GetAtlasPath(string atlasName)
     {
-        return string.Format($"{Instance.m_UIAtlasPath}/{atlasName}.spriteatlas");
+        return string.Format($"{Instance.m_UIAtlasPath}/{atlasName}/{atlasName}.spriteatlas");
     }
 }
