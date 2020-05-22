@@ -1,7 +1,10 @@
 ﻿* async,await的封装，统一同步、异步加载接口，AsyncTaskMethodBuilder，TaskCompletionSource
 * 研究C#WeakReference的使用
 * 整合BuildReport，https://github.com/Unity-Technologies/BuildReportInspector
-
+* 资源检查工具
+	** 统计Bundle（A）中有哪些资源依赖了其他Bundle（B）中的哪些资源，参考AssetBundle Browser
+	** 显示AssetDatabase.GetDependices和AssetBundleManifest.GetAllDependices的统计数据
+	** 一键清理mat，fbx冗余依赖
 
 
 
