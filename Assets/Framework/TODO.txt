@@ -20,13 +20,13 @@
 	* 提供界面扩展接口
 	* Sprite Atlas流程：SpriteAtlasManager
 	* MVVM，单向、双向数据绑定
+	* 断线重连事件处理
 	* Event是否发生在UI
 	* 支持横竖屏
 	* 支持自定义UI控件位置
 	* 各种UI效果支持（羽化，描边等）
 	* 特效挂载UI流程，资源分离，方便美术预览效果
 	* 多种字体的支持，WGame只支持一种字体大小，且添加其他语种不友好，字体静态生成容易产生冗余，限制策划的使用
-	* Sprite能同时被多个SpriteAtlas引用吗？
 	* ResourceManager添加SpriteAtlas的管理
 	* 如何卸载Atlas？https://github.com/jconstable/SpriteSleeper
 		** 思考：prefab静态使用的散图可以预存为依赖图集，程序动态使用的图集需要用接口来约束
@@ -39,7 +39,8 @@
 
 	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
 
-* Sprite各个属性含义
+* UI Opt
+	https://learn.unity.com/tutorial/optimizing-unity-ui
 
 
 
