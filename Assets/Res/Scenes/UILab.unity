@@ -318,7 +318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EventMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 23
   m_MaxRayIntersections: 0
 --- !u!81 &149533200
 AudioListener:
@@ -1379,8 +1379,6 @@ GameObject:
   m_Component:
   - component: {fileID: 580316941}
   - component: {fileID: 580316940}
-  - component: {fileID: 580316939}
-  - component: {fileID: 580316938}
   - component: {fileID: 580316937}
   - component: {fileID: 580316936}
   m_Layer: 0
@@ -1435,24 +1433,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EventMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 32
   m_MaxRayIntersections: 0
---- !u!81 &580316938
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 580316935}
-  m_Enabled: 1
---- !u!124 &580316939
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 580316935}
-  m_Enabled: 1
 --- !u!20 &580316940
 Camera:
   m_ObjectHideFlags: 0
