@@ -42,15 +42,6 @@
 * UI Opt
 	https://learn.unity.com/tutorial/optimizing-unity-ui
 
-思考：
-* Canvas Render Mode选择Screen Space - Overlay不需要camera
-* 多相机设置：
-	1、 场景相机（主相机）设置Base，渲染除UI外的其他对象
-	2、 GUI相机设置Overlay，负责渲染UI
-	3、 Canvas Render Mode设置为Screen Space - Camera（此时不生效，需要step 4）
-	4、 主相机Stack设置GUI Camera
-
-
 
 
 
