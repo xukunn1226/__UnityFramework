@@ -15,7 +15,7 @@
 	https://www.jianshu.com/p/bf82beb41f7f
 * 配表方案：https://blog.csdn.net/linshuhe1/article/details/52062969
 * 使用反射实现类UE的Config.ini全局数据配置机制
-* UI框架设计：
+* UI框架设计：  UI开发与优化知识Tree(https://blog.uwa4d.com/archives/UWA_UITree.html)
 	* 隐藏所有业务逻辑不需要关心的加载、卸载，界面流转等逻辑
 	* 完整的业务流程
 	* 提供界面扩展接口
@@ -34,8 +34,7 @@
 		** 只要Atlas被注册过，再次被引用到时不会调用RequestAtlas
 		1、彻底卸载atlas ab：AssetBundle.unload（true）
 		2、使用此atlas的gameobject被删除
-
-	* 搭建美术UI制作环境
+	* 搭建美术UI制作环境(特效预览、分辨率适配等)
 	* UIView跳转流程，参照新闻app的用户习惯设计
 
 	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
@@ -43,6 +42,11 @@
 * UI Opt
 	https://learn.unity.com/tutorial/optimizing-unity-ui
 
+* Gesture Extension
+	https://stackoverflow.com/questions/40341191/pinch-and-other-multi-finger-gestures-in-modern-unity3d
+	https://stackoverflow.com/questions/40576493/duplicating-unitys-mystic-interface-power/40576974#40576974
+
+* 嵌套Prefab的使用规范总结
 
 
 
