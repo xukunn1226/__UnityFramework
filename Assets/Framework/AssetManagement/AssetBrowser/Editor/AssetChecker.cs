@@ -196,44 +196,75 @@ namespace Framework.AssetManagement.AssetBrowser
         [MenuItem("Assets/AssetBrowser/Find References(*.prefab, *.unity, *.mat, *.asset)", false, 1)]
         static private void FindReferences()
         {
-            string path = AssetDatabase.GetAssetPath(Selection.activeObject);
-            if (!string.IsNullOrEmpty(path) && !AssetDatabase.IsValidFolder(path))
+            List<string> paths = new List<string>();
+            UnityEngine.Object[] objs = Selection.objects;
+            foreach (UnityEngine.Object obj in objs)
             {
-                string guid = AssetDatabase.AssetPathToGUID(path);
-                string[] withExtensions = new string[] { ".prefab", ".unity", ".mat", ".asset" };
-                string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories)
-                    .Where(s => withExtensions.Contains(Path.GetExtension(s).ToLower())).ToArray();
-                int startIndex = 0;
-
-                EditorApplication.update = delegate ()
+                string path = AssetDatabase.GetAssetPath(obj);
+                if (AssetDatabase.IsValidFolder(path))
                 {
-                    string file = files[startIndex];
-
-                    bool isCancel = EditorUtility.DisplayCancelableProgressBar("匹配资源中", file, (float)startIndex / (float)files.Length);
-
-                    if (Regex.IsMatch(File.ReadAllText(file), guid))
+                    string[] GUIDs = AssetDatabase.FindAssets("", new string[] {path});
+                    foreach(var guid in GUIDs)
                     {
-                        Debug.Log(file, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(GetRelativeAssetsPath(file)));
+                        paths.Add(AssetDatabase.GUIDToAssetPath(guid));
                     }
-
-                    startIndex++;
-                    if (isCancel || startIndex >= files.Length)
-                    {
-                        EditorUtility.ClearProgressBar();
-                        EditorApplication.update = null;
-                        startIndex = 0;
-                        Debug.Log("匹配结束 in (*.prefab, *.unity, *.mat, *.asset)");
-                    }
-                };
+                }
+                else
+                {
+                    paths.Add(path);
+                }
             }
+
+            foreach(var path in paths)
+                DoFindReference(path);            
         }
 
-        [MenuItem("Assets/AssetBrowser/Find References(*.prefab, *.unity, *.mat, *.asset)", true)]
-        static private bool VFindReferences()
+        static private void DoFindReference(string path)
         {
-            string path = AssetDatabase.GetAssetPath(Selection.activeObject);
-            return (!string.IsNullOrEmpty(path) && !AssetDatabase.IsValidFolder(path));
+            if(string.IsNullOrEmpty(path) || AssetDatabase.IsValidFolder(path))
+                return;
+
+            string guid = AssetDatabase.AssetPathToGUID(path);
+            string[] withExtensions = new string[] { ".prefab", ".unity", ".mat", ".asset" };
+            string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories)
+                    .Where(s => withExtensions.Contains(Path.GetExtension(s).ToLower())).ToArray();
+            int startIndex = 0;
+
+            Debug.Log($"Begin to find reference: {path}");
+            int count = 0;
+            EditorApplication.update = delegate ()
+            {
+                string file = files[startIndex];
+
+                bool isCancel = EditorUtility.DisplayCancelableProgressBar("匹配资源中", file, (float)startIndex / (float)files.Length);
+
+                if (Regex.IsMatch(File.ReadAllText(file), guid))
+                {
+                    ++count;
+                    Debug.Log(file, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(GetRelativeAssetsPath(file)));
+                }
+
+                startIndex++;
+                if (isCancel || startIndex >= files.Length)
+                {
+                    EditorUtility.ClearProgressBar();
+                    EditorApplication.update = null;
+                    startIndex = 0;
+
+                    if(count > 1)
+                        Debug.LogWarning($"查找结束 in (*.prefab, *.unity, *.mat, *.asset)      Count: {count}");
+                    else
+                        Debug.Log($"查找结束 in (*.prefab, *.unity, *.mat, *.asset)     Count: {count}");
+                }
+            };
         }
+
+        // [MenuItem("Assets/AssetBrowser/Find References(*.prefab, *.unity, *.mat, *.asset)", true)]
+        // static private bool VFindReferences()
+        // {
+        //     string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+        //     return (!string.IsNullOrEmpty(path) && !AssetDatabase.IsValidFolder(path));
+        // }
 
         static private string GetRelativeAssetsPath(string path)
         {
