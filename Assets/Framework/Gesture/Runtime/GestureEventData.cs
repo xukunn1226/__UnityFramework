@@ -7,8 +7,6 @@ namespace Framework.Gesture.Runtime
 {
     public class GestureEventData
     {
-        private readonly GestureSystem m_GestureSystem;
-
         private PointerEventData m_PointerEventData;
       
         public enum RecognitionState
@@ -46,10 +44,12 @@ namespace Framework.Gesture.Runtime
             get { return m_PrevState; }
         }
 
-        public GestureEventData(GestureSystem gestureSystem, PointerEventData pointerEventData)
+        public GestureEventData(PointerEventData pointerEventData)
         {
-            m_GestureSystem = gestureSystem;
             m_PointerEventData = pointerEventData;
         }
+
+        public GestureEventData()
+        {}
     }
 }

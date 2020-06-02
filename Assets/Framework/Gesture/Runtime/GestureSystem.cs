@@ -6,5 +6,6 @@ namespace Framework.Gesture.Runtime
 {
     public class GestureSystem : MonoBehaviour
     {
+        public int MaxSimultaneousGestures = 2;
     }
 }
