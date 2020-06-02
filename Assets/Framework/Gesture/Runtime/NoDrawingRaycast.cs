@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Framework.UI.Runtime
+namespace Framework.Gesture.Runtime
 {
     public class NoDrawingRaycast : Graphic
     {

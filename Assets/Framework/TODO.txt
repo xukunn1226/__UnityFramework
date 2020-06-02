@@ -46,12 +46,13 @@
 	https://stackoverflow.com/questions/40341191/pinch-and-other-multi-finger-gestures-in-modern-unity3d
 	https://stackoverflow.com/questions/40576493/duplicating-unitys-mystic-interface-power/40576974#40576974
 
-* 嵌套Prefab的使用规范总结
 
 
 
 
 
+
+- 嵌套Prefab的使用规范总结
 - 可视化图集引用关系
 - 尝试其他图集管理方法
 1、check ”include in build"
