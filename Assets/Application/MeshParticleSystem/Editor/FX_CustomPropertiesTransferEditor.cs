@@ -501,6 +501,9 @@ namespace MeshParticleSystem.Editor
                     SerializedProperty startFrameProp = m_CustomTextureSheetProp.FindPropertyRelative("StartFrame");
                     EditorGUILayout.PropertyField(startFrameProp);
 
+                    SerializedProperty endFrameProp = m_CustomTextureSheetProp.FindPropertyRelative("EndFrame");
+                    EditorGUILayout.PropertyField(endFrameProp);
+
                     SerializedProperty frameCountProp = m_CustomTextureSheetProp.FindPropertyRelative("FrameCount");
                     EditorGUILayout.PropertyField(frameCountProp);
 

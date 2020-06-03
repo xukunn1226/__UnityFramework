@@ -255,6 +255,8 @@ namespace MeshParticleSystem
 #endif
             public int              StartFrame;
 
+            public int              EndFrame;
+
 #if UNITY_2019_1_OR_NEWER
             [Min(0)]
 #endif
@@ -262,6 +264,7 @@ namespace MeshParticleSystem
 
             public AnimationCurve   Curve;
 
+            private int             m_StartFrame;
             private int             m_CurFrame;
             private float           m_ElapsedTime;
 
@@ -269,7 +272,8 @@ namespace MeshParticleSystem
 
             public void Init(MaterialPropertyBlock block)
             {
-                m_CurFrame = StartFrame;
+                m_StartFrame = Random.Range(StartFrame, EndFrame);
+                m_CurFrame = m_StartFrame;
                 m_ElapsedTime = 0;
             }
 
@@ -279,11 +283,11 @@ namespace MeshParticleSystem
                 {
                     m_ElapsedTime += deltaTime;
 
-                    m_CurFrame = StartFrame + (int)((Curve.Evaluate(m_ElapsedTime / Duration) - 0.01f) * FrameCount);
+                    m_CurFrame = m_StartFrame + (int)((Curve.Evaluate(m_ElapsedTime / Duration) - 0.01f) * FrameCount);
                 }
                 else
                 {
-                    m_CurFrame = StartFrame;
+                    m_CurFrame = m_StartFrame;
                 }
             }
 

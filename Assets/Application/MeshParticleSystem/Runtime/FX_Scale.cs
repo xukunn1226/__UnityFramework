@@ -13,23 +13,24 @@ namespace MeshParticleSystem
 #endif
         public float            Duration;
 
-        public bool             Addition;
-        public Vector3          Target = Vector3.one;
+        public Vector3          StartSize;
+
+        public Vector3          EndSize1;
+        public Vector3          EndSize2;
+
         public AnimationCurve   Curve = new AnimationCurve(FX_Const.defaultKeyFrames);
 
         private float           m_Delay;
-        private Vector3         m_OriginalLocalScale;
 
-        private void Awake()
-        {
-            RecordInit();
-        }
+        private Vector3         m_EndSize;
 
         protected override void Init()
         {
             base.Init();
 
-            transform.localScale = m_OriginalLocalScale;         // 恢复初始localScale
+            transform.localScale = StartSize;         // 恢复初始localScale
+
+            m_EndSize = EndSize1 + (EndSize2 - EndSize1) * Random.Range(0.001f, 1.0f);
 
             m_Delay = Delay;
         }
@@ -50,20 +51,7 @@ namespace MeshParticleSystem
             }
             float value = Curve.Evaluate(percent);
 
-            if (Addition)
-            {
-                transform.localScale = Vector3.Lerp(m_OriginalLocalScale, m_OriginalLocalScale + Target, value);
-            }
-            else
-            {
-                transform.localScale = Vector3.Lerp(m_OriginalLocalScale, Target, value);
-            }
-        }
-
-        public override void RecordInit()
-        {
-            // 记录初始localScale
-            m_OriginalLocalScale = transform.localScale;
+            transform.localScale = Vector3.Lerp(StartSize, m_EndSize, value);
         }
     }
 }
