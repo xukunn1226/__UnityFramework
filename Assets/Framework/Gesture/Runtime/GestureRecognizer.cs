@@ -13,7 +13,7 @@ namespace Framework.Gesture.Runtime
         public int RequiredPointerCount = 1;
 
         protected T m_EventData;
-
+ 
         public void OnPointerDown(PointerEventData eventData)
         {
             Debug.Log($"-------OnPointerDown");
@@ -26,7 +26,8 @@ namespace Framework.Gesture.Runtime
         {
             Debug.Log($"OnPointerUp------------");
 
-            // m_EventData = null;
+            T data = GetGestureEventData();
+            data.RemovePointerData(eventData);
         }
 
         protected T GetGestureEventData()
