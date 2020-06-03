@@ -7,7 +7,7 @@ namespace Framework.Gesture.Runtime
 {
     public class GestureEventData
     {
-        private PointerEventData m_PointerEventData;
+        protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();
       
         public enum RecognitionState
         {
@@ -44,12 +44,25 @@ namespace Framework.Gesture.Runtime
             get { return m_PrevState; }
         }
 
-        public GestureEventData(PointerEventData pointerEventData)
-        {
-            m_PointerEventData = pointerEventData;
-        }
-
         public GestureEventData()
         {}
+
+        public bool AddPointerData(PointerEventData data)
+        {
+            if(m_PointerData.ContainsKey(data.pointerId))
+                return false;
+
+            m_PointerData.Add(data.pointerId, data);
+            return true;
+        }
+
+        public void RemovePointerData(PointerEventData data)
+        {
+            m_PointerData.Remove(data.pointerId);
+        }
+
+        public int pointerCount { get { return m_PointerData.Count; } }
+
+
     }
 }
