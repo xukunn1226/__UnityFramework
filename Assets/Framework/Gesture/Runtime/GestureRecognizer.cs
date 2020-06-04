@@ -5,38 +5,39 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    public abstract class GestureRecognizer<T> : MonoBehaviour, IPointerDownHandler, IPointerUpHandler where T : GestureEventData, new()
+    public abstract class GestureRecognizer<T> : MonoBehaviour where T : GestureEventData, new()
     {
         public delegate void GestureEventHandler(T eventData);
         public event GestureEventHandler OnGesture;
 
+        public bool ContinuousRecognizeWhenFailed;          // whether or not to recognize gesture when failed
+
         public int RequiredPointerCount = 1;
 
-        protected T m_EventData;
+        protected T m_EventData = new T();
  
-        public void OnPointerDown(PointerEventData eventData)
+        protected void AddPointer(PointerEventData eventData)
         {
             Debug.Log($"-------OnPointerDown");
 
-            T data = GetGestureEventData();
-            data.AddPointerData(eventData);
+            m_EventData.AddPointerData(eventData);
         }
 
-        public void OnPointerUp(PointerEventData eventData)
+        protected void RemovePointer(PointerEventData eventData)
         {
             Debug.Log($"OnPointerUp------------");
 
-            T data = GetGestureEventData();
-            data.RemovePointerData(eventData);
+            m_EventData.RemovePointerData(eventData);
         }
 
-        protected T GetGestureEventData()
+        protected virtual bool CanBegin()
         {
-            if(m_EventData == null)
-            {
-                m_EventData = new T();
-            }
-            return m_EventData;
+            return m_EventData.pointerCount == RequiredPointerCount;
+        }
+
+        private void Update()
+        {
+
         }
     }
 }
