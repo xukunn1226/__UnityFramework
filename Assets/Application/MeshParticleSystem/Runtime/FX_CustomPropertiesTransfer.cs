@@ -25,7 +25,7 @@ namespace MeshParticleSystem
         {
             public int              Id;
             public float            Delay;
-            public float            Duration;
+            public Vector2          Duration;
             public bool             Loop;
 
             public ControlMode      Mode;
@@ -35,10 +35,13 @@ namespace MeshParticleSystem
             public float            m_Delay         { get; private set; }
             public float            m_Duration      { get; private set; }
 
+            private float           m_RealDuration;
+
             public void Init(MaterialPropertyBlock block)
             {
                 m_Delay = Delay;
-                m_Duration = Duration;
+                m_RealDuration = Random.Range(Duration.x, Duration.y);
+                m_Duration = m_RealDuration;
 
                 // 恢复初始值
                 block.SetColor(FX_Const.SerializedIDToPropID[Id], Mode == ControlMode.Constant ? Color : Gradient.Evaluate(0));
@@ -63,8 +66,8 @@ namespace MeshParticleSystem
                     float percent = 1;
                     if (m_Duration >= 0 || Loop)
                     {
-                        m_Duration = (m_Duration < 0 && Loop) ? m_Duration + Duration : m_Duration;
-                        percent = Mathf.Clamp01(1 - (m_Duration / Duration));
+                        m_Duration = (m_Duration < 0 && Loop) ? m_Duration + m_RealDuration : m_Duration;
+                        percent = Mathf.Clamp01(1 - (m_Duration / m_RealDuration));
                     }
                     block.SetColor(FX_Const.SerializedIDToPropID[Id], Gradient.Evaluate(percent));
                 }
