@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6622254154323761560}
   - component: {fileID: 6622254154323761561}
   - component: {fileID: 6622254154323761562}
-  - component: {fileID: 6622254154323761575}
+  - component: {fileID: 8670295788380827560}
   m_Layer: 0
   m_Name: UV
   m_TagString: Untagged
@@ -26,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6622254154323761563}
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 1, z: -0, w: -0.0000001872535}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.050000038, y: 0.05, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180.00002, z: 0}
 --- !u!33 &6622254154323761561
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -80,7 +80,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &6622254154323761575
+--- !u!114 &8670295788380827560
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,36 +92,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0addbbe25e11cf4f88cac46a8e4e4fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CustomPropColorList: []
+  m_Speed: 1
+  m_CustomPropColorList:
+  - Id: 1
+    Delay: 1
+    Duration: {x: 1, y: 2}
+    Loop: 0
+    Mode: 1
+    Color: {r: 0.8784314, g: 0, b: 0, a: 1}
+    Gradient:
+      serializedVersion: 2
+      key0: {r: 0, g: 0, b: 0, a: 0}
+      key1: {r: 0.13381095, g: 0.22935048, b: 0.9150943, a: 1}
+      key2: {r: 0.9056604, g: 0.20932718, b: 0.20932718, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 31611
+      ctime2: 65535
+      ctime3: 65535
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 65535
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 3
+      m_NumAlphaKeys: 2
   m_CustomPropFloatList: []
   m_CustomPropVector4List: []
   m_CustomPropUV:
-    Active: 0
-    Delay: 0
-    Duration: 0
-    Speed: {x: 0, y: 0}
-    StartOffset: {x: 0, y: 0}
-    TileScale: {x: 1, y: 1}
-    Loop: 0
-    LoopReset: 0
-    Curve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  m_CustomPropAtlas:
     Active: 1
+    Delay: 2
+    Tiling: {x: 2, y: 2}
+    Offset: {x: 0.1, y: 0.1}
+    Speed: {x: 1, y: 2}
+    m_AccumulatedSpeed: {x: 4.341461, y: 8.682922}
+  m_CustomPropTextureSheet:
+    Active: 0
+    Duration: 0
     TileX: 1
     TileY: 1
     StartFrame: 0
-    Tiling: {x: 1, y: 1}
-    Offset: {x: 0, y: 0}
-    Speed: {x: 0.2, y: -0.5}
+    EndFrame: 0
+    FrameCount: 0
     Curve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    m_AccumulatedSpeed: {x: 7.668878, y: -5.0691876}
