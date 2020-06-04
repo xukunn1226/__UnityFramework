@@ -10,6 +10,36 @@ namespace Framework.Gesture.Runtime
         public delegate void GestureEventHandler(T eventData);
         public event GestureEventHandler OnGesture;
 
+        public enum RecognitionState
+        {
+            Ready,
+            Started,
+            InProgress,
+            Failed,
+            Ended,
+        }
+
+        private RecognitionState m_CurState = RecognitionState.Ready;
+        private RecognitionState m_PrevState = RecognitionState.Ready;
+
+        public RecognitionState State
+        {
+            get { return m_CurState; }
+            set
+            {
+                if(m_CurState != value)
+                {
+                    m_PrevState = m_CurState;
+                    m_CurState = value;
+                }
+            }
+        }
+
+        public RecognitionState PrevState
+        {
+            get { return m_PrevState; }
+        }
+
         public bool ContinuousRecognizeWhenFailed;          // whether or not to recognize gesture when failed
 
         public int RequiredPointerCount = 1;
@@ -18,16 +48,17 @@ namespace Framework.Gesture.Runtime
  
         protected void AddPointer(PointerEventData eventData)
         {
-            Debug.Log($"-------OnPointerDown");
-
             m_EventData.AddPointerData(eventData);
         }
 
         protected void RemovePointer(PointerEventData eventData)
         {
-            Debug.Log($"OnPointerUp------------");
-
             m_EventData.RemovePointerData(eventData);
+
+            if(m_EventData.pointerCount == 0)
+            {
+                State = RecognitionState.Ready;
+            }
         }
 
         protected virtual bool CanBegin()
@@ -35,9 +66,35 @@ namespace Framework.Gesture.Runtime
             return m_EventData.pointerCount == RequiredPointerCount;
         }
 
+        private void Begin()
+        {
+            OnBegin();
+            State = RecognitionState.Started;
+        }
+
+        protected abstract void OnBegin();
+
+        protected abstract RecognitionState OnProgress();
+
         private void Update()
         {
-
+            switch(State)
+            {
+                case RecognitionState.Ready:
+                    if(CanBegin())
+                        OnBegin();
+                    break;
+                case RecognitionState.Started:
+                    State = RecognitionState.InProgress;
+                    break;
+                case RecognitionState.InProgress:
+                    OnProgress();
+                    break;
+                case RecognitionState.Failed:
+                case RecognitionState.Ended:
+                    
+                    break;
+            }
         }
     }
 }

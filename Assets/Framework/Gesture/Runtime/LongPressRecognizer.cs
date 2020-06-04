@@ -11,6 +11,11 @@ namespace Framework.Gesture.Runtime
 
         public float MoveTolerance = 5.0f;
 
+        protected override void OnBegin()
+        {
+            
+        }
+
         private void Update()
         {
         }
