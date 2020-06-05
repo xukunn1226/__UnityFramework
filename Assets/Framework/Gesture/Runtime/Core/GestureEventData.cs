@@ -9,6 +9,7 @@ namespace Framework.Gesture.Runtime
     {
         protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();
 
+        public Vector2  PressPosition;
         public float    StartTime;
         public float    ElapsedTime     { get { return Time.time - StartTime; } }
 

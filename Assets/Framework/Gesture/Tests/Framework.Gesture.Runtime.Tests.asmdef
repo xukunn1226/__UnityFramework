@@ -1,0 +1,15 @@
+{
+    "name": "Framework.Gesture.Runtime.Tests",
+    "references": [
+        "GUID:bf86db89479a47742b8f4d49d1a39a8a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

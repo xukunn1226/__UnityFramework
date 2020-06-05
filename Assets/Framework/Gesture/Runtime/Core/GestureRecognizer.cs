@@ -7,8 +7,8 @@ namespace Framework.Gesture.Runtime
 {
     public abstract class GestureRecognizer<T> : MonoBehaviour where T : GestureEventData, new()
     {
-        public delegate void GestureEventHandler(T eventData);
-        public event GestureEventHandler OnGesture;
+        // public delegate void GestureEventHandler(T eventData);
+        // public event GestureEventHandler OnGesture;
 
         public enum RecognitionState
         {
@@ -31,6 +31,8 @@ namespace Framework.Gesture.Runtime
                 {
                     m_PrevState = m_CurState;
                     m_CurState = value;
+
+                    OnStateChanged();
                 }
             }
         }
@@ -40,8 +42,7 @@ namespace Framework.Gesture.Runtime
             get { return m_PrevState; }
         }
 
-        public bool ContinuousRecognizeWhenFailed;          // whether or not to recognize gesture when failed
-
+        [Min(1)]
         public int RequiredPointerCount = 1;
 
         protected T m_EventData = new T();
@@ -54,11 +55,11 @@ namespace Framework.Gesture.Runtime
         protected void RemovePointer(PointerEventData eventData)
         {
             m_EventData.RemovePointerData(eventData);
+        }
 
-            if(m_EventData.pointerCount == 0)
-            {
-                State = RecognitionState.Ready;
-            }
+        protected virtual void OnStateChanged()
+        {
+            RaiseEvent();
         }
 
         protected virtual bool CanBegin()
@@ -66,35 +67,13 @@ namespace Framework.Gesture.Runtime
             return m_EventData.pointerCount == RequiredPointerCount;
         }
 
-        private void Begin()
-        {
-            OnBegin();
-            State = RecognitionState.Started;
-        }
-
         protected abstract void OnBegin();
 
         protected abstract RecognitionState OnProgress();
 
-        private void Update()
+        protected void RaiseEvent()
         {
-            switch(State)
-            {
-                case RecognitionState.Ready:
-                    if(CanBegin())
-                        OnBegin();
-                    break;
-                case RecognitionState.Started:
-                    State = RecognitionState.InProgress;
-                    break;
-                case RecognitionState.InProgress:
-                    OnProgress();
-                    break;
-                case RecognitionState.Failed:
-                case RecognitionState.Ended:
-                    
-                    break;
-            }
+            // OnGesture?.Invoke(m_EventData);
         }
     }
 }
