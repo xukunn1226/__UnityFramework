@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.Gesture.Runtime
 {
-    public abstract class DiscreteGestureRecognizer<T> : GestureRecognizer<T> where T : GestureEventData, new()
+    public abstract class DiscreteGestureRecognizer<T, K> : GestureRecognizer<K> where K : GestureEventData, new() where T : IDiscreteGestureHandler<K>
     {
         // life cycle: Ready -> InProgress -> Failed/Ended
         private void Update()

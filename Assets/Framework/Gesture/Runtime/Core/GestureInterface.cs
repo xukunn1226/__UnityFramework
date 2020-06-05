@@ -21,15 +21,12 @@ namespace Framework.Gesture.Runtime
     {
         void OnGestureReady(T eventData);
 
-        void OnGestureProgress(T eventData);
-
         void OnGestureStarted(T eventData);
+
+        void OnGestureProgress(T eventData);
 
         void OnGestureEnded(T eventData);
 
         void OnGestureFailed(T eventData);
     }
-
-    public interface ILongPressHandler<T> : IDiscreteGestureHandler<T> where T : GestureEventData, new()
-    {}
 }

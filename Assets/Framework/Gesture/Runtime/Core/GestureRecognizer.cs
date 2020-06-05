@@ -71,9 +71,6 @@ namespace Framework.Gesture.Runtime
 
         protected abstract RecognitionState OnProgress();
 
-        protected void RaiseEvent()
-        {
-            // OnGesture?.Invoke(m_EventData);
-        }
+        protected abstract void RaiseEvent();
     }
 }

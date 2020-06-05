@@ -7,18 +7,10 @@ namespace Framework.Gesture.Runtime
 {
     static public class GestureEvents
     {
-        public delegate void EventFunction<T>(IDiscreteGestureHandler handler, T eventData);
+        public delegate void DiscreteEventFunction<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new();
+        public delegate void ContinuousEventFunction<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new();
 
-        public static T ValidateEventData<T>(GestureEventData data) where T : class
-        {
-            if ((data as T) == null)
-                throw new ArgumentException(String.Format("Invalid type: {0} passed to event expecting {1}", data.GetType(), typeof(T)));
-            return data as T;
-        }
-
-        private static readonly EventFunctionReady<GestureEventData> s_DiscreteGestureHandler_Ready = ExecuteReady;
-
-        private static void ExecuteReady<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        public static void ExecuteReady<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
             handler?.OnGestureReady(eventData);
         }
@@ -74,7 +66,7 @@ namespace Framework.Gesture.Runtime
 
         private static readonly ObjectPool<List<IGestureHandler>> s_HandlerListPool = new ObjectPool<List<IGestureHandler>>(null, l => l.Clear());
 
-        public static bool Execute<T>(GameObject target, GestureEventData eventData, EventFunction<T> functor) where T : IGestureHandler
+        public static bool Execute<T, K>(GameObject target, K eventData, DiscreteEventFunction<K> functor) where T : IGestureHandler where K : GestureEventData, new()
         {
             var internalHandlers = s_HandlerListPool.Get();
             GetEventList<T>(target, internalHandlers);
@@ -97,7 +89,7 @@ namespace Framework.Gesture.Runtime
 
                 try
                 {
-                    functor(arg, eventData);
+                    functor((IDiscreteGestureHandler<K>)arg, eventData);
                 }
                 catch (Exception e)
                 {
@@ -115,18 +107,18 @@ namespace Framework.Gesture.Runtime
         /// </summary>
         private static readonly List<Transform> s_InternalTransformList = new List<Transform>(30);
 
-        // public static GameObject ExecuteHierarchy<T>(GameObject root, GestureEventData eventData, EventFunction<T> callbackFunction) where T : IGestureHandler
-        // {
-        //     GetEventChain(root, s_InternalTransformList);
+        public static GameObject ExecuteHierarchy<T, K>(GameObject root, K eventData, DiscreteEventFunction<K> callbackFunction) where T : IGestureHandler where K : GestureEventData, new()
+        {
+            GetEventChain(root, s_InternalTransformList);
 
-        //     for (var i = 0; i < s_InternalTransformList.Count; i++)
-        //     {
-        //         var transform = s_InternalTransformList[i];
-        //         if (Execute(transform.gameObject, eventData, callbackFunction))
-        //             return transform.gameObject;
-        //     }
-        //     return null;
-        // }
+            for (var i = 0; i < s_InternalTransformList.Count; i++)
+            {
+                var transform = s_InternalTransformList[i];
+                if (Execute<T, K>(transform.gameObject, eventData, callbackFunction))
+                    return transform.gameObject;
+            }
+            return null;
+        }
 
         private static bool ShouldSendToComponent<T>(Component component) where T : IGestureHandler
         {

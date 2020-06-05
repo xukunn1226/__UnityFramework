@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    public class LongPressRecognizer : GestureRecognizer<LongPressEventData>, IPointerDownHandler, IPointerUpHandler
+    public class LongPressRecognizer : DiscreteGestureRecognizer<ILongPressHandler, LongPressEventData>, IPointerDownHandler, IPointerUpHandler
     {
         public float Duration = 1.0f;
 
@@ -45,9 +45,24 @@ namespace Framework.Gesture.Runtime
 
             return RecognitionState.InProgress;
         }
-    }
 
+        public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_DiscreteGestureHandler_Ready = GestureEvents.ExecuteReady;
+
+        protected override void RaiseEvent()
+        {
+            switch(State)
+            {
+                case RecognitionState.Ready:
+                    GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_DiscreteGestureHandler_Ready);
+                    break;
+            }
+        }
+    }    
+    
     public class LongPressEventData : GestureEventData
     {
     }
+
+    public interface ILongPressHandler : IDiscreteGestureHandler<LongPressEventData>
+    {}
 }

@@ -5,7 +5,7 @@ using Framework.Gesture.Runtime;
 
 namespace Tests
 {
-    public class TestLongPressRecognizer : ILongPressHandler<LongPressEventData>
+    public class TestLongPressRecognizer : MonoBehaviour, ILongPressHandler
     {
         public void OnGestureReady(LongPressEventData eventData)
         {}
