@@ -7,12 +7,16 @@ namespace Framework.Gesture.Runtime
 {
     static public class GestureEvents
     {
+        public delegate void EventFunction<T>(IDiscreteGestureHandler handler, T eventData);
+
         public static T ValidateEventData<T>(GestureEventData data) where T : class
         {
             if ((data as T) == null)
                 throw new ArgumentException(String.Format("Invalid type: {0} passed to event expecting {1}", data.GetType(), typeof(T)));
             return data as T;
         }
+
+        private static readonly EventFunctionReady<GestureEventData> s_DiscreteGestureHandler_Ready = ExecuteReady;
 
         private static void ExecuteReady<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
