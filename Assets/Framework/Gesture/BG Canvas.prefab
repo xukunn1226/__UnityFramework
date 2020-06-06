@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 1636162866817692369}
   - component: {fileID: 1636162866817692370}
   m_Layer: 0
-  m_Name: BGCanvas
+  m_Name: BG Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 1636162867028848245}
   - component: {fileID: 1636162867028848246}
   m_Layer: 0
-  m_Name: Gesture Canvas
+  m_Name: BG Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

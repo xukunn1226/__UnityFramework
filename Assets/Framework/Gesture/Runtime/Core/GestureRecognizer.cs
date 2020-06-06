@@ -39,8 +39,14 @@ namespace Framework.Gesture.Runtime
             get { return m_PrevState; }
         }
 
-        [Min(1)]
-        public int RequiredPointerCount = 1;
+        [Min(1)][SerializeField]
+        private int m_RequiredPointerCount = 1;
+
+        public virtual int requiredPointerCount
+        {
+            get { return m_RequiredPointerCount; }
+            set { m_RequiredPointerCount = value; }
+        }
 
         protected T m_EventData = new T();
  
@@ -61,7 +67,7 @@ namespace Framework.Gesture.Runtime
 
         protected virtual bool CanBegin()
         {
-            return m_EventData.pointerCount == RequiredPointerCount;
+            return m_EventData.pointerCount == requiredPointerCount;
         }
 
         protected abstract void OnBegin();

@@ -11,6 +11,12 @@ namespace Framework.Gesture.Runtime
 
         public float MoveTolerance = 5.0f;
 
+        public override int requiredPointerCount
+        {
+            get { return 1; }
+            set { throw new System.ArgumentException("not support!"); }
+        }
+
         public void OnPointerDown(PointerEventData eventData)
         {
             AddPointer(eventData);
@@ -24,18 +30,18 @@ namespace Framework.Gesture.Runtime
         protected override void OnBegin()
         {
             m_EventData.StartTime = Time.time;
-            m_EventData.PressPosition = m_EventData.GetAveragePressPosition(RequiredPointerCount);
+            m_EventData.PressPosition = m_EventData.GetAveragePressPosition(requiredPointerCount);
         }
 
         protected override RecognitionState OnProgress()
         {
-            if(m_EventData.pointerCount != RequiredPointerCount)
+            if(m_EventData.pointerCount != requiredPointerCount)
                 return RecognitionState.Failed;
 
             if(m_EventData.ElapsedTime > Duration)
                 return RecognitionState.Ended;
 
-            if(m_EventData.GetAverageDistanceFromPress(RequiredPointerCount) > MoveTolerance)
+            if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) > MoveTolerance)
                 return RecognitionState.Failed;
 
             return RecognitionState.InProgress;

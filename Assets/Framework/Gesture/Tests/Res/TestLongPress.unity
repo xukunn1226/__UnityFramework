@@ -642,6 +642,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1636162865416355068, guid: 56fb1a6bb1b823943bbaaa64263b8e97,
+        type: 3}
+      propertyPath: m_CameraType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1636162867028848235, guid: 56fb1a6bb1b823943bbaaa64263b8e97,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -750,7 +755,7 @@ PrefabInstance:
     - target: {fileID: 1636162867028848247, guid: 56fb1a6bb1b823943bbaaa64263b8e97,
         type: 3}
       propertyPath: m_Name
-      value: Gesture Canvas
+      value: BG Canvas
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56fb1a6bb1b823943bbaaa64263b8e97, type: 3}
