@@ -7,9 +7,6 @@ namespace Framework.Gesture.Runtime
 {
     public abstract class GestureRecognizer<T> : MonoBehaviour where T : GestureEventData, new()
     {
-        // public delegate void GestureEventHandler(T eventData);
-        // public event GestureEventHandler OnGesture;
-
         public enum RecognitionState
         {
             Ready,

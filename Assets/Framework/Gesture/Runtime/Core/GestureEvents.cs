@@ -15,12 +15,12 @@ namespace Framework.Gesture.Runtime
             handler?.OnGestureReady(eventData);
         }
         
-        private static void ExecuteRecognized<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        public static void ExecuteRecognized<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
             handler?.OnGestureRecognized(eventData);
         }
         
-        private static void ExecuteFailed<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        public static void ExecuteFailed<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
             handler?.OnGestureFailed(eventData);
         }

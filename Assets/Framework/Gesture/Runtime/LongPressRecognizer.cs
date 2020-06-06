@@ -21,11 +21,6 @@ namespace Framework.Gesture.Runtime
             RemovePointer(eventData);
         }
 
-        protected override bool CanBegin()
-        {
-            return m_EventData.pointerCount >= RequiredPointerCount;
-        }
-
         protected override void OnBegin()
         {
             m_EventData.StartTime = Time.time;
@@ -34,7 +29,7 @@ namespace Framework.Gesture.Runtime
 
         protected override RecognitionState OnProgress()
         {
-            if(m_EventData.pointerCount < RequiredPointerCount)
+            if(m_EventData.pointerCount != RequiredPointerCount)
                 return RecognitionState.Failed;
 
             if(m_EventData.ElapsedTime > Duration)
@@ -46,14 +41,22 @@ namespace Framework.Gesture.Runtime
             return RecognitionState.InProgress;
         }
 
-        public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_DiscreteGestureHandler_Ready = GestureEvents.ExecuteReady;
+        public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Ready = GestureEvents.ExecuteReady;
+        public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Recognized = GestureEvents.ExecuteRecognized;
+        public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Failed = GestureEvents.ExecuteFailed;
 
         protected override void RaiseEvent()
         {
             switch(State)
             {
                 case RecognitionState.Ready:
-                    GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_DiscreteGestureHandler_Ready);
+                    GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Ready);
+                    break;
+                case RecognitionState.Ended:
+                    GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Recognized);
+                    break;
+                case RecognitionState.Failed:
+                    GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Failed);
                     break;
             }
         }
