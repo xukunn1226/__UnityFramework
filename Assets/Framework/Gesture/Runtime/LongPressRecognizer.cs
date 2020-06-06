@@ -41,21 +41,17 @@ namespace Framework.Gesture.Runtime
             return RecognitionState.InProgress;
         }
 
-        public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Ready = GestureEvents.ExecuteReady;
-        public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Recognized = GestureEvents.ExecuteRecognized;
-        public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Failed = GestureEvents.ExecuteFailed;
-        
         protected override void ExecuteGestureReady()
         {
-            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Ready);
+            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, GestureEvents.ExecuteReady);
         }
         protected override void ExecuteGestureRecognized()
         {
-            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Recognized);
+            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, GestureEvents.ExecuteRecognized);
         }
         protected override void ExecuteGestureFailed()
         {
-            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Failed);
+            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, GestureEvents.ExecuteFailed);
         }
     }    
     

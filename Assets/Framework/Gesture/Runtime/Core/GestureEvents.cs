@@ -25,27 +25,27 @@ namespace Framework.Gesture.Runtime
             handler?.OnGestureFailed(eventData);
         }
 
-        private static void ExecuteReady<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        public static void ExecuteReady<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
             handler?.OnGestureReady(eventData);
         }
 
-        private static void ExecuteProgress<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        public static void ExecuteProgress<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
             handler?.OnGestureProgress(eventData);
         }
         
-        private static void ExecuteStarted<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        public static void ExecuteStarted<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
             handler?.OnGestureStarted(eventData);
         }
         
-        private static void ExecuteEnded<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        public static void ExecuteEnded<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
             handler?.OnGestureEnded(eventData);
         }
         
-        private static void ExecuteFailed<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        public static void ExecuteFailed<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
             handler?.OnGestureFailed(eventData);
         }
