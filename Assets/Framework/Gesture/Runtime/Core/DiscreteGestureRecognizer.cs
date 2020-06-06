@@ -30,5 +30,25 @@ namespace Framework.Gesture.Runtime
                     break;
             }
         }
+
+        protected override void RaiseEvent()
+        {
+            switch(State)
+            {
+                case RecognitionState.Ready:
+                    ExecuteGestureReady();
+                    break;
+                case RecognitionState.Ended:
+                    ExecuteGestureRecognized();
+                    break;
+                case RecognitionState.Failed:
+                    ExecuteGestureFailed();
+                    break;
+            }
+        }
+
+        protected abstract void ExecuteGestureReady();
+        protected abstract void ExecuteGestureRecognized();
+        protected abstract void ExecuteGestureFailed();
     }
 }

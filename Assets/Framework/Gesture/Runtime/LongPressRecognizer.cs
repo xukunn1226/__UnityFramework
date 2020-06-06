@@ -44,21 +44,18 @@ namespace Framework.Gesture.Runtime
         public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Ready = GestureEvents.ExecuteReady;
         public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Recognized = GestureEvents.ExecuteRecognized;
         public static readonly GestureEvents.DiscreteEventFunction<LongPressEventData> s_GestureHandler_Failed = GestureEvents.ExecuteFailed;
-
-        protected override void RaiseEvent()
+        
+        protected override void ExecuteGestureReady()
         {
-            switch(State)
-            {
-                case RecognitionState.Ready:
-                    GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Ready);
-                    break;
-                case RecognitionState.Ended:
-                    GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Recognized);
-                    break;
-                case RecognitionState.Failed:
-                    GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Failed);
-                    break;
-            }
+            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Ready);
+        }
+        protected override void ExecuteGestureRecognized()
+        {
+            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Recognized);
+        }
+        protected override void ExecuteGestureFailed()
+        {
+            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, s_GestureHandler_Failed);
         }
     }    
     
@@ -67,5 +64,6 @@ namespace Framework.Gesture.Runtime
     }
 
     public interface ILongPressHandler : IDiscreteGestureHandler<LongPressEventData>
-    {}
+    {
+    }
 }
