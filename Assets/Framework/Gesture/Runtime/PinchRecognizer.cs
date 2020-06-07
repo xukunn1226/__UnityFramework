@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -79,6 +79,18 @@ namespace Framework.Gesture.Runtime
     
     public class PinchEventData : GestureEventData
     {
+        public float Delta { get; internal set; }       // gap difference from last frame
+        public float Gap { get; internal set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(base.ToString());
+            sb.AppendLine($"<b>Delta</b>: {Delta}");
+            sb.AppendLine($"<b>Gap</b>: {Gap}");
+
+            return sb.ToString();
+        }
     }
 
     public interface IPinchHandler : IContinuousGestureHandler<PinchEventData>
