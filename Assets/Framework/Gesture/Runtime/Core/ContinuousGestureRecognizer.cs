@@ -38,14 +38,19 @@ namespace Framework.Gesture.Runtime
             switch(State)
             {
                 case RecognitionState.Ready:
+                    ExecuteGestureReady();
                     break;
                 case RecognitionState.Started:
+                    ExecuteGestureStarted();
                     break;
                 case RecognitionState.InProgress:
+                    ExecuteGestureInProgress();
                     break;
                 case RecognitionState.Ended:
+                    ExecuteGestureEnded();
                     break;
                 case RecognitionState.Failed:
+                    ExecuteGestureFailed();
                     break;
             }
         }

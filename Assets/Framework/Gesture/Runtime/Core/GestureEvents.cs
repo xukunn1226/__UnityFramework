@@ -66,7 +66,7 @@ namespace Framework.Gesture.Runtime
 
         private static readonly ObjectPool<List<IGestureHandler>> s_HandlerListPool = new ObjectPool<List<IGestureHandler>>(null, l => l.Clear());
 
-        public static bool Execute<T, K>(GameObject target, K eventData, DiscreteEventFunction<K> functor) where T : IGestureHandler where K : GestureEventData, new()
+        public static bool Execute<T, K>(GameObject target, K eventData, DiscreteEventFunction<K> functor) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
         {
             var internalHandlers = s_HandlerListPool.Get();
             GetEventList<T>(target, internalHandlers);
@@ -102,12 +102,61 @@ namespace Framework.Gesture.Runtime
             return handlerCount > 0;
         }
 
+        public static bool Execute<T, K>(GameObject target, K eventData, ContinuousEventFunction<K> functor) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
+        {
+            var internalHandlers = s_HandlerListPool.Get();
+            GetEventList<T>(target, internalHandlers);
+            //  if (s_InternalHandlers.Count > 0)
+            //      Debug.Log("Executinng " + typeof (T) + " on " + target);
+
+            for (var i = 0; i < internalHandlers.Count; i++)
+            {
+                T arg;
+                try
+                {
+                    arg = (T)internalHandlers[i];
+                }
+                catch (Exception e)
+                {
+                    var temp = internalHandlers[i];
+                    Debug.LogException(new Exception(string.Format("Type {0} expected {1} received.", typeof(T).Name, temp.GetType().Name), e));
+                    continue;
+                }
+
+                try
+                {
+                    functor((IContinuousGestureHandler<K>)arg, eventData);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
+            }
+
+            var handlerCount = internalHandlers.Count;
+            s_HandlerListPool.Release(internalHandlers);
+            return handlerCount > 0;
+        }
+
         /// <summary>
         /// Execute the specified event on the first game object underneath the current touch.
         /// </summary>
         private static readonly List<Transform> s_InternalTransformList = new List<Transform>(30);
 
-        public static GameObject ExecuteHierarchy<T, K>(GameObject root, K eventData, DiscreteEventFunction<K> callbackFunction) where T : IGestureHandler where K : GestureEventData, new()
+        public static GameObject ExecuteHierarchy<T, K>(GameObject root, K eventData, DiscreteEventFunction<K> callbackFunction) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
+        {
+            GetEventChain(root, s_InternalTransformList);
+
+            for (var i = 0; i < s_InternalTransformList.Count; i++)
+            {
+                var transform = s_InternalTransformList[i];
+                if (Execute<T, K>(transform.gameObject, eventData, callbackFunction))
+                    return transform.gameObject;
+            }
+            return null;
+        }
+
+        public static GameObject ExecuteHierarchy<T, K>(GameObject root, K eventData, ContinuousEventFunction<K> callbackFunction) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
         {
             GetEventChain(root, s_InternalTransformList);
 

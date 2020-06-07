@@ -27,12 +27,6 @@ namespace Framework.Gesture.Runtime
             RemovePointer(eventData);
         }
 
-        protected override void OnBegin()
-        {
-            m_EventData.StartTime = Time.time;
-            m_EventData.PressPosition = m_EventData.GetAveragePressPosition(requiredPointerCount);
-        }
-
         protected override RecognitionState OnProgress()
         {
             if(m_EventData.pointerCount != requiredPointerCount)

@@ -70,7 +70,12 @@ namespace Framework.Gesture.Runtime
             return m_EventData.pointerCount == requiredPointerCount;
         }
 
-        protected abstract void OnBegin();
+        protected virtual void OnBegin()
+        {
+            m_EventData.StartTime = Time.time;
+            m_EventData.PressPosition = m_EventData.GetAveragePressPosition(requiredPointerCount);
+            m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
+        }
 
         protected abstract RecognitionState OnProgress();
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +9,7 @@ namespace Framework.Gesture.Runtime
     {
         protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();
 
+        public Vector2  Position;
         public Vector2  PressPosition;
         public float    StartTime;
         public float    ElapsedTime     { get { return Time.time - StartTime; } }
@@ -118,6 +119,17 @@ namespace Framework.Gesture.Runtime
         static private float GetDistanceFromPress(PointerEventData eventData)
         {
             return Vector2.Distance(eventData.pressPosition, eventData.position);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"<b>PressPosition:</b> {PressPosition}");
+            sb.AppendLine($"<b>Position</b>: {Position}");
+            sb.AppendLine($"<b>StartTime:</b> {StartTime}");
+            sb.AppendLine($"<b>ElapsedTime:</b> {ElapsedTime}");
+
+            return sb.ToString();
         }
     }
 }
