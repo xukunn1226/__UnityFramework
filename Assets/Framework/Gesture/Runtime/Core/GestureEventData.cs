@@ -9,6 +9,12 @@ namespace Framework.Gesture.Runtime
     {
         protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();
 
+        public Dictionary<int, PointerEventData> PointerEventData
+        {
+            get { return m_PointerData; }
+            internal set { m_PointerData = value; }
+        }
+
         public Vector2  Position;
         public Vector2  PressPosition;
         public float    StartTime;

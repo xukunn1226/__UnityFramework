@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 namespace Framework.Gesture.Runtime
 {
     [RequireComponent(typeof(EventSystem))]
-    public class ScreenDragRecognizer : ContinuousGestureRecognizer<IScreenDragHandler, ScreenDragEventData>//, IPointerDownHandler, IPointerUpHandler
+    public class ScreenDragRecognizer : ContinuousGestureRecognizer<IScreenDragHandler, ScreenDragEventData>
     {
         public float MoveTolerance = 1.0f;
 
@@ -16,29 +16,17 @@ namespace Framework.Gesture.Runtime
             get { return 1; }
             set { throw new System.ArgumentException("not support!"); }
         }
-        
-        // public void OnPointerDown(PointerEventData eventData)
-        // {
-        //     AddPointer(eventData);
-        // }
 
-        // public void OnPointerUp(PointerEventData eventData)
-        // {
-        //     RemovePointer(eventData);
-        // }
-
-        protected override void Update()
+        private void Start()
         {
-            base.Update();
-
-
-        }       
+            if(EventSystem.current.currentInputModule as MyStandaloneInputModule)
+            {
+                m_EventData.PointerEventData = ((MyStandaloneInputModule)EventSystem.current.currentInputModule).UnusedPointerData;
+            }            
+        }
 
         protected override bool CanBegin()
         {
-            if(!base.CanBegin())
-                return false;
-
             if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) < MoveTolerance)
                 return false;
             

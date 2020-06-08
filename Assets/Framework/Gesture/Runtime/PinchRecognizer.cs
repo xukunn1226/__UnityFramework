@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    public class PinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>, IPointerDownHandler, IPointerUpHandler
+    public class PinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>//, IPointerDownHandler, IPointerUpHandler
     {
         public float MinDOT = -0.7f;
 
@@ -17,15 +17,15 @@ namespace Framework.Gesture.Runtime
             set { throw new System.ArgumentException("not support!"); }
         }
 
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            AddPointer(eventData);
-        }
+        // public void OnPointerDown(PointerEventData eventData)
+        // {
+        //     AddPointer(eventData);
+        // }
 
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            RemovePointer(eventData);
-        }
+        // public void OnPointerUp(PointerEventData eventData)
+        // {
+        //     RemovePointer(eventData);
+        // }
 
         protected override bool CanBegin()
         {

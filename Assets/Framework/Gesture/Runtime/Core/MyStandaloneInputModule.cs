@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Framework.Gesture.Runtime
 {
@@ -11,6 +12,8 @@ namespace Framework.Gesture.Runtime
         // 1. raycast nothing OR
         // 2. No Over UI & Not consumed by interactive object
         private Dictionary<int, PointerEventData> m_UnusedPointerData = new Dictionary<int, PointerEventData>();
+
+        public Dictionary<int, PointerEventData> UnusedPointerData => m_UnusedPointerData;
 
         public override void Process()
         {
@@ -24,17 +27,21 @@ namespace Framework.Gesture.Runtime
         {
             for(int i = 0; i < Input.touchCount; ++i)
             {
-                bool pressed = Input.touches[i].phase == TouchPhase.Began;
-                bool released = (Input.touches[i].phase == TouchPhase.Canceled) || (Input.touches[i].phase == TouchPhase.Ended);
+                Touch touch = Input.touches[i];
+                bool pressed = touch.phase == TouchPhase.Began;
+                bool released = (touch.phase == TouchPhase.Canceled) || (touch.phase == TouchPhase.Ended);
 
+                PointerEventData eventData = GetLastPointerEventData(touch.fingerId);
                 if(pressed)
                 {
-                    // m_EventData.AddPointerData()
+                    if(!IsPointerOverUI(eventData) && !eventData.used)
+                    {
+                        AddUnusedPointerEventData(eventData);
+                    }
                 }
-
-                if(released)
+                else if(released || eventData.used)
                 {
-                    m_UnusedPointerData.Remove(Input.touches[i].fingerId);
+                    RemoveUnusedPointerEventData(touch.fingerId);
                 }
             }
             return Input.touchCount > 0;
@@ -42,19 +49,42 @@ namespace Framework.Gesture.Runtime
 
         protected void ProcessUnusedMouseEventData()
         {
-
+            PointerEventData eventData = GetLastPointerEventData(kMouseLeftId);
+            MouseState mouseState = GetMousePointerEventData();
+            ButtonState buttonState = mouseState.GetButtonState(PointerEventData.InputButton.Left);
+            if(buttonState.eventData.PressedThisFrame())
+            {
+                if(!IsPointerOverUI(eventData) && !eventData.used)
+                {
+                    AddUnusedPointerEventData(eventData);
+                }
+            }
+            else if(buttonState.eventData.ReleasedThisFrame() || eventData.used)
+            {
+                RemoveUnusedPointerEventData(eventData.pointerId);
+            }
         }
 
-        public PointerEventData GetTouchPointerEventData(Touch input)
+        private void AddUnusedPointerEventData(PointerEventData eventData)
         {
-            return GetPointerEventData(input.fingerId);
+            if(m_UnusedPointerData.ContainsKey(eventData.pointerId))
+                return;
+            m_UnusedPointerData.Add(eventData.pointerId, eventData);
         }
 
-        public PointerEventData GetPointerEventData(int id)
+        private void RemoveUnusedPointerEventData(int id)
         {
-            PointerEventData data;
-            GetPointerData(id, out data, false);
-            return data;
+            if(!m_UnusedPointerData.ContainsKey(id))
+                return;
+            m_UnusedPointerData.Remove(id);
+        }
+
+        static private bool IsPointerOverUI(PointerEventData eventData)
+        {
+            if(eventData.pointerCurrentRaycast.gameObject == null)
+                return false;
+
+            return eventData.pointerCurrentRaycast.module is GraphicRaycaster;
         }
     }
 }
