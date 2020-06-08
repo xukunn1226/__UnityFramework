@@ -6,7 +6,8 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    public class DragRecognizer : ContinuousGestureRecognizer<IDragHandler, DragEventData>, IPointerDownHandler, IPointerUpHandler
+    [RequireComponent(typeof(EventSystem))]
+    public class ScreenDragRecognizer : ContinuousGestureRecognizer<IScreenDragHandler, ScreenDragEventData>//, IPointerDownHandler, IPointerUpHandler
     {
         public float MoveTolerance = 1.0f;
 
@@ -16,15 +17,22 @@ namespace Framework.Gesture.Runtime
             set { throw new System.ArgumentException("not support!"); }
         }
         
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            AddPointer(eventData);
-        }
+        // public void OnPointerDown(PointerEventData eventData)
+        // {
+        //     AddPointer(eventData);
+        // }
 
-        public void OnPointerUp(PointerEventData eventData)
+        // public void OnPointerUp(PointerEventData eventData)
+        // {
+        //     RemovePointer(eventData);
+        // }
+
+        protected override void Update()
         {
-            RemovePointer(eventData);
-        }
+            base.Update();
+
+
+        }       
 
         protected override bool CanBegin()
         {
@@ -60,27 +68,27 @@ namespace Framework.Gesture.Runtime
         
         protected override void ExecuteGestureReady()
         {
-            GestureEvents.Execute<IDragHandler, DragEventData>(gameObject, m_EventData, GestureEvents.ExecuteReady);
+            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteReady);
         }
         protected override void ExecuteGestureStarted()
         {
-            GestureEvents.Execute<IDragHandler, DragEventData>(gameObject, m_EventData, GestureEvents.ExecuteStarted);
+            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteStarted);
         }
         protected override void ExecuteGestureInProgress()
         {
-            GestureEvents.Execute<IDragHandler, DragEventData>(gameObject, m_EventData, GestureEvents.ExecuteProgress);
+            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteProgress);
         }
         protected override void ExecuteGestureEnded()
         {
-            GestureEvents.Execute<IDragHandler, DragEventData>(gameObject, m_EventData, GestureEvents.ExecuteEnded);
+            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteEnded);
         }
         protected override void ExecuteGestureFailed()
         {
-            GestureEvents.Execute<IDragHandler, DragEventData>(gameObject, m_EventData, GestureEvents.ExecuteFailed);
+            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteFailed);
         }
     }
     
-    public class DragEventData : GestureEventData
+    public class ScreenDragEventData : GestureEventData
     {
         private Vector2 m_DeltaMove;
         public Vector2 DeltaMove
@@ -104,7 +112,7 @@ namespace Framework.Gesture.Runtime
         }
     }
 
-    public interface IDragHandler : IContinuousGestureHandler<DragEventData>
+    public interface IScreenDragHandler : IContinuousGestureHandler<ScreenDragEventData>
     {
     }
 }

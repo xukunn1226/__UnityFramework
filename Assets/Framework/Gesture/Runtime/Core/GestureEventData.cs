@@ -28,6 +28,9 @@ namespace Framework.Gesture.Runtime
 
         public void RemovePointerData(PointerEventData data)
         {
+            if(!m_PointerData.ContainsKey(data.pointerId))
+                return;
+
             m_PointerData.Remove(data.pointerId);
         }
 
@@ -53,9 +56,14 @@ namespace Framework.Gesture.Runtime
             return AverageFloat(GetDistanceFromPress, count);
         }
 
+        public void SetEventDataUsed(int count)
+        {
+            SetPropertyBoolean(SetPointerUsed, true, count);
+        }
+
         public delegate T PropertyGetterDelegate<T>(PointerEventData pointer);
 
-        public Vector2 AverageVector(PropertyGetterDelegate<Vector2> getProperty, int count)
+        private Vector2 AverageVector(PropertyGetterDelegate<Vector2> getProperty, int count)
         {
             Vector2 avg = Vector2.zero;
 
@@ -78,7 +86,7 @@ namespace Framework.Gesture.Runtime
             return avg;
         }
 
-        public float AverageFloat(PropertyGetterDelegate<float> getProperty, int count)
+        private float AverageFloat(PropertyGetterDelegate<float> getProperty, int count)
         {
             float avg = 0;
 
@@ -101,6 +109,26 @@ namespace Framework.Gesture.Runtime
             return avg;
         }
 
+        public delegate void PropertySetterDelegate<T>(PointerEventData pointer, T value);
+
+        private void SetPropertyBoolean(PropertySetterDelegate<bool> setProperty, bool value, int count)
+        {
+            if(m_PointerData.Count > 0 && count > 0)
+            {
+                Dictionary<int, PointerEventData>.Enumerator e = m_PointerData.GetEnumerator();
+                int c = 0;
+                while(e.MoveNext())
+                {
+                    if(c >= count)
+                        break;
+
+                    setProperty(e.Current.Value, value);
+                    ++c;
+                }
+                e.Dispose();
+            }
+        }
+
         static private Vector2 GetPressPosition(PointerEventData eventData)
         {
             return eventData.pressPosition;
@@ -119,6 +147,11 @@ namespace Framework.Gesture.Runtime
         static private float GetDistanceFromPress(PointerEventData eventData)
         {
             return Vector2.Distance(eventData.pressPosition, eventData.position);
+        }
+
+        static private void SetPointerUsed(PointerEventData eventData, bool value)
+        {
+            eventData.Use();
         }
 
         public override string ToString()

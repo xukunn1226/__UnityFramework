@@ -7,7 +7,7 @@ namespace Framework.Gesture.Runtime
     public abstract class DiscreteGestureRecognizer<T, K> : GestureRecognizer<K> where K : GestureEventData, new() where T : IDiscreteGestureHandler<K>
     {
         // life cycle: Ready -> InProgress -> Failed/Ended
-        private void Update()
+        protected virtual void Update()
         {
             switch(State)
             {

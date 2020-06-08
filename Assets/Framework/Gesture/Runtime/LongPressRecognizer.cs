@@ -33,7 +33,10 @@ namespace Framework.Gesture.Runtime
                 return RecognitionState.Failed;
 
             if(m_EventData.ElapsedTime > Duration)
+            {
+                m_EventData.SetEventDataUsed(requiredPointerCount);         // 设置消息被使用的标志
                 return RecognitionState.Ended;
+            }
 
             if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) > MoveTolerance)
                 return RecognitionState.Failed;

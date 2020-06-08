@@ -8,7 +8,7 @@ namespace Framework.Gesture.Runtime
     {
         public bool ContinuousRecognizeWhenFailed = true;          // whether or not to recognize gesture when failed
 
-        private void Update()
+        protected virtual void Update()
         {
             switch(State)
             {

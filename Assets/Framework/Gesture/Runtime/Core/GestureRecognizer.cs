@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Framework.Gesture.Runtime
 {
@@ -80,5 +81,13 @@ namespace Framework.Gesture.Runtime
         protected abstract RecognitionState OnProgress();
 
         protected abstract void RaiseEvent();
+
+        static public bool IsPointerOverUI(PointerEventData eventData)
+        {
+            if(eventData.pointerCurrentRaycast.gameObject == null)
+                return false;
+
+            return eventData.pointerCurrentRaycast.module is GraphicRaycaster;
+        }
     }
 }
