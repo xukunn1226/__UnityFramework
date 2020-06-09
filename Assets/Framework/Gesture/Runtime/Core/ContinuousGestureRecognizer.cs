@@ -8,7 +8,7 @@ namespace Framework.Gesture.Runtime
     {
         public bool ContinuousRecognizeWhenFailed = true;          // whether or not to recognize gesture when failed
 
-        protected virtual void Update()
+        internal override void InternalUpdate()
         {
             switch(State)
             {
@@ -21,6 +21,7 @@ namespace Framework.Gesture.Runtime
                     break;
                 case RecognitionState.Started:
                     State = RecognitionState.InProgress;
+                    OnProgress();
                     break;
                 case RecognitionState.InProgress:
                     State = OnProgress();

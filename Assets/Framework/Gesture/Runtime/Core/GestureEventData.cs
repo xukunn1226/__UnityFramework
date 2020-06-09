@@ -7,7 +7,7 @@ namespace Framework.Gesture.Runtime
 {
     public class GestureEventData
     {
-        protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();
+        protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();        // 当前手势需要的数据，可能大于requiredPointerCount，取决于具体实现
 
         public Dictionary<int, PointerEventData> PointerEventData
         {
@@ -38,6 +38,11 @@ namespace Framework.Gesture.Runtime
                 return;
 
             m_PointerData.Remove(data.pointerId);
+        }
+
+        public void ClearPointerDatas()
+        {
+            m_PointerData.Clear();
         }
 
         public int pointerCount { get { return m_PointerData.Count; } }

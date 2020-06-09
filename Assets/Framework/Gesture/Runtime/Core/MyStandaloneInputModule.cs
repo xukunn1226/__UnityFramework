@@ -8,22 +8,24 @@ namespace Framework.Gesture.Runtime
 {
     public class MyStandaloneInputModule : StandaloneInputModule
     {
-        // collection of PointerEventData accord with:
-        // 1. raycast nothing OR
-        // 2. No Over UI & Not consumed by interactive object
-        private Dictionary<int, PointerEventData> m_UnusedPointerData = new Dictionary<int, PointerEventData>();
-
-        public Dictionary<int, PointerEventData> UnusedPointerData => m_UnusedPointerData;
-
         public override void Process()
         {
             base.Process();
 
-            if(!ProcessUnusedTouchEventData() && input.mousePresent)
-                ProcessUnusedMouseEventData();
+            // 为了整合IEventSystemHandler和Gesture，消息优先IEventSystemHandler处理，然后是IGestureHandler
+            GestureRecognizerManager.Update();
         }
 
-        protected bool ProcessUnusedTouchEventData()
+        // collection of PointerEventData accord with:
+        // 1. raycast nothing OR
+        // 2. No Over UI & Not consumed by interactive object
+        public void UpdateUnusedEventData(ref Dictionary<int, PointerEventData> unusedPointerData)
+        {
+            if(!ProcessUnusedTouchEventData(ref unusedPointerData) && input.mousePresent)
+                ProcessUnusedMouseEventData(ref unusedPointerData);
+        }
+
+        private bool ProcessUnusedTouchEventData(ref Dictionary<int, PointerEventData> unusedPointerData)
         {
             for(int i = 0; i < Input.touchCount; ++i)
             {
@@ -36,18 +38,18 @@ namespace Framework.Gesture.Runtime
                 {
                     if(!IsPointerOverUI(eventData) && !eventData.used)
                     {
-                        AddUnusedPointerEventData(eventData);
+                        AddUnusedPointerEventData(ref unusedPointerData, eventData);
                     }
                 }
                 else if(released || eventData.used)
                 {
-                    RemoveUnusedPointerEventData(touch.fingerId);
+                    RemoveUnusedPointerEventData(ref unusedPointerData, touch.fingerId);
                 }
             }
             return Input.touchCount > 0;
         }
 
-        protected void ProcessUnusedMouseEventData()
+        private void ProcessUnusedMouseEventData(ref Dictionary<int, PointerEventData> unusedPointerData)
         {
             PointerEventData eventData = GetLastPointerEventData(kMouseLeftId);
             MouseState mouseState = GetMousePointerEventData();
@@ -56,27 +58,27 @@ namespace Framework.Gesture.Runtime
             {
                 if(!IsPointerOverUI(eventData) && !eventData.used)
                 {
-                    AddUnusedPointerEventData(eventData);
+                    AddUnusedPointerEventData(ref unusedPointerData, eventData);
                 }
             }
             else if(buttonState.eventData.ReleasedThisFrame() || eventData.used)
             {
-                RemoveUnusedPointerEventData(eventData.pointerId);
+                RemoveUnusedPointerEventData(ref unusedPointerData, eventData.pointerId);
             }
         }
 
-        private void AddUnusedPointerEventData(PointerEventData eventData)
+        private void AddUnusedPointerEventData(ref Dictionary<int, PointerEventData> unusedPointerData, PointerEventData eventData)
         {
-            if(m_UnusedPointerData.ContainsKey(eventData.pointerId))
+            if(unusedPointerData.ContainsKey(eventData.pointerId))
                 return;
-            m_UnusedPointerData.Add(eventData.pointerId, eventData);
+            unusedPointerData.Add(eventData.pointerId, eventData);
         }
 
-        private void RemoveUnusedPointerEventData(int id)
+        private void RemoveUnusedPointerEventData(ref Dictionary<int, PointerEventData> unusedPointerData, int id)
         {
-            if(!m_UnusedPointerData.ContainsKey(id))
+            if(!unusedPointerData.ContainsKey(id))
                 return;
-            m_UnusedPointerData.Remove(id);
+            unusedPointerData.Remove(id);
         }
 
         static private bool IsPointerOverUI(PointerEventData eventData)

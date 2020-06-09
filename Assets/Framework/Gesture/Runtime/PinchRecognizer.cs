@@ -55,6 +55,12 @@ namespace Framework.Gesture.Runtime
             return RecognitionState.InProgress;
         }
 
+        protected override void OnEnded()
+        {}
+
+        protected override void OnFailed()
+        {}
+
         protected override void ExecuteGestureReady()
         {
             GestureEvents.Execute<IPinchHandler, PinchEventData>(gameObject, m_EventData, GestureEvents.ExecuteReady);

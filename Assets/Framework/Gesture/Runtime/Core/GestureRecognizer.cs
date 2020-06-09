@@ -5,7 +5,23 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    public abstract class GestureRecognizer<T> : MonoBehaviour where T : GestureEventData, new()
+    public abstract class GestureRecognizer : MonoBehaviour
+    {
+        protected virtual void OnEnable()
+        {
+            GestureRecognizerManager.AddRecognizer(this);
+        }
+
+        protected virtual void OnDisable()
+        {
+            GestureRecognizerManager.RemoveRecognizer(this);
+        }
+
+        // 由GestureRecognizerManager统一处理
+        internal abstract void InternalUpdate();
+    }
+
+    public abstract class GestureRecognizer<T> : GestureRecognizer where T : GestureEventData, new()
     {
         public enum RecognitionState
         {
@@ -60,10 +76,16 @@ namespace Framework.Gesture.Runtime
             m_EventData.RemovePointerData(eventData);
         }
 
+        protected void ClearPointers()
+        {
+            m_EventData.ClearPointerDatas();
+        }
+
         protected virtual void OnStateChanged()
         {
             RaiseEvent();
         }
+        protected abstract void RaiseEvent();
 
         protected virtual bool CanBegin()
         {
@@ -78,7 +100,7 @@ namespace Framework.Gesture.Runtime
         }
 
         protected abstract RecognitionState OnProgress();
-
-        protected abstract void RaiseEvent();
+        protected virtual void OnEnded() {}
+        protected virtual void OnFailed() {}        
     }
 }
