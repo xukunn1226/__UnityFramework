@@ -14,6 +14,7 @@ namespace Framework.Gesture.Runtime
                 return;
 
             s_Recognizers.Add(recognizer);
+            s_Recognizers.Sort((lhs, rhs) => {return lhs.Priority.CompareTo(rhs.Priority); });
         }
 
         public static List<GestureRecognizer> GetRecognizers()

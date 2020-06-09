@@ -2,26 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Gesture.Runtime
 {
     public abstract class GestureRecognizer : MonoBehaviour
-    {
-        protected virtual void OnEnable()
-        {
-            GestureRecognizerManager.AddRecognizer(this);
-        }
-
-        protected virtual void OnDisable()
-        {
-            GestureRecognizerManager.RemoveRecognizer(this);
-        }
-
-        // 由GestureRecognizerManager统一处理
-        internal abstract void InternalUpdate();
-    }
-
-    public abstract class GestureRecognizer<T> : GestureRecognizer where T : GestureEventData, new()
     {
         public enum RecognitionState
         {
@@ -55,6 +42,8 @@ namespace Framework.Gesture.Runtime
             get { return m_PrevState; }
         }
 
+        public int Priority;        // 消息处理优先级，值越小越优先处理消息
+
         [Min(1)][SerializeField]
         private int m_RequiredPointerCount = 1;
 
@@ -63,7 +52,29 @@ namespace Framework.Gesture.Runtime
             get { return m_RequiredPointerCount; }
             set { m_RequiredPointerCount = value; }
         }
+        
+        protected virtual void OnStateChanged()
+        {
+            RaiseEvent();
+        }
+        protected abstract void RaiseEvent();
 
+        protected virtual void OnEnable()
+        {
+            GestureRecognizerManager.AddRecognizer(this);
+        }
+
+        protected virtual void OnDisable()
+        {
+            GestureRecognizerManager.RemoveRecognizer(this);
+        }
+
+        // 消息处理优先级的缘由，忽略Update，由GestureRecognizerManager统一处理
+        internal abstract void InternalUpdate();
+    }
+
+    public abstract class GestureRecognizer<T> : GestureRecognizer where T : GestureEventData, new()
+    {
         protected T m_EventData = new T();
  
         protected void AddPointer(PointerEventData eventData)
@@ -81,12 +92,6 @@ namespace Framework.Gesture.Runtime
             m_EventData.ClearPointerDatas();
         }
 
-        protected virtual void OnStateChanged()
-        {
-            RaiseEvent();
-        }
-        protected abstract void RaiseEvent();
-
         protected virtual bool CanBegin()
         {
             return m_EventData.pointerCount == requiredPointerCount;
@@ -103,4 +108,21 @@ namespace Framework.Gesture.Runtime
         protected virtual void OnEnded() {}
         protected virtual void OnFailed() {}        
     }
+
+
+    #if UNITY_EDITOR
+    [CustomEditor(typeof(GestureRecognizer), true)]
+    public class GestureRecognizerEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+
+            GestureRecognizer gesture = target as GestureRecognizer;
+            GUI.enabled = false;
+            EditorGUILayout.EnumFlagsField("State", gesture.State);
+            GUI.enabled = true;
+        }
+    }
+    #endif
 }

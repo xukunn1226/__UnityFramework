@@ -52,16 +52,16 @@ namespace Framework.Gesture.Runtime
         private void ProcessUnusedMouseEventData(ref Dictionary<int, PointerEventData> unusedPointerData)
         {
             PointerEventData eventData = GetLastPointerEventData(kMouseLeftId);
-            MouseState mouseState = GetMousePointerEventData();
-            ButtonState buttonState = mouseState.GetButtonState(PointerEventData.InputButton.Left);
-            if(buttonState.eventData.PressedThisFrame())
+            bool pressed = input.GetMouseButtonDown(0);
+            bool released = input.GetMouseButtonUp(0);
+            if(pressed)
             {
                 if(!IsPointerOverUI(eventData) && !eventData.used)
                 {
                     AddUnusedPointerEventData(ref unusedPointerData, eventData);
                 }
             }
-            else if(buttonState.eventData.ReleasedThisFrame() || eventData.used)
+            else if(released || eventData.used)
             {
                 RemoveUnusedPointerEventData(ref unusedPointerData, eventData.pointerId);
             }

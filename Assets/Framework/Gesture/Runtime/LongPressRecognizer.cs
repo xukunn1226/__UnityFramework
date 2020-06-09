@@ -34,11 +34,7 @@ namespace Framework.Gesture.Runtime
 
             if(m_EventData.ElapsedTime > Duration)
             {
-                // PointerEventData data;
-                // m_EventData.PointerEventData.TryGetValue(-1, out data);
-                // Debug.Log($"-------{data.used}");
                 m_EventData.SetEventDataUsed(requiredPointerCount);         // 设置消息被使用的标志
-                // Debug.LogWarning($"{data.used}-------");
                 return RecognitionState.Ended;
             }
 

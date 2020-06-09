@@ -6,10 +6,10 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    [RequireComponent(typeof(EventSystem))]
+    [RequireComponent(typeof(MyStandaloneInputModule))]
     public class ScreenDragRecognizer : ContinuousGestureRecognizer<IScreenDragHandler, ScreenDragEventData>
     {
-        public float MoveTolerance = 1.0f;
+        public float MoveTolerance = 5.0f;
 
         private MyStandaloneInputModule m_InputModule;
         private MyStandaloneInputModule InputModule
@@ -39,7 +39,6 @@ namespace Framework.Gesture.Runtime
             {
                 InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
                 m_EventData.PointerEventData = m_UnusedPointerData;
-                // Debug.Log($"======== {m_UnusedPointerData.Count}");
             }
             base.InternalUpdate();
         }
@@ -62,8 +61,9 @@ namespace Framework.Gesture.Runtime
         {
             base.OnBegin();
 
-            m_EventData.DeltaMove = m_EventData.Position - m_EventData.PressPosition;
+            m_EventData.DeltaMove = Vector2.zero;
             m_EventData.LastPos = m_EventData.Position;
+            m_EventData.PressPosition = m_EventData.Position;           // MoveTolerance原因，重新定位PressPosition
         }
 
         protected override RecognitionState OnProgress()
@@ -74,6 +74,7 @@ namespace Framework.Gesture.Runtime
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
             m_EventData.DeltaMove = m_EventData.Position - m_EventData.LastPos;
             m_EventData.LastPos = m_EventData.Position;
+            m_EventData.SetEventDataUsed(requiredPointerCount);
 
             ExecuteGestureInProgress();
             return RecognitionState.InProgress;

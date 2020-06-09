@@ -3804,9 +3804,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74e89a81a0cb9a4f8aae8ee82fb6aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Priority: 99
   m_RequiredPointerCount: 1
   ContinuousRecognizeWhenFailed: 1
-  MoveTolerance: 1
+  MoveTolerance: 5
 --- !u!114 &1582356172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5271,6 +5272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Priority: 0
   m_RequiredPointerCount: 1
   Duration: 1
   MoveTolerance: 5
