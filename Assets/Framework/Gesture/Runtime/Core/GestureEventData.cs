@@ -23,6 +23,29 @@ namespace Framework.Gesture.Runtime
         public GestureEventData()
         {}
 
+        public PointerEventData this[int index]
+        {
+            get
+            {
+                if(index < 0 || index >= m_PointerData.Count)
+                    return null;
+
+                Dictionary<int, PointerEventData>.Enumerator e = m_PointerData.GetEnumerator();
+                PointerEventData data = null;
+                int c = 0;
+                while(e.MoveNext())
+                {
+                    if(index == c)
+                    {
+                        data = e.Current.Value;
+                        break;
+                    }
+                    ++c;
+                }
+                e.Dispose();
+                return data;
+            }
+        }
         public bool AddPointerData(PointerEventData data)
         {
             if(m_PointerData.ContainsKey(data.pointerId))

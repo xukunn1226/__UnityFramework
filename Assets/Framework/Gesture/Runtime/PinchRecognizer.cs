@@ -1,14 +1,17 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
 namespace Framework.Gesture.Runtime
 {
-    public class PinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>//, IPointerDownHandler, IPointerUpHandler
+    [RequireComponent(typeof(MyStandaloneInputModule))]
+    public class PinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>
     {
         public float MinDOT = -0.7f;
-
+        public float MinDistance = 5;
         public float DeltaScale = 1.0f;
 
         public override int requiredPointerCount
@@ -17,19 +20,47 @@ namespace Framework.Gesture.Runtime
             set { throw new System.ArgumentException("not support!"); }
         }
 
-        // public void OnPointerDown(PointerEventData eventData)
-        // {
-        //     AddPointer(eventData);
-        // }
+        private MyStandaloneInputModule m_InputModule;
+        private MyStandaloneInputModule InputModule
+        {
+            get
+            {
+                if(m_InputModule == null)
+                {
+                    m_InputModule = EventSystem.current.currentInputModule as MyStandaloneInputModule;
+                }
+                return m_InputModule;
+            }
+        }
 
-        // public void OnPointerUp(PointerEventData eventData)
-        // {
-        //     RemovePointer(eventData);
-        // }
+        private Dictionary<int, PointerEventData> m_UnusedPointerData = new Dictionary<int, PointerEventData>();
+        private PointerEventData m_Pointer1;
+        private PointerEventData m_Pointer2;
+
+        internal override void InternalUpdate()
+        {
+            if(InputModule != null)
+            {
+                InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
+                m_EventData.PointerEventData = m_UnusedPointerData;
+                m_Pointer1 = m_EventData.PointerEventData[0];
+                m_Pointer2 = m_EventData.PointerEventData[1];
+            }
+            base.InternalUpdate();
+        }
 
         protected override bool CanBegin()
         {
             if(m_EventData.pointerCount < requiredPointerCount)
+                return false;
+
+            if(m_Pointer1 == null || m_Pointer2 == null)
+                return false;
+
+            float startGap = Vector2.SqrMagnitude(m_Pointer1.pressPosition - m_Pointer2.pressPosition);
+            float curGap = Vector2.SqrMagnitude(m_Pointer1.position - m_Pointer2.position);
+
+            if(Mathf.Abs(startGap - curGap) < MinDistance * MinDistance)
                 return false;
 
             return true;
@@ -37,29 +68,40 @@ namespace Framework.Gesture.Runtime
 
         protected override void OnBegin()
         {
-            m_EventData.StartTime = Time.time;
-            m_EventData.PressPosition = m_EventData.GetAveragePressPosition(requiredPointerCount);
+            base.OnBegin();
+            
+            m_EventData.Gap = Vector2.Distance(m_Pointer1.position, m_Pointer2.position);
+            m_EventData.Delta = 0;
         }
 
         protected override RecognitionState OnProgress()
         {
             if(m_EventData.pointerCount != requiredPointerCount)
-                return RecognitionState.Failed;
+                return RecognitionState.Ended;
 
-            // if(m_EventData.ElapsedTime > Duration)
-            //     return RecognitionState.Ended;
+            m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
+            
+            float curGap = Vector2.Distance(m_Pointer1.position, m_Pointer2.position);
+            float newDelta = (curGap - m_EventData.Gap) * DeltaScale;
+            m_EventData.Gap = curGap;
 
-            // if(m_EventData.GetAverageDistanceFromPress(RequiredPointerCount) > MoveTolerance)
-            //     return RecognitionState.Failed;
+            m_EventData.Delta = 0;
+            if(MovedInOppositeDirections(m_Pointer1, m_Pointer2, MinDOT))
+            {
+                m_EventData.Delta = newDelta;
+            }
+
+            m_EventData.SetEventDataUsed(requiredPointerCount);
+            ExecuteGestureInProgress();
 
             return RecognitionState.InProgress;
         }
 
-        protected override void OnEnded()
-        {}
-
-        protected override void OnFailed()
-        {}
+        private static bool MovedInOppositeDirections(PointerEventData pointer1, PointerEventData pointer2, float minDOT )
+        {
+            float dot = Vector2.Dot( pointer1.delta.normalized, pointer2.delta.normalized );
+            return dot < minDOT;
+        }
 
         protected override void ExecuteGestureReady()
         {
