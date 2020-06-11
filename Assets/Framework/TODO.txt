@@ -41,17 +41,25 @@
 
 * UI Opt
 	https://learn.unity.com/tutorial/optimizing-unity-ui
+	* 没有勾选raycastTarget的Graphic从判定列表中移除：GraphicRegistry.UnregisterGraphicForCanvas。显示/隐藏时移除？见GraphicRaycaster.Raycast()
+	* 优化GraphicRaycaster.eventCamera，没有缓存
+	* 考虑当raycast时取消排序，始终返回最上层graphics，优化GraphicsRaycster::Raycast()
+	* Graphics.canvasRenderer的判空操作过多，也有一定耗时，考虑组件各自在Awake中缓存
+	* GraphicRaycaster减少depth获取次数，优化raycast函数
+	* 减少点击事件响应的组件注册（原生Image即使不选择RaycastTarget也会出现在判定列表中），可以重写OnTransformParentChanged，OnCanvasHierarchyChanged
+	* 不在屏幕内的UI不参与raycast，增加判定UI是否在屏幕内的接口，修改raycast函数
 
-* Gesture Extension
+
+
+
+
+
+
+
+
+- Gesture Extension
 	https://stackoverflow.com/questions/40341191/pinch-and-other-multi-finger-gestures-in-modern-unity3d
 	https://stackoverflow.com/questions/40576493/duplicating-unitys-mystic-interface-power/40576974#40576974
-
-
-
-
-
-
-
 - 嵌套Prefab的使用规范总结
 - 可视化图集引用关系
 - 尝试其他图集管理方法
