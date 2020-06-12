@@ -1,0 +1,71 @@
+* UI框架设计：  UI开发与优化知识Tree(https://blog.uwa4d.com/archives/UWA_UITree.html)
+	* UI框架涵盖的几个要点：界面制作、业务编程模型
+	* 隐藏所有业务逻辑不需要关心的加载、卸载，界面流转等逻辑
+	* 完整的业务流程
+	* 提供界面扩展接口
+	* Sprite Atlas流程：SpriteAtlasManager
+	* MVVM，单向、双向数据绑定
+	* 断线重连事件处理
+	* Event是否发生在UI
+	* 支持横竖屏
+	* 支持自定义UI控件位置
+	* 各种UI效果支持（羽化，描边等）
+	* 特效挂载UI流程，资源分离，方便美术预览效果
+	* 多种字体的支持，WGame只支持一种字体大小，且添加其他语种不友好，字体静态生成容易产生冗余，限制策划的使用
+	* ResourceManager添加SpriteAtlas的管理
+	* 如何卸载Atlas？https://github.com/jconstable/SpriteSleeper
+		** 思考：prefab静态使用的散图可以预存为依赖图集，程序动态使用的图集需要用接口来约束
+		** 只要Atlas被注册过，再次被引用到时不会调用RequestAtlas
+		1、彻底卸载atlas ab：AssetBundle.unload（true）
+		2、使用此atlas的gameobject被删除
+	* 搭建美术UI制作环境(特效预览、分辨率适配等)
+	* UIView跳转流程，参照新闻app的用户习惯设计
+
+	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
+	https://zhuanlan.zhihu.com/p/102278660   个人对于游戏UI架构的思考与总结
+
+
+
+* UI Opt
+	https://learn.unity.com/tutorial/optimizing-unity-ui
+	https://gameinstitute.qq.com/community/detail/112235  UGUI优化：批次合并源码分析及工具
+	https://gameinstitute.qq.com/community/detail/114203  重建 是UGUI优化的关键
+	https://zhuanlan.zhihu.com/p/55566751  				  Unity UGUI 点击性能优化
+
+
+	* 没有勾选raycastTarget的Graphic从判定列表中移除：GraphicRegistry.UnregisterGraphicForCanvas。显示/隐藏时移除？见GraphicRaycaster.Raycast()
+	* 优化GraphicRaycaster.eventCamera，没有缓存
+	* 考虑当raycast时取消排序，始终返回最上层graphics，优化GraphicsRaycster::Raycast()
+	* Graphics.canvasRenderer的判空操作过多，也有一定耗时，考虑组件各自在Awake中缓存
+	* GraphicRaycaster减少depth获取次数，优化raycast函数
+	* 减少点击事件响应的组件注册（原生Image即使不选择RaycastTarget也会出现在判定列表中），可以重写OnTransformParentChanged，OnCanvasHierarchyChanged
+	* 不在屏幕内的UI不参与raycast，增加判定UI是否在屏幕内的接口，修改raycast函数
+	* Mask2个DC，会打断上下合批，但Mask之间能合批	
+	* 删除不必要的元素，减少层次结构，这样可以减少深度排序耗时
+	* 动态UI元素（频繁改变例如顶点、alpha、position、size）与静态UI元素分离
+	* 谨慎使用UI元素的enable/disable，会触发rebuild，替代方案是enable/disable UI元素的CanvasRender或Canvas
+	* 谨慎使用Text的Best Fit
+	* 谨慎使用Canvas的Pixel Perfect
+	* 对于不需要接收touch事件的元素，禁用Raycast Target
+	* 批处理需要符合以下条件：
+		* 在同一个canvas下。
+		* 使用同一个材质
+		* 在同一时间渲染
+		* RectTransform共面(深度相同),不重叠。
+		* 在同一个父mask下(不同mask下会造成drawcall增加)
+	* 使用Slice时，对于不需要渲染中心的可以uncheck Fill Center
+	* 修改Image自带的Color属性实际上是修改顶点上的属性，会导致网格重建，可以自定义材质，去改变材质的Tint Color
+	* 同一级Canvas之间的渲染顺序：ovreride sorting=false时，以hierarchy顺序渲染;override sorting=true时，以sort order顺序渲染
+	* 隐藏界面的几种方式带来的影响对比
+		1、SetActive				优势：NO CPU、no raycast；劣势：GC，rebuild mesh
+		2、Out of Screen			优势：NO GC；劣势：CPU有开销，raycast有开销，rebuild mesh
+		3、Set Layer（OutUI）		优势：切换无开销，no rebuild mesh；劣势：CPU有开销，raycast
+		4、Disable Component		据说是最优，不会rebuild mesh，不会rebatch，待验证
+	* overridesorting属性会打断射线，可以降低层级遍历的成本?
+
+
+
+* 动态打图集方案：
+	https://github.com/DaVikingCode/UnityRuntimeSpriteSheetsGenerator
+
+

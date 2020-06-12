@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Framework.Gesture.Runtime
+namespace Framework.UI.Runtime
 {
     public class NoDrawingRaycast : Graphic
     {
+        protected NoDrawingRaycast()
+        {
+            useLegacyMeshGeneration = false;
+        }
+
         public override void SetMaterialDirty()
         {}
 
@@ -15,7 +20,7 @@ namespace Framework.Gesture.Runtime
 
         protected override void OnPopulateMesh(VertexHelper vh)
         {
-            base.OnPopulateMesh(vh);
+            vh.Clear();
         }
     }
 }
