@@ -1,5 +1,5 @@
-* UI框架设计：  UI开发与优化知识Tree(https://blog.uwa4d.com/archives/UWA_UITree.html)
-	* UI框架涵盖的几个要点：界面制作、业务编程模型
+* UI框架设计：
+	* 界面的制作、业务开发模式
 	* 隐藏所有业务逻辑不需要关心的加载、卸载，界面流转等逻辑
     * 界面调度逻辑
     * 框架支持界面的FadeIn，FadeOut
@@ -23,8 +23,10 @@
 	* 搭建美术UI制作环境(特效预览、分辨率适配等)
 	* UIView跳转流程，参照新闻app的用户习惯设计
 
-	参考：M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
+	参考：
+	M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
 	https://zhuanlan.zhihu.com/p/102278660   个人对于游戏UI架构的思考与总结
+	https://blog.uwa4d.com/archives/UWA_UITree.html   UI开发与优化知识Tree
 
 
 
@@ -35,6 +37,9 @@
 	https://gameinstitute.qq.com/community/detail/114203  重建 是UGUI优化的关键
 	https://zhuanlan.zhihu.com/p/55566751  				  Unity UGUI 点击性能优化
 
+	一切的优化围绕三个点进行：batch build、mesh build、raycast
+	* batch build: 根据depth排序，检测overlap，material id，worker thread执行
+	* rebuild process：Layout rebuilds & Graphics rebuilds
 
 	* 没有勾选raycastTarget的Graphic从判定列表中移除：GraphicRegistry.UnregisterGraphicForCanvas。显示/隐藏时移除？见GraphicRaycaster.Raycast()
 	* 优化GraphicRaycaster.eventCamera，没有缓存
@@ -74,5 +79,16 @@
 
 
 
-## 脑子装不下那么多东西，就记好笔记系列
-* 
+## UGUI读书笔记
+
+RectTransform:
+* anchorMax, anchorMin：组合成四个锚点
+    1、（anchorMin.x，anchorMin.y)  ——左下角
+    2、（anchorMin.x,  anchorMax.y）——左上角    
+    3、（anchorMax.x, anchorMin.y） ——右下角
+    4、（anchorMax.x, anchorMax.y） ——右上角
+* anchoredPosition：pivot相对anchor的位置，（面板上的PosX，PosY）
+* sizeDelta：当anchor非strech模式时，等同于size；当anchor为stretch模式时，为相比父节点的差异值（面板上Width，Height）
+* pivot：（0,0）面板左下角，（1,1）面板右上角；以pivot点轴心旋转
+* offsetMin:  The offset of the lower left corner of the rectangle relative to the lower left anchor
+* offsetMax:  The offset of the upper right corner of the rectangle relative to the upper right anchor
