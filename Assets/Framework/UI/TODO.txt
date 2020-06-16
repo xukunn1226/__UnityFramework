@@ -36,6 +36,11 @@
 	https://gameinstitute.qq.com/community/detail/112235  UGUI优化：批次合并源码分析及工具
 	https://gameinstitute.qq.com/community/detail/114203  重建 是UGUI优化的关键
 	https://zhuanlan.zhihu.com/p/55566751  				  Unity UGUI 点击性能优化
+	https://blog.csdn.net/VR_iShow/article/details/92850381
+	https://thegamedev.guru/unity-ui/optimization-strategies/
+	https://forum.unity.com/threads/unity-ui-performance-tips-sharing-my-findings.524916/
+	
+
 
 	一切的优化围绕三个点进行：batch build、mesh build、raycast
 	* batch build: 根据depth排序，检测overlap，material id，worker thread执行
@@ -68,8 +73,11 @@
 		1、SetActive				优势：NO CPU、no raycast；劣势：GC，rebuild mesh
 		2、Out of Screen			优势：NO GC；劣势：CPU有开销，raycast有开销，rebuild mesh
 		3、Set Layer（OutUI）		优势：切换无开销，no rebuild mesh；劣势：CPU有开销，raycast
-		4、Disable Component		据说是最优，不会rebuild mesh，不会rebatch，待验证
+		4、Disable canvas			据说是最优，不会rebuild mesh，不会rebatch，待验证
 	* overridesorting属性会打断射线，可以降低层级遍历的成本?
+	* 放入缓存池的最佳操作：disable the gameobject first，then reparent it into pool
+	  取出缓存池的最佳操作：reparent it first, then update your data, then enable it
+	* Animator会每帧dirty ui element，尽量减少使用（待验证）
 
 
 
