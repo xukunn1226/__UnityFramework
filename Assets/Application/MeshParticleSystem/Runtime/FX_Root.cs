@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Cache;
 
-//[MenuItem("Tools/Apply PrefabInstance")]
-//static private void TestPrefab()
-//{
-//    GameObject parent = PrefabUtility.GetOutermostPrefabInstanceRoot(Selection.activeObject);
-//    if (parent != null)
-//        Selection.activeObject = parent;
-
-//    //PrefabUtility.ApplyPrefabInstance(Selection.activeGameObject, InteractionMode.UserAction);
-//}
 namespace MeshParticleSystem
 {
     [ExecuteInEditMode]
