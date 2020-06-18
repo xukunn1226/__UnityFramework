@@ -2,6 +2,7 @@
 * 工具监测特效制作是否规范
 * 工具检测特效是否符合合批规范
 https://github.com/gmhevinci/MotionFramework/blob/master/Docs/Editor.ParticleProfiler.md
+https://github.com/sunbrando/ParticleEffectProfiler
 * 去除所有FX_Component组件上的duration，统一使用FX_Root duration
 * 对象池管理特效：当特效数量达到一定值，使用LOD机制弱化效果
 

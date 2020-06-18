@@ -2,73 +2,68 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor;
 
 namespace MeshParticleSystem.Profiler
 {
     [System.Serializable]
     public class ParticleProfilingData
     {
-        private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
-        private List<FX_Component> m_FXComponents = new List<FX_Component>();
+        public bool                 isDone          { get; set; }
+        public List<ParticleSystem> allParticles    { get; set; }
+        public List<Texture>        allTextures     { get; set; }
+        public List<Material>       allMaterials    { get; set; }
+        public List<Mesh>           allMeshes       { get; set; }
 
-        private HashSet<Texture> m_Textures = new HashSet<Texture>();
-
-        public ParticleProfilingData(GameObject particle)
+        public int                  materialCount   { get; set; }
+        public long                 textureMemory   { get; set; }
+        public int                  maxDrawCall     { get; set; }
+        private int                 m_CurDrawCall;
+        public int                  curDrawCall
         {
-            if(particle == null)
-                throw new System.ArgumentNullException("");
-
-            particle.GetComponentsInChildren<ParticleSystem>(true, m_Particles);
+            get { return m_CurDrawCall; }
+            set
+            {
+                if(value > maxDrawCall)
+                {
+                    maxDrawCall = value;
+                }
+                m_CurDrawCall = value;
+            }
         }
 
-        static private HashSet<Texture> s_TexturesSet = new HashSet<Texture>();
-        static private HashSet<Texture> GetTextures(ParticleSystem ps)
+        public int                  maxTriangles    { get; set; }
+        private int                 m_CurTriangles;
+        public int                  curTriangles
         {
-            s_TexturesSet.Clear();
-
-            ParticleSystem.TextureSheetAnimationModule tsa = ps.textureSheetAnimation;
-            if(tsa.mode == ParticleSystemAnimationMode.Sprites)
+            get { return m_CurTriangles; }
+            set
             {
-                for(int i = 0; i < tsa.spriteCount; ++i)
+                if(value > maxTriangles)
                 {
-                    Sprite s = tsa.GetSprite(i);
-                    if( s != null && s.texture != null )
-                    {
-                        s_TexturesSet.Add(s.texture);
-                    }
+                    maxTriangles = value;
                 }
+                m_CurTriangles = value;
             }
-
-            // ParticleSystemRenderer[] psrs = ps.GetComponentsInChildren<ParticleSystemRenderer>(true);
-            // List<Material> mats = new List<Material>();
-            // foreach(var psr in psrs)
-            // {
-            //     psr.sharedMaterials.CopyTo(mats.ToArray(), 0);
-
-            //     if(psr.trailMaterial != null)
-            //         mats.Append(psr.trailMaterial);
-            // }
-
-            return s_TexturesSet;
         }
 
-        static private HashSet<Material> s_MaterialsSet = new HashSet<Material>();
-        static private HashSet<Material> GetMaterials(ParticleSystem ps)
+        public int                  maxParticleCount    { get; set; }
+        private int                 m_CurParticleCount;
+        public int                  curParticleCount
         {
-            s_MaterialsSet.Clear();
-
-            ParticleSystemRenderer[] psrs = ps.GetComponentsInChildren<ParticleSystemRenderer>(true);
-            foreach(var psr in psrs)
+            get { return m_CurParticleCount; }
+            set
             {
-                if(psr == null) continue;
-
-                foreach(var mat in psr.sharedMaterials)
+                if(value > maxParticleCount)
                 {
-                    if(mat == null) continue;
-                    s_MaterialsSet.Add(mat);
+                    maxParticleCount = value;
                 }
+                m_CurParticleCount = value;
             }
-            return s_MaterialsSet;
+        }
+
+        public ParticleProfilingData()
+        {
         }
     }
 }

@@ -1,0 +1,247 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+using UnityEditor;
+
+namespace MeshParticleSystem.Profiler
+{
+    public class ParticleProfilerEx
+    {
+        private const float kMaxSimulatedTime = 5.0f;        
+        static private GameObject m_Inst;
+        static private ParticleProfilingData m_ProfilingData;
+        static private float m_LastTime;
+        static private float m_BeginTime;
+
+        static public ParticleProfilingData StartProfiler(string assetPath)
+        {
+            GameObject particle = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if(particle == null)
+            {
+                Debug.LogError($"Can't load gameObject at path {assetPath}");
+                return new ParticleProfilingData();
+            }
+
+            return StartProfiler(particle);
+        }
+
+        static public ParticleProfilingData StartProfiler(GameObject particle)
+        {
+            m_Inst = PrefabUtility.InstantiatePrefab(particle) as GameObject;
+
+            m_ProfilingData = new ParticleProfilingData();
+            m_ProfilingData.allParticles = m_Inst.GetComponentsInChildren<ParticleSystem>(true).ToList();
+            m_ProfilingData.allMeshes = GetAllMeshes(m_Inst);
+            m_ProfilingData.allMaterials = GetAllMaterials(m_Inst);
+            m_ProfilingData.allTextures = GetAllTextures(m_Inst);
+            m_ProfilingData.materialCount = m_ProfilingData.allMaterials.Count;
+            m_ProfilingData.textureMemory = GetRuntimeMemorySizeLong(m_ProfilingData.allTextures);
+
+            m_BeginTime = (float)EditorApplication.timeSinceStartup; 
+            m_LastTime = (float)EditorApplication.timeSinceStartup;
+            EditorApplication.update += Update;
+
+            return m_ProfilingData;
+        }
+
+        static private void Update()
+        {
+            float deltaTime = (float)(EditorApplication.timeSinceStartup - m_LastTime);
+            m_LastTime = (float)EditorApplication.timeSinceStartup;
+
+            foreach(var ps in m_ProfilingData.allParticles)
+            {
+                ps.Simulate(deltaTime, false, false);
+            }
+
+            m_ProfilingData.curDrawCall = UnityEditor.UnityStats.batches;
+            m_ProfilingData.curTriangles = UnityEditor.UnityStats.triangles;
+            m_ProfilingData.curParticleCount = GetTotalParticleCount(m_ProfilingData.allParticles);
+
+            if(m_LastTime - m_BeginTime > kMaxSimulatedTime || IsSimulatedDone(m_ProfilingData.allParticles))
+            {
+                m_ProfilingData.isDone = true;
+                EditorApplication.update = null;
+            }
+        }
+
+        static private bool IsSimulatedDone(List<ParticleSystem> psList)
+        {
+            foreach(var ps in psList)
+            {
+                if(ps.main.loop || ps.IsAlive())
+                    return false;
+            }
+            return true;
+        }
+
+        static private int GetTotalParticleCount(List<ParticleSystem> psList)
+        {
+            int count = 0;
+            foreach(var ps in psList)
+            {
+                count += ps.particleCount;
+            }
+            return count;
+        }
+
+        static private long GetRuntimeMemorySizeLong(List<Texture> texList)
+        {
+            long size = 0;
+            foreach(var tex in texList)
+            {
+                size += Utility.GetRuntimeMemorySizeLong(tex);
+            }
+            return size;
+        }
+
+        static private List<Mesh> GetAllMeshes(GameObject particle)
+        {
+            if(particle == null)
+                throw new System.ArgumentNullException("particle");
+
+            HashSet<Mesh> meshSet = new HashSet<Mesh>();
+
+            MeshFilter[] mfs = particle.GetComponentsInChildren<MeshFilter>(true);
+            foreach(var mf in mfs)
+            {
+                if(mf == null || mf.sharedMesh == null) continue;
+                meshSet.Add(mf.sharedMesh);
+            }
+
+            SkinnedMeshRenderer[] smrs = particle.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            foreach(var smr in smrs)
+            {
+                if(smr == null || smr.sharedMesh == null) continue;
+                meshSet.Add(smr.sharedMesh);
+            }
+
+            ParticleSystem[] pss = particle.GetComponentsInChildren<ParticleSystem>(true);
+            foreach(var ps in pss)
+            {
+                var psr = ps.GetComponent<ParticleSystemRenderer>();
+                if(psr.renderMode == ParticleSystemRenderMode.Mesh && psr.mesh != null)
+                {
+                    meshSet.Add(psr.mesh);
+                }
+            }
+            return meshSet.ToList();
+        }
+
+        static private List<Texture> GetAllTextures(GameObject particle)
+        {
+            if(particle == null)
+                throw new System.ArgumentNullException("particle");
+
+            HashSet<Texture> texSet = new HashSet<Texture>();
+
+            texSet.UnionWith(GetAllTextureSheet(particle));
+
+            List<Material> matList = GetAllMaterials(particle);
+            foreach(var mat in matList)
+            {
+                int count = ShaderUtil.GetPropertyCount(mat.shader);
+				for (int i = 0; i < count; i++)
+				{
+					ShaderUtil.ShaderPropertyType propertyType = ShaderUtil.GetPropertyType(mat.shader, i);
+					if (propertyType == ShaderUtil.ShaderPropertyType.TexEnv)
+					{
+						string propertyName = ShaderUtil.GetPropertyName(mat.shader, i);
+						Texture tex = mat.GetTexture(propertyName);
+						if (tex != null)
+						{
+                            texSet.Add(tex);
+						}
+					}
+				}
+            }
+            return texSet.ToList();
+        }
+
+        static private HashSet<Texture> GetAllTextureSheet(GameObject particle)
+        {
+            HashSet<Texture> texSet = new HashSet<Texture>();
+
+            ParticleSystem[] pss = particle.GetComponentsInChildren<ParticleSystem>(true);
+            foreach(var ps in pss)
+            {
+                ParticleSystem.TextureSheetAnimationModule tsa = ps.textureSheetAnimation;
+                if(tsa.mode == ParticleSystemAnimationMode.Sprites)
+                {
+                    for(int i = 0; i < tsa.spriteCount; ++i)
+                    {
+                        Sprite s = tsa.GetSprite(i);
+                        if(s != null && s.texture != null)
+                        {
+                            texSet.Add(s.texture);
+                        }
+                    }
+                }
+            }
+
+            return texSet;
+        }
+
+        static private List<Material> GetAllMaterials(GameObject particle)
+        {
+            if(particle == null)
+                throw new System.ArgumentNullException("particle");
+
+            HashSet<Material> matSet = new HashSet<Material>();
+
+            ParticleSystem[] pss = particle.GetComponentsInChildren<ParticleSystem>(true);
+            foreach(var ps in pss)
+            {
+                matSet.UnionWith(GetMaterials(ps));
+            }
+
+            FX_Component[] fxs = particle.GetComponentsInChildren<FX_Component>(true);
+            foreach(var fx in fxs)
+            {
+                matSet.UnionWith(GetMaterials(fx));
+            }
+            return matSet.ToList();
+        }
+
+        static private HashSet<Material> GetMaterials(ParticleSystem ps)
+        {
+            HashSet<Material> matSet = new HashSet<Material>();
+
+            ParticleSystemRenderer[] psrs = ps.GetComponentsInChildren<ParticleSystemRenderer>(true);
+            foreach(var psr in psrs)
+            {
+                if(psr == null) continue;
+
+                foreach(var mat in psr.sharedMaterials)
+                {
+                    if(mat == null) continue;
+                    matSet.Add(mat);
+                }
+
+                if(psr.trailMaterial != null)
+                    matSet.Add(psr.trailMaterial);
+            }
+            return matSet;
+        }
+
+        static private HashSet<Material> GetMaterials(FX_Component fxComp)
+        {
+            HashSet<Material> matSet = new HashSet<Material>();
+
+            Renderer[] rdrs = fxComp.GetComponents<Renderer>();
+            foreach(var rdr in rdrs)
+            {
+                if(rdr == null) continue;
+
+                foreach(var mat in rdr.sharedMaterials)
+                {
+                    if(mat == null) continue;
+                    matSet.Add(mat);
+                }
+            }
+
+            return matSet;
+        }
+    }
+}
