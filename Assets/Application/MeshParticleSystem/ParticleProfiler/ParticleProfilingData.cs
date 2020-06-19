@@ -9,7 +9,7 @@ namespace MeshParticleSystem.Profiler
     [System.Serializable]
     public class ParticleProfilingData
     {
-        public bool                 isDone          { get; set; }
+        public string               assetPath;
         public List<ParticleSystem> allParticles    { get; set; }
         public List<Texture>        allTextures     { get; set; }
         public List<Material>       allMaterials    { get; set; }
@@ -62,8 +62,24 @@ namespace MeshParticleSystem.Profiler
             }
         }
 
-        public ParticleProfilingData()
+        public AnimationCurve DrawCallCurve = new AnimationCurve();
+        public AnimationCurve TriangleCountCurve = new AnimationCurve();
+        public AnimationCurve ParticleCountCurve = new AnimationCurve();
+
+        protected ParticleProfilingData() {}
+        public ParticleProfilingData(string assetPath)
         {
+            this.assetPath = assetPath;
+        }
+
+        public override string ToString()
+        {
+            return null;
+        }
+
+        public string ToJson()
+        {
+            return null;
         }
     }
 }

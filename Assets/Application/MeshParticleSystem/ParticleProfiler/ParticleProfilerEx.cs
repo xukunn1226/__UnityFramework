@@ -11,8 +11,8 @@ namespace MeshParticleSystem.Profiler
         private const float kMaxSimulatedTime = 5.0f;        
         static private GameObject m_Inst;
         static private ParticleProfilingData m_ProfilingData;
-        static private float m_LastTime;
         static private float m_BeginTime;
+        static private float m_IntervalSampleTime;
 
         static public ParticleProfilingData StartProfiler(string assetPath)
         {
@@ -20,17 +20,12 @@ namespace MeshParticleSystem.Profiler
             if(particle == null)
             {
                 Debug.LogError($"Can't load gameObject at path {assetPath}");
-                return new ParticleProfilingData();
+                return new ParticleProfilingData("Invalid assetPath");
             }
-
-            return StartProfiler(particle);
-        }
-
-        static public ParticleProfilingData StartProfiler(GameObject particle)
-        {
+            
             m_Inst = PrefabUtility.InstantiatePrefab(particle) as GameObject;
 
-            m_ProfilingData = new ParticleProfilingData();
+            m_ProfilingData = new ParticleProfilingData(assetPath);
             m_ProfilingData.allParticles = m_Inst.GetComponentsInChildren<ParticleSystem>(true).ToList();
             m_ProfilingData.allMeshes = GetAllMeshes(m_Inst);
             m_ProfilingData.allMaterials = GetAllMaterials(m_Inst);
@@ -38,42 +33,54 @@ namespace MeshParticleSystem.Profiler
             m_ProfilingData.materialCount = m_ProfilingData.allMaterials.Count;
             m_ProfilingData.textureMemory = GetRuntimeMemorySizeLong(m_ProfilingData.allTextures);
 
-            m_BeginTime = (float)EditorApplication.timeSinceStartup; 
-            m_LastTime = (float)EditorApplication.timeSinceStartup;
-            EditorApplication.update += Update;
+            m_BeginTime = (float)EditorApplication.timeSinceStartup;
+            m_IntervalSampleTime = 0;
 
             return m_ProfilingData;
         }
 
-        static private void Update()
-        {
-            float deltaTime = (float)(EditorApplication.timeSinceStartup - m_LastTime);
-            m_LastTime = (float)EditorApplication.timeSinceStartup;
-
+        public bool UpdateSimulate(float deltaTime)
+        {            
+            // simulate particle system
             foreach(var ps in m_ProfilingData.allParticles)
             {
                 ps.Simulate(deltaTime, false, false);
             }
 
+            // update stats
             m_ProfilingData.curDrawCall = UnityEditor.UnityStats.batches;
             m_ProfilingData.curTriangles = UnityEditor.UnityStats.triangles;
             m_ProfilingData.curParticleCount = GetTotalParticleCount(m_ProfilingData.allParticles);
 
-            if(m_LastTime - m_BeginTime > kMaxSimulatedTime || IsSimulatedDone(m_ProfilingData.allParticles))
+            // sample stats
+            m_IntervalSampleTime += deltaTime;
+            if(m_IntervalSampleTime > 0.3f)
             {
-                m_ProfilingData.isDone = true;
-                EditorApplication.update = null;
+                m_IntervalSampleTime = 0;
+
+                float time = (float)(EditorApplication.timeSinceStartup - m_BeginTime);
+                m_ProfilingData.DrawCallCurve.AddKey(time, m_ProfilingData.curDrawCall);
+                m_ProfilingData.TriangleCountCurve.AddKey(time, m_ProfilingData.curTriangles);
+                m_ProfilingData.ParticleCountCurve.AddKey(time, m_ProfilingData.curParticleCount);
             }
+
+            if(EditorApplication.timeSinceStartup - m_BeginTime > kMaxSimulatedTime || !IsAlive(m_ProfilingData.allParticles))
+            {
+                if(m_Inst != null)
+                    Object.DestroyImmediate(m_Inst);
+                return true;
+            }
+            return false;
         }
 
-        static private bool IsSimulatedDone(List<ParticleSystem> psList)
+        static private bool IsAlive(List<ParticleSystem> psList)
         {
             foreach(var ps in psList)
             {
-                if(ps.main.loop || ps.IsAlive())
-                    return false;
+                if(ps.IsAlive())
+                    return true;
             }
-            return true;
+            return false;
         }
 
         static private int GetTotalParticleCount(List<ParticleSystem> psList)
