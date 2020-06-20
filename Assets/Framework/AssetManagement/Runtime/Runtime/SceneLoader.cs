@@ -12,7 +12,7 @@ namespace Framework.AssetManagement.Runtime
     public class SceneLoader : ILinkedObjectPoolNode<SceneLoader>, IPooledObject
     {
         static private LinkedObjectPool<SceneLoader> m_Pool;
-        static private int k_InitPoolSize = 4;
+        static private int k_InitPoolSize = 1;
 
         private AssetBundleLoader   m_BundleLoader;
 

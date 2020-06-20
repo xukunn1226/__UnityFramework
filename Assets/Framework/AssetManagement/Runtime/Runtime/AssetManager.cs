@@ -172,7 +172,7 @@ namespace Framework.AssetManagement.Runtime
             GameObject go = null;
 
             AssetLoader<GameObject> loader = LoadAsset<GameObject>(assetPath);
-            if (loader.asset != null)
+            if (loader != null && loader.asset != null)
             {
                 go = UnityEngine.Object.Instantiate(loader.asset);
 
@@ -182,8 +182,6 @@ namespace Framework.AssetManagement.Runtime
             else
             {
                 Debug.LogWarningFormat("InstantiatePrefab -- Failed to load asset[{0}]", assetPath);
-
-                UnloadAsset(loader);        // 加载失败回收AssetLoader
             }
 
             return go;
@@ -197,7 +195,7 @@ namespace Framework.AssetManagement.Runtime
             GameObject go = null;
 
             AssetLoader<GameObject> loader = LoadAsset<GameObject>(assetBundleName, assetName);
-            if (loader.asset != null)
+            if (loader != null && loader.asset != null)
             {
                 go = UnityEngine.Object.Instantiate(loader.asset);
 
@@ -207,8 +205,6 @@ namespace Framework.AssetManagement.Runtime
             else
             {
                 Debug.LogWarningFormat("InstantiatePrefab -- Failed to load asset[{0}]", assetBundleName + "/" + assetName);
-
-                UnloadAsset(loader);        // 加载失败回收AssetLoader
             }
 
             return go;

@@ -91,6 +91,15 @@ namespace Framework.Core.Editor
             if (Camera.main == null || SceneView.lastActiveSceneView == null)
                 return;
 
+            if(EditorApplication.isPlaying)
+                return;
+
+            if(EditorApplication.isCompiling)
+                return;
+
+            if(EditorWindow.focusedWindow != SceneView.lastActiveSceneView)
+                return;
+
             if (enableSyncGameViewToSceneView)
             {
                 SceneView.lastActiveSceneView.AlignViewToObject(Camera.main.transform);

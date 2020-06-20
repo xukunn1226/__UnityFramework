@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using UnityEditor;
 
 namespace MeshParticleSystem.Profiler
 {
@@ -10,10 +8,10 @@ namespace MeshParticleSystem.Profiler
     public class ParticleProfilingData
     {
         public string               assetPath;
-        public List<ParticleSystem> allParticles    { get; set; }
-        public List<Texture>        allTextures     { get; set; }
-        public List<Material>       allMaterials    { get; set; }
-        public List<Mesh>           allMeshes       { get; set; }
+        public List<ParticleSystem> allParticles    = new List<ParticleSystem>();
+        public List<Texture>        allTextures     = new List<Texture>();
+        public List<Material>       allMaterials    = new List<Material>();
+        public List<Mesh>           allMeshes       = new List<Mesh>();
 
         public int                  materialCount   { get; set; }
         public long                 textureMemory   { get; set; }
@@ -62,11 +60,11 @@ namespace MeshParticleSystem.Profiler
             }
         }
 
-        public AnimationCurve DrawCallCurve = new AnimationCurve();
-        public AnimationCurve TriangleCountCurve = new AnimationCurve();
-        public AnimationCurve ParticleCountCurve = new AnimationCurve();
+        public AnimationCurve DrawCallCurve         = new AnimationCurve();
+        public AnimationCurve TriangleCountCurve    = new AnimationCurve();
+        public AnimationCurve ParticleCountCurve    = new AnimationCurve();
 
-        protected ParticleProfilingData() {}
+        public ParticleProfilingData() {}
         public ParticleProfilingData(string assetPath)
         {
             this.assetPath = assetPath;

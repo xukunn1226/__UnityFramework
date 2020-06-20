@@ -52,6 +52,9 @@ namespace Framework.AssetManagement.GameBuilder
         static public BuildAssetBundleOptions GenerateOptions(this BundleBuilderSetting para)
         {
             BuildAssetBundleOptions opt = BuildAssetBundleOptions.None;
+
+            opt |= BuildAssetBundleOptions.DisableWriteTypeTree;
+            opt |= BuildAssetBundleOptions.DisableLoadAssetByFileName;
             
             if (para.useLZ4Compress)
                 opt |= BuildAssetBundleOptions.ChunkBasedCompression;

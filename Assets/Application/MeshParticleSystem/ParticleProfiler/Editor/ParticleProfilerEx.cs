@@ -8,7 +8,7 @@ namespace MeshParticleSystem.Profiler
 {
     public class ParticleProfilerEx
     {
-        private const float kMaxSimulatedTime = 5.0f;        
+        private const float kMaxSimulatedTime = 5.0f;
         static private GameObject m_Inst;
         static private ParticleProfilingData m_ProfilingData;
         static private float m_BeginTime;
