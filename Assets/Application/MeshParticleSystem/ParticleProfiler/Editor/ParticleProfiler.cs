@@ -1,237 +1,173 @@
-﻿//--------------------------------------------------
-// Motion Framework
-// Copyright©2019-2020 何冠峰
-// Licensed under the MIT license
-//--------------------------------------------------
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
+using System.Linq;
 using UnityEditor;
 
 namespace MeshParticleSystem.Profiler
 {
-	public class ParticleProfiler
-	{
-		private MethodInfo _calculateEffectUIDataMethod = null;
+    public class ParticleProfiler
+    {
+        private const float                     kMaxSimulatedTime = 10.0f;
+        static private GameObject               m_Inst;
+        static private ParticleProfilingData    m_ProfilingData = new ParticleProfilingData();
+        static public ParticleProfilingData     profilingData => m_ProfilingData;
+        static private float                    m_BeginTime;
+        static private float                    m_LastTime;
+        static private float                    m_IntervalSampleTime;
+        static public float                     elapsedTime         { get; private set; }
+        static public bool                      profilingFinished   { get; private set; }
 
-		// 克隆的预制体
-		private GameObject _cloneObject = null;
+        static public void StartProfiler(string assetPath)
+        {
+            profilingFinished = false;
 
-		private readonly List<ParticleSystem> _allParticles = new List<ParticleSystem>(100);
-		private readonly List<Material> _allMaterials = new List<Material>(100);
-		private readonly List<Texture> _allTextures = new List<Texture>(100);
-		private readonly List<Mesh> _allMeshs = new List<Mesh>(100);
-		private readonly List<string> _errors = new List<string>(100);
+            GameObject particle = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if(particle == null)
+            {
+                Debug.LogError($"Can't load gameObject at path {assetPath}");
+                profilingFinished = true;
+                return;
+            }
+            
+            m_Inst = PrefabUtility.InstantiatePrefab(particle) as GameObject;
+            m_Inst.transform.position = Vector3.zero;
 
-		private double _beginTime = 0;
-		private float _repeterTimer = 0;
+            m_ProfilingData = new ParticleProfilingData(assetPath);
+            m_ProfilingData.allParticles = m_Inst.GetComponentsInChildren<ParticleSystem>(true).ToList();
+            m_ProfilingData.allMeshes = GetAllMeshes(m_Inst);
+            m_ProfilingData.allMaterials = GetAllMaterials(m_Inst);
+            m_ProfilingData.allTextures = GetAllTextures(m_Inst);
+            m_ProfilingData.materialCount = m_ProfilingData.allMaterials.Count;
+            m_ProfilingData.textureMemory = GetRuntimeMemorySizeLong(m_ProfilingData.allTextures);
 
-		// 材质信息
-		public int MaterialCount { private set; get; }
+            m_BeginTime = (float)EditorApplication.timeSinceStartup;
+            m_LastTime = m_BeginTime;
+            m_IntervalSampleTime = 0;
 
-		// 纹理信息
-		public long TextureMemory { private set; get; }
-		public int TextureCount { private set; get; }
+            EditorApplication.update += UpdateSimulate;
+        }
 
-		// DrawCall信息
-		public int DrawCallCurrentNum { private set; get; }
-		public int DrawCallMaxNum { private set; get; }
+        static private void UpdateSimulate()
+        {
+            float deltaTime = (float)EditorApplication.timeSinceStartup - m_LastTime;
+            m_LastTime = (float)EditorApplication.timeSinceStartup;
 
-		// 粒子信息
-		public int ParticleCurrentCount { private set; get; }
-		public int ParticleMaxCount { private set; get; }
+            // simulate particle system
+            foreach(var ps in m_ProfilingData.allParticles)
+            {
+                ps.Simulate(deltaTime, false, false);
+            }
 
-		// 三角面信息
-		public int TriangleCurrentCount { private set; get; }
-		public int TriangleMaxCount { private set; get; }
+            // update stats
+            m_ProfilingData.curDrawCall = UnityEditor.UnityStats.batches;
+            m_ProfilingData.curTriangles = UnityEditor.UnityStats.triangles;
+            m_ProfilingData.curParticleCount = GetTotalParticleCount(m_ProfilingData.allParticles);
 
-		// 填充率信息
-		public int OverdrawTotalPixel { private set; get; }
-		public int OverdrawPerPixel { private set; get; }
+            // sample stats
+            m_IntervalSampleTime += deltaTime;
+            if(m_IntervalSampleTime > 0.3f)
+            {
+                m_IntervalSampleTime = 0;
 
-		// 曲线图相关
-		public readonly AnimationCurve DrawCallCurve = new AnimationCurve();
-		public readonly AnimationCurve ParticleCountCurve = new AnimationCurve();
-		public readonly AnimationCurve TriangleCountCurve = new AnimationCurve();
+                float time = (float)(EditorApplication.timeSinceStartup - m_BeginTime);
+                m_ProfilingData.DrawCallCurve.AddKey(time, m_ProfilingData.curDrawCall);
+                m_ProfilingData.TriangleCountCurve.AddKey(time, m_ProfilingData.curTriangles);
+                m_ProfilingData.ParticleCountCurve.AddKey(time, m_ProfilingData.curParticleCount);
+            }
 
-		/// <summary>
-		/// 曲线采样总时长（秒）
-		/// </summary>
-		public float CurveSampleTime { private set; get; } = 1f;
+            elapsedTime = (float)EditorApplication.timeSinceStartup - m_BeginTime;
+            if(elapsedTime > kMaxSimulatedTime || !IsAlive(m_ProfilingData.allParticles))
+            {
+                profilingFinished = true;
 
-		/// <summary>
-		/// 粒子系统组件总数
-		/// </summary>
-		public int ParticleSystemComponentCount
-		{
-			get
-			{
-				if (_allParticles == null)
-					return 0;
-				else
-					return _allParticles.Count;
-			}
-		}
+                if(m_Inst != null)
+                    Object.DestroyImmediate(m_Inst);               
 
-		// 获取集合数据相关
-		public List<ParticleSystem> AllParticles
-		{
-			get { return _allParticles; }
-		}
-		public List<Texture> AllTextures
-		{
-			get { return _allTextures; }
-		}
-		public List<Material> AllMaterials
-		{
-			get { return _allMaterials; }
-		}
-		public List<Mesh> AllMeshs
-		{
-			get { return _allMeshs; }
-		}
-		public List<string> Errors
-		{
-			get { return _errors; }
-		}
+                EditorApplication.update -= UpdateSimulate;
+            }
+        }
 
+        static private bool IsAlive(List<ParticleSystem> psList)
+        {
+            foreach(var ps in psList)
+            {
+                ParticleSystem.MainModule main = ps.main;
+                if(main.loop)
+                    return true;
 
-		public ParticleProfiler()
-		{
-			_calculateEffectUIDataMethod = typeof(ParticleSystem).GetMethod("CalculateEffectUIData", BindingFlags.Instance | BindingFlags.NonPublic);
-		}
+                if(elapsedTime < main.duration + main.startLifetime.constant)
+                    return true;
+            }
+            return false;
+        }
 
-		/// <summary>
-		/// 开始分析特效
-		/// </summary>
-		/// <param name="prefab">特效预制体</param>
-		public void Analyze(UnityEngine.Object prefab)
-		{
-			if (prefab == null)
-				return;
+        static private int GetTotalParticleCount(List<ParticleSystem> psList)
+        {
+            int count = 0;
+            foreach(var ps in psList)
+            {
+                count += ps.particleCount;
+            }
+            return count;
+        }
 
-			// 销毁旧的克隆体
-			DestroyPrefab();
+        static private long GetRuntimeMemorySizeLong(List<Texture> texList)
+        {
+            long size = 0;
+            foreach(var tex in texList)
+            {
+                size += Utility.GetRuntimeMemorySizeLong(tex);
+            }
+            return size;
+        }
 
-			// 重置数据
-			Reset();
+        static private List<Mesh> GetAllMeshes(GameObject particle)
+        {
+            if(particle == null)
+                throw new System.ArgumentNullException("particle");
 
-			// 创建新实例对象
-			_cloneObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            HashSet<Mesh> meshSet = new HashSet<Mesh>();
 
-			// 分析显示相关数据
-			ParseRendererInfo(_cloneObject);
+            MeshFilter[] mfs = particle.GetComponentsInChildren<MeshFilter>(true);
+            foreach(var mf in mfs)
+            {
+                if(mf == null || mf.sharedMesh == null) continue;
+                meshSet.Add(mf.sharedMesh);
+            }
 
-			_beginTime = EditorApplication.timeSinceStartup;
-		}
+            SkinnedMeshRenderer[] smrs = particle.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            foreach(var smr in smrs)
+            {
+                if(smr == null || smr.sharedMesh == null) continue;
+                meshSet.Add(smr.sharedMesh);
+            }
 
-		/// <summary>
-		/// 重置所有数据
-		/// </summary>
-		public void Reset()
-		{
-			_allParticles.Clear();
-			_allMaterials.Clear();
-			_allTextures.Clear();
-			_allMeshs.Clear();
-			_errors.Clear();
+            ParticleSystem[] pss = particle.GetComponentsInChildren<ParticleSystem>(true);
+            foreach(var ps in pss)
+            {
+                var psr = ps.GetComponent<ParticleSystemRenderer>();
+                if(psr.renderMode == ParticleSystemRenderMode.Mesh && psr.mesh != null)
+                {
+                    meshSet.Add(psr.mesh);
+                }
+            }
+            return meshSet.ToList();
+        }
 
-			_beginTime = 0;
-			_repeterTimer = 0;
+        static private List<Texture> GetAllTextures(GameObject particle)
+        {
+            if(particle == null)
+                throw new System.ArgumentNullException("particle");
 
-			MaterialCount = 0;
-			TextureMemory = 0;
-			TextureCount = 0;
-			DrawCallCurrentNum = 0;
-			DrawCallMaxNum = 0;
-			ParticleCurrentCount = 0;
-			ParticleMaxCount = 0;
-			TriangleCurrentCount = 0;
-			TriangleMaxCount = 0;
-			OverdrawTotalPixel = 0;
-			OverdrawPerPixel = 0;
+            HashSet<Texture> texSet = new HashSet<Texture>();
 
-			for (int i = DrawCallCurve.length - 1; i >= 0; i--)
-			{
-				DrawCallCurve.RemoveKey(i);
-			}
-			for (int i = ParticleCountCurve.length - 1; i >= 0; i--)
-			{
-				ParticleCountCurve.RemoveKey(i);
-			}
-			for (int i = TriangleCountCurve.length - 1; i >= 0; i--)
-			{
-				TriangleCountCurve.RemoveKey(i);
-			}
-		}
+            texSet.UnionWith(GetAllTextureSheet(particle));
 
-		/// <summary>
-		/// 销毁克隆的预制体
-		/// </summary>
-		public void DestroyPrefab()
-		{
-			if (_cloneObject != null)
-			{
-				GameObject.DestroyImmediate(_cloneObject);
-				_cloneObject = null;
-			}
-		}
-
-		/// <summary>
-		/// 更新分析器
-		/// </summary>
-		public void Update(float deltaTime)
-		{
-			if (_cloneObject == null)
-				return;
-
-			UpdateSimulate(deltaTime);
-			UpdateRuntimeStats();
-			UpdateRuntimeParticleCount();
-			UpdateAllAnimationCurve(deltaTime);
-		}
-
-
-		/// <summary>
-		/// 分析显示相关数据
-		/// </summary>
-		private void ParseRendererInfo(GameObject go)
-		{
-			// 获取所有的粒子系统组件
-			_cloneObject.GetComponentsInChildren<ParticleSystem>(true, _allParticles);
-
-			// 获取所有唯一的材质球
-			_allMaterials.Clear();
-			Renderer[] rendererList = go.GetComponentsInChildren<Renderer>(true);
-			foreach (var rd in rendererList)
-			{
-				if (rd.enabled == false)
-				{
-					ParticleSystem ps = rd.gameObject.GetComponent<ParticleSystem>();
-					if (ps.emission.enabled)
-						_errors.Add($"{rd.gameObject.name} 粒子系统组件：Renderer未启用，请关闭Emission发射器！");
-				}
-
-				foreach (var mat in rd.sharedMaterials)
-				{
-					if (mat == null)
-					{
-						if (rd.enabled)
-							_errors.Add($"{rd.gameObject.name} 粒子系统组件：Renderer已启用，但是缺少材质球！");
-						continue;
-					}
-
-					if (_allMaterials.Contains(mat) == false)
-						_allMaterials.Add(mat);
-				}
-			}
-
-			// 获取所有唯一的纹理
-			_allTextures.Clear();
-			foreach (var mat in _allMaterials)
-			{
-				int count = ShaderUtil.GetPropertyCount(mat.shader);
+            List<Material> matList = GetAllMaterials(particle);
+            foreach(var mat in matList)
+            {
+                int count = ShaderUtil.GetPropertyCount(mat.shader);
 				for (int i = 0; i < count; i++)
 				{
 					ShaderUtil.ShaderPropertyType propertyType = ShaderUtil.GetPropertyType(mat.shader, i);
@@ -241,215 +177,97 @@ namespace MeshParticleSystem.Profiler
 						Texture tex = mat.GetTexture(propertyName);
 						if (tex != null)
 						{
-							if (_allTextures.Contains(tex) == false)
-								_allTextures.Add(tex);
+                            texSet.Add(tex);
 						}
 					}
 				}
-			}
-			foreach (var ps in _allParticles)
-			{
-				ParticleSystem.TextureSheetAnimationModule tm = ps.textureSheetAnimation;
-				if (tm.mode == ParticleSystemAnimationMode.Sprites)
-				{
-					for (int i = 0; i < tm.spriteCount; i++)
-					{
-						Sprite sprite = tm.GetSprite(i);
-						if (sprite != null && sprite.texture != null)
-						{
-							if (_allTextures.Contains(sprite.texture) == false)
-								_allTextures.Add(sprite.texture);
-						}
-					}
-				}
-			}
+            }
+            return texSet.ToList();
+        }
 
-			// 获取所有唯一的网格
-			_allMeshs.Clear();
-			MeshFilter[] list1 = go.GetComponentsInChildren<MeshFilter>();
-			foreach (var meshFilter in list1)
-			{
-				if (meshFilter.sharedMesh != null)
-				{
-					if (_allMeshs.Contains(meshFilter.sharedMesh) == false)
-						_allMeshs.Add(meshFilter.sharedMesh);
-				}
-			}
-			SkinnedMeshRenderer[] list2 = go.GetComponentsInChildren<SkinnedMeshRenderer>();
-			foreach (var skinMesh in list2)
-			{
-				if (skinMesh.sharedMesh != null)
-				{
-					if (_allMeshs.Contains(skinMesh.sharedMesh) == false)
-						_allMeshs.Add(skinMesh.sharedMesh);
-				}
-			}
-			foreach (var ps in _allParticles)
-			{
-				var psr = ps.GetComponent<ParticleSystemRenderer>();
-				if (psr != null && psr.renderMode == ParticleSystemRenderMode.Mesh)
-				{
-					if (psr.mesh != null)
-					{
-						if (_allMeshs.Contains(psr.mesh) == false)
-							_allMeshs.Add(psr.mesh);
-					}
-				}
-			}
+        static private HashSet<Texture> GetAllTextureSheet(GameObject particle)
+        {
+            HashSet<Texture> texSet = new HashSet<Texture>();
 
-			// 计算材质数量
-			MaterialCount = _allMaterials.Count;
+            ParticleSystem[] pss = particle.GetComponentsInChildren<ParticleSystem>(true);
+            foreach(var ps in pss)
+            {
+                ParticleSystem.TextureSheetAnimationModule tsa = ps.textureSheetAnimation;
+                if(tsa.mode == ParticleSystemAnimationMode.Sprites)
+                {
+                    for(int i = 0; i < tsa.spriteCount; ++i)
+                    {
+                        Sprite s = tsa.GetSprite(i);
+                        if(s != null && s.texture != null)
+                        {
+                            texSet.Add(s.texture);
+                        }
+                    }
+                }
+            }
 
-			// 计算纹理数量和所需内存大小	
-			TextureCount = _allTextures.Count;
-			TextureMemory = 0;
-			foreach (var tex in _allTextures)
-			{
-				TextureMemory += GetStorageMemorySize(tex);
-			}
+            return texSet;
+        }
 
-			// 计算特效生命周期
-			CurveSampleTime = 1f;
-			foreach (var ps in _allParticles)
-			{
-				float playingTime = ps.main.duration;
-				float delayTime = GetMaxTime(ps.main.startDelay);
-				float lifeTime = GetMaxTime(ps.main.startLifetime);
-				if ((delayTime + lifeTime) > playingTime)
-					playingTime = delayTime + lifeTime;
-				if (playingTime > CurveSampleTime)
-					CurveSampleTime = playingTime;
-			}
-		}
-		private float GetMaxTime(ParticleSystem.MinMaxCurve curveInfo)
-		{
-			if (curveInfo.mode == ParticleSystemCurveMode.Constant)
-				return curveInfo.constant;
-			else if (curveInfo.mode == ParticleSystemCurveMode.TwoConstants)
-				return curveInfo.constantMax;
-			else if (curveInfo.mode == ParticleSystemCurveMode.Curve)
-				return GetAnimationCurveMaxValue(curveInfo.curve) * curveInfo.curveMultiplier;
-			else if (curveInfo.mode == ParticleSystemCurveMode.TwoCurves)
-				return GetAnimationCurveMaxValue(curveInfo.curveMin, curveInfo.curveMax) * curveInfo.curveMultiplier;
-			else
-				throw new System.NotImplementedException($"{curveInfo.mode}");
-		}
-		private float GetAnimationCurveMaxValue(AnimationCurve curve)
-		{
-			float maxValue = float.MinValue;
-			foreach (var key in curve.keys)
-			{
-				if (key.value > maxValue)
-					maxValue = key.value;
-			}
-			return maxValue;
-		}
-		private float GetAnimationCurveMaxValue(AnimationCurve minCurve, AnimationCurve maxCurve)
-		{
-			float value1 = GetAnimationCurveMaxValue(minCurve);
-			float value2 = GetAnimationCurveMaxValue(maxCurve);
-			if (value1 > value2)
-				return value1;
-			else
-				return value2;
-		}
+        static private List<Material> GetAllMaterials(GameObject particle)
+        {
+            if(particle == null)
+                throw new System.ArgumentNullException("particle");
 
-		/// <summary>
-		/// 模拟粒子效果
-		/// </summary>
-		private void UpdateSimulate(float deltaTime)
-		{
-			foreach (var ps in _allParticles)
-			{
-				ps.Simulate(deltaTime, false, false);
-			}
-		}
+            HashSet<Material> matSet = new HashSet<Material>();
 
-		/// <summary>
-		/// 更新运行时的Stats信息
-		/// </summary>
-		private void UpdateRuntimeStats()
-		{
-			// 注意：如果开启填充率测试，这里要除以2
-			DrawCallCurrentNum = UnityEditor.UnityStats.batches;
-			if (DrawCallCurrentNum > DrawCallMaxNum)
-				DrawCallMaxNum = DrawCallCurrentNum;
+            ParticleSystem[] pss = particle.GetComponentsInChildren<ParticleSystem>(true);
+            foreach(var ps in pss)
+            {
+                matSet.UnionWith(GetMaterials(ps));
+            }
 
-			TriangleCurrentCount = UnityEditor.UnityStats.triangles;
-			if (TriangleCurrentCount > TriangleMaxCount)
-				TriangleMaxCount = TriangleCurrentCount;
-		}
+            FX_Component[] fxs = particle.GetComponentsInChildren<FX_Component>(true);
+            foreach(var fx in fxs)
+            {
+                matSet.UnionWith(GetMaterials(fx));
+            }
+            return matSet.ToList();
+        }
 
-		/// <summary>
-		/// 更新运行时的粒子数量信息
-		/// </summary>
-		private void UpdateRuntimeParticleCount()
-		{
-			ParticleCurrentCount = 0;
-			foreach (var ps in _allParticles)
-			{
-				int count = GetRuntimeParticleCount(ps);
-				ParticleCurrentCount += count;
-			}
-			if (ParticleCurrentCount > ParticleMaxCount)
-				ParticleMaxCount = ParticleCurrentCount;
-		}
-		private int GetRuntimeParticleCount(ParticleSystem ps)
-		{
-			// 获取粒子系统运行时的数量
-			int count = 0;
-			object[] parameters = new object[] { count, 0.0f, Mathf.Infinity };
-			_calculateEffectUIDataMethod.Invoke(ps, parameters);
-			count = (int)parameters[0];
-			return count;
-		}
+        static private HashSet<Material> GetMaterials(ParticleSystem ps)
+        {
+            HashSet<Material> matSet = new HashSet<Material>();
 
-		/// <summary>
-		/// 更新所有曲线图
-		/// </summary>
-		private void UpdateAllAnimationCurve(float deltaTime)
-		{
-			float time = (float)(EditorApplication.timeSinceStartup - _beginTime);
-			if (time > CurveSampleTime)
-				return;
+            ParticleSystemRenderer[] psrs = ps.GetComponentsInChildren<ParticleSystemRenderer>(true);
+            foreach(var psr in psrs)
+            {
+                if(psr == null) continue;
 
-			_repeterTimer += deltaTime;
-			if (_repeterTimer > 0.03333f)
-			{
-				_repeterTimer = 0;
-				ParticleCountCurve.AddKey(time, ParticleCurrentCount);
-				DrawCallCurve.AddKey(time, DrawCallCurrentNum);
-				TriangleCountCurve.AddKey(time, TriangleCurrentCount);
-			}
-		}
+                foreach(var mat in psr.sharedMaterials)
+                {
+                    if(mat == null) continue;
+                    matSet.Add(mat);
+                }
 
+                if(psr.trailMaterial != null)
+                    matSet.Add(psr.trailMaterial);
+            }
+            return matSet;
+        }
 
-		#region 静态方法
-		/// <summary>
-		/// 获取纹理运行时内存大小
-		/// </summary>
-		public static int GetStorageMemorySize(Texture tex)
-		{
-			int size = (int)InvokeStaticMethod("UnityEditor.TextureUtil", "GetStorageMemorySize", tex);
-			return size;
-		}
+        static private HashSet<Material> GetMaterials(FX_Component fxComp)
+        {
+            HashSet<Material> matSet = new HashSet<Material>();
 
-		/// <summary>
-		/// 获取当前平台纹理的格式
-		/// </summary>
-		public static string GetTextureFormatString(Texture tex)
-		{
-			TextureFormat format = (TextureFormat)InvokeStaticMethod("UnityEditor.TextureUtil", "GetTextureFormat", tex);
-			return format.ToString();
-		}
+            Renderer[] rdrs = fxComp.GetComponents<Renderer>();
+            foreach(var rdr in rdrs)
+            {
+                if(rdr == null) continue;
 
-		private static object InvokeStaticMethod(string type, string method, params object[] parameters)
-		{
-			var assembly = typeof(AssetDatabase).Assembly;
-			var temp = assembly.GetType(type);
-			var methodInfo = temp.GetMethod(method, BindingFlags.Public | BindingFlags.Static);
-			return methodInfo.Invoke(null, parameters);
-		}
-		#endregion
-	}
+                foreach(var mat in rdr.sharedMaterials)
+                {
+                    if(mat == null) continue;
+                    matSet.Add(mat);
+                }
+            }
+
+            return matSet;
+        }
+    }
 }
