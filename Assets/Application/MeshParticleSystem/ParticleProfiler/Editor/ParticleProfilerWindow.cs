@@ -15,7 +15,6 @@ namespace MeshParticleSystem.Profiler.Editor
 			if (m_Instance == null)
 			{
 				m_Instance = EditorWindow.GetWindow(typeof(ParticleProfilerWindow), false, "Particle Profiler", true) as ParticleProfilerWindow;
-				// m_Instance.minSize = new Vector2(800, 600);
 			}
 			m_Instance.Show();
 		}
@@ -52,8 +51,12 @@ namespace MeshParticleSystem.Profiler.Editor
 			EditorGUILayout.Space();
 			EditorGUILayout.LabelField($"材质数量：{ParticleProfiler.profilingData.materialCount}");
 			EditorGUILayout.LabelField($"纹理数量：{ParticleProfiler.profilingData.allTextures.Count}");
-			EditorGUILayout.LabelField($"纹理内存：{EditorUtility.FormatBytes(ParticleProfiler.profilingData.textureMemory)}");
+			EditorGUILayout.LabelField($"纹理内存(当前平台)：{EditorUtility.FormatBytes(ParticleProfiler.profilingData.textureMemory)}");
+			EditorGUILayout.LabelField($"纹理内存(ETC2)：{EditorUtility.FormatBytes(ParticleProfiler.profilingData.textureMemoryOnAndroid)}");
+			EditorGUILayout.LabelField($"纹理内存(ASTC6x6)：{EditorUtility.FormatBytes(ParticleProfiler.profilingData.textureMemoryOnIPhone)}");
+			EditorGUILayout.LabelField($"网格数量：{ParticleProfiler.profilingData.allMeshes.Count}");
 			EditorGUILayout.LabelField($"粒子系统组件：{ParticleProfiler.profilingData.allParticles.Count} 个");
+			EditorGUILayout.LabelField($"FX_Component组件：{ParticleProfiler.profilingData.allFXComponents.Count} 个");
 			
 			EditorGUILayout.Space();
 			EditorGUILayout.LabelField($"DrawCall：{ParticleProfiler.profilingData.curDrawCall}  最大：{ParticleProfiler.profilingData.maxDrawCall}");

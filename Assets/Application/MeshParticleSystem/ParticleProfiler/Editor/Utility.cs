@@ -10,7 +10,6 @@ namespace MeshParticleSystem.Profiler
     [InitializeOnLoad]
     static public class Utility
     {
-        static public MethodInfo m_CalcParticleCount = null;
         static public MethodInfo m_GetRuntimeMemorySizeLong = null;                 // 运行时纹理内存大小
         static public MethodInfo m_GetTextureFormat = null;                         // 当前平台纹理格式
 
@@ -19,16 +18,8 @@ namespace MeshParticleSystem.Profiler
             Type t = typeof(AssetDatabase).Assembly.GetType("UnityEditor.TextureUtil");
 
             m_GetRuntimeMemorySizeLong = t.GetMethod("GetRuntimeMemorySizeLong", BindingFlags.Public | BindingFlags.Static);
-            // if(m_GetRuntimeMemorySizeLong != null)
-            //     Debug.Log("222222222222");
 
             m_GetTextureFormat = t.GetMethod("GetTextureFormat", BindingFlags.Public | BindingFlags.Static);
-            // if(m_GetTextureFormat != null)
-            //     Debug.Log("333333333");
-
-            m_CalcParticleCount = typeof(ParticleSystem).GetMethod("CalculateEffectUIData", BindingFlags.NonPublic | BindingFlags.Instance);
-            // if(m_CalcParticleCount != null)
-            //     Debug.Log("555555555");
         }
 
         private static object InvokeInternalAPI(string type, string method, params object[] parameters)
@@ -47,6 +38,34 @@ namespace MeshParticleSystem.Profiler
         static public string GetTextureFormatString(Texture texture)
         {
             return m_GetTextureFormat?.Invoke(null, new object[] {texture}).ToString() ?? null;
+        }
+
+        static public long GetRuntimeMemorySizeLongOnAndroid(Texture texture)
+        {
+            string path = AssetDatabase.GetAssetPath(texture);
+            TextureImporter ti = TextureImporter.GetAtPath(path) as TextureImporter;
+            if(ti == null)
+                return 0;
+
+            long size = texture.width * texture.height * (ti.DoesSourceTextureHaveAlpha() ? 8 : 4) / 8;
+            if(ti.mipmapEnabled)
+                size = size * 13 / 10;
+
+            return size;
+        }
+
+        static public long GetRuntimeMemorySizeLongOnIPhone(Texture texture)
+        {
+            string path = AssetDatabase.GetAssetPath(texture);
+            TextureImporter ti = TextureImporter.GetAtPath(path) as TextureImporter;
+            if(ti == null)
+                return 0;
+
+            float size = texture.width * texture.height * (3.56f) / 8;
+            if(ti.mipmapEnabled)
+                size = size * 1.3f;
+
+            return (long)size;
         }
     }
 }

@@ -30,16 +30,20 @@ namespace MeshParticleSystem.Profiler
                 return;
             }
             
-            m_Inst = PrefabUtility.InstantiatePrefab(particle) as GameObject;
+            m_Inst = Object.Instantiate(particle) as GameObject;
             m_Inst.transform.position = Vector3.zero;
+            Selection.activeGameObject = m_Inst;        // 选中对象才能正确模拟，奇怪
 
             m_ProfilingData = new ParticleProfilingData(assetPath);
             m_ProfilingData.allParticles = m_Inst.GetComponentsInChildren<ParticleSystem>(true).ToList();
+            m_ProfilingData.allFXComponents = m_Inst.GetComponentsInChildren<FX_Component>(true).ToList();
             m_ProfilingData.allMeshes = GetAllMeshes(m_Inst);
             m_ProfilingData.allMaterials = GetAllMaterials(m_Inst);
             m_ProfilingData.allTextures = GetAllTextures(m_Inst);
             m_ProfilingData.materialCount = m_ProfilingData.allMaterials.Count;
             m_ProfilingData.textureMemory = GetRuntimeMemorySizeLong(m_ProfilingData.allTextures);
+            m_ProfilingData.textureMemoryOnAndroid = GetRuntimeMemorySizeLongOnAndroid(m_ProfilingData.allTextures);
+            m_ProfilingData.textureMemoryOnIPhone = GetRuntimeMemorySizeLongOnIPhone(m_ProfilingData.allTextures);
 
             m_BeginTime = (float)EditorApplication.timeSinceStartup;
             m_LastTime = m_BeginTime;
@@ -60,7 +64,7 @@ namespace MeshParticleSystem.Profiler
             }
 
             // update stats
-            m_ProfilingData.curDrawCall = UnityEditor.UnityStats.batches;
+            m_ProfilingData.curDrawCall = UnityEditor.UnityStats.batches - 2;       // 搭建的测试环境有2个batch
             m_ProfilingData.curTriangles = UnityEditor.UnityStats.triangles;
             m_ProfilingData.curParticleCount = GetTotalParticleCount(m_ProfilingData.allParticles);
 
@@ -118,6 +122,26 @@ namespace MeshParticleSystem.Profiler
             foreach(var tex in texList)
             {
                 size += Utility.GetRuntimeMemorySizeLong(tex);
+            }
+            return size;
+        }
+
+        static private long GetRuntimeMemorySizeLongOnAndroid(List<Texture> texList)
+        {
+            long size = 0;
+            foreach(var tex in texList)
+            {
+                size += Utility.GetRuntimeMemorySizeLongOnAndroid(tex);
+            }
+            return size;
+        }
+
+        static private long GetRuntimeMemorySizeLongOnIPhone(List<Texture> texList)
+        {
+            long size = 0;
+            foreach(var tex in texList)
+            {
+                size += Utility.GetRuntimeMemorySizeLongOnIPhone(tex);
             }
             return size;
         }

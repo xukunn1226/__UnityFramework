@@ -9,12 +9,15 @@ namespace MeshParticleSystem.Profiler
     {
         public string               assetPath;
         public List<ParticleSystem> allParticles        = new List<ParticleSystem>();
+        public List<FX_Component>   allFXComponents     = new List<FX_Component>();
         public List<Texture>        allTextures         = new List<Texture>();
         public List<Material>       allMaterials        = new List<Material>();
         public List<Mesh>           allMeshes           = new List<Mesh>();
 
         public int                  materialCount       { get; set; }
         public long                 textureMemory       { get; set; }
+        public long                 textureMemoryOnAndroid  { get; set; }
+        public long                 textureMemoryOnIPhone   { get; set; }
         public int                  maxDrawCall         { get; set; }
         private int                 m_CurDrawCall;
         public int                  curDrawCall         { get { return m_CurDrawCall; } set { if(value > maxDrawCall) maxDrawCall = value; m_CurDrawCall = value; } }
