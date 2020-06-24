@@ -15,24 +15,33 @@ namespace MeshParticleSystem.Profiler
 
         static public long GetRuntimeMemorySizeLong(Texture texture)
         {
+#if UNITY_EDITOR
             if(m_GetRuntimeMemorySizeLong == null)
             {
                 m_GetRuntimeMemorySizeLong = typeof(AssetDatabase).Assembly.GetType("UnityEditor.TextureUtil").GetMethod("GetRuntimeMemorySizeLong", BindingFlags.Public | BindingFlags.Static);
             }
             return (long)(m_GetRuntimeMemorySizeLong?.Invoke(null, new object[] {texture}) ?? 0);
+#else
+            return 0;
+#endif
         }
 
         static public string GetTextureFormatString(Texture texture)
         {
+#if UNITY_EDITOR            
             if(m_GetTextureFormat == null)
             {
                 m_GetTextureFormat = typeof(AssetDatabase).Assembly.GetType("UnityEditor.TextureUtil").GetMethod("GetTextureFormat", BindingFlags.Public | BindingFlags.Static);
             }
             return m_GetTextureFormat?.Invoke(null, new object[] {texture}).ToString() ?? null;
+#else
+            return null;
+#endif        
         }
 
         static public long GetRuntimeMemorySizeLongOnAndroid(Texture texture)
         {
+#if UNITY_EDITOR                        
             string path = AssetDatabase.GetAssetPath(texture);
             TextureImporter ti = TextureImporter.GetAtPath(path) as TextureImporter;
             if(ti == null)
@@ -43,10 +52,14 @@ namespace MeshParticleSystem.Profiler
                 size = size * 13 / 10;
 
             return size;
+#else
+            return 0;
+#endif            
         }
 
         static public long GetRuntimeMemorySizeLongOnIPhone(Texture texture)
         {
+#if UNITY_EDITOR                        
             string path = AssetDatabase.GetAssetPath(texture);
             TextureImporter ti = TextureImporter.GetAtPath(path) as TextureImporter;
             if(ti == null)
@@ -57,9 +70,26 @@ namespace MeshParticleSystem.Profiler
                 size = size * 1.3f;
 
             return (long)size;
+#else
+            return 0;
+#endif            
         }
         
-        static private int GetTotalParticleCount(List<ParticleSystem> psList)
+        static public bool IsAlive(List<ParticleSystem> psList, float elapsedTime)
+        {
+            foreach(var ps in psList)
+            {
+                ParticleSystem.MainModule main = ps.main;
+                if(main.loop)
+                    return true;
+
+                if(elapsedTime < main.duration + main.startLifetime.constant)
+                    return true;
+            }
+            return false;
+        }
+
+        static public int GetTotalParticleCount(List<ParticleSystem> psList)
         {
             int count = 0;
             foreach(var ps in psList)
@@ -140,7 +170,7 @@ namespace MeshParticleSystem.Profiler
             HashSet<Texture> texSet = new HashSet<Texture>();
 
             texSet.UnionWith(GetAllTextureSheet(particle));
-
+#if UNITY_EDITOR
             List<Material> matList = GetAllMaterials(particle);
             foreach(var mat in matList)
             {
@@ -159,6 +189,7 @@ namespace MeshParticleSystem.Profiler
 					}
 				}
             }
+#endif            
             return texSet.ToList();
         }
 

@@ -3,21 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(ShowOverdraw))]
-public class ShowOverdrawEditor : Editor
+namespace MeshParticleSystem.Profiler
 {
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(ShowOverdraw))]
+    public class ShowOverdrawEditor : UnityEditor.Editor
     {
-        ShowOverdraw obj = (ShowOverdraw)target;
+        private ShowOverdraw m_Target;
 
-        EditorGUI.BeginDisabledGroup(true);
-        EditorGUILayout.ObjectField("RenderTexture", obj.m_RT, typeof(RenderTexture), false);
+        void OnEnable()
+        {
+            m_Target = (ShowOverdraw)target;
+        }
+        public override void OnInspectorGUI()
+        {
+            EditorGUILayout.ObjectField("RenderTexture", m_Target.m_RT, typeof(RenderTexture), false);
         
-        EditorGUILayout.LabelField("Frame Count", obj.m_FrameCount.ToString());
-        EditorGUILayout.LabelField("Pixel Total", obj.GetAveragePixDraw().ToString());
-        EditorGUILayout.LabelField("Actual Pixel Total", obj.GetAverageActualPixDraw().ToString());
-        EditorGUILayout.LabelField("Fill Rate", obj.GetAverageFillrate().ToString());
-        
-        EditorGUI.EndDisabledGroup();
+            DrawStat();
+        }
+
+        void OnSceneGUI()
+        {
+            Handles.BeginGUI();
+        	GUILayout.BeginArea(new Rect(10, 320, 300, 300));
+	        
+            DrawStat();
+
+	        GUILayout.EndArea();
+    	    Handles.EndGUI();
+        }
+
+        void DrawStat()
+        {
+            GUIStyle style = new GUIStyle();
+    	    style.richText = true;
+
+            EditorGUILayout.LabelField("Frame Count", m_Target.m_FrameCount.ToString(), style);
+            EditorGUILayout.LabelField("Pixel Total", m_Target.GetAveragePixDraw().ToString(), style);
+            EditorGUILayout.LabelField("Actual Pixel Total", m_Target.GetAverageActualPixDraw().ToString(), style);
+            
+            float fillRate = m_Target.GetAverageFillrate();
+            string s;
+            if(fillRate < ShowOverdraw.kRecommendFillrate)
+                s = string.Format("<color=green>{0}</color>    建议：<{1}", fillRate, ShowOverdraw.kRecommendFillrate);
+            else
+                s = string.Format("<color=red>{0}</color>    建议：<{1}", fillRate, ShowOverdraw.kRecommendFillrate);
+            EditorGUILayout.LabelField("Fill Rate", s, style);
+        }
     }
 }

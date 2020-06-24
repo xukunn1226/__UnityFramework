@@ -5,8 +5,19 @@ using System.Linq;
 
 namespace MeshParticleSystem.Profiler
 {
-    public class ParticleProfilerEx : MonoBehaviour
+    [ExecuteInEditMode]
+    public class ParticleProfiler : MonoBehaviour
     {
+        static private float        kMaxSimulatedTime               = 5.0f;
+        static public float         kRecommendedTextureMemorySize   = 1;            // 建议的贴图内存占用大小
+        static public int           kRecommendTextureCount          = 5;            // 建议的贴图数量
+        static public int           kRecommendMaterialCount         = 3;            // 建议的材质数量
+        static public int           kRecommendParticleCompCount     = 8;            // 建议的粒子组件数量
+        static public int           kRecommendDrawCallCount         = 10;           // 建议的DC数量
+        static public int           kRecommendParticleCount         = 50;           // 建议的同时存在的粒子数量
+        static public float         kRecommendFillrate              = 4;            // 建议的填充率
+        static public int           kRecommendMeshCount             = 3;            // 建议的网格数量        
+
         public List<ParticleSystem> allParticles            = new List<ParticleSystem>();
         public List<FX_Component>   allFXComponents         = new List<FX_Component>();
         public List<Texture>        allTextures             = new List<Texture>();
@@ -33,6 +44,9 @@ namespace MeshParticleSystem.Profiler
         public AnimationCurve       TriangleCountCurve      = new AnimationCurve();
         public AnimationCurve       ParticleCountCurve      = new AnimationCurve();
 
+        private float               m_IntervalSampleTime;
+        public float                elapsedTime             { get; private set; }
+
         void OnEnable()
         {
             allParticles            = GetComponentsInChildren<ParticleSystem>(true).ToList();
@@ -44,11 +58,41 @@ namespace MeshParticleSystem.Profiler
             textureMemory           = Utility.GetRuntimeMemorySizeLong(allTextures);
             textureMemoryOnAndroid  = Utility.GetRuntimeMemorySizeLongOnAndroid(allTextures);
             textureMemoryOnIPhone   = Utility.GetRuntimeMemorySizeLongOnIPhone(allTextures);
+            curDrawCall             = 0;
+            curTriangles            = 0;
+            curParticleCount        = 0;
+            DrawCallCurve           = new AnimationCurve();
+            TriangleCountCurve      = new AnimationCurve();
+            ParticleCountCurve      = new AnimationCurve();
+
+            m_IntervalSampleTime    = 0;
+            elapsedTime             = 0;
         }
 
         void Update()
         {
-            
+            if(!Application.isPlaying)
+                return;
+#if UNITY_EDITOR
+            // update stats
+            curDrawCall = (UnityEditor.UnityStats.batches - 2) >> 1;       // exclude "Clear" & "ImageEffects"
+            curTriangles = UnityEditor.UnityStats.triangles;
+            curParticleCount = Utility.GetTotalParticleCount(allParticles);
+#endif
+
+            elapsedTime = Mathf.Min(kMaxSimulatedTime, elapsedTime + Time.deltaTime);
+            bool isSimulatedDone = elapsedTime > kMaxSimulatedTime - 0.01f || !Utility.IsAlive(allParticles, elapsedTime);
+
+            // sample stats
+            m_IntervalSampleTime += Time.deltaTime;
+            if(!isSimulatedDone && m_IntervalSampleTime > 0.3f)
+            {
+                m_IntervalSampleTime = 0;
+
+                DrawCallCurve.AddKey(elapsedTime, curDrawCall);
+                TriangleCountCurve.AddKey(elapsedTime, curTriangles);
+                ParticleCountCurve.AddKey(elapsedTime, curParticleCount);
+            }          
         }
     }
 }
