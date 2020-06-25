@@ -1,12 +1,12 @@
 ﻿using System.IO;
 using System;
 using System.Text;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Framework.Core
 {
-    public class FileLogOutput : ILogOutput
+    [RequireComponent(typeof(GameDebug))]
+    public class FileLogOutput : BaseLogOutput
     {
         private bool            m_Disposed = false;
 
@@ -16,7 +16,7 @@ namespace Framework.Core
         private int             m_BufSize = 1024;
         private int             m_BufWrittenBytes;
 
-        public FileLogOutput()
+        void Awake()
         {
             m_FileStream = new FileStream(Application.persistentDataPath + "/" + Application.productName + "_log.txt", FileMode.Create, FileAccess.ReadWrite);
             m_Writer = new StreamWriter(m_FileStream);
@@ -24,7 +24,7 @@ namespace Framework.Core
             Debug.Log($"File log output: {Application.persistentDataPath + "/" + Application.productName + "_log.txt"}");
         }
 
-        public void Output(string logString, string stackTrace, LogType type)
+        public override void Output(string logString, string stackTrace, LogType type)
         {
             if(type == LogType.Error || type == LogType.Exception)
             {
@@ -37,14 +37,14 @@ namespace Framework.Core
             Receive(logString);
         }
 
-        public void Flush()
+        public override void Flush()
         {
             m_BufWrittenBytes = 0;
             if (m_Writer != null)
                 m_Writer.Flush();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

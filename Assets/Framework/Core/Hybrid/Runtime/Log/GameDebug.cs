@@ -3,21 +3,32 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
 
 namespace Framework.Core
 {
-    public static class GameDebug
+    /// <summary>
+    /// Log, LogWarning, LogError, LogAssertion, LogException
+    /// Release版本：保留LogWarning、LogError、LogException, 其余strip
+    /// Debug版本：提供两种方式开关Log. 1、ENABLE_LOG ———— strip，更彻底；2、EnableLog ———— not strip，仍有参数传递的GC
+    /// </summary>
+    public class GameDebug : MonoBehaviour
     {
-        private static List<ILogOutput> m_Outputs = new List<ILogOutput>();
+        static public bool EnableLog = true;
 
-        public static void Init()
-        {
+        private static List<BaseLogOutput> m_Outputs = new List<BaseLogOutput>();
+
+        void OnEnable()
+        {            
             Application.logMessageReceivedThreaded += HandleLog;
+
+            Debug.developerConsoleVisible = false;
         }
-        public static void Shutdown()
+
+        void OnDisable()
         {
             Application.logMessageReceivedThreaded -= HandleLog;
-            foreach(ILogOutput device in m_Outputs)
+            foreach(BaseLogOutput device in m_Outputs)
             {
                 device.Dispose();
             }
@@ -25,7 +36,7 @@ namespace Framework.Core
 
         private static void HandleLog(string logString, string stackTrace, LogType type)
         {
-            foreach(ILogOutput device in m_Outputs)
+            foreach(BaseLogOutput device in m_Outputs)
             {
                 device.Output(logString, stackTrace, type);
             }
@@ -33,13 +44,13 @@ namespace Framework.Core
 
         public static void Flush()
         {
-            foreach(ILogOutput device in m_Outputs)
+            foreach(BaseLogOutput device in m_Outputs)
             {
                 device.Flush();
             }
         }
 
-        public static void RegisterOutputDevice(ILogOutput device)
+        public void RegisterOutputDevice(BaseLogOutput device)
         {
             if(device != null && !m_Outputs.Contains(device))
             {
@@ -47,7 +58,7 @@ namespace Framework.Core
             }
         }
 
-        public static void UnregisterOutputDevice(ILogOutput device)
+        public void UnregisterOutputDevice(BaseLogOutput device)
         {
             if (device == null)
                 return;
@@ -56,35 +67,91 @@ namespace Framework.Core
             m_Outputs.Remove(device);
         }
 
-        public static void Assert(bool condition, string format, params object[] args)
+        
+
+        
+        [Conditional("UNITY_EDITOR")]
+        public static void DevLog(object message)
         {
-            Debug.AssertFormat(condition, format, args);
+            Debug.Log(message);
         }
 
         [Conditional("UNITY_EDITOR")]
-        public static void DevLog(string format, params object[] args)
+        public static void DevLog(object message, Object context)
         {
-            Debug.LogFormat(format, args);
+            Debug.Log(message, context);
         }
 
-        public static void Log(string format, params object[] args)
+        [Conditional("ENABLE_LOG")]
+        public static void Log(object message)
         {
-            Debug.LogFormat(format, args);
+            if(!GameDebug.EnableLog)
+                return;
+
+            Debug.Log(message);
         }
 
-        public static void LogWarning(string format, params object[] args)
+        [Conditional("ENABLE_LOG")]
+        public static void Log(object message, Object context)
         {
-            Debug.LogWarningFormat(format, args);
+            if(!GameDebug.EnableLog)
+                return;
+
+            Debug.Log(message, context);
         }
 
-        public static void LogError(string format, params object[] args)
+        public static void LogWarning(object message)
         {
-            Debug.LogErrorFormat(format, args);
+            Debug.LogWarning(message);
+        }
+
+        public static void LogWarning(object message, Object context)
+        {
+            Debug.LogWarning(message, context);
+        }
+
+        public static void LogError(object message)
+        {
+            Debug.LogError(message);
+        }
+
+        public static void LogError(object message, Object context)
+        {
+            Debug.LogError(message, context);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition)
+        {
+            Debug.Assert(condition);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition, object message)
+        {
+            Debug.Assert(condition, message);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition, Object context)
+        {
+            Debug.Assert(condition, context);
+        }
+
+        [Conditional("UNITY_ASSERTIONS")]
+        public static void Assert(bool condition, object message, Object context)
+        {
+            Debug.Assert(condition, message, context);
         }
 
         public static void LogException(Exception exception)
         {
             Debug.LogException(exception);
+        }
+
+        public static void LogException(Exception exception, Object context)
+        {
+            Debug.LogException(exception, context);
         }
     }
 }
