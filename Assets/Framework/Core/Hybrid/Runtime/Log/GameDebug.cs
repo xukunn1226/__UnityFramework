@@ -14,24 +14,20 @@ namespace Framework.Core
     /// </summary>
     public class GameDebug : MonoBehaviour
     {
-        static public bool EnableLog = true;
+        static public bool EnableLog = true;            // 仅控制DevLog, Log
 
         private static List<BaseLogOutput> m_Outputs = new List<BaseLogOutput>();
 
         void OnEnable()
         {            
             Application.logMessageReceivedThreaded += HandleLog;
-
             Debug.developerConsoleVisible = false;
         }
 
         void OnDisable()
         {
+            Flush();
             Application.logMessageReceivedThreaded -= HandleLog;
-            foreach(BaseLogOutput device in m_Outputs)
-            {
-                device.Dispose();
-            }
         }
 
         private static void HandleLog(string logString, string stackTrace, LogType type)
@@ -63,22 +59,22 @@ namespace Framework.Core
             if (device == null)
                 return;
 
-            device.Dispose();
             m_Outputs.Remove(device);
         }
-
-        
-
         
         [Conditional("UNITY_EDITOR")]
         public static void DevLog(object message)
         {
+            if(!GameDebug.EnableLog)
+                return;
             Debug.Log(message);
         }
 
         [Conditional("UNITY_EDITOR")]
         public static void DevLog(object message, Object context)
         {
+            if(!GameDebug.EnableLog)
+                return;
             Debug.Log(message, context);
         }
 
@@ -87,7 +83,6 @@ namespace Framework.Core
         {
             if(!GameDebug.EnableLog)
                 return;
-
             Debug.Log(message);
         }
 
@@ -96,7 +91,6 @@ namespace Framework.Core
         {
             if(!GameDebug.EnableLog)
                 return;
-
             Debug.Log(message, context);
         }
 

@@ -28,7 +28,7 @@ namespace MeshParticleSystem.Profiler
 
         private static void PlayModeState(PlayModeStateChange state)
         {
-            Debug.Log($"{state}     {EditorApplication.isPlaying}");
+            // Debug.Log($"{state}     {EditorApplication.isPlaying}");
 
             if(!EditorPrefs.GetBool(ProfilingEventKey))
                 return;

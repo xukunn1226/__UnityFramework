@@ -119,7 +119,7 @@ namespace Framework.AssetManagement.GameBuilder
             newStyle.fixedHeight = 24;
             newStyle.fontSize = 14;
             EditorGUI.BeginChangeCheck();
-            string newName = EditorGUILayout.DelayedTextField("Setting Name", toolbarLabels[selectedSettingIndex], newStyle, GUILayout.Width(260));
+            string newName = EditorGUILayout.TextField("Setting Name", toolbarLabels[selectedSettingIndex], newStyle, GUILayout.Width(260));
             if(EditorGUI.EndChangeCheck())
             {
                 if(target.Rename(toolbarLabels[selectedSettingIndex], newName))

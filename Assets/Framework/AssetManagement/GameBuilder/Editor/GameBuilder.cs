@@ -102,6 +102,7 @@ namespace Framework.AssetManagement.GameBuilder
             SetOverridePara(ref setting.playerSetting.useMTRendering,               "UseMTRendering",           true);
             SetOverridePara(ref setting.playerSetting.useAPKExpansionFiles,         "UseAPKExpansionFiles",     true);
             SetOverridePara(ref setting.playerSetting.macroDefines,                 "MacroDefines",             "");
+            SetOverridePara(ref setting.playerSetting.excludedDefines,              "ExcludedDefines",          "");
 
             BuildGame(setting);
         }

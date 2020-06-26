@@ -25,7 +25,7 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty              m_useMTRenderingProp;
         SerializedProperty              m_useAPKExpansionFilesProp;
         SerializedProperty              m_macroDefinesProp;
-
+        SerializedProperty              m_excludedDefinesProp;
         SerializedProperty              m_bOverrideBuildScenesProp;
         SerializedProperty              m_overrideBuildScenesProp;
 
@@ -47,6 +47,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
             m_useAPKExpansionFilesProp  = serializedObject.FindProperty("useAPKExpansionFiles");
             m_macroDefinesProp          = serializedObject.FindProperty("macroDefines");
+            m_excludedDefinesProp       = serializedObject.FindProperty("excludedDefines");
 
             m_bOverrideBuildScenesProp  = serializedObject.FindProperty("bOverrideBuildScenes");
             m_overrideBuildScenesProp   = serializedObject.FindProperty("overrideBuildScenes");
@@ -218,10 +219,17 @@ namespace Framework.AssetManagement.GameBuilder
                 m_useAPKExpansionFilesProp.boolValue = EditorGUILayout.Toggle("UseAPKExpansionFiles", m_useAPKExpansionFilesProp.boolValue);
 
                 EditorGUI.BeginChangeCheck();
-                m_macroDefinesProp.stringValue = EditorGUILayout.DelayedTextField(new GUIContent("Macro Defines(;)"), m_macroDefinesProp.stringValue);
+                m_macroDefinesProp.stringValue = EditorGUILayout.TextField(new GUIContent("Macro Defines(;)"), m_macroDefinesProp.stringValue);
                 if(EditorGUI.EndChangeCheck())
                 {
-                    m_macroDefinesProp.stringValue = m_macroDefinesProp.stringValue.TrimEnd(new char[] { ';' });
+                    m_macroDefinesProp.stringValue = m_macroDefinesProp.stringValue.Trim(new char[] { ';' });
+                }
+
+                EditorGUI.BeginChangeCheck();
+                m_excludedDefinesProp.stringValue = EditorGUILayout.TextField(new GUIContent("Exclude Defines(;)"), m_excludedDefinesProp.stringValue);
+                if(EditorGUI.EndChangeCheck())
+                {
+                    m_excludedDefinesProp.stringValue = m_excludedDefinesProp.stringValue.Trim(new char[] {';'});
                 }
             }
             GUILayout.EndVertical();

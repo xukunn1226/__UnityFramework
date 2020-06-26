@@ -21,6 +21,12 @@ namespace Framework.Core
             m_Debugger.UnregisterOutputDevice(this);
         }
 
+        protected virtual void OnDestroy()
+        {
+            Flush();
+            Dispose();
+        }
+
         public abstract void Output(string logString, string stackTrace, LogType type);
         public abstract void Flush();
         public abstract void Dispose();

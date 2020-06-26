@@ -17,8 +17,6 @@ namespace Framework.Core.Tests
             // FileLogOutput m_FileOutput = new FileLogOutput();
             // GameDebug.RegisterOutputDevice(m_FileOutput);
 
-
-
             // GameDebug.LogError("{0}  {1}", "sfsd", "3223");
             // GameDebug.Log("{0}  {1}", "11111111我们1", "ABCCCC");
             // GameDebug.Log("{0}  {1}", "122222222221我们1", "ABCCCC");

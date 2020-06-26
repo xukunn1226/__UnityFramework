@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using UnityEditor;
 using Framework.Core;
 
@@ -45,6 +46,8 @@ namespace Framework.AssetManagement.GameBuilder
 
         public string                       macroDefines;
 
+        public string                       excludedDefines;
+
         public string                       cachedBundleVersion                 { get; set; }
 
         public bool                         cachedUseIL2CPP                     { get; set; }
@@ -81,6 +84,7 @@ namespace Framework.AssetManagement.GameBuilder
             sb.Append(string.Format($"useMTRendering: {useMTRendering}  \n"));
             sb.Append(string.Format($"useAPKExpansionFiles: {useAPKExpansionFiles}  \n"));
             sb.Append(string.Format($"macroDefines: {macroDefines}  \n"));
+            sb.Append(string.Format($"excludedDefines: {excludedDefines}  \n"));
             return sb.ToString();
         }
     }
@@ -120,7 +124,19 @@ namespace Framework.AssetManagement.GameBuilder
                 }
             }
 
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, para.macroDefines);
+            // final macro defines = PlayerSetting.ScriptingDefineSymbols + PlayerBuilderSetting.macroDefines - PlayerBuilderSetting.excludedDefines
+            HashSet<string> macroSet = new HashSet<string>();
+            macroSet.UnionWith(para.cachedMacroDefines.Split(new char[]{';'}));
+            macroSet.UnionWith(para.macroDefines.Split(new char[]{';'}));
+
+            string[] exDefines = para.excludedDefines.Split(new char[] {';'});
+            foreach(var ex in exDefines)
+            {
+                macroSet.Remove(ex);
+            }
+
+            string finalMacroDefines = string.Join(";", macroSet.ToArray());
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, finalMacroDefines.Trim(new char[] {';'}));
         }
 
         static internal void RestorePlayerSettings(this PlayerBuilderSetting para)

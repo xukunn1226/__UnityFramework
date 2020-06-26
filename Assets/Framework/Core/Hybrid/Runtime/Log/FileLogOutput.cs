@@ -26,14 +26,12 @@ namespace Framework.Core
 
         public override void Output(string logString, string stackTrace, LogType type)
         {
-            if(type == LogType.Error || type == LogType.Exception)
+            if(type == LogType.Error || type == LogType.Warning || type == LogType.Exception)
             {
+                stackTrace = stackTrace.TrimEnd(new char[] {'\n'});
                 logString = string.Format("{0}\r\n  {1}", logString, stackTrace.Replace("\n", "\r\n     "));
             }
-            else
-            {
-                logString += "\r\n";
-            }
+            logString = string.Format("[{0}] {1}{2}", type.ToString(), logString, "\n");
             Receive(logString);
         }
 
