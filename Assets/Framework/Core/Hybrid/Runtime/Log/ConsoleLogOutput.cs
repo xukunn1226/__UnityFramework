@@ -29,12 +29,12 @@ namespace Framework.Core
         public float    ShakeAcceleration = 100f;
         public bool     StackLog = false;
         public bool     Collapse;
-        public float    ScrollbarSize = 20;
+        public float    ScrollbarSize = 35;
         public bool     AutoScroll;
 
 
 
-        private Rect    m_WindowRect = new Rect(20, 20, 800, 600);
+        private Rect    m_WindowRect = new Rect(20, 40, 800, 600);
         private Vector2 m_ScrollPosition;        
         private bool    m_isShow;
         private Rect    m_ResizerRect;
@@ -79,7 +79,7 @@ namespace Framework.Core
             {
                 m_isShow = true;
             }
-            if(Input.touchCount > 4)
+            if(Input.touchCount > 3)
             {
                 m_isShow = true;
             }
@@ -99,12 +99,13 @@ namespace Framework.Core
             DrawLogItems();
             DrawToolbar();
        
-            GUI.DragWindow(new Rect(0, 0, 10000, 20));
+            GUI.DragWindow(new Rect(0, 0, 10000, 60));
         }
         
         void HandleResize()
         {
-            m_ResizerRect = new Rect(m_WindowRect.position.x + m_WindowRect.width - 25, m_WindowRect.position.y + m_WindowRect.height - 25, 25, 25);
+            float size = 25;
+            m_ResizerRect = new Rect(m_WindowRect.position.x + m_WindowRect.width - size, m_WindowRect.position.y + m_WindowRect.height - size, size, size);
 
             if(Event.current.type == EventType.MouseDown && m_ResizerRect.Contains(Event.current.mousePosition))
             {
@@ -184,6 +185,7 @@ namespace Framework.Core
             Collapse = GUILayout.Toggle(Collapse, "Collapse", GUILayout.Width(100), GUILayout.Height(20));
             StackLog = GUILayout.Toggle(StackLog, "Show Stack", GUILayout.Width(100), GUILayout.Height(20));
             GameDebug.EnableLog = GUILayout.Toggle(GameDebug.EnableLog, "Enable Log", GUILayout.Width(100), GUILayout.Height(20));
+            GUILayout.Space(50);
 
             GUILayout.EndHorizontal();
         }
