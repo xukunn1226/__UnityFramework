@@ -1,12 +1,9 @@
 * 使用各种性能分析工具：GOT、GPM、URP并整合
 * 不同平台代码库公用方案（前后端代码公用）
-* 完善日志系统
-	https://www.jianshu.com/p/5163b0a0180e
 * UWorld, ULevel
 * SortedArray
 * QuadTree
 * 二分图、二叉堆
-* FX AUTOLOD
 * 消息系统：
 	https://blog.csdn.net/qq_33413868/article/details/104725966  
 	https://blog.csdn.net/qq_33413868/article/details/104725268  
@@ -23,7 +20,8 @@
 
 
 
-
+- 完善日志系统
+	https://www.jianshu.com/p/5163b0a0180e
 - Gesture Extension
 	https://stackoverflow.com/questions/40341191/pinch-and-other-multi-finger-gestures-in-modern-unity3d
 	https://stackoverflow.com/questions/40576493/duplicating-unitys-mystic-interface-power/40576974#40576974

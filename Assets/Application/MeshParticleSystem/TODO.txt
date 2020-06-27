@@ -1,11 +1,12 @@
 * 搭建特效制作环境（InGame、UI）
-* 工具监测特效制作是否规范
-* 工具检测特效是否符合合批规范
+* 去除所有FX_Component组件上的duration，统一使用FX_Root duration
+* 对象池管理特效：当特效数量达到一定值，使用LOD机制弱化效果(FX AUTOLOD)
+
+
+
+- 工具监测特效制作是否规范
+- 工具检测特效是否符合合批规范
 https://github.com/gmhevinci/MotionFramework/blob/master/Docs/Editor.ParticleProfiler.md
 https://github.com/sunbrando/ParticleEffectProfiler
-* 去除所有FX_Component组件上的duration，统一使用FX_Root duration
-* 对象池管理特效：当特效数量达到一定值，使用LOD机制弱化效果
-
-
 - FX_Root配置回收类型（Destroy、IPool），可配置有哪些对象池可供选择
 - 完善FX_Root，接入对象池* 去除所有FX_Component组件上的duration，统一使用FX_Root duration
