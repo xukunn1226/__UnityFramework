@@ -7,32 +7,185 @@ namespace Framework.Core
     [RequireComponent(typeof(GameDebug))]
     public class ConsoleLogOutput : BaseLogOutput
     {
-        public int m_MaxCountOfLog = 200;
-        private const int m_Margin = 20;
+        private static readonly Color[] logTypeColors = new Color[]
+        {
+            Color.red,          // error
+            Color.green,        // assert
+            Color.yellow,       // warning
+            Color.white,        // log
+            Color.magenta,      // exception
+        };
 
-        private Rect m_WindowRect = new Rect(m_Margin, m_Margin, 800, 600);
+        struct LogInfo
+        {
+            public string logString;
+            public string stackTrace;
+            public LogType type;
+        }
+        private LinkedList<LogInfo> m_Logs = new LinkedList<LogInfo>();
+
+        public int      MaxCountOfLog = 999;
+        public bool     ShakeToOpen = true;
+        public float    ShakeAcceleration = 100f;
+        public bool     StackLog = false;
+        public bool     Collapse;
+        public float    ScrollbarSize = 20;
+        public bool     AutoScroll;
+
+
+
+        private Rect    m_WindowRect = new Rect(20, 20, 800, 600);
+        private Vector2 m_ScrollPosition;        
+        private bool    m_isShow;
+        private Rect    m_ResizerRect;
+        private bool    m_Resizing;        
+
+        protected override void OnEnable()
+        {
+#if ENABLE_PROFILER
+            base.OnEnable();
+#endif
+        }
+
+        protected override void OnDisable()
+        {
+#if ENABLE_PROFILER
+            base.OnDisable();
+#endif            
+        }
 
         public override void Output(string logString, string stackTrace, LogType type)
-        {}
+        {
+            m_Logs.AddLast(new LogInfo() {logString = "<size=20>" + logString + "</size>", stackTrace = "<size=14>" + stackTrace + "</size>", type = type });
 
-        public override void Flush()
-        {}
+            if(m_Logs.Count > MaxCountOfLog)
+            {
+                m_Logs.RemoveFirst();
+            }
+        }
 
-        public override void Dispose()
-        {}
+        public override void Flush() {}
+
+        public override void Dispose() {}
+
+        [System.Diagnostics.Conditional("ENABLE_PROFILER")]
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.BackQuote))
+            {
+                m_isShow = !m_isShow;
+            }
+            if (ShakeToOpen && Input.acceleration.sqrMagnitude > ShakeAcceleration)
+            {
+                m_isShow = true;
+            }
+            if(Input.touchCount > 4)
+            {
+                m_isShow = true;
+            }
+        }
 
         void OnGUI()
         {
-            m_WindowRect = GUI.Window(0, m_WindowRect, DrawConsoleWindow, "Debug Window");
+            if(!m_isShow)
+                return;
 
-            // GUI.Button(new Rect(10, 20, 100, 20), "Can't drag me");
+            HandleResize();
+            m_WindowRect = GUI.Window(0, m_WindowRect, DrawConsoleWindow, "Debug Window");
         }
 
         void DrawConsoleWindow(int windowID)
-        {
-            GUI.Button(new Rect(10, 20, 100, 20), "Can't drag me");
-            
+        {            
+            DrawLogItems();
+            DrawToolbar();
+       
             GUI.DragWindow(new Rect(0, 0, 10000, 20));
+        }
+        
+        void HandleResize()
+        {
+            m_ResizerRect = new Rect(m_WindowRect.position.x + m_WindowRect.width - 25, m_WindowRect.position.y + m_WindowRect.height - 25, 25, 25);
+
+            if(Event.current.type == EventType.MouseDown && m_ResizerRect.Contains(Event.current.mousePosition))
+            {
+                m_Resizing = true;                
+            }
+
+            if (Event.current.type == EventType.MouseUp)
+            {
+                m_Resizing = false;
+            }
+
+            if(m_Resizing)
+            {
+                m_WindowRect.width = Event.current.mousePosition.x - m_WindowRect.position.x;
+                m_WindowRect.height = Event.current.mousePosition.y - m_WindowRect.position.y;
+            }
+        }
+
+        void DrawLogItems()
+        {
+            GUIStyle gs_vertica = GUI.skin.verticalScrollbar;
+            GUIStyle gs1_vertica = GUI.skin.verticalScrollbarThumb;
+
+            gs_vertica.fixedWidth = ScrollbarSize;
+            gs1_vertica.fixedWidth = ScrollbarSize;
+
+            GUIStyle gs_horizontal = GUI.skin.horizontalScrollbar;
+            GUIStyle gs1_horizontal = GUI.skin.horizontalScrollbarThumb;
+
+            gs_horizontal.fixedHeight = ScrollbarSize;
+            gs1_horizontal.fixedHeight = ScrollbarSize;
+
+            if(AutoScroll)
+                m_ScrollPosition.y += 20;
+            m_ScrollPosition = GUILayout.BeginScrollView(m_ScrollPosition, false, false);
+
+            LinkedListNode<LogInfo> cur = m_Logs.First;
+            while(cur != null)
+            {
+                if(Collapse)
+                {
+                    LinkedListNode<LogInfo> prev = cur.Previous;
+                    if(prev != null && prev.Value.logString == cur.Value.logString)
+                    {
+                        cur = cur.Next;
+                        continue;
+                    }
+                }
+                GUI.contentColor = logTypeColors[(int)cur.Value.type];
+                GUILayout.Label(cur.Value.logString);
+                if (StackLog)
+                {
+                    GUILayout.Label(cur.Value.stackTrace);
+                }
+                cur = cur.Next;
+            }
+
+            GUILayout.EndScrollView();
+
+            GUI.contentColor = Color.white;
+        }
+
+        private void DrawToolbar()
+        {
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("Clear", GUILayout.Height(20)))
+            {
+                m_Logs.Clear();
+            }
+
+            if (GUILayout.Button("Close", GUILayout.Height(20)))
+            {
+                m_isShow = false;
+            }
+            AutoScroll = GUILayout.Toggle(AutoScroll, "Auto Scroll", GUILayout.Width(100), GUILayout.Height(20));
+            Collapse = GUILayout.Toggle(Collapse, "Collapse", GUILayout.Width(100), GUILayout.Height(20));
+            StackLog = GUILayout.Toggle(StackLog, "Show Stack", GUILayout.Width(100), GUILayout.Height(20));
+            GameDebug.EnableLog = GUILayout.Toggle(GameDebug.EnableLog, "Enable Log", GUILayout.Width(100), GUILayout.Height(20));
+
+            GUILayout.EndHorizontal();
         }
     }
 }

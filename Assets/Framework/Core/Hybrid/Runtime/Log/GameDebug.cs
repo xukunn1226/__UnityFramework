@@ -8,9 +8,10 @@ using Object = UnityEngine.Object;
 namespace Framework.Core
 {
     /// <summary>
-    /// Log, LogWarning, LogError, LogAssertion, LogException
-    /// Release版本：保留LogWarning、LogError、LogException, 其余strip
-    /// Debug版本：提供两种方式开关Log. 1、ENABLE_LOG ———— strip，更彻底；2、EnableLog ———— not strip，仍有参数传递的GC
+    /// 1、Release版本：保留LogWarning、LogError、LogException, 其余strip
+    /// 2、Debug版本：提供两种方式开关Log. 1、ENABLE_LOG ———— strip，更彻底；2、EnableLog ———— not strip，仍有参数传递的GC
+    /// 3、Console模式仅支持Development Build
+    /// 4、FileLogOutput默认打开
     /// </summary>
     public class GameDebug : MonoBehaviour
     {
@@ -21,7 +22,6 @@ namespace Framework.Core
         void OnEnable()
         {            
             Application.logMessageReceivedThreaded += HandleLog;
-            Debug.developerConsoleVisible = false;
         }
 
         void OnDisable()
