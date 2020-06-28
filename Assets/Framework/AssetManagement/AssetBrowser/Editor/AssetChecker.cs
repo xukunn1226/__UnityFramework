@@ -317,5 +317,60 @@ namespace Framework.AssetManagement.AssetBrowser
             AssetDatabase.SaveAssets();
             Debug.Log("Fix Redundant Mesh of ParticleSystemRender is Done.  " + assetPaths.Count);
         }
+
+        [MenuItem("Assets/AssetBrowser/Clean Property on All Materials", false, 4)]
+        static private void MemuItem_CleanAllMaterials()
+        {
+            if(!EditorUtility.DisplayDialog("", "耗时操作，预计2分钟", "OK", "Cancel"))
+                return;
+
+            var allMaterials = AssetDatabase.FindAssets("t:Material");
+            for (int i = 0; i < allMaterials.Length; ++i)
+            {
+                var matPath = AssetDatabase.GUIDToAssetPath(allMaterials[i]);
+                var mat = AssetDatabase.LoadAssetAtPath<Material>(matPath);
+
+                if (mat)
+                {
+                    CleanMaterialProperties(mat);
+
+                    EditorUtility.SetDirty(mat);
+                }
+            }
+            AssetDatabase.SaveAssets();
+        }
+
+        [MenuItem("Assets/AssetBrowser/Clean Property on Selected Material", false, 5)]
+        static private void MemuItem_CleanMaterial()
+        {
+            Material mat = Selection.activeObject as Material;
+            if(mat == null)
+                return;
+            CleanMaterialProperties(mat);
+        }
+
+        private static void CleanMaterialProperties(Material mat)
+        {
+            SerializedObject source = new SerializedObject(mat);
+            SerializedProperty savedProperties = source.FindProperty("m_SavedProperties");
+            SerializedProperty texEnvs = savedProperties.FindPropertyRelative("m_TexEnvs");
+            SerializedProperty floats = savedProperties.FindPropertyRelative("m_Floats");
+            SerializedProperty colors = savedProperties.FindPropertyRelative("m_Colors");
+
+            CleanMaterialsSerializedProperty(texEnvs, mat);
+            CleanMaterialsSerializedProperty(floats, mat);
+            CleanMaterialsSerializedProperty(colors, mat);
+            source.ApplyModifiedProperties();            
+        }
+
+        private static void CleanMaterialsSerializedProperty(SerializedProperty property, Material mat)
+        {
+            for(int i = property.arraySize - 1; i >= 0; --i)
+            {
+                string name = property.GetArrayElementAtIndex(i).FindPropertyRelative("first").stringValue;
+                if (!mat.HasProperty(name))
+                    property.DeleteArrayElementAtIndex(i);
+            }
+        }
     }
 }
