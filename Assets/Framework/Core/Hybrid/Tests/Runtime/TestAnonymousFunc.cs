@@ -20,7 +20,7 @@ namespace Tests
             table.Add(5, 5);
             count = 0;
 
-            _cb = onComplete;
+            _cb = onCompleteCB;
         }
 
         void Update()
@@ -30,23 +30,27 @@ namespace Tests
             Profiler.EndSample();            
         }
 
-        System.Action _cb;
+        System.Action<int> _cb;
+        int m_Value;
 
         void SetMesh()
         {
-            int index = 10;
-            float v = 1.23f;
-
-            LoadAsync("323", _cb);
+            LoadAsync("assets/res/cube.asset", _cb);
         }
 
-        void onComplete()
+        void onCompleteCB(int i)
         {
-
+            m_Value = i;
         }
 
-        void LoadAsync(string assetPath, System.Action onComplete)
+        void LoadAsync(string assetPath, System.Action<int> onComplete)
         {
+            onComplete?.Invoke(3);
+        }
+
+        void Foo(int i, float v)
+        {
+            
         }
 
 
