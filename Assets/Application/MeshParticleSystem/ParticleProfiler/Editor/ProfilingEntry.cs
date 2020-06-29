@@ -10,7 +10,7 @@ namespace MeshParticleSystem.Profiler
     {
         private const string ProfilingEventKey = "91D1BD0E-2AD2-4930-A98C-9CDE8793907D";
 
-        [MenuItem("GameObject/特效/Particle Profiler", false, 1000)]
+        [MenuItem("GameObject/Effects/Particle Profiler", false, 1000)]
         static private void Test()
         {
             if(EditorApplication.isPlaying)

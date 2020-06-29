@@ -30,6 +30,8 @@ namespace MeshParticleSystem.Profiler
 
 	        GUILayout.EndArea();
     	    Handles.EndGUI();
+
+            Repaint();
         }
 
         void DrawStat()
@@ -37,7 +39,7 @@ namespace MeshParticleSystem.Profiler
             GUIStyle style = new GUIStyle();
     	    style.richText = true;
 
-            EditorGUILayout.LabelField("Frame Count", m_Target.m_FrameCount.ToString(), style);
+            EditorGUILayout.LabelField("Frame Count", m_Target.m_Data.m_FrameCount.ToString(), style);
             EditorGUILayout.LabelField("Pixel Total", m_Target.GetAveragePixDraw().ToString(), style);
             EditorGUILayout.LabelField("Actual Pixel Total", m_Target.GetAverageActualPixDraw().ToString(), style);
             

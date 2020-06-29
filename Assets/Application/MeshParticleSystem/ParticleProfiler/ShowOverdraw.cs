@@ -27,12 +27,17 @@ namespace MeshParticleSystem.Profiler
         public RenderTexture m_RT;
         private Texture2D m_TexCopyFromRT;
 
-        public int m_pixTotalThisFrame;
-        public int m_pixActualDrawThisFrame;
-
-        public int m_pixTotal;
-        public int m_pixActualTotal;
-        public int m_FrameCount;
+        private int     m_pixTotalThisFrame;
+        private int     m_pixActualDrawThisFrame;
+        
+        public class OverdrawData
+        {
+            public int      m_FrameCount;
+            public int      m_pixTotal;
+            public int      m_pixActualTotal;
+            public float    m_Fillrate;
+        }
+        public OverdrawData m_Data = new OverdrawData();
 
         void OnEnable()
         {
@@ -44,9 +49,11 @@ namespace MeshParticleSystem.Profiler
             m_RT = RenderTexture.GetTemporary(new RenderTextureDescriptor(m_rtWidth, m_rtHeight, RenderTextureFormat.ARGB32));
             m_TexCopyFromRT = new Texture2D(m_RT.width, m_RT.height, TextureFormat.ARGB32, false);
 
-            m_pixTotal = 0;
-            m_pixActualTotal = 0;
-            m_FrameCount = 0;
+            m_Data.m_pixTotal = 0;
+            m_Data.m_pixActualTotal = 0;
+            m_Data.m_FrameCount = 0;
+
+            Application.targetFrameRate = 30;           // 固定帧率测试
         }
 
         void OnDisable()
@@ -83,9 +90,10 @@ namespace MeshParticleSystem.Profiler
 
                 GetOverDrawDataThisFrame(m_TexCopyFromRT, out m_pixTotalThisFrame, out m_pixActualDrawThisFrame);
 
-                m_pixTotal += m_pixTotalThisFrame;
-                m_pixActualTotal += m_pixActualDrawThisFrame;
-                m_FrameCount += 1;
+                m_Data.m_pixTotal += m_pixTotalThisFrame;
+                m_Data.m_pixActualTotal += m_pixActualDrawThisFrame;
+                m_Data.m_FrameCount += 1;
+                m_Data.m_Fillrate = GetAverageFillrate();
             }
             RenderTexture.active = prevRT;
         }
@@ -126,34 +134,34 @@ namespace MeshParticleSystem.Profiler
         }
 
         //计算单像素的绘制次数
-        public int DrawPixTimes(float r, float g, float b)
+        private int DrawPixTimes(float r, float g, float b)
         {
             //在OverDraw.Shader中像素每渲染一次，g值就会叠加0.04
             return Convert.ToInt32(g / 0.04);
         }
 
-        public bool IsEmptyPix(float r, float g, float b)
+        private bool IsEmptyPix(float r, float g, float b)
         {
             return r == 0 && g == 0 && b == 0;
         }
 
         public float GetAveragePixDraw()
         {
-            if (m_FrameCount == 0)
+            if (m_Data.m_FrameCount == 0)
                 return 0;
-            return 1.0f * m_pixTotal / m_FrameCount;
+            return 1.0f * m_Data.m_pixTotal / m_Data.m_FrameCount;
         }
 
         public float GetAverageActualPixDraw()
         {
-            if (m_FrameCount == 0)
+            if (m_Data.m_FrameCount == 0)
                 return 0;
-            return 1.0f * m_pixActualTotal / m_FrameCount;
+            return 1.0f * m_Data.m_pixActualTotal / m_Data.m_FrameCount;
         }
 
         public float GetAverageFillrate()
         {
-            if (m_FrameCount == 0)
+            if (m_Data.m_FrameCount == 0)
                 return 0;
             return GetAverageActualPixDraw() / GetAveragePixDraw();
         }

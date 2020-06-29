@@ -18,55 +18,60 @@ namespace MeshParticleSystem.Profiler
         static public float         kRecommendFillrate              = 4;            // 建议的填充率
         static public int           kRecommendMeshCount             = 3;            // 建议的网格数量        
 
-        public List<ParticleSystem> allParticles            = new List<ParticleSystem>();
-        public List<FX_Component>   allFXComponents         = new List<FX_Component>();
-        public List<Texture>        allTextures             = new List<Texture>();
-        public List<Material>       allMaterials            = new List<Material>();
-        public List<Mesh>           allMeshes               = new List<Mesh>();
+        public class ProfilerData
+        {
+            public List<ParticleSystem> allParticles            = new List<ParticleSystem>();
+            public List<FX_Component>   allFXComponents         = new List<FX_Component>();
+            public List<Texture>        allTextures             = new List<Texture>();
+            public List<Material>       allMaterials            = new List<Material>();
+            public List<Mesh>           allMeshes               = new List<Mesh>();
         
-        public int                  materialCount           { get; set; }
-        public long                 textureMemory           { get; set; }
-        public long                 textureMemoryOnAndroid  { get; set; }
-        public long                 textureMemoryOnIPhone   { get; set; }
-        public int                  maxDrawCall             { get; set; }
-        private int                 m_CurDrawCall;
-        public int                  curDrawCall             { get { return m_CurDrawCall; } set { if(value > maxDrawCall) maxDrawCall = value; m_CurDrawCall = value; } }
+            public int                  materialCount           { get; set; }
+            public long                 textureMemory           { get; set; }
+            public long                 textureMemoryOnAndroid  { get; set; }
+            public long                 textureMemoryOnIPhone   { get; set; }
+            public int                  maxDrawCall             { get; set; }
+            private int                 m_CurDrawCall;
+            public int                  curDrawCall             { get { return m_CurDrawCall; } set { if(value > maxDrawCall) maxDrawCall = value; m_CurDrawCall = value; } }
 
-        public int                  maxTriangles            { get; set; }
-        private int                 m_CurTriangles;
-        public int                  curTriangles            { get { return m_CurTriangles; } set { if(value > maxTriangles) maxTriangles = value; m_CurTriangles = value; } }
+            public int                  maxTriangles            { get; set; }
+            private int                 m_CurTriangles;
+            public int                  curTriangles            { get { return m_CurTriangles; } set { if(value > maxTriangles) maxTriangles = value; m_CurTriangles = value; } }
 
-        public int                  maxParticleCount        { get; set; }
-        private int                 m_CurParticleCount;
-        public int                  curParticleCount        { get { return m_CurParticleCount; } set { if(value > maxParticleCount) maxParticleCount = value; m_CurParticleCount = value; } }
+            public int                  maxParticleCount        { get; set; }
+            private int                 m_CurParticleCount;
+            public int                  curParticleCount        { get { return m_CurParticleCount; } set { if(value > maxParticleCount) maxParticleCount = value; m_CurParticleCount = value; } }
 
-        public AnimationCurve       DrawCallCurve           = new AnimationCurve();
-        public AnimationCurve       TriangleCountCurve      = new AnimationCurve();
-        public AnimationCurve       ParticleCountCurve      = new AnimationCurve();
+            public AnimationCurve       DrawCallCurve           = new AnimationCurve();
+            public AnimationCurve       TriangleCountCurve      = new AnimationCurve();
+            public AnimationCurve       ParticleCountCurve      = new AnimationCurve();
+        }
+
+        public ProfilerData m_Data = new ProfilerData();
 
         private float               m_IntervalSampleTime;
         public float                elapsedTime             { get; private set; }
 
         void OnEnable()
         {
-            allParticles            = GetComponentsInChildren<ParticleSystem>(true).ToList();
-            allFXComponents         = GetComponentsInChildren<FX_Component>(true).ToList();
-            allMeshes               = Utility.GetAllMeshes(gameObject);
-            allMaterials            = Utility.GetAllMaterials(gameObject);
-            allTextures             = Utility.GetAllTextures(gameObject);
-            materialCount           = allMaterials.Count;
-            textureMemory           = Utility.GetRuntimeMemorySizeLong(allTextures);
-            textureMemoryOnAndroid  = Utility.GetRuntimeMemorySizeLongOnAndroid(allTextures);
-            textureMemoryOnIPhone   = Utility.GetRuntimeMemorySizeLongOnIPhone(allTextures);
-            curDrawCall             = 0;
-            curTriangles            = 0;
-            curParticleCount        = 0;
-            DrawCallCurve           = new AnimationCurve();
-            TriangleCountCurve      = new AnimationCurve();
-            ParticleCountCurve      = new AnimationCurve();
+            m_Data.allParticles             = GetComponentsInChildren<ParticleSystem>(true).ToList();
+            m_Data.allFXComponents          = GetComponentsInChildren<FX_Component>(true).ToList();
+            m_Data.allMeshes                = Utility.GetAllMeshes(gameObject);
+            m_Data.allMaterials             = Utility.GetAllMaterials(gameObject);
+            m_Data.allTextures              = Utility.GetAllTextures(gameObject);
+            m_Data.materialCount            = m_Data.allMaterials.Count;
+            m_Data.textureMemory            = Utility.GetRuntimeMemorySizeLong(m_Data.allTextures);
+            m_Data.textureMemoryOnAndroid   = Utility.GetRuntimeMemorySizeLongOnAndroid(m_Data.allTextures);
+            m_Data.textureMemoryOnIPhone    = Utility.GetRuntimeMemorySizeLongOnIPhone(m_Data.allTextures);
+            m_Data.curDrawCall              = 0;
+            m_Data.curTriangles             = 0;
+            m_Data.curParticleCount         = 0;
+            m_Data.DrawCallCurve            = new AnimationCurve();
+            m_Data.TriangleCountCurve       = new AnimationCurve();
+            m_Data.ParticleCountCurve       = new AnimationCurve();
 
-            m_IntervalSampleTime    = 0;
-            elapsedTime             = 0;
+            m_IntervalSampleTime            = 0;
+            elapsedTime                     = 0;            
         }
 
         void Update()
@@ -75,13 +80,13 @@ namespace MeshParticleSystem.Profiler
                 return;
 #if UNITY_EDITOR
             // update stats
-            curDrawCall = (UnityEditor.UnityStats.batches - 2) >> 1;       // exclude "Clear" & "ImageEffects"
-            curTriangles = UnityEditor.UnityStats.triangles;
-            curParticleCount = Utility.GetTotalParticleCount(allParticles);
+            m_Data.curDrawCall = (UnityEditor.UnityStats.batches - 2) >> 1;       // exclude "Clear" & "ImageEffects"
+            m_Data.curTriangles = UnityEditor.UnityStats.triangles;
+            m_Data.curParticleCount = Utility.GetTotalParticleCount(m_Data.allParticles);
 #endif
 
             elapsedTime = Mathf.Min(kMaxSimulatedTime, elapsedTime + Time.deltaTime);
-            bool isSimulatedDone = elapsedTime > kMaxSimulatedTime - 0.01f || !Utility.IsAlive(allParticles, elapsedTime);
+            bool isSimulatedDone = elapsedTime > kMaxSimulatedTime - 0.01f || !Utility.IsAlive(m_Data.allParticles, elapsedTime);
 
             // sample stats
             m_IntervalSampleTime += Time.deltaTime;
@@ -89,10 +94,12 @@ namespace MeshParticleSystem.Profiler
             {
                 m_IntervalSampleTime = 0;
 
-                DrawCallCurve.AddKey(elapsedTime, curDrawCall);
-                TriangleCountCurve.AddKey(elapsedTime, curTriangles);
-                ParticleCountCurve.AddKey(elapsedTime, curParticleCount);
-            }          
+                m_Data.DrawCallCurve.AddKey(elapsedTime, m_Data.curDrawCall);
+                m_Data.TriangleCountCurve.AddKey(elapsedTime, m_Data.curTriangles);
+                m_Data.ParticleCountCurve.AddKey(elapsedTime, m_Data.curParticleCount);
+            }
+
+            Debug.Log($"{Time.deltaTime}");
         }
     }
 }
