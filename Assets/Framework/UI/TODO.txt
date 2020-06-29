@@ -27,6 +27,7 @@
 	M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
 	https://zhuanlan.zhihu.com/p/102278660   个人对于游戏UI架构的思考与总结
 	https://blog.uwa4d.com/archives/UWA_UITree.html   UI开发与优化知识Tree
+	https://github.com/NVentimiglia/Unity3d-Foundation
 
 
 
