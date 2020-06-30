@@ -11,6 +11,8 @@ namespace Framework.AssetManagement.Runtime.Tests
         GameObject inst;
         string info;
 
+        GameObjectLoader loader;
+
         private void Awake()
         {
             AssetManager.Init(type);
@@ -41,7 +43,8 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void StartTask()
         {
-            inst = AssetManager.InstantiatePrefab(assetPath);
+            // inst = AssetManager.InstantiatePrefab(assetPath);
+            loader = AssetManager.InstantiatePrefabEx(assetPath);
 
             info = inst != null ? "sucess to load: " : "fail to load: ";
             info += assetPath;
@@ -49,6 +52,12 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void EndTask()
         {
+            if(loader != null)
+            {
+                AssetManager.ReleasePrefab(loader);
+                loader = null;
+            }
+            
             if (inst != null)
             {
                 Destroy(inst);

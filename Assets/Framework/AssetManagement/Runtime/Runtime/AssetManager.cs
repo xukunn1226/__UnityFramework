@@ -187,6 +187,19 @@ namespace Framework.AssetManagement.Runtime
             return go;
         }
 
+        static public GameObjectLoader InstantiatePrefabEx(string assetPath)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
+            return GameObjectLoader.Get(assetPath);
+        }
+
+        static public void ReleasePrefab(GameObjectLoader loader)
+        {
+            GameObjectLoader.Release(loader);
+        }
+
         static public GameObject InstantiatePrefab(string assetBundleName, string assetName)
         {
             if (Instance == null)
@@ -209,7 +222,7 @@ namespace Framework.AssetManagement.Runtime
 
             return go;
         }
-
+        
         static public IEnumerator InstantiatePrefabAsync(string assetPath, Action<GameObject> handler = null)
         {
             if (Instance == null)
