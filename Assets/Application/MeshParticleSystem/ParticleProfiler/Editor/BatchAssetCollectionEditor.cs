@@ -20,7 +20,7 @@ namespace MeshParticleSystem.Profiler
 
             if(GUILayout.Button("Add"))
             {
-                m_Target.AddDirectory("Assets/Application/MeshParticleSystem/Tests/Runtime/Res");
+                // m_Target.AddDirectory("Assets/Application/MeshParticleSystem/Tests/Runtime/Res");
 
                 EditorUtility.SetDirty(m_Target);
                 AssetDatabase.SaveAssets();

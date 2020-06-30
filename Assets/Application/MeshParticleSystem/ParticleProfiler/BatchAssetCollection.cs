@@ -8,13 +8,17 @@ using UnityEditor;
 
 namespace MeshParticleSystem.Profiler
 {
-    [CreateAssetMenuAttribute(menuName="Create Particle Batcher")]
+    // [CreateAssetMenuAttribute(menuName="Create Particle Batcher")]
     public class BatchAssetCollection : ScriptableObject
     {
         public List<string>             assetPaths          = new List<string>();
         public List<string>             directoryPaths      = new List<string>();
+
         [SerializeField]
-        public List<AssetPathsInDir>    dirToAssetsDic      = new List<AssetPathsInDir>();
+        public List<AssetPathsInDir>    dirToAssetsDic      = new List<AssetPathsInDir>();          // 记录directoryPaths下的所有资源路径
+
+        [SerializeField]
+        public List<AssetProfilerData>  profilerDataList    = new List<AssetProfilerData>();
 
 #if UNITY_EDITOR
         public void AddDirectory(string directory)
@@ -84,5 +88,16 @@ namespace MeshParticleSystem.Profiler
             this.directory = directory;
             this.assetPaths = assetPaths;
         }
+    }
+
+    [Serializable]
+    public class AssetProfilerData
+    {
+        public string assetPath;
+
+        [NonSerialized]
+        public ParticleProfiler.ProfilerData profilerData;
+        [NonSerialized]
+        public ShowOverdraw.OverdrawData overdrawData;
     }
 }
