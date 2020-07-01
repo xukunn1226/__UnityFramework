@@ -54,7 +54,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             if(loader != null)
             {
-                AssetManager.ReleasePrefab(loader);
+                AssetManager.UnloadGameObject(loader);
                 loader = null;
             }
             
