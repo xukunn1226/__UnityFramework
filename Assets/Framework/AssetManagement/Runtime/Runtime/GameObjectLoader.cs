@@ -10,9 +10,9 @@ namespace Framework.AssetManagement.Runtime
         static private LinkedObjectPool<GameObjectLoader>       m_Pool;
         static public LinkedObjectPool<GameObjectLoader>        kPool   { get { return m_Pool; } }
 
-        public GameObject Inst;
+        public GameObject               asset       { get; internal set; }
 
-        internal AssetLoader<GameObject> m_AssetLoader;
+        private AssetLoader<GameObject> assetLoader { get; set; }
 
         static internal GameObjectLoader Get(string assetPath)
         {
@@ -20,11 +20,16 @@ namespace Framework.AssetManagement.Runtime
             {
                 m_Pool = new LinkedObjectPool<GameObjectLoader>(AssetManager.PreAllocateAssetLoaderPoolSize);
             }
+
             GameObjectLoader loader = (GameObjectLoader)m_Pool.Get();
-            loader.m_AssetLoader = AssetLoader<GameObject>.Get(assetPath);
-            if(loader.m_AssetLoader.asset == null)
+            loader.assetLoader = AssetLoader<GameObject>.Get(assetPath);
+            if(loader.assetLoader.asset != null)
             {
-                loader.Inst = Object.Instantiate(loader.m_AssetLoader.asset);
+                loader.asset = Object.Instantiate(loader.assetLoader.asset);
+            }
+            else
+            {
+                loader.Unload();
             }
             return loader;
         }
@@ -37,15 +42,15 @@ namespace Framework.AssetManagement.Runtime
             m_Pool.Return(loader);
         }
 
-        protected void Unload()
+        private void Unload()
         {
-            if(Inst != null)
+            if(asset != null)
             {
-                Object.Destroy(Inst);
-                Inst = null;
+                Object.Destroy(asset);
+                asset = null;
             }
 
-            AssetLoader<GameObject>.Release(m_AssetLoader);
+            AssetLoader<GameObject>.Release(assetLoader);
         }
 
         
