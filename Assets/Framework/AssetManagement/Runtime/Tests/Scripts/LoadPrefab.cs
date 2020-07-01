@@ -54,7 +54,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             if(loader != null)
             {
-                AssetManager.UnloadGameObject(loader);
+                AssetManager.ReleaseGameObject(loader);
                 loader = null;
             }
             

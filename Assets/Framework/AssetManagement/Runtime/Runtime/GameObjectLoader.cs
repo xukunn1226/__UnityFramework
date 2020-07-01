@@ -50,7 +50,11 @@ namespace Framework.AssetManagement.Runtime
                 asset = null;
             }
 
-            AssetLoader<GameObject>.Release(assetLoader);
+            if(assetLoader != null)
+            {
+                AssetLoader<GameObject>.Release(assetLoader);
+                assetLoader = null;
+            }
         }
 
         

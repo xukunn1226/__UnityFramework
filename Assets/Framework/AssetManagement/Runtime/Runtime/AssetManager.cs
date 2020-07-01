@@ -192,17 +192,10 @@ namespace Framework.AssetManagement.Runtime
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             
-            GameObjectLoader loader = GameObjectLoader.Get(assetPath);
-            if(loader.asset == null)
-            {
-                UnloadGameObject(loader);
-                return null;
-            }
-
-            return loader;
+            return GameObjectLoader.Get(assetPath);
         }
 
-        static public void UnloadGameObject(GameObjectLoader loader)
+        static public void ReleaseGameObject(GameObjectLoader loader)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
@@ -294,13 +287,7 @@ namespace Framework.AssetManagement.Runtime
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             
-            AssetLoader<T> loader = AssetLoader<T>.Get(assetPath);
-            if(loader.asset == null)
-            {
-                UnloadAsset(loader);
-                return null;
-            }
-            return loader;
+            return AssetLoader<T>.Get(assetPath);
         }
 
         /// <summary>
@@ -315,13 +302,7 @@ namespace Framework.AssetManagement.Runtime
         //     if (Instance == null)
         //         throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             
-        //     AssetLoader<T> loader = AssetLoader<T>.Get(assetBundleName, assetName);
-        //     if(loader.asset == null)
-        //     {
-        //         UnloadAsset(loader);
-        //         return null;
-        //     }
-        //     return loader;
+        //     return AssetLoader<T>.Get(assetBundleName, assetName);
         // }
 
         /// <summary>

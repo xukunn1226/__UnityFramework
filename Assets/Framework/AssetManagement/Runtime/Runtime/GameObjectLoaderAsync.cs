@@ -7,8 +7,34 @@ namespace Framework.AssetManagement.Runtime
 {
     public class GameObjectLoaderAsync : IEnumerator, ILinkedObjectPoolNode<GameObjectLoaderAsync>, IPooledObject
     {
+        static private LinkedObjectPool<GameObjectLoaderAsync>    m_Pool;
+        public static LinkedObjectPool<GameObjectLoaderAsync>     kPool { get { return m_Pool; } }
+
+        private AssetLoaderAsync<GameObject> assetLoaderAsync { get; set; }
+
         public GameObject               asset       { get; internal set; }
 
+        public GameObjectLoaderAsync()
+        {
+            assetLoaderAsync = null;
+            asset = null;
+        }
+
+        static internal GameObjectLoaderAsync Get(string assetPath)
+        {
+            if (m_Pool == null)
+            {
+                m_Pool = new LinkedObjectPool<GameObjectLoaderAsync>(AssetManager.PreAllocateAssetLoaderPoolSize);
+            }
+
+            GameObjectLoaderAsync loader = (GameObjectLoaderAsync)m_Pool.Get();
+            loader.assetLoaderAsync = AssetLoaderAsync<GameObject>.Get(assetPath);
+            if(loader.assetLoaderAsync.asset != null)
+            {
+                loader.asset = Object.Instantiate(loader.assetLoaderAsync.asset);
+            }
+            return loader;
+        }
         
         // private bool IsDone()
         // {

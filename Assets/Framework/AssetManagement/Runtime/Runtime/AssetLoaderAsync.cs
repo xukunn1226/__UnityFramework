@@ -43,18 +43,18 @@ namespace Framework.AssetManagement.Runtime
             return loader;
         }
 
-        static internal AssetLoaderAsync<T> Get(string assetBundleName, string assetName)
-        {
-            if (m_Pool == null)
-            {
-                m_Pool = new LinkedObjectPool<AssetLoaderAsync<T>>(AssetManager.PreAllocateAssetLoaderAsyncPoolSize);
-            }
+        // static internal AssetLoaderAsync<T> Get(string assetBundleName, string assetName)
+        // {
+        //     if (m_Pool == null)
+        //     {
+        //         m_Pool = new LinkedObjectPool<AssetLoaderAsync<T>>(AssetManager.PreAllocateAssetLoaderAsyncPoolSize);
+        //     }
 
-            AssetLoaderAsync<T> loader = (AssetLoaderAsync<T>)m_Pool.Get();
-            loader.LoadAsset(assetBundleName, assetName);
-            loader.Pool = m_Pool;
-            return loader;
-        }
+        //     AssetLoaderAsync<T> loader = (AssetLoaderAsync<T>)m_Pool.Get();
+        //     loader.LoadAsset(assetBundleName, assetName);
+        //     loader.Pool = m_Pool;
+        //     return loader;
+        // }
 
         static internal void Release(AssetLoaderAsync<T> loader)
         {
@@ -83,27 +83,27 @@ namespace Framework.AssetManagement.Runtime
 #endif
         }
 
-        private void LoadAsset(string assetBundleName, string assetName)
-        {
-#if UNITY_EDITOR
-            AssetManager.Instance.ParseBundleAndAssetName(assetBundleName, assetName, out assetPath);
-            switch (AssetManager.Instance.loaderType)
-            {
-                case LoaderType.FromEditor:
-                    {
-                        asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
-                    }
-                    break;
-                case LoaderType.FromAB:
-                    {
-                        LoadAssetInternal(assetBundleName, assetName);
-                    }
-                    break;
-            }
-#else
-            LoadAssetInternal(assetBundleName, assetName);
-#endif
-        }
+//         private void LoadAsset(string assetBundleName, string assetName)
+//         {
+// #if UNITY_EDITOR
+//             AssetManager.Instance.ParseBundleAndAssetName(assetBundleName, assetName, out assetPath);
+//             switch (AssetManager.Instance.loaderType)
+//             {
+//                 case LoaderType.FromEditor:
+//                     {
+//                         asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+//                     }
+//                     break;
+//                 case LoaderType.FromAB:
+//                     {
+//                         LoadAssetInternal(assetBundleName, assetName);
+//                     }
+//                     break;
+//             }
+// #else
+//             LoadAssetInternal(assetBundleName, assetName);
+// #endif
+//         }
 
         private void LoadAssetInternal(string assetPath)
         {
@@ -123,14 +123,6 @@ namespace Framework.AssetManagement.Runtime
             if (abLoader.assetBundle != null)
             {
                 m_Request = abLoader.assetBundle.LoadAssetAsync<T>(assetName);
-                if (m_Request == null || m_Request.asset == null)
-                {
-                    Unload();           // asset加载失败则释放所有的AB包
-                }
-            }
-            else
-            {
-                Unload();               // asset bundle加载失败则释放所有的AB包
             }
         }
 
@@ -148,10 +140,19 @@ namespace Framework.AssetManagement.Runtime
         private bool IsDone()
         {
             if (m_Request == null)
+            { // bundle加载失败，释放所有bundle
+                Unload();
                 return true;
+            }
 
             if (m_Request.isDone)
+            {
                 asset = m_Request.asset as T;
+                if(asset == null)
+                { // asset加载失败
+                    Unload();
+                }
+            }
             return m_Request.isDone;
         }
 
