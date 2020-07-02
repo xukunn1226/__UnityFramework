@@ -168,7 +168,7 @@ namespace Framework.AssetManagement.Runtime.Editor
             EditorGUILayout.LabelField(string.Format("[{0}]  {1}", index, loader.assetPath), AssetStyle);
 
             ++EditorGUI.indentLevel;
-            DrawAssetBundleLoader(loader.assetLoader.abLoader);
+            DrawAssetBundleLoader(loader.abLoader);
             --EditorGUI.indentLevel;
         }
 
