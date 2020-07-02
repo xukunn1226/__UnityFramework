@@ -12,6 +12,8 @@ using Framework.Core.Editor;
 
 public sealed class SoftObject : SoftObjectPath
 {
+    private GameObjectLoader            m_PrefabLoader;
+    private GameObjectLoaderAsync       m_PrefabLoaderAsync;
     private AssetLoader<Object>         m_Loader;
     private AssetLoaderAsync<Object>    m_LoaderAsync;
 
@@ -28,20 +30,44 @@ public sealed class SoftObject : SoftObjectPath
 
     public GameObject Instantiate()
     {
-        return ResourceManager.InstantiatePrefab(assetPath);
+        // 已异步加载，不能再次加载
+        if (m_PrefabLoaderAsync != null)
+            throw new System.InvalidOperationException($"{assetPath} has already loaded async");
+
+        // 已同步加载，不能再次加载
+        if (m_PrefabLoader != null)
+            throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
+
+        m_PrefabLoader = ResourceManager.Instantiate(assetPath);
+        return m_PrefabLoader?.asset;
     }
 
-    public IEnumerator InstantiateAsync(System.Action<GameObject> handler = null)
+    public GameObjectLoaderAsync InstantiateAsync()
     {
-        return ResourceManager.InstantiatePrefabAsync(assetPath, handler);
+        // 已异步加载，不能再次加载
+        if (m_PrefabLoaderAsync != null)
+            throw new System.InvalidOperationException($"{assetPath} has already loaded async");
+
+        // 已同步加载，不能再次加载
+        if (m_PrefabLoader != null)
+            throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
+
+        return ResourceManager.InstantiateAsync(assetPath);
     }
 
-    public void ReleaseInst(GameObject inst)
+    public void ReleaseInst()
     {
-        if (inst == null)
-            throw new System.ArgumentNullException("inst");
-
-        Destroy(inst);
+        if(m_PrefabLoader != null)
+        {
+            ResourceManager.ReleaseInst(m_PrefabLoader);
+            m_PrefabLoader = null;
+        }
+    
+        if(m_PrefabLoaderAsync != null)
+        {
+            ResourceManager.ReleaseInst(m_PrefabLoaderAsync);
+            m_PrefabLoaderAsync = null;
+        }
     }
 
     public Object LoadAsset()

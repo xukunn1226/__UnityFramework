@@ -61,10 +61,10 @@ namespace Tests
             if (m_SoftObject == null)
                 yield break;
 
-            yield return m_SoftObject.InstantiateAsync((go) =>
-            {
-                inst = go;
-            });
+            GameObjectLoaderAsync loaderAsync = m_SoftObject.InstantiateAsync();
+            yield return loaderAsync;
+            inst = loaderAsync.asset;
+            
             info = inst != null ? "sucess to load: " : "fail to load: ";
             info += m_SoftObject.assetPath;
         }
@@ -73,7 +73,7 @@ namespace Tests
         {
             if (inst != null)
             {
-                m_SoftObject.ReleaseInst(inst);
+                m_SoftObject.ReleaseInst();
                 inst = null;
             }
             info = null;

@@ -56,7 +56,11 @@ namespace Framework.AssetManagement.Runtime
             switch (AssetManager.Instance.loaderType)
             {
                 case LoaderType.FromEditor:
-                    asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                    GameObject prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);       // hack: 编辑模式
+                    if(prefabAsset != null)
+                    {
+                        asset = Object.Instantiate(prefabAsset);
+                    }
                     this.assetPath = assetPath;
                     break;
                 case LoaderType.FromAB:
@@ -91,7 +95,7 @@ namespace Framework.AssetManagement.Runtime
         }
 
         private void Unload()
-        {
+        {            
             if(asset != null)
             {
                 Object.Destroy(asset);
@@ -108,7 +112,13 @@ namespace Framework.AssetManagement.Runtime
 
         private bool IsDone()
         {
-            Debug.Log($"{Time.frameCount}   GameLoaderAsync:IsDone  Update");
+#if UNITY_EDITOR
+            if(AssetManager.Instance.loaderType == LoaderType.FromEditor)
+            {
+                return true;                // 编辑模式直接返回，LoadAssetAtPath之后立即实例化
+            }
+#endif
+            // Debug.Log($"{Time.frameCount}   GameLoaderAsync:IsDone  Update");
             if (m_Request == null)
             { // bundle加载失败，释放所有bundle
                 Unload();
@@ -117,7 +127,7 @@ namespace Framework.AssetManagement.Runtime
 
             if (m_Request.isDone)
             {
-                Debug.Log($"{Time.frameCount}   GameLoaderAsync:IsDone  TRUE");
+                // Debug.Log($"{Time.frameCount}   GameLoaderAsync:IsDone  TRUE");
                 if(m_Request.asset != null && m_Request.asset is GameObject)
                 {
                     asset = Object.Instantiate(m_Request.asset) as GameObject;

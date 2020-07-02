@@ -94,45 +94,35 @@ public class ResourceManager : MonoBehaviour
         AssetManager.RegisterCustomizedParser(parser1, parser2);
     }
 
-    static public GameObject InstantiatePrefab(string assetPath)
+    static public GameObjectLoader Instantiate(string assetPath)
     {
-        return AssetManager.InstantiatePrefab(assetPath);
+        return AssetManager.Instantiate(assetPath);
     }
 
-    // static public GameObject InstantiatePrefab(string assetBundleName, string assetName)
-    // {
-    //     return AssetManager.InstantiatePrefab(assetBundleName, assetName);
-    // }
-
-    static public IEnumerator InstantiatePrefabAsync(string assetPath, Action<GameObject> handler = null)
+    static public void ReleaseInst(GameObjectLoader loader)
     {
-        return AssetManager.InstantiatePrefabAsync(assetPath, handler);
+        AssetManager.ReleaseInst(loader);
     }
 
-    // static public IEnumerator InstantiatePrefabAsync(string assetBundleName, string assetName, Action<GameObject> handler = null)
-    // {
-    //     return AssetManager.InstantiatePrefabAsync(assetBundleName, assetName, handler);
-    // }
+    static public GameObjectLoaderAsync InstantiateAsync(string assetPath)
+    {
+        return AssetManager.InstantiateAsync(assetPath);
+    }
+
+    static public void ReleaseInst(GameObjectLoaderAsync loader)
+    {
+        AssetManager.ReleaseInst(loader);
+    }
 
     static public AssetLoader<T> LoadAsset<T>(string assetPath) where T : UnityEngine.Object
     {
         return AssetManager.LoadAsset<T>(assetPath);
     }
 
-    // static public AssetLoader<T> LoadAsset<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
-    // {
-    //     return AssetManager.LoadAsset<T>(assetBundleName, assetName);
-    // }
-
     static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetPath) where T : UnityEngine.Object
     {
         return AssetManager.LoadAssetAsync<T>(assetPath);
     }
-
-    // static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
-    // {
-    //     return AssetManager.LoadAssetAsync<T>(assetBundleName, assetName);
-    // }
 
     static public void UnloadAsset<T>(AssetLoader<T> loader) where T : UnityEngine.Object
     {
@@ -153,7 +143,6 @@ public class ResourceManager : MonoBehaviour
     {
         AssetManager.UnloadAssetBundle(abLoader);
     }
-
 
     static public SceneLoader LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
     {

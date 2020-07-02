@@ -193,7 +193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bd9fce9ea1df5a4e8ccb7ceb8649375, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  type: 0
   assetPath: assets/framework/assetmanagement/runtime/tests/res/testdep/tex/cube.prefab
 --- !u!4 &621498211
 Transform:

@@ -275,10 +275,10 @@ namespace Tests
         private void InstantiateCanvas(int flag = 1)
         {
             Debug.Log($"InstantiateCanvas        {Time.frameCount}   flag: {flag}");
-            if(flag == 1)
-                m_Canvas = ResourceManager.InstantiatePrefab("assets/application/tests/runtime/res/prefabs/canvas.prefab");
-            else if(flag == 2)
-                m_Canvas2 = ResourceManager.InstantiatePrefab("assets/application/tests/runtime/res/prefabs/canvas2.prefab");
+            // if(flag == 1)
+            //     m_Canvas = ResourceManager.InstantiatePrefab("assets/application/tests/runtime/res/prefabs/canvas.prefab");
+            // else if(flag == 2)
+            //     m_Canvas2 = ResourceManager.InstantiatePrefab("assets/application/tests/runtime/res/prefabs/canvas2.prefab");
         }
 
         private void LoadAtlas(int flag = 1)

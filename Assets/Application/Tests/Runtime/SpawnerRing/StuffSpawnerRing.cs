@@ -25,7 +25,7 @@ public class StuffSpawnerRing : MonoBehaviour
     {
         foreach(var assetPath in PoolPathList)
         {
-            GameObject go = ResourceManager.InstantiatePrefab(assetPath);
+            GameObject go = ResourceManager.Instantiate(assetPath).asset;
             PrefabObjectPool pool = go.GetComponent<PrefabObjectPool>();
             if(pool != null)
             {

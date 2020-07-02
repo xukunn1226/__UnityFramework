@@ -3,52 +3,69 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Cache;
 using MeshParticleSystem;
+using Framework.AssetManagement.Runtime;
 
+// 不足：以assetPath为KEY，所以同一资源不能有多个实例
+// 改善：以isntanceID为KEY可以解决上述问题
 public class LRUPool_FX : LRUPoolBase
 {
-    static private LRUQueue<string, FX_Root> k_FXPool;
+    static private LRUQueue<string, FX_Root>            s_FXPool;
+    static private Dictionary<string, GameObjectLoader> s_LoaderPool = new Dictionary<string, GameObjectLoader>();      // <assetPath, GameObjectLoader>
 
-    public override int countOfUsed { get { return k_FXPool.Count; } }
+    public override int countOfUsed { get { return s_FXPool.Count; } }
 
     public override void Clear()
     {
-        k_FXPool?.Clear();
+        s_FXPool?.Clear();
     }
 
     protected override void InitLRU()
     {
-        k_FXPool = new LRUQueue<string, FX_Root>(Capacity);        // 自动注册到PoolManager
-        k_FXPool.OnDiscard += OnDiscard;
+        s_FXPool = new LRUQueue<string, FX_Root>(Capacity);        // 自动注册到PoolManager
+        s_FXPool.OnDiscard += OnDiscard;
     }
 
     protected override void UninitLRU()
     {
-        if (k_FXPool == null)
+        if (s_FXPool == null)
             throw new System.ArgumentNullException("k_FXPool");
 
-        k_FXPool.OnDiscard -= OnDiscard;
+        s_FXPool.OnDiscard -= OnDiscard;
         PoolManager.RemoveObjectPool(typeof(FX_Root));
     }
 
     private void OnDiscard(string assetPath, FX_Root fx)
     {
         Destroy(fx.gameObject);
+
+        GameObjectLoader loader;
+        if(s_LoaderPool.TryGetValue(assetPath, out loader))
+        {
+            s_LoaderPool.Remove(assetPath);
+            ResourceManager.ReleaseInst(loader);
+        }
     }
 
     public override IPooledObject Get(string assetPath)
     {
-        FX_Root fx = k_FXPool.Exist(assetPath);
+        FX_Root fx = s_FXPool.Exist(assetPath);
         if(fx == null)
         {
-            GameObject go = ResourceManager.InstantiatePrefab(assetPath);
-            fx = go.GetComponent<FX_Root>();
+            GameObjectLoader loader = ResourceManager.Instantiate(assetPath);
+            if(loader.asset == null)
+            {
+                return null;
+            }
+            fx = loader.asset.GetComponent<FX_Root>();
             if (fx == null)
                 throw new System.ArgumentNullException("FX_Root", "no FX_Root script attached to prefab");
             fx.Pool = this;
+
+            s_LoaderPool.Add(assetPath, loader);
         }
 
         fx.OnGet();
-        k_FXPool.Cache(assetPath, fx);
+        s_FXPool.Cache(assetPath, fx);        
         return fx;
     }
 

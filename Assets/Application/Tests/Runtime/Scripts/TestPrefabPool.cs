@@ -15,13 +15,15 @@ public class TestPrefabPool : MonoBehaviour
     public string assetPath;
 
     private GameObject PoolInst;
+    private GameObjectLoader loader;
 
     private void OnGUI()
     {
         if (GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
         {
             // step 1. 创建对象池
-            PoolInst = ResourceManager.InstantiatePrefab(assetPath);
+            loader = ResourceManager.Instantiate(assetPath);
+            PoolInst = loader.asset;
         }
 
         if (GUI.Button(new Rect(100, 200, 150, 80), "Run"))
@@ -33,8 +35,10 @@ public class TestPrefabPool : MonoBehaviour
         if (GUI.Button(new Rect(100, 300, 150, 80), "Stop"))
         {
             // step 3. remove pool
-            if (PoolInst != null)
-                Destroy(PoolInst);
+            // if (PoolInst != null)
+            //     Destroy(PoolInst);
+            if(loader != null)
+                ResourceManager.ReleaseInst(loader);
         }
     }
 

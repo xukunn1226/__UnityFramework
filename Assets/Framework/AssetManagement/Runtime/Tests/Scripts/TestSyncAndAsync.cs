@@ -67,17 +67,14 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             int f1 = Time.frameCount;
 
-            // 异步加载
-            IEnumerator e = AssetManager.InstantiatePrefabAsync(assetPath, (go) =>
-            {
-                inst = go;
-            });
+            GameObjectLoaderAsync loaderAsync = AssetManager.InstantiateAsync(assetPath);
+            yield return loaderAsync;
+
+            inst = loaderAsync.asset;
 
             // 马上同步加载，将立即结束之前的异步流程
             loader = AssetManager.LoadAssetBundle("prefab.ab");
             GameObject asset = loader.LoadAsset<GameObject>("cube.prefab");
-
-            yield return e;
 
             info = inst != null ? "sucess to load: " : "fail to load: ";
             info += assetPath;

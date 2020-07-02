@@ -55,7 +55,7 @@ namespace Framework.AssetManagement.Runtime.Tests
             // });
 
             Debug.Log($"{Time.frameCount}   Start..............");
-            loaderAsync = AssetManager.InstantiatePrefabAsyncEx(assetPath);
+            loaderAsync = AssetManager.InstantiateAsync(assetPath);
             yield return loaderAsync;
             Debug.Log($"{Time.frameCount}   End..............");
 
@@ -67,7 +67,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             if(loaderAsync != null)
             {
-                AssetManager.ReleaseGameObject(loaderAsync);
+                AssetManager.ReleaseInst(loaderAsync);
                 loaderAsync = null;
             }
 

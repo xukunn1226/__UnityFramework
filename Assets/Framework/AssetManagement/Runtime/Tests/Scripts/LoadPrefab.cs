@@ -44,7 +44,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         void StartTask()
         {
             // inst = AssetManager.InstantiatePrefab(assetPath);
-            loader = AssetManager.InstantiatePrefabEx(assetPath);
+            loader = AssetManager.Instantiate(assetPath);
 
             info = inst != null ? "sucess to load: " : "fail to load: ";
             info += assetPath;
@@ -54,7 +54,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             if(loader != null)
             {
-                AssetManager.ReleaseGameObject(loader);
+                AssetManager.ReleaseInst(loader);
                 loader = null;
             }
             

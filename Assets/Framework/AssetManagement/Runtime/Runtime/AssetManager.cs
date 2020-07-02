@@ -162,32 +162,8 @@ namespace Framework.AssetManagement.Runtime
         /// 加载prefab资源接口（同步、异步共4个）
         /// </summary>
         /// <param name="assetPath"></param>
-        /// <param name="parent"></param>
         /// <returns></returns>
-        static public GameObject InstantiatePrefab(string assetPath)
-        {
-            if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-
-            GameObject go = null;
-
-            AssetLoader<GameObject> loader = LoadAsset<GameObject>(assetPath);
-            if (loader != null && loader.asset != null)
-            {
-                go = UnityEngine.Object.Instantiate(loader.asset);
-
-                GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
-                destroyer.loader = loader;
-            }
-            else
-            {
-                Debug.LogWarningFormat("InstantiatePrefab -- Failed to load asset[{0}]", assetPath);
-            }
-
-            return go;
-        }
-
-        static public GameObjectLoader InstantiatePrefabEx(string assetPath)
+        static public GameObjectLoader Instantiate(string assetPath)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
@@ -195,7 +171,7 @@ namespace Framework.AssetManagement.Runtime
             return GameObjectLoader.Get(assetPath);
         }
 
-        static public void ReleaseGameObject(GameObjectLoader loader)
+        static public void ReleaseInst(GameObjectLoader loader)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
@@ -203,8 +179,7 @@ namespace Framework.AssetManagement.Runtime
             GameObjectLoader.Release(loader);
         }
 
-
-        static public GameObjectLoaderAsync InstantiatePrefabAsyncEx(string assetPath)
+        static public GameObjectLoaderAsync InstantiateAsync(string assetPath)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
@@ -212,7 +187,7 @@ namespace Framework.AssetManagement.Runtime
             return GameObjectLoaderAsync.Get(assetPath);
         }
 
-        static public void ReleaseGameObject(GameObjectLoaderAsync loader)
+        static public void ReleaseInst(GameObjectLoaderAsync loader)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
@@ -220,81 +195,8 @@ namespace Framework.AssetManagement.Runtime
             GameObjectLoaderAsync.Release(loader);
         }
 
-        // static public GameObject InstantiatePrefab(string assetBundleName, string assetName)
-        // {
-        //     if (Instance == null)
-        //         throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-
-        //     GameObject go = null;
-
-        //     AssetLoader<GameObject> loader = LoadAsset<GameObject>(assetBundleName, assetName);
-        //     if (loader != null && loader.asset != null)
-        //     {
-        //         go = UnityEngine.Object.Instantiate(loader.asset);
-
-        //         GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
-        //         destroyer.loader = loader;
-        //     }
-        //     else
-        //     {
-        //         Debug.LogWarningFormat("InstantiatePrefab -- Failed to load asset[{0}]", assetBundleName + "/" + assetName);
-        //     }
-
-        //     return go;
-        // }
-        
-        static public IEnumerator InstantiatePrefabAsync(string assetPath, Action<GameObject> handler = null)
-        {
-            if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-
-            AssetLoaderAsync<GameObject> loaderAsync = LoadAssetAsync<GameObject>(assetPath);
-            yield return loaderAsync;
-            if (loaderAsync.asset != null)
-            {
-                GameObject go = UnityEngine.Object.Instantiate(loaderAsync.asset);
-
-                GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
-                destroyer.loaderAsync = loaderAsync;
-
-                handler?.Invoke(go);
-            }
-            else
-            {
-                Debug.LogWarningFormat("InstantiatePrefabAsync -- Failed to load asset[{0}]", assetPath);
-
-                UnloadAsset(loaderAsync);        // 加载失败回收AssetLoaderAsync
-            }            
-        }
-
-        // static public IEnumerator InstantiatePrefabAsync(string assetBundleName, string assetName, Action<GameObject> handler = null)
-        // {
-        //     if (Instance == null)
-        //         throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-        //     GameObject go = null;
-
-        //     AssetLoaderAsync<GameObject> loaderAsync = LoadAssetAsync<GameObject>(assetBundleName, assetName);
-        //     yield return loaderAsync;
-        //     if (loaderAsync.asset != null)
-        //     {
-        //         go = UnityEngine.Object.Instantiate(loaderAsync.asset);
-
-        //         GameObjectDestroyer destroyer = go.AddComponent<GameObjectDestroyer>();
-        //         destroyer.loaderAsync = loaderAsync;
-
-        //         handler?.Invoke(go);
-        //     }
-        //     else
-        //     {
-        //         Debug.LogWarningFormat("InstantiatePrefabAsync -- Failed to load asset[{0}]", assetBundleName + "/" + assetName);
-
-        //         UnloadAsset(loaderAsync);        // 加载失败回收AssetLoaderAsync
-        //     }            
-        // }
-
         /// <summary>
-        /// 同步加载资源接口，如果加载失败则返回null，内部会自动回收loader
+        /// 同步加载资源接口
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="assetPath"></param>
@@ -308,22 +210,7 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// 同上
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="assetBundleName"></param>
-        /// <param name="assetName"></param>
-        /// <returns></returns>
-        // static public AssetLoader<T> LoadAsset<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
-        // {
-        //     if (Instance == null)
-        //         throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-        //     return AssetLoader<T>.Get(assetBundleName, assetName);
-        // }
-
-        /// <summary>
-        /// 异步加载资源接口，如果加载失败需应用层释放loader，因为异步内部无法判断是否加载成功
+        /// 异步加载资源接口
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="assetPath"></param>
@@ -335,21 +222,6 @@ namespace Framework.AssetManagement.Runtime
             
             return AssetLoaderAsync<T>.Get(assetPath);
         }
-
-        /// <summary>
-        /// 同上
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="assetBundleName"></param>
-        /// <param name="assetName"></param>
-        /// <returns></returns>
-        // static public AssetLoaderAsync<T> LoadAssetAsync<T>(string assetBundleName, string assetName) where T : UnityEngine.Object
-        // {
-        //     if (Instance == null)
-        //         throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-        //     return AssetLoaderAsync<T>.Get(assetBundleName, assetName);
-        // }
 
         static public void UnloadAsset<T>(AssetLoader<T> loader) where T : UnityEngine.Object
         {
