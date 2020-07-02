@@ -12,8 +12,11 @@ namespace Framework.AssetManagement.Runtime
 
         public GameObject               asset       { get; internal set; }
 
-        private AssetLoader<GameObject> assetLoader { get; set; }
+        public AssetLoader<GameObject> assetLoader { get; private set; }
 
+#if UNITY_EDITOR
+        public string                   assetPath;
+#endif
         static internal GameObjectLoader Get(string assetPath)
         {
             if (m_Pool == null)
@@ -31,6 +34,10 @@ namespace Framework.AssetManagement.Runtime
             {
                 loader.Unload();
             }
+            
+#if UNITY_EDITOR
+            loader.assetPath = assetPath;
+#endif
             return loader;
         }
 

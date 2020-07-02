@@ -17,10 +17,12 @@ namespace Framework.AssetManagement.Runtime.Editor
 
         GUIStyle AssetStyle;
 
-        bool bFoldout_Prefab = true;
+        bool bFoldout_GameObject = true;
+        bool bFoldout_PrefabAsset = true;
         bool bFoldout_Object = true;
         bool bFoldout_Material = true;
         bool bFoldout_Texture2D = true;
+        bool bFoldout_Mesh = true;
         bool bFoldout_AnimationClip = true;
         bool bFoldout_ScriptableObject = true;
         bool bFoldout_AudioClip = true;
@@ -64,11 +66,11 @@ namespace Framework.AssetManagement.Runtime.Editor
             EditorGUILayout.PropertyField(m_LoaderTypeProp);
             EditorGUILayout.PropertyField(m_RootPathProp);
 
-            bFoldout_Prefab = DrawAssetInfo<GameObject>("<Prefab>", bFoldout_Prefab);
+            bFoldout_GameObject = DrawGameObjectInfo("<GameObject>", bFoldout_GameObject);
 
             EditorGUILayout.Space();
 
-            bFoldout_Object = DrawAssetInfo<UnityEngine.Object>("<Object>", bFoldout_Object);
+            bFoldout_PrefabAsset = DrawAssetInfo<GameObject>("<PrefabAsset>", bFoldout_PrefabAsset);
 
             EditorGUILayout.Space();
 
@@ -77,6 +79,10 @@ namespace Framework.AssetManagement.Runtime.Editor
             EditorGUILayout.Space();
 
             bFoldout_Texture2D = DrawAssetInfo<Texture2D>("<Texture2D>", bFoldout_Texture2D);
+
+            EditorGUILayout.Space();
+
+            bFoldout_Mesh = DrawAssetInfo<Mesh>("<Mesh>", bFoldout_Mesh);
 
             EditorGUILayout.Space();
 
@@ -89,9 +95,94 @@ namespace Framework.AssetManagement.Runtime.Editor
             EditorGUILayout.Space();
 
             bFoldout_AudioClip = DrawAssetInfo<AudioClip>("<AudioClip>", bFoldout_AudioClip);
+            
+            EditorGUILayout.Space();
+
+            bFoldout_Object = DrawAssetInfo<UnityEngine.Object>("<Object>", bFoldout_Object);
 
             serializedObject.ApplyModifiedProperties();
         }
+
+        private bool DrawGameObjectInfo(string title, bool bFoldout)
+        {
+            GUIStyle boldStyle = EditorStyles.foldout;
+            boldStyle.alignment = TextAnchor.MiddleLeft;
+            boldStyle.fontSize = 14;
+            bFoldout = EditorGUILayout.Foldout(bFoldout, title, boldStyle);
+            
+            if (bFoldout)
+            {
+                GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+                {
+                    DrawGameObjectLoader(GameObjectLoader.kPool);
+
+                    EditorGUILayout.Separator();
+
+                    DrawGameObjectLoaderAsync(GameObjectLoaderAsync.kPool);
+                }
+                GUILayout.EndVertical();
+            }
+            return bFoldout;
+        }
+        
+        private void DrawGameObjectLoader(LinkedObjectPool<GameObjectLoader> Pool)
+        {
+            string title = string.Format("Sync Loader [{0}/{1}]", Pool?.countOfUsed ?? 0, Pool?.countAll ?? 0);
+            EditorGUILayout.LabelField(title, EditorStyles.label);
+            if (Pool != null)
+            {
+                // draw used loader
+                if (Pool.countOfUsed != 0)
+                {
+                    int index = 0;
+                    foreach (var loader in Pool)
+                    {
+                        DrawGameObjectLoader(index, loader);
+                        ++index;
+                    }
+                }
+            }
+        }
+
+        private void DrawGameObjectLoaderAsync(LinkedObjectPool<GameObjectLoaderAsync> Pool)
+        {
+            string title = string.Format("Async Loader [{0}/{1}]", Pool?.countOfUsed ?? 0, Pool?.countAll ?? 0);
+            EditorGUILayout.LabelField(title, EditorStyles.label);
+            if (Pool != null)
+            {
+                // draw used loader
+                if (Pool.countOfUsed != 0)
+                {
+                    int index = 0;
+                    foreach (var loader in Pool)
+                    {
+                        DrawGameObjectLoaderAsync(index, loader);
+                        ++index;
+                    }
+                }
+            }
+        }
+
+        private void DrawGameObjectLoader(int index, GameObjectLoader loader)
+        {
+            EditorGUILayout.LabelField(string.Format("[{0}]  {1}", index, loader.assetPath), AssetStyle);
+
+            ++EditorGUI.indentLevel;
+            DrawAssetBundleLoader(loader.assetLoader.abLoader);
+            --EditorGUI.indentLevel;
+        }
+
+        private void DrawGameObjectLoaderAsync(int index, GameObjectLoaderAsync loader)
+        {
+            EditorGUILayout.LabelField(string.Format("[{0}]  {1}", index, loader.assetPath), AssetStyle);
+
+            ++EditorGUI.indentLevel;
+            DrawAssetBundleLoader(loader.abLoader);
+            --EditorGUI.indentLevel;
+        }
+
+
+
 
         private bool DrawAssetInfo<T>(string title, bool bFoldout) where T : UnityEngine.Object
         {
