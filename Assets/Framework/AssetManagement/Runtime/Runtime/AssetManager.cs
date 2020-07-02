@@ -203,6 +203,23 @@ namespace Framework.AssetManagement.Runtime
             GameObjectLoader.Release(loader);
         }
 
+
+        static public GameObjectLoaderAsync InstantiatePrefabAsyncEx(string assetPath)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
+            return GameObjectLoaderAsync.Get(assetPath);
+        }
+
+        static public void ReleaseGameObject(GameObjectLoaderAsync loader)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+                
+            GameObjectLoaderAsync.Release(loader);
+        }
+
         // static public GameObject InstantiatePrefab(string assetBundleName, string assetName)
         // {
         //     if (Instance == null)

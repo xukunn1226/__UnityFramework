@@ -151,6 +151,7 @@ namespace Framework.AssetManagement.Runtime
                 if(asset == null)
                 { // asset加载失败
                     Unload();
+                    return true;
                 }
             }
             return m_Request.isDone;

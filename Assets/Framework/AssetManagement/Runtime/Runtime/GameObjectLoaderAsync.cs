@@ -1,7 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Framework.Cache;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.AssetManagement.Runtime
 {
@@ -10,13 +12,20 @@ namespace Framework.AssetManagement.Runtime
         static private LinkedObjectPool<GameObjectLoaderAsync>    m_Pool;
         public static LinkedObjectPool<GameObjectLoaderAsync>     kPool { get { return m_Pool; } }
 
-        private AssetLoaderAsync<GameObject> assetLoaderAsync { get; set; }
+        public AssetBundleLoader        abLoader    { get; private set; }
 
-        public GameObject               asset       { get; internal set; }
+        private AssetBundleRequest      m_Request;
+
+        public GameObject               asset       { get; private set; }
+
+#if UNITY_EDITOR
+        public string                   assetPath;
+#endif
 
         public GameObjectLoaderAsync()
         {
-            assetLoaderAsync = null;
+            abLoader = null;
+            m_Request = null;
             asset = null;
         }
 
@@ -24,27 +33,103 @@ namespace Framework.AssetManagement.Runtime
         {
             if (m_Pool == null)
             {
-                m_Pool = new LinkedObjectPool<GameObjectLoaderAsync>(AssetManager.PreAllocateAssetLoaderPoolSize);
+                m_Pool = new LinkedObjectPool<GameObjectLoaderAsync>(AssetManager.PreAllocateAssetLoaderAsyncPoolSize);
             }
 
             GameObjectLoaderAsync loader = (GameObjectLoaderAsync)m_Pool.Get();
-            loader.assetLoaderAsync = AssetLoaderAsync<GameObject>.Get(assetPath);
-            if(loader.assetLoaderAsync.asset != null)
-            {
-                loader.asset = Object.Instantiate(loader.assetLoaderAsync.asset);
-            }
+            loader.LoadAsset(assetPath);
+            loader.Pool = m_Pool;
             return loader;
         }
-        
-        // private bool IsDone()
-        // {
-        //     if (m_Request == null)
-        //         return true;
 
-        //     if (m_Request.isDone)
-        //         asset = m_Request.asset as T;
-        //     return m_Request.isDone;
-        // }
+        static internal void Release(GameObjectLoaderAsync loader)
+        {
+            if (m_Pool == null || loader == null)
+                throw new System.ArgumentNullException();
+
+            m_Pool.Return(loader);
+        }
+
+        private void LoadAsset(string assetPath)
+        {
+#if UNITY_EDITOR
+            switch (AssetManager.Instance.loaderType)
+            {
+                case LoaderType.FromEditor:
+                    asset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                    this.assetPath = assetPath;
+                    break;
+                case LoaderType.FromAB:
+                    LoadAssetInternal(assetPath);
+                    this.assetPath = assetPath;
+                    break;
+            }
+#else
+            LoadAssetInternal(assetPath);
+#endif
+        }
+
+        private void LoadAssetInternal(string assetPath)
+        {
+            string assetBundleName, assetName;
+            if (!AssetManager.Instance.ParseAssetPath(assetPath, out assetBundleName, out assetName))
+            {
+                Debug.LogWarningFormat("AssetLoader -- Failed to reslove assetbundle name: {0} {1}", assetPath, typeof(GameObject));
+                return;
+            }
+
+            LoadAssetInternal(assetBundleName, assetName);
+        }
+
+        private void LoadAssetInternal(string assetBundleName, string assetName)
+        {
+            abLoader = AssetBundleLoader.Get(assetBundleName);
+            if (abLoader.assetBundle != null)
+            {
+                m_Request = abLoader.assetBundle.LoadAssetAsync<GameObject>(assetName);
+            }
+        }
+
+        private void Unload()
+        {
+            if(asset != null)
+            {
+                Object.Destroy(asset);
+                asset = null;
+            }
+
+            if (abLoader != null)
+            {
+                AssetBundleLoader.Release(abLoader);
+                abLoader = null;
+            }
+            m_Request = null;
+        }
+
+        private bool IsDone()
+        {
+            Debug.Log($"{Time.frameCount}   GameLoaderAsync:IsDone  Update");
+            if (m_Request == null)
+            { // bundle加载失败，释放所有bundle
+                Unload();
+                return true;
+            }
+
+            if (m_Request.isDone)
+            {
+                Debug.Log($"{Time.frameCount}   GameLoaderAsync:IsDone  TRUE");
+                if(m_Request.asset != null && m_Request.asset is GameObject)
+                {
+                    asset = Object.Instantiate(m_Request.asset) as GameObject;
+                }
+                else
+                { // asset加载失败
+                    Unload();
+                    return true;
+                }
+            }
+            return m_Request.isDone;
+        }
 
         object IEnumerator.Current
         {
@@ -53,8 +138,7 @@ namespace Framework.AssetManagement.Runtime
 
         bool IEnumerator.MoveNext()
         {
-            // return !IsDone();
-            return false;
+            return !IsDone();
         }
 
         void IEnumerator.Reset()
@@ -79,7 +163,7 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         void IPooledObject.OnRelease()
         {
-            // Unload();
+            Unload();
             Pool = null;
         }
 
@@ -91,6 +175,6 @@ namespace Framework.AssetManagement.Runtime
             Pool?.Return(this);
         }
 
-        public IPool Pool { get; set; }
+        public IPool Pool { get; set; }    
     }
 }
