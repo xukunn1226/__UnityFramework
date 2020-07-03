@@ -13,10 +13,12 @@ namespace MeshParticleSystem.Profiler
         enum MyColumns
         {
             Name,
-            Value1,
-            Value2,
-            Icon,
-            Button
+            PSCount,
+            TexMemorySize,
+            DCCount,
+            Fillrate,
+            Command_Test,
+            Command_Del,
         }
 
         public enum SortOption
@@ -80,7 +82,87 @@ namespace MeshParticleSystem.Profiler
 
         void CellGUI(Rect cellRect, TreeViewItem<ParticleAssetTreeElement> item, MyColumns column, ref RowGUIArgs args)
         {
+            // CenterRectUsingSingleLineHeight(ref cellRect);
 
+//             TreeViewItem<BundleListTreeElement> element = (TreeViewItem<BundleListTreeElement>)args.item;
+//             if (element == null || element.data == null || element.data.bundleFileInfo == null)
+//                 return;
+
+//             switch (column)
+//             {
+//                 case MyColumns.Name:
+//                     Rect iconRect = args.rowRect;
+//                     iconRect.x += GetContentIndent(args.item);
+//                     iconRect.width = 16f;
+
+//                     if(element.data.bundleFileInfo.includeScene)
+//                     {
+//                         GUI.DrawTexture(iconRect, m_Icons[5]);
+//                     }
+//                     else
+//                     {
+//                         if (string.IsNullOrEmpty(element.data.bundleFileInfo.assetBundleName))
+//                             GUI.DrawTexture(iconRect, m_Icons[0]);                        
+//                         else
+//                             GUI.DrawTexture(iconRect, m_Icons[1]);
+//                     }
+
+//                     // 选中icon时也可选中item
+//                     if (Event.current.type == EventType.MouseDown && iconRect.Contains(Event.current.mousePosition))
+//                         SelectionClick(args.item, false);
+
+//                     // draw label
+//                     args.rowRect = cellRect;
+//                     base.RowGUI(args); 
+//                     break;
+//                 case MyColumns.Value1:
+//                     if(element.data.bundleFileInfo.size > 0)
+//                         GUI.Label(cellRect, new GUIContent(EditorUtility.FormatBytes(element.data.bundleFileInfo.size)));
+//                     break;
+//                 case MyColumns.Icon:
+//                     if (!element.data.bundleFileInfo.isBundle)
+//                         break;      // 不是bundle则忽略
+
+//                     if (!element.data.bundleFileInfo.isValid)
+//                         GUI.DrawTexture(cellRect, m_Icons[4], ScaleMode.ScaleToFit);
+//                     else if (element.data.bundleFileInfo.hasMissingReference)
+//                         GUI.DrawTexture(cellRect, m_Icons[3], ScaleMode.ScaleToFit);
+//                     else
+//                         GUI.DrawTexture(cellRect, m_Icons[2], ScaleMode.ScaleToFit);
+//                     break;
+//                 case MyColumns.Value2:
+//                     if (item.data.bundleFileInfo.dependentOnBundleList != null)
+//                     {
+//                         string info = string.Format("[" + item.data.bundleFileInfo.dependentOnBundleList.Length + "]");
+//                         if (item.data.bundleFileInfo.dependentOnBundleList.Length > 4)
+//                         {
+//                             GUIStyle style = new GUIStyle("BoldLabel");
+//                             style.normal.textColor = Color.red;
+//                             GUI.Label(cellRect, info, style);
+//                         }
+//                         else
+//                         {
+//                             GUI.Label(cellRect, info);
+//                         }
+//                     }
+//                     break;
+//                 case MyColumns.Button:
+//                     IList<int> selectedIDs = GetSelection();
+//                     if(selectedIDs.Count > 0 && item.data.id == selectedIDs[0])
+//                     {
+//                         if(GUI.Button(cellRect, "Fix"))
+//                         {
+//                             if (item.data.bundleFileInfo.includedAssetFileList == null)
+//                                 return;
+//                             foreach(var assetFileInfo in item.data.bundleFileInfo.includedAssetFileList)
+//                             {
+//                                 AssetBrowserUtil.FixRedundantMeshOfParticleSystemRender(assetFileInfo.assetPath);
+//                             }
+//                             AssetDatabase.SaveAssets();
+//                         }
+//                     }
+//                     break;
+//             }
         }
 
         protected override void KeyEvent()
@@ -159,7 +241,7 @@ namespace MeshParticleSystem.Profiler
                 },
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("Size"),
+                    headerContent = new GUIContent("PS Count"),
                     headerTextAlignment = TextAlignment.Left,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Center,
@@ -172,7 +254,7 @@ namespace MeshParticleSystem.Profiler
                 },
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("Count", "Dependencies Count"),
+                    headerContent = new GUIContent("DC Count"),
                     headerTextAlignment = TextAlignment.Left,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Center,
@@ -185,7 +267,7 @@ namespace MeshParticleSystem.Profiler
                 },
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent(EditorGUIUtility.FindTexture("console.infoicon"), "Warning, Error or Info"),
+                    headerContent = new GUIContent("Tex Memory Size"),
                     contextMenuText = "Info",
                     headerTextAlignment = TextAlignment.Center,
                     sortedAscending = true,
@@ -199,7 +281,35 @@ namespace MeshParticleSystem.Profiler
                 },
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent(EditorGUIUtility.FindTexture("console.infoicon"), "Fix Unused Mesh of ParticleSystem"),
+                    headerContent = new GUIContent("Fillrate"),
+                    contextMenuText = "Info",
+                    headerTextAlignment = TextAlignment.Center,
+                    sortedAscending = true,
+                    sortingArrowAlignment = TextAlignment.Right,
+                    width = 50,
+                    minWidth = 50,
+                    maxWidth = 50,
+                    autoResize = false,
+                    allowToggleVisibility = true,
+                    canSort = false
+                },
+                new MultiColumnHeaderState.Column
+                {
+                    headerContent = new GUIContent("Test"),
+                    contextMenuText = "Info",
+                    headerTextAlignment = TextAlignment.Center,
+                    sortedAscending = true,
+                    sortingArrowAlignment = TextAlignment.Right,
+                    width = 50,
+                    minWidth = 50,
+                    maxWidth = 50,
+                    autoResize = false,
+                    allowToggleVisibility = true,
+                    canSort = false
+                },
+                new MultiColumnHeaderState.Column
+                {
+                    headerContent = new GUIContent("Del"),
                     contextMenuText = "Info",
                     headerTextAlignment = TextAlignment.Center,
                     sortedAscending = true,
@@ -266,7 +376,11 @@ namespace MeshParticleSystem.Profiler
 
     public class ParticleAssetTreeElement : TreeElement
     {
-        public string assetPath;
+        public bool isFile;
+        public AssetProfilerData assetProfilerData;
+        
+        public DirectoryProfilerData directoryProfilerData;
+
         public ParticleAssetTreeElement(string name, int depth, int id) : base(name, depth, id)
         { }
     }

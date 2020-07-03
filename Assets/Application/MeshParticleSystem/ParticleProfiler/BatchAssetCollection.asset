@@ -12,6 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5537d07a4c1fdf468725cec0be20964, type: 3}
   m_Name: BatchAssetCollection
   m_EditorClassIdentifier: 
-  assetPaths: []
-  directoryPaths: []
-  dirToAssetsDic: []
+  assetProfilerDataList:
+  - assetPath: assets/application/meshparticlesystem/tests/runtime/res/effect/skillfx1_5.prefab
+  - assetPath: assets/application/meshparticlesystem/tests/runtime/res/a.prefab
+  directoryProfilerDataList:
+  - directoryPath: assets/application/meshparticlesystem/tests/runtime/res
+    assetProfilerDataList:
+    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/a.prefab
+    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/billboard.prefab
+    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/bullet.prefab
+    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/effect/skillfx1_5.prefab
+    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/testrotation.prefab
+    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/testscale.prefab
+    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/testtranslation.prefab
+    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/uv.prefab

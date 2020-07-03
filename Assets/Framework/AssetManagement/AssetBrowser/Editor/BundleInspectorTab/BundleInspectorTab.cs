@@ -90,7 +90,6 @@ namespace Framework.AssetManagement.AssetBrowser
 
             int startIndex = 0;
             List<BundleFileInfo> bundleList = new List<BundleFileInfo>();
-            float startTime = Time.time;
             EditorApplication.update = delegate ()
             {
                 bool isCancel = EditorUtility.DisplayCancelableProgressBar("资源分析中", abNames[startIndex], (float)startIndex / abNames.Length);
@@ -104,7 +103,6 @@ namespace Framework.AssetManagement.AssetBrowser
                     EditorUtility.ClearProgressBar();
                     EditorApplication.update = null;
                     BundleFileInfo.PostParse();
-                    Debug.LogFormat("!!!Parsing AssetBundles Finished，Count[{0}]   Time[{1}]", bundleList.Count, Time.time - startTime);
 
                     BundleListToTreeView(bundleList);
 

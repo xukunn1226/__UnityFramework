@@ -17,14 +17,6 @@ namespace MeshParticleSystem.Profiler
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-
-            if(GUILayout.Button("Add"))
-            {
-                // m_Target.AddDirectory("Assets/Application/MeshParticleSystem/Tests/Runtime/Res");
-
-                EditorUtility.SetDirty(m_Target);
-                AssetDatabase.SaveAssets();
-            }
         }
     }
 }

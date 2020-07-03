@@ -43,7 +43,7 @@ namespace MeshParticleSystem.Profiler
                 m_Data = GetDefault();
             }
 
-            m_HorizontalSplitterPercent = 0.4f;
+            m_HorizontalSplitterPercent = 0.7f;
             InitParticleAssetTreeView();
         }
 
@@ -68,6 +68,13 @@ namespace MeshParticleSystem.Profiler
             m_ParticleAssetTreeView = new ParticleAssetTreeView(m_ParticleAssetTreeViewState, multiColumnHeader, GetParticleAssetData(), this);
         }
 
+        void UpdateParticleAssetTreeView()
+        {
+            m_ParticleAssetTreeView = new ParticleAssetTreeView(m_ParticleAssetTreeViewState, new ParticleAssetMultiColumnHeader(m_ParticleAssetMultiColumnHeaderState), GetParticleAssetData(), this);            
+            if (m_ParticleAssetTreeViewState.selectedIDs != null)
+                m_ParticleAssetTreeView.SetSelection(m_ParticleAssetTreeViewState.selectedIDs, TreeViewSelectionOptions.FireSelectionChanged);
+        }
+
         private TreeModel<ParticleAssetTreeElement> GetParticleAssetData()
         {
             List<ParticleAssetTreeElement> treeElements = new List<ParticleAssetTreeElement>();
@@ -75,7 +82,33 @@ namespace MeshParticleSystem.Profiler
 
             if(m_Data != null)
             {
+                foreach(var file in m_Data.assetProfilerDataList)
+                {
+                    ParticleAssetTreeElement treeElement = new ParticleAssetTreeElement(file.filename, 0, file.assetPath.GetHashCode());
+                    treeElement.isFile = true;
+                    treeElement.assetProfilerData = file;
+                    treeElement.directoryProfilerData = null;
+                    treeElements.Add(treeElement);
+                }
 
+                foreach(var directory in m_Data.directoryProfilerDataList)
+                {
+                    ParticleAssetTreeElement treeElement = new ParticleAssetTreeElement(directory.directoryPath, 0, directory.directoryPath.GetHashCode());
+                    treeElement.isFile = false;
+                    treeElement.assetProfilerData = null;
+                    treeElement.directoryProfilerData = directory;
+                    // treeElement.index = -1;         // 目录节点
+                    treeElements.Add(treeElement);
+
+                    foreach(var file in directory.assetProfilerDataList)
+                    {
+                        ParticleAssetTreeElement e = new ParticleAssetTreeElement(file.filename, 1, file.assetPath.GetHashCode());
+                        e.isFile = true;
+                        e.assetProfilerData = file;
+                        e.directoryProfilerData = null;
+                        treeElements.Add(e);
+                    }
+                }
             }
 
             return new TreeModel<ParticleAssetTreeElement>(treeElements);
@@ -126,11 +159,28 @@ namespace MeshParticleSystem.Profiler
             {
                 GUILayout.BeginHorizontal();
                 {
-                    // GUILayout.Space(2);
                     if(GUILayout.Button("Add"))
                     {
+                        if(ValidGameObject())
+                        {
+                            m_Data.AddFile(AssetDatabase.GetAssetPath(Selection.activeGameObject));
 
+                            EditorUtility.SetDirty(m_Data);
+                            AssetDatabase.SaveAssets();
+                        }
+                        else if(ValidFolder())
+                        {
+                            m_Data.AddDirectory(AssetDatabase.GetAssetPath(Selection.activeObject));
+                            
+                            EditorUtility.SetDirty(m_Data);
+                            AssetDatabase.SaveAssets();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("plz select Valid Object");
+                        }
                     }
+
                     if(GUILayout.Button("Remove"))
                     {
 
@@ -173,7 +223,29 @@ namespace MeshParticleSystem.Profiler
             GUILayout.EndArea();
         }
 
+        private bool ValidParticle(GameObject prefab)
+        {
+            if(prefab.GetComponentsInChildren<ParticleSystem>(true).Length == 0 &&
+               prefab.GetComponentsInChildren<FX_Component>(true).Length == 0)
+            {
+                return false;
+            }
+            return true;
+        }
 
+        private bool ValidGameObject()
+        {
+            if(Selection.activeGameObject == null || !ValidParticle(Selection.activeGameObject))
+                return false;
+            return true;
+        }
+
+        private bool ValidFolder()
+        {
+            if(Selection.activeObject == null)
+                return false;
+            return AssetDatabase.IsValidFolder(AssetDatabase.GetAssetPath(Selection.activeObject));
+        }
 
 
         static private void CreateSetting()

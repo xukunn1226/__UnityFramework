@@ -11,93 +11,132 @@ namespace MeshParticleSystem.Profiler
     // [CreateAssetMenuAttribute(menuName="Create Particle Batcher")]
     public class BatchAssetCollection : ScriptableObject
     {
-        public List<string>             assetPaths          = new List<string>();
-        public List<string>             directoryPaths      = new List<string>();
+        [SerializeField]
+        public List<AssetProfilerData>      assetProfilerDataList       = new List<AssetProfilerData>();
 
         [SerializeField]
-        public List<AssetPathsInDir>    dirToAssetsDic      = new List<AssetPathsInDir>();          // 记录directoryPaths下的所有资源路径
-
-        [SerializeField]
-        public List<AssetProfilerData>  profilerDataList    = new List<AssetProfilerData>();
+        public List<DirectoryProfilerData>  directoryProfilerDataList   = new List<DirectoryProfilerData>();
 
 #if UNITY_EDITOR
-        public void AddDirectory(string directory)
+        private int FindInFileList(string assetPath)
         {
-            if(!AssetDatabase.IsValidFolder(directory))
-            {
-                Debug.LogError($"{directory} is not valid folder");
-                return;
-            }
-
-            string[] guids = AssetDatabase.FindAssets("t:Prefab", new string[] { directory });
-            if(guids.Length == 0)
-            {
-                Debug.LogWarning($"Empty directory: {directory}");
-                return;
-            }
-
-            string dirLower = directory.ToLower();
-            if(directoryPaths.IndexOf(dirLower) != -1)
-                return;
-
-            directoryPaths.Add(dirLower);
-
-            List<string> paths = new List<string>();
-            foreach(var guid in guids)
-            {
-                paths.Add(AssetDatabase.GUIDToAssetPath(guid));
-            }
-            dirToAssetsDic.Add(new AssetPathsInDir(dirLower, paths));
+            return assetProfilerDataList.FindIndex((item) => { return item.assetPath == assetPath.ToLower(); });
         }
 
-        public void RemoveDirectory(string directory)
+        private int FindInDirectoryList(string assetPath)
         {
-            if(!AssetDatabase.IsValidFolder(directory))
+            foreach(var directory in directoryProfilerDataList)
             {
-                Debug.LogError($"{directory} is not valid folder");
-                return;
+                int index = directory.FindAsset(assetPath);
+                if(index != -1)
+                    return index;
             }
-
-            string dirLower = directory.ToLower();
-            int index = directoryPaths.IndexOf(dirLower);
-            if(index == -1)
-                return;
-
-            directoryPaths.RemoveAt(index);
-            dirToAssetsDic.RemoveAt(index);
+            return -1;
         }
 
-        public void RefreshDirectory(string directory)
+        public void AddFile(string assetPath)
         {
-            RemoveDirectory(directory);
-            AddDirectory(directory);            
+            if(FindInFileList(assetPath) != -1 || FindInDirectoryList(assetPath) != -1)
+                return;
+
+            assetProfilerDataList.Add(new AssetProfilerData(assetPath));
+        }
+
+        public void RemoveFile(string assetPath)
+        {
+            int index = FindInFileList(assetPath);
+            if(index != -1)
+                assetProfilerDataList.RemoveAt(index);
+        }
+
+        public void AddDirectory(string directoryPath)
+        {
+            if(directoryProfilerDataList.FindIndex((item) => { return item.directoryPath == directoryPath.ToLower(); }) != -1)
+                return;
+            directoryProfilerDataList.Add(new DirectoryProfilerData(directoryPath));
+        }
+
+        public void RemoveDirectory(string directoryPath)
+        {
+            int index = directoryProfilerDataList.FindIndex((item) => { return item.directoryPath == directoryPath.ToLower(); });
+            if(index != -1)
+                directoryProfilerDataList.RemoveAt(index);
         }
 #endif        
-    }
-
-    [Serializable]
-    public class AssetPathsInDir
-    {
-        public string directory;
-        public List<string> assetPaths;
-
-        protected AssetPathsInDir() {}
-
-        public AssetPathsInDir(string directory, List<string> assetPaths)
-        {
-            this.directory = directory;
-            this.assetPaths = assetPaths;
-        }
     }
 
     [Serializable]
     public class AssetProfilerData
     {
         public string assetPath;
+        public string filename;
+
+        protected AssetProfilerData()
+        {}
+
+        public AssetProfilerData(string assetPath)
+        {
+            this.assetPath = assetPath.ToLower();
+            filename = System.IO.Path.GetFileNameWithoutExtension(assetPath);
+        }
 
         [NonSerialized]
-        public ParticleProfiler.ProfilerData profilerData;
+        public ParticleProfiler.ProfilerData    profilerData;
         [NonSerialized]
-        public ShowOverdraw.OverdrawData overdrawData;
+        public ShowOverdraw.OverdrawData        overdrawData;
+    }
+
+    [Serializable]
+    public class DirectoryProfilerData
+    {
+        public string directoryPath;
+        public string directoryName;
+
+        public List<AssetProfilerData> assetProfilerDataList = new List<AssetProfilerData>();
+
+        protected DirectoryProfilerData()
+        {}
+
+        public DirectoryProfilerData(string directoryPath)
+        {
+            this.directoryPath = directoryPath.ToLower();
+            directoryName = System.IO.Path.GetFileNameWithoutExtension(directoryPath);
+
+            if(!AssetDatabase.IsValidFolder(directoryPath))
+            {
+                Debug.LogError($"{directoryPath} is not valid folder");
+                return;
+            }
+            
+            string[] guids = AssetDatabase.FindAssets("t:Prefab", new string[] { directoryPath });
+            if(guids.Length == 0)
+            {
+                Debug.LogWarning($"Empty directory: {directoryPath}");
+                return;
+            }
+
+            foreach(var guid in guids)
+            {
+                string filePath = AssetDatabase.GUIDToAssetPath(guid);
+                GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>(filePath);
+                if(asset != null && ValidParticle(asset))
+                    assetProfilerDataList.Add(new AssetProfilerData(filePath));
+            }
+        }
+
+        public int FindAsset(string assetPath)
+        {
+            return assetProfilerDataList.FindIndex(0, (item) => { return assetPath.ToLower() == item.assetPath; });
+        }
+
+        private bool ValidParticle(GameObject prefab)
+        {
+            if(prefab.GetComponentsInChildren<ParticleSystem>(true).Length == 0 &&
+               prefab.GetComponentsInChildren<FX_Component>(true).Length == 0)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
