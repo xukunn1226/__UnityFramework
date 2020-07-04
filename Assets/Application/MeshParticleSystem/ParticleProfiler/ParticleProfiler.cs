@@ -98,8 +98,6 @@ namespace MeshParticleSystem.Profiler
                 m_Data.TriangleCountCurve.AddKey(elapsedTime, m_Data.curTriangles);
                 m_Data.ParticleCountCurve.AddKey(elapsedTime, m_Data.curParticleCount);
             }
-
-            Debug.Log($"{Time.deltaTime}");
         }
     }
 }

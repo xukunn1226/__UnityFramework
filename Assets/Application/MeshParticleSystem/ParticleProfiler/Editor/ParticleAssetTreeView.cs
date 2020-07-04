@@ -10,15 +10,21 @@ namespace MeshParticleSystem.Profiler
 {
     internal class ParticleAssetTreeView : TreeViewWithTreeModel<ParticleAssetTreeElement>
     {
+        static private Texture2D[] m_Icons =
+        {
+            EditorGUIUtility.FindTexture("Prefab Icon"),
+            EditorGUIUtility.FindTexture("Folder Icon"),
+        };
+
         enum MyColumns
         {
             Name,
             PSCount,
-            TexMemorySize,
             DCCount,
+            TexMemorySize,
+            TexMemorySizeOnAndroid,
             Fillrate,
             Command_Test,
-            Command_Del,
         }
 
         public enum SortOption
@@ -82,87 +88,153 @@ namespace MeshParticleSystem.Profiler
 
         void CellGUI(Rect cellRect, TreeViewItem<ParticleAssetTreeElement> item, MyColumns column, ref RowGUIArgs args)
         {
-            // CenterRectUsingSingleLineHeight(ref cellRect);
+            CenterRectUsingSingleLineHeight(ref cellRect);
 
-//             TreeViewItem<BundleListTreeElement> element = (TreeViewItem<BundleListTreeElement>)args.item;
-//             if (element == null || element.data == null || element.data.bundleFileInfo == null)
-//                 return;
+            TreeViewItem<ParticleAssetTreeElement> element = (TreeViewItem<ParticleAssetTreeElement>)args.item;
+            if (element == null || element.data == null || (element.data.assetProfilerData == null && element.data.directoryProfilerData == null))
+                return;
 
-//             switch (column)
-//             {
-//                 case MyColumns.Name:
-//                     Rect iconRect = args.rowRect;
-//                     iconRect.x += GetContentIndent(args.item);
-//                     iconRect.width = 16f;
+            switch (column)
+            {
+                case MyColumns.Name:
+                    Rect iconRect = args.rowRect;
+                    iconRect.x += GetContentIndent(args.item);
+                    iconRect.width = 16f;
 
-//                     if(element.data.bundleFileInfo.includeScene)
-//                     {
-//                         GUI.DrawTexture(iconRect, m_Icons[5]);
-//                     }
-//                     else
-//                     {
-//                         if (string.IsNullOrEmpty(element.data.bundleFileInfo.assetBundleName))
-//                             GUI.DrawTexture(iconRect, m_Icons[0]);                        
-//                         else
-//                             GUI.DrawTexture(iconRect, m_Icons[1]);
-//                     }
+                    if (element.data.assetProfilerData != null)
+                        GUI.DrawTexture(iconRect, m_Icons[0]);                        
+                    else
+                        GUI.DrawTexture(iconRect, m_Icons[1]);
 
-//                     // 选中icon时也可选中item
-//                     if (Event.current.type == EventType.MouseDown && iconRect.Contains(Event.current.mousePosition))
-//                         SelectionClick(args.item, false);
+                    // 选中icon时也可选中item
+                    if (Event.current.type == EventType.MouseDown && iconRect.Contains(Event.current.mousePosition))
+                        SelectionClick(args.item, false);
 
-//                     // draw label
-//                     args.rowRect = cellRect;
-//                     base.RowGUI(args); 
-//                     break;
-//                 case MyColumns.Value1:
-//                     if(element.data.bundleFileInfo.size > 0)
-//                         GUI.Label(cellRect, new GUIContent(EditorUtility.FormatBytes(element.data.bundleFileInfo.size)));
-//                     break;
-//                 case MyColumns.Icon:
-//                     if (!element.data.bundleFileInfo.isBundle)
-//                         break;      // 不是bundle则忽略
+                    // draw label
+                    args.rowRect = cellRect;
+                    base.RowGUI(args); 
+                    break;
+                case MyColumns.PSCount:
+                    if(element.data.assetProfilerData != null)
+                    {
+                        GUIStyle style = new GUIStyle("Label");
+                        style.alignment = TextAnchor.MiddleRight;
+                        int count = element.data.assetProfilerData.profilerData.allParticles.Count + element.data.assetProfilerData.profilerData.allFXComponents.Count;
+                        if(count < ParticleProfiler.kRecommendParticleCompCount)
+                        {
+                            style.normal.textColor = Color.black;
+                        }
+                        else
+                        {
+                            style.normal.textColor = Color.red;
+                        }
+                        GUI.Label(cellRect, count.ToString(), style);
+                    }
+                    break;
+                case MyColumns.DCCount:
+                    if(element.data.assetProfilerData != null)
+                    {
+                        GUIStyle style = new GUIStyle("Label");
+                        style.alignment = TextAnchor.MiddleRight;
+                        int count = element.data.assetProfilerData.profilerData.maxDrawCall;
+                        if(count < ParticleProfiler.kRecommendDrawCallCount)
+                        {
+                            style.normal.textColor = Color.black;
+                        }
+                        else
+                        {
+                            style.normal.textColor = Color.red;
+                        }
+                        GUI.Label(cellRect, count.ToString(), style);
+                    }
+                    break;
+                case MyColumns.TexMemorySize:
+                    if(element.data.assetProfilerData != null)
+                    {
+                        GUIStyle style = new GUIStyle("Label");
+                        style.alignment = TextAnchor.MiddleRight;
+                        long size = element.data.assetProfilerData.profilerData.textureMemory;
+                        if(size < ParticleProfiler.kRecommendedTextureMemorySize)
+                        {
+                            style.normal.textColor = Color.black;
+                        }
+                        else
+                        {
+                            style.normal.textColor = Color.red;
+                        }
+                        GUI.Label(cellRect, EditorUtility.FormatBytes(size), style);
+                    }
+                    break;
+                case MyColumns.TexMemorySizeOnAndroid:
+                    if(element.data.assetProfilerData != null)
+                    {
+                        GUIStyle style = new GUIStyle("Label");
+                        style.alignment = TextAnchor.MiddleRight;
+                        long size = element.data.assetProfilerData.profilerData.textureMemoryOnAndroid;
+                        if(size < ParticleProfiler.kRecommendedTextureMemorySize)
+                        {
+                            style.normal.textColor = Color.black;
+                        }
+                        else
+                        {
+                            style.normal.textColor = Color.red;
+                        }
+                        GUI.Label(cellRect, EditorUtility.FormatBytes(size), style);
+                    }
+                    break;
+                case MyColumns.Fillrate:
+                    if(element.data.assetProfilerData != null)
+                    {
+                        GUIStyle style = new GUIStyle("Label");
+                        style.alignment = TextAnchor.MiddleRight;
+                        float rate = element.data.assetProfilerData.overdrawData.m_Fillrate;
+                        if(rate < ParticleProfiler.kRecommendFillrate)
+                        {
+                            style.normal.textColor = Color.black;
+                        }
+                        else
+                        {
+                            style.normal.textColor = Color.red;
+                        }
+                        GUI.Label(cellRect, rate.ToString(), style);
+                    }
+                    break;
+                case MyColumns.Command_Test:
+                    IList<int> selectedIDs = GetSelection();
+                    if(selectedIDs.Count > 0 && item.data.id == selectedIDs[0])
+                    {
+                        if(GUI.Button(cellRect, "Test"))
+                        {
+                            // if (item.data.bundleFileInfo.includedAssetFileList == null)
+                            //     return;
+                            // foreach(var assetFileInfo in item.data.bundleFileInfo.includedAssetFileList)
+                            // {
+                            //     AssetBrowserUtil.FixRedundantMeshOfParticleSystemRender(assetFileInfo.assetPath);
+                            // }
+                            // AssetDatabase.SaveAssets();
+                        }
+                    }
+                    break;
+            }
+        }
 
-//                     if (!element.data.bundleFileInfo.isValid)
-//                         GUI.DrawTexture(cellRect, m_Icons[4], ScaleMode.ScaleToFit);
-//                     else if (element.data.bundleFileInfo.hasMissingReference)
-//                         GUI.DrawTexture(cellRect, m_Icons[3], ScaleMode.ScaleToFit);
-//                     else
-//                         GUI.DrawTexture(cellRect, m_Icons[2], ScaleMode.ScaleToFit);
-//                     break;
-//                 case MyColumns.Value2:
-//                     if (item.data.bundleFileInfo.dependentOnBundleList != null)
-//                     {
-//                         string info = string.Format("[" + item.data.bundleFileInfo.dependentOnBundleList.Length + "]");
-//                         if (item.data.bundleFileInfo.dependentOnBundleList.Length > 4)
-//                         {
-//                             GUIStyle style = new GUIStyle("BoldLabel");
-//                             style.normal.textColor = Color.red;
-//                             GUI.Label(cellRect, info, style);
-//                         }
-//                         else
-//                         {
-//                             GUI.Label(cellRect, info);
-//                         }
-//                     }
-//                     break;
-//                 case MyColumns.Button:
-//                     IList<int> selectedIDs = GetSelection();
-//                     if(selectedIDs.Count > 0 && item.data.id == selectedIDs[0])
-//                     {
-//                         if(GUI.Button(cellRect, "Fix"))
-//                         {
-//                             if (item.data.bundleFileInfo.includedAssetFileList == null)
-//                                 return;
-//                             foreach(var assetFileInfo in item.data.bundleFileInfo.includedAssetFileList)
-//                             {
-//                                 AssetBrowserUtil.FixRedundantMeshOfParticleSystemRender(assetFileInfo.assetPath);
-//                             }
-//                             AssetDatabase.SaveAssets();
-//                         }
-//                     }
-//                     break;
-//             }
+        protected override void SelectionChanged(IList<int> selectedIds)
+        {
+            if (selectedIds.Count == 0)
+            {
+                m_Owner.OnPostAssetListSelection(null);
+                return;
+            }
+
+            TreeViewItem<ParticleAssetTreeElement> item = (TreeViewItem<ParticleAssetTreeElement>)FindItem(selectedIds[0], rootItem);
+            if (item != null && item.data != null)
+            {
+                m_Owner.OnPostAssetListSelection(item.data);
+            }
+            else
+            {
+                m_Owner.OnPostAssetListSelection(null);
+            }
         }
 
         protected override void KeyEvent()
@@ -191,36 +263,6 @@ namespace MeshParticleSystem.Profiler
             }
         }
 
-        internal void UpdateData(ParticleAssetTreeElement selectedViewItem)
-        {
-            // List<ParticleAssetTreeElement> data = new List<ParticleAssetTreeElement>();
-            // data.Add(new ParticleAssetTreeElement("Root", -1, 0));
-
-            // if (selectedViewItem == null || string.IsNullOrEmpty(selectedViewItem.bundleFileInfo.assetBundleName))
-            // {
-            //     treeModel.SetData(data);
-            //     Reload();
-            //     return;
-            // }
-
-            // ParticleAssetTreeElement treeElement = new ParticleAssetTreeElement(selectedViewItem.bundleFileInfo.assetBundleName, 0, selectedViewItem.bundleFileInfo.hashName.GetHashCode());
-            // data.Add(treeElement);
-
-            // string dependOnHeader = "Dependent On:";
-            // ParticleAssetTreeElement dependOnElement = new ParticleAssetTreeElement(dependOnHeader, 1, dependOnHeader.GetHashCode());
-            // data.Add(dependOnElement);
-
-            // foreach (string dependency in selectedViewItem.bundleFileInfo.dependentOnBundleList)
-            // {
-            //     ParticleAssetTreeElement dependentElement = new ParticleAssetTreeElement(dependency, 2, dependency.GetHashCode());
-            //     data.Add(dependentElement);
-            // }
-
-            // treeModel.SetData(data);
-            // Reload();
-
-            // SetExpandedRecursive(selectedViewItem.bundleFileInfo.hashName.GetHashCode(), true);
-        }
         public static MultiColumnHeaderState CreateDefaultMultiColumnHeaderState()
         {
             var columns = new[]
@@ -232,7 +274,7 @@ namespace MeshParticleSystem.Profiler
                     headerTextAlignment = TextAlignment.Center,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 220,
+                    width = 400,
                     minWidth = 80,
                     //maxWidth = 60,
                     autoResize = false,
@@ -241,26 +283,26 @@ namespace MeshParticleSystem.Profiler
                 },
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("PS Count"),
-                    headerTextAlignment = TextAlignment.Left,
+                    headerContent = new GUIContent("PS"),
+                    headerTextAlignment = TextAlignment.Right,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Center,
                     width = 60,
-                    minWidth = 30,
-                    maxWidth = 100,
+                    minWidth = 60,
+                    maxWidth = 120,
                     autoResize = false,
                     allowToggleVisibility = false,
                     canSort = false
                 },
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("DC Count"),
-                    headerTextAlignment = TextAlignment.Left,
+                    headerContent = new GUIContent("DC"),
+                    headerTextAlignment = TextAlignment.Right,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Center,
-                    width = 50,
-                    minWidth = 30,
-                    maxWidth = 70,
+                    width = 60,
+                    minWidth = 60,
+                    maxWidth = 120,
                     autoResize = false,
                     allowToggleVisibility = false,
                     canSort = false
@@ -269,12 +311,26 @@ namespace MeshParticleSystem.Profiler
                 {
                     headerContent = new GUIContent("Tex Memory Size"),
                     contextMenuText = "Info",
-                    headerTextAlignment = TextAlignment.Center,
+                    headerTextAlignment = TextAlignment.Right,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 25,
-                    minWidth = 25,
-                    maxWidth = 25,
+                    width = 120,
+                    minWidth = 100,
+                    maxWidth = 160,
+                    autoResize = false,
+                    allowToggleVisibility = true,
+                    canSort = false
+                },
+                new MultiColumnHeaderState.Column
+                {
+                    headerContent = new GUIContent("Tex Memory Size On Android"),
+                    contextMenuText = "Info",
+                    headerTextAlignment = TextAlignment.Right,
+                    sortedAscending = true,
+                    sortingArrowAlignment = TextAlignment.Right,
+                    width = 150,
+                    minWidth = 100,
+                    maxWidth = 180,
                     autoResize = false,
                     allowToggleVisibility = true,
                     canSort = false
@@ -283,12 +339,12 @@ namespace MeshParticleSystem.Profiler
                 {
                     headerContent = new GUIContent("Fillrate"),
                     contextMenuText = "Info",
-                    headerTextAlignment = TextAlignment.Center,
+                    headerTextAlignment = TextAlignment.Right,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 50,
-                    minWidth = 50,
-                    maxWidth = 50,
+                    width = 60,
+                    minWidth = 60,
+                    maxWidth = 120,
                     autoResize = false,
                     allowToggleVisibility = true,
                     canSort = false
@@ -297,26 +353,12 @@ namespace MeshParticleSystem.Profiler
                 {
                     headerContent = new GUIContent("Test"),
                     contextMenuText = "Info",
-                    headerTextAlignment = TextAlignment.Center,
+                    headerTextAlignment = TextAlignment.Right,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 50,
-                    minWidth = 50,
-                    maxWidth = 50,
-                    autoResize = false,
-                    allowToggleVisibility = true,
-                    canSort = false
-                },
-                new MultiColumnHeaderState.Column
-                {
-                    headerContent = new GUIContent("Del"),
-                    contextMenuText = "Info",
-                    headerTextAlignment = TextAlignment.Center,
-                    sortedAscending = true,
-                    sortingArrowAlignment = TextAlignment.Right,
-                    width = 50,
-                    minWidth = 50,
-                    maxWidth = 50,
+                    width = 60,
+                    minWidth = 60,
+                    maxWidth = 100,
                     autoResize = false,
                     allowToggleVisibility = true,
                     canSort = false

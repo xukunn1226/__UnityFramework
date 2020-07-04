@@ -13,16 +13,11 @@ MonoBehaviour:
   m_Name: BatchAssetCollection
   m_EditorClassIdentifier: 
   assetProfilerDataList:
-  - assetPath: assets/application/meshparticlesystem/tests/runtime/res/effect/skillfx1_5.prefab
   - assetPath: assets/application/meshparticlesystem/tests/runtime/res/a.prefab
+    filename: A
   directoryProfilerDataList:
-  - directoryPath: assets/application/meshparticlesystem/tests/runtime/res
+  - directoryPath: assets/application/meshparticlesystem/tests/runtime/res/effect
+    directoryName: Effect
     assetProfilerDataList:
-    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/a.prefab
-    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/billboard.prefab
-    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/bullet.prefab
     - assetPath: assets/application/meshparticlesystem/tests/runtime/res/effect/skillfx1_5.prefab
-    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/testrotation.prefab
-    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/testscale.prefab
-    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/testtranslation.prefab
-    - assetPath: assets/application/meshparticlesystem/tests/runtime/res/uv.prefab
+      filename: skillfx1_5

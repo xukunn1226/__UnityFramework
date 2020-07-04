@@ -14,7 +14,7 @@ namespace MeshParticleSystem.Profiler
         {
             BatchProfilingWindow window = GetWindow<BatchProfilingWindow>();
             window.titleContent = new GUIContent("Particle Profiling Batcher");
-            window.position = new Rect(300, 200, 800, 600);
+            window.position = new Rect(300, 200, 1300, 700);
             window.Show();
         }
 
@@ -33,6 +33,7 @@ namespace MeshParticleSystem.Profiler
         private ParticleAssetTreeView       m_ParticleAssetTreeView;
         private TreeViewState               m_ParticleAssetTreeViewState;
         private MultiColumnHeaderState      m_ParticleAssetMultiColumnHeaderState;
+        private ParticleAssetTreeElement    m_SelectedTreeElement;
 
         private void OnEnable()
         {
@@ -167,6 +168,8 @@ namespace MeshParticleSystem.Profiler
 
                             EditorUtility.SetDirty(m_Data);
                             AssetDatabase.SaveAssets();
+
+                            UpdateParticleAssetTreeView();
                         }
                         else if(ValidFolder())
                         {
@@ -174,6 +177,8 @@ namespace MeshParticleSystem.Profiler
                             
                             EditorUtility.SetDirty(m_Data);
                             AssetDatabase.SaveAssets();
+
+                            UpdateParticleAssetTreeView();
                         }
                         else
                         {
@@ -183,7 +188,27 @@ namespace MeshParticleSystem.Profiler
 
                     if(GUILayout.Button("Remove"))
                     {
+                        if(m_SelectedTreeElement != null)
+                        {
+                            if(m_SelectedTreeElement.assetProfilerData != null && m_SelectedTreeElement.depth == 0)
+                            {
+                                m_Data.RemoveFile(m_SelectedTreeElement.assetProfilerData.assetPath);
 
+                                EditorUtility.SetDirty(m_Data);
+                                AssetDatabase.SaveAssets();
+
+                                UpdateParticleAssetTreeView();
+                            }
+                            else if(m_SelectedTreeElement.directoryProfilerData != null && m_SelectedTreeElement.depth == 0)
+                            {
+                                m_Data.RemoveDirectory(m_SelectedTreeElement.directoryProfilerData.directoryPath);
+
+                                EditorUtility.SetDirty(m_Data);
+                                AssetDatabase.SaveAssets();
+
+                                UpdateParticleAssetTreeView();
+                            }
+                        }
                     }
                     if(GUILayout.Button("Refresh"))
                     {
@@ -247,6 +272,10 @@ namespace MeshParticleSystem.Profiler
             return AssetDatabase.IsValidFolder(AssetDatabase.GetAssetPath(Selection.activeObject));
         }
 
+        internal void OnPostAssetListSelection(ParticleAssetTreeElement treeElement)
+        {
+            m_SelectedTreeElement = treeElement;
+        }
 
         static private void CreateSetting()
         {

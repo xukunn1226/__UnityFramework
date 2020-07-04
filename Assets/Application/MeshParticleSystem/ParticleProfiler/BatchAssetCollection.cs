@@ -81,9 +81,9 @@ namespace MeshParticleSystem.Profiler
         }
 
         [NonSerialized]
-        public ParticleProfiler.ProfilerData    profilerData;
+        public ParticleProfiler.ProfilerData    profilerData = new ParticleProfiler.ProfilerData();
         [NonSerialized]
-        public ShowOverdraw.OverdrawData        overdrawData;
+        public ShowOverdraw.OverdrawData        overdrawData = new ShowOverdraw.OverdrawData();
     }
 
     [Serializable]
