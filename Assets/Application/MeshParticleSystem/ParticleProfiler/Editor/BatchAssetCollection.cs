@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 namespace MeshParticleSystem.Profiler
 {
@@ -17,7 +15,37 @@ namespace MeshParticleSystem.Profiler
         [SerializeField]
         public List<DirectoryProfilerData>  directoryProfilerDataList   = new List<DirectoryProfilerData>();
 
-#if UNITY_EDITOR
+        public void Refresh()
+        {
+            for(int i = assetProfilerDataList.Count - 1; i >= 0; --i)
+            {
+                AssetProfilerData data = assetProfilerDataList[i];
+                if(AssetDatabase.LoadAssetAtPath<GameObject>(data.assetPath) == null)
+                {
+                    assetProfilerDataList.RemoveAt(i);
+                }
+            }
+
+            for(int i = directoryProfilerDataList.Count - 1; i >= 0; --i)
+            {
+                DirectoryProfilerData directoryData = directoryProfilerDataList[i];
+                if(!AssetDatabase.IsValidFolder(directoryData.directoryPath))
+                {
+                    directoryProfilerDataList.RemoveAt(i);
+                }
+                else
+                {
+                    directoryProfilerDataList[i] = new DirectoryProfilerData(directoryData.directoryPath);
+                }
+            }
+        }
+
+        public DirectoryProfilerData GetInDirectoryList(string directoryPath)
+        {
+            int index = directoryProfilerDataList.FindIndex((item) => { return item.directoryPath == directoryPath.ToLower(); });
+            return index == -1 ? null : directoryProfilerDataList[index];
+        }
+
         private int FindInFileList(string assetPath)
         {
             return assetProfilerDataList.FindIndex((item) => { return item.assetPath == assetPath.ToLower(); });
@@ -62,7 +90,6 @@ namespace MeshParticleSystem.Profiler
             if(index != -1)
                 directoryProfilerDataList.RemoveAt(index);
         }
-#endif        
     }
 
     [Serializable]
@@ -70,6 +97,11 @@ namespace MeshParticleSystem.Profiler
     {
         public string assetPath;
         public string filename;
+
+        [HideInInspector]
+        public bool pendingProfiling;
+        [NonSerialized]
+        public GameObject profilingGameObject;
 
         protected AssetProfilerData()
         {}
@@ -80,9 +112,7 @@ namespace MeshParticleSystem.Profiler
             filename = System.IO.Path.GetFileNameWithoutExtension(assetPath);
         }
 
-        [NonSerialized]
         public ParticleProfiler.ProfilerData    profilerData = new ParticleProfiler.ProfilerData();
-        [NonSerialized]
         public ShowOverdraw.OverdrawData        overdrawData = new ShowOverdraw.OverdrawData();
     }
 
@@ -90,7 +120,6 @@ namespace MeshParticleSystem.Profiler
     public class DirectoryProfilerData
     {
         public string directoryPath;
-        public string directoryName;
 
         public List<AssetProfilerData> assetProfilerDataList = new List<AssetProfilerData>();
 
@@ -100,7 +129,6 @@ namespace MeshParticleSystem.Profiler
         public DirectoryProfilerData(string directoryPath)
         {
             this.directoryPath = directoryPath.ToLower();
-            directoryName = System.IO.Path.GetFileNameWithoutExtension(directoryPath);
 
             if(!AssetDatabase.IsValidFolder(directoryPath))
             {

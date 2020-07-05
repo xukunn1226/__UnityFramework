@@ -15,7 +15,7 @@ namespace MeshParticleSystem.Profiler
             BatchProfilingWindow window = GetWindow<BatchProfilingWindow>();
             window.titleContent = new GUIContent("Particle Profiling Batcher");
             window.position = new Rect(300, 200, 1300, 700);
-            window.Show();
+            window.Show();            
         }
 
         private const float kStatusbarPadding = 20;
@@ -35,7 +35,17 @@ namespace MeshParticleSystem.Profiler
         private MultiColumnHeaderState      m_ParticleAssetMultiColumnHeaderState;
         private ParticleAssetTreeElement    m_SelectedTreeElement;
 
-        private void OnEnable()
+        private AssetProfilerData           m_CurProfilingData;
+        private AssetProfilerData           m_PrevProfilingData;
+        private double                      m_BeginTime;
+        private string                      m_Info;
+
+        void Awake()
+        {
+            m_HorizontalSplitterPercent = 0.7f;
+        }
+
+        void OnEnable()
         {
             m_Data = GetDefault();
             if(m_Data == null)
@@ -44,8 +54,7 @@ namespace MeshParticleSystem.Profiler
                 m_Data = GetDefault();
             }
 
-            m_HorizontalSplitterPercent = 0.7f;
-            InitParticleAssetTreeView();
+            InitParticleAssetTreeView(); 
         }
 
         void InitParticleAssetTreeView()
@@ -86,7 +95,6 @@ namespace MeshParticleSystem.Profiler
                 foreach(var file in m_Data.assetProfilerDataList)
                 {
                     ParticleAssetTreeElement treeElement = new ParticleAssetTreeElement(file.filename, 0, file.assetPath.GetHashCode());
-                    treeElement.isFile = true;
                     treeElement.assetProfilerData = file;
                     treeElement.directoryProfilerData = null;
                     treeElements.Add(treeElement);
@@ -95,16 +103,13 @@ namespace MeshParticleSystem.Profiler
                 foreach(var directory in m_Data.directoryProfilerDataList)
                 {
                     ParticleAssetTreeElement treeElement = new ParticleAssetTreeElement(directory.directoryPath, 0, directory.directoryPath.GetHashCode());
-                    treeElement.isFile = false;
                     treeElement.assetProfilerData = null;
                     treeElement.directoryProfilerData = directory;
-                    // treeElement.index = -1;         // 目录节点
                     treeElements.Add(treeElement);
 
                     foreach(var file in directory.assetProfilerDataList)
                     {
                         ParticleAssetTreeElement e = new ParticleAssetTreeElement(file.filename, 1, file.assetPath.GetHashCode());
-                        e.isFile = true;
                         e.assetProfilerData = file;
                         e.directoryProfilerData = null;
                         treeElements.Add(e);
@@ -122,6 +127,53 @@ namespace MeshParticleSystem.Profiler
             DrawAssetTree();
             DrawInspector();
             DrawStatusbar();
+        }
+
+        private void Update()
+        {
+            if(!EditorApplication.isPlaying)
+            {
+                return;
+            }
+
+            m_PrevProfilingData = m_CurProfilingData;
+            m_CurProfilingData = GetPendingProfilingData();
+            if(m_CurProfilingData != null)
+            {
+                if(m_CurProfilingData.profilingGameObject == null)
+                {
+                    GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(m_CurProfilingData.assetPath);
+                    if(prefab == null)
+                    {
+                        m_CurProfilingData.pendingProfiling = false;
+                    }
+                    else
+                    {
+                        m_CurProfilingData.profilingGameObject = ProfilingEntry.BeginTest(prefab, out m_CurProfilingData.profilerData, out m_CurProfilingData.overdrawData);
+                        m_Info = "检测中...   " + m_CurProfilingData.assetPath;
+                    }
+                }
+                else
+                {
+                    ParticleProfiler profiler = m_CurProfilingData.profilingGameObject.GetComponent<ParticleProfiler>();
+                    if(profiler != null && profiler.isSimulatedDone)
+                    {
+                        Destroy(m_CurProfilingData.profilingGameObject);
+                        m_CurProfilingData.pendingProfiling = false;
+                    }
+                }
+            }
+            else
+            {
+                if(m_PrevProfilingData != null && m_CurProfilingData == null)
+                {
+                    m_Info = "检测结束";
+                    EditorUtility.SetDirty(m_Data);
+                    AssetDatabase.SaveAssets();
+                }
+            }
+
+            Repaint();
         }
 
         private void HandleResize()
@@ -210,16 +262,27 @@ namespace MeshParticleSystem.Profiler
                             }
                         }
                     }
+                    EditorGUI.BeginDisabledGroup(EditorApplication.isPlaying);
                     if(GUILayout.Button("Refresh"))
                     {
+                        m_Data.Refresh();
 
+                        EditorUtility.SetDirty(m_Data);
+                        AssetDatabase.SaveAssets();
+                        UpdateParticleAssetTreeView();
                     }
+                    EditorGUI.EndDisabledGroup();
                 }
                 GUILayout.EndHorizontal();
 
-                if(GUILayout.Button("Test"))
+                string btnName = "Test All";
+                if(EditorApplication.isPlaying && m_CurProfilingData != null)
                 {
-
+                    btnName = string.Format("{0}({1:0.00})", btnName, (EditorApplication.timeSinceStartup - m_BeginTime));
+                }
+                if(GUILayout.Button(btnName))
+                {
+                    ExecuteTest(null);
                 }
             }
             GUILayout.EndVertical();
@@ -244,7 +307,7 @@ namespace MeshParticleSystem.Profiler
         {
             Rect rc = new Rect(0, position.height - kStatusbarPadding, position.width, kStatusbarPadding);
             GUILayout.BeginArea(rc);
-            GUILayout.Label("Hello world");
+            GUILayout.Label(m_Info);
             GUILayout.EndArea();
         }
 
@@ -275,6 +338,88 @@ namespace MeshParticleSystem.Profiler
         internal void OnPostAssetListSelection(ParticleAssetTreeElement treeElement)
         {
             m_SelectedTreeElement = treeElement;
+        }
+
+        private void DestroyProfilingGameObject()
+        {
+            if(m_CurProfilingData != null && m_CurProfilingData.profilingGameObject != null)
+            {
+                Destroy(m_CurProfilingData.profilingGameObject);
+            }
+        }
+
+        internal void ExecuteTest(ParticleAssetTreeElement treeElement)
+        {
+            if(!EditorApplication.isPlaying)
+            {
+                EditorApplication.isPlaying = true;
+            }
+
+            m_BeginTime = EditorApplication.timeSinceStartup;
+
+            DestroyProfilingGameObject();
+
+            // clear flags
+            foreach(var assetData in m_Data.assetProfilerDataList)
+            {
+                assetData.pendingProfiling = false;
+            }
+            foreach(var directoryData in m_Data.directoryProfilerDataList)
+            {
+                foreach(var assetData in directoryData.assetProfilerDataList)
+                {
+                    assetData.pendingProfiling = false;
+                }
+            }
+
+            // collect pending profiling particle asset
+            if(treeElement == null)
+            {
+                foreach(var assetData in m_Data.assetProfilerDataList)
+                {
+                    assetData.pendingProfiling = true;
+                }
+                foreach(var directoryData in m_Data.directoryProfilerDataList)
+                {
+                    foreach(var assetData in directoryData.assetProfilerDataList)
+                    {
+                        assetData.pendingProfiling = true;
+                    }
+                }
+            }
+            else if(treeElement.assetProfilerData != null)
+            {
+                treeElement.assetProfilerData.pendingProfiling = true;
+            }
+            else if(treeElement.directoryProfilerData != null)
+            {
+                DirectoryProfilerData directoryData = m_Data.GetInDirectoryList(treeElement.directoryProfilerData.directoryPath);
+                if(directoryData != null)
+                {
+                    foreach(var assetData in directoryData.assetProfilerDataList)
+                    {
+                        assetData.pendingProfiling = true;
+                    }
+                }
+            }
+        }
+
+        private AssetProfilerData GetPendingProfilingData()
+        {
+            foreach(var assetData in m_Data.assetProfilerDataList)
+            {
+                if(assetData.pendingProfiling)
+                    return assetData;
+            }
+            foreach(var directoryData in m_Data.directoryProfilerDataList)
+            {
+                foreach(var assetData in directoryData.assetProfilerDataList)
+                {
+                    if(assetData.pendingProfiling)
+                        return assetData;
+                }
+            }
+            return null;
         }
 
         static private void CreateSetting()

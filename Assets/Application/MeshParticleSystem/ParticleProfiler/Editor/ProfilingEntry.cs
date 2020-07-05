@@ -28,8 +28,6 @@ namespace MeshParticleSystem.Profiler
 
         private static void PlayModeState(PlayModeStateChange state)
         {
-            // Debug.Log($"{state}     {EditorApplication.isPlaying}");
-
             if(!EditorPrefs.GetBool(ProfilingEventKey))
                 return;
 
@@ -38,18 +36,43 @@ namespace MeshParticleSystem.Profiler
             if(state != PlayModeStateChange.EnteredPlayMode)
                 return;
                 
-            GameObject ps = Selection.activeGameObject;
-            var particleSystemRenderer = ps.GetComponentsInChildren<ParticleSystemRenderer>(true);
-            if(particleSystemRenderer.Length == 0)
+            ParticleProfiler.ProfilerData profiler;
+            ShowOverdraw.OverdrawData overdraw;
+            BeginTest(Selection.activeGameObject, out profiler, out overdraw);
+        }
+
+        static public GameObject BeginTest(GameObject prefab, out ParticleProfiler.ProfilerData profilerData, out ShowOverdraw.OverdrawData overdrawData)
+        {
+            profilerData = null;
+            overdrawData = null;
+
+            if(prefab.GetComponentsInChildren<ParticleSystemRenderer>(true).Length == 0 &&
+            prefab.GetComponentsInChildren<FX_Component>(true).Length == 0)
             {
                 Debug.LogWarning("Not found any ParticleSystem");
-                return;
+                return null;
             }
 
-            if(ps.GetComponent<ShowOverdraw>() == null)
-                ps.AddComponent<ShowOverdraw>();
-            if(ps.GetComponent<ParticleProfiler>() == null)
-                ps.AddComponent<ParticleProfiler>();
+            GameObject inst = prefab;
+            if(EditorUtility.IsPersistent(prefab))
+            {
+                inst = Object.Instantiate(prefab);
+            }
+
+            ParticleProfiler particleProfiler = inst.GetComponent<ParticleProfiler>();
+            if(particleProfiler == null)
+            {
+                particleProfiler = inst.AddComponent<ParticleProfiler>();
+                profilerData = particleProfiler.m_Data;
+            }
+
+            ShowOverdraw overdraw = inst.GetComponent<ShowOverdraw>();
+            if(overdraw == null)
+            {
+                overdraw = inst.AddComponent<ShowOverdraw>();
+                overdrawData = overdraw.m_Data;
+            }
+            return inst;
         }
     }
 }

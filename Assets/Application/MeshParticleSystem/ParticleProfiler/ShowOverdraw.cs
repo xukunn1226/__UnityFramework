@@ -30,6 +30,7 @@ namespace MeshParticleSystem.Profiler
         private int     m_pixTotalThisFrame;
         private int     m_pixActualDrawThisFrame;
         
+        [System.Serializable]
         public class OverdrawData
         {
             public int      m_FrameCount;

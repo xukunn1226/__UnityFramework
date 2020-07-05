@@ -119,7 +119,7 @@ namespace MeshParticleSystem.Profiler
                     {
                         GUIStyle style = new GUIStyle("Label");
                         style.alignment = TextAnchor.MiddleRight;
-                        int count = element.data.assetProfilerData.profilerData.allParticles.Count + element.data.assetProfilerData.profilerData.allFXComponents.Count;
+                        int count = element.data.assetProfilerData.profilerData.componentCount;
                         if(count < ParticleProfiler.kRecommendParticleCompCount)
                         {
                             style.normal.textColor = Color.black;
@@ -196,7 +196,7 @@ namespace MeshParticleSystem.Profiler
                         {
                             style.normal.textColor = Color.red;
                         }
-                        GUI.Label(cellRect, rate.ToString(), style);
+                        GUI.Label(cellRect, string.Format("{0:0.00}", rate), style);
                     }
                     break;
                 case MyColumns.Command_Test:
@@ -205,13 +205,7 @@ namespace MeshParticleSystem.Profiler
                     {
                         if(GUI.Button(cellRect, "Test"))
                         {
-                            // if (item.data.bundleFileInfo.includedAssetFileList == null)
-                            //     return;
-                            // foreach(var assetFileInfo in item.data.bundleFileInfo.includedAssetFileList)
-                            // {
-                            //     AssetBrowserUtil.FixRedundantMeshOfParticleSystemRender(assetFileInfo.assetPath);
-                            // }
-                            // AssetDatabase.SaveAssets();
+                            m_Owner.ExecuteTest(item.data);
                         }
                     }
                     break;
@@ -314,7 +308,7 @@ namespace MeshParticleSystem.Profiler
                     headerTextAlignment = TextAlignment.Right,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 120,
+                    width = 100,
                     minWidth = 100,
                     maxWidth = 160,
                     autoResize = false,
@@ -328,7 +322,7 @@ namespace MeshParticleSystem.Profiler
                     headerTextAlignment = TextAlignment.Right,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 150,
+                    width = 100,
                     minWidth = 100,
                     maxWidth = 180,
                     autoResize = false,
@@ -343,7 +337,7 @@ namespace MeshParticleSystem.Profiler
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
                     width = 60,
-                    minWidth = 60,
+                    minWidth = 50,
                     maxWidth = 120,
                     autoResize = false,
                     allowToggleVisibility = true,
@@ -418,7 +412,6 @@ namespace MeshParticleSystem.Profiler
 
     public class ParticleAssetTreeElement : TreeElement
     {
-        public bool isFile;
         public AssetProfilerData assetProfilerData;
         
         public DirectoryProfilerData directoryProfilerData;

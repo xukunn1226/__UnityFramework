@@ -96,7 +96,7 @@ namespace MeshParticleSystem.Profiler
 			EditorGUILayout.LabelField(FormatMemoryStat("纹理内存(ETC2)", m_Target.m_Data.textureMemoryOnAndroid, ParticleProfiler.kRecommendedTextureMemorySize), style);
 			EditorGUILayout.LabelField(FormatMemoryStat("纹理内存(ASTC6x6)", m_Target.m_Data.textureMemoryOnIPhone, ParticleProfiler.kRecommendedTextureMemorySize), style);
 			EditorGUILayout.LabelField(FormatStat("网格数量", m_Target.m_Data.allMeshes.Count, ParticleProfiler.kRecommendMeshCount), style);
-			EditorGUILayout.LabelField(FormatStat("粒子系统组件", m_Target.m_Data.allParticles.Count + m_Target.m_Data.allFXComponents.Count, ParticleProfiler.kRecommendParticleCompCount), style);
+			EditorGUILayout.LabelField(FormatStat("粒子系统组件", m_Target.m_Data.componentCount, ParticleProfiler.kRecommendParticleCompCount), style);
             
 			EditorGUILayout.Space();
             EditorGUILayout.LabelField($"模拟时长：{m_Target.elapsedTime}");
