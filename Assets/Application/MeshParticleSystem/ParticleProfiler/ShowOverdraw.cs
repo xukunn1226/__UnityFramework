@@ -37,7 +37,28 @@ namespace MeshParticleSystem.Profiler
             public int      m_pixTotal;
             public int      m_pixActualTotal;
             public float    m_Fillrate;
-        }
+
+            public float GetAveragePixDraw()
+            {
+                if (m_FrameCount == 0)
+                    return 0;
+                return 1.0f * m_pixTotal / m_FrameCount;
+            }
+
+            public float GetAverageActualPixDraw()
+            {
+                if (m_FrameCount == 0)
+                    return 0;
+                return 1.0f * m_pixActualTotal / m_FrameCount;
+            }
+
+            public float GetAverageFillrate()
+            {
+                if (m_FrameCount == 0)
+                    return 0;
+                return GetAverageActualPixDraw() / GetAveragePixDraw();
+            }
+        }        
         public OverdrawData m_Data = new OverdrawData();
 
         void OnEnable()
@@ -94,7 +115,7 @@ namespace MeshParticleSystem.Profiler
                 m_Data.m_pixTotal += m_pixTotalThisFrame;
                 m_Data.m_pixActualTotal += m_pixActualDrawThisFrame;
                 m_Data.m_FrameCount += 1;
-                m_Data.m_Fillrate = GetAverageFillrate();
+                m_Data.m_Fillrate = m_Data.GetAverageFillrate();
             }
             RenderTexture.active = prevRT;
         }
@@ -144,27 +165,6 @@ namespace MeshParticleSystem.Profiler
         private bool IsEmptyPix(float r, float g, float b)
         {
             return r == 0 && g == 0 && b == 0;
-        }
-
-        public float GetAveragePixDraw()
-        {
-            if (m_Data.m_FrameCount == 0)
-                return 0;
-            return 1.0f * m_Data.m_pixTotal / m_Data.m_FrameCount;
-        }
-
-        public float GetAverageActualPixDraw()
-        {
-            if (m_Data.m_FrameCount == 0)
-                return 0;
-            return 1.0f * m_Data.m_pixActualTotal / m_Data.m_FrameCount;
-        }
-
-        public float GetAverageFillrate()
-        {
-            if (m_Data.m_FrameCount == 0)
-                return 0;
-            return GetAverageActualPixDraw() / GetAveragePixDraw();
         }
     }
 }

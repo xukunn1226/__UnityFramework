@@ -40,10 +40,10 @@ namespace MeshParticleSystem.Profiler
     	    style.richText = true;
 
             EditorGUILayout.LabelField("Frame Count", m_Target.m_Data.m_FrameCount.ToString(), style);
-            EditorGUILayout.LabelField("Pixel Total", m_Target.GetAveragePixDraw().ToString(), style);
-            EditorGUILayout.LabelField("Actual Pixel Total", m_Target.GetAverageActualPixDraw().ToString(), style);
+            EditorGUILayout.LabelField("Pixel Total", m_Target.m_Data.GetAveragePixDraw().ToString(), style);
+            EditorGUILayout.LabelField("Actual Pixel Total", m_Target.m_Data.GetAverageActualPixDraw().ToString(), style);
             
-            float fillRate = m_Target.GetAverageFillrate();
+            float fillRate = m_Target.m_Data.GetAverageFillrate();
             string s;
             if(fillRate < ShowOverdraw.kRecommendFillrate)
                 s = string.Format("<color=green>{0}</color>    建议：<{1}", fillRate, ShowOverdraw.kRecommendFillrate);
