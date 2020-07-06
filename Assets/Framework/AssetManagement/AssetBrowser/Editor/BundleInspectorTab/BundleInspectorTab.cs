@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UITreeView;
 using UnityEditor.IMGUI.Controls;
-using NUnit.Framework;
-using System.IO;
+using Unity.EditorCoroutines.Editor;
 
 namespace Framework.AssetManagement.AssetBrowser
 {
@@ -48,6 +47,7 @@ namespace Framework.AssetManagement.AssetBrowser
         private IssueCollectionTreeView     m_IssueCollectionTreeView;
         private TreeViewState               m_IssueCollectionTreeViewState;
         private MultiColumnHeaderState      m_IssueCollectionMultiColumnHeaderState;
+        private EditorCoroutine             m_Coroutine;
 
         internal void OnEnable(Rect pos, EditorWindow parent)
         {
@@ -63,6 +63,7 @@ namespace Framework.AssetManagement.AssetBrowser
 
         internal void OnDisable()
         {
+            StopCoroutine();
         }
 
         private void Init()
@@ -81,27 +82,43 @@ namespace Framework.AssetManagement.AssetBrowser
             m_SearchField = new SearchField();
             m_SearchField.downOrUpArrowKeyPressed += m_BundleListTreeView.SetFocusAndEnsureSelectedItem;
         }
+        
+        private void StopCoroutine()
+        {
+            if(m_Coroutine != null)
+            {
+                EditorCoroutineUtility.StopCoroutine(m_Coroutine);
+                m_Coroutine = null;
+            }
+        }
 
         internal void Reload()
         {
+            m_Coroutine = EditorCoroutineUtility.StartCoroutine(ReloadEx(), this);
+        }
+
+        internal IEnumerator ReloadEx()
+        {
             string[] abNames = BundleFileInfo.PreParse();
             if (abNames.Length == 0)
-                return;
+            {
+                StopCoroutine();
+                yield break;
+            }
 
             int startIndex = 0;
             List<BundleFileInfo> bundleList = new List<BundleFileInfo>();
-            EditorApplication.update = delegate ()
+            while(startIndex < abNames.Length)
             {
                 bool isCancel = EditorUtility.DisplayCancelableProgressBar("资源分析中", abNames[startIndex], (float)startIndex / abNames.Length);
 
                 BundleFileInfo.ParseBundle(ref bundleList, abNames[startIndex]);
-                Debug.Log("Parsing AssetBundle: " + abNames[startIndex]);
+                Debug.Log($"Parsing AssetBundle: {abNames[startIndex]}  {Time.frameCount}");
 
                 ++startIndex;
                 if(isCancel || startIndex >= abNames.Length)
                 {
                     EditorUtility.ClearProgressBar();
-                    EditorApplication.update = null;
                     BundleFileInfo.PostParse();
 
                     BundleListToTreeView(bundleList);
@@ -109,8 +126,11 @@ namespace Framework.AssetManagement.AssetBrowser
                     // 根据问题原因汇总遇到问题的资产
                     BundleFileInfo.CollectIssues(ref bundleList);
                     IssueCollectionToTreeView();
+                    StopCoroutine();
+                    yield break;
                 }
-            };
+                yield return null;
+            }
         }
 
         private void BundleListToTreeView(List<BundleFileInfo> bundleList)
