@@ -415,30 +415,25 @@ namespace Framework.Core.Editor
                 // reimport
                 // 56fa9a21fe1ba864086c2d3328d79985 : SoftObjectPath
                 // 5526957ebeb07bd4299f5213397a148b : SoftObject
-                ReimportAllRedirectors(new string[] { "56fa9a21fe1ba864086c2d3328d79985", "5526957ebeb07bd4299f5213397a148b" }, new string[] { ".prefab", ".unity" });
+                m_Coroutine = EditorCoroutineUtility.StartCoroutineOwnerless(Reimport(new string[] { "56fa9a21fe1ba864086c2d3328d79985", "5526957ebeb07bd4299f5213397a148b" }, new string[] { ".prefab", ".unity" }));
 
                 AssetDatabase.Refresh();
             }
         }
 
-        /// <summary>
-        /// reimport all redirectors
-        /// </summary>
-        /// <param name="guids"></param>
-        /// <param name="filters"></param>
-        /// <returns></returns>
-        static private void ReimportAllRedirectors(string[] guids, string[] filters)
+        static private EditorCoroutine m_Coroutine;
+        static private IEnumerator Reimport(string[] guids, string[] filters)
         {
             string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories)
                 .Where(s => filters.Contains(Path.GetExtension(s).ToLower())).ToArray();
 
             int startIndex = 0;
 
-            EditorApplication.update = delegate ()
+            while(startIndex < files.Length)
             {
                 string file = files[startIndex];
 
-                bool isCancel = UnityEditor.EditorUtility.DisplayCancelableProgressBar("资源查找中", file, (float)startIndex / (float)files.Length);
+                bool isCancel = UnityEditor.EditorUtility.DisplayCancelableProgressBar("重新导入...", file, (float)startIndex / (float)files.Length);
 
                 foreach (var guid in guids)
                 {
@@ -447,7 +442,7 @@ namespace Framework.Core.Editor
                         string assetPath = GetRelativeAssetsPath(file);
                         AssetDatabase.ImportAsset(assetPath);
 
-                        //Debug.Log(file, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath));
+                        Debug.Log(file, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath));
                     }
                 }
 
@@ -455,11 +450,23 @@ namespace Framework.Core.Editor
                 if (isCancel || startIndex >= files.Length)
                 {
                     UnityEditor.EditorUtility.ClearProgressBar();
-                    EditorApplication.update = null;
-                    startIndex = 0;
-                    Debug.Log("重导结束 in (*.prefab, *.unity, *.mat, *.asset)");
+                    Debug.Log("重导结束 in (*.prefab, *.unity)");
+                    break;
                 }
+
+                yield return null;
             };
+
+            StopCoroutine();
+        }
+
+        static private void StopCoroutine()
+        {
+            if(m_Coroutine != null)
+            {
+                EditorCoroutineUtility.StopCoroutine(m_Coroutine);
+                m_Coroutine = null;
+            }
         }
 
         static private string GetRelativeAssetsPath(string path)
