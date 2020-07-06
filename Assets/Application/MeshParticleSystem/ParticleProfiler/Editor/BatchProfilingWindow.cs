@@ -39,6 +39,7 @@ namespace MeshParticleSystem.Profiler
         private AssetProfilerData           m_PrevProfilingData;
         private double                      m_BeginTime;
         private string                      m_Info;
+        private Vector2                     m_ScrollPosition;
 
         void Awake()
         {
@@ -306,34 +307,21 @@ namespace MeshParticleSystem.Profiler
                 return;
 
             GUILayout.BeginArea(m_InspectorRect, GUI.skin.GetStyle("Label"));
+            m_ScrollPosition = GUILayout.BeginScrollView(m_ScrollPosition);
 
             // draw Overdraw stat
-            GUIStyle boldStyle = EditorStyles.boldLabel;
-            boldStyle.alignment = TextAnchor.MiddleLeft;
-            EditorGUILayout.LabelField("Overdraw", boldStyle);
-
-            ShowOverdraw.OverdrawData overdraw = m_SelectedTreeElement.assetProfilerData.overdrawData;
-            GUIStyle style = new GUIStyle("Label");
-    	    style.richText = true;
-
-            EditorGUILayout.LabelField("Frame Count", overdraw.m_FrameCount.ToString(), style);
-            EditorGUILayout.LabelField("Pixel Total", overdraw.GetAveragePixDraw().ToString("#.##"), style);
-            EditorGUILayout.LabelField("Actual Pixel Total", overdraw.GetAverageActualPixDraw().ToString("#.##"), style);
-            
-            float fillRate = overdraw.GetAverageFillrate();
-            string s;
-            if(fillRate < ShowOverdraw.kRecommendFillrate)
-                s = string.Format("<color=green>{0:0.00}</color>    建议：<{1}", fillRate, ShowOverdraw.kRecommendFillrate);
-            else
-                s = string.Format("<color=red>{0:0.00}</color>    建议：<{1}", fillRate, ShowOverdraw.kRecommendFillrate);
-            EditorGUILayout.LabelField("Fill Rate", s, style);
+            EditorGUILayout.LabelField("Overdraw", EditorStyles.boldLabel);
+            ShowOverdrawEditor.DrawOverdraw(m_SelectedTreeElement.assetProfilerData.overdrawData);
 
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
 
             // draw Profiler stat
-            EditorGUILayout.LabelField("Profiler", boldStyle);
+            EditorGUILayout.LabelField("Profiler", EditorStyles.boldLabel);
+            ParticleProfilerEditor.DrawStat(m_SelectedTreeElement.assetProfilerData.profilerData);
+            ParticleProfilerEditor.DrawChart(m_SelectedTreeElement.assetProfilerData.profilerData);
             
+            GUILayout.EndScrollView();
             GUILayout.EndArea();
         }
 

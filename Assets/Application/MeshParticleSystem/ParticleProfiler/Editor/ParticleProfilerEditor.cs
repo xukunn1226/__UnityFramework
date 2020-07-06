@@ -20,7 +20,7 @@ namespace MeshParticleSystem.Profiler
 			Handles.BeginGUI();
 
         	GUILayout.BeginArea(new Rect(10, 80, 300, 300));
-	        ShowStat();
+			DrawStat(m_Target.m_Data);
 	        GUILayout.EndArea();
 
     	    Handles.EndGUI();
@@ -30,8 +30,12 @@ namespace MeshParticleSystem.Profiler
 
         public override void OnInspectorGUI()
         {
-			ShowStat();
+			DrawStat(m_Target.m_Data);
+			DrawChart(m_Target.m_Data);
+        }
 
+		static public void DrawChart(ParticleProfiler.ProfilerData profilerData)
+		{			
 			// 曲线图
 			EditorGUILayout.Space();
 			using (new EditorGUI.DisabledScope(false))
@@ -40,9 +44,9 @@ namespace MeshParticleSystem.Profiler
 				{
 					float curveHeight = 80;
 					EditorGUI.indentLevel = 1;
-					EditorGUILayout.CurveField("DrawCall", m_Target.m_Data.DrawCallCurve, GUILayout.Height(curveHeight));
-					EditorGUILayout.CurveField("粒子数量", m_Target.m_Data.ParticleCountCurve, GUILayout.Height(curveHeight));
-					EditorGUILayout.CurveField("三角面数", m_Target.m_Data.TriangleCountCurve, GUILayout.Height(curveHeight));
+					EditorGUILayout.CurveField("DrawCall", profilerData.DrawCallCurve, GUILayout.Height(curveHeight));
+					EditorGUILayout.CurveField("粒子数量", profilerData.ParticleCountCurve, GUILayout.Height(curveHeight));
+					EditorGUILayout.CurveField("三角面数", profilerData.TriangleCountCurve, GUILayout.Height(curveHeight));
 					EditorGUI.indentLevel = 0;
 				}
 			}
@@ -55,7 +59,7 @@ namespace MeshParticleSystem.Profiler
 				{
 					EditorGUI.indentLevel = 1;
 					{
-						List<Texture> textures = m_Target.m_Data.allTextures;
+						List<Texture> textures = profilerData.allTextures;
 						foreach (var tex in textures)
 						{
 							EditorGUILayout.LabelField($"{tex.name}  尺寸:{tex.height }*{tex.width}  格式:{Utility.GetTextureFormatString(tex)}");
@@ -74,7 +78,7 @@ namespace MeshParticleSystem.Profiler
 				{
 					EditorGUI.indentLevel = 1;
 					{
-						List<Mesh> meshs = m_Target.m_Data.allMeshes;
+						List<Mesh> meshs = profilerData.allMeshes;
 						foreach (var mesh in meshs)
 						{
 							EditorGUILayout.ObjectField($"三角面数 : {mesh.triangles.Length / 3}", mesh, typeof(MeshFilter), false, GUILayout.Width(300));
@@ -83,29 +87,29 @@ namespace MeshParticleSystem.Profiler
 					EditorGUI.indentLevel = 0;
 				}
 			}
-        }
+		}
 
-		private void ShowStat()
+		static public void DrawStat(ParticleProfiler.ProfilerData profilerData)
 		{
 			GUIStyle style = new GUIStyle();
     	    style.richText = true;
 
-			EditorGUILayout.LabelField(FormatStat("材质数量", m_Target.m_Data.materialCount, ParticleProfiler.kRecommendMaterialCount), style);
-			EditorGUILayout.LabelField(FormatStat("纹理数量", m_Target.m_Data.allTextures.Count, ParticleProfiler.kRecommendTextureCount), style);
-			EditorGUILayout.LabelField(FormatMemoryStat("纹理内存(当前平台)", m_Target.m_Data.textureMemory, ParticleProfiler.kRecommendedTextureMemorySize), style);
-			EditorGUILayout.LabelField(FormatMemoryStat("纹理内存(ETC2)", m_Target.m_Data.textureMemoryOnAndroid, ParticleProfiler.kRecommendedTextureMemorySize), style);
-			EditorGUILayout.LabelField(FormatMemoryStat("纹理内存(ASTC6x6)", m_Target.m_Data.textureMemoryOnIPhone, ParticleProfiler.kRecommendedTextureMemorySize), style);
-			EditorGUILayout.LabelField(FormatStat("网格数量", m_Target.m_Data.allMeshes.Count, ParticleProfiler.kRecommendMeshCount), style);
-			EditorGUILayout.LabelField(FormatStat("粒子系统组件", m_Target.m_Data.componentCount, ParticleProfiler.kRecommendParticleCompCount), style);
+			EditorGUILayout.LabelField(FormatStat("材质数量", profilerData.materialCount, ParticleProfiler.kRecommendMaterialCount), style);
+			EditorGUILayout.LabelField(FormatStat("纹理数量", profilerData.allTextures.Count, ParticleProfiler.kRecommendTextureCount), style);
+			EditorGUILayout.LabelField(FormatMemoryStat("纹理内存(当前平台)", profilerData.textureMemory, ParticleProfiler.kRecommendedTextureMemorySize), style);
+			EditorGUILayout.LabelField(FormatMemoryStat("纹理内存(ETC2)", profilerData.textureMemoryOnAndroid, ParticleProfiler.kRecommendedTextureMemorySize), style);
+			EditorGUILayout.LabelField(FormatMemoryStat("纹理内存(ASTC6x6)", profilerData.textureMemoryOnIPhone, ParticleProfiler.kRecommendedTextureMemorySize), style);
+			EditorGUILayout.LabelField(FormatStat("网格数量", profilerData.allMeshes.Count, ParticleProfiler.kRecommendMeshCount), style);
+			EditorGUILayout.LabelField(FormatStat("粒子系统组件", profilerData.componentCount, ParticleProfiler.kRecommendParticleCompCount), style);
             
 			EditorGUILayout.Space();
-            EditorGUILayout.LabelField($"模拟时长：{m_Target.elapsedTime}");
-			EditorGUILayout.LabelField(FormatStat("DrawCall", m_Target.m_Data.curDrawCall, m_Target.m_Data.maxDrawCall, ParticleProfiler.kRecommendDrawCallCount), style);
-			EditorGUILayout.LabelField(FormatStat("粒子数量", m_Target.m_Data.curParticleCount, m_Target.m_Data.maxParticleCount, ParticleProfiler.kRecommendParticleCount), style);
-			EditorGUILayout.LabelField($"三角面数： {m_Target.m_Data.curTriangles}      最大：{m_Target.m_Data.maxTriangles}");
+            // EditorGUILayout.LabelField($"模拟时长：{m_Target.elapsedTime}");
+			EditorGUILayout.LabelField(FormatStat("DrawCall", profilerData.curDrawCall, profilerData.maxDrawCall, ParticleProfiler.kRecommendDrawCallCount), style);
+			EditorGUILayout.LabelField(FormatStat("粒子数量", profilerData.curParticleCount, profilerData.maxParticleCount, ParticleProfiler.kRecommendParticleCount), style);
+			EditorGUILayout.LabelField($"三角面数： {profilerData.curTriangles}      最大：{profilerData.maxTriangles}");			
 		}
 
-		private string FormatStat(string label, float value, float threshold)
+		static private string FormatStat(string label, float value, float threshold)
 		{
 			string v;
 			if (value <= threshold)
@@ -116,7 +120,7 @@ namespace MeshParticleSystem.Profiler
 			return string.Format($"{label}: {v}      建议：<{threshold}");
 		}
 
-		private string FormatStat(string label, float value, float max, float threshold)
+		static private string FormatStat(string label, float value, float max, float threshold)
 		{
 			string v;
 			if (value <= threshold)
@@ -127,7 +131,7 @@ namespace MeshParticleSystem.Profiler
 			return string.Format($"{label}: {v}      最大：{max}      建议：<{threshold}");
 		}
 
-		private string FormatMemoryStat(string label, long value, float threshold)
+		static private string FormatMemoryStat(string label, long value, float threshold)
 		{
 			string v;
 			if (value <= threshold)

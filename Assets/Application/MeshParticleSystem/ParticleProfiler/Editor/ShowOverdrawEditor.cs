@@ -18,7 +18,7 @@ namespace MeshParticleSystem.Profiler
         {
             EditorGUILayout.ObjectField("RenderTexture", m_Target.m_RT, typeof(RenderTexture), false);
         
-            DrawStat();
+            DrawOverdraw(m_Target.m_Data);
         }
 
         void OnSceneGUI()
@@ -26,7 +26,7 @@ namespace MeshParticleSystem.Profiler
             Handles.BeginGUI();
         	GUILayout.BeginArea(new Rect(10, 320, 300, 300));
 	        
-            DrawStat();
+            DrawOverdraw(m_Target.m_Data);
 
 	        GUILayout.EndArea();
     	    Handles.EndGUI();
@@ -34,16 +34,16 @@ namespace MeshParticleSystem.Profiler
             Repaint();
         }
 
-        void DrawStat()
+        static public void DrawOverdraw(ShowOverdraw.OverdrawData overdraw)
         {
             GUIStyle style = new GUIStyle();
     	    style.richText = true;
 
-            EditorGUILayout.LabelField("Frame Count", m_Target.m_Data.m_FrameCount.ToString(), style);
-            EditorGUILayout.LabelField("Pixel Total", m_Target.m_Data.GetAveragePixDraw().ToString(), style);
-            EditorGUILayout.LabelField("Actual Pixel Total", m_Target.m_Data.GetAverageActualPixDraw().ToString(), style);
+            EditorGUILayout.LabelField("Frame Count", overdraw.m_FrameCount.ToString(), style);
+            EditorGUILayout.LabelField("Pixel Total", overdraw.GetAveragePixDraw().ToString(), style);
+            EditorGUILayout.LabelField("Actual Pixel Total", overdraw.GetAverageActualPixDraw().ToString(), style);
             
-            float fillRate = m_Target.m_Data.GetAverageFillrate();
+            float fillRate = overdraw.GetAverageFillrate();
             string s;
             if(fillRate < ShowOverdraw.kRecommendFillrate)
                 s = string.Format("<color=green>{0}</color>    建议：<{1}", fillRate, ShowOverdraw.kRecommendFillrate);
