@@ -47,7 +47,7 @@ namespace MeshParticleSystem.Profiler
             if(ti == null)
                 return 0;
 
-            long size = texture.width * texture.height * (ti.DoesSourceTextureHaveAlpha() ? 8 : 4) / 8;
+            long size = texture.width * texture.height * (ti.DoesSourceTextureHaveAlpha() ? 8 : 4) / 8;     // ETC2 8 bits per pixel
             if(ti.mipmapEnabled)
                 size = size * 13 / 10;
 

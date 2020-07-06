@@ -71,6 +71,8 @@ crashlytics-build.properties
 
 # Deployment
 Deployment/
+[Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData
+[Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData.meta
 
 # some plugins
 [Aa]ssets/AssetBundles-Browser-master

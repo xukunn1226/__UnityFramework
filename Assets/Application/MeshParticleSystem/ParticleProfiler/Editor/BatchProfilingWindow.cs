@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System.IO;
+using System.Text;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -263,6 +265,7 @@ namespace MeshParticleSystem.Profiler
                             }
                         }
                     }
+
                     EditorGUI.BeginDisabledGroup(EditorApplication.isPlaying);
                     if(GUILayout.Button("Refresh"))
                     {
@@ -273,6 +276,12 @@ namespace MeshParticleSystem.Profiler
                         UpdateParticleAssetTreeView();
                     }
                     EditorGUI.EndDisabledGroup();
+
+                    if(GUILayout.Button("Export CSV"))
+                    {
+                        ExportCSV();
+                        AssetDatabase.Refresh();
+                    }
                 }
                 GUILayout.EndHorizontal();
 
@@ -442,6 +451,52 @@ namespace MeshParticleSystem.Profiler
                 }
             }
             return null;
+        }
+
+        private void ExportCSV()
+        {
+            var csv = new StringBuilder();
+
+            string firstLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", "", "填充率", "组件数量", "材质", "Drawcall", "贴图大小", "贴图大小（Android）", "贴图大小（ASTC6x6）");
+            csv.AppendLine(firstLine);
+
+            foreach(var assetData in m_Data.assetProfilerDataList)
+            {
+                string newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", 
+                                                assetData.assetPath, 
+                                                assetData.overdrawData.m_Fillrate,
+                                                assetData.profilerData.componentCount,
+                                                assetData.profilerData.materialCount,
+                                                assetData.profilerData.maxDrawCall,
+                                                EditorUtility.FormatBytes(assetData.profilerData.textureMemory),
+                                                EditorUtility.FormatBytes(assetData.profilerData.textureMemoryOnAndroid),
+                                                EditorUtility.FormatBytes(assetData.profilerData.textureMemoryOnIPhone));
+                csv.AppendLine(newLine);
+            }
+            foreach(var directoryData in m_Data.directoryProfilerDataList)
+            {
+                foreach(var assetData in directoryData.assetProfilerDataList)
+                {
+                    string newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", 
+                                                assetData.assetPath, 
+                                                assetData.overdrawData.m_Fillrate,
+                                                assetData.profilerData.componentCount,
+                                                assetData.profilerData.materialCount,
+                                                assetData.profilerData.maxDrawCall,
+                                                EditorUtility.FormatBytes(assetData.profilerData.textureMemory),
+                                                EditorUtility.FormatBytes(assetData.profilerData.textureMemoryOnAndroid),
+                                                EditorUtility.FormatBytes(assetData.profilerData.textureMemoryOnIPhone));
+                    csv.AppendLine(newLine);
+                }
+            }
+
+            const string profilerDataDir = kDefaultConfigPath + "/ProfilerData";
+            if(!Directory.Exists(profilerDataDir))
+                Directory.CreateDirectory(profilerDataDir);
+            string assetPath = profilerDataDir + "/ParticleProfilerData_" + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm") + ".csv";
+            File.WriteAllText(assetPath, csv.ToString(), Encoding.UTF8);
+
+            Debug.Log("Export CSV: " + assetPath);
         }
 
         static private void CreateSetting()
