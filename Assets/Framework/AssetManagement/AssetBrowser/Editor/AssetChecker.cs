@@ -2,9 +2,11 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Unity.EditorCoroutines.Editor;
 
 namespace Framework.AssetManagement.AssetBrowser
 {
@@ -219,7 +221,7 @@ namespace Framework.AssetManagement.AssetBrowser
             }
 
             if(s_ReferenceFindingCommand.Count > 0)
-                DoFindReference(0, new string[] {".prefab", ".unity", ".mat", ".asset"});
+                StartFindReference(new string[] {".prefab", ".unity", ".mat", ".asset"});
         }
 
         // 检查当前选中对象的引用资源是否正确
@@ -247,58 +249,75 @@ namespace Framework.AssetManagement.AssetBrowser
             }
 
             if(s_ReferenceFindingCommand.Count > 0)
-                DoFindReference(0);
+                StartFindReference();
         }
 
-        static private void DoFindReference(int index, string[] extensions = null)
+        static private EditorCoroutine m_Coroutine;
+        static private void StartFindReference(string[] extensions = null)
         {
-            if(index >= s_ReferenceFindingCommand.Count)
-                return;
+            m_Coroutine = EditorCoroutineUtility.StartCoroutineOwnerless(DoFindReference(extensions));
+        }
 
-            string path = s_ReferenceFindingCommand[index];
-
-            if(string.IsNullOrEmpty(path) || AssetDatabase.IsValidFolder(path))
+        static private void StopFindReference()
+        {
+            if(m_Coroutine != null)
             {
-                DoFindReference(index + 1, extensions);
-                return;
+                EditorCoroutineUtility.StopCoroutine(m_Coroutine);
+                m_Coroutine = null;
+            }
+        }
+
+        static private IEnumerator DoFindReference(string[] extensions = null)
+        {
+            string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories);
+            int startIndex = 0;
+            while(startIndex < s_ReferenceFindingCommand.Count)
+            {
+                string path = s_ReferenceFindingCommand[startIndex];
+                if(string.IsNullOrEmpty(path) || AssetDatabase.IsValidFolder(path))
+                {
+                    ++startIndex;
+                    yield return null;
+                }
+                else
+                {
+                    string[] filesWithFilter = files;
+                    if(extensions != null)
+                        filesWithFilter = files.Where(s => extensions.Contains(Path.GetExtension(s).ToLower())).ToArray();
+
+                    Debug.Log($"Begin to find reference: {path}");
+                    string guid = AssetDatabase.AssetPathToGUID(path);
+                    int index = 0;
+                    int count = 0;
+                    while(index < filesWithFilter.Length)
+                    {
+                        bool isCancel = EditorUtility.DisplayCancelableProgressBar("匹配资源中", filesWithFilter[index], (float)index / (float)filesWithFilter.Length);
+
+                        if (Regex.IsMatch(File.ReadAllText(filesWithFilter[index]), guid))
+                        {
+                            ++count;
+                            Debug.Log(filesWithFilter[index], AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(GetRelativeAssetsPath(filesWithFilter[index])));
+                        }
+
+                        index++;
+                        if (isCancel || index >= filesWithFilter.Length)
+                        {
+                            EditorUtility.ClearProgressBar();
+
+                            if(count > 1)
+                                Debug.LogWarning($"查找结束 in (*.prefab, *.unity, *.mat, *.asset)      被引用次数: {count}");
+                            else
+                                Debug.Log($"查找结束 in (*.prefab, *.unity, *.mat, *.asset)     被引用次数: {count}");
+                            break;
+                        }
+                    }
+
+                    ++startIndex;
+                    yield return null;
+                }
             }
 
-            string guid = AssetDatabase.AssetPathToGUID(path);
-            // string[] withExtensions = new string[] { ".prefab", ".unity", ".mat", ".asset" };
-            string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories);
-            if(extensions != null)
-                files = files.Where(s => extensions.Contains(Path.GetExtension(s).ToLower())).ToArray();
-            int startIndex = 0;
-
-            Debug.Log($"Begin to find reference: {path}");
-            int count = 0;
-            EditorApplication.update = delegate ()
-            {
-                string file = files[startIndex];
-
-                bool isCancel = EditorUtility.DisplayCancelableProgressBar("匹配资源中", file, (float)startIndex / (float)files.Length);
-
-                if (Regex.IsMatch(File.ReadAllText(file), guid))
-                {
-                    ++count;
-                    Debug.Log(file, AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(GetRelativeAssetsPath(file)));
-                }
-
-                startIndex++;
-                if (isCancel || startIndex >= files.Length)
-                {
-                    EditorUtility.ClearProgressBar();
-                    EditorApplication.update = null;
-                    startIndex = 0;
-
-                    if(count > 1)
-                        Debug.LogWarning($"查找结束 in (*.prefab, *.unity, *.mat, *.asset)      Count: {count}");
-                    else
-                        Debug.Log($"查找结束 in (*.prefab, *.unity, *.mat, *.asset)     Count: {count}");
-
-                    DoFindReference(index + 1, extensions);
-                }
-            };
+            StopFindReference();
         }
 
         static private string GetRelativeAssetsPath(string path)
