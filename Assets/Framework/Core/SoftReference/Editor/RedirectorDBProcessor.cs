@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
 using System.Reflection;
 using UnityEditor.SceneManagement;
+using Unity.EditorCoroutines.Editor;
 
 namespace Framework.Core.Editor
 {
