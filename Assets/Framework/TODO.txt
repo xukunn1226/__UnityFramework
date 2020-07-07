@@ -12,6 +12,13 @@
 	https://www.jianshu.com/p/bf82beb41f7f
 * 配表方案：https://blog.csdn.net/linshuhe1/article/details/52062969
 * 使用反射实现类UE的Config.ini全局数据配置机制
+* GPU Skinning: 
+	https://github.com/chengkehan/GPUSkinning   
+	https://github.com/Unity-Technologies/Animation-Instancing
+	https://blogs.unity3d.com/2018/04/16/animation-instancing-instancing-for-skinnedmeshrenderer/
+	https://www.cnblogs.com/smallrainf/p/11746909.html
+	http://www.xuanyusong.com/archives/4488
+	
 
 
 

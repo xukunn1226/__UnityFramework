@@ -369,6 +369,14 @@ namespace MeshParticleSystem.Profiler
         internal void OnPostAssetListSelection(ParticleAssetTreeElement treeElement)
         {
             m_SelectedTreeElement = treeElement;
+            if(m_SelectedTreeElement.assetProfilerData != null)
+            {
+                Selection.activeObject = AssetDatabase.LoadAssetAtPath<GameObject>(m_SelectedTreeElement.assetProfilerData.assetPath);
+            }
+            else if(m_SelectedTreeElement.directoryProfilerData != null)
+            {
+                Selection.activeObject = AssetDatabase.LoadAssetAtPath<Object>(m_SelectedTreeElement.directoryProfilerData.directoryPath);
+            }
         }
 
         private void DestroyProfilingGameObject()
