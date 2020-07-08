@@ -18,7 +18,10 @@
 	https://blogs.unity3d.com/2018/04/16/animation-instancing-instancing-for-skinnedmeshrenderer/
 	https://www.cnblogs.com/smallrainf/p/11746909.html
 	http://www.xuanyusong.com/archives/4488
-	
+* 也许用的到的工具
+	asset-bundle-analyzer   https://github.com/faelenor/asset-bundle-analyzer   通过py脚本分析Bundles信息，并存储至SQLite
+	DB Browser for SQLite 	https://sqlitebrowser.org/  SQLite查看工具
+* Inspector Field for Scene Asset  https://answers.unity.com/questions/242794/inspector-field-for-scene-asset.html?_ga=2.221217361.81844548.1594053424-350901822.1561524296
 
 
 
