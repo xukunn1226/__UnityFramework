@@ -26,7 +26,7 @@
     choice /t 1 /d y
 
     for /f "delims=" %%i in ('dir /b/a-d/s %transitionFolder%\*') do (
-        call %binary2testPath% %%i
+        call %binary2testPath% %%i -detailed -hexfloat
     )
     echo 已生成到同目录%~nx1%_data下
     shift
