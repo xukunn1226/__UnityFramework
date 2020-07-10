@@ -25,7 +25,7 @@
     echo 生成文本文件
     choice /t 1 /d y
 
-    for /f "delims=" %%i in ('dir /b/a-d/s %transitionFolder%\*') do (
+    for %%i in (%transitionFolder%\*) do (        
         call %binary2testPath% %%i -detailed -hexfloat
     )
     echo 已生成到同目录%~nx1%_data下
