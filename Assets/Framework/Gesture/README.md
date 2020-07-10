@@ -32,7 +32,7 @@
 # Gesture
 ## Goal
 * Extend universal gestures based on event system：LongPress、Pinch、Tap、Drag
-* Gesture components for all objects（2D/3D），same as IXXXHandler
+* Gesture components for all objects（2D/3D），be similar to IXXXHandler
 * Scalable
 * Easy to use
 * Compatible with StandaloneInputModule and InputSystemUIInputModule
