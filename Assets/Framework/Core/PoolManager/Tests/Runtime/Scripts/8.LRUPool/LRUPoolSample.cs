@@ -45,7 +45,7 @@ namespace Tests
             if (GUI.Button(new Rect(320, 100, 200, 80), "Unload 11"))
             {
                 if (m_UI1 != null)
-                    Unload("11", m_UI1);
+                    Unload(m_UI1);
             }
 
             if (GUI.Button(new Rect(100, 200, 200, 80), "Load 22"))
@@ -56,7 +56,7 @@ namespace Tests
             if (GUI.Button(new Rect(320, 200, 200, 80), "Unload 22"))
             {
                 if (m_UI2 != null)
-                    Unload("22", m_UI2);
+                    Unload(m_UI2);
             }
 
             if (GUI.Button(new Rect(100, 300, 200, 80), "Load 33"))
@@ -67,7 +67,7 @@ namespace Tests
             if (GUI.Button(new Rect(320, 300, 200, 80), "Unload 33"))
             {
                 if (m_UI3 != null)
-                    Unload("33", m_UI3);
+                    Unload(m_UI3);
             }
 
             if (GUI.Button(new Rect(100, 400, 200, 80), "Load 44"))
@@ -78,7 +78,7 @@ namespace Tests
             if (GUI.Button(new Rect(320, 400, 200, 80), "Unload 44"))
             {
                 if (m_UI4 != null)
-                    Unload("44", m_UI4);
+                    Unload(m_UI4);
             }
         }
 
@@ -87,9 +87,9 @@ namespace Tests
             return m_LRUInst?.Get(assetPath) ?? null;
         }
 
-        private void Unload(string assetPath, IPooledObject ui)
+        private void Unload(IPooledObject ui)
         {
-            m_LRUInst?.UnloadUI(assetPath, ui);
+            m_LRUInst?.Return(ui);
         }
     }
 }

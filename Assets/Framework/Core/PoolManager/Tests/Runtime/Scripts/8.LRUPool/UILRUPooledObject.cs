@@ -18,7 +18,7 @@ namespace Tests
         /// </summary>
         public void OnGet()
         {
-            gameObject.SetActive(true);
+            // gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -29,11 +29,18 @@ namespace Tests
             gameObject.SetActive(false);
         }
 
+        public void OnTouch()
+        {
+            gameObject.SetActive(true);
+        }
+
         /// <summary>
         /// 放回对象池
         /// </summary>
         void IPooledObject.ReturnToPool()
-        { }
+        {
+            throw new System.NotImplementedException();
+        }
 
         IPool IPooledObject.Pool { get; set; }
 
