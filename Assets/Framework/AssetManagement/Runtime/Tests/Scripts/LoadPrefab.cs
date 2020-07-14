@@ -39,6 +39,21 @@ namespace Framework.AssetManagement.Runtime.Tests
             {
                 GUI.Label(new Rect(100, 600, 500, 100), info);
             }
+
+            if(GUI.Button(new Rect(100, 400, 200, 80), "masterTextureLimit = 0"))
+            {
+                QualitySettings.masterTextureLimit = 0;
+            }
+
+            if(GUI.Button(new Rect(100, 500, 200, 80), "masterTextureLimit = 1"))
+            {
+                QualitySettings.masterTextureLimit = 1;
+            }
+
+            if(GUI.Button(new Rect(100, 600, 200, 80), "masterTextureLimit = 2"))
+            {
+                QualitySettings.masterTextureLimit = 2;
+            }
         }
 
         void StartTask()
