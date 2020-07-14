@@ -52,7 +52,8 @@ public sealed class SoftObject : SoftObjectPath
         if (m_PrefabLoader != null)
             throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
 
-        return ResourceManager.InstantiateAsync(assetPath);
+        m_PrefabLoaderAsync = ResourceManager.InstantiateAsync(assetPath);
+        return m_PrefabLoaderAsync;
     }
 
     public void ReleaseInst()

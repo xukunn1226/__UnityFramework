@@ -67,9 +67,9 @@ namespace Framework.Core.Editor
             }
 
             GUI.enabled = false;
-            EditorGUILayout.TextField("GUID",       m_GUIDProp.stringValue);
-            EditorGUILayout.TextField("Asset Path", m_AssetPathProp.stringValue);
-            EditorGUILayout.TextField("FileID",     m_FileID.ToString());
+            EditorGUILayout.TextField("Asset Path", m_AssetPathProp.stringValue);           // 资源地址
+            EditorGUILayout.TextField("GUID",       m_GUIDProp.stringValue);                // 资源GUID，与Asset Path一致
+            EditorGUILayout.TextField("FileID",     m_FileID.ToString());                   // 
             GUI.enabled = true;
 
             serializedObject.ApplyModifiedProperties();
