@@ -10,7 +10,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         public string assetPath;
 
-        AssetLoaderAsync<Material> loader;
+        AssetLoaderAsync<Material> m_Loader;
         string info;
 
         private void Awake()
@@ -43,27 +43,19 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         IEnumerator StartTask()
         {
-            loader = AssetManager.LoadAssetAsync<Material>(assetPath);
-            yield return loader;
+            m_Loader = AssetManager.LoadAssetAsync<Material>(assetPath);
+            yield return m_Loader;
 
-            info = loader.asset != null ? "sucess to load: " : "fail to load: ";
-            info += assetPath;
-
-            if (loader.asset == null)
-            {
-                AssetManager.UnloadAsset(loader);
-                loader = null;
-            }
+            // m_Loader.asset
         }
 
         void EndTask()
         {
-            if (loader != null)
+            if (m_Loader != null)
             {
-                AssetManager.UnloadAsset(loader);
-                loader = null;
+                AssetManager.UnloadAsset(m_Loader);
+                m_Loader = null;
             }
-            info = null;
         }
     }
 }

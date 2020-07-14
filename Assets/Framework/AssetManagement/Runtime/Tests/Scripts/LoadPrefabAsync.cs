@@ -12,7 +12,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         GameObject inst;
         string info;
 
-        GameObjectLoaderAsync loaderAsync;
+        GameObjectLoaderAsync m_LoaderAsync;
 
         private void Awake()
         {
@@ -49,34 +49,19 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         IEnumerator StartTask()
         {
-            // yield return AssetManager.InstantiatePrefabAsync(assetPath, (go) =>
-            // {
-            //     inst = go;
-            // });
+            m_LoaderAsync = AssetManager.InstantiateAsync(assetPath);
+            yield return m_LoaderAsync;
 
-            Debug.Log($"{Time.frameCount}   Start..............");
-            loaderAsync = AssetManager.InstantiateAsync(assetPath);
-            yield return loaderAsync;
-            Debug.Log($"{Time.frameCount}   End..............");
-
-            info = inst != null ? "sucess to load: " : "fail to load: ";
-            info += assetPath;
+            // m_LoaderAsync.asset
         }
 
         void EndTask()
         {
-            if(loaderAsync != null)
+            if(m_LoaderAsync != null)
             {
-                AssetManager.ReleaseInst(loaderAsync);
-                loaderAsync = null;
+                AssetManager.ReleaseInst(m_LoaderAsync);
+                m_LoaderAsync = null;
             }
-
-            if (inst != null)
-            {
-                Destroy(inst);
-                inst = null;
-            }
-            info = null;
         }
     }
 }
