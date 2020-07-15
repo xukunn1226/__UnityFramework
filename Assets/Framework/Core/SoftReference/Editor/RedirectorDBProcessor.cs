@@ -235,13 +235,13 @@ namespace Framework.Core.Editor
                 SoftRefRedirector.UserInfo userInfo = item.Value;
 
                 string userAssetPath = AssetDatabase.GUIDToAssetPath(userInfo.m_UserObjectGUID);
-                if (string.IsNullOrEmpty(userAssetPath))        // 被删除资源的GUID仍会返回一个路径，需要加载判断资源是否真实存在
+                if (string.IsNullOrEmpty(userAssetPath))
                 {
                     removeList.Add(item.Key);
                     continue;
                 }
 
-                Object userObject = AssetDatabase.LoadAssetAtPath<Object>(userAssetPath);
+                Object userObject = AssetDatabase.LoadAssetAtPath<Object>(userAssetPath);       // 被删除资源的GUID仍会返回一个路径，需要加载判断资源是否真实存在
                 if (userObject == null)
                 {
                     removeList.Add(item.Key);
