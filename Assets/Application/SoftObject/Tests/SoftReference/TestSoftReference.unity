@@ -188,35 +188,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestSoft
       objectReference: {fileID: 0}
-    - target: {fileID: 5911553339366115662, guid: dbd49dd61bce04e4bb1eb017c38e1707,
-        type: 3}
-      propertyPath: m_GUID
-      value: 4821597d05f0b1b4d95f0ff8bbbba59c
-      objectReference: {fileID: 0}
-    - target: {fileID: 5911553339366115662, guid: dbd49dd61bce04e4bb1eb017c38e1707,
-        type: 3}
-      propertyPath: m_AssetPath
-      value: assets/application/softobject/tests/softreference/plane1.prefab
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dbd49dd61bce04e4bb1eb017c38e1707, type: 3}
---- !u!1 &900641839 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1237652909959145938, guid: dbd49dd61bce04e4bb1eb017c38e1707,
-    type: 3}
-  m_PrefabInstance: {fileID: 900641838}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &900641840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 900641839}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56fa9a21fe1ba864086c2d3328d79985, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_GUID: 4821597d05f0b1b4d95f0ff8bbbba59c
-  m_AssetPath: assets/application/softobject/tests/softreference/plane1.prefab

@@ -46,7 +46,7 @@ namespace Framework.Core.Editor
                     m_GUIDProp.stringValue = AssetDatabase.AssetPathToGUID(m_AssetPathProp.stringValue);
                 }
 
-                // 更新被替换资源的DB
+                // 更新被替换资源的DB，不需要更新新资源的DB，因为reimport asset会触发更新
                 if (oldObj != null)
                 {
                     string oldAssetPath = AssetDatabase.GetAssetPath(oldObj);
@@ -65,12 +65,6 @@ namespace Framework.Core.Editor
                     {
                         RedirectorDB.UnloadRefObject(oldGUID, AssetDatabase.AssetPathToGUID(userAssetPath), m_FileID);
                     }
-                }
-
-                // 更新新资源的DB
-                if(obj != null)
-                {
-
                 }
             }
 
