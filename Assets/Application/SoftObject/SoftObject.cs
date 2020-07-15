@@ -214,6 +214,8 @@ public class SoftObjectEditor : SoftObjectPathEditor
     {
         base.OnInspectorGUI();
 
+        EditorGUILayout.Separator();
+
         serializedObject.Update();
 
         m_UseLRUManageProp.boolValue = EditorGUILayout.Toggle("Use LRU", m_UseLRUManageProp.boolValue);

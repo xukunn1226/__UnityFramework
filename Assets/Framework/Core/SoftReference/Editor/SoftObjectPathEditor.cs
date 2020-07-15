@@ -31,9 +31,10 @@ namespace Framework.Core.Editor
             Object oldObj = obj;
 
             EditorGUI.BeginChangeCheck();
-            obj = EditorGUILayout.ObjectField("Ref Object", obj, typeof(Object), false);
+            obj = EditorGUILayout.ObjectField("Ref Object", obj, typeof(Object), false);        // only allow assigning project assets
             if (EditorGUI.EndChangeCheck())
             {
+                // 更新SoftObject
                 if (obj == null)
                 {
                     m_AssetPathProp.stringValue = null;
@@ -45,6 +46,7 @@ namespace Framework.Core.Editor
                     m_GUIDProp.stringValue = AssetDatabase.AssetPathToGUID(m_AssetPathProp.stringValue);
                 }
 
+                // 更新被替换资源的DB
                 if (oldObj != null)
                 {
                     string oldAssetPath = AssetDatabase.GetAssetPath(oldObj);
@@ -64,12 +66,18 @@ namespace Framework.Core.Editor
                         RedirectorDB.UnloadRefObject(oldGUID, AssetDatabase.AssetPathToGUID(userAssetPath), m_FileID);
                     }
                 }
+
+                // 更新新资源的DB
+                if(obj != null)
+                {
+
+                }
             }
 
             GUI.enabled = false;
             EditorGUILayout.TextField("Asset Path", m_AssetPathProp.stringValue);           // 资源地址
             EditorGUILayout.TextField("GUID",       m_GUIDProp.stringValue);                // 资源GUID，与Asset Path一致
-            EditorGUILayout.TextField("FileID",     m_FileID.ToString());                   // 
+            EditorGUILayout.TextField("FileID",     m_FileID.ToString());                   // SoftObjectPath在挂载对象上的FileID
             GUI.enabled = true;
 
             serializedObject.ApplyModifiedProperties();

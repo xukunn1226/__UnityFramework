@@ -53,7 +53,8 @@ namespace Framework.Core.Editor
 
         static RedirectorDB()
         {
-            Directory.CreateDirectory(k_SavedPath);
+            if(!Directory.Exists(k_SavedPath))
+                Directory.CreateDirectory(k_SavedPath);
         }
 
         /// <summary>
@@ -66,8 +67,8 @@ namespace Framework.Core.Editor
 
             public class UserInfo
             {
-                public string   m_UserObjectGUID;               // 使用此资源的GUID
-                public long     m_FileID;                       // FileID，用于定位SoftObjectPath
+                public string   m_UserObjectGUID;               // 使用此资源的GUID(*.unity, *.prefab, *.asset)
+                public long     m_FileID;                       // FileID，用于资源内部定位SoftObjectPath
                 public string   m_UserObjectAssetPath;          // 资源路径（与GUID对应，方便DEBUG）
             }
             public SortedList<string, UserInfo> m_UserInfoList = new SortedList<string, UserInfo>();        // key: m_UserObjectGUID | m_FileID
@@ -167,6 +168,10 @@ namespace Framework.Core.Editor
                 if (string.IsNullOrEmpty(referencedAssetPath))
                     continue;       // 引用资源被删除可能失效
 
+                long id = GetLocalID(sop);
+                if(id == 0)
+                    continue;       // 场景对象时可能为0，表示组件是prefab的一部分，而不是场景的一部分
+
                 // get or create SoftReferenceInfo data
                 SoftRefRedirector sri;
                 string filePath = string.Format("{0}/{1}.json", k_SavedPath, sop.m_GUID);
@@ -179,7 +184,7 @@ namespace Framework.Core.Editor
                     sri = new SoftRefRedirector() { m_RefObjectGUID = sop.m_GUID, m_RefObjectAssetPath = referencedAssetPath };
                 }
 
-                sri.AddOrUpdateUserInfo(userGUID, GetLocalID(sop));
+                sri.AddOrUpdateUserInfo(userGUID, id);
 
                 SerializeSoftReference(sop.m_GUID, sri);
             }

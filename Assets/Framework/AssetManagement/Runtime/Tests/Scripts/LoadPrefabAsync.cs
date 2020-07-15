@@ -10,7 +10,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         public string assetPath;
 
         GameObject inst;
-        string info;
+        // string info;
 
         GameObjectLoaderAsync m_LoaderAsync;
 
@@ -41,10 +41,10 @@ namespace Framework.AssetManagement.Runtime.Tests
                 EndTask();
             }
 
-            if (!string.IsNullOrEmpty(info))
-            {
-                GUI.Label(new Rect(100, 600, 500, 100), info);
-            }
+            // if (!string.IsNullOrEmpty(info))
+            // {
+            //     GUI.Label(new Rect(100, 600, 500, 100), info);
+            // }
         }
 
         IEnumerator StartTask()

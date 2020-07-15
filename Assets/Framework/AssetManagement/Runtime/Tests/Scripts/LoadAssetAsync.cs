@@ -11,7 +11,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         public string assetPath;
 
         AssetLoaderAsync<Material> m_Loader;
-        string info;
+        // string info;
 
         private void Awake()
         {
@@ -35,10 +35,10 @@ namespace Framework.AssetManagement.Runtime.Tests
                 EndTask();
             }
 
-            if (!string.IsNullOrEmpty(info))
-            {
-                GUI.Label(new Rect(100, 600, 500, 100), info);
-            }
+            // if (!string.IsNullOrEmpty(info))
+            // {
+            //     GUI.Label(new Rect(100, 600, 500, 100), info);
+            // }
         }
 
         IEnumerator StartTask()
