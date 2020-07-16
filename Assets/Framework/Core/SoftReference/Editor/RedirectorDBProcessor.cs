@@ -23,7 +23,7 @@ namespace Framework.Core.Editor
             for (int i = 0; i < importedAssets.Length; ++i)
             {
                 // Debug.Log($"importedAsset: {importedAssets[i]}");
-                RedirectorDB.ImportAsset(importedAssets[i]);
+                // RedirectorDB.ImportAsset(importedAssets[i]);
             }
 
             bool bDirty = false;
@@ -49,25 +49,29 @@ namespace Framework.Core.Editor
     [InitializeOnLoad]
     public class RedirectorDB
     {
-        static private string k_SavedPath = "Assets/RedirectorDB";
+        static private string s_RefObjectDBPath = "Assets/RedirectorDB/RefObject_DB";           // 记录资源被引用的信息
+        static private string s_UserObjectDBPath = "Assets/RedirectorDB/UserObject_DB";         // 记录userObj引用的资源
 
         static RedirectorDB()
         {
-            if(!Directory.Exists(k_SavedPath))
-                Directory.CreateDirectory(k_SavedPath);
+            if(!Directory.Exists(s_RefObjectDBPath))
+                Directory.CreateDirectory(s_RefObjectDBPath);
+            
+            if(!Directory.Exists(s_UserObjectDBPath))
+                Directory.CreateDirectory(s_UserObjectDBPath);
         }
 
         /// <summary>
-        /// 重定向器，记录资源被引用信息
+        /// 记录资源被引用信息
         /// </summary>
-        public class SoftRefRedirector
+        public class RefObjectInfo
         {
             public string       m_RefObjectGUID;                // 被引用资源的GUID
             public string       m_RefObjectAssetPath;           // 资源路径（与GUID对应，方便DEBUG）
 
             public class UserInfo
             {
-                public string   m_UserObjectGUID;               // 使用此资源的GUID(*.unity, *.prefab, *.asset)
+                public string   m_UserObjectGUID;               // 使用此资源的GUID(*.unity, *.prefab)
                 public long     m_FileID;                       // FileID，用于资源内部定位SoftObjectPath
                 public string   m_UserObjectAssetPath;          // 资源路径（与GUID对应，方便DEBUG）
             }
@@ -114,6 +118,53 @@ namespace Framework.Core.Editor
         }
 
         /// <summary>
+        /// 记录*.prefab, *.unity引用的资源信息
+        /// </summary>
+        public class UserObjectInfo
+        {
+            public string m_UserObjectGUID;
+            public string m_UserObjectAssetPath;
+
+            public class RefInfo
+            {
+                public long m_FileID;           // FileID means that which component of UserObject references the m_RefObjectGUID
+                public string m_RefObjectGUID;
+                public string m_RefObjectAssetPath;
+            }
+            public SortedList<long, RefInfo> m_RefInfoList = new SortedList<long, RefInfo>();               // 记录引用的资源信息（SoftObjectPath、SoftObject）
+
+            public void AddOrUpdateRefInfo(long fileID, string refGUID)
+            {
+                if (m_RefInfoList.ContainsKey(fileID))
+                {
+                    RefInfo refInfo;
+                    if (m_RefInfoList.TryGetValue(fileID, out refInfo))
+                    {
+                        refInfo.m_FileID = fileID;
+                        refInfo.m_RefObjectGUID = refGUID;                        
+                        refInfo.m_RefObjectAssetPath = AssetDatabase.GUIDToAssetPath(refGUID);
+                    }
+
+                    return;
+                }
+
+                string assetPath = AssetDatabase.GUIDToAssetPath(refGUID);
+                if (string.IsNullOrEmpty(assetPath))
+                {
+                    Debug.LogError($"{refGUID} is not valid");
+                    return;
+                }
+
+                m_RefInfoList.Add(fileID, new RefInfo() { m_FileID = fileID, m_RefObjectGUID = refGUID, m_RefObjectAssetPath = assetPath });
+            }
+
+            public void Remove(long fileID)
+            {
+                m_RefInfoList.Remove(fileID);
+            }
+        }
+
+        /// <summary>
         /// 根据SoftObjectPath组件信息更新DB
         /// </summary>
         /// <param name="userAssetPath"></param>
@@ -147,15 +198,17 @@ namespace Framework.Core.Editor
         /// <summary>
         /// 资源导入、保存时把其所有SoftObjectPath数据更新至redirector
         /// 遍历asset中的所有SoftObjectPath，更新其GUID,FILEID
+        /// 更新流程：
+        /// step 1. 检查userObject
         /// </summary>
-        /// <param name="asset"></param>
+        /// <param name="userObj"></param>
         /// <param name="userGUID"></param>
-        static private void InternalImportAsset(GameObject asset, string userGUID)
+        static private void InternalImportAsset(GameObject userObj, string userGUID)
         {
-            if (asset == null)
+            if (userObj == null)
                 return;
 
-            SoftObjectPath[] sopList = asset.GetComponentsInChildren<SoftObjectPath>(true);
+            SoftObjectPath[] sopList = userObj.GetComponentsInChildren<SoftObjectPath>(true);
             if (sopList.Length == 0)
                 return;
 
@@ -173,15 +226,15 @@ namespace Framework.Core.Editor
                     continue;       // 场景对象时可能为0，表示组件是prefab的一部分，而不是场景的一部分
 
                 // get or create SoftReferenceInfo data
-                SoftRefRedirector sri;
-                string filePath = string.Format("{0}/{1}.json", k_SavedPath, sop.m_GUID);
+                RefObjectInfo sri;
+                string filePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, sop.m_GUID);
                 if (File.Exists(filePath))
                 {
                     sri = DeserializeSoftReference(sop.m_GUID);
                 }
                 else
                 {
-                    sri = new SoftRefRedirector() { m_RefObjectGUID = sop.m_GUID, m_RefObjectAssetPath = referencedAssetPath };
+                    sri = new RefObjectInfo() { m_RefObjectGUID = sop.m_GUID, m_RefObjectAssetPath = referencedAssetPath };
                 }
 
                 sri.AddOrUpdateUserInfo(userGUID, id);
@@ -218,12 +271,12 @@ namespace Framework.Core.Editor
         {
             string guid = AssetDatabase.AssetPathToGUID(refObjectAssetPath);
 
-            string filePath = string.Format("{0}/{1}.json", k_SavedPath, guid);
+            string filePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, guid);
             if (!File.Exists(filePath))
                 return false;
 
             // deserialize redirector and update
-            SoftRefRedirector sri = DeserializeSoftReference(guid);
+            RefObjectInfo sri = DeserializeSoftReference(guid);
             sri.m_RefObjectGUID = guid;
             sri.m_RefObjectAssetPath = refObjectAssetPath;
 
@@ -232,7 +285,7 @@ namespace Framework.Core.Editor
             bool bModified = false;
             foreach (var item in sri.m_UserInfoList)
             {
-                SoftRefRedirector.UserInfo userInfo = item.Value;
+                RefObjectInfo.UserInfo userInfo = item.Value;
 
                 string userAssetPath = AssetDatabase.GUIDToAssetPath(userInfo.m_UserObjectGUID);
                 if (string.IsNullOrEmpty(userAssetPath))
@@ -343,12 +396,12 @@ namespace Framework.Core.Editor
 
         static public void UnloadRefObject(string refObjectGUID, string userGUID, long fileID)
         {
-            string filePath = string.Format("{0}/{1}.json", k_SavedPath, refObjectGUID);
+            string filePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, refObjectGUID);
             if (!File.Exists(filePath))
                 return;
 
             // deserialize redirector and update
-            SoftRefRedirector sri = DeserializeSoftReference(refObjectGUID);
+            RefObjectInfo sri = DeserializeSoftReference(refObjectGUID);
             sri.m_RefObjectGUID = refObjectGUID;
             sri.m_RefObjectAssetPath = AssetDatabase.GUIDToAssetPath(refObjectGUID);
 
@@ -359,9 +412,9 @@ namespace Framework.Core.Editor
 
 
 
-        private static SoftRefRedirector DeserializeSoftReference(string filename)
+        private static RefObjectInfo DeserializeSoftReference(string filename)
         {
-            string filePath = string.Format("{0}/{1}.json", k_SavedPath, filename);
+            string filePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, filename);
 
             FileStream reader = new FileStream(filePath, FileMode.Open);
             byte[] bs_reader = new byte[reader.Length];
@@ -369,12 +422,39 @@ namespace Framework.Core.Editor
             reader.Close();
             string json_reader = System.Text.Encoding.UTF8.GetString(bs_reader);
 
-            return JsonConvert.DeserializeObject<SoftRefRedirector>(json_reader);
+            return JsonConvert.DeserializeObject<RefObjectInfo>(json_reader);
         }
 
-        private static void SerializeSoftReference(string filename, SoftRefRedirector data)
+        private static void SerializeSoftReference(string filename, RefObjectInfo data)
         {
-            string filePath = string.Format("{0}/{1}.json", k_SavedPath, filename);
+            string filePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, filename);
+
+            string json_writer = JsonConvert.SerializeObject(data, Formatting.Indented);
+            byte[] bs_writer = System.Text.Encoding.UTF8.GetBytes(json_writer);
+
+            FileStream writer = new FileStream(filePath, FileMode.Create);
+            writer.Write(bs_writer, 0, bs_writer.Length);
+            writer.Close();
+
+            AssetDatabase.ImportAsset(filePath);
+        }
+        
+        private static UserObjectInfo DeserializeUserInfo(string filename)
+        {
+            string filePath = string.Format("{0}/{1}.json", s_UserObjectDBPath, filename);
+
+            FileStream reader = new FileStream(filePath, FileMode.Open);
+            byte[] bs_reader = new byte[reader.Length];
+            reader.Read(bs_reader, 0, bs_reader.Length);
+            reader.Close();
+            string json_reader = System.Text.Encoding.UTF8.GetString(bs_reader);
+
+            return JsonConvert.DeserializeObject<UserObjectInfo>(json_reader);
+        }
+
+        private static void SerializeUserInfo(string filename, UserObjectInfo data)
+        {
+            string filePath = string.Format("{0}/{1}.json", s_UserObjectDBPath, filename);
 
             string json_writer = JsonConvert.SerializeObject(data, Formatting.Indented);
             byte[] bs_writer = System.Text.Encoding.UTF8.GetBytes(json_writer);
@@ -410,11 +490,18 @@ namespace Framework.Core.Editor
             if (UnityEditor.EditorUtility.DisplayDialog("Reimport All Redirectors", "Are you sure, about 2 mins", "OK", "Cancel"))
             {
                 // delete all redirectors
-                if(Directory.Exists(k_SavedPath))
-                    Directory.Delete(k_SavedPath, true);
+                if(Directory.Exists(s_RefObjectDBPath))
+                    Directory.Delete(s_RefObjectDBPath, true);
 
-                Directory.CreateDirectory(k_SavedPath);
-                StreamWriter sw = File.CreateText(string.Format("{0}/{1}", k_SavedPath, "DONTDELETEME.txt"));
+                if(Directory.Exists(s_UserObjectDBPath))
+                    Directory.Delete(s_UserObjectDBPath, true);
+
+                Directory.CreateDirectory(s_RefObjectDBPath);
+                StreamWriter sw = File.CreateText(string.Format("{0}/{1}", s_RefObjectDBPath, "DONTDELETEME.txt"));
+                sw.Close();
+
+                Directory.CreateDirectory(s_UserObjectDBPath);
+                sw = File.CreateText(string.Format("{0}/{1}", s_UserObjectDBPath, "DONTDELETEME.txt"));
                 sw.Close();
 
                 // reimport
