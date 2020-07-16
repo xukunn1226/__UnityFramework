@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine.SceneManagement;
 
 namespace Framework.Core.Editor
@@ -62,8 +63,15 @@ namespace Framework.Core.Editor
                     string oldAssetPath = AssetDatabase.GetAssetPath(oldObj);
                     string oldGUID = AssetDatabase.AssetPathToGUID(oldAssetPath);
 
-                    bool isPersistent = UnityEditor.EditorUtility.IsPersistent(target);     // scene object or project object
-                    if (!isPersistent)
+                    // 这里要判断当前编辑环境是处于场景、Prefab Editor Mode、Project Asset                                        
+                    // Object source = PrefabUtility.GetCorrespondingObjectFromOriginalSource<Object>(target);
+                    // if(string.IsNullOrEmpty(userAssetPath) && source == null)
+                    // { // prefab editing environment
+
+                    // }
+
+                    string userAssetPath = AssetDatabase.GetAssetPath(target);          // 返回空表示选中了场景或prefab editing environment中的object
+                    if(string.IsNullOrEmpty(userAssetPath))
                     { // scene object
                         Scene scene = SceneManager.GetActiveScene();
                         if (!scene.IsValid())
