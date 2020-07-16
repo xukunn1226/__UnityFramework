@@ -28,17 +28,17 @@ namespace Framework.Core.Editor
 
             string assetPath = AssetDatabase.GUIDToAssetPath(m_GUIDProp.stringValue);
             Object obj = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
-            // 选中及时更新
-            if (obj == null)
-            {
-               m_AssetPathProp.stringValue = null;
-                m_GUIDProp.stringValue = null;
-            }
-            else
-            {
-                m_AssetPathProp.stringValue = AssetDatabase.GetAssetPath(obj).ToLower();
-                m_GUIDProp.stringValue = AssetDatabase.AssetPathToGUID(m_AssetPathProp.stringValue);
-            }
+            // // 选中及时更新
+            // if (obj == null)
+            // {
+            //    m_AssetPathProp.stringValue = null;
+            //     m_GUIDProp.stringValue = null;
+            // }
+            // else
+            // {
+            //     m_AssetPathProp.stringValue = AssetDatabase.GetAssetPath(obj).ToLower();
+            //     m_GUIDProp.stringValue = AssetDatabase.AssetPathToGUID(m_AssetPathProp.stringValue);
+            // }
 
             EditorGUI.BeginChangeCheck();
             Object oldObj = obj;

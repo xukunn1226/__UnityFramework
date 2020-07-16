@@ -1,0 +1,16 @@
+{
+  "m_UserObjectGUID": "743a270c5349d8c4bbabac38a405f6ca",
+  "m_UserObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/UserA.prefab",
+  "m_RefInfoList": {
+    "474539670189816408": {
+      "m_FileID": 474539670189816408,
+      "m_RefObjectGUID": "1427944daac4b2c46afe356b6ae7fc18",
+      "m_RefObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/RefB.prefab"
+    },
+    "5954176803795596492": {
+      "m_FileID": 5954176803795596492,
+      "m_RefObjectGUID": "9013c69fd12b0d44b8dd61226cf4020a",
+      "m_RefObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/RefA.prefab"
+    }
+  }
+}
