@@ -18,7 +18,6 @@ namespace Framework.Core.Editor
         {
             m_GUIDProp = serializedObject.FindProperty("m_GUID");
             m_AssetPathProp = serializedObject.FindProperty("m_AssetPath");
-
             m_FileID = RedirectorDB.GetLocalID(serializedObject.targetObject);
         }
 
@@ -28,9 +27,20 @@ namespace Framework.Core.Editor
 
             string assetPath = AssetDatabase.GUIDToAssetPath(m_GUIDProp.stringValue);
             Object obj = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
-            Object oldObj = obj;
+            // 选中及时更新
+            if (obj == null)
+            {
+               m_AssetPathProp.stringValue = null;
+                m_GUIDProp.stringValue = null;
+            }
+            else
+            {
+                m_AssetPathProp.stringValue = AssetDatabase.GetAssetPath(obj).ToLower();
+                m_GUIDProp.stringValue = AssetDatabase.AssetPathToGUID(m_AssetPathProp.stringValue);
+            }
 
             EditorGUI.BeginChangeCheck();
+            Object oldObj = obj;
             obj = EditorGUILayout.ObjectField("Ref Object", obj, typeof(Object), false);        // only allow assigning project assets
             if (EditorGUI.EndChangeCheck())
             {
@@ -52,18 +62,19 @@ namespace Framework.Core.Editor
                     string oldAssetPath = AssetDatabase.GetAssetPath(oldObj);
                     string oldGUID = AssetDatabase.AssetPathToGUID(oldAssetPath);
 
-                    string userAssetPath = AssetDatabase.GetAssetPath(target);
-                    if (string.IsNullOrEmpty(userAssetPath))
+                    bool isPersistent = UnityEditor.EditorUtility.IsPersistent(target);     // scene object or project object
+                    if (!isPersistent)
                     { // scene object
                         Scene scene = SceneManager.GetActiveScene();
                         if (!scene.IsValid())
                             return;
 
-                        RedirectorDB.UnloadRefObject(oldGUID, AssetDatabase.AssetPathToGUID(scene.path), m_FileID);
+                        if(m_FileID != 0)       // SoftObjectPath是prefab一部分时返回0
+                            RedirectorDB.UnloadRefObject(oldGUID, AssetDatabase.AssetPathToGUID(scene.path), m_FileID);
                     }
                     else
                     {
-                        RedirectorDB.UnloadRefObject(oldGUID, AssetDatabase.AssetPathToGUID(userAssetPath), m_FileID);
+                        RedirectorDB.UnloadRefObject(oldGUID, AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(target)), m_FileID);
                     }
                 }
             }

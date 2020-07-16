@@ -22,7 +22,7 @@ namespace Framework.Core.Editor
 
             for (int i = 0; i < importedAssets.Length; ++i)
             {
-                //Debug.Log($"importedAsset: {importedAssets[i]}");
+                // Debug.Log($"importedAsset: {importedAssets[i]}");
                 RedirectorDB.ImportAsset(importedAssets[i]);
             }
 
