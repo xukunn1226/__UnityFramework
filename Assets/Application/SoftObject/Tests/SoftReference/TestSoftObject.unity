@@ -308,7 +308,7 @@ GameObject:
   - component: {fileID: 1960723466}
   - component: {fileID: 1960723467}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: TestPrefabSoftObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -354,7 +354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GUID: 451f1efb05a611a42a5014cfd98bd7a4
-  m_AssetPath: assets/application/tests/runtime/res/prefabpooledobject/capsulepooledobject.prefab
+  m_GUID: 289787880bb25464eb6abfb5455d9f73
+  m_AssetPath: assets/framework/assetmanagement/runtime/tests/res/testdep/tex/cube.prefab
   m_UseLRUManage: 0
   m_LRUedPoolAsset: {fileID: 0}
