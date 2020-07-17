@@ -6,6 +6,11 @@
       "m_UserObjectGUID": "743a270c5349d8c4bbabac38a405f6ca",
       "m_FileID": 474539670189816408,
       "m_UserObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/UserA.prefab"
+    },
+    "825a5a337563aa34980646f082fba13a|5954176803795596492": {
+      "m_UserObjectGUID": "825a5a337563aa34980646f082fba13a",
+      "m_FileID": 5954176803795596492,
+      "m_UserObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/UserB.prefab"
     }
   }
 }
