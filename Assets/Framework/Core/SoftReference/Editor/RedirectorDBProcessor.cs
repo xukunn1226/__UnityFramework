@@ -22,20 +22,20 @@ namespace Framework.Core.Editor
 
             for (int i = 0; i < importedAssets.Length; ++i)
             {
-                Debug.Log($"importedAsset: {importedAssets[i]}");
+                // Debug.Log($"importedAsset: {importedAssets[i]}");
                 RedirectorDB.ImportAsset(importedAssets[i]);
             }
 
             bool bDirty = false;
             for (int i = 0; i < deletedAssets.Length; ++i)
             {
-                Debug.Log($"deletedAssets: {deletedAssets[i]}");
+                // Debug.Log($"deletedAssets: {deletedAssets[i]}");
                 bDirty |= RedirectorDB.DeleteAsset(deletedAssets[i]);
             }
 
             for (int i = 0; i < movedAssets.Length; ++i)
             {
-                Debug.Log($"movedAssets: {movedAssets[i]}       movedFromAssetPaths: {movedFromAssetPaths[i]}");
+                // Debug.Log($"movedAssets: {movedAssets[i]}       movedFromAssetPaths: {movedFromAssetPaths[i]}");
                 bDirty |= RedirectorDB.MoveAsset(movedAssets[i]);
             }
 
