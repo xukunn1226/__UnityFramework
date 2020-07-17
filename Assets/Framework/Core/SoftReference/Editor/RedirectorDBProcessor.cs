@@ -22,20 +22,20 @@ namespace Framework.Core.Editor
 
             for (int i = 0; i < importedAssets.Length; ++i)
             {
-                // Debug.Log($"importedAsset: {importedAssets[i]}");
+                Debug.Log($"importedAsset: {importedAssets[i]}");
                 RedirectorDB.ImportAsset(importedAssets[i]);
             }
 
             bool bDirty = false;
             for (int i = 0; i < deletedAssets.Length; ++i)
             {
-                //Debug.Log($"deletedAssets: {deletedAssets[i]}");
+                Debug.Log($"deletedAssets: {deletedAssets[i]}");
                 bDirty |= RedirectorDB.DeleteAsset(deletedAssets[i]);
             }
 
             for (int i = 0; i < movedAssets.Length; ++i)
             {
-                //Debug.Log($"movedAssets: {movedAssets[i]}       movedFromAssetPaths: {movedFromAssetPaths[i]}");
+                Debug.Log($"movedAssets: {movedAssets[i]}       movedFromAssetPaths: {movedFromAssetPaths[i]}");
                 bDirty |= RedirectorDB.MoveAsset(movedAssets[i]);
             }
 
@@ -82,9 +82,6 @@ namespace Framework.Core.Editor
                 string key = MakeKey(userGUID, fileID);
                 if (m_UserInfoList.ContainsKey(key))
                 {
-                    // 多次导入属正常情况
-                    //Debug.LogError($"{guid} & {fileID} has already exist.");
-
                     UserInfo userInfo;
                     if (m_UserInfoList.TryGetValue(key, out userInfo))
                     {
@@ -172,46 +169,42 @@ namespace Framework.Core.Editor
         /// <summary>
         /// 根据SoftObjectPath组件信息更新DB
         /// </summary>
-        /// <param name="userAssetPath"></param>
-        static public void ImportAsset(string userAssetPath)
+        /// <param name="importerAssetPath"></param>
+        static public void ImportAsset(string importerAssetPath)
         {
-            if (userAssetPath.EndsWith(".prefab"))
+            if (importerAssetPath.EndsWith(".prefab"))
             {
-                InternalImportAsset(userAssetPath);
+                InternalImportAsset(importerAssetPath);
             }
-            // else if (userAssetPath.EndsWith(".unity"))
-            // {
-            //     Scene activeScene = EditorSceneManager.GetActiveScene();
+        }
 
-            //     Scene scene = EditorSceneManager.OpenScene(userAssetPath, OpenSceneMode.Additive);
-            //     if (!scene.IsValid())
-            //         return;
+        /// <summary>
+        /// 删除资源触发DB更新，把正在引用此资源的SoftObjectPath清空
+        /// </summary>
+        /// <param name="deletedAssetPath"></param>
+        static public bool DeleteAsset(string deletedAssetPath)
+        {
+            return InternalDeleteAsset(deletedAssetPath);
+        }
 
-            //     GameObject[] gos = scene.GetRootGameObjects();
-            //     foreach (var go in gos)
-            //     {
-            //         InternalImportAsset(go, AssetDatabase.AssetPathToGUID(userAssetPath));
-            //     }
-
-            //     if(scene != activeScene)
-            //     {
-            //         EditorSceneManager.CloseScene(scene, true);
-            //     }
-            // }
+        /// <summary>
+        /// 移动、改名触发DB更新
+        /// </summary>
+        /// <param name="movedAssetPath"></param>
+        static public bool MoveAsset(string movedAssetPath)
+        {
+            return InternalMoveAsset(movedAssetPath);
         }
 
         /// <summary>
         /// 资源导入、保存时把其所有SoftObjectPath数据更新至redirector
         /// 遍历asset中的所有SoftObjectPath，更新其GUID,FILEID
         /// </summary>
-        static private void InternalImportAsset(string userAssetPath)
+        static private void InternalImportAsset(string importedAssetPath)
         {
-            string userGUID = AssetDatabase.AssetPathToGUID(userAssetPath);
-            GameObject userObj = AssetDatabase.LoadAssetAtPath<GameObject>(userAssetPath);
-            if (userObj == null)
-                return;
-
+            //////////////////////////// importedAssetPath: 更新UserObject_DB
             // step 1. 更新UserObj之前指向的Ref的数据
+            string userGUID = AssetDatabase.AssetPathToGUID(importedAssetPath);
             string userFilePath = string.Format("{0}/{1}.json", s_UserObjectDBPath, userGUID);
             UserObjectInfo uoi;
             if(File.Exists(userFilePath))
@@ -230,6 +223,7 @@ namespace Framework.Core.Editor
             }
 
             // step 2. 更新UserObj当前指向的Ref数据
+            GameObject userObj = AssetDatabase.LoadAssetAtPath<GameObject>(importedAssetPath);
             SoftObjectPath[] sopList = userObj.GetComponentsInChildren<SoftObjectPath>(true);
             foreach (var sop in sopList)
             {
@@ -254,6 +248,7 @@ namespace Framework.Core.Editor
                 else
                 {
                     sri = new RefObjectInfo() { m_RefObjectGUID = sop.m_GUID, m_RefObjectAssetPath = referencedAssetPath };
+                    // Debug.Log($"--- New RefObjectInfo: {referencedAssetPath}");
                 }
 
                 sri.AddOrUpdateUserInfo(userGUID, id);
@@ -262,63 +257,57 @@ namespace Framework.Core.Editor
             }
 
             // step 3. create or update UserObj DB
-            if(File.Exists(userFilePath))
+            if(sopList.Length != 0)
             {
-                uoi = DeserializeUserInfo(userGUID);
+                if(File.Exists(userFilePath))
+                {
+                    uoi = DeserializeUserInfo(userGUID);
+                }
+                else
+                {
+                    uoi = new UserObjectInfo() { m_UserObjectGUID = userGUID, m_UserObjectAssetPath = AssetDatabase.GUIDToAssetPath(userGUID) };
+                    Debug.Log($"--- New UserObjectInfo: {uoi.m_UserObjectAssetPath}");
+                }
+
+                uoi.Clear();
+                foreach(var sop in sopList)
+                {
+                    if (string.IsNullOrEmpty(sop.m_GUID))
+                        continue;
+
+                    string referencedAssetPath = AssetDatabase.GUIDToAssetPath(sop.m_GUID);         // 被引用资源路径
+                    if (string.IsNullOrEmpty(referencedAssetPath))
+                        continue;       // 引用资源被删除可能失效
+
+                    long id = GetLocalID(sop);
+                    if(id == 0)
+                        continue;
+
+                    uoi.AddOrUpdateRefInfo(id, sop.m_GUID);
+                }
+                SerializeUserInfo(userGUID, uoi);
             }
             else
             {
-                uoi = new UserObjectInfo() { m_UserObjectGUID = userGUID, m_UserObjectAssetPath = AssetDatabase.GUIDToAssetPath(userGUID) };
+                if(File.Exists(userFilePath))
+                {
+                    File.Delete(userFilePath);
+                    File.Delete(userFilePath + ".meta");
+                }
             }
-
-            uoi.Clear();
-            foreach(var sop in sopList)
-            {
-                if (string.IsNullOrEmpty(sop.m_GUID))
-                    continue;
-
-                string referencedAssetPath = AssetDatabase.GUIDToAssetPath(sop.m_GUID);         // 被引用资源路径
-                if (string.IsNullOrEmpty(referencedAssetPath))
-                    continue;       // 引用资源被删除可能失效
-
-                long id = GetLocalID(sop);
-                if(id == 0)
-                    continue;
-
-                uoi.AddOrUpdateRefInfo(id, sop.m_GUID);
-            }
-            SerializeUserInfo(userGUID, uoi);
         }
 
         /// <summary>
-        /// 删除资源触发DB更新，把正在引用此资源的SoftObjectPath清空
-        /// </summary>
-        /// <param name="deletedAssetPath"></param>
-        static public bool DeleteAsset(string deletedAssetPath)
-        {
-            return InternalDeleteAsset(deletedAssetPath, true);
-        }
-
-        /// <summary>
-        /// 移动、改名触发DB更新
-        /// </summary>
-        /// <param name="newAssetPath"></param>
-        static public bool MoveAsset(string newAssetPath)
-        {
-            return InternalMoveAsset(newAssetPath, false);
-        }
-
-        /// <summary>
-        /// 被引用资源删除时触发引用资源更新数据(*.prefab, *.unity)
+        /// 被引用资源删除时触发引用资源更新数据
         /// </summary>
         /// <param name="deletedAssetPath"></param>
         /// <returns></returns>
-        static private bool InternalDeleteAsset(string deletedAssetPath, bool bDelete)
+        static private bool InternalDeleteAsset(string deletedAssetPath)
         {
             string guid = AssetDatabase.AssetPathToGUID(deletedAssetPath);
             bool isDirty = false;
 
-            // step 1. deal RefObject DB
+            // step 1. update RefObject DB
             string userFilePath = string.Format("{0}/{1}.json", s_UserObjectDBPath, guid);
             string refFilePath;
             if(File.Exists(userFilePath))
@@ -336,10 +325,10 @@ namespace Framework.Core.Editor
                     }
                 }
                 File.Delete(userFilePath);
-                isDirty = true;
+                File.Delete(userFilePath + ".meta");
             }
 
-            // step 2. deal UserObject DB
+            // step 2. update UserObject DB
             refFilePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, guid);
             if (File.Exists(refFilePath))
             {
@@ -368,116 +357,64 @@ namespace Framework.Core.Editor
                             sop.m_AssetPath = string.Empty;
 
                             UnityEditor.EditorUtility.SetDirty(userObj);
+                            isDirty = true;
                             break;
                         }
                     }
                 }
 
                 File.Delete(refFilePath);
-                isDirty = true;
+                File.Delete(refFilePath + ".meta");
             }
             return isDirty;
         }
 
-        static private bool InternalMoveAsset(string refObjectAssetPath, bool bDelete)
+        static private bool InternalMoveAsset(string movedAssetPath)
         {
-            string guid = AssetDatabase.AssetPathToGUID(refObjectAssetPath);
-
-            string filePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, guid);
-            if (!File.Exists(filePath))
+            //////////////////////////// movedAssetPath: 更新RefObject_DB            
+            string refGUID = AssetDatabase.AssetPathToGUID(movedAssetPath);
+            string refFilePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, refGUID);
+            
+            if(!File.Exists(refFilePath))
                 return false;
 
-            // deserialize redirector and update
-            RefObjectInfo sri = DeserializeSoftReference(guid);
-            sri.m_RefObjectGUID = guid;
-            sri.m_RefObjectAssetPath = refObjectAssetPath;
+            RefObjectInfo roi;
+            roi = DeserializeSoftReference(refGUID);
+            roi.m_RefObjectGUID = refGUID;
+            roi.m_RefObjectAssetPath = movedAssetPath;
+            SerializeSoftReference(refGUID, roi);
 
-            // 根据redirector记录的userInfo，逐个更新user data
-            List<string> removeList = new List<string>();
-            bool bModified = false;
-            foreach (var item in sri.m_UserInfoList)
+            bool isDirty = false;
+            foreach(var ui in roi.m_UserInfoList)
             {
-                RefObjectInfo.UserInfo userInfo = item.Value;
-
-                string userAssetPath = AssetDatabase.GUIDToAssetPath(userInfo.m_UserObjectGUID);
-                if (string.IsNullOrEmpty(userAssetPath))
-                {
-                    removeList.Add(item.Key);
+                string userFilePath = string.Format("{0}/{1}.json", s_UserObjectDBPath , ui.Value.m_UserObjectGUID);
+                if(!File.Exists(userFilePath))
                     continue;
-                }
 
-                Object userObject = AssetDatabase.LoadAssetAtPath<Object>(userAssetPath);       // 被删除资源的GUID仍会返回一个路径，需要加载判断资源是否真实存在
-                if (userObject == null)
+                UserObjectInfo uoi = DeserializeUserInfo(ui.Value.m_UserObjectGUID);
+                uoi.AddOrUpdateRefInfo(ui.Value.m_FileID, refGUID);
+                SerializeUserInfo(ui.Value.m_UserObjectGUID, uoi);
+
+                // update UserObj
+                GameObject userObj = AssetDatabase.LoadAssetAtPath<GameObject>(ui.Value.m_UserObjectAssetPath);
+                if(userObj != null)
                 {
-                    removeList.Add(item.Key);
-                    continue;       // 可能userAssetPath有值，但对应的资源已删除
-                }
-
-                // prefab，unity分开处理
-                if (userObject is GameObject)
-                { // GameObject
-                    bool bFind = false;
-                    SoftObjectPath[] sopList = ((GameObject)userObject).GetComponentsInChildren<SoftObjectPath>(true);
-                    foreach (var sop in sopList)
+                    SoftObjectPath[] sops = userObj.GetComponentsInChildren<SoftObjectPath>(true);
+                    foreach(var sop in sops)
                     {
-                        if (GetLocalID(sop) != userInfo.m_FileID)
+                        if(GetLocalID(sop) != ui.Value.m_FileID)
                             continue;
+                        sop.m_GUID = refGUID;
+                        sop.m_AssetPath = movedAssetPath.ToLower();
 
-                        sop.m_GUID = bDelete ? null : guid;
-                        sop.m_AssetPath = bDelete ? null : refObjectAssetPath.ToLower();
-
-                        UnityEditor.EditorUtility.SetDirty(userObject);
-                        bModified = true;
-                        bFind = true;
-
+                        UnityEditor.EditorUtility.SetDirty(userObj);
+                        isDirty = true;
                         break;
                     }
-
-                    if (!bFind)
-                    {
-                        removeList.Add(item.Key);
-                    }
-                }                
+                }
             }
-
-            // 移除已失效的记录
-            foreach (var r in removeList)
-            {
-                sri.m_UserInfoList.Remove(r);
-            }
-
-            if (bDelete)
-            {
-                // 保留记录不删除，以备debug
-                //AssetDatabase.DeleteAsset(filePath)
-                //AssetDatabase.Refresh();
-
-                SerializeSoftReference(guid, sri);
-            }
-            else
-            {
-                SerializeSoftReference(guid, sri);
-            }
-            return bModified;
+            return isDirty;
         }
-
-        static public void UnloadRefObject(string refObjectGUID, string userGUID, long fileID)
-        {
-            string filePath = string.Format("{0}/{1}.json", s_RefObjectDBPath, refObjectGUID);
-            if (!File.Exists(filePath))
-                return;
-
-            // deserialize redirector and update
-            RefObjectInfo sri = DeserializeSoftReference(refObjectGUID);
-            sri.m_RefObjectGUID = refObjectGUID;
-            sri.m_RefObjectAssetPath = AssetDatabase.GUIDToAssetPath(refObjectGUID);
-
-            sri.Remove(userGUID, fileID);
-
-            SerializeSoftReference(refObjectGUID, sri);
-        }
-
-
 
         private static RefObjectInfo DeserializeSoftReference(string filename)
         {
