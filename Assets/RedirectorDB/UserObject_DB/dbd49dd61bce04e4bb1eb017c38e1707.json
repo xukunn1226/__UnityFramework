@@ -1,0 +1,21 @@
+{
+  "m_UserObjectGUID": "dbd49dd61bce04e4bb1eb017c38e1707",
+  "m_UserObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/TestSoft.prefab",
+  "m_RefInfoList": {
+    "-2385830913515302333": {
+      "m_FileID": -2385830913515302333,
+      "m_RefObjectGUID": "bc14a199bfe85454c962b23acf9e9135",
+      "m_RefObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/Cube333.prefab"
+    },
+    "2127520844514257236": {
+      "m_FileID": 2127520844514257236,
+      "m_RefObjectGUID": "4821597d05f0b1b4d95f0ff8bbbba59c",
+      "m_RefObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/Plane1.prefab"
+    },
+    "5911553339366115662": {
+      "m_FileID": 5911553339366115662,
+      "m_RefObjectGUID": "80a096570f542f34fa55b850a52b8139",
+      "m_RefObjectAssetPath": "Assets/Application/SoftObject/Tests/SoftReference/Cube222.prefab"
+    }
+  }
+}
