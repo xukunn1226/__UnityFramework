@@ -105,23 +105,23 @@ namespace Framework.Gesture.Runtime
 
         protected override void ExecuteGestureReady()
         {
-            GestureEvents.Execute<IPinchHandler, PinchEventData>(gameObject, m_EventData, GestureEvents.ExecuteReady);
+            GestureEvents.ExecuteReady_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureStarted()
         {
-            GestureEvents.Execute<IPinchHandler, PinchEventData>(gameObject, m_EventData, GestureEvents.ExecuteStarted);
+            GestureEvents.ExecuteStarted_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureInProgress()
         {
-            GestureEvents.Execute<IPinchHandler, PinchEventData>(gameObject, m_EventData, GestureEvents.ExecuteProgress);
+            GestureEvents.ExecuteProgress_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureEnded()
         {
-            GestureEvents.Execute<IPinchHandler, PinchEventData>(gameObject, m_EventData, GestureEvents.ExecuteEnded);
+            GestureEvents.ExecuteEnded_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureFailed()
         {
-            GestureEvents.Execute<IPinchHandler, PinchEventData>(gameObject, m_EventData, GestureEvents.ExecuteFailed);
+            GestureEvents.ExecuteFailed_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
         }
     }
     

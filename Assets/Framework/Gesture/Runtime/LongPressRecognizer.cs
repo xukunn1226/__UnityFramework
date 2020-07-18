@@ -32,14 +32,11 @@ namespace Framework.Gesture.Runtime
             if(m_EventData.pointerCount != requiredPointerCount)
                 return RecognitionState.Failed;
 
-            if(m_EventData.ElapsedTime > Duration)
-            {
-                m_EventData.SetEventDataUsed(requiredPointerCount);         // 设置消息被使用的标志
-                return RecognitionState.Ended;
-            }
-
             if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) > MoveTolerance)
                 return RecognitionState.Failed;
+                
+            if(m_EventData.ElapsedTime > Duration)
+                return RecognitionState.Ended;
 
             return RecognitionState.InProgress;
         }
@@ -47,17 +44,17 @@ namespace Framework.Gesture.Runtime
         protected override void ExecuteGestureReady()
         {
             Debug.Log("LongPressRecognizer:     ---- Ready");
-            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, GestureEvents.ExecuteReady);
+            GestureEvents.ExecuteReady_Discrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureRecognized()
         {
             Debug.Log("LongPressRecognizer:     ---- Recognized");
-            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, GestureEvents.ExecuteRecognized);
+            GestureEvents.ExecuteReady_Discrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureFailed()
         {
             Debug.Log("LongPressRecognizer:     ---- Failed");
-            GestureEvents.Execute<ILongPressHandler, LongPressEventData>(gameObject, m_EventData, GestureEvents.ExecuteFailed);
+            GestureEvents.ExecuteFailed_Discrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
         }
     }    
     

@@ -83,27 +83,27 @@ namespace Framework.Gesture.Runtime
         protected override void ExecuteGestureReady()
         {
             Debug.Log($"ScreenDrag:      --- Ready      {m_EventData.DeltaMove}");
-            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteReady);
+            GestureEvents.ExecuteReady_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureStarted()
         {
             Debug.Log($"ScreenDrag:      --- Started      {m_EventData.DeltaMove}");
-            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteStarted);
+            GestureEvents.ExecuteStarted_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureInProgress()
         {
             Debug.Log($"ScreenDrag:      --- InProgress      {m_EventData.DeltaMove}");
-            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteProgress);
+            GestureEvents.ExecuteProgress_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureEnded()
         {
             Debug.Log($"ScreenDrag:      --- Ended      {m_EventData.DeltaMove}");
-            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteEnded);
+            GestureEvents.ExecuteEnded_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
         }
         protected override void ExecuteGestureFailed()
         {
             Debug.Log($"ScreenDrag:      --- Failed      {m_EventData.DeltaMove}");
-            GestureEvents.Execute<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData, GestureEvents.ExecuteFailed);
+            GestureEvents.ExecuteFailed_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
         }
     }
     

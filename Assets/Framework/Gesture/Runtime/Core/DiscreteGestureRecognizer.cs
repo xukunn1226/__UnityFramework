@@ -22,16 +22,21 @@ namespace Framework.Gesture.Runtime
                 case RecognitionState.InProgress:
                     State = OnProgress();                    
                     break;
-                case RecognitionState.Failed:               // 清空数据，重置状态Ready
+                // case RecognitionState.Failed:               // 清空数据，重置状态Ready
+                //     m_EventData.ClearPointerDatas();
+                //     State = RecognitionState.Ready;
+                //     break;
+                // case RecognitionState.Ended:                // 持续持有状态，设置used标志
+                //     m_EventData.SetEventDataUsed(requiredPointerCount);                    
+                //     if(m_EventData.pointerCount == 0)
+                //     {
+                //         State = RecognitionState.Ready;
+                //     }
+                //     break;
+                case RecognitionState.Failed:
+                case RecognitionState.Ended:
                     m_EventData.ClearPointerDatas();
                     State = RecognitionState.Ready;
-                    break;
-                case RecognitionState.Ended:                // 持续持有状态，设置used标志
-                    m_EventData.SetEventDataUsed(requiredPointerCount);                    
-                    if(m_EventData.pointerCount == 0)
-                    {
-                        State = RecognitionState.Ready;
-                    }
                     break;
             }
         }

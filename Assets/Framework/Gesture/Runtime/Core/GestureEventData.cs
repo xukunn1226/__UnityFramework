@@ -70,6 +70,17 @@ namespace Framework.Gesture.Runtime
 
         public int pointerCount { get { return m_PointerData.Count; } }
 
+        public int GetUnusedPointerCount()
+        {
+            int count = 0;
+            for(int i = 0, maxCount = m_PointerData.Count; i < maxCount; ++i)
+            {
+                if(!m_PointerData[i].used)
+                    ++count;
+            }
+            return count;
+        }
+
         public Vector2 GetAveragePressPosition(int count)
         {            
             return AverageVector(GetPressPosition, count);

@@ -39,3 +39,46 @@
 
 # Usage
 * Replace StandaloneInputModule with MyStandaloneInputModule on EventSystem
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+
+# Reference
+## GestureEventData
+手势数据，PointerEventData的集合
+## Properties
+Proprety | Description
+--|--
+Position|当前位置（屏幕坐标），所有PointerEventData.position的平均值
+PressPosition|起始位置（屏幕坐标），所有PointerEventData.pressPosition的平均值
+StartTime|起始时间
+ElapsedTime|手势开始后的时长
+
+## IDiscreteGestureHandler
+Function | Description
+--|--
+OnGestureReady|
+OnGestureRecognized|
+OnGestureFailed|
+
+## IContinuousGestureHandler
+Function | Description
+--|--
+OnGestureReady|
+OnGestureStarted|
+OnGestureProgress|
+OnGestureEnded|
+OnGestureFailed|
+
+
+## GestureEvent
+Send specified event to gameobject
+
+
+
+
+# Extension
+1、Customize GestureEventData
