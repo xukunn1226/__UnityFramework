@@ -8,6 +8,12 @@ namespace Framework.Gesture.Runtime
 {
     public class MyStandaloneInputModule : StandaloneInputModule
     {
+        private GameObject m_CurrentSelected;           // 自定义的当前选中对象，不同于EventSystem.m_CurrentSelected
+        public GameObject currentSelectedGameObject
+        {
+            get { return m_CurrentSelected; } 
+        }
+
         public override void Process()
         {
             base.Process();
@@ -65,6 +71,12 @@ namespace Framework.Gesture.Runtime
             {
                 RemoveUnusedPointerEventData(ref unusedPointerData, eventData.pointerId);
             }
+
+            var mouseData = GetMousePointerEventData(0);
+            if(IsPointerOverUI(mouseData.GetButtonState(PointerEventData.InputButton.Middle).eventData.buttonData))
+            {
+                Debug.Log($"------------------");
+            }
         }
 
         private void AddUnusedPointerEventData(ref Dictionary<int, PointerEventData> unusedPointerData, PointerEventData eventData)
@@ -87,6 +99,10 @@ namespace Framework.Gesture.Runtime
                 return false;
 
             return eventData.pointerCurrentRaycast.module is GraphicRaycaster;
+        }
+
+        public void SetSelectedGameObject(GameObject selected)
+        {
         }
     }
 }

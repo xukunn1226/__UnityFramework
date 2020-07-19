@@ -43,15 +43,15 @@ namespace Framework.Gesture.Runtime
             {
                 InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
                 m_EventData.PointerEventData = m_UnusedPointerData;
-                m_Pointer1 = m_EventData.PointerEventData[0];
-                m_Pointer2 = m_EventData.PointerEventData[1];
+                m_Pointer1 = m_EventData[0];
+                m_Pointer2 = m_EventData[1];
             }
             base.InternalUpdate();
         }
 
         protected override bool CanBegin()
         {
-            if(m_EventData.pointerCount < requiredPointerCount)
+            if(m_EventData.pointerCount < requiredPointerCount)         // 允许pointerCount >= requiredPointerCount，后续pointer不生效
                 return false;
 
             if(m_Pointer1 == null || m_Pointer2 == null)

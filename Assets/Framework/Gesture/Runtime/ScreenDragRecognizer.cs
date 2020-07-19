@@ -54,6 +54,7 @@ namespace Framework.Gesture.Runtime
             if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) < MoveTolerance)
                 return false;
 
+            // todo: EventSystem.currentSelectedGameObject逻辑不符合需求，适合UI内部使用，MyStandaloneInputModule扩展currentSelectedGameObject使用
             if(EventSystem.current.currentSelectedGameObject != null && 
                EventSystem.current.currentSelectedGameObject == m_EventData[0].pointerPressRaycast.gameObject)
                 return false;
