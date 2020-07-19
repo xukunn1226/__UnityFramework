@@ -40,22 +40,6 @@ namespace Framework.Gesture.Runtime
 
             return RecognitionState.InProgress;
         }
-
-        protected override void ExecuteGestureReady()
-        {
-            Debug.Log("LongPressRecognizer:     ---- Ready");
-            GestureEvents.ExecuteReady_Discrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureRecognized()
-        {
-            Debug.Log("LongPressRecognizer:     ---- Recognized");
-            GestureEvents.ExecuteReady_Discrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureFailed()
-        {
-            Debug.Log("LongPressRecognizer:     ---- Failed");
-            GestureEvents.ExecuteFailed_Discrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
-        }
     }    
     
     public class LongPressEventData : GestureEventData

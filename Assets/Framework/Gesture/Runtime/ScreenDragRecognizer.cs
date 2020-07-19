@@ -53,6 +53,10 @@ namespace Framework.Gesture.Runtime
 
             if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) < MoveTolerance)
                 return false;
+
+            if(EventSystem.current.currentSelectedGameObject != null && 
+               EventSystem.current.currentSelectedGameObject == m_EventData[0].pointerPressRaycast.gameObject)
+                return false;
             
             return true;
         }
@@ -74,51 +78,19 @@ namespace Framework.Gesture.Runtime
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
             m_EventData.DeltaMove = m_EventData.Position - m_EventData.LastPos;
             m_EventData.LastPos = m_EventData.Position;
-            m_EventData.SetEventDataUsed(requiredPointerCount);
+            // m_EventData.SetEventDataUsed(requiredPointerCount);
+
+            // Debug.LogWarning($"{m_EventData.DeltaMove}");
 
             ExecuteGestureInProgress();
             return RecognitionState.InProgress;
-        }
-        
-        protected override void ExecuteGestureReady()
-        {
-            Debug.Log($"ScreenDrag:      --- Ready      {m_EventData.DeltaMove}");
-            GestureEvents.ExecuteReady_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureStarted()
-        {
-            Debug.Log($"ScreenDrag:      --- Started      {m_EventData.DeltaMove}");
-            GestureEvents.ExecuteStarted_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureInProgress()
-        {
-            Debug.Log($"ScreenDrag:      --- InProgress      {m_EventData.DeltaMove}");
-            GestureEvents.ExecuteProgress_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureEnded()
-        {
-            Debug.Log($"ScreenDrag:      --- Ended      {m_EventData.DeltaMove}");
-            GestureEvents.ExecuteEnded_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureFailed()
-        {
-            Debug.Log($"ScreenDrag:      --- Failed      {m_EventData.DeltaMove}");
-            GestureEvents.ExecuteFailed_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
         }
     }
     
     public class ScreenDragEventData : GestureEventData
     {
-        private Vector2 m_DeltaMove;
-        public Vector2 DeltaMove
-        {
-            get { return m_DeltaMove; }
-            internal set
-            {
-                m_DeltaMove = value;
-            }
-        }
-
+        public Vector2 DeltaMove { get; internal set; }
+        public Vector2 Speed { get { return DeltaMove / Time.deltaTime; } }
         internal Vector2 LastPos;
 
         public override string ToString()
@@ -126,6 +98,7 @@ namespace Framework.Gesture.Runtime
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(base.ToString());
             sb.AppendLine($"<b>DeltaMove</b>: {DeltaMove}");
+            sb.AppendLine($"<b>Speed</b>: {Speed}");
 
             return sb.ToString();
         }

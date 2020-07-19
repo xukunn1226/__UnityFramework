@@ -56,10 +56,31 @@ namespace Framework.Gesture.Runtime
             }
         }
         
-        protected abstract void ExecuteGestureReady();
-        protected abstract void ExecuteGestureStarted();
-        protected abstract void ExecuteGestureInProgress();
-        protected abstract void ExecuteGestureEnded();
-        protected abstract void ExecuteGestureFailed();
+
+        protected void ExecuteGestureReady()
+        {
+            Debug.Log($"ContinuousGestureRecognizer:     ---- Ready       {typeof(T).Name} -- {typeof(K).Name}");
+            GestureEvents.ExecuteReady_Continous<T, K>(gameObject, m_EventData);
+        }
+        protected void ExecuteGestureStarted()
+        {
+            Debug.Log($"ContinuousGestureRecognizer:     ---- Started       {typeof(T).Name} -- {typeof(K).Name}");
+            GestureEvents.ExecuteStarted_Continous<T, K>(gameObject, m_EventData);
+        }
+        protected void ExecuteGestureInProgress()
+        {
+            Debug.Log($"ContinuousGestureRecognizer:     ---- InProgress       {typeof(T).Name} -- {typeof(K).Name}");
+            GestureEvents.ExecuteProgress_Continous<T, K>(gameObject, m_EventData);
+        }
+        protected void ExecuteGestureEnded()
+        {
+            Debug.Log($"ContinuousGestureRecognizer:     ---- Ended       {typeof(T).Name} -- {typeof(K).Name}");
+            GestureEvents.ExecuteEnded_Continous<T, K>(gameObject, m_EventData);
+        }
+        protected void ExecuteGestureFailed()
+        {
+            Debug.Log($"ContinuousGestureRecognizer:     ---- Failed       {typeof(T).Name} -- {typeof(K).Name}");
+            GestureEvents.ExecuteFailed_Continous<T, K>(gameObject, m_EventData);
+        }
     }
 }

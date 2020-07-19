@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace Framework.Gesture.Runtime
 {
     [RequireComponent(typeof(MyStandaloneInputModule))]
-    public class PinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>
+    public class ScreenPinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>
     {
         public float MinDOT = -0.7f;
         public float MinDistance = 5;
@@ -101,27 +101,6 @@ namespace Framework.Gesture.Runtime
         {
             float dot = Vector2.Dot( pointer1.delta.normalized, pointer2.delta.normalized );
             return dot < minDOT;
-        }
-
-        protected override void ExecuteGestureReady()
-        {
-            GestureEvents.ExecuteReady_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureStarted()
-        {
-            GestureEvents.ExecuteStarted_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureInProgress()
-        {
-            GestureEvents.ExecuteProgress_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureEnded()
-        {
-            GestureEvents.ExecuteEnded_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
-        }
-        protected override void ExecuteGestureFailed()
-        {
-            GestureEvents.ExecuteFailed_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
         }
     }
     
