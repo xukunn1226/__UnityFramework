@@ -22,7 +22,10 @@
 	asset-bundle-analyzer   https://github.com/faelenor/asset-bundle-analyzer   通过py脚本分析Bundles信息，并存储至SQLite
 	DB Browser for SQLite 	https://sqlitebrowser.org/  SQLite查看工具
 * Inspector Field for Scene Asset  https://answers.unity.com/questions/242794/inspector-field-for-scene-asset.html?_ga=2.221217361.81844548.1594053424-350901822.1561524296
-* 手势模块：悬停
+* 手势模块：
+	* 悬停
+	* MyStandalongInputModule添加自定义当前选中对象
+	* 思考:如何在PC上实现Pinch，见ProcessUnusedMouseEventData
 
 * 监控所有的特效播放，统一特效加载接口
 
