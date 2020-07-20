@@ -73,6 +73,7 @@ namespace Framework.Gesture.Runtime
             }
             else
             {
+                // 模拟ScreenPinch
                 if(!IsPointerOverUI(eventData))
                 {
                     if(Input.mouseScrollDelta.y != 0)

@@ -76,7 +76,7 @@ namespace Framework.Gesture.Runtime
 
         protected override RecognitionState OnProgress()
         {
-            if(m_EventData.pointerCount != requiredPointerCount)
+            if(m_EventData.pointerCount < requiredPointerCount)
                 return RecognitionState.Ended;
 
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
@@ -85,13 +85,15 @@ namespace Framework.Gesture.Runtime
             float newDelta = (curGap - m_EventData.Gap) * DeltaScale;
             m_EventData.Gap = curGap;
 
-            m_EventData.Delta = 0;
-            if(MovedInOppositeDirections(m_Pointer1, m_Pointer2, MinDOT))
-            {
-                m_EventData.Delta = newDelta;
-            }
+            m_EventData.Delta = newDelta;
 
-            m_EventData.SetEventDataUsed(requiredPointerCount);
+            // m_EventData.Delta = 0;
+            // if(MovedInOppositeDirections(m_Pointer1, m_Pointer2, MinDOT))
+            // {
+            //     m_EventData.Delta = newDelta;
+            // }
+
+            // m_EventData.SetEventDataUsed(requiredPointerCount);
             ExecuteGestureInProgress();
 
             return RecognitionState.InProgress;
