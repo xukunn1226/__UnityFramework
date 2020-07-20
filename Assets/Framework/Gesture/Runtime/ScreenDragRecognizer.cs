@@ -11,6 +11,9 @@ namespace Framework.Gesture.Runtime
     {
         public float MoveTolerance = 5.0f;
 
+        [Range(0.1f, 5f)]
+        public float Scale = 1;
+
         private MyStandaloneInputModule m_InputModule;
         private MyStandaloneInputModule InputModule
         {
@@ -77,7 +80,7 @@ namespace Framework.Gesture.Runtime
                 return RecognitionState.Ended;
 
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
-            m_EventData.DeltaMove = m_EventData.Position - m_EventData.LastPos;
+            m_EventData.DeltaMove = (m_EventData.Position - m_EventData.LastPos) * Scale;
             m_EventData.LastPos = m_EventData.Position;
             // m_EventData.SetEventDataUsed(requiredPointerCount);
 

@@ -71,11 +71,15 @@ namespace Framework.Gesture.Runtime
             {
                 RemoveUnusedPointerEventData(ref unusedPointerData, eventData.pointerId);
             }
-
-            var mouseData = GetMousePointerEventData(0);
-            if(IsPointerOverUI(mouseData.GetButtonState(PointerEventData.InputButton.Middle).eventData.buttonData))
+            else
             {
-                Debug.Log($"------------------");
+                if(!IsPointerOverUI(eventData))
+                {
+                    if(Input.mouseScrollDelta.y != 0)
+                    {
+                        Debug.Log($"------------------: {Input.mouseScrollDelta.y}");
+                    }
+                }
             }
         }
 
