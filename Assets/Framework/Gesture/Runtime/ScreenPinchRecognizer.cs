@@ -41,7 +41,9 @@ namespace Framework.Gesture.Runtime
         {
             if(InputModule != null)
             {
+                InputModule.m_isPinchFetch = true;      // ugly code
                 InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
+                InputModule.m_isPinchFetch = false;
                 m_EventData.PointerEventData = m_UnusedPointerData;
                 m_Pointer1 = m_EventData[0];
                 m_Pointer2 = m_EventData[1];
@@ -51,6 +53,7 @@ namespace Framework.Gesture.Runtime
 
         protected override bool CanBegin()
         {
+            // Debug.Log($"CanBegin1111: {Time.frameCount}");
             if(m_EventData.pointerCount < requiredPointerCount)         // 允许pointerCount >= requiredPointerCount，后续pointer不生效
                 return false;
 
@@ -60,9 +63,12 @@ namespace Framework.Gesture.Runtime
             float startGap = Vector2.SqrMagnitude(m_Pointer1.pressPosition - m_Pointer2.pressPosition);
             float curGap = Vector2.SqrMagnitude(m_Pointer1.position - m_Pointer2.position);
 
+#if UNITY_IOS || UNITY_ANDROID
             if(Mathf.Abs(startGap - curGap) < MinDistance * MinDistance)
                 return false;
+#endif
 
+            Debug.Log($"CanBegin2222: {Time.frameCount}");
             return true;
         }
 
@@ -72,12 +78,18 @@ namespace Framework.Gesture.Runtime
             
             m_EventData.Gap = Vector2.Distance(m_Pointer1.position, m_Pointer2.position);
             m_EventData.Delta = 0;
+
+            Debug.Log($"OnBegin: {Time.frameCount}      {m_EventData.Gap}   {m_EventData.Position}");
         }
 
         protected override RecognitionState OnProgress()
         {
+            Debug.Log($"OnProgress: {Time.frameCount}");
             if(m_EventData.pointerCount < requiredPointerCount)
+            {
+                Debug.Log($"OnProgress.Ended: {Time.frameCount}");
                 return RecognitionState.Ended;
+            }
 
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
             

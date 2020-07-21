@@ -8,18 +8,42 @@ namespace Framework.Gesture.Runtime
 {
     public class MyStandaloneInputModule : StandaloneInputModule
     {
-        private GameObject m_CurrentSelected;           // 自定义的当前选中对象，不同于EventSystem.m_CurrentSelected
-        public GameObject currentSelectedGameObject
-        {
-            get { return m_CurrentSelected; } 
-        }
+        // private GameObject m_CurrentSelected;           // 自定义的当前选中对象，不同于EventSystem.m_CurrentSelected
+        // public GameObject currentSelectedGameObject
+        // {
+        //     get { return m_CurrentSelected; } 
+        // }
+
+        private bool m_wasMouseScrolling;
+        private bool m_isMouseScrolling;
+        public bool m_isPinchFetch;
 
         public override void Process()
         {
             base.Process();
 
+            if (!eventSystem.isFocused && ShouldIgnoreEventsOnNoFocus())
+                return;
+
             // 为了整合IEventSystemHandler和Gesture，消息优先IEventSystemHandler处理，然后是IGestureHandler
             GestureRecognizerManager.Update();
+        }
+
+        private bool ShouldIgnoreEventsOnNoFocus()
+        {
+            switch (SystemInfo.operatingSystemFamily)
+            {
+                case OperatingSystemFamily.Windows:
+                case OperatingSystemFamily.Linux:
+                case OperatingSystemFamily.MacOSX:
+#if UNITY_EDITOR
+                    if (UnityEditor.EditorApplication.isRemoteConnected)
+                        return false;
+#endif
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         // collection of PointerEventData accord with:
@@ -58,28 +82,49 @@ namespace Framework.Gesture.Runtime
         private void ProcessUnusedMouseEventData(ref Dictionary<int, PointerEventData> unusedPointerData)
         {
             PointerEventData eventData = GetLastPointerEventData(kMouseLeftId);
-            bool pressed = input.GetMouseButtonDown(0);
-            bool released = input.GetMouseButtonUp(0);
-            if(pressed)
+
+            if(m_isPinchFetch)         // ugly code, Pinch只需监听mouse scroll
             {
-                if(!IsPointerOverUI(eventData) && !eventData.used)
+                m_wasMouseScrolling = m_isMouseScrolling;
+                if(Input.mouseScrollDelta.y != 0)
                 {
-                    AddUnusedPointerEventData(ref unusedPointerData, eventData);
+                    m_isMouseScrolling = true;
                 }
-            }
-            else if(released || eventData.used)
-            {
-                RemoveUnusedPointerEventData(ref unusedPointerData, eventData.pointerId);
+                else
+                {
+                    m_isMouseScrolling = false;                
+                }
+
+                if(m_isMouseScrolling)
+                {
+                    Debug.Log($"begin scroll: {Time.frameCount}");
+                    if(!IsPointerOverUI(eventData))
+                    {
+                        AddUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseLeftId));
+                        AddUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseRightId));
+                    }
+                }
+                if(m_wasMouseScrolling && !m_isMouseScrolling)
+                {
+                    Debug.LogWarning($"end scroll: {Time.frameCount}");
+                    RemoveUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseLeftId).pointerId);
+                    RemoveUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseRightId).pointerId);
+                }                
             }
             else
-            {
-                // 模拟ScreenPinch
-                if(!IsPointerOverUI(eventData))
+            {                
+                bool pressed = input.GetMouseButtonDown(0);
+                bool released = input.GetMouseButtonUp(0);
+                if(pressed)
                 {
-                    if(Input.mouseScrollDelta.y != 0)
+                    if(!IsPointerOverUI(eventData) && !eventData.used)
                     {
-                        Debug.Log($"------------------: {Input.mouseScrollDelta.y}");
+                        AddUnusedPointerEventData(ref unusedPointerData, eventData);
                     }
+                }
+                else if(released || eventData.used)
+                {
+                    RemoveUnusedPointerEventData(ref unusedPointerData, eventData.pointerId);
                 }
             }
         }
@@ -88,6 +133,8 @@ namespace Framework.Gesture.Runtime
         {
             if(unusedPointerData.ContainsKey(eventData.pointerId))
                 return;
+            
+            Debug.LogWarning($"Add: {eventData.pointerId}   {Time.frameCount}");
             unusedPointerData.Add(eventData.pointerId, eventData);
         }
 
@@ -95,6 +142,8 @@ namespace Framework.Gesture.Runtime
         {
             if(!unusedPointerData.ContainsKey(id))
                 return;
+
+            Debug.LogError($"Remove: {id}   {Time.frameCount}");
             unusedPointerData.Remove(id);
         }
 

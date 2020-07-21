@@ -59,17 +59,17 @@ namespace Framework.Gesture.Runtime
         
         protected void ExecuteGestureReady()
         {
-            Debug.Log($"DiscreteGestureRecognizer:     ---- Ready       {typeof(T).Name} -- {typeof(K).Name}");
+            // Debug.Log($"DiscreteGestureRecognizer:     ---- Ready       {typeof(T).Name} -- {typeof(K).Name}");
             GestureEvents.ExecuteReady_Discrete<T, K>(gameObject, m_EventData);
         }
         protected void ExecuteGestureRecognized()
         {
-            Debug.Log($"DiscreteGestureRecognizer:     ---- Recognized       {typeof(T).Name} -- {typeof(K).Name}");
+            // Debug.Log($"DiscreteGestureRecognizer:     ---- Recognized       {typeof(T).Name} -- {typeof(K).Name}");
             GestureEvents.ExecuteRecognized_Discrete<T, K>(gameObject, m_EventData);
         }
         protected void ExecuteGestureFailed()
         {
-            Debug.Log($"DiscreteGestureRecognizer:     ---- Failed       {typeof(T).Name} -- {typeof(K).Name}");
+            // Debug.Log($"DiscreteGestureRecognizer:     ---- Failed       {typeof(T).Name} -- {typeof(K).Name}");
             GestureEvents.ExecuteFailed_Discrete<T, K>(gameObject, m_EventData);
         }
     }

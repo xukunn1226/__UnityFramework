@@ -21,7 +21,7 @@ namespace Framework.Gesture.Runtime
                     break;
                 case RecognitionState.Started:
                     State = RecognitionState.InProgress;
-                    OnProgress();
+                    State = OnProgress();
                     break;
                 case RecognitionState.InProgress:
                     State = OnProgress();
@@ -59,27 +59,27 @@ namespace Framework.Gesture.Runtime
 
         protected void ExecuteGestureReady()
         {
-            Debug.Log($"ContinuousGestureRecognizer:     ---- Ready       {typeof(T).Name} -- {typeof(K).Name}");
+            // Debug.Log($"ContinuousGestureRecognizer:     ---- Ready   {Time.frameCount}    {typeof(T).Name} -- {typeof(K).Name}");
             GestureEvents.ExecuteReady_Continous<T, K>(gameObject, m_EventData);
         }
         protected void ExecuteGestureStarted()
         {
-            Debug.Log($"ContinuousGestureRecognizer:     ---- Started       {typeof(T).Name} -- {typeof(K).Name}");
+            // Debug.Log($"ContinuousGestureRecognizer:     ---- Started    {Time.frameCount}   {typeof(T).Name} -- {typeof(K).Name}");
             GestureEvents.ExecuteStarted_Continous<T, K>(gameObject, m_EventData);
         }
         protected void ExecuteGestureInProgress()
         {
-            Debug.Log($"ContinuousGestureRecognizer:     ---- InProgress       {typeof(T).Name} -- {typeof(K).Name}");
+            // Debug.Log($"ContinuousGestureRecognizer:     ---- InProgress   {Time.frameCount}    {typeof(T).Name} -- {typeof(K).Name}");
             GestureEvents.ExecuteProgress_Continous<T, K>(gameObject, m_EventData);
         }
         protected void ExecuteGestureEnded()
         {
-            Debug.Log($"ContinuousGestureRecognizer:     ---- Ended       {typeof(T).Name} -- {typeof(K).Name}");
+            // Debug.Log($"ContinuousGestureRecognizer:     ---- Ended   {Time.frameCount}    {typeof(T).Name} -- {typeof(K).Name}");
             GestureEvents.ExecuteEnded_Continous<T, K>(gameObject, m_EventData);
         }
         protected void ExecuteGestureFailed()
         {
-            Debug.Log($"ContinuousGestureRecognizer:     ---- Failed       {typeof(T).Name} -- {typeof(K).Name}");
+            // Debug.Log($"ContinuousGestureRecognizer:     ---- Failed    {Time.frameCount}   {typeof(T).Name} -- {typeof(K).Name}");
             GestureEvents.ExecuteFailed_Continous<T, K>(gameObject, m_EventData);
         }
     }
