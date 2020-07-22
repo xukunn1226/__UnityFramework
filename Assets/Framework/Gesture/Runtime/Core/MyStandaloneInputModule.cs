@@ -16,6 +16,8 @@ namespace Framework.Gesture.Runtime
 
         private bool m_wasMouseScrolling;
         private bool m_isMouseScrolling;
+        [System.NonSerialized][HideInInspector]
+        public float m_MouseScrollingDelta;
         public bool m_isPinchFetch;
 
         public override void Process()
@@ -94,10 +96,10 @@ namespace Framework.Gesture.Runtime
                 {
                     m_isMouseScrolling = false;                
                 }
+                m_MouseScrollingDelta = Input.mouseScrollDelta.y;
 
                 if(m_isMouseScrolling)
                 {
-                    Debug.Log($"begin scroll: {Time.frameCount}");
                     if(!IsPointerOverUI(eventData))
                     {
                         AddUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseLeftId));
@@ -106,7 +108,6 @@ namespace Framework.Gesture.Runtime
                 }
                 if(m_wasMouseScrolling && !m_isMouseScrolling)
                 {
-                    Debug.LogWarning($"end scroll: {Time.frameCount}");
                     RemoveUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseLeftId).pointerId);
                     RemoveUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseRightId).pointerId);
                 }                
@@ -134,7 +135,6 @@ namespace Framework.Gesture.Runtime
             if(unusedPointerData.ContainsKey(eventData.pointerId))
                 return;
             
-            Debug.LogWarning($"Add: {eventData.pointerId}   {Time.frameCount}");
             unusedPointerData.Add(eventData.pointerId, eventData);
         }
 
@@ -143,7 +143,6 @@ namespace Framework.Gesture.Runtime
             if(!unusedPointerData.ContainsKey(id))
                 return;
 
-            Debug.LogError($"Remove: {id}   {Time.frameCount}");
             unusedPointerData.Remove(id);
         }
 

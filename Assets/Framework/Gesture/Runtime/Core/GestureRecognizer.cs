@@ -9,7 +9,7 @@ using UnityEditor;
 namespace Framework.Gesture.Runtime
 {
     public abstract class GestureRecognizer : MonoBehaviour
-    {
+    {        
         public enum RecognitionState
         {
             Ready,
@@ -53,12 +53,6 @@ namespace Framework.Gesture.Runtime
             set { m_RequiredPointerCount = value; }
         }
         
-        protected virtual void OnStateChanged()
-        {
-            RaiseEvent();
-        }
-        protected abstract void RaiseEvent();
-
         protected virtual void OnEnable()
         {
             GestureRecognizerManager.AddRecognizer(this);
@@ -68,8 +62,11 @@ namespace Framework.Gesture.Runtime
         {
             GestureRecognizerManager.RemoveRecognizer(this);
         }
-
-        // 消息处理优先级的缘由，忽略Update，由GestureRecognizerManager统一处理
+        protected virtual void OnStateChanged()
+        {
+            RaiseEvent();
+        }
+        protected abstract void RaiseEvent();
         internal abstract void InternalUpdate();
     }
 
@@ -106,7 +103,35 @@ namespace Framework.Gesture.Runtime
 
         protected abstract RecognitionState OnProgress();
         protected virtual void OnEnded() {}
-        protected virtual void OnFailed() {}        
+        protected virtual void OnFailed() {}
+
+        // 消息处理优先级的缘由，忽略Update，由GestureRecognizerManager统一处理
+        internal override void InternalUpdate()
+        {
+            if(State == RecognitionState.Ready)
+            {
+                if(CanBegin())
+                {
+                    OnBegin();
+                    State = RecognitionState.Started;
+                }
+            }
+            
+            if(State == RecognitionState.Started)
+                State = RecognitionState.InProgress;
+
+            switch(State)
+            {
+                case RecognitionState.InProgress:
+                    State = OnProgress();
+                    break;
+                case RecognitionState.Failed:
+                case RecognitionState.Ended:
+                    m_EventData.ClearPointerDatas();
+                    State = RecognitionState.Ready;
+                    break;
+            }
+        }   
     }
 
 

@@ -6,7 +6,7 @@ using System;
 
 namespace Framework.Gesture.Runtime
 {
-    public class GestureEventTrigger : MonoBehaviour, ILongPressHandler, IPinchHandler
+    public class GestureEventTrigger : MonoBehaviour, ILongPressHandler, IPinchHandler, IScreenDragHandler
     {
         [Serializable]
         public class GestureTriggerEvent : UnityEvent<GestureEventData>
@@ -53,24 +53,9 @@ namespace Framework.Gesture.Runtime
             }
         }
 
-        public void OnGestureReady(LongPressEventData eventData)
-        {
-            Execute(GestureEventTriggerType.LongPressReady, eventData);
-        }
-
         public void OnGestureRecognized(LongPressEventData eventData)
         {
             Execute(GestureEventTriggerType.LongPressRecognized, eventData);
-        }
-
-        public void OnGestureFailed(LongPressEventData eventData)
-        {
-            Execute(GestureEventTriggerType.LongPressFailed, eventData);
-        }
-
-        public void OnGestureReady(PinchEventData eventData)
-        {
-            Execute(GestureEventTriggerType.PinchReady, eventData);
         }
 
         public void OnGestureStarted(PinchEventData eventData)
@@ -91,6 +76,26 @@ namespace Framework.Gesture.Runtime
         public void OnGestureFailed(PinchEventData eventData)
         {
             Execute(GestureEventTriggerType.PinchFailed, eventData);
+        }
+
+        public void OnGestureStarted(ScreenDragEventData eventData)
+        {
+            Execute(GestureEventTriggerType.ScreenDragStarted, eventData);
+        }
+
+        public void OnGestureProgress(ScreenDragEventData eventData)
+        {
+            Execute(GestureEventTriggerType.ScreenDragInProgress, eventData);
+        }
+
+        public void OnGestureEnded(ScreenDragEventData eventData)
+        {
+            Execute(GestureEventTriggerType.ScreenDragEnded, eventData);
+        }
+
+        public void OnGestureFailed(ScreenDragEventData eventData)
+        {
+            Execute(GestureEventTriggerType.ScreenDragFailed, eventData);
         }
     }
 }

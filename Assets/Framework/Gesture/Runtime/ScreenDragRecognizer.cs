@@ -38,6 +38,7 @@ namespace Framework.Gesture.Runtime
 
         internal override void InternalUpdate()
         {
+            // collect gesture event data
             if(InputModule != null)
             {
                 InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
@@ -86,7 +87,7 @@ namespace Framework.Gesture.Runtime
 
             // Debug.LogWarning($"{m_EventData.DeltaMove}");
 
-            ExecuteGestureInProgress();
+            GestureEvents.ExecuteProgress_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
             return RecognitionState.InProgress;
         }
     }

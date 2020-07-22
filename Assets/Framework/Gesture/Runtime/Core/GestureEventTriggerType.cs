@@ -6,18 +6,16 @@ namespace Framework.Gesture.Runtime
 {
     public enum GestureEventTriggerType
     {
-        LongPressReady          = 0,
-        LongPressRecognized     = 1,
-        LongPressFailed         = 2,
+        LongPressRecognized     = 0,
         
-        PinchReady              = 3,
-        PinchStarted            = 4,
-        PinchInProgress         = 5,
-        PinchEnded              = 6,
-        PinchFailed             = 7,
+        PinchStarted            = 1,
+        PinchInProgress         = 2,
+        PinchEnded              = 3,
+        PinchFailed             = 4,
 
-        ScreenDragReady         = 8,
-        ScreenDragRecognized    = 9,
-        ScreenDragFailed        = 10,
+        ScreenDragStarted       = 5,
+        ScreenDragInProgress    = 6,
+        ScreenDragEnded         = 7,
+        ScreenDragFailed        = 8,
     }
 }

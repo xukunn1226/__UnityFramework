@@ -10,7 +10,7 @@ namespace Framework.Gesture.Runtime
     [RequireComponent(typeof(MyStandaloneInputModule))]
     public class ScreenPinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>
     {
-        public float MinDOT = -0.7f;
+        // public float MinDOT = -0.7f;
         public float MinDistance = 5;
         public float DeltaScale = 1.0f;
 
@@ -37,12 +37,16 @@ namespace Framework.Gesture.Runtime
         private PointerEventData m_Pointer1;
         private PointerEventData m_Pointer2;
 
+        private float m_MouseScrollingDelta;
+
         internal override void InternalUpdate()
         {
+            // collect gesture event data
             if(InputModule != null)
             {
                 InputModule.m_isPinchFetch = true;      // ugly code
                 InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
+                m_MouseScrollingDelta = InputModule.m_MouseScrollingDelta;
                 InputModule.m_isPinchFetch = false;
                 m_EventData.PointerEventData = m_UnusedPointerData;
                 m_Pointer1 = m_EventData[0];
@@ -53,7 +57,6 @@ namespace Framework.Gesture.Runtime
 
         protected override bool CanBegin()
         {
-            // Debug.Log($"CanBegin1111: {Time.frameCount}");
             if(m_EventData.pointerCount < requiredPointerCount)         // 允许pointerCount >= requiredPointerCount，后续pointer不生效
                 return false;
 
@@ -68,7 +71,7 @@ namespace Framework.Gesture.Runtime
                 return false;
 #endif
 
-            Debug.Log($"CanBegin2222: {Time.frameCount}");
+            // Debug.Log($"CanBegin2222: {Time.frameCount}");
             return true;
         }
 
@@ -79,15 +82,14 @@ namespace Framework.Gesture.Runtime
             m_EventData.Gap = Vector2.Distance(m_Pointer1.position, m_Pointer2.position);
             m_EventData.Delta = 0;
 
-            Debug.Log($"OnBegin: {Time.frameCount}      {m_EventData.Gap}   {m_EventData.Position}");
+            // Debug.Log($"OnBegin: {Time.frameCount}      {m_EventData.Gap}   {m_EventData.Position}");
         }
 
         protected override RecognitionState OnProgress()
         {
-            Debug.Log($"OnProgress: {Time.frameCount}");
             if(m_EventData.pointerCount < requiredPointerCount)
             {
-                Debug.Log($"OnProgress.Ended: {Time.frameCount}");
+                // Debug.Log($"OnProgress.Ended: {Time.frameCount}");
                 return RecognitionState.Ended;
             }
 
@@ -97,7 +99,9 @@ namespace Framework.Gesture.Runtime
             float newDelta = (curGap - m_EventData.Gap) * DeltaScale;
             m_EventData.Gap = curGap;
 
-            m_EventData.Delta = newDelta;
+            m_EventData.Delta = Input.mousePresent ? m_MouseScrollingDelta * DeltaScale : newDelta;
+
+            // Debug.Log($"OnProgress: {Time.frameCount}   {m_EventData.Delta}");
 
             // m_EventData.Delta = 0;
             // if(MovedInOppositeDirections(m_Pointer1, m_Pointer2, MinDOT))
@@ -105,8 +109,7 @@ namespace Framework.Gesture.Runtime
             //     m_EventData.Delta = newDelta;
             // }
 
-            // m_EventData.SetEventDataUsed(requiredPointerCount);
-            ExecuteGestureInProgress();
+            GestureEvents.ExecuteProgress_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
 
             return RecognitionState.InProgress;
         }

@@ -10,16 +10,16 @@ namespace Framework.Gesture.Runtime
 
     public interface IDiscreteGestureHandler<T> : IGestureHandler where T : GestureEventData, new()
     {
-        void OnGestureReady(T eventData);
+        // void OnGestureReady(T eventData);
 
         void OnGestureRecognized(T eventData);
 
-        void OnGestureFailed(T eventData);
+        // void OnGestureFailed(T eventData);
     }
 
     public interface IContinuousGestureHandler<T> : IGestureHandler where T : GestureEventData, new()
     {
-        void OnGestureReady(T eventData);
+        // void OnGestureReady(T eventData);
 
         void OnGestureStarted(T eventData);
 
