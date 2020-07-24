@@ -27,12 +27,10 @@ namespace Framework.Core
         public int      MaxCountOfLog = 999;
         public bool     ShakeToOpen = true;
         public float    ShakeAcceleration = 100f;
-        public bool     StackLog = false;
-        public bool     Collapse;
-        public float    ScrollbarSize = 35;
-        public bool     AutoScroll;
-
-
+        [HideInInspector] public bool     StackLog = false;
+        [HideInInspector] public bool     Collapse;
+        [HideInInspector] public float    ScrollbarSize = 25;
+        [HideInInspector] public bool     AutoScroll;
 
         private Rect    m_WindowRect = new Rect(20, 40, 800, 600);
         private Vector2 m_ScrollPosition;        

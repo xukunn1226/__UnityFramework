@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Core
 {
@@ -148,4 +151,22 @@ namespace Framework.Core
             Debug.LogException(exception, context);
         }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(GameDebug))]
+    public class GameDebugEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+            EditorGUILayout.LabelField("打开Console Log的三种方式：", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField(@"1、`(BackQuote)", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField(@"2、shake phone ", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField(@"3、touch 3 fingers simultaneously", new GUIStyle("LargeLabel"));
+            GUILayout.EndVertical();
+        }
+    }
+#endif
 }
