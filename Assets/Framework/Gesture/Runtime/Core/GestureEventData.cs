@@ -5,8 +5,20 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
+    public enum RecognitionState
+    {
+        Ready,
+        Started,
+        InProgress,
+        Failed,
+        Ended,
+    }
+
     public class GestureEventData
     {
+        public delegate void EventHandler(GestureEventData gesture);
+        public event EventHandler OnStateChanged;
+
         protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();        // 当前手势需要的数据，可能大于requiredPointerCount，取决于具体实现
 
         public Dictionary<int, PointerEventData> PointerEventData
@@ -19,6 +31,28 @@ namespace Framework.Gesture.Runtime
         public Vector2  PressPosition;
         public float    StartTime;
         public float    ElapsedTime     { get { return Time.time - StartTime; } }
+
+        private RecognitionState m_CurState = RecognitionState.Ready;
+        private RecognitionState m_PrevState = RecognitionState.Ready;
+        public RecognitionState State
+        {
+            get { return m_CurState; }
+            set
+            {
+                if(m_CurState != value)
+                {
+                    m_PrevState = m_CurState;
+                    m_CurState = value;
+
+                    OnStateChanged?.Invoke(this);
+                }
+            }
+        }
+
+        public RecognitionState PrevState
+        {
+            get { return m_PrevState; }
+        }
 
         public GestureEventData()
         {}

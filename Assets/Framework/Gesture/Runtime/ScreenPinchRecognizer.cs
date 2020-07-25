@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    [RequireComponent(typeof(MyStandaloneInputModule))]
     public class ScreenPinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>
     {
         // public float MinDOT = -0.7f;
@@ -44,10 +43,10 @@ namespace Framework.Gesture.Runtime
             // collect gesture event data
             if(InputModule != null)
             {
-                InputModule.m_isPinchFetch = true;      // ugly code
+                InputModule.isPinchFetch = true;      // ugly code
                 InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
-                m_MouseScrollingDelta = InputModule.m_MouseScrollingDelta;
-                InputModule.m_isPinchFetch = false;
+                m_MouseScrollingDelta = InputModule.mouseScrollingDelta;
+                InputModule.isPinchFetch = false;
                 m_EventData.PointerEventData = m_UnusedPointerData;
                 m_Pointer1 = m_EventData[0];
                 m_Pointer2 = m_EventData[1];
@@ -109,7 +108,7 @@ namespace Framework.Gesture.Runtime
             //     m_EventData.Delta = newDelta;
             // }
 
-            GestureEvents.ExecuteProgress_Continous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
+            GestureEvents.ExecuteContinous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
 
             return RecognitionState.InProgress;
         }

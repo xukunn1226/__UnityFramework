@@ -18,7 +18,7 @@ namespace Framework.Gesture.Runtime
             /// <summary>
             /// What type of event is the associated callback listening for.
             /// </summary>
-            public GestureEventTriggerType eventID = GestureEventTriggerType.LongPressRecognized;
+            public GestureEventTriggerType eventID = GestureEventTriggerType.LongPress;
 
             /// <summary>
             /// The desired TriggerEvent to be Invoked.
@@ -53,49 +53,19 @@ namespace Framework.Gesture.Runtime
             }
         }
 
-        public void OnGestureRecognized(LongPressEventData eventData)
+        public void OnGesture(LongPressEventData eventData)
         {
-            Execute(GestureEventTriggerType.LongPressRecognized, eventData);
+            Execute(GestureEventTriggerType.LongPress, eventData);
         }
 
-        public void OnGestureStarted(PinchEventData eventData)
+        public void OnGesture(ScreenDragEventData eventData)
         {
-            Execute(GestureEventTriggerType.PinchStarted, eventData);
+            Execute(GestureEventTriggerType.ScreenDrag, eventData);
         }
 
-        public void OnGestureProgress(PinchEventData eventData)
+        public void OnGesture(PinchEventData eventData)
         {
-            Execute(GestureEventTriggerType.PinchInProgress, eventData);
-        }
-
-        public void OnGestureEnded(PinchEventData eventData)
-        {
-            Execute(GestureEventTriggerType.PinchEnded, eventData);
-        }
-
-        public void OnGestureFailed(PinchEventData eventData)
-        {
-            Execute(GestureEventTriggerType.PinchFailed, eventData);
-        }
-
-        public void OnGestureStarted(ScreenDragEventData eventData)
-        {
-            Execute(GestureEventTriggerType.ScreenDragStarted, eventData);
-        }
-
-        public void OnGestureProgress(ScreenDragEventData eventData)
-        {
-            Execute(GestureEventTriggerType.ScreenDragInProgress, eventData);
-        }
-
-        public void OnGestureEnded(ScreenDragEventData eventData)
-        {
-            Execute(GestureEventTriggerType.ScreenDragEnded, eventData);
-        }
-
-        public void OnGestureFailed(ScreenDragEventData eventData)
-        {
-            Execute(GestureEventTriggerType.ScreenDragFailed, eventData);
+            Execute(GestureEventTriggerType.ScreenPinch, eventData);
         }
     }
 }

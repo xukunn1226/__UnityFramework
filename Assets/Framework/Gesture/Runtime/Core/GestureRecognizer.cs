@@ -9,39 +9,7 @@ using UnityEditor;
 namespace Framework.Gesture.Runtime
 {
     public abstract class GestureRecognizer : MonoBehaviour
-    {        
-        public enum RecognitionState
-        {
-            Ready,
-            Started,
-            InProgress,
-            Failed,
-            Ended,
-        }
-
-        private RecognitionState m_CurState = RecognitionState.Ready;
-        private RecognitionState m_PrevState = RecognitionState.Ready;
-
-        public RecognitionState State
-        {
-            get { return m_CurState; }
-            set
-            {
-                if(m_CurState != value)
-                {
-                    m_PrevState = m_CurState;
-                    m_CurState = value;
-
-                    OnStateChanged();
-                }
-            }
-        }
-
-        public RecognitionState PrevState
-        {
-            get { return m_PrevState; }
-        }
-
+    {
         public int Priority;        // 消息处理优先级，值越小越优先处理消息
 
         [Min(1)][SerializeField]
@@ -62,18 +30,31 @@ namespace Framework.Gesture.Runtime
         {
             GestureRecognizerManager.RemoveRecognizer(this);
         }
-        protected virtual void OnStateChanged()
-        {
-            RaiseEvent();
-        }
-        protected abstract void RaiseEvent();
         internal abstract void InternalUpdate();
     }
 
     public abstract class GestureRecognizer<T> : GestureRecognizer where T : GestureEventData, new()
     {
         protected T m_EventData = new T();
- 
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            m_EventData.OnStateChanged += OnStateChanged;
+        }
+
+        protected override void OnDisable()
+        {
+            m_EventData.OnStateChanged -= OnStateChanged;
+            base.OnDisable();
+        }
+
+        private void OnStateChanged(GestureEventData eventData)
+        {
+            RaiseEvent(eventData);
+        }
+        protected abstract void RaiseEvent(GestureEventData eventData);
+
         protected void AddPointer(PointerEventData eventData)
         {
             m_EventData.AddPointerData(eventData);
@@ -102,52 +83,50 @@ namespace Framework.Gesture.Runtime
         }
 
         protected abstract RecognitionState OnProgress();
-        protected virtual void OnEnded() {}
-        protected virtual void OnFailed() {}
 
         // 消息处理优先级的缘由，忽略Update，由GestureRecognizerManager统一处理
         internal override void InternalUpdate()
         {
-            if(State == RecognitionState.Ready)
+            if(m_EventData.State == RecognitionState.Ready)
             {
                 if(CanBegin())
                 {
                     OnBegin();
-                    State = RecognitionState.Started;
+                    m_EventData.State = RecognitionState.Started;
                 }
             }
             
-            if(State == RecognitionState.Started)
-                State = RecognitionState.InProgress;
+            if(m_EventData.State == RecognitionState.Started)
+                m_EventData.State = RecognitionState.InProgress;
 
-            switch(State)
+            switch(m_EventData.State)
             {
                 case RecognitionState.InProgress:
-                    State = OnProgress();
+                    m_EventData.State = OnProgress();
                     break;
                 case RecognitionState.Failed:
                 case RecognitionState.Ended:
                     m_EventData.ClearPointerDatas();
-                    State = RecognitionState.Ready;
+                    m_EventData.State = RecognitionState.Ready;
                     break;
             }
         }   
     }
 
 
-    #if UNITY_EDITOR
-    [CustomEditor(typeof(GestureRecognizer), true)]
-    public class GestureRecognizerEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            DrawDefaultInspector();
+    // #if UNITY_EDITOR
+    // [CustomEditor(typeof(GestureRecognizer), true)]
+    // public class GestureRecognizerEditor : Editor
+    // {
+    //     public override void OnInspectorGUI()
+    //     {
+    //         DrawDefaultInspector();
 
-            GestureRecognizer gesture = target as GestureRecognizer;
-            GUI.enabled = false;
-            EditorGUILayout.EnumFlagsField("State", gesture.State);
-            GUI.enabled = true;
-        }
-    }
-    #endif
+    //         GestureRecognizer gesture = target as GestureRecognizer;
+    //         GUI.enabled = false;
+    //         EditorGUILayout.EnumFlagsField("State", gesture.eventData.State);
+    //         GUI.enabled = true;
+    //     }
+    // }
+    // #endif
 }

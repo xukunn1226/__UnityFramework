@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    [RequireComponent(typeof(MyStandaloneInputModule))]
     public class ScreenDragRecognizer : ContinuousGestureRecognizer<IScreenDragHandler, ScreenDragEventData>
     {
         public float MoveTolerance = 5.0f;
@@ -87,7 +86,7 @@ namespace Framework.Gesture.Runtime
 
             // Debug.LogWarning($"{m_EventData.DeltaMove}");
 
-            GestureEvents.ExecuteProgress_Continous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
+            GestureEvents.ExecuteContinous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
             return RecognitionState.InProgress;
         }
     }

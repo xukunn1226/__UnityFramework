@@ -1,18 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework.Gesture.Runtime;
 
-public class PlayerInput : MonoBehaviour
+public class PlayerInput : MonoBehaviour, IScreenDragHandler, IPinchHandler
 {
-    // Start is called before the first frame update
-    void Start()
+    public void OnGesture(ScreenDragEventData eventData)
     {
-        
+        Debug.Log($"{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {eventData.Speed}");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnGesture(PinchEventData eventData)
     {
-        
+        Debug.Log($"{eventData.State}   {eventData.Position}    {eventData.Delta}");
     }
 }

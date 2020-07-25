@@ -10,46 +10,6 @@ namespace Framework.Gesture.Runtime
         private delegate void DiscreteEventFunction<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new();
         private delegate void ContinuousEventFunction<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new();
 
-        // private static void ExecuteReady<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
-        // {
-        //     handler?.OnGestureReady(eventData);
-        // }
-        
-        private static void ExecuteRecognized<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
-        {
-            handler?.OnGestureRecognized(eventData);
-        }
-        
-        // private static void ExecuteFailed<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
-        // {
-        //     handler?.OnGestureFailed(eventData);
-        // }
-
-        // private static void ExecuteReady<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
-        // {
-        //     handler?.OnGestureReady(eventData);
-        // }
-
-        private static void ExecuteProgress<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
-        {
-            handler?.OnGestureProgress(eventData);
-        }
-        
-        private static void ExecuteStarted<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
-        {
-            handler?.OnGestureStarted(eventData);
-        }
-        
-        private static void ExecuteEnded<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
-        {
-            handler?.OnGestureEnded(eventData);
-        }
-        
-        private static void ExecuteFailed<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
-        {
-            handler?.OnGestureFailed(eventData);
-        }
-
         private static readonly ObjectPool<List<IGestureHandler>> s_HandlerListPool = new ObjectPool<List<IGestureHandler>>(null, l => l.Clear());
 
         private static bool Execute<T, K>(GameObject target, K eventData, DiscreteEventFunction<K> functor) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
@@ -237,75 +197,33 @@ namespace Framework.Gesture.Runtime
             }
             return null;
         }
+        
+        private static void Execute<T>(IDiscreteGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
+        {
+            handler?.OnGesture(eventData);
+        }
 
-
-
-        // public static bool ExecuteReady_Discrete<T, K>(GameObject target, K eventData) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
-        // {
-        //     return Execute<T, K>(target, eventData, ExecuteReady);
-        // }
-        public static bool ExecuteRecognized_Discrete<T, K>(GameObject target, K eventData) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
+        private static void Execute<T>(IContinuousGestureHandler<T> handler, T eventData) where T : GestureEventData, new()
         {
-            return Execute<T, K>(target, eventData, ExecuteRecognized);
-        }
-        // public static bool ExecuteFailed_Discrete<T, K>(GameObject target, K eventData) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
-        // {
-        //     return Execute<T, K>(target, eventData, ExecuteFailed);
-        // }
-        // public static bool ExecuteReady_Continous<T, K>(GameObject target, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
-        // {
-        //     return Execute<T, K>(target, eventData, ExecuteReady);
-        // }
-        public static bool ExecuteProgress_Continous<T, K>(GameObject target, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
-        {
-            return Execute<T, K>(target, eventData, ExecuteProgress);
-        }
-        public static bool ExecuteStarted_Continous<T, K>(GameObject target, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
-        {
-            return Execute<T, K>(target, eventData, ExecuteStarted);
-        }
-        public static bool ExecuteEnded_Continous<T, K>(GameObject target, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
-        {
-            return Execute<T, K>(target, eventData, ExecuteEnded);
-        }
-        public static bool ExecuteFailed_Continous<T, K>(GameObject target, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
-        {
-            return Execute<T, K>(target, eventData, ExecuteFailed);
+            handler?.OnGesture(eventData);
         }
 
 
-
-        // private static GameObject ExecuteReadyHierarchy_Discrete<T, K>(GameObject root, K eventData) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
-        // {
-        //     return ExecuteHierarchy<T, K>(root, eventData, ExecuteReady);
-        // }
-        private static GameObject ExecuteRecognizedHierarchy_Discrete<T, K>(GameObject root, K eventData) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
+        public static bool ExecuteDiscrete<T, K>(GameObject target, K eventData) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
         {
-            return ExecuteHierarchy<T, K>(root, eventData, ExecuteRecognized);
+            return Execute<T, K>(target, eventData, Execute);
         }
-        // private static GameObject ExecuteFailedHierarchy_Discrete<T, K>(GameObject root, K eventData) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
-        // {
-        //     return ExecuteHierarchy<T, K>(root, eventData, ExecuteFailed);
-        // }
-        // private static GameObject ExecuteReadyHierarchy_Continuous<T, K>(GameObject root, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
-        // {
-        //     return ExecuteHierarchy<T, K>(root, eventData, ExecuteReady);
-        // }
-        private static GameObject ExecuteProgressHierarchy_Continuous<T, K>(GameObject root, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
+        public static bool ExecuteContinous<T, K>(GameObject target, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
         {
-            return ExecuteHierarchy<T, K>(root, eventData, ExecuteProgress);
+            return Execute<T, K>(target, eventData, Execute);
         }
-        private static GameObject ExecuteStartedHierarchy_Continuous<T, K>(GameObject root, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
+        public static GameObject ExecuteHierarchyDiscrete<T, K>(GameObject root, K eventData) where T : IDiscreteGestureHandler<K> where K : GestureEventData, new()
         {
-            return ExecuteHierarchy<T, K>(root, eventData, ExecuteStarted);
+            return ExecuteHierarchy<T, K>(root, eventData, Execute);
         }
-        private static GameObject ExecuteEndedHierarchy_Continuous<T, K>(GameObject root, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
+        public static GameObject ExecuteHierarchyContinuous<T, K>(GameObject root, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
         {
-            return ExecuteHierarchy<T, K>(root, eventData, ExecuteEnded);
-        }
-        private static GameObject ExecuteFailedHierarchy_Continuous<T, K>(GameObject root, K eventData) where T : IContinuousGestureHandler<K> where K : GestureEventData, new()
-        {
-            return ExecuteHierarchy<T, K>(root, eventData, ExecuteFailed);
-        }
+            return ExecuteHierarchy<T, K>(root, eventData, Execute);
+        }        
     }
 }

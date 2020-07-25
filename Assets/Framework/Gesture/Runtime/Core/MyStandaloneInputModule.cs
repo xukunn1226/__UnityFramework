@@ -16,9 +16,8 @@ namespace Framework.Gesture.Runtime
 
         private bool m_wasMouseScrolling;
         private bool m_isMouseScrolling;
-        [System.NonSerialized][HideInInspector]
-        public float m_MouseScrollingDelta;
-        public bool m_isPinchFetch;
+        public float mouseScrollingDelta { get; private set; }
+        public bool isPinchFetch { get; internal set; }
 
         public override void Process()
         {
@@ -85,7 +84,7 @@ namespace Framework.Gesture.Runtime
         {
             PointerEventData eventData = GetLastPointerEventData(kMouseLeftId);
 
-            if(m_isPinchFetch)         // ugly code, Pinch只需监听mouse scroll
+            if(isPinchFetch)         // ugly code, Pinch只需监听mouse scroll
             {
                 m_wasMouseScrolling = m_isMouseScrolling;
                 if(Input.mouseScrollDelta.y != 0)
@@ -96,7 +95,7 @@ namespace Framework.Gesture.Runtime
                 {
                     m_isMouseScrolling = false;                
                 }
-                m_MouseScrollingDelta = Input.mouseScrollDelta.y;
+                mouseScrollingDelta = Input.mouseScrollDelta.y;
 
                 if(m_isMouseScrolling)
                 {
