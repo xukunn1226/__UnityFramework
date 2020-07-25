@@ -82,3 +82,7 @@ Send specified event to gameobject
 
 # Extension
 1、Customize GestureEventData
+
+# How to intergate
+* Replace StandaloneInputModule with MyStandaloneInputModule on EventSystem
+* Drag PlayerInput component into scene
