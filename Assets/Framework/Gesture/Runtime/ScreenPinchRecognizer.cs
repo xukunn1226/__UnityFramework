@@ -79,7 +79,7 @@ namespace Framework.Gesture.Runtime
             base.OnBegin();
             
             m_EventData.Gap = Vector2.Distance(m_Pointer1.position, m_Pointer2.position);
-            m_EventData.Delta = 0;
+            m_EventData.DeltaMove = 0;
 
             // Debug.Log($"OnBegin: {Time.frameCount}      {m_EventData.Gap}   {m_EventData.Position}");
         }
@@ -98,7 +98,7 @@ namespace Framework.Gesture.Runtime
             float newDelta = (curGap - m_EventData.Gap) * DeltaScale;
             m_EventData.Gap = curGap;
 
-            m_EventData.Delta = Input.mousePresent ? m_MouseScrollingDelta * DeltaScale : newDelta;
+            m_EventData.DeltaMove = Input.mousePresent ? m_MouseScrollingDelta * DeltaScale : newDelta;
 
             // Debug.Log($"OnProgress: {Time.frameCount}   {m_EventData.Delta}");
 
@@ -122,14 +122,14 @@ namespace Framework.Gesture.Runtime
     
     public class PinchEventData : GestureEventData
     {
-        public float Delta { get; internal set; }       // gap difference from last frame
+        public float DeltaMove { get; internal set; }       // gap difference from last frame
         public float Gap { get; internal set; }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(base.ToString());
-            sb.AppendLine($"<b>Delta</b>: {Delta}");
+            sb.AppendLine($"<b>Delta</b>: {DeltaMove}");
             sb.AppendLine($"<b>Gap</b>: {Gap}");
 
             return sb.ToString();
