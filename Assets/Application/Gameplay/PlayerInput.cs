@@ -29,7 +29,7 @@ public class PlayerInput : MonoBehaviour, IScreenDragHandler, IPinchHandler
 
     public void OnGesture(ScreenDragEventData eventData)
     {
-        Debug.Log($"{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {eventData.Speed}");
+        // Debug.Log($"{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {eventData.Speed}");
 
         screenDragData = eventData;
         switch(eventData.State)
