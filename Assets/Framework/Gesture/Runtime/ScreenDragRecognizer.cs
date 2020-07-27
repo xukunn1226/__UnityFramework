@@ -82,10 +82,7 @@ namespace Framework.Gesture.Runtime
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
             m_EventData.DeltaMove = (m_EventData.Position - m_EventData.LastPos) * DeltaScale;
             m_EventData.LastPos = m_EventData.Position;
-            // m_EventData.SetEventDataUsed(requiredPointerCount);
-
-            // Debug.LogWarning($"{m_EventData.DeltaMove}");
-
+            m_EventData.SetEventDataUsed(requiredPointerCount);
             GestureEvents.ExecuteContinous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
             return RecognitionState.InProgress;
         }

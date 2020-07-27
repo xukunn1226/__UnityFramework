@@ -108,6 +108,7 @@ namespace Framework.Gesture.Runtime
             //     m_EventData.Delta = newDelta;
             // }
 
+            m_EventData.SetEventDataUsed(requiredPointerCount);
             GestureEvents.ExecuteContinous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
 
             return RecognitionState.InProgress;

@@ -6,7 +6,7 @@ using System;
 
 namespace Framework.Gesture.Runtime
 {
-    public class GestureEventTrigger : MonoBehaviour, ILongPressHandler, IPinchHandler, IScreenDragHandler
+    public class GestureEventTrigger : MonoBehaviour, ILongPressHandler, IPinchHandler, IScreenDragHandler, IScreenPointerUpHandler
     {
         [Serializable]
         public class GestureTriggerEvent : UnityEvent<GestureEventData>
@@ -66,6 +66,11 @@ namespace Framework.Gesture.Runtime
         public void OnGesture(PinchEventData eventData)
         {
             Execute(GestureEventTriggerType.ScreenPinch, eventData);
+        }
+
+        public void OnGesture(ScreenPointerUpEventData eventData)
+        {
+            Execute(GestureEventTriggerType.ScreenPointerUp, eventData);
         }
     }
 }
