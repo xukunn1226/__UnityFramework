@@ -10,6 +10,7 @@
 	“计算打包之前的文件本体以及文件对应的META，这些文件的HASH作为依据”，https://www.bilibili.com/video/BV1Wv41167i2?from=search&seid=1342351602314114440  70min
 	https://91make.top/assetbundle-%E8%B5%84%E6%BA%90%E6%89%93%E5%8C%85%E4%B8%8E%E4%B8%8B%E8%BD%BD%E6%9B%B4%E6%96%B0/
 	https://blog.csdn.net/LIQIANGEASTSUN/article/details/79130408
+* Preload: 添加预加载机制
 
 
 
