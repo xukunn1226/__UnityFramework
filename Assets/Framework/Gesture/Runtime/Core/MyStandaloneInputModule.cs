@@ -126,7 +126,7 @@ namespace Framework.Gesture.Runtime
                 {
                     RemoveUnusedPointerEventData(ref unusedPointerData, eventData.pointerId);
 
-                    Debug.Log($"{released}      {eventData.used}");
+                    Debug.Log($"{released}      {eventData.used}    {Time.frameCount}");
                 }
             }
         }
