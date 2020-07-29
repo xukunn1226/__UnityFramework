@@ -3,11 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Text;
+using UnityEngine.U2D;
+using UnityEditor.U2D;
 
 namespace Framework.UI.Editor
 {
     static public class Utility
     {
+        [InitializeOnLoadMethod]
+        static void AutoPackAllAtlases()
+        {
+            EditorApplication.playModeStateChanged += DoPack;
+        }
+
+        private static void DoPack(PlayModeStateChange state)
+        {
+            // 为了编辑器下涉及到图集的业务逻辑的正确性，每次进入Play Mode时重新打图集
+            if(state == PlayModeStateChange.EnteredPlayMode)
+                SpriteAtlasUtility.PackAllAtlases(EditorUserBuildSettings.activeBuildTarget);
+        }
+
         [MenuItem("GameObject/UI/List Details")]
         static private void ListDetails()
         {

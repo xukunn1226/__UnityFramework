@@ -109,7 +109,7 @@ namespace Framework.Gesture.Runtime
                 {
                     RemoveUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseLeftId).pointerId);
                     RemoveUnusedPointerEventData(ref unusedPointerData, GetLastPointerEventData(kMouseRightId).pointerId);
-                }                
+                }
             }
             else
             {                
