@@ -3807,8 +3807,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Priority: 99
   m_RequiredPointerCount: 1
-  ContinuousRecognizeWhenFailed: 1
   MoveTolerance: 5
+  DeltaScale: 1
 --- !u!114 &1582356172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5272,7 +5272,6 @@ GameObject:
   - component: {fileID: 2134326723}
   - component: {fileID: 2134326722}
   - component: {fileID: 2134326721}
-  - component: {fileID: 2134326725}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -5354,19 +5353,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2134326725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2134326720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5

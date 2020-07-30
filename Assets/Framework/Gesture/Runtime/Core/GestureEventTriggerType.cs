@@ -9,6 +9,6 @@ namespace Framework.Gesture.Runtime
         LongPress       = 0,
         ScreenDrag      = 1,
         ScreenPinch     = 2,
-        ScreenPointerUp = 3,
+        ScreenPointer   = 3,
     }
 }

@@ -8,12 +8,6 @@ namespace Framework.Gesture.Runtime
 {
     public class MyStandaloneInputModule : StandaloneInputModule
     {
-        // private GameObject m_CurrentSelected;           // 自定义的当前选中对象，不同于EventSystem.m_CurrentSelected
-        // public GameObject currentSelectedGameObject
-        // {
-        //     get { return m_CurrentSelected; } 
-        // }
-
         private bool m_wasMouseScrolling;
         private bool m_isMouseScrolling;
         public float mouseScrollingDelta { get; private set; }
@@ -125,8 +119,6 @@ namespace Framework.Gesture.Runtime
                 else if(released || eventData.used)
                 {
                     RemoveUnusedPointerEventData(ref unusedPointerData, eventData.pointerId);
-
-                    Debug.Log($"{released}      {eventData.used}    {Time.frameCount}");
                 }
             }
         }
@@ -147,7 +139,7 @@ namespace Framework.Gesture.Runtime
             unusedPointerData.Remove(id);
         }
 
-        static private bool IsPointerOverUI(PointerEventData eventData)
+        static internal bool IsPointerOverUI(PointerEventData eventData)
         {
             if(eventData.pointerCurrentRaycast.gameObject == null)
                 return false;
@@ -155,8 +147,10 @@ namespace Framework.Gesture.Runtime
             return eventData.pointerCurrentRaycast.module is GraphicRaycaster;
         }
 
-        public void SetSelectedGameObject(GameObject selected)
+        // [trick] public the api for ScreenPointerUpRecognizer
+        internal PointerEventData GetPointerEventData(int id)
         {
+            return GetLastPointerEventData(id);
         }
     }
 }

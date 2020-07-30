@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
+    [RequireComponent(typeof(PlayerInput))]
     public class LongPressRecognizer : DiscreteGestureRecognizer<ILongPressHandler, LongPressEventData>, IPointerDownHandler, IPointerUpHandler
     {
         public float Duration = 1.0f;
@@ -36,7 +37,10 @@ namespace Framework.Gesture.Runtime
                 return RecognitionState.Failed;
                 
             if(m_EventData.ElapsedTime > Duration)
+            {
+                // m_EventData.SetEventDataUsed(requiredPointerCount);
                 return RecognitionState.Ended;
+            }                
 
             return RecognitionState.InProgress;
         }

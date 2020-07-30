@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
+    [RequireComponent(typeof(PlayerInput))]
     public class ScreenDragRecognizer : ContinuousGestureRecognizer<IScreenDragHandler, ScreenDragEventData>
     {
         public float MoveTolerance = 5.0f;
@@ -82,7 +83,7 @@ namespace Framework.Gesture.Runtime
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
             m_EventData.DeltaMove = (m_EventData.Position - m_EventData.LastPos) * DeltaScale;
             m_EventData.LastPos = m_EventData.Position;
-            m_EventData.SetEventDataUsed(requiredPointerCount);
+            // m_EventData.SetEventDataUsed(requiredPointerCount);
             GestureEvents.ExecuteContinous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
             return RecognitionState.InProgress;
         }

@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
+    [RequireComponent(typeof(PlayerInput))]
     public class ScreenPinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>
     {
         // public float MinDOT = -0.7f;
@@ -108,7 +109,7 @@ namespace Framework.Gesture.Runtime
             //     m_EventData.Delta = newDelta;
             // }
 
-            m_EventData.SetEventDataUsed(requiredPointerCount);
+            // m_EventData.SetEventDataUsed(requiredPointerCount);
             GestureEvents.ExecuteContinous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
 
             return RecognitionState.InProgress;

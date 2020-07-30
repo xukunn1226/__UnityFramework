@@ -1047,8 +1047,6 @@ GameObject:
   - component: {fileID: 393429388}
   - component: {fileID: 393429387}
   - component: {fileID: 393429386}
-  - component: {fileID: 393429385}
-  - component: {fileID: 393429384}
   m_Layer: 0
   m_Name: Sphere(LongPress) (2)
   m_TagString: Untagged
@@ -1056,34 +1054,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &393429384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 393429383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &393429385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 393429383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &393429386
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1313,7 +1283,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 92104459}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.85066164
+  m_Size: 0.90014064
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1757,8 +1727,6 @@ GameObject:
   - component: {fileID: 663732861}
   - component: {fileID: 663732860}
   - component: {fileID: 663732859}
-  - component: {fileID: 663732858}
-  - component: {fileID: 663732857}
   m_Layer: 0
   m_Name: Cube(LongPress) (3)
   m_TagString: Untagged
@@ -1766,34 +1734,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &663732857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663732856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &663732858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663732856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &663732859
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2070,8 +2010,6 @@ GameObject:
   - component: {fileID: 735901221}
   - component: {fileID: 735901220}
   - component: {fileID: 735901219}
-  - component: {fileID: 735901218}
-  - component: {fileID: 735901217}
   m_Layer: 0
   m_Name: Cube(LongPress) (1)
   m_TagString: Untagged
@@ -2079,34 +2017,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &735901217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 735901216}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &735901218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 735901216}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &735901219
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2635,8 +2545,6 @@ GameObject:
   - component: {fileID: 1068103184}
   - component: {fileID: 1068103183}
   - component: {fileID: 1068103182}
-  - component: {fileID: 1068103181}
-  - component: {fileID: 1068103180}
   m_Layer: 0
   m_Name: Sphere(LongPress) (3)
   m_TagString: Untagged
@@ -2644,34 +2552,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1068103180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1068103179}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1068103181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1068103179}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &1068103182
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3239,8 +3119,6 @@ GameObject:
   - component: {fileID: 1243118925}
   - component: {fileID: 1243118924}
   - component: {fileID: 1243118923}
-  - component: {fileID: 1243118922}
-  - component: {fileID: 1243118921}
   m_Layer: 0
   m_Name: Sphere(LongPress) (4)
   m_TagString: Untagged
@@ -3248,34 +3126,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1243118921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1243118920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1243118922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1243118920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &1243118923
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3610,8 +3460,6 @@ GameObject:
   - component: {fileID: 1310266919}
   - component: {fileID: 1310266918}
   - component: {fileID: 1310266917}
-  - component: {fileID: 1310266916}
-  - component: {fileID: 1310266915}
   m_Layer: 0
   m_Name: Sphere(LongPress)
   m_TagString: Untagged
@@ -3619,34 +3467,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1310266915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1310266914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1310266916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1310266914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &1310266917
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3918,8 +3738,6 @@ GameObject:
   - component: {fileID: 1349916157}
   - component: {fileID: 1349916156}
   - component: {fileID: 1349916155}
-  - component: {fileID: 1349916154}
-  - component: {fileID: 1349916153}
   m_Layer: 0
   m_Name: Cube(LongPress) (2)
   m_TagString: Untagged
@@ -3927,34 +3745,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1349916153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1349916152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1349916154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1349916152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &1349916155
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4347,8 +4137,6 @@ GameObject:
   - component: {fileID: 1463805582}
   - component: {fileID: 1463805581}
   - component: {fileID: 1463805580}
-  - component: {fileID: 1463805579}
-  - component: {fileID: 1463805578}
   m_Layer: 0
   m_Name: Sphere(LongPress) (1)
   m_TagString: Untagged
@@ -4356,34 +4144,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1463805578
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1463805577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1463805579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1463805577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &1463805580
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4543,8 +4303,6 @@ GameObject:
   - component: {fileID: 1514149854}
   - component: {fileID: 1514149853}
   - component: {fileID: 1514149852}
-  - component: {fileID: 1514149851}
-  - component: {fileID: 1514149850}
   m_Layer: 0
   m_Name: Cube(LongPress) (5)
   m_TagString: Untagged
@@ -4552,34 +4310,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1514149850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1514149849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1514149851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1514149849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &1514149852
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6203,8 +5933,6 @@ GameObject:
   - component: {fileID: 1989450268}
   - component: {fileID: 1989450267}
   - component: {fileID: 1989450266}
-  - component: {fileID: 1989450265}
-  - component: {fileID: 1989450264}
   m_Layer: 0
   m_Name: Cube(LongPress) (4)
   m_TagString: Untagged
@@ -6212,34 +5940,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1989450264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1989450263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1989450265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1989450263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
 --- !u!65 &1989450266
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6620,8 +6320,6 @@ GameObject:
   - component: {fileID: 2134326723}
   - component: {fileID: 2134326722}
   - component: {fileID: 2134326721}
-  - component: {fileID: 2134326725}
-  - component: {fileID: 2134326726}
   m_Layer: 0
   m_Name: Cube(LongPress)
   m_TagString: Untagged
@@ -6703,34 +6401,6 @@ Transform:
   m_Father: {fileID: 1332535085}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2134326725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2134326720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 0
-  m_RequiredPointerCount: 1
-  Duration: 1
-  MoveTolerance: 5
---- !u!114 &2134326726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2134326720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7ae35a46a1b7bc40b333ddd291fc60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &894413193379170018
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6874,3 +6544,41 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67eb073e7f9a21b428a76378bd7d7c96, type: 3}
+--- !u!1 &6764658650292968929 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6764658650940765554, guid: 67eb073e7f9a21b428a76378bd7d7c96,
+    type: 3}
+  m_PrefabInstance: {fileID: 6764658650292968928}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6764658650292968930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6764658650292968929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1a37e4e842110a428db7ca74ce65679, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Priority: -1
+  m_RequiredPointerCount: 1
+  sendDownMessage: 1
+  sendUpMessage: 1
+--- !u!114 &6764658650292968931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6764658650292968929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a1c5f6ad2fca244082639a97755183b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Priority: 0
+  m_RequiredPointerCount: 1
+  Duration: 1
+  MoveTolerance: 5

@@ -68,9 +68,9 @@ namespace Framework.Gesture.Runtime
             Execute(GestureEventTriggerType.ScreenPinch, eventData);
         }
 
-        public void OnGesture(ScreenPointerUpEventData eventData)
+        public void OnGesture(ScreenPointerEventData eventData)
         {
-            Execute(GestureEventTriggerType.ScreenPointerUp, eventData);
+            Execute(GestureEventTriggerType.ScreenPointer, eventData);
         }
     }
 }
