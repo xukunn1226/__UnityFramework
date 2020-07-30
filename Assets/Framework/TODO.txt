@@ -28,6 +28,7 @@
 	* 思考:如何在PC上实现Pinch，见ProcessUnusedMouseEventData
 
 * 监控所有的特效播放，统一特效加载接口
+* 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
 
 
 
