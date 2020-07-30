@@ -55,16 +55,6 @@ namespace Framework.Gesture.Runtime
         }
         protected abstract void RaiseEvent(GestureEventData eventData);
 
-        protected void AddPointer(PointerEventData eventData)
-        {
-            m_EventData.AddPointerData(eventData);
-        }
-
-        protected void RemovePointer(PointerEventData eventData)
-        {
-            m_EventData.RemovePointerData(eventData);
-        }
-
         protected void ClearPointers()
         {
             m_EventData.ClearPointerDatas();

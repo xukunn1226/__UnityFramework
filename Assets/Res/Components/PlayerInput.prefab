@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74e89a81a0cb9a4f8aae8ee82fb6aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Priority: 99
+  Priority: 1
   m_RequiredPointerCount: 1
   MoveTolerance: 5
   DeltaScale: 1

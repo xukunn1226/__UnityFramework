@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 namespace Framework.Gesture.Runtime
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class LongPressRecognizer : DiscreteGestureRecognizer<ILongPressHandler, LongPressEventData>, IPointerDownHandler, IPointerUpHandler
+    public class LongPressRecognizer : DiscreteGestureRecognizer<ILongPressHandler, LongPressEventData>
     {
         public float Duration = 1.0f;
 
@@ -17,15 +17,88 @@ namespace Framework.Gesture.Runtime
             get { return 1; }
             set { throw new System.ArgumentException("not support!"); }
         }
-
-        public void OnPointerDown(PointerEventData eventData)
+        
+        private MyStandaloneInputModule m_InputModule;
+        private MyStandaloneInputModule InputModule
         {
-            AddPointer(eventData);
+            get
+            {
+                if(m_InputModule == null)
+                {
+                    m_InputModule = EventSystem.current.currentInputModule as MyStandaloneInputModule;
+                }
+                return m_InputModule;
+            }
         }
 
-        public void OnPointerUp(PointerEventData eventData)
+        internal override void InternalUpdate()
         {
-            RemovePointer(eventData);
+            if(InputModule == null)
+                return;
+
+            ProcessInput();
+            base.InternalUpdate();
+        }
+
+        private void ProcessInput()
+        {
+            if(!ProcessTouchInput() && Input.mousePresent)
+                ProcessMouseInput();
+        }
+
+        private bool ProcessTouchInput()
+        {
+            for(int i = 0; i < Input.touchCount; ++i)
+            {
+                Touch touch = Input.touches[i];
+                bool pressed = touch.phase == TouchPhase.Began;
+                bool released = (touch.phase == TouchPhase.Canceled) || (touch.phase == TouchPhase.Ended);
+
+                PointerEventData eventData = InputModule.GetPointerEventData(touch.fingerId);
+                if(pressed)
+                {
+                    if(!MyStandaloneInputModule.IsPointerOverUI(eventData))
+                    {
+                        m_EventData.singlePointerData = eventData;
+                        m_EventData.bPressed = true;
+                        GestureEvents.ExecuteDiscrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
+                    }
+                }
+                else if(released)
+                {
+                    {
+                        m_EventData.singlePointerData = eventData;
+                        m_EventData.bPressed = false;
+                        GestureEvents.ExecuteDiscrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
+                    }
+                }
+            }
+            return Input.touchCount > 0;
+        }
+
+        private void ProcessMouseInput()
+        {
+            PointerEventData eventData = InputModule.GetPointerEventData(-1);
+
+            bool pressed = Input.GetMouseButtonDown(0);
+            bool released = Input.GetMouseButtonUp(0);
+            if(pressed)
+            {
+                if(!MyStandaloneInputModule.IsPointerOverUI(eventData))
+                {
+                    m_EventData.singlePointerData = eventData;
+                    m_EventData.bPressed = true;
+                    GestureEvents.ExecuteDiscrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
+                }
+            }
+            else if(released)
+            {
+                {
+                    m_EventData.singlePointerData = eventData;
+                    m_EventData.bPressed = false;
+                    GestureEvents.ExecuteDiscrete<ILongPressHandler, LongPressEventData>(gameObject, m_EventData);
+                }
+            }
         }
 
         protected override RecognitionState OnProgress()
@@ -48,6 +121,8 @@ namespace Framework.Gesture.Runtime
     
     public class LongPressEventData : GestureEventData
     {
+        public PointerEventData singlePointerData;
+        public bool bPressed;
     }
 
     public interface ILongPressHandler : IDiscreteGestureHandler<LongPressEventData>

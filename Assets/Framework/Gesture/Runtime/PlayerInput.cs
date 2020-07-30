@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.Gesture.Runtime
 {
-    public class PlayerInput : MonoBehaviour, IScreenDragHandler, IPinchHandler, IScreenPointerDownHandler, IScreenPointerUpHandler
+    public class PlayerInput : MonoBehaviour, IScreenDragHandler, IScreenPinchHandler, IScreenPointerDownHandler, IScreenPointerUpHandler
     {
         static public PlayerInput Instance { get; private set; }
         
@@ -18,7 +18,7 @@ namespace Framework.Gesture.Runtime
         public ScreenDragEventData screenDragData { get; private set; }
 
         public bool isScreenPinching { get; private set; }
-        public PinchEventData screenPinchData { get; private set; }
+        public ScreenPinchEventData screenPinchData { get; private set; }
 
         void Awake()
         {
@@ -59,7 +59,7 @@ namespace Framework.Gesture.Runtime
             }
         }
 
-        public void OnGesture(PinchEventData eventData)
+        public void OnGesture(ScreenPinchEventData eventData)
         {
             Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
 

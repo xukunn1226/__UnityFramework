@@ -6,7 +6,7 @@ using System;
 
 namespace Framework.Gesture.Runtime
 {
-    public class GestureEventTrigger : MonoBehaviour, ILongPressHandler, IPinchHandler, IScreenDragHandler, IScreenPointerUpHandler
+    public class GestureEventTrigger : MonoBehaviour, ILongPressHandler, IScreenPinchHandler, IScreenDragHandler, IScreenPointerUpHandler
     {
         [Serializable]
         public class GestureTriggerEvent : UnityEvent<GestureEventData>
@@ -18,7 +18,7 @@ namespace Framework.Gesture.Runtime
             /// <summary>
             /// What type of event is the associated callback listening for.
             /// </summary>
-            public GestureEventTriggerType eventID = GestureEventTriggerType.LongPress;
+            public GestureEventTriggerType eventID = GestureEventTriggerType.ScreenLongPress;
 
             /// <summary>
             /// The desired TriggerEvent to be Invoked.
@@ -55,7 +55,7 @@ namespace Framework.Gesture.Runtime
 
         public void OnGesture(LongPressEventData eventData)
         {
-            Execute(GestureEventTriggerType.LongPress, eventData);
+            Execute(GestureEventTriggerType.ScreenLongPress, eventData);
         }
 
         public void OnGesture(ScreenDragEventData eventData)
@@ -63,7 +63,7 @@ namespace Framework.Gesture.Runtime
             Execute(GestureEventTriggerType.ScreenDrag, eventData);
         }
 
-        public void OnGesture(PinchEventData eventData)
+        public void OnGesture(ScreenPinchEventData eventData)
         {
             Execute(GestureEventTriggerType.ScreenPinch, eventData);
         }

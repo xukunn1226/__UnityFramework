@@ -19,6 +19,42 @@ namespace Framework.Gesture.Runtime
         public delegate void EventHandler(GestureEventData gesture);
         public event EventHandler OnStateChanged;
 
+        // collection of PointerEventData to Gesture
+        public class GesturePointerEventData
+        {
+            public PointerEventData pointerData;
+            public bool used;
+        }
+        protected Dictionary<int, GesturePointerEventData> m_PointerDataEx = new Dictionary<int, GesturePointerEventData>();
+
+        public GesturePointerEventData GetGesturePointerEventData(PointerEventData data)
+        {
+            GesturePointerEventData gesturePointerEventData;
+            if(!m_PointerDataEx.TryGetValue(data.pointerId, out gesturePointerEventData))
+            {
+                gesturePointerEventData = new GesturePointerEventData();
+                gesturePointerEventData.pointerData = data;
+                m_PointerDataEx.Add(data.pointerId, gesturePointerEventData);
+            }
+            return gesturePointerEventData;
+        }
+
+        public void RemoveGesturePointerEventData(PointerEventData data)
+        {
+            m_PointerDataEx.Remove(data.pointerId);
+        }
+
+        public Dictionary<int, GesturePointerEventData> pointerEventData
+        {
+            get { return m_PointerDataEx; }
+            internal set { m_PointerDataEx = value; }
+        }
+
+
+
+
+
+
         protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();        // 当前手势需要的数据，可能大于requiredPointerCount，取决于具体实现
 
         public Dictionary<int, PointerEventData> PointerEventData
@@ -26,6 +62,14 @@ namespace Framework.Gesture.Runtime
             get { return m_PointerData; }
             internal set { m_PointerData = value; }
         }
+
+
+
+
+
+
+
+
 
         public Vector2  Position;
         public Vector2  PressPosition;
@@ -80,22 +124,22 @@ namespace Framework.Gesture.Runtime
                 return data;
             }
         }
-        public bool AddPointerData(PointerEventData data)
-        {
-            if(m_PointerData.ContainsKey(data.pointerId))
-                return false;
+        // public bool AddPointerData(PointerEventData data)
+        // {
+        //     if(m_PointerData.ContainsKey(data.pointerId))
+        //         return false;
 
-            m_PointerData.Add(data.pointerId, data);
-            return true;
-        }
+        //     m_PointerData.Add(data.pointerId, data);
+        //     return true;
+        // }
 
-        public void RemovePointerData(PointerEventData data)
-        {
-            if(!m_PointerData.ContainsKey(data.pointerId))
-                return;
+        // public void RemovePointerData(PointerEventData data)
+        // {
+        //     if(!m_PointerData.ContainsKey(data.pointerId))
+        //         return;
 
-            m_PointerData.Remove(data.pointerId);
-        }
+        //     m_PointerData.Remove(data.pointerId);
+        // }
 
         public void ClearPointerDatas()
         {
@@ -202,6 +246,24 @@ namespace Framework.Gesture.Runtime
                         break;
 
                     setProperty(e.Current.Value, value);
+                    ++c;
+                }
+                e.Dispose();
+            }
+        }
+
+        private void SetPropertyBooleanEx(PropertySetterDelegate<bool> setProperty, bool value, int count)
+        {
+            if(m_PointerData.Count > 0 && count > 0)
+            {
+                Dictionary<int, GesturePointerEventData>.Enumerator e = m_PointerDataEx.GetEnumerator();
+                int c = 0;
+                while(e.MoveNext())
+                {
+                    if(c >= count)
+                        break;
+
+                    setProperty(e.Current.Value.pointerData, value);
                     ++c;
                 }
                 e.Dispose();

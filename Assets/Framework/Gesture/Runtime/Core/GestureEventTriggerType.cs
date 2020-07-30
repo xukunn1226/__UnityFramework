@@ -6,7 +6,7 @@ namespace Framework.Gesture.Runtime
 {
     public enum GestureEventTriggerType
     {
-        LongPress       = 0,
+        ScreenLongPress = 0,
         ScreenDrag      = 1,
         ScreenPinch     = 2,
         ScreenPointer   = 3,

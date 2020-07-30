@@ -27,6 +27,19 @@ namespace Framework.Gesture.Runtime
             }
         }
 
+        private PlayerInput m_PlayerInput;
+        private PlayerInput PlayerInput
+        {
+            get
+            {
+                if(m_PlayerInput == null)
+                {
+                    m_PlayerInput = gameObject.GetComponent<PlayerInput>();
+                }
+                return m_PlayerInput;
+            }
+        }
+
         public override int requiredPointerCount
         {
             get { return 1; }
@@ -49,7 +62,7 @@ namespace Framework.Gesture.Runtime
 
         protected override bool CanBegin()
         {
-            if(InputModule == null)
+            if(InputModule == null || PlayerInput == null)
                 return false;
                 
             if(m_EventData.PointerEventData.Count != requiredPointerCount)
@@ -58,11 +71,11 @@ namespace Framework.Gesture.Runtime
             if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) < MoveTolerance)
                 return false;
 
-            // todo: EventSystem.currentSelectedGameObject逻辑不符合需求，适合UI内部使用，MyStandaloneInputModule扩展currentSelectedGameObject使用
-            if(EventSystem.current.currentSelectedGameObject != null && 
-               EventSystem.current.currentSelectedGameObject == m_EventData[0].pointerPressRaycast.gameObject)
+            // 指向当前选中物体时不可拖拽
+            if(PlayerInput.currentSelectedGameObject != null &&
+                PlayerInput.currentSelectedGameObject == m_EventData[0].pointerPressRaycast.gameObject)
                 return false;
-            
+
             return true;
         }
 

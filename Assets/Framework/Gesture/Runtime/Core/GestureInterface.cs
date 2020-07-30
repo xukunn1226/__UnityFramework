@@ -8,6 +8,11 @@ namespace Framework.Gesture.Runtime
     {
     }
 
+    public interface IGestureHandler<T> : IGestureHandler where T : GestureEventData, new()
+    {
+        void OnGesture(T eventData);
+    }
+
     public interface IDiscreteGestureHandler<T> : IGestureHandler where T : GestureEventData, new()
     {
         void OnGesture(T eventData);

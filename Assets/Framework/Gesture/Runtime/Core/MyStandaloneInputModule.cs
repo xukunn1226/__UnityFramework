@@ -147,7 +147,7 @@ namespace Framework.Gesture.Runtime
             return eventData.pointerCurrentRaycast.module is GraphicRaycaster;
         }
 
-        // [trick] public the api for ScreenPointerUpRecognizer
+        // [trick] make the api public for ScreenPointerUpRecognizer
         internal PointerEventData GetPointerEventData(int id)
         {
             return GetLastPointerEventData(id);

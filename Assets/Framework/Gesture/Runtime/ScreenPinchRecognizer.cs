@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace Framework.Gesture.Runtime
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class ScreenPinchRecognizer : ContinuousGestureRecognizer<IPinchHandler, PinchEventData>
+    public class ScreenPinchRecognizer : ContinuousGestureRecognizer<IScreenPinchHandler, ScreenPinchEventData>
     {
         // public float MinDOT = -0.7f;
         public float MinDistance = 5;
@@ -30,6 +30,19 @@ namespace Framework.Gesture.Runtime
                     m_InputModule = EventSystem.current.currentInputModule as MyStandaloneInputModule;
                 }
                 return m_InputModule;
+            }
+        }
+
+        private PlayerInput m_PlayerInput;
+        private PlayerInput PlayerInput
+        {
+            get
+            {
+                if(m_PlayerInput == null)
+                {
+                    m_PlayerInput = gameObject.GetComponent<PlayerInput>();
+                }
+                return m_PlayerInput;
             }
         }
 
@@ -63,6 +76,14 @@ namespace Framework.Gesture.Runtime
             if(m_Pointer1 == null || m_Pointer2 == null)
                 return false;
 
+            if(PlayerInput.currentSelectedGameObject != null &&
+                PlayerInput.currentSelectedGameObject == m_Pointer1.pointerPressRaycast.gameObject)
+                return false;
+
+            if(PlayerInput.currentSelectedGameObject != null &&
+                PlayerInput.currentSelectedGameObject == m_Pointer2.pointerPressRaycast.gameObject)
+                return false;
+
             float startGap = Vector2.SqrMagnitude(m_Pointer1.pressPosition - m_Pointer2.pressPosition);
             float curGap = Vector2.SqrMagnitude(m_Pointer1.position - m_Pointer2.position);
 
@@ -71,7 +92,6 @@ namespace Framework.Gesture.Runtime
                 return false;
 #endif
 
-            // Debug.Log($"CanBegin2222: {Time.frameCount}");
             return true;
         }
 
@@ -110,7 +130,7 @@ namespace Framework.Gesture.Runtime
             // }
 
             // m_EventData.SetEventDataUsed(requiredPointerCount);
-            GestureEvents.ExecuteContinous<IPinchHandler, PinchEventData>(gameObject, m_EventData);
+            GestureEvents.ExecuteContinous<IScreenPinchHandler, ScreenPinchEventData>(gameObject, m_EventData);
 
             return RecognitionState.InProgress;
         }
@@ -122,7 +142,7 @@ namespace Framework.Gesture.Runtime
         }
     }
     
-    public class PinchEventData : GestureEventData
+    public class ScreenPinchEventData : GestureEventData
     {
         public float DeltaMove { get; internal set; }       // gap difference from last frame
         public float Gap { get; internal set; }
@@ -138,7 +158,7 @@ namespace Framework.Gesture.Runtime
         }
     }
 
-    public interface IPinchHandler : IContinuousGestureHandler<PinchEventData>
+    public interface IScreenPinchHandler : IContinuousGestureHandler<ScreenPinchEventData>
     {
     }
 }
