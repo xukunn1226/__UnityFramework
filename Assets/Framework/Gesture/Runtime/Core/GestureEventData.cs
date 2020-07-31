@@ -19,42 +19,6 @@ namespace Framework.Gesture.Runtime
         public delegate void EventHandler(GestureEventData gesture);
         public event EventHandler OnStateChanged;
 
-        // collection of PointerEventData to Gesture
-        public class GesturePointerEventData
-        {
-            public PointerEventData pointerData;
-            public bool used;
-        }
-        protected Dictionary<int, GesturePointerEventData> m_PointerDataEx = new Dictionary<int, GesturePointerEventData>();
-
-        public GesturePointerEventData GetGesturePointerEventData(PointerEventData data)
-        {
-            GesturePointerEventData gesturePointerEventData;
-            if(!m_PointerDataEx.TryGetValue(data.pointerId, out gesturePointerEventData))
-            {
-                gesturePointerEventData = new GesturePointerEventData();
-                gesturePointerEventData.pointerData = data;
-                m_PointerDataEx.Add(data.pointerId, gesturePointerEventData);
-            }
-            return gesturePointerEventData;
-        }
-
-        public void RemoveGesturePointerEventData(PointerEventData data)
-        {
-            m_PointerDataEx.Remove(data.pointerId);
-        }
-
-        public Dictionary<int, GesturePointerEventData> pointerEventData
-        {
-            get { return m_PointerDataEx; }
-            internal set { m_PointerDataEx = value; }
-        }
-
-
-
-
-
-
         protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();        // 当前手势需要的数据，可能大于requiredPointerCount，取决于具体实现
 
         public Dictionary<int, PointerEventData> PointerEventData
@@ -62,14 +26,6 @@ namespace Framework.Gesture.Runtime
             get { return m_PointerData; }
             internal set { m_PointerData = value; }
         }
-
-
-
-
-
-
-
-
 
         public Vector2  Position;
         public Vector2  PressPosition;
@@ -252,23 +208,23 @@ namespace Framework.Gesture.Runtime
             }
         }
 
-        private void SetPropertyBooleanEx(PropertySetterDelegate<bool> setProperty, bool value, int count)
-        {
-            if(m_PointerData.Count > 0 && count > 0)
-            {
-                Dictionary<int, GesturePointerEventData>.Enumerator e = m_PointerDataEx.GetEnumerator();
-                int c = 0;
-                while(e.MoveNext())
-                {
-                    if(c >= count)
-                        break;
+        // private void SetPropertyBooleanEx(PropertySetterDelegate<bool> setProperty, bool value, int count)
+        // {
+        //     if(m_PointerData.Count > 0 && count > 0)
+        //     {
+        //         Dictionary<int, GesturePointerEventData>.Enumerator e = m_PointerDataEx.GetEnumerator();
+        //         int c = 0;
+        //         while(e.MoveNext())
+        //         {
+        //             if(c >= count)
+        //                 break;
 
-                    setProperty(e.Current.Value.pointerData, value);
-                    ++c;
-                }
-                e.Dispose();
-            }
-        }
+        //             setProperty(e.Current.Value.pointerData, value);
+        //             ++c;
+        //         }
+        //         e.Dispose();
+        //     }
+        // }
 
         static private Vector2 GetPressPosition(PointerEventData eventData)
         {

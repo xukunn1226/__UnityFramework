@@ -8,6 +8,39 @@ namespace Framework.Gesture.Runtime
 {
     public class MyStandaloneInputModule : StandaloneInputModule
     {
+        // collection of PointerEventData for screen gesture recognizer
+        public class ScreenPointerEventData
+        {
+            public PointerEventData pointerData;
+            public bool used;
+        }
+        protected Dictionary<int, ScreenPointerEventData> m_ScreenPointerData = new Dictionary<int, ScreenPointerEventData>();
+
+        public ScreenPointerEventData GetScreenPointerEventData(PointerEventData data)
+        {
+            ScreenPointerEventData eventData;
+            if(!m_ScreenPointerData.TryGetValue(data.pointerId, out eventData))
+            {
+                eventData = new ScreenPointerEventData();
+                eventData.pointerData = data;
+                m_ScreenPointerData.Add(data.pointerId, eventData);
+            }
+            return eventData;
+        }
+
+        public void RemoveGesturePointerEventData(PointerEventData data)
+        {
+            m_ScreenPointerData.Remove(data.pointerId);
+        }
+
+        public Dictionary<int, ScreenPointerEventData> screenPointerEventData
+        {
+            get { return m_ScreenPointerData; }
+            internal set { m_ScreenPointerData = value; }
+        }
+
+
+
         private bool m_wasMouseScrolling;
         private bool m_isMouseScrolling;
         public float mouseScrollingDelta { get; private set; }
@@ -20,9 +53,48 @@ namespace Framework.Gesture.Runtime
             if (!eventSystem.isFocused && ShouldIgnoreEventsOnNoFocus())
                 return;
 
+            UpdateScreenPointerData();
+
             // 为了整合IEventSystemHandler和Gesture，消息优先IEventSystemHandler处理，然后是IGestureHandler
             GestureRecognizerManager.Update();
         }
+
+        private void UpdateScreenPointerData()
+        {
+            if(!CollectTouchScreenPointerData() && input.mousePresent)
+                CollectMouseScreenPointerData();
+        }
+
+        private bool CollectTouchScreenPointerData()
+        {
+            for(int i = 0; i < Input.touchCount; ++i)
+            {
+                Touch touch = Input.touches[i];
+                bool pressed = touch.phase == TouchPhase.Began;
+                bool released = (touch.phase == TouchPhase.Canceled) || (touch.phase == TouchPhase.Ended);
+
+                PointerEventData eventData = GetLastPointerEventData(touch.fingerId);
+                if(pressed)
+                {
+                    if(!IsPointerOverUI(eventData) && !eventData.used)
+                    {
+                        // AddUnusedPointerEventData(ref unusedPointerData, eventData);
+                    }
+                }
+                else if(released || eventData.used)
+                {
+                    // RemoveUnusedPointerEventData(ref unusedPointerData, touch.fingerId);
+                }
+            }
+            return Input.touchCount > 0;
+        }
+
+        private void CollectMouseScreenPointerData()
+        {}
+
+
+
+
 
         private bool ShouldIgnoreEventsOnNoFocus()
         {
