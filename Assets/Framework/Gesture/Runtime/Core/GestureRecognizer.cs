@@ -12,13 +12,9 @@ namespace Framework.Gesture.Runtime
     {
         public int Priority;        // 消息处理优先级，值越小越优先处理消息
 
-        [Min(1)][SerializeField]
-        private int m_RequiredPointerCount = 1;
-
         public virtual int requiredPointerCount
         {
-            get { return m_RequiredPointerCount; }
-            set { m_RequiredPointerCount = value; }
+            get { return 1; }
         }
         
         protected virtual void OnEnable()
@@ -36,6 +32,18 @@ namespace Framework.Gesture.Runtime
     public abstract class GestureRecognizer<T> : GestureRecognizer where T : GestureEventData, new()
     {
         protected T m_EventData = new T();
+        protected PlayerInputModule m_InputModule;
+        protected PlayerInputModule InputModule
+        {
+            get
+            {
+                if(m_InputModule == null)
+                {
+                    m_InputModule = EventSystem.current.currentInputModule as PlayerInputModule;
+                }
+                return m_InputModule;
+            }
+        }
 
         protected override void OnEnable()
         {

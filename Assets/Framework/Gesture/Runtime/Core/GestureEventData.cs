@@ -14,14 +14,31 @@ namespace Framework.Gesture.Runtime
         Ended,
     }
 
+    internal enum UsedBy
+    {
+        None,
+        LongPress,
+        Drag,
+        Pinch,
+    }
+
+    public class ScreenPointerData
+    {
+        public PointerEventData pointerEventData;
+        internal UsedBy usedBy;
+        public float startTime;
+        public bool bPressedThisFrame;
+        public bool bReleasedThisFrame;
+    }
+
     public class GestureEventData
     {
         public delegate void EventHandler(GestureEventData gesture);
         public event EventHandler OnStateChanged;
 
-        protected Dictionary<int, PointerEventData> m_PointerData = new Dictionary<int, PointerEventData>();        // 当前手势需要的数据，可能大于requiredPointerCount，取决于具体实现
+        protected Dictionary<int, ScreenPointerData> m_PointerData = new Dictionary<int, ScreenPointerData>();
 
-        public Dictionary<int, PointerEventData> PointerEventData
+        public Dictionary<int, ScreenPointerData> PointerEventData
         {
             get { return m_PointerData; }
             internal set { m_PointerData = value; }
@@ -57,15 +74,15 @@ namespace Framework.Gesture.Runtime
         public GestureEventData()
         {}
 
-        public PointerEventData this[int index]
+        public ScreenPointerData this[int index]
         {
             get
             {
                 if(index < 0 || index >= m_PointerData.Count)
                     return null;
 
-                Dictionary<int, PointerEventData>.Enumerator e = m_PointerData.GetEnumerator();
-                PointerEventData data = null;
+                Dictionary<int, ScreenPointerData>.Enumerator e = m_PointerData.GetEnumerator();
+                ScreenPointerData data = null;
                 int c = 0;
                 while(e.MoveNext())
                 {
@@ -80,22 +97,31 @@ namespace Framework.Gesture.Runtime
                 return data;
             }
         }
-        // public bool AddPointerData(PointerEventData data)
-        // {
-        //     if(m_PointerData.ContainsKey(data.pointerId))
-        //         return false;
 
-        //     m_PointerData.Add(data.pointerId, data);
-        //     return true;
-        // }
+        internal void SetUsedBy(UsedBy by)
+        {
+            foreach(var data in m_PointerData)
+            {
+                data.Value.usedBy = by;
+            }
+        }
 
-        // public void RemovePointerData(PointerEventData data)
-        // {
-        //     if(!m_PointerData.ContainsKey(data.pointerId))
-        //         return;
+        public bool AddPointerData(ScreenPointerData data)
+        {
+            if(m_PointerData.ContainsKey(data.pointerEventData.pointerId))
+                return false;
 
-        //     m_PointerData.Remove(data.pointerId);
-        // }
+            m_PointerData.Add(data.pointerEventData.pointerId, data);
+            return true;
+        }
+
+        public void RemovePointerData(ScreenPointerData data)
+        {
+            if(!m_PointerData.ContainsKey(data.pointerEventData.pointerId))
+                return;
+
+            m_PointerData.Remove(data.pointerEventData.pointerId);
+        }
 
         public void ClearPointerDatas()
         {
@@ -103,17 +129,6 @@ namespace Framework.Gesture.Runtime
         }
 
         public int pointerCount { get { return m_PointerData.Count; } }
-
-        public int GetUnusedPointerCount()
-        {
-            int count = 0;
-            for(int i = 0, maxCount = m_PointerData.Count; i < maxCount; ++i)
-            {
-                if(!m_PointerData[i].used)
-                    ++count;
-            }
-            return count;
-        }
 
         public Vector2 GetAveragePressPosition(int count)
         {            
@@ -148,14 +163,14 @@ namespace Framework.Gesture.Runtime
 
             if(m_PointerData.Count > 0 && count > 0)
             {
-                Dictionary<int, PointerEventData>.Enumerator e = m_PointerData.GetEnumerator();
+                Dictionary<int, ScreenPointerData>.Enumerator e = m_PointerData.GetEnumerator();
                 int c = 0;
                 while(e.MoveNext())
                 {
                     if(c >= count)
                         break;
 
-                    avg += getProperty(e.Current.Value);
+                    avg += getProperty(e.Current.Value.pointerEventData);
                     ++c;
                 }
                 avg /= c;
@@ -171,14 +186,14 @@ namespace Framework.Gesture.Runtime
 
             if(m_PointerData.Count > 0 && count > 0)
             {
-                Dictionary<int, PointerEventData>.Enumerator e = m_PointerData.GetEnumerator();
+                Dictionary<int, ScreenPointerData>.Enumerator e = m_PointerData.GetEnumerator();
                 int c = 0;
                 while(e.MoveNext())
                 {
                     if(c >= count)
                         break;
 
-                    avg += getProperty(e.Current.Value);
+                    avg += getProperty(e.Current.Value.pointerEventData);
                     ++c;
                 }
                 avg /= c;
@@ -194,37 +209,19 @@ namespace Framework.Gesture.Runtime
         {
             if(m_PointerData.Count > 0 && count > 0)
             {
-                Dictionary<int, PointerEventData>.Enumerator e = m_PointerData.GetEnumerator();
+                Dictionary<int, ScreenPointerData>.Enumerator e = m_PointerData.GetEnumerator();
                 int c = 0;
                 while(e.MoveNext())
                 {
                     if(c >= count)
                         break;
 
-                    setProperty(e.Current.Value, value);
+                    setProperty(e.Current.Value.pointerEventData, value);
                     ++c;
                 }
                 e.Dispose();
             }
         }
-
-        // private void SetPropertyBooleanEx(PropertySetterDelegate<bool> setProperty, bool value, int count)
-        // {
-        //     if(m_PointerData.Count > 0 && count > 0)
-        //     {
-        //         Dictionary<int, GesturePointerEventData>.Enumerator e = m_PointerDataEx.GetEnumerator();
-        //         int c = 0;
-        //         while(e.MoveNext())
-        //         {
-        //             if(c >= count)
-        //                 break;
-
-        //             setProperty(e.Current.Value.pointerData, value);
-        //             ++c;
-        //         }
-        //         e.Dispose();
-        //     }
-        // }
 
         static private Vector2 GetPressPosition(PointerEventData eventData)
         {

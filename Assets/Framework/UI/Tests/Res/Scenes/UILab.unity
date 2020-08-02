@@ -1190,7 +1190,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 92104459}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.90014064
+  m_Size: 0.85066164
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3766,7 +3766,6 @@ GameObject:
   - component: {fileID: 1582356173}
   - component: {fileID: 1582356172}
   - component: {fileID: 1582356170}
-  - component: {fileID: 1582356171}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -3783,7 +3782,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1582356169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81b95da2afcc78e44b1594e1e82b94d8, type: 3}
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalAxis: Horizontal
@@ -3793,22 +3792,6 @@ MonoBehaviour:
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
---- !u!114 &1582356171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582356169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e74e89a81a0cb9a4f8aae8ee82fb6aa5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Priority: 99
-  m_RequiredPointerCount: 1
-  MoveTolerance: 5
-  DeltaScale: 1
 --- !u!114 &1582356172
 MonoBehaviour:
   m_ObjectHideFlags: 0

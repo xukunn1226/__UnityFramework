@@ -12,25 +12,12 @@ namespace Framework.Gesture.Runtime
     {
         // public float MinDOT = -0.7f;
         public float MinDistance = 5;
+        [Range(0.1f, 5f)]
         public float DeltaScale = 1.0f;
 
         public override int requiredPointerCount
         {
             get { return 2; }
-            set { throw new System.ArgumentException("not support!"); }
-        }
-
-        private MyStandaloneInputModule m_InputModule;
-        private MyStandaloneInputModule InputModule
-        {
-            get
-            {
-                if(m_InputModule == null)
-                {
-                    m_InputModule = EventSystem.current.currentInputModule as MyStandaloneInputModule;
-                }
-                return m_InputModule;
-            }
         }
 
         private PlayerInput m_PlayerInput;
@@ -46,7 +33,6 @@ namespace Framework.Gesture.Runtime
             }
         }
 
-        private Dictionary<int, PointerEventData> m_UnusedPointerData = new Dictionary<int, PointerEventData>();
         private PointerEventData m_Pointer1;
         private PointerEventData m_Pointer2;
 
@@ -54,23 +40,23 @@ namespace Framework.Gesture.Runtime
 
         internal override void InternalUpdate()
         {
-            // collect gesture event data
             if(InputModule != null)
             {
-                InputModule.isPinchFetch = true;      // ugly code
-                InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
+                m_EventData.ClearPointerDatas();
+                foreach(var data in InputModule.screenPointerData)
+                {
+                    m_EventData.AddPointerData(data.Value);
+                }
                 m_MouseScrollingDelta = InputModule.mouseScrollingDelta;
-                InputModule.isPinchFetch = false;
-                m_EventData.PointerEventData = m_UnusedPointerData;
-                m_Pointer1 = m_EventData[0];
-                m_Pointer2 = m_EventData[1];
+                m_Pointer1 = m_EventData[0]?.pointerEventData;
+                m_Pointer2 = m_EventData[1]?.pointerEventData;
             }
             base.InternalUpdate();
         }
 
         protected override bool CanBegin()
         {
-            if(m_EventData.pointerCount < requiredPointerCount)         // 允许pointerCount >= requiredPointerCount，后续pointer不生效
+            if(m_EventData.pointerCount != requiredPointerCount)
                 return false;
 
             if(m_Pointer1 == null || m_Pointer2 == null)
@@ -100,16 +86,14 @@ namespace Framework.Gesture.Runtime
             base.OnBegin();
             
             m_EventData.Gap = Vector2.Distance(m_Pointer1.position, m_Pointer2.position);
-            m_EventData.DeltaMove = 0;
-
-            // Debug.Log($"OnBegin: {Time.frameCount}      {m_EventData.Gap}   {m_EventData.Position}");
+            m_EventData.DeltaMove = Input.mousePresent ? m_MouseScrollingDelta * DeltaScale : 0;
         }
 
         protected override RecognitionState OnProgress()
         {
-            if(m_EventData.pointerCount < requiredPointerCount)
+            if(m_EventData.pointerCount != requiredPointerCount)
             {
-                // Debug.Log($"OnProgress.Ended: {Time.frameCount}");
+                m_EventData.DeltaMove = 0;
                 return RecognitionState.Ended;
             }
 
@@ -121,15 +105,13 @@ namespace Framework.Gesture.Runtime
 
             m_EventData.DeltaMove = Input.mousePresent ? m_MouseScrollingDelta * DeltaScale : newDelta;
 
-            // Debug.Log($"OnProgress: {Time.frameCount}   {m_EventData.Delta}");
-
-            // m_EventData.Delta = 0;
+            // m_EventData.DeltaMove = 0;
             // if(MovedInOppositeDirections(m_Pointer1, m_Pointer2, MinDOT))
             // {
-            //     m_EventData.Delta = newDelta;
+            //     m_EventData.DeltaMove = newDelta;
             // }
 
-            // m_EventData.SetEventDataUsed(requiredPointerCount);
+            m_EventData.SetUsedBy(UsedBy.Pinch);
             GestureEvents.ExecuteContinous<IScreenPinchHandler, ScreenPinchEventData>(gameObject, m_EventData);
 
             return RecognitionState.InProgress;

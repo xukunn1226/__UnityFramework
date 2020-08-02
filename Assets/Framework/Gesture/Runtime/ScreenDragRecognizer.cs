@@ -14,19 +14,6 @@ namespace Framework.Gesture.Runtime
         [Range(0.1f, 5f)]
         public float DeltaScale = 1;
 
-        private MyStandaloneInputModule m_InputModule;
-        private MyStandaloneInputModule InputModule
-        {
-            get
-            {
-                if(m_InputModule == null)
-                {
-                    m_InputModule = EventSystem.current.currentInputModule as MyStandaloneInputModule;
-                }
-                return m_InputModule;
-            }
-        }
-
         private PlayerInput m_PlayerInput;
         private PlayerInput PlayerInput
         {
@@ -43,19 +30,17 @@ namespace Framework.Gesture.Runtime
         public override int requiredPointerCount
         {
             get { return 1; }
-            set { throw new System.ArgumentException("not support!"); }
         }
-        
-        private Dictionary<int, PointerEventData> m_UnusedPointerData = new Dictionary<int, PointerEventData>();
-
 
         internal override void InternalUpdate()
         {
-            // collect gesture event data
             if(InputModule != null)
             {
-                InputModule.UpdateUnusedEventData(ref m_UnusedPointerData);
-                m_EventData.PointerEventData = m_UnusedPointerData;
+                m_EventData.ClearPointerDatas();
+                foreach(var data in InputModule.screenPointerData)
+                {
+                    m_EventData.AddPointerData(data.Value);
+                }
             }
             base.InternalUpdate();
         }
@@ -73,7 +58,7 @@ namespace Framework.Gesture.Runtime
 
             // 指向当前选中物体时不可拖拽
             if(PlayerInput.currentSelectedGameObject != null &&
-                PlayerInput.currentSelectedGameObject == m_EventData[0].pointerPressRaycast.gameObject)
+                PlayerInput.currentSelectedGameObject == m_EventData[0].pointerEventData.pointerPressRaycast.gameObject)
                 return false;
 
             return true;
@@ -96,12 +81,13 @@ namespace Framework.Gesture.Runtime
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
             m_EventData.DeltaMove = (m_EventData.Position - m_EventData.LastPos) * DeltaScale;
             m_EventData.LastPos = m_EventData.Position;
-            // m_EventData.SetEventDataUsed(requiredPointerCount);
+            m_EventData.SetUsedBy(UsedBy.Drag);
+
             GestureEvents.ExecuteContinous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
             return RecognitionState.InProgress;
         }
     }
-    
+
     public class ScreenDragEventData : GestureEventData
     {
         public Vector2 DeltaMove { get; internal set; }

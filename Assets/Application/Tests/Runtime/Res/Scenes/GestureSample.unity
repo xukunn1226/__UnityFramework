@@ -1283,7 +1283,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 92104459}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.90014064
+  m_Size: 0.85066164
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4754,7 +4754,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1582356169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81b95da2afcc78e44b1594e1e82b94d8, type: 3}
+  m_Script: {fileID: 11500000, guid: 05531492bb44c724b88dbf01b65a15c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalAxis: Horizontal
@@ -6482,11 +6482,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6764658650292968931, guid: 67eb073e7f9a21b428a76378bd7d7c96,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6764658650940765554, guid: 67eb073e7f9a21b428a76378bd7d7c96,
         type: 3}
       propertyPath: m_Name

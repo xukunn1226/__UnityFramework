@@ -4,7 +4,12 @@ using UnityEngine;
 
 namespace Framework.Gesture.Runtime
 {
-    public class PlayerInput : MonoBehaviour, IScreenDragHandler, IScreenPinchHandler, IScreenPointerDownHandler, IScreenPointerUpHandler
+    public class PlayerInput :  MonoBehaviour, 
+                                IScreenDragHandler,
+                                IScreenPinchHandler,
+                                ILongPressHandler,
+                                IScreenPointerDownHandler,
+                                IScreenPointerUpHandler
     {
         static public PlayerInput Instance { get; private set; }
         
@@ -13,12 +18,6 @@ namespace Framework.Gesture.Runtime
         {
             get { return m_CurrentSelected; } 
         }
-
-        public bool isScreenDragging { get; private set; }
-        public ScreenDragEventData screenDragData { get; private set; }
-
-        public bool isScreenPinching { get; private set; }
-        public ScreenPinchEventData screenPinchData { get; private set; }
 
         void Awake()
         {
@@ -44,17 +43,17 @@ namespace Framework.Gesture.Runtime
 
         public void OnGesture(ScreenDragEventData eventData)
         {
-            Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
+            // Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
 
-            screenDragData = eventData;
+            // screenDragData = eventData;
             switch (eventData.State)
             {
                 case RecognitionState.Started:
-                    isScreenDragging = true;
+                    // isScreenDragging = true;
                     break;
                 case RecognitionState.Failed:
                 case RecognitionState.Ended:
-                    isScreenDragging = false;
+                    // isScreenDragging = false;
                     break;
             }
         }
@@ -63,25 +62,31 @@ namespace Framework.Gesture.Runtime
         {
             Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
 
-            screenPinchData = eventData;
+            // screenPinchData = eventData;
             switch(eventData.State)
             {
                 case RecognitionState.Started:
-                    isScreenPinching = true;
+                    // isScreenPinching = true;
                     break;
                 case RecognitionState.Failed:
                 case RecognitionState.Ended:
-                    isScreenPinching = false;
+                    // isScreenPinching = false;
                     break;
             }
         }
 
-        public void OnGesture(ScreenPointerEventData eventData)
+        public void OnGesture(ScreenLongPressEventData eventData)
         {
-            if(isScreenDragging || isScreenPinching)
-                return;
+            Debug.Log($"LongPress..........{eventData.State}   {eventData.screenPosition}    {Time.frameCount}");
+        }
 
-            Debug.Log($"Screen Pointer EventData: {eventData.bPressed}      {Time.frameCount}");
+        public void OnGesture(ScreenPointerDownEventData eventData)
+        {
+            Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
+        }
+        public void OnGesture(ScreenPointerUpEventData eventData)
+        {
+            Debug.Log($"ScreenPointerUpEventData:       {Time.frameCount}");
         }
     }
 }
