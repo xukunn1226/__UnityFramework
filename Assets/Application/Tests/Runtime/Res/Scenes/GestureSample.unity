@@ -295,8 +295,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 149533197}
-  m_LocalRotation: {x: -0.33380723, y: 0.62387043, z: -0.33464015, w: -0.6223942}
-  m_LocalPosition: {x: 50.081966, y: 84.353424, z: -2.419144}
+  m_LocalRotation: {x: -0.31153405, y: -0.0051430226, z: 0.0016579686, w: -0.9502197}
+  m_LocalPosition: {x: -13.855069, y: 89.60626, z: -100.13957}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1315087424}
@@ -3738,6 +3738,7 @@ GameObject:
   - component: {fileID: 1349916157}
   - component: {fileID: 1349916156}
   - component: {fileID: 1349916155}
+  - component: {fileID: 1349916153}
   m_Layer: 0
   m_Name: Cube(LongPress) (2)
   m_TagString: Untagged
@@ -3745,6 +3746,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1349916153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349916152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &1349916155
 BoxCollider:
   m_ObjectHideFlags: 0
