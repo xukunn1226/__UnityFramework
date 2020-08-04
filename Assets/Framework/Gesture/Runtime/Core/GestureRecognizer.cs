@@ -10,7 +10,7 @@ namespace Framework.Gesture.Runtime
 {
     public abstract class GestureRecognizer : MonoBehaviour
     {
-        public int Priority;        // 消息处理优先级，值越小越优先处理消息
+        [HideInInspector] public int Priority;        // 消息处理优先级，值越小越优先处理消息
 
         public virtual int requiredPointerCount
         {

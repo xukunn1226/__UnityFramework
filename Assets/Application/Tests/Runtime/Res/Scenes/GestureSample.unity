@@ -295,8 +295,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 149533197}
-  m_LocalRotation: {x: -0.31153405, y: -0.0051430226, z: 0.0016579686, w: -0.9502197}
-  m_LocalPosition: {x: -13.855069, y: 89.60626, z: -100.13957}
+  m_LocalRotation: {x: -0.14971307, y: -0.0201714, z: 0.0030548365, w: -0.9885191}
+  m_LocalPosition: {x: -3.5065632, y: 47.325592, z: -110.849625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1315087424}
@@ -400,7 +400,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 23
+    m_Bits: 791
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -797,7 +797,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &354382075
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1047,13 +1047,26 @@ GameObject:
   - component: {fileID: 393429388}
   - component: {fileID: 393429387}
   - component: {fileID: 393429386}
-  m_Layer: 0
+  - component: {fileID: 393429384}
+  m_Layer: 9
   m_Name: Sphere(LongPress) (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &393429384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 393429383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &393429386
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1283,7 +1296,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 92104459}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.85066164
+  m_Size: 0.90014064
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1727,13 +1740,26 @@ GameObject:
   - component: {fileID: 663732861}
   - component: {fileID: 663732860}
   - component: {fileID: 663732859}
-  m_Layer: 0
+  - component: {fileID: 663732857}
+  m_Layer: 9
   m_Name: Cube(LongPress) (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &663732857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 663732856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &663732859
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2010,13 +2036,26 @@ GameObject:
   - component: {fileID: 735901221}
   - component: {fileID: 735901220}
   - component: {fileID: 735901219}
-  m_Layer: 0
+  - component: {fileID: 735901217}
+  m_Layer: 9
   m_Name: Cube(LongPress) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &735901217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735901216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &735901219
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2545,13 +2584,26 @@ GameObject:
   - component: {fileID: 1068103184}
   - component: {fileID: 1068103183}
   - component: {fileID: 1068103182}
-  m_Layer: 0
+  - component: {fileID: 1068103180}
+  m_Layer: 9
   m_Name: Sphere(LongPress) (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1068103180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068103179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &1068103182
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3119,13 +3171,26 @@ GameObject:
   - component: {fileID: 1243118925}
   - component: {fileID: 1243118924}
   - component: {fileID: 1243118923}
-  m_Layer: 0
+  - component: {fileID: 1243118921}
+  m_Layer: 9
   m_Name: Sphere(LongPress) (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1243118921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1243118920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &1243118923
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3212,7 +3277,7 @@ GameObject:
   - component: {fileID: 1279451572}
   - component: {fileID: 1279451571}
   - component: {fileID: 1279451570}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3460,13 +3525,26 @@ GameObject:
   - component: {fileID: 1310266919}
   - component: {fileID: 1310266918}
   - component: {fileID: 1310266917}
-  m_Layer: 0
+  - component: {fileID: 1310266915}
+  m_Layer: 9
   m_Name: Sphere(LongPress)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1310266915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310266914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &1310266917
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3607,7 +3685,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967039
+    m_Bits: 4294967295
   m_RenderingLayerMask: 1
   m_Lightmapping: 1
   m_LightShadowCasterMode: 0
@@ -3739,7 +3817,7 @@ GameObject:
   - component: {fileID: 1349916156}
   - component: {fileID: 1349916155}
   - component: {fileID: 1349916153}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube(LongPress) (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4150,13 +4228,26 @@ GameObject:
   - component: {fileID: 1463805582}
   - component: {fileID: 1463805581}
   - component: {fileID: 1463805580}
-  m_Layer: 0
+  - component: {fileID: 1463805578}
+  m_Layer: 9
   m_Name: Sphere(LongPress) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1463805578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463805577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &1463805580
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4316,13 +4407,26 @@ GameObject:
   - component: {fileID: 1514149854}
   - component: {fileID: 1514149853}
   - component: {fileID: 1514149852}
-  m_Layer: 0
+  - component: {fileID: 1514149850}
+  m_Layer: 9
   m_Name: Cube(LongPress) (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1514149850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514149849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &1514149852
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5946,13 +6050,26 @@ GameObject:
   - component: {fileID: 1989450268}
   - component: {fileID: 1989450267}
   - component: {fileID: 1989450266}
-  m_Layer: 0
+  - component: {fileID: 1989450264}
+  m_Layer: 9
   m_Name: Cube(LongPress) (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1989450264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989450263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &1989450266
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6333,7 +6450,8 @@ GameObject:
   - component: {fileID: 2134326723}
   - component: {fileID: 2134326722}
   - component: {fileID: 2134326721}
-  m_Layer: 0
+  - component: {fileID: 2134326725}
+  m_Layer: 9
   m_Name: Cube(LongPress)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6414,6 +6532,18 @@ Transform:
   m_Father: {fileID: 1332535085}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2134326725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134326720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ef2cabd10d0f241810b0ba970555c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &894413193379170018
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6495,6 +6625,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6764658650292968930, guid: 67eb073e7f9a21b428a76378bd7d7c96,
+        type: 3}
+      propertyPath: eventCamera
+      value: 
+      objectReference: {fileID: 149533203}
     - target: {fileID: 6764658650940765554, guid: 67eb073e7f9a21b428a76378bd7d7c96,
         type: 3}
       propertyPath: m_Name
