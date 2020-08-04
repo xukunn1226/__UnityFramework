@@ -5,16 +5,10 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    public class PlayerInput :  MonoBehaviour, 
-                                IScreenDragHandler,
-                                IScreenPinchHandler,
-                                ILongPressHandler,
-                                IScreenPointerDownHandler,
-                                IScreenPointerUpHandler
+    public class PlayerInput :  MonoBehaviour
     {
-        static public PlayerInput Instance { get; private set; }
-        public Camera eventCamera;
-        
+        // static public PlayerInput Instance { get; private set; }
+
         public class HitEventData : BaseEventData
         {
             public RaycastHit hitInfo;
@@ -46,31 +40,23 @@ namespace Framework.Gesture.Runtime
         }
 
         private bool m_SelectionGuard;
-        private int m_TerrainLayer;
-        private int m_BaseLayer;
 
-        void Awake()
-        {
-            if(eventCamera == null)
-                throw new System.Exception("Missing event camera");
+        // void Awake()
+        // {
+        //     // 已有PlayerInput，则自毁
+        //     if (FindObjectsOfType<PlayerInput>().Length > 1)
+        //     {
+        //         DestroyImmediate(this);
+        //         throw new System.Exception("PlayerInput has already exist...");
+        //     }
 
-            // 已有PlayerInput，则自毁
-            if (FindObjectsOfType<PlayerInput>().Length > 1)
-            {
-                DestroyImmediate(this);
-                throw new System.Exception("PlayerInput has already exist...");
-            }
+        //     Instance = this;
+        // }
 
-            Instance = this;
-
-            m_TerrainLayer = LayerMask.NameToLayer("Terrain");
-            m_BaseLayer = LayerMask.NameToLayer("Base");
-        }
-
-        void OnDestroy()
-        {
-            Instance = null;
-        }
+        // void OnDestroy()
+        // {
+        //     Instance = null;
+        // }
 
         public void SetSelectedGameObject(GameObject selected, HitEventData eventData)
         {
@@ -96,70 +82,6 @@ namespace Framework.Gesture.Runtime
         public void SetSelectedGameObject(GameObject selected)
         {
             SetSelectedGameObject(selected, hitEventData);
-        }
-
-        public void OnGesture(ScreenDragEventData eventData)
-        {
-            // Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
-
-            // screenDragData = eventData;
-            switch (eventData.State)
-            {
-                case RecognitionState.Started:
-                    // isScreenDragging = true;
-                    break;
-                case RecognitionState.Failed:
-                case RecognitionState.Ended:
-                    // isScreenDragging = false;
-                    break;
-            }
-        }
-
-        public void OnGesture(ScreenPinchEventData eventData)
-        {
-            Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
-
-            // screenPinchData = eventData;
-            switch(eventData.State)
-            {
-                case RecognitionState.Started:
-                    // isScreenPinching = true;
-                    break;
-                case RecognitionState.Failed:
-                case RecognitionState.Ended:
-                    // isScreenPinching = false;
-                    break;
-            }
-        }
-
-        public void OnGesture(ScreenLongPressEventData eventData)
-        {
-            Debug.Log($"LongPress..........{eventData.State}   {eventData.screenPosition}    {Time.frameCount}");
-            PickGameObject(eventData.screenPosition);
-        }
-
-        public void OnGesture(ScreenPointerDownEventData eventData)
-        {
-            Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
-        }
-        public void OnGesture(ScreenPointerUpEventData eventData)
-        {
-            Debug.Log($"ScreenPointerUpEventData:       {Time.frameCount}");
-            PickGameObject(eventData.screenPosition);
-        }
-
-        private void PickGameObject(Vector2 screenPosition)
-        {
-            Ray ray = eventCamera.ScreenPointToRay(screenPosition);
-
-            RaycastHit hitInfo = new RaycastHit();
-            Physics.Raycast(ray, out hitInfo, Mathf.Infinity, 1 << m_TerrainLayer | 1 << m_BaseLayer);
-
-            if(hitInfo.transform != null)
-            {
-                hitEventData.hitInfo = hitInfo;
-                SetSelectedGameObject(hitInfo.transform.gameObject, hitEventData);
-            }
         }
     }
 }

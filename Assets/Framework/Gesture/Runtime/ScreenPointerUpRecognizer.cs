@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Framework.Gesture.Runtime
 {
+    [RequireComponent(typeof(PlayerInput))]
     public class ScreenPointerUpRecognizer : DiscreteGestureRecognizer<IScreenPointerUpHandler, ScreenPointerUpEventData>
     {
         protected override bool CanBegin()

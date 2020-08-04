@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
+    [RequireComponent(typeof(PlayerInput))]
     public class ScreenPointerDownRecognizer : DiscreteGestureRecognizer<IScreenPointerDownHandler, ScreenPointerDownEventData>
     {
         protected override bool CanBegin()
