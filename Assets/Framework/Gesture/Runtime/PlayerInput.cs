@@ -66,13 +66,14 @@ namespace Framework.Gesture.Runtime
                 return;
             }
 
-            m_SelectionGuard = true;
             if (selected == m_CurrentSelected)
             {
-                m_SelectionGuard = false;
+                ExecuteEvents.Execute(m_CurrentSelected, eventData, ExecuteEvents.deselectHandler);
+                m_CurrentSelected = null;
                 return;
             }
 
+            m_SelectionGuard = true;
             ExecuteEvents.Execute(m_CurrentSelected, eventData, ExecuteEvents.deselectHandler);
             m_CurrentSelected = selected;
             ExecuteEvents.Execute(m_CurrentSelected, eventData, ExecuteEvents.selectHandler);

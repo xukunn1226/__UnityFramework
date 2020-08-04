@@ -12,6 +12,7 @@ public class GamePlayerInput :  MonoBehaviour,
                                 IScreenPointerUpHandler
 {
     public Camera eventCamera;
+    public Collider terrain;
     private PlayerInput m_PlayerInput;
     private PlayerInput playerInput
     {
@@ -41,11 +42,8 @@ public class GamePlayerInput :  MonoBehaviour,
 
     private void PickGameObject(Vector2 screenPosition)
     {
-        Ray ray = eventCamera.ScreenPointToRay(screenPosition);
-
-        RaycastHit hitInfo = new RaycastHit();
-        Physics.Raycast(ray, out hitInfo, Mathf.Infinity, 1 << m_TerrainLayer | 1 << m_BaseLayer);
-
+        RaycastHit hitInfo = Raycast(screenPosition, 1 << m_TerrainLayer | 1 << m_BaseLayer);
+     
         if (hitInfo.transform != null)
         {
             playerInput.hitEventData.hitInfo = hitInfo;
@@ -53,9 +51,18 @@ public class GamePlayerInput :  MonoBehaviour,
         }
     }
 
+    private RaycastHit Raycast(Vector2 screenPosition, int layerMask)
+    {
+        Ray ray = eventCamera.ScreenPointToRay(screenPosition);
+
+        RaycastHit hitInfo = new RaycastHit();
+        Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask);
+        return hitInfo;
+    }
+
     public void OnGesture(ScreenDragEventData eventData)
     {
-        // Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
+        Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
 
         // screenDragData = eventData;
         switch (eventData.State)
