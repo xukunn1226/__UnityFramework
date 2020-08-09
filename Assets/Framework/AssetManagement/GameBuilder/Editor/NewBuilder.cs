@@ -7,7 +7,9 @@ using UnityEditor;
 using UnityEditor.Build.Pipeline.Interfaces;
 using UnityEditor.Build.Pipeline;
 using UnityEditor.Build.Content;
+using UnityEditor.Build.Player;
 using UnityEngine.Build.Pipeline;
+using System.IO;
 
 public class NewBuilder
 {
@@ -59,16 +61,19 @@ public class NewBuilder
             AssetBundleBuild abb = BuildList[i];
             abb.addressableNames = new string[abb.assetNames.Length];
             for(int j = 0; j < abb.assetNames.Length; ++j)
-                abb.addressableNames[j] = System.IO.Path.GetFileNameWithoutExtension(abb.assetNames[j]);
+                abb.addressableNames[j] = System.IO.Path.GetFileName(abb.assetNames[j]);
             BuildList[i] = abb;
         }
         var buildContent = new BundleBuildContent(BuildList);
         // Construct the new parameters class
         var buildParams = new CustomBuildParameters(buildTarget, buildGroup, outputPath);
+        buildParams.BundleCompression = UnityEngine.BuildCompression.LZ4;
+        buildParams.ContentBuildFlags = ContentBuildFlags.DisableWriteTypeTree;
+        buildParams.ScriptOptions = ScriptCompilationOptions.DevelopmentBuild;
         // Populate the bundle specific compression data
         buildParams.PerBundleCompression.Add("Bundle1", UnityEngine.BuildCompression.Uncompressed);
         buildParams.PerBundleCompression.Add("Bundle2", UnityEngine.BuildCompression.LZMA);
-        buildParams.OutputFolder = "Deployment2";
+        buildParams.OutputFolder = "Deployment/Ex";
 
         // if (m_Settings.compressionType == CompressionType.None)
         //     buildParams.BundleCompression = BuildCompression.DefaultUncompressed;
@@ -79,14 +84,30 @@ public class NewBuilder
 
         IBundleBuildResults results;
         ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
+        if(exitCode < ReturnCode.Success)
+            return false;
+
+        var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
+            manifest.SetResults(results.BundleInfos);
+            File.WriteAllText(buildParams.GetOutputFilePathForIdentifier(Path.GetFileName(outputPath) + ".manifest"), manifest.ToString());
+            
         return exitCode == ReturnCode.Success;
-        // return true;
     }
 
     [MenuItem("Tools/Build AB")]
     static void BuildAB()
     {
         BuildAssetBundles_2("Deployment", true, BuildTarget.StandaloneWindows64, BuildTargetGroup.Standalone);
+    }
+
+    [MenuItem("Tools/Display GUID")]
+    static void DisplayGUID()
+    {
+        Debug.Log($"{AssetDatabase.GUIDToAssetPath("25d5b8ce0e9654646ae1ff96222c7aaa")}");
+        Debug.Log($"{AssetDatabase.GUIDToAssetPath("ea51d4abbd79dbe4684c910b4b11cfe5")}");
+        Debug.Log($"{AssetDatabase.GUIDToAssetPath("fd76295b7725e284cb11b334d456f0a1")}");
+        Debug.Log($"{AssetDatabase.GUIDToAssetPath("f14436493e490444fbf64c9f5569d86f")}");
+        Debug.Log($"{AssetDatabase.GUIDToAssetPath("e28b2d65b12b59c4b8bec50caa9a92f6")}");
     }
 
 

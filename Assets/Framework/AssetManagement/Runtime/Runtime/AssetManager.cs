@@ -129,7 +129,7 @@ namespace Framework.AssetManagement.Runtime
 #endif
             if (m_LoaderType == LoaderType.FromAB)
             {
-                AssetBundleManager.Init(m_RootPath, Utility.GetPlatformName());
+                AssetBundleManager.Init(m_RootPath);
             }
             Debug.Log($"AssetManager.loaderType is {m_LoaderType}");
         }

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Build.Pipeline;
+using UnityEngine.Networking;
 
 namespace Framework.AssetManagement.Runtime
 {
@@ -7,6 +9,7 @@ namespace Framework.AssetManagement.Runtime
     {
         static private string                                               m_RootPath;
         static private AssetBundleManifest                                  m_AssetBundleManifest;
+        static private UnityEngine.Object                     m_Manifest;
         static private Dictionary<string, AssetBundleRef>                   m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
         static private Dictionary<string, string[]>                         m_CachedDependencies        = new Dictionary<string, string[]>();
         
@@ -18,17 +21,21 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        static internal void Init(string rootPath, string platformName)
+        static internal void Init(string rootPath)
         {
+            string platformName = Framework.Core.Utility.GetPlatformName();
             m_RootPath = string.Format("{0}/{1}/", rootPath, platformName);
             Debug.LogFormat($"AssetBundleManager: init rootPath      {m_RootPath}");
 
             // init asset bundle manifest
             AssetBundle manifest = AssetBundle.LoadFromFile(GetRootPath(platformName));
+            // AssetBundle manifest = AssetBundle.LoadFromFile(GetRootPath(platformName) + "_xx.manifest");
             if (manifest != null)
             {
                 m_AssetBundleManifest = manifest.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                 manifest.Unload(false);
+
+                // m_Manifest = manifest.LoadAsset<UnityEngine.Object>("assets/windows_1.manifest");
             }
 
             if (m_AssetBundleManifest == null)

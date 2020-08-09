@@ -83,7 +83,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             if (needBuild)
             {
-                BundleBuilder.BuildAssetBundles(target as BundleBuilderSetting);
+                BundleBuilder.BuildAssetBundlesEx(target as BundleBuilderSetting);
             }
         }
 
