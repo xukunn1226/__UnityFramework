@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b87204b66a7c32a41807b797c08864d9, type: 3}
   m_Name: 0_BundleBuilderSetting
   m_EditorClassIdentifier: 
-  outputPath: Deployment/AssetBundles
+  outputPath: Assets/Deployment/AssetBundles
   useLZ4Compress: 1
   rebuildBundles: 1
   appendHash: 0

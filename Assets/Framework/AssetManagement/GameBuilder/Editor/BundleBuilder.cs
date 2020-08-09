@@ -104,7 +104,7 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             // step 3. copy bundles to streamingAssets
-            CopyAssetBundlesToStreamingAssets(outputPath);
+            // CopyAssetBundlesToStreamingAssets(outputPath);
             Debug.Log($"        Copy bundles to streaming assets");
             Debug.Log($"        BundleSettings: {para.ToString()}");
             Debug.Log($"End Build AssetBundles: Succeeded");
@@ -169,9 +169,10 @@ namespace Framework.AssetManagement.GameBuilder
 
             var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
             manifest.SetResults(results.BundleInfos);
-            File.WriteAllText(buildParams.GetOutputFilePathForIdentifier(Path.GetFileName(output) + "_Text.manifest"), manifest.ToString());
-
-            BuildManifestAsBundle(output);
+            // File.WriteAllText(buildParams.GetOutputFilePathForIdentifier(Path.GetFileName(output) + "_Text.manifest"), manifest.ToString());
+            AssetDatabase.CreateAsset(manifest, buildParams.GetOutputFilePathForIdentifier(Path.GetFileName(output) + "_Text.manifest"));
+            AssetDatabase.Refresh();
+            // BuildManifestAsBundle(output);
             return true;
         }
 
