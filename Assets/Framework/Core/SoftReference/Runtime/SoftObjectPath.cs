@@ -15,7 +15,6 @@ namespace Framework.Core
 
         [SerializeField]
         private string m_AssetPath;
-
         public string assetPath 
         { 
             get { return m_AssetPath; }
@@ -24,6 +23,16 @@ namespace Framework.Core
                 m_AssetPath = value;
             }
         }
+
+
+
+        [SerializeField]
+        private string m_BundleName;
+        [SerializeField]
+        private string m_AssetName;
+
+        public string bundleName    { get { return m_BundleName; } }
+        public string assetName     { get { return m_AssetName; } }
 
         static public bool IsValid(SoftObjectPath sop)
         {
