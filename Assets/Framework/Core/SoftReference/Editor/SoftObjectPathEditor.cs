@@ -10,6 +10,9 @@ namespace Framework.Core.Editor
     {
         private SoftObjectPath m_Target;
         private SerializedProperty m_GUIDProp;
+        private SerializedProperty m_AssetPathProp;
+        private SerializedProperty m_BundleNameProp;
+        private SerializedProperty m_AssetNameProp;
 
         private long m_FileID;
 
@@ -17,6 +20,9 @@ namespace Framework.Core.Editor
         {
             m_Target = (SoftObjectPath)serializedObject.targetObject;
             m_GUIDProp = serializedObject.FindProperty("m_GUID");
+            m_AssetPathProp = serializedObject.FindProperty("m_AssetPath");
+            m_BundleNameProp = serializedObject.FindProperty("m_BundleName");
+            m_AssetNameProp = serializedObject.FindProperty("m_AssetName");
             m_FileID = RedirectorDB.GetLocalID(m_Target);
         }
 
@@ -46,8 +52,14 @@ namespace Framework.Core.Editor
                 }
             }
 
+            m_AssetPathProp.stringValue = m_Target.assetPath;
+            m_BundleNameProp.stringValue = m_Target.bundleName;
+            m_AssetNameProp.stringValue = m_Target.assetName;
+
             GUI.enabled = false;
             EditorGUILayout.TextField("Asset Path", m_Target.assetPath);                    // 资源地址
+            EditorGUILayout.TextField("Bundle Name", m_Target.bundleName);
+            EditorGUILayout.TextField("Asset Name", m_Target.assetName);
             EditorGUILayout.TextField("GUID",       m_GUIDProp.stringValue);                // 资源GUID，与Asset Path一致
             EditorGUILayout.TextField("FileID",     m_FileID.ToString());                   // SoftObjectPath在挂载对象上的FileID
             GUI.enabled = true;

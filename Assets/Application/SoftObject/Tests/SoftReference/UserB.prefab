@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: 1427944daac4b2c46afe356b6ae7fc18
   m_AssetPath: assets/application/softobject/tests/softreference/refb.prefab
+  m_BundleName: assets/application/softobject/tests/softreference.ab
+  m_AssetName: assets/application/softobject/tests/softreference/refb.prefab
 --- !u!114 &474539670189816408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,5 +62,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: e4ebd3e647d74ed48a2558aa70612b04
   m_AssetPath: assets/application/softobject/tests/softreference/refc.prefab
+  m_BundleName: assets/application/softobject/tests/softreference.ab
+  m_AssetName: assets/application/softobject/tests/softreference/refc.prefab
   m_UseLRUManage: 0
   m_LRUedPoolAsset: {fileID: 0}

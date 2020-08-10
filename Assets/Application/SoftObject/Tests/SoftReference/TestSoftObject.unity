@@ -356,5 +356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: 289787880bb25464eb6abfb5455d9f73
   m_AssetPath: assets/framework/assetmanagement/runtime/tests/res/testdep/tex/cube.prefab
+  m_BundleName: assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab
+  m_AssetName: cube.prefab
   m_UseLRUManage: 0
   m_LRUedPoolAsset: {fileID: 0}

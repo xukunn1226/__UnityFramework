@@ -21,10 +21,18 @@ namespace Framework.Core
             set
             {
                 m_AssetPath = value;
+
+                m_BundleName = null;
+                m_AssetName = null;
+
+                int index = assetPath.LastIndexOf(@"/");
+                if (index == -1)
+                    return;
+
+                m_AssetName = assetPath.Substring(index + 1);
+                m_BundleName = assetPath.Substring(0, index) + ".ab";
             }
         }
-
-
 
         [SerializeField]
         private string m_BundleName;

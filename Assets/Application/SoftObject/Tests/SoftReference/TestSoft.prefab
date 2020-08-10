@@ -62,6 +62,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: bc14a199bfe85454c962b23acf9e9135
   m_AssetPath: assets/application/softobject/tests/softreference/cube333.prefab
+  m_BundleName: assets/application/softobject/tests/softreference.ab
+  m_AssetName: cube333.prefab
   m_UseLRUManage: 0
   m_LRUedPoolAsset: {fileID: 0}
 --- !u!114 &5911553339366115662
@@ -78,6 +80,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: 80a096570f542f34fa55b850a52b8139
   m_AssetPath: assets/application/softobject/tests/softreference/cube222.prefab
+  m_BundleName: assets/application/softobject/tests/softreference.ab
+  m_AssetName: cube222.prefab
 --- !u!1 &8297248846892223419
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,5 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: 4821597d05f0b1b4d95f0ff8bbbba59c
   m_AssetPath: assets/application/softobject/tests/softreference/plane1.prefab
+  m_BundleName: assets/application/softobject/tests/softreference.ab
+  m_AssetName: plane1.prefab
   m_UseLRUManage: 0
   m_LRUedPoolAsset: {fileID: 0}
