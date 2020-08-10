@@ -13,9 +13,17 @@ namespace Framework.Core
         public string m_GUID;
 #endif
 
-        public string m_AssetPath;
+        [SerializeField]
+        private string m_AssetPath;
 
-        public string assetPath { get { return m_AssetPath; } }
+        public string assetPath 
+        { 
+            get { return m_AssetPath; }
+            set
+            {
+                m_AssetPath = value;
+            }
+        }
 
         static public bool IsValid(SoftObjectPath sop)
         {

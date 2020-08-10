@@ -354,7 +354,7 @@ namespace Framework.Core.Editor
                             if(GetLocalID(sop) != ui.Value.m_FileID)
                                 continue;
                             sop.m_GUID = string.Empty;
-                            sop.m_AssetPath = string.Empty;
+                            sop.assetPath = string.Empty;
 
                             UnityEditor.EditorUtility.SetDirty(userObj);
                             isDirty = true;
@@ -405,7 +405,7 @@ namespace Framework.Core.Editor
                         if(GetLocalID(sop) != ui.Value.m_FileID)
                             continue;
                         sop.m_GUID = refGUID;
-                        sop.m_AssetPath = movedAssetPath.ToLower();
+                        sop.assetPath = movedAssetPath.ToLower();
 
                         UnityEditor.EditorUtility.SetDirty(userObj);
                         isDirty = true;
