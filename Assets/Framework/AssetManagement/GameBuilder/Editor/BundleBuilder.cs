@@ -19,7 +19,57 @@ namespace Framework.AssetManagement.GameBuilder
         /// </summary>
         /// <param name="para"></param>
         /// <returns></returns>
-        static public AssetBundleManifest BuildAssetBundles(BundleBuilderSetting para)
+        // static public AssetBundleManifest BuildAssetBundles(BundleBuilderSetting para)
+        // {
+        //     if (para == null)
+        //     {
+        //         Debug.LogError($"BundleBuilderSetting para == null");
+        //         if (Application.isBatchMode)
+        //         {
+        //             EditorApplication.Exit(1);
+        //         }
+        //         return null;
+        //     }
+
+        //     Debug.Log("Begin Build AssetBundles");
+
+        //     // step 1. create directory
+        //     string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
+        //     if (Directory.Exists(outputPath))
+        //         Directory.Delete(outputPath, true);
+        //     Directory.CreateDirectory(outputPath);
+        //     Debug.Log($"        Bundles Output: {outputPath}");
+
+        //     // step 2. build bundles
+        //     AssetBundleManifest manifest = BuildPipeline.BuildAssetBundles(outputPath, para.GenerateOptions(), EditorUserBuildSettings.activeBuildTarget);
+        //     Debug.Log($"        BuildAssetBundleOptions: {para.GenerateOptions()}");
+
+        //     // step 3. copy bundles to streamingAssets
+        //     if (manifest != null)
+        //     {
+        //         CopyAssetBundlesToStreamingAssets(outputPath);
+        //         Debug.Log($"        Copy bundles to streaming assets");
+        //     }
+
+        //     Debug.Log($"        BundleSettings: {para.ToString()}");
+
+        //     if(manifest != null)
+        //     {
+        //         Debug.Log($"End Build AssetBundles: Succeeded");
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError($"End Build AssetBundles: Failed");
+        //         if (Application.isBatchMode)
+        //         {
+        //             EditorApplication.Exit(1);
+        //         }
+        //     }
+
+        //     return manifest;
+        // }
+
+        static public bool BuildAssetBundles(BundleBuilderSetting para)
         {
             if (para == null)
             {
@@ -28,7 +78,7 @@ namespace Framework.AssetManagement.GameBuilder
                 {
                     EditorApplication.Exit(1);
                 }
-                return null;
+                return false;
             }
 
             Debug.Log("Begin Build AssetBundles");
@@ -41,58 +91,7 @@ namespace Framework.AssetManagement.GameBuilder
             Debug.Log($"        Bundles Output: {outputPath}");
 
             // step 2. build bundles
-            AssetBundleManifest manifest = BuildPipeline.BuildAssetBundles(outputPath, para.GenerateOptions(), EditorUserBuildSettings.activeBuildTarget);
-            Debug.Log($"        BuildAssetBundleOptions: {para.GenerateOptions()}");
-
-            // step 3. copy bundles to streamingAssets
-            if (manifest != null)
-            {
-                CopyAssetBundlesToStreamingAssets(outputPath);
-                Debug.Log($"        Copy bundles to streaming assets");
-            }
-
-            Debug.Log($"        BundleSettings: {para.ToString()}");
-
-            if(manifest != null)
-            {
-                Debug.Log($"End Build AssetBundles: Succeeded");
-            }
-            else
-            {
-                Debug.LogError($"End Build AssetBundles: Failed");
-                if (Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
-            }
-
-            return manifest;
-        }
-
-        static public AssetBundleManifest BuildAssetBundlesEx(BundleBuilderSetting para)
-        {
-            if (para == null)
-            {
-                Debug.LogError($"BundleBuilderSetting para == null");
-                if (Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
-                return null;
-            }
-
-            Debug.Log("Begin Build AssetBundles");
-
-            // step 1. create directory
-            string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
-            if (Directory.Exists(outputPath))
-                Directory.Delete(outputPath, true);
-            Directory.CreateDirectory(outputPath);
-            Debug.Log($"        Bundles Output: {outputPath}");
-
-            // step 2. build bundles
-            // AssetBundleManifest manifest = BuildPipeline.BuildAssetBundles(outputPath, para.GenerateOptions(), EditorUserBuildSettings.activeBuildTarget);
-            Debug.Log($"        BuildAssetBundleOptions: {para.GenerateOptions()}");
+            // Debug.Log($"        BuildAssetBundleOptions: {para.GenerateOptions()}");
             if(!BuildBundleWithSBP(outputPath, para))
             {
                 Debug.LogError($"End Build AssetBundles: Failed");
@@ -100,16 +99,16 @@ namespace Framework.AssetManagement.GameBuilder
                 {
                     EditorApplication.Exit(1);
                 }
-                return null;
+                return false;
             }
 
             // step 3. copy bundles to streamingAssets
-            // CopyAssetBundlesToStreamingAssets(outputPath);
+            CopyAssetBundlesToStreamingAssets(outputPath);
             Debug.Log($"        Copy bundles to streaming assets");
             Debug.Log($"        BundleSettings: {para.ToString()}");
             Debug.Log($"End Build AssetBundles: Succeeded");
 
-            return null;
+            return true;
         }
 
 
@@ -141,7 +140,7 @@ namespace Framework.AssetManagement.GameBuilder
                 AssetBundleBuild abb = BuildList[i];
                 abb.addressableNames = new string[abb.assetNames.Length];
                 for (int j = 0; j < abb.assetNames.Length; ++j)
-                    abb.addressableNames[j] = Path.GetFileName(abb.assetNames[j]);
+                    abb.addressableNames[j] = Path.GetFileName(abb.assetNames[j]).ToLower();
                 BuildList[i] = abb;
             }
             var buildContent = new BundleBuildContent(BuildList);
@@ -152,13 +151,16 @@ namespace Framework.AssetManagement.GameBuilder
                                                         output);
             
             buildParams.BundleCompression = setting.useLZ4Compress ? UnityEngine.BuildCompression.LZ4 : UnityEngine.BuildCompression.LZMA;
-            buildParams.ContentBuildFlags = ContentBuildFlags.DisableWriteTypeTree;
-            buildParams.ScriptOptions = ScriptCompilationOptions.DevelopmentBuild;
+            if(setting.DisableWriteTypeTree)
+                buildParams.ContentBuildFlags |= ContentBuildFlags.DisableWriteTypeTree;
+            if(setting.DevelopmentBuild)
+                buildParams.ScriptOptions |= ScriptCompilationOptions.DevelopmentBuild;
             // Populate the bundle specific compression data
-            buildParams.PerBundleCompression.Add("Bundle1", UnityEngine.BuildCompression.Uncompressed);
-            buildParams.PerBundleCompression.Add("Bundle2", UnityEngine.BuildCompression.LZMA);
+            // buildParams.PerBundleCompression.Add("Bundle1", UnityEngine.BuildCompression.Uncompressed);
+            // buildParams.PerBundleCompression.Add("Bundle2", UnityEngine.BuildCompression.LZMA);
             buildParams.OutputFolder = output;
 
+            // step3. build bundles except Manifest
             IBundleBuildResults results;
             ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
             if (exitCode < ReturnCode.Success)
@@ -169,33 +171,34 @@ namespace Framework.AssetManagement.GameBuilder
 
             var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
             manifest.SetResults(results.BundleInfos);
-            // File.WriteAllText(buildParams.GetOutputFilePathForIdentifier(Path.GetFileName(output) + "_Text.manifest"), manifest.ToString());
-            AssetDatabase.CreateAsset(manifest, buildParams.GetOutputFilePathForIdentifier(Path.GetFileName(output) + "_Text.manifest"));
+            AssetDatabase.CreateAsset(manifest, buildParams.GetOutputFilePathForIdentifier(Path.GetFileName(output) + "_Text.asset"));
             AssetDatabase.Refresh();
-            // BuildManifestAsBundle(output);
+            if(!BuildManifestAsBundle(output))
+            {
+                Debug.LogError("Failed to build manifest");
+                return false;
+            }
             return true;
         }
 
-        static private void BuildManifestAsBundle(string output)
+        static private bool BuildManifestAsBundle(string output)
         {
             AssetBundleBuild[] BuildList = new AssetBundleBuild[1];
             AssetBundleBuild abb = new AssetBundleBuild();
-            // abb.assetBundleName = Utility.GetPlatformName() + "_XX.manifest";
             abb.assetBundleName = "manifest";
             abb.assetNames = new string[1];
-            abb.assetNames[0] = output + "/" + Path.GetFileName(output) + "_Text.manifest";
-            // abb.assetNames[0] = "Assets/Windows_1.manifest";
+            abb.assetNames[0] = output + "/" + Path.GetFileName(output) + "_Text.asset";
+            abb.addressableNames = new string[1];
+            abb.addressableNames[0] = "manifest";
             BuildList[0] = abb;
-            // var buildContent = new BundleBuildContent(BuildList);
-            // var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
-            //                                             BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), 
-            //                                             output);
+            var buildContent = new BundleBuildContent(BuildList);
+            var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
+                                                        BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), 
+                                                        output);
 
-
-            // IBundleBuildResults results;
-            // ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
-
-            AssetBundleManifest manifest = BuildPipeline.BuildAssetBundles(output, BuildList, BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
+            IBundleBuildResults results;
+            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
+            return exitCode >= ReturnCode.Success;
         }
 
         static internal void CopyAssetBundlesToStreamingAssets(string output)
@@ -235,7 +238,10 @@ namespace Framework.AssetManagement.GameBuilder
                 string destName = Path.Combine(destinationPath, fsi.Name);
 
                 if (fsi is System.IO.FileInfo)          //如果是文件，复制文件
-                    File.Copy(fsi.FullName, destName);
+                {
+                    if(!fsi.FullName.EndsWith(".meta"))
+                        File.Copy(fsi.FullName, destName);
+                }
                 else                                    //如果是文件夹，新建文件夹，递归
                 {
                     Directory.CreateDirectory(destName);

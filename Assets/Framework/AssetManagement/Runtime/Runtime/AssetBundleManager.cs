@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Build.Pipeline;
-using UnityEngine.Networking;
 
 namespace Framework.AssetManagement.Runtime
 {
     static internal class AssetBundleManager
     {
         static private string                                               m_RootPath;
-        static private AssetBundleManifest                                  m_AssetBundleManifest;
-        static private UnityEngine.Object                     m_Manifest;
+        static private CompatibilityAssetBundleManifest                     m_Manifest;
         static private Dictionary<string, AssetBundleRef>                   m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
         static private Dictionary<string, string[]>                         m_CachedDependencies        = new Dictionary<string, string[]>();
         
@@ -17,7 +15,7 @@ namespace Framework.AssetManagement.Runtime
         {
             get
             {
-                return m_AssetBundleManifest != null;
+                return m_Manifest != null;
             }
         }
 
@@ -28,17 +26,14 @@ namespace Framework.AssetManagement.Runtime
             Debug.LogFormat($"AssetBundleManager: init rootPath      {m_RootPath}");
 
             // init asset bundle manifest
-            AssetBundle manifest = AssetBundle.LoadFromFile(GetRootPath(platformName));
-            // AssetBundle manifest = AssetBundle.LoadFromFile(GetRootPath(platformName) + "_xx.manifest");
+            AssetBundle manifest = AssetBundle.LoadFromFile(GetRootPath("manifest"));
             if (manifest != null)
             {
-                m_AssetBundleManifest = manifest.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+                m_Manifest = manifest.LoadAsset<CompatibilityAssetBundleManifest>("manifest");
                 manifest.Unload(false);
-
-                // m_Manifest = manifest.LoadAsset<UnityEngine.Object>("assets/windows_1.manifest");
             }
 
-            if (m_AssetBundleManifest == null)
+            if (m_Manifest == null)
                 Debug.LogError("AssetBundleManager init failed becase of asset bundle manifest == null");
         }
 
@@ -56,10 +51,10 @@ namespace Framework.AssetManagement.Runtime
             m_DictAssetBundleRefs.Clear();
 
             // unload manifest
-            if (m_AssetBundleManifest != null)
+            if (m_Manifest != null)
             {
-                Resources.UnloadAsset(m_AssetBundleManifest);        // 卸载Asset-Object
-                m_AssetBundleManifest = null;
+                Resources.UnloadAsset(m_Manifest);        // 卸载Asset-Object
+                m_Manifest = null;
             }
         }
         
@@ -74,7 +69,7 @@ namespace Framework.AssetManagement.Runtime
             string[] dependencies;
             if (!m_CachedDependencies.TryGetValue(InAssetBundleName, out dependencies))
             {
-                dependencies = m_AssetBundleManifest.GetAllDependencies(InAssetBundleName);
+                dependencies = m_Manifest.GetAllDependencies(InAssetBundleName);
                 m_CachedDependencies.Add(InAssetBundleName, dependencies);
             }
             return dependencies;

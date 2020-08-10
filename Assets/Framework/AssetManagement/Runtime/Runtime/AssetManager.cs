@@ -97,7 +97,7 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         /// <param name="type">AB加载模式或直接从project中加载资源</param>
         /// <param name="bundleRootPath">bundle资源路径，仅限AB加载模式时有效</param>
-        static public AssetManager Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
+        static public AssetManager Init(LoaderType type, string bundleRootPath = "Assets/Deployment/AssetBundles")
         {
             k_bDynamicLoad = true;
 

@@ -32,7 +32,7 @@ namespace Framework.AssetManagement.GameBuilder
                     EditorApplication.Exit(1);
                 }
                 throw new System.ArgumentNullException("BundleBuilderSetting", "bundleSetting == null");
-            }                
+            }
 
             if (gameSetting.playerSetting == null)
             {
@@ -43,8 +43,7 @@ namespace Framework.AssetManagement.GameBuilder
                 throw new System.ArgumentNullException("PlayerBuilderSetting", "playerSetting == null");
             }
 
-            AssetBundleManifest manifest = BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting);
-            if(manifest != null)
+            if(BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting))
             {
                 PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
             }
@@ -76,14 +75,13 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             // override the bundle setting parameters
-            SetOverridePara(ref setting.bundleSetting.outputPath,                   "BundlesOutput",            "Deployment/AssetBundles");
+            SetOverridePara(ref setting.bundleSetting.outputPath,                   "BundlesOutput",            "Assets/Deployment/AssetBundles");
             SetOverridePara(ref setting.bundleSetting.useLZ4Compress,               "UseLZ4Compress",           true);
             SetOverridePara(ref setting.bundleSetting.appendHash,                   "AppendHash",               false);
-            SetOverridePara(ref setting.bundleSetting.rebuildBundles,               "RebuildBundles",           false);
-            SetOverridePara(ref setting.bundleSetting.strictMode,                   "BundleStrictMode",         true);
+            // SetOverridePara(ref setting.bundleSetting.rebuildBundles,               "RebuildBundles",           false);
 
             // override the player setting parameters
-            SetOverridePara(ref setting.playerSetting.outputPath,                   "PlayerOutput",             "Deployment/Player");            
+            SetOverridePara(ref setting.playerSetting.outputPath,                   "PlayerOutput",             "Assets/Deployment/Player");            
             SetOverridePara(ref setting.playerSetting.projectName,                  "ProjectName",              "MyProject");
             SetOverridePara(ref setting.playerSetting.autoRunPlayer,                "AutoRunPlayer",            true);
             // batch mode没有连接设备会出包失败
