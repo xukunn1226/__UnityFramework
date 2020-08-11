@@ -11,10 +11,12 @@ public class GamePlayerInput :  MonoBehaviour,
                                 IScreenPointerDownHandler,
                                 IScreenPointerUpHandler
 {
-    public Camera eventCamera;
-    public Collider terrain;
-    private PlayerInput m_PlayerInput;
-    private PlayerInput playerInput
+    static public GamePlayerInput Instance { get; private set; }
+
+    public Camera           eventCamera;
+    public Collider         terrain;
+    private PlayerInput     m_PlayerInput;
+    private PlayerInput     playerInput
     {
         get
         {
@@ -29,15 +31,32 @@ public class GamePlayerInput :  MonoBehaviour,
     private int m_TerrainLayer;
     private int m_BaseLayer;
 
+    public ScreenDragEventData dragData { get; private set; }
+    public bool isDragging { get; private set; }
+    public bool wasDragging { get; private set; }
+
     void Awake()
     {
+        if (FindObjectsOfType<GamePlayerInput>().Length > 1)
+        {
+            DestroyImmediate(this);
+            throw new System.Exception("GamePlayerInput has already exist...");
+        }
+
         if(eventCamera == null)
             throw new System.Exception("Missing event camera");
         if(playerInput == null)
             throw new System.ArgumentNullException("playerInput");
 
+        Instance = this;
+        
         m_TerrainLayer = LayerMask.NameToLayer("Terrain");
         m_BaseLayer = LayerMask.NameToLayer("Base");
+    }
+
+    void OnDestroy()
+    {
+        Instance = null;
     }
 
     private void PickGameObject(Vector2 screenPosition)
@@ -64,15 +83,21 @@ public class GamePlayerInput :  MonoBehaviour,
     {
         Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
 
-        // screenDragData = eventData;
+        dragData = eventData;
         switch (eventData.State)
         {
             case RecognitionState.Started:
-                // isScreenDragging = true;
+                wasDragging = false;
+                isDragging = true;
+                break;
+            case RecognitionState.InProgress:
+                wasDragging = isDragging;
+                isDragging = true;
                 break;
             case RecognitionState.Failed:
             case RecognitionState.Ended:
-                // isScreenDragging = false;
+                wasDragging = isDragging;
+                isDragging = false;
                 break;
         }
     }
