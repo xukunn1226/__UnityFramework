@@ -20,6 +20,7 @@ namespace Framework.Cache
         public IPooledObject Get() { throw new System.NotImplementedException(); }
 
         public abstract IPooledObject Get(string assetPath);
+        public abstract IPooledObject Get(string bundleName, string assetName);
 
         public abstract void Return(IPooledObject obj);
 

@@ -8,7 +8,8 @@ namespace Framework.AssetManagement.Runtime.Tests
     {
         public LoaderType type;
 
-        public string assetPath;
+        public string bundleName;
+        public string assetName;
 
         public Material Mat;
 
@@ -59,7 +60,7 @@ namespace Framework.AssetManagement.Runtime.Tests
             }
 
             info = inst != null ? "sucess to load: " : "fail to load: ";
-            info += assetPath;
+            info += assetName;
             info += Time.frameCount - f1;
         }
 
@@ -67,7 +68,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             int f1 = Time.frameCount;
 
-            GameObjectLoaderAsync loaderAsync = AssetManager.InstantiateAsync(assetPath);
+            GameObjectLoaderAsync loaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
             yield return loaderAsync;
 
             inst = loaderAsync.asset;
@@ -77,7 +78,7 @@ namespace Framework.AssetManagement.Runtime.Tests
             GameObject asset = loader.LoadAsset<GameObject>("cube.prefab");
 
             info = inst != null ? "sucess to load: " : "fail to load: ";
-            info += assetPath;
+            info += assetName;
             info += Time.frameCount - f1;
         }
 

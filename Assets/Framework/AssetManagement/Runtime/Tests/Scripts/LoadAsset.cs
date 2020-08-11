@@ -8,7 +8,8 @@ namespace Framework.AssetManagement.Runtime.Tests
     {
         public LoaderType type;
 
-        public string assetPath;
+        public string bundleName;
+        public string assetName;
 
         AssetLoader<UnityEngine.Object> loader;
         string info;
@@ -48,10 +49,10 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void StartTask()
         {
-            loader = AssetManager.LoadAsset<UnityEngine.Object>(assetPath);
+            loader = AssetManager.LoadAsset<UnityEngine.Object>(bundleName, assetName);
 
             info = loader == null ? "fail to load: " : "sucess to load: ";
-            info += assetPath;
+            info += assetName;
         }
 
         void EndTask()

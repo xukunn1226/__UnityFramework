@@ -13,8 +13,9 @@ public class StuffSpawnerRing : MonoBehaviour
 
     public StuffSpawner spawnerPrefab;
 
-    public List<string> PoolPathList = new List<string>();
-
+    public List<string> PoolPathList = new List<string>();      // bundle name list
+    public List<string> AssetNameList = new List<string>();     // asset name list
+    
     [HideInInspector]
     public List<PrefabObjectPool> PoolList = new List<PrefabObjectPool>();
 
@@ -23,9 +24,12 @@ public class StuffSpawnerRing : MonoBehaviour
 
     IEnumerator Start()
     {
-        foreach(var assetPath in PoolPathList)
+        if(PoolPathList.Count != AssetNameList.Count)
+            throw new System.Exception("PoolPathList.Count != AssetNameList.Count");
+
+        for(int i = 0; i < PoolPathList.Count; ++i)
         {
-            GameObject go = ResourceManager.Instantiate(assetPath).asset;
+            GameObject go = ResourceManager.Instantiate(PoolPathList[i], AssetNameList[i]).asset;
             PrefabObjectPool pool = go.GetComponent<PrefabObjectPool>();
             if(pool != null)
             {

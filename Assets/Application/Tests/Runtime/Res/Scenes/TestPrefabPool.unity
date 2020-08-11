@@ -151,6 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   assetPath: assets/gameplay/tests/runtime/res/qk/prefabpool.prefab
+  bundleName: assets/gameplay/tests/runtime/res/qk.ab
+  assetName: prefabpool.prefab
 --- !u!4 &128648269
 Transform:
   m_ObjectHideFlags: 0
@@ -196,6 +198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LoaderType: 1
   m_RootPath: Deployment/AssetBundles
+  m_UIAtlasPath: res/ui/atlases
 --- !u!4 &1394410415
 Transform:
   m_ObjectHideFlags: 0

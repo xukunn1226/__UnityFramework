@@ -166,7 +166,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   assetPathA: assets/framework/assetmanagement/runtime/tests/res/testunload/a.asset
+  bundleNameA: assets/framework/assetmanagement/runtime/tests/res/testunload.ab
+  assetNameA: a.asset
   assetPathB: assets/framework/assetmanagement/runtime/tests/res/testunload/b.asset
+  bundleNameB: assets/framework/assetmanagement/runtime/tests/res/testunload.ab
+  assetNameB: b.asset
 --- !u!1 &688187353
 GameObject:
   m_ObjectHideFlags: 0

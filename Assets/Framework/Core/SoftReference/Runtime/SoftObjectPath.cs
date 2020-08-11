@@ -11,7 +11,6 @@ namespace Framework.Core
     {
 #if UNITY_EDITOR
         public string m_GUID;
-#endif
 
         [SerializeField]
         private string m_AssetPath;
@@ -33,18 +32,21 @@ namespace Framework.Core
                 m_BundleName = assetPath.Substring(0, index) + ".ab";
             }
         }
+#endif
 
+#pragma warning disable 0649
         [SerializeField]
         private string m_BundleName;
         [SerializeField]
         private string m_AssetName;
+#pragma warning restore 0649
 
         public string bundleName    { get { return m_BundleName; } }
         public string assetName     { get { return m_AssetName; } }
 
         static public bool IsValid(SoftObjectPath sop)
         {
-            return sop != null && !string.IsNullOrEmpty(sop.assetPath);
+            return sop != null && !string.IsNullOrEmpty(sop.bundleName) && !string.IsNullOrEmpty(sop.assetName);
         }
     }
 }

@@ -43,18 +43,18 @@ namespace Framework.AssetManagement.Runtime
             return loader;
         }
 
-        // static internal AssetLoaderAsync<T> Get(string assetBundleName, string assetName)
-        // {
-        //     if (m_Pool == null)
-        //     {
-        //         m_Pool = new LinkedObjectPool<AssetLoaderAsync<T>>(AssetManager.PreAllocateAssetLoaderAsyncPoolSize);
-        //     }
+        static internal AssetLoaderAsync<T> Get(string assetBundleName, string assetName)
+        {
+            if (m_Pool == null)
+            {
+                m_Pool = new LinkedObjectPool<AssetLoaderAsync<T>>(AssetManager.PreAllocateAssetLoaderAsyncPoolSize);
+            }
 
-        //     AssetLoaderAsync<T> loader = (AssetLoaderAsync<T>)m_Pool.Get();
-        //     loader.LoadAsset(assetBundleName, assetName);
-        //     loader.Pool = m_Pool;
-        //     return loader;
-        // }
+            AssetLoaderAsync<T> loader = (AssetLoaderAsync<T>)m_Pool.Get();
+            loader.LoadAsset(assetBundleName, assetName);
+            loader.Pool = m_Pool;
+            return loader;
+        }
 
         static internal void Release(AssetLoaderAsync<T> loader)
         {
@@ -83,32 +83,32 @@ namespace Framework.AssetManagement.Runtime
 #endif
         }
 
-//         private void LoadAsset(string assetBundleName, string assetName)
-//         {
-// #if UNITY_EDITOR
-//             AssetManager.Instance.ParseBundleAndAssetName(assetBundleName, assetName, out assetPath);
-//             switch (AssetManager.Instance.loaderType)
-//             {
-//                 case LoaderType.FromEditor:
-//                     {
-//                         asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
-//                     }
-//                     break;
-//                 case LoaderType.FromAB:
-//                     {
-//                         LoadAssetInternal(assetBundleName, assetName);
-//                     }
-//                     break;
-//             }
-// #else
-//             LoadAssetInternal(assetBundleName, assetName);
-// #endif
-//         }
+        private void LoadAsset(string assetBundleName, string assetName)
+        {
+#if UNITY_EDITOR
+            AssetManager.ParseBundleAndAssetName(assetBundleName, assetName, out assetPath);
+            switch (AssetManager.Instance.loaderType)
+            {
+                case LoaderType.FromEditor:
+                    {
+                        asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                    }
+                    break;
+                case LoaderType.FromAB:
+                    {
+                        LoadAssetInternal(assetBundleName, assetName);
+                    }
+                    break;
+            }
+#else
+            LoadAssetInternal(assetBundleName, assetName);
+#endif
+        }
 
         private void LoadAssetInternal(string assetPath)
         {
             string assetBundleName, assetName;
-            if (!AssetManager.Instance.ParseAssetPath(assetPath, out assetBundleName, out assetName))
+            if (!AssetManager.ParseAssetPath(assetPath, out assetBundleName, out assetName))
             {
                 Debug.LogWarningFormat("AssetLoader -- Failed to reslove assetbundle name: {0} {1}", assetPath, typeof(T));
                 return;

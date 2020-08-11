@@ -22,10 +22,10 @@ namespace Framework.AssetManagement.Runtime
     public sealed class AssetManager : MonoBehaviour
     {
         public delegate bool AssetPathToBundleAndAsset_EventHandler(string assetPath, out string assetBundleName, out string assetName);
-        public event AssetPathToBundleAndAsset_EventHandler CustomizedParser_AssetPathToBundleAndAsset;
+        static public event AssetPathToBundleAndAsset_EventHandler CustomizedParser_AssetPathToBundleAndAsset;
 
         public delegate bool BundleAndAssetToAssetPath_EventHandler(string assetBundleName, string assetName, out string assetPath);
-        public event BundleAndAssetToAssetPath_EventHandler CustomizedParser_BundleAndAssetToAssetPath;
+        static public event BundleAndAssetToAssetPath_EventHandler CustomizedParser_BundleAndAssetToAssetPath;
 
         static public AssetManager      Instance { get; private set; }
 
@@ -153,8 +153,8 @@ namespace Framework.AssetManagement.Runtime
             if (Instance == null)
                 throw new ArgumentNullException("Instance", "AssetManager not init");
 
-            Instance.CustomizedParser_AssetPathToBundleAndAsset += parser1;
-            Instance.CustomizedParser_BundleAndAssetToAssetPath += parser2;
+            CustomizedParser_AssetPathToBundleAndAsset += parser1;
+            CustomizedParser_BundleAndAssetToAssetPath += parser2;
         }
 
 
@@ -169,6 +169,13 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             
             return GameObjectLoader.Get(assetPath);
+        }
+        static public GameObjectLoader Instantiate(string bundleName, string assetName)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
+            return GameObjectLoader.Get(bundleName, assetName);
         }
 
         static public void ReleaseInst(GameObjectLoader loader)
@@ -185,6 +192,13 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             
             return GameObjectLoaderAsync.Get(assetPath);
+        }
+        static public GameObjectLoaderAsync InstantiateAsync(string bundleName, string assetName)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
+            return GameObjectLoaderAsync.Get(bundleName, assetName);
         }
 
         static public void ReleaseInst(GameObjectLoaderAsync loader)
@@ -208,6 +222,13 @@ namespace Framework.AssetManagement.Runtime
             
             return AssetLoader<T>.Get(assetPath);
         }
+        static public AssetLoader<T> LoadAsset<T>(string bundleName, string assetName) where T : UnityEngine.Object
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
+            return AssetLoader<T>.Get(bundleName, assetName);
+        }
 
         /// <summary>
         /// 异步加载资源接口
@@ -221,6 +242,13 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             
             return AssetLoaderAsync<T>.Get(assetPath);
+        }
+        static public AssetLoaderAsync<T> LoadAssetAsync<T>(string bundleName, string assetName) where T : UnityEngine.Object
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            
+            return AssetLoaderAsync<T>.Get(bundleName, assetName);
         }
 
         static public void UnloadAsset<T>(AssetLoader<T> loader) where T : UnityEngine.Object
@@ -344,7 +372,7 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="assetBundleName">res/windows/test.ab</param>
         /// <param name="assetName">cube.prefab</param>
         /// <returns></returns>
-        internal bool ParseAssetPath(string assetPath, out string assetBundleName, out string assetName)
+        static public bool ParseAssetPath(string assetPath, out string assetBundleName, out string assetName)
         {
             if (string.IsNullOrEmpty(assetPath))
             {
@@ -379,7 +407,7 @@ namespace Framework.AssetManagement.Runtime
             return true;
         }
 
-        internal void ParseBundleAndAssetName(string assetBundleName, string assetName, out string assetPath)
+        static public void ParseBundleAndAssetName(string assetBundleName, string assetName, out string assetPath)
         {
             if(CustomizedParser_BundleAndAssetToAssetPath != null)
             {

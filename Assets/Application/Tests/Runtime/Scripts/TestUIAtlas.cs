@@ -31,12 +31,12 @@ namespace Tests
 
             if (GUI.Button(new Rect(100, 400, 120, 60), "GetAtlas"))
             {
-                m_Atlas = ResourceManager.GetAtlas("0.Common", "12321");
+                // m_Atlas = ResourceManager.GetAtlas("0.Common", "12321");
             }
 
             if (GUI.Button(new Rect(100, 500, 120, 60), "ReleaseAtlas"))
             {
-                ResourceManager.ReleaseAtlas("0.Common", "12321");
+                // ResourceManager.ReleaseAtlas("0.Common", "12321");
             }
 
 

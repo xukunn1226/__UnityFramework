@@ -48,10 +48,34 @@ public class LRUPool_FX : LRUPoolBase
 
     public override IPooledObject Get(string assetPath)
     {
-        FX_Root fx = s_FXPool.Exist(assetPath);
+        // FX_Root fx = s_FXPool.Exist(assetPath);
+        // if(fx == null)
+        // {
+        //     GameObjectLoader loader = ResourceManager.Instantiate(assetPath);
+        //     if(loader.asset == null)
+        //     {
+        //         return null;
+        //     }
+        //     fx = loader.asset.GetComponent<FX_Root>();
+        //     if (fx == null)
+        //         throw new System.ArgumentNullException("FX_Root", "no FX_Root script attached to prefab");
+        //     fx.Pool = this;
+
+        //     s_LoaderPool.Add(assetPath, loader);
+        // }
+
+        // fx.OnGet();
+        // s_FXPool.Cache(assetPath, fx);        
+        // return fx;
+        throw new System.NotImplementedException();
+    }
+    
+    public override IPooledObject Get(string bundleName, string assetName)
+    {
+        FX_Root fx = s_FXPool.Exist(assetName);
         if(fx == null)
         {
-            GameObjectLoader loader = ResourceManager.Instantiate(assetPath);
+            GameObjectLoader loader = ResourceManager.Instantiate(bundleName, assetName);
             if(loader.asset == null)
             {
                 return null;
@@ -61,11 +85,11 @@ public class LRUPool_FX : LRUPoolBase
                 throw new System.ArgumentNullException("FX_Root", "no FX_Root script attached to prefab");
             fx.Pool = this;
 
-            s_LoaderPool.Add(assetPath, loader);
+            s_LoaderPool.Add(assetName, loader);
         }
 
         fx.OnGet();
-        s_FXPool.Cache(assetPath, fx);        
+        s_FXPool.Cache(assetName, fx);        
         return fx;
     }
 

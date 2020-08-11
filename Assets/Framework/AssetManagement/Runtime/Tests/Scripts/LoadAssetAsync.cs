@@ -8,7 +8,8 @@ namespace Framework.AssetManagement.Runtime.Tests
     {
         public LoaderType type;
 
-        public string assetPath;
+        public string bundleName;
+        public string assetName;
 
         AssetLoaderAsync<Material> m_Loader;
         // string info;
@@ -43,7 +44,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         IEnumerator StartTask()
         {
-            m_Loader = AssetManager.LoadAssetAsync<Material>(assetPath);
+            m_Loader = AssetManager.LoadAssetAsync<Material>(bundleName, assetName);
             yield return m_Loader;
 
             // m_Loader.asset

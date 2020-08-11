@@ -53,7 +53,7 @@ namespace Tests
             inst = m_SoftObject.Instantiate();
 
             info = inst != null ? "sucess to load: " : "fail to load: ";
-            info += m_SoftObject.assetPath;
+            info += m_SoftObject.assetName;
         }
 
         IEnumerator StartTaskAsync()
@@ -66,7 +66,7 @@ namespace Tests
             inst = loaderAsync.asset;
             
             info = inst != null ? "sucess to load: " : "fail to load: ";
-            info += m_SoftObject.assetPath;
+            info += m_SoftObject.assetName;
         }
 
         void EndTask()

@@ -9,6 +9,8 @@ namespace Framework.AssetManagement.Runtime
         static private string                                               m_RootPath;
         static private CompatibilityAssetBundleManifest                     m_Manifest;
         static private Dictionary<string, AssetBundleRef>                   m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
+
+        // CompatibilityAssetBundleManifest.GetAllDependencies()有GC，待官方修正，暂时本地做缓存避免每次获取产生的GC
         static private Dictionary<string, string[]>                         m_CachedDependencies        = new Dictionary<string, string[]>();
         
         static private bool bInit

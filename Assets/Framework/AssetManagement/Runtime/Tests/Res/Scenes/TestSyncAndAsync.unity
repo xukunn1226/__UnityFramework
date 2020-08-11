@@ -152,6 +152,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   assetPath: assets/framework/assetmanagement/runtime/tests/res/prefab/cube.prefab
+  bundleName: assets/framework/assetmanagement/runtime/tests/res/prefab.ab
+  assetName: cube.prefab
   Mat: {fileID: 0}
 --- !u!4 &65220020
 Transform:

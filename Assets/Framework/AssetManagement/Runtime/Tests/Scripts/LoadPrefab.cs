@@ -6,7 +6,8 @@ namespace Framework.AssetManagement.Runtime.Tests
     {
         public LoaderType type;
 
-        public string assetPath;
+        public string bundleName;
+        public string assetName;
 
         GameObject inst;
         string info;
@@ -58,11 +59,10 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void StartTask()
         {
-            // inst = AssetManager.InstantiatePrefab(assetPath);
-            loader = AssetManager.Instantiate(assetPath);
+            loader = AssetManager.Instantiate(bundleName, assetName);
 
             info = inst != null ? "sucess to load: " : "fail to load: ";
-            info += assetPath;
+            info += assetName;
         }
 
         void EndTask()

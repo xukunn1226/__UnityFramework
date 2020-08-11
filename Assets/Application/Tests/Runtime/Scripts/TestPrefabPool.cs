@@ -12,7 +12,8 @@ using Framework.AssetManagement.Runtime;
 /// </summary>
 public class TestPrefabPool : MonoBehaviour
 {
-    public string assetPath;
+    public string bundleName;
+    public string assetName;
 
     private GameObject PoolInst;
     private GameObjectLoader loader;
@@ -22,7 +23,7 @@ public class TestPrefabPool : MonoBehaviour
         if (GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
         {
             // step 1. 创建对象池
-            loader = ResourceManager.Instantiate(assetPath);
+            loader = ResourceManager.Instantiate(bundleName, assetName);
             PoolInst = loader.asset;
         }
 

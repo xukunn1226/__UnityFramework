@@ -84,7 +84,7 @@ namespace Tests
 
         private IPooledObject Load(string assetPath)
         {
-            return m_LRUInst?.Get(assetPath) ?? null;
+            return m_LRUInst?.Get("", assetPath) ?? null;
         }
 
         private void Unload(IPooledObject ui)

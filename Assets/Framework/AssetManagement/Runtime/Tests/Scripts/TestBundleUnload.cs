@@ -11,8 +11,10 @@ namespace Framework.AssetManagement.Runtime.Tests
     {
         public LoaderType type;
 
-        public string assetPathA;
-        public string assetPathB;
+        public string bundleNameA;
+        public string assetNameA;
+        public string bundleNameB;
+        public string assetNameB;
 
         AssetLoader<UnityEngine.Object> loaderA;
         AssetLoader<UnityEngine.Object> loaderB;
@@ -64,10 +66,10 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void LoadA()
         {
-            loaderA = AssetManager.LoadAsset<UnityEngine.Object>(assetPathA);
+            loaderA = AssetManager.LoadAsset<UnityEngine.Object>(bundleNameA, assetNameA);
 
             info = loaderA.asset != null ? "sucess to load: " : "fail to load: ";
-            info += assetPathA;
+            info += assetNameA;
         }
 
         void UnLoadA()
@@ -77,10 +79,10 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void LoadB()
         {
-            loaderB = AssetManager.LoadAsset<Object>(assetPathB);
+            loaderB = AssetManager.LoadAsset<Object>(bundleNameB, assetNameB);
 
             info = loaderB.asset != null ? "sucess to load: " : "fail to load: ";
-            info += assetPathB;
+            info += assetNameB;
         }
 
         void UnLoadB()

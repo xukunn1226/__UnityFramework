@@ -19,6 +19,8 @@ public sealed class SoftObject : SoftObjectPath
 
     private MonoPoolBase                m_ScriptedPool;         // 脚本创建的对象池
     private MonoPoolBase                m_PrefabedPool;
+    private string                      m_PoolPath;
+    public string                       poolPath                { get { return m_PoolPath; } }
 
 #if UNITY_EDITOR
     public bool                         m_UseLRUManage;         // 使用LRU管理
@@ -32,13 +34,13 @@ public sealed class SoftObject : SoftObjectPath
     {
         // 已异步加载，不能再次加载
         if (m_PrefabLoaderAsync != null)
-            throw new System.InvalidOperationException($"{assetPath} has already loaded async");
+            throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded async");
 
         // 已同步加载，不能再次加载
         if (m_PrefabLoader != null)
-            throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
+            throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-        m_PrefabLoader = ResourceManager.Instantiate(assetPath);
+        m_PrefabLoader = ResourceManager.Instantiate(bundleName, assetName);
         return m_PrefabLoader?.asset;
     }
 
@@ -46,13 +48,13 @@ public sealed class SoftObject : SoftObjectPath
     {
         // 已异步加载，不能再次加载
         if (m_PrefabLoaderAsync != null)
-            throw new System.InvalidOperationException($"{assetPath} has already loaded async");
+            throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded async");
 
         // 已同步加载，不能再次加载
         if (m_PrefabLoader != null)
-            throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
+            throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-        m_PrefabLoaderAsync = ResourceManager.InstantiateAsync(assetPath);
+        m_PrefabLoaderAsync = ResourceManager.InstantiateAsync(bundleName, assetName);
         return m_PrefabLoaderAsync;
     }
 
@@ -75,13 +77,13 @@ public sealed class SoftObject : SoftObjectPath
     {
         // 已同步加载，不能再次加载
         if (m_Loader != null)
-            throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
+            throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
         // 已异步加载，不能再次加载
         if (m_LoaderAsync != null)
-            throw new System.InvalidOperationException($"{assetPath} has already loaded async");
+            throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded async");
 
-        m_Loader = ResourceManager.LoadAsset<Object>(assetPath);
+        m_Loader = ResourceManager.LoadAsset<Object>(bundleName, assetName);
         return m_Loader.asset;
     }
 
@@ -89,13 +91,13 @@ public sealed class SoftObject : SoftObjectPath
     {
         // 已异步加载，不能再次加载
         if (m_LoaderAsync != null)
-            throw new System.InvalidOperationException($"{assetPath} has already loaded async");
+            throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded async");
 
         // 已同步加载，不能再次加载
         if (m_Loader != null)
-            throw new System.InvalidOperationException($"{assetPath} has already loaded, plz unload it");
+            throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-        m_LoaderAsync = ResourceManager.LoadAssetAsync<Object>(assetPath);
+        m_LoaderAsync = ResourceManager.LoadAssetAsync<Object>(bundleName, assetName);
         return m_LoaderAsync;
     }
 
@@ -129,7 +131,8 @@ public sealed class SoftObject : SoftObjectPath
     {
         if (m_ScriptedPool == null)
         {
-            m_ScriptedPool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(assetPath);
+            ResourceManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
+            m_ScriptedPool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(m_PoolPath);
             m_ScriptedPool.Warmup();
         }
         return m_ScriptedPool.Get();
@@ -144,7 +147,7 @@ public sealed class SoftObject : SoftObjectPath
         if (m_ScriptedPool == null)
             throw new System.ArgumentNullException("Pool", "Scripted Pool not initialize");
 
-        PoolManager.RemoveMonoPool<TPool>(assetPath);
+        PoolManager.RemoveMonoPool<TPool>(m_PoolPath);
     }
 
     /// <summary>
@@ -155,7 +158,8 @@ public sealed class SoftObject : SoftObjectPath
     {
         if(m_PrefabedPool == null)
         {
-            m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoaderEx>(assetPath);
+            ResourceManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
+            m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoaderEx>(m_PoolPath);
         }
         return m_PrefabedPool.Get();
     }
@@ -168,7 +172,7 @@ public sealed class SoftObject : SoftObjectPath
         if (m_PrefabedPool == null)
             throw new System.ArgumentNullException("Pool", "Prefabed Pool not initialize");
 
-        PoolManager.RemoveMonoPrefabedPool(assetPath);
+        PoolManager.RemoveMonoPrefabedPool(m_PoolPath);
     }
 
     public IPooledObject SpawnFromLRUPool()
@@ -178,9 +182,12 @@ public sealed class SoftObject : SoftObjectPath
             if (!IsValid(m_LRUedPoolAsset))
                 throw new System.ArgumentNullException("m_LRUedPoolAsset");
 
-            m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_LRUedPoolAsset.assetPath);
+            ResourceManager.ParseBundleAndAssetName(m_LRUedPoolAsset.bundleName, m_LRUedPoolAsset.assetName, out m_PoolPath);
+            m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_PoolPath);
+            // m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_LRUedPoolAsset.assetPath);
         }
-        return m_LRUedPool.Get(assetPath);
+        // return m_LRUedPool.Get(assetPath);
+        return m_LRUedPool.Get(bundleName, assetName);
     }
 
     public void DestroyLRUedPool()
@@ -191,7 +198,8 @@ public sealed class SoftObject : SoftObjectPath
         if (!IsValid(m_LRUedPoolAsset))
             throw new System.ArgumentNullException("m_LRUedPoolAsset", "m_LRUedPoolAsset is not valid");
         
-        PoolManager.RemoveLRUPool(m_LRUedPoolAsset.assetPath);
+        // PoolManager.RemoveLRUPool(m_LRUedPoolAsset.assetPath);
+        PoolManager.RemoveLRUPool(m_PoolPath);
     }
 }
 

@@ -7,7 +7,8 @@ namespace Framework.AssetManagement.Runtime.Tests
     {
         public LoaderType type;
 
-        public string assetPath;
+        public string bundleName;
+        public string assetName;
 
         GameObject inst;
         // string info;
@@ -49,7 +50,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         IEnumerator StartTask()
         {
-            m_LoaderAsync = AssetManager.InstantiateAsync(assetPath);
+            m_LoaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
             yield return m_LoaderAsync;
 
             // m_LoaderAsync.asset

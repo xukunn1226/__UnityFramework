@@ -56,6 +56,23 @@ namespace Tests
             return ui;
         }
 
+        public override IPooledObject Get(string bundleName, string assetName)
+        {
+            UILRUPooledObject ui = m_Pool.Exist(assetName);
+            if (ui == null)
+            {
+                ui = InstantiateUIPrefab(bundleName, assetName);
+            }
+            ui.OnTouch();
+            m_Pool.Cache(assetName, ui);
+
+            if(m_UIPrefabs.ContainsKey(assetName))
+            {
+                m_UIPrefabs.Add(assetName, ui);
+            }
+            return ui;
+        }
+
         public override void Return(IPooledObject obj)
         {
             if(!(obj is UILRUPooledObject))
@@ -84,6 +101,13 @@ namespace Tests
         {
             GameObject go = new GameObject();
             go.name = assetPath;
+            go.transform.parent = gameObject.transform;
+            return go.AddComponent<UILRUPooledObject>();
+        }
+        private UILRUPooledObject InstantiateUIPrefab(string bundleName, string assetName)
+        {
+            GameObject go = new GameObject();
+            go.name = assetName;
             go.transform.parent = gameObject.transform;
             return go.AddComponent<UILRUPooledObject>();
         }

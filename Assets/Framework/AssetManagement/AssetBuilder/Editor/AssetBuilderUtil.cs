@@ -132,6 +132,7 @@ namespace Framework.AssetManagement.AssetBuilder
             }
 
             EditorGUIUtility.systemCopyBuffer = ti.assetBundleName;
+            Debug.Log($"BundleName is: {ti.assetBundleName}");
         }
 
         [MenuItem("Assets/AssetBuilder/Copy Asset Name(ToLower) &b", false, 22)]
@@ -146,6 +147,7 @@ namespace Framework.AssetManagement.AssetBuilder
             }
 
             EditorGUIUtility.systemCopyBuffer = Path.GetFileName(assetPath);
+            Debug.Log($"AssetName is: {EditorGUIUtility.systemCopyBuffer}");
         }
     }
 }

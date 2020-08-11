@@ -63,7 +63,7 @@ namespace Tests
 
         void StartTask_Case1()
         {
-            if (m_PooledObject == null || string.IsNullOrEmpty(m_PooledObject.assetPath))
+            if (m_PooledObject == null || string.IsNullOrEmpty(m_PooledObject.assetName))
                 return;
 
             TestPooledObject obj = (TestPooledObject)m_PooledObject.SpawnFromPool<TestPooledObject, PrefabObjectPool>();
@@ -72,7 +72,7 @@ namespace Tests
             m_Stack.Push(obj);
 
             info = obj.gameObject != null ? "sucess to load: " : "fail to load: ";
-            info += m_PooledObject.assetPath;
+            info += m_PooledObject.assetName;
         }
 
         void ReturnToPool_Case1()
@@ -103,7 +103,7 @@ namespace Tests
 
         void StartTask_Case2()
         {
-            if (m_PoolPrefab == null || string.IsNullOrEmpty(m_PoolPrefab.assetPath))
+            if (m_PoolPrefab == null || string.IsNullOrEmpty(m_PoolPrefab.assetName))
                 return;
 
             TestPooledObject obj = (TestPooledObject)m_PoolPrefab.SpawnFromPrefabedPool();
@@ -112,7 +112,7 @@ namespace Tests
             m_Stack.Push(obj);
 
             info = obj.gameObject != null ? "sucess to load: " : "fail to load: ";
-            info += m_PooledObject.assetPath;
+            info += m_PooledObject.assetName;
         }
 
         void ReturnToPool_Case2()
@@ -126,7 +126,7 @@ namespace Tests
 
         void EndTask_Case2()
         {
-            if (m_PoolPrefab == null || string.IsNullOrEmpty(m_PoolPrefab.assetPath))
+            if (m_PoolPrefab == null || string.IsNullOrEmpty(m_PoolPrefab.assetName))
                 return;
 
             m_PoolPrefab.DestroyPrefabedPool();

@@ -14,7 +14,7 @@ namespace Tests
             //ResourceManager.GetAtlas("1.Bag", "sdsdf");
             foreach (var atlasName in m_SpriteAtlases)
             {
-                ResourceManager.RegisterPersistentAtlas(atlasName, gameObject.name);
+                // ResourceManager.RegisterPersistentAtlas(atlasName, gameObject.name);
             }            
         }
 
@@ -23,7 +23,7 @@ namespace Tests
             //ResourceManager.ReleaseAtlas("1.Bag", "sdsdf");
             foreach (var atlasName in m_SpriteAtlases)
             {
-                ResourceManager.UnregisterPersistentAtlas(atlasName, gameObject.name);
+                // ResourceManager.UnregisterPersistentAtlas(atlasName, gameObject.name);
             }
         }
     }
