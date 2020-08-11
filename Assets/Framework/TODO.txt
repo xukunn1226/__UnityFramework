@@ -29,8 +29,6 @@
 
 * 监控所有的特效播放，统一特效加载接口
 * 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
-* LongPressRecognizer设计成ScreenTouch，仅抛出事件，后续由上层逻辑处理
-* SoftPath分别存储BundleName，AssetName，减少运行时字符串操作
 
 
 
@@ -38,6 +36,7 @@
 
 
 
+- SoftPath分别存储BundleName，AssetName，减少运行时字符串操作
 - 完善日志系统
 	https://www.jianshu.com/p/5163b0a0180e
 - Gesture Extension
