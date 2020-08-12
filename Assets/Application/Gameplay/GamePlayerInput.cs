@@ -82,7 +82,7 @@ public class GamePlayerInput :  MonoBehaviour,
 
     public void OnGesture(ScreenDragEventData eventData)
     {
-        Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
+        // Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
 
         dragData = eventData;
         switch (eventData.State)
@@ -101,9 +101,10 @@ public class GamePlayerInput :  MonoBehaviour,
                     {
                         dragEndPoint = m_HitInfo.point;
                     }
+                    Debug.LogWarning($"{dragStartPoint}   {dragEndPoint}");
                     wasDragging = true;
                     isDragging = true;
-                    Debug.DrawLine(eventCamera.transform.position, dragEndPoint, Color.red);
+                    // Debug.DrawLine(eventCamera.transform.position, dragEndPoint, Color.red);
                 }
                 break;
             case RecognitionState.Failed:
