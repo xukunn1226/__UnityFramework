@@ -13,10 +13,9 @@ public class GamePlayerInput :  MonoBehaviour,
 {
     static public GamePlayerInput Instance { get; private set; }
 
-    public Camera           eventCamera;
-    public Collider         terrain;
-    private PlayerInput     m_PlayerInput;
-    private PlayerInput     playerInput
+    public Camera               eventCamera;
+    private PlayerInput         m_PlayerInput;
+    private PlayerInput         playerInput
     {
         get
         {
@@ -28,12 +27,18 @@ public class GamePlayerInput :  MonoBehaviour,
         }
     }
 
-    private int m_TerrainLayer;
-    private int m_BaseLayer;
+    private RaycastHit m_HitInfo = new RaycastHit();
+    private ref RaycastHit m_HitInfoRef => ref m_HitInfo;
 
-    public ScreenDragEventData dragData { get; private set; }
-    public bool isDragging { get; private set; }
-    public bool wasDragging { get; private set; }
+    public LayerMask            BaseLayer;
+    public LayerMask            TerrainLayer;
+
+    public ScreenDragEventData  dragData        { get; private set; }
+    public bool                 isDragging      { get; private set; }
+    public bool                 wasDragging     { get; private set; }
+    public Vector3              dragStartPoint  { get; private set; }
+    public Vector3              dragEndPoint    { get; private set; }
+
 
     void Awake()
     {
@@ -49,9 +54,6 @@ public class GamePlayerInput :  MonoBehaviour,
             throw new System.ArgumentNullException("playerInput");
 
         Instance = this;
-        
-        m_TerrainLayer = LayerMask.NameToLayer("Terrain");
-        m_BaseLayer = LayerMask.NameToLayer("Base");
     }
 
     void OnDestroy()
@@ -61,22 +63,21 @@ public class GamePlayerInput :  MonoBehaviour,
 
     private void PickGameObject(Vector2 screenPosition)
     {
-        RaycastHit hitInfo = Raycast(screenPosition, 1 << m_TerrainLayer | 1 << m_BaseLayer);
+        m_HitInfoRef = Raycast(screenPosition, TerrainLayer | BaseLayer);
      
-        if (hitInfo.transform != null)
+        if (m_HitInfoRef.transform != null)
         {
-            playerInput.hitEventData.hitInfo = hitInfo;
-            playerInput.SetSelectedGameObject(hitInfo.transform.gameObject, playerInput.hitEventData);
+            playerInput.hitEventData.hitInfo = m_HitInfoRef;
+            playerInput.SetSelectedGameObject(m_HitInfoRef.transform.gameObject, playerInput.hitEventData);
         }
     }
 
-    private RaycastHit Raycast(Vector2 screenPosition, int layerMask)
+    private ref RaycastHit Raycast(Vector2 screenPosition, int layerMask)
     {
         Ray ray = eventCamera.ScreenPointToRay(screenPosition);
 
-        RaycastHit hitInfo = new RaycastHit();
-        Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask);
-        return hitInfo;
+        Physics.Raycast(ray, out m_HitInfoRef, Mathf.Infinity, layerMask);
+        return ref m_HitInfoRef;
     }
 
     public void OnGesture(ScreenDragEventData eventData)
@@ -87,15 +88,31 @@ public class GamePlayerInput :  MonoBehaviour,
         switch (eventData.State)
         {
             case RecognitionState.Started:
+                Raycast(dragData.Position, TerrainLayer);
                 wasDragging = false;
-                isDragging = true;
+                isDragging = m_HitInfo.transform != null;
+                dragStartPoint = m_HitInfo.point;
                 break;
             case RecognitionState.InProgress:
-                wasDragging = isDragging;
-                isDragging = true;
+                if(isDragging)
+                { // 起始在Terrain
+                    Raycast(dragData.Position, TerrainLayer);
+                    if(m_HitInfo.transform != null)
+                    {
+                        dragEndPoint = m_HitInfo.point;
+                    }
+                    wasDragging = true;
+                    isDragging = true;
+                    Debug.DrawLine(eventCamera.transform.position, dragEndPoint, Color.red);
+                }
                 break;
             case RecognitionState.Failed:
             case RecognitionState.Ended:
+                Raycast(dragData.Position, TerrainLayer);
+                if(m_HitInfo.transform != null)
+                {
+                    dragEndPoint = m_HitInfo.point;
+                }
                 wasDragging = isDragging;
                 isDragging = false;
                 break;

@@ -295,8 +295,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 149533197}
-  m_LocalRotation: {x: -0.45405534, y: -0.0008173197, z: 0.00038632785, w: -0.89097303}
-  m_LocalPosition: {x: -3.1778147, y: 64.14716, z: -54.558693}
+  m_LocalRotation: {x: -0.1482514, y: -0.011276582, z: 0.0016904008, w: -0.988884}
+  m_LocalPosition: {x: -3.5065632, y: 47.325592, z: -110.849625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1315087424}
@@ -1296,7 +1296,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 92104459}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.85066164
+  m_Size: 0.90014064
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6629,10 +6629,6 @@ PrefabInstance:
       propertyPath: eventCamera
       value: 
       objectReference: {fileID: 149533203}
-    - target: {fileID: 251470520, guid: 67eb073e7f9a21b428a76378bd7d7c96, type: 3}
-      propertyPath: terrain
-      value: 
-      objectReference: {fileID: 1279451570}
     - target: {fileID: 6764658650940765554, guid: 67eb073e7f9a21b428a76378bd7d7c96,
         type: 3}
       propertyPath: m_Name

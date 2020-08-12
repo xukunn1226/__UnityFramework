@@ -133,4 +133,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eventCamera: {fileID: 0}
-  terrain: {fileID: 0}
+  BaseLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  TerrainLayer:
+    serializedVersion: 2
+    m_Bits: 256
