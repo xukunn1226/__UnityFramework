@@ -29,7 +29,9 @@
 
 * 监控所有的特效播放，统一特效加载接口
 * 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
-
+* Protobuf3优化
+* 字符串Tolower，split的unsafe实现
+* unsafe和非托管内存优化
 
 
 

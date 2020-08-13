@@ -44,4 +44,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
-  SmoothTime: 0.1
+  SmoothTime: 0.05
+  BaseLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  TerrainLayer:
+    serializedVersion: 2
+    m_Bits: 256

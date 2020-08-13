@@ -5,7 +5,7 @@ using Framework.Gesture.Runtime;
 
 [RequireComponent(typeof(PlayerInput))]
 public class GamePlayerInput :  MonoBehaviour,
-                                IScreenDragHandler,
+                                // IScreenDragHandler,
                                 IScreenPinchHandler,
                                 ILongPressHandler,
                                 IScreenPointerDownHandler,
@@ -101,7 +101,7 @@ public class GamePlayerInput :  MonoBehaviour,
                     {
                         dragEndPoint = m_HitInfo.point;
                     }
-                    Debug.LogWarning($"{dragStartPoint}   {dragEndPoint}");
+                    // Debug.LogWarning($"{dragStartPoint}   {dragEndPoint}");
                     wasDragging = true;
                     isDragging = true;
                     // Debug.DrawLine(eventCamera.transform.position, dragEndPoint, Color.red);
@@ -122,7 +122,7 @@ public class GamePlayerInput :  MonoBehaviour,
 
     public void OnGesture(ScreenPinchEventData eventData)
     {
-        Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
+        // Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
 
         // screenPinchData = eventData;
         switch (eventData.State)
@@ -139,17 +139,17 @@ public class GamePlayerInput :  MonoBehaviour,
 
     public void OnGesture(ScreenLongPressEventData eventData)
     {
-        Debug.Log($"LongPress..........{eventData.State}   {eventData.screenPosition}    {Time.frameCount}");
+        // Debug.Log($"LongPress..........{eventData.State}   {eventData.screenPosition}    {Time.frameCount}");
         PickGameObject(eventData.screenPosition);
     }
 
     public void OnGesture(ScreenPointerDownEventData eventData)
     {
-        Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
+        // Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
     }
     public void OnGesture(ScreenPointerUpEventData eventData)
     {
-        Debug.Log($"ScreenPointerUpEventData:       {Time.frameCount}");
+        // Debug.Log($"ScreenPointerUpEventData:       {Time.frameCount}");
         PickGameObject(eventData.screenPosition);
     }
 }
