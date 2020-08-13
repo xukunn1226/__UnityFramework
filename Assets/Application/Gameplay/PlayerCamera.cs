@@ -45,9 +45,9 @@ public class PlayerCamera : MonoBehaviour, IScreenDragHandler
         {
             Vector3 delta = dragEndPoint - dragStartPoint;
             
-            // mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, m_StartCamera - delta, ref m_DragVelocity, m_SmoothTime);
-            mainCamera.transform.position = m_StartCamera - delta;
-            Debug.Log($"{delta}     {delta.magnitude}   {(mainCamera.transform.position - m_StartCamera).magnitude}");
+            // mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, mainCamera.transform.position - delta, ref m_DragVelocity, m_SmoothTime);
+            // mainCamera.transform.position = m_StartCamera - delta;
+            // Debug.Log($"{delta}     {dragEndPoint}   {(mainCamera.transform.position - m_StartCamera).magnitude}");
         }
         // else if(wasDragging && !isDragging)
         // {
@@ -77,6 +77,7 @@ public class PlayerCamera : MonoBehaviour, IScreenDragHandler
 
     public void OnGesture(ScreenDragEventData eventData)
     {
+        return;
         // Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
 
         switch (eventData.State)
@@ -86,6 +87,7 @@ public class PlayerCamera : MonoBehaviour, IScreenDragHandler
                 dragStartPoint = m_HitInfo.point;
                 m_StartCamera = mainCamera.transform.position;
 
+                Vector3 p = mainCamera.ScreenToWorldPoint(new Vector3(eventData.Position.x, eventData.Position.y, 0.5f));
 
                 wasDragging = false;
                 isDragging = m_HitInfo.transform != null;
@@ -104,6 +106,11 @@ public class PlayerCamera : MonoBehaviour, IScreenDragHandler
                     isDragging = true;
                     // Debug.DrawLine(eventCamera.transform.position, dragEndPoint, Color.red);
                     // Debug.DrawLine(dragEndPoint, dragEndPoint + Vector3.up * 100, Color.green, 5);
+
+                    Vector3 delta = dragEndPoint - dragStartPoint;
+            
+            // mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, m_StartCamera - delta, ref m_DragVelocity, m_SmoothTime);
+                    mainCamera.transform.position = m_StartCamera - delta;
                 }
                 break;
             case RecognitionState.Failed:
@@ -111,18 +118,18 @@ public class PlayerCamera : MonoBehaviour, IScreenDragHandler
                 Raycast(eventData.Position, TerrainLayer);
                 dragEndPoint = m_HitInfo.transform != null ? m_HitInfo.point : dragEndPoint;
                 
-                Vector3 dist = Vector3.zero;
-                if(eventData.Speed.magnitude > FlyScreenSpeedThreshold)
-                {
-                    Vector3 nor = (dragEndPoint - dragStartPoint).normalized;
-                    dist = nor * eventData.Speed.magnitude / SpeedValueOneScreen * m_OneScreenWidth;
-                    dragEndPoint += dist;
-                    // Debug.DrawLine(mainCamera.transform.position, dragEndPoint, Color.red, 3);
-                    Debug.DrawLine(dragEndPoint, dragEndPoint + Vector3.up * 100, Color.green, 5);
-                    Debug.Log($"{m_DragVelocity}    {eventData.DeltaMove}   {dist.magnitude}      {eventData.Speed}");
+                // Vector3 dist = Vector3.zero;
+                // if(eventData.Speed.magnitude > FlyScreenSpeedThreshold)
+                // {
+                //     Vector3 nor = (dragEndPoint - dragStartPoint).normalized;
+                //     dist = nor * eventData.Speed.magnitude / SpeedValueOneScreen * m_OneScreenWidth;
+                //     dragEndPoint += dist;
+                //     // Debug.DrawLine(mainCamera.transform.position, dragEndPoint, Color.red, 3);
+                //     Debug.DrawLine(dragEndPoint, dragEndPoint + Vector3.up * 100, Color.green, 5);
+                //     Debug.Log($"{m_DragVelocity}    {eventData.DeltaMove}   {dist.magnitude}      {eventData.Speed}");
 
-                    m_SmoothTime = SlideSmoothTime;
-                }
+                //     m_SmoothTime = SlideSmoothTime;
+                // }
                 
 
 
