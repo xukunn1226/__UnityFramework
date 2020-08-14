@@ -157,7 +157,14 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
     {
         Ray ray = cam.ScreenPointToRay(screenPosition);
 
-        return Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask);
+        return PhysUtility.Raycast(ray, 1000, layerMask, ref hitInfo);
+    }
+
+    static public ref RaycastHit RaycastEx(Vector2 screenPosition, int layerMask)
+    {
+        Ray ray = cam.ScreenPointToRay(screenPosition);
+
+        return PhysUtility.RaycastEx(ray, 1000, layerMask);
     }
 }
 
