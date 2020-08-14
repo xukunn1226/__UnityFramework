@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 251470520}
   - component: {fileID: 591085602}
   m_Layer: 0
-  m_Name: PlayerInput
+  m_Name: InputAndCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,7 +133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f553434e24a51e143914f58fdc203a0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventCamera: {fileID: 0}
   BaseLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -153,12 +152,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
-  SmoothTime: 0.075
-  BaseLayer:
-    serializedVersion: 2
-    m_Bits: 0
   TerrainLayer:
     serializedVersion: 2
     m_Bits: 256
-  FlyScreenSpeedThreshold: 500
-  SpeedValueOneScreen: 1000
+  GroundZ: 0
+  DragSmoothTime: 0.075
+  SlideSmoothTime: 0.3
+  SpeedValueMatchOneScreen: 3500
+  MaxCountScreen: 0.5
