@@ -15,8 +15,8 @@ public class GamePlayerInput :  MonoBehaviour,
     private PlayerInput             m_PlayerInput;
     private PlayerInput             playerInput     { get { if(m_PlayerInput == null) m_PlayerInput = GetComponent<PlayerInput>(); return m_PlayerInput;} }
 
-    private RaycastHit              m_HitInfo       = new RaycastHit();
-    private ref RaycastHit          m_HitInfoRef    => ref m_HitInfo;
+    // private RaycastHit              m_HitInfo       = new RaycastHit();
+    // private ref RaycastHit          m_HitInfoRef    => ref m_HitInfo;
 
     public LayerMask                BaseLayer;
     public LayerMask                TerrainLayer;
@@ -42,12 +42,11 @@ public class GamePlayerInput :  MonoBehaviour,
 
     private void PickGameObject(Vector2 screenPosition)
     {
-        GamePlayerCamera.Raycast(screenPosition, TerrainLayer | BaseLayer, ref m_HitInfoRef);
-     
-        if (m_HitInfoRef.transform != null)
+        ref readonly RaycastHit hitInfo = ref GamePlayerCamera.Raycast(screenPosition, TerrainLayer | BaseLayer);
+        if(hitInfo.transform != null)
         {
-            playerInput.hitEventData.hitInfo = m_HitInfoRef;
-            playerInput.SetSelectedGameObject(m_HitInfoRef.transform.gameObject, playerInput.hitEventData);
+            playerInput.hitEventData.hitInfo = hitInfo;
+            playerInput.SetSelectedGameObject(hitInfo.transform.gameObject, playerInput.hitEventData);
         }
     }
 

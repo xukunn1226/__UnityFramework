@@ -117,14 +117,20 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
                 float w = Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / SpeedValueMatchOneScreen) * GetScreenWidth();
                 SetCameraMovement(eventData.Position + dir * w, SlideSmoothTime);
 
+#if UNITY_EDITOR
                 // debug
-                // Debug.Log($"=========== w: {w}     ratio: {w / GetScreenWidth()}");                
+                Debug.Log($"=========== w: {w}     ratio: {w / GetScreenWidth()}");
+                Vector3 pos = GetGroundHitPoint(eventData.Position + dir * w);
+                Debug.DrawLine(pos, pos + Vector3.up * 1000, Color.green, 5);
+                Debug.Log($"{pos}   {eventData.Speed.magnitude}");
+
                 // Raycast(eventData.Position + dir * w, TerrainLayer, ref m_HitInfo);
                 // Debug.DrawLine(m_HitInfo.point, m_HitInfo.point + Vector3.up * 100, Color.green, 5);
                 // if(m_HitInfo.transform == null)
                 //     Debug.LogError($"-----  {eventData.Speed.magnitude}");
                 // else
                 //     Debug.Log($"{m_HitInfo.point}       {eventData.Speed.magnitude}");
+#endif            
                 break;
         }
     }
@@ -160,11 +166,11 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
         return PhysUtility.Raycast(ray, 1000, layerMask, ref hitInfo);
     }
 
-    static public ref RaycastHit RaycastEx(Vector2 screenPosition, int layerMask)
+    static public ref readonly RaycastHit Raycast(Vector2 screenPosition, int layerMask)
     {
         Ray ray = cam.ScreenPointToRay(screenPosition);
 
-        return PhysUtility.RaycastEx(ray, 1000, layerMask);
+        return ref PhysUtility.Raycast(ray, 1000, layerMask);
     }
 }
 
