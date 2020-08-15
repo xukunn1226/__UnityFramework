@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 251470520}
   - component: {fileID: 591085602}
   m_Layer: 0
-  m_Name: InputAndCamera
+  m_Name: PlayerInputAndCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,5 +158,12 @@ MonoBehaviour:
   GroundZ: 0
   DragSmoothTime: 0.075
   SlideSmoothTime: 0.3
-  SpeedValueMatchOneScreen: 3500
-  MaxCountScreen: 0.5
+  SpeedValueMatchOneScreen: 10000
+  MaxCountScreen: 1
+  ApplyBound: 1
+  Bound:
+    serializedVersion: 2
+    x: -1140
+    y: -1035
+    width: 1000
+    height: 2000

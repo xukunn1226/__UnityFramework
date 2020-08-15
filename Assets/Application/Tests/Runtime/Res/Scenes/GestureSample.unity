@@ -12094,14 +12094,6 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 149533203}
-    - target: {fileID: 591085602, guid: 67eb073e7f9a21b428a76378bd7d7c96, type: 3}
-      propertyPath: SpeedValueMatchOneScreen
-      value: 24000
-      objectReference: {fileID: 0}
-    - target: {fileID: 591085602, guid: 67eb073e7f9a21b428a76378bd7d7c96, type: 3}
-      propertyPath: MaxCountScreen
-      value: 0.8
-      objectReference: {fileID: 0}
     - target: {fileID: 6764658650940765554, guid: 67eb073e7f9a21b428a76378bd7d7c96,
         type: 3}
       propertyPath: m_Name
