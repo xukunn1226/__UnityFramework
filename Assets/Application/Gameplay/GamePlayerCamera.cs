@@ -5,13 +5,13 @@ using Framework.Gesture.Runtime;
 
 public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointerDownHandler
 {
-    static public GamePlayerCamera  Instance                    { get; private set; }
+    static public GamePlayerCamera  Instance                { get; private set; }
 
     static public Camera        cam                         { get { return Instance?.mainCamera; } }
 
     public Camera               mainCamera;
     public LayerMask            TerrainLayer;
-    private RaycastHit          m_HitInfo                   = new RaycastHit();
+    // private RaycastHit          m_HitInfo                   = new RaycastHit();
     private Plane               m_Ground;
     public float                GroundZ;
     private Vector3             m_DragVelocity;

@@ -12028,7 +12028,7 @@ PrefabInstance:
     - target: {fileID: 6764658650940765554, guid: 67eb073e7f9a21b428a76378bd7d7c96,
         type: 3}
       propertyPath: m_Name
-      value: InputAndCamera
+      value: PlayerInputAndCamera
       objectReference: {fileID: 0}
     - target: {fileID: 6764658650940765556, guid: 67eb073e7f9a21b428a76378bd7d7c96,
         type: 3}
