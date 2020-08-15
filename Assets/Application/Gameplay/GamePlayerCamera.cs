@@ -11,17 +11,16 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
 
     public Camera               mainCamera;
     public LayerMask            TerrainLayer;
-    // private RaycastHit          m_HitInfo                   = new RaycastHit();
     private Plane               m_Ground;
-    public float                GroundZ;
-    private Vector3             m_DragVelocity;
+    public float                GroundZ;    
     public float                DragSmoothTime;
     public float                SlideSmoothTime;
     private float               m_SmoothTime;
     private bool                m_IsDragging;
     private bool                m_WasDragging;
-    private Vector3             m_DragStartPoint;
-    private Vector3             m_DragEndPoint;
+    private Vector3             m_StartPoint;
+    private Vector3             m_EndPoint;
+    private Vector3             m_Velocity;
 
     [Min(1000)][Tooltip("每一屏距离匹配的速度值")]
     public float                SpeedValueMatchOneScreen    = 1000;
@@ -29,6 +28,7 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
     public float                MaxCountScreen;
     private Vector2             m_PendingScreenPos          = Vector2.zero;
     private bool                m_IsMoving;
+    private float               m_LengthOfOneScreen;        // 一屏(横屏)对应的世界距离
 
     void Awake()
     {
@@ -55,20 +55,22 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
         if(m_IsMoving)
         {
             // 确认目标点
-            m_DragEndPoint = GetGroundHitPoint(m_PendingScreenPos);
+            m_EndPoint = GetGroundHitPoint(m_PendingScreenPos);
 
             // 移动相机逼近目标多
-            Vector3 delta = m_DragEndPoint - m_DragStartPoint;            
-            mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position, mainCamera.transform.position - delta, ref m_DragVelocity, m_SmoothTime);
+            mainCamera.transform.position = Vector3.SmoothDamp( mainCamera.transform.position, 
+                                                                mainCamera.transform.position - (m_EndPoint - m_StartPoint), 
+                                                                ref m_Velocity, 
+                                                                m_SmoothTime);
 
             // 移动结束判断
-            if(m_WasDragging && !m_IsDragging)
-            {
-                if(delta.sqrMagnitude < 1 || m_DragVelocity.sqrMagnitude < 1)
-                {
-                    m_IsMoving = false;
-                }
-            }
+            // if(m_WasDragging && !m_IsDragging)
+            // {
+            //     if(delta.sqrMagnitude < 1 || m_Velocity.sqrMagnitude < 1)
+            //     {
+            //         m_IsMoving = false;
+            //     }
+            // }
         }
     }
 
@@ -76,10 +78,10 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
     {
         // Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
         m_IsMoving = false;
-        m_DragVelocity = Vector3.zero;
+        m_Velocity = Vector3.zero;
     }
 
-    private void SetCameraMovement(Vector2 screenPosition, float smoothTime)
+    private void SetViewTarget(Vector2 screenPosition, float smoothTime)
     {
         m_IsMoving = true;
         m_PendingScreenPos = screenPosition;
@@ -93,48 +95,47 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
         switch (eventData.State)
         {
             case RecognitionState.Started:
-                m_DragStartPoint = GetGroundHitPoint(eventData.Position);
-
                 m_WasDragging = false;
                 m_IsDragging = true;
-                SetCameraMovement(eventData.Position, DragSmoothTime);
-                
+                BeginScreenDrag(eventData);
                 break;
             case RecognitionState.InProgress:
-                if(m_IsDragging)
-                {
-                    m_WasDragging = true;
-                    m_IsDragging = true;
-                    SetCameraMovement(eventData.Position, DragSmoothTime);
-                }
+                m_WasDragging = m_IsDragging;
+                m_IsDragging = true;
+                UpdateScreenDrag(eventData);
                 break;
             case RecognitionState.Failed:
             case RecognitionState.Ended:
                 m_WasDragging = m_IsDragging;
                 m_IsDragging = false;
-
-                Vector2 dir = eventData.DeltaMove.normalized;
-                float w = Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / SpeedValueMatchOneScreen) * GetScreenWidth();
-                SetCameraMovement(eventData.Position + dir * w, SlideSmoothTime);
-
-#if UNITY_EDITOR
-                // debug
-                Debug.Log($"=========== w: {w}     ratio: {w / GetScreenWidth()}");
-                Vector3 pos = GetGroundHitPoint(eventData.Position + dir * w);
-                Debug.DrawLine(pos, pos + Vector3.up * 1000, Color.green, 5);
-                Debug.Log($"{pos}   {eventData.Speed.magnitude}");
-
-                // Raycast(eventData.Position + dir * w, TerrainLayer, ref m_HitInfo);
-                // Debug.DrawLine(m_HitInfo.point, m_HitInfo.point + Vector3.up * 100, Color.green, 5);
-                // if(m_HitInfo.transform == null)
-                //     Debug.LogError($"-----  {eventData.Speed.magnitude}");
-                // else
-                //     Debug.Log($"{m_HitInfo.point}       {eventData.Speed.magnitude}");
-#endif            
+                EndScreenDrag(eventData);
                 break;
         }
     }
 
+    private void BeginScreenDrag(ScreenDragEventData eventData)
+    {
+        m_StartPoint = GetGroundHitPoint(eventData.Position);
+        SetViewTarget(eventData.Position, DragSmoothTime);
+    }
+
+    private void UpdateScreenDrag(ScreenDragEventData eventData)
+    {
+        SetViewTarget(eventData.Position, DragSmoothTime);        
+    }
+
+    private void EndScreenDrag(ScreenDragEventData eventData)
+    {
+        float dist = Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / SpeedValueMatchOneScreen) * CalcLengthOfOneScreen();
+        Vector3 endPos = GetGroundHitPoint(eventData.Position);
+        Vector3 dir = (endPos - m_StartPoint).normalized;
+        Vector3 pendingScreenPos = mainCamera.WorldToScreenPoint(endPos + dir * dist);
+        SetViewTarget(pendingScreenPos, SlideSmoothTime);
+        Debug.Log($"{Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / SpeedValueMatchOneScreen)}   {eventData.Speed.magnitude}");
+        // Debug.DrawLine(pos, pos + dir * dist, Color.red, 10);
+        // Debug.DrawLine(m_StartPoint, pos, Color.green, 10);
+    }
+    
     private Vector3 GetGroundHitPoint(Vector2 screenPosition)
     {
         ///// method 1
@@ -147,14 +148,21 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
         // Raycast(screenPosition, TerrainLayer, ref m_HitInfo);
         // return m_HitInfo.point;
     }
+    
+    private float CalcLengthOfOneScreen()
+    {
+        Vector3 l = GetGroundHitPoint(new Vector2(0,                    GetScreenPortrait() * 0.5f));
+        Vector3 r = GetGroundHitPoint(new Vector2(GetScreenLandscape(), GetScreenPortrait() * 0.5f));
+        return (r - l).magnitude;
+    }
 
     // 适配横竖屏，预留接口
-    private float GetScreenWidth()
+    private float GetScreenLandscape()
     {
         return Screen.width;
     }
 
-    private float GetScreenHeight()
+    private float GetScreenPortrait()
     {
         return Screen.height;
     }
