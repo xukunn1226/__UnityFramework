@@ -100,10 +100,10 @@ namespace Framework.Gesture.Runtime
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
             
             float curGap = Vector2.Distance(m_Pointer1.position, m_Pointer2.position);
-            float newDelta = (curGap - m_EventData.Gap) * DeltaScale;
+            float newDelta = curGap - m_EventData.Gap;
             m_EventData.Gap = curGap;
 
-            m_EventData.DeltaMove = Input.mousePresent ? m_MouseScrollingDelta * DeltaScale : newDelta;
+            m_EventData.DeltaMove = (Input.mousePresent ? m_MouseScrollingDelta : newDelta) * DeltaScale;
 
             // m_EventData.DeltaMove = 0;
             // if(MovedInOppositeDirections(m_Pointer1, m_Pointer2, MinDOT))

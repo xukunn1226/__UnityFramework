@@ -7,8 +7,6 @@ namespace Framework.Gesture.Runtime
 {
     public class PlayerInput :  MonoBehaviour
     {
-        // static public PlayerInput Instance { get; private set; }
-
         public class HitEventData : BaseEventData
         {
             public RaycastHit hitInfo;
@@ -40,24 +38,7 @@ namespace Framework.Gesture.Runtime
         }
 
         private bool m_SelectionGuard;
-
-        // void Awake()
-        // {
-        //     // 已有PlayerInput，则自毁
-        //     if (FindObjectsOfType<PlayerInput>().Length > 1)
-        //     {
-        //         DestroyImmediate(this);
-        //         throw new System.Exception("PlayerInput has already exist...");
-        //     }
-
-        //     Instance = this;
-        // }
-
-        // void OnDestroy()
-        // {
-        //     Instance = null;
-        // }
-
+        
         public void SetSelectedGameObject(GameObject selected, HitEventData eventData)
         {
             if (m_SelectionGuard)

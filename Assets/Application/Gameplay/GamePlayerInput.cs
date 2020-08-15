@@ -4,8 +4,7 @@ using UnityEngine;
 using Framework.Gesture.Runtime;
 
 [RequireComponent(typeof(PlayerInput))]
-public class GamePlayerInput :  MonoBehaviour,
-                                IScreenPinchHandler,
+public class GamePlayerInput :  MonoBehaviour,                                
                                 ILongPressHandler,
                                 IScreenPointerDownHandler,
                                 IScreenPointerUpHandler
@@ -47,23 +46,6 @@ public class GamePlayerInput :  MonoBehaviour,
         {
             playerInput.hitEventData.hitInfo = hitInfo;
             playerInput.SetSelectedGameObject(hitInfo.transform.gameObject, playerInput.hitEventData);
-        }
-    }
-
-    public void OnGesture(ScreenPinchEventData eventData)
-    {
-        // Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
-
-        // screenPinchData = eventData;
-        switch (eventData.State)
-        {
-            case RecognitionState.Started:
-                // isScreenPinching = true;
-                break;
-            case RecognitionState.Failed:
-            case RecognitionState.Ended:
-                // isScreenPinching = false;
-                break;
         }
     }
 

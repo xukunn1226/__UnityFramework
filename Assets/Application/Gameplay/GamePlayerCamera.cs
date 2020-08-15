@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Gesture.Runtime;
 
-public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointerDownHandler
+public class GamePlayerCamera : MonoBehaviour, 
+                                IScreenDragHandler, 
+                                IScreenPointerDownHandler,
+                                IScreenPinchHandler
 {
     static public GamePlayerCamera  Instance                { get; private set; }
 
@@ -31,6 +34,8 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
     private float               m_LengthOfOneScreen;        // 一屏(横屏)对应的世界距离
     public bool                 ApplyBound;
     public Rect                 Bound;
+    private bool                m_IsPinching;
+    private bool                m_WasPinching;
 
     void Awake()
     {
@@ -109,6 +114,52 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
         m_SmoothTime = smoothTime;
     }
 
+    public void OnGesture(ScreenPinchEventData eventData)
+    {
+        Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
+
+        // screenPinchData = eventData;
+        switch (eventData.State)
+        {
+            case RecognitionState.Started:
+                m_WasPinching = false;
+                m_IsPinching = true;
+                BeginScreenPinching(eventData);
+                break;
+            case RecognitionState.InProgress:
+                m_WasPinching = m_IsPinching;
+                m_IsPinching = true;
+                UpdateScreenPinching(eventData);
+                break;
+            case RecognitionState.Failed:
+            case RecognitionState.Ended:
+                m_WasPinching = m_IsPinching;
+                m_IsPinching = false;
+                EndScreenPinching(eventData);
+                break;
+        }
+    }
+
+    private void BeginScreenPinching(ScreenPinchEventData eventData)
+    {
+        m_StartPoint = GetGroundHitPoint(eventData.Position);
+        SetViewTarget(eventData.Position, 0);
+    }
+    
+    private void UpdateScreenPinching(ScreenPinchEventData eventData)
+    {
+        SetViewTarget(eventData.Position, 0);
+    }
+
+    private void EndScreenPinching(ScreenPinchEventData eventData)
+    {
+        float dist = Mathf.Min(MaxCountScreen, 1000 / SpeedValueMatchOneScreen) * CalcLengthOfOneScreen();
+        Vector3 endPos = GetGroundHitPoint(eventData.Position);
+        Vector3 dir = (endPos - m_StartPoint).normalized;
+        Vector3 pendingScreenPos = mainCamera.WorldToScreenPoint(endPos + dir * dist);
+        SetViewTarget(pendingScreenPos, SlideSmoothTime);
+    }
+
     public void OnGesture(ScreenDragEventData eventData)
     {
         // Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
@@ -142,7 +193,7 @@ public class GamePlayerCamera : MonoBehaviour, IScreenDragHandler, IScreenPointe
 
     private void UpdateScreenDrag(ScreenDragEventData eventData)
     {
-        SetViewTarget(eventData.Position, DragSmoothTime);        
+        SetViewTarget(eventData.Position, DragSmoothTime);
     }
 
     private void EndScreenDrag(ScreenDragEventData eventData)
