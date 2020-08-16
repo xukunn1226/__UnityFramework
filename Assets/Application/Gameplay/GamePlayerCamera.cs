@@ -85,8 +85,12 @@ public class GamePlayerCamera : MonoBehaviour,
         // process screen pinching
         if(m_IsPinching)
         {
-            Vector3 delta = GetGroundHitPoint(m_PinchEventData.Position) - GetGroundHitPoint(m_PinchEventData.PrevPosition);
+            Vector3 pos = GetGroundHitPoint(m_PinchEventData.Position);
+            Vector3 delta = pos - GetGroundHitPoint(m_PinchEventData.PrevPosition);
             mainCamera.transform.position -= delta;
+
+            Vector3 dir = (pos - mainCamera.transform.position).normalized;
+            mainCamera.transform.position += dir * m_PinchEventData.DeltaMove;
         }
 
         if(ApplyBound)

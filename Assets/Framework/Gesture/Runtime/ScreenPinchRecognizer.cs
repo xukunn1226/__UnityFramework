@@ -103,7 +103,7 @@ namespace Framework.Gesture.Runtime
             float newDelta = curGap - m_EventData.Gap;
             m_EventData.Gap = curGap;
 
-            m_EventData.DeltaMove = (Input.mousePresent ? m_MouseScrollingDelta : newDelta) * DeltaScale;
+            m_EventData.DeltaMove = (Input.mousePresent ? m_MouseScrollingDelta * 5 : newDelta) * DeltaScale;
 
             // m_EventData.DeltaMove = 0;
             // if(MovedInOppositeDirections(m_Pointer1, m_Pointer2, MinDOT))
