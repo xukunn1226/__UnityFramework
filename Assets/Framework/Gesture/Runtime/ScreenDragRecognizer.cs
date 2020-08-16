@@ -69,7 +69,6 @@ namespace Framework.Gesture.Runtime
             base.OnBegin();
 
             m_EventData.DeltaMove = Vector2.zero;
-            m_EventData.LastPos = m_EventData.Position;
             m_EventData.PressPosition = m_EventData.Position;           // MoveTolerance原因，重新定位PressPosition
         }
 
@@ -78,9 +77,9 @@ namespace Framework.Gesture.Runtime
             if(m_EventData.pointerCount != requiredPointerCount)
                 return RecognitionState.Ended;
 
-            m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
-            m_EventData.DeltaMove = (m_EventData.Position - m_EventData.LastPos) * DeltaScale;
-            m_EventData.LastPos = m_EventData.Position;
+            Vector2 pos = m_EventData.GetAveragePosition(requiredPointerCount);
+            m_EventData.DeltaMove = (pos - m_EventData.PrevPosition) * DeltaScale;
+            m_EventData.Position = pos;
             m_EventData.SetUsedBy(UsedBy.Drag);
 
             GestureEvents.ExecuteContinous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
@@ -92,7 +91,6 @@ namespace Framework.Gesture.Runtime
     {
         public Vector2 DeltaMove { get; internal set; }
         public Vector2 Speed { get { return DeltaMove / Time.deltaTime; } }
-        internal Vector2 LastPos;
 
         public override string ToString()
         {

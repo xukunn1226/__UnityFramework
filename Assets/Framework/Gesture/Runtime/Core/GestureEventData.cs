@@ -44,7 +44,9 @@ namespace Framework.Gesture.Runtime
             internal set { m_PointerData = value; }
         }
 
-        public Vector2  Position;
+        private Vector2 m_Position;
+        public Vector2  Position        { get { return m_Position; } internal set { PrevPosition = m_Position; m_Position = value; } }
+        public Vector2  PrevPosition    { get; internal set; }
         public Vector2  PressPosition;
         public float    StartTime;
         public float    ElapsedTime     { get { return Time.time - StartTime; } }

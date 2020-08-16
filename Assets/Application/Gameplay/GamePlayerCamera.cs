@@ -8,34 +8,35 @@ public class GamePlayerCamera : MonoBehaviour,
                                 IScreenPointerDownHandler,
                                 IScreenPinchHandler
 {
-    static public GamePlayerCamera  Instance                { get; private set; }
+    static public GamePlayerCamera  Instance                    { get; private set; }
 
-    static public Camera        cam                         { get { return Instance?.mainCamera; } }
+    static public Camera            cam                         { get { return Instance?.mainCamera; } }
 
-    public Camera               mainCamera;
-    public LayerMask            TerrainLayer;
-    private Plane               m_Ground;
-    public float                GroundZ;    
-    public float                DragSmoothTime;
-    public float                SlideSmoothTime;
-    private float               m_SmoothTime;
-    private bool                m_IsDragging;
-    private bool                m_WasDragging;
-    private Vector3             m_StartPoint;
-    private Vector3             m_EndPoint;
-    private Vector3             m_Velocity;
+    public Camera                   mainCamera;
+    public LayerMask                TerrainLayer;
+    private Plane                   m_Ground;
+    public float                    GroundZ;    
+    public float                    DragSmoothTime;
+    public float                    SlideSmoothTime;
+    private float                   m_SmoothTime;
+    private bool                    m_IsDragging;
+    private bool                    m_WasDragging;
+    private Vector3                 m_StartPoint;
+    private Vector3                 m_EndPoint;
+    private Vector3                 m_Velocity;
 
     [Min(1000)][Tooltip("每一屏距离匹配的速度值")]
-    public float                SpeedValueMatchOneScreen    = 1000;
+    public float                    SpeedValueMatchOneScreen    = 1000;
     [Min(0.2f)][Tooltip("最大划屏数")]
-    public float                MaxCountScreen;
-    private Vector2             m_PendingScreenPos          = Vector2.zero;
-    private bool                m_IsMoving;
-    private float               m_LengthOfOneScreen;        // 一屏(横屏)对应的世界距离
-    public bool                 ApplyBound;
-    public Rect                 Bound;
-    private bool                m_IsPinching;
-    private bool                m_WasPinching;
+    public float                    MaxCountScreen;
+    private Vector2                 m_PendingScreenPos          = Vector2.zero;
+    private bool                    m_IsDraggingCommand;
+    private float                   m_LengthOfOneScreen;        // 一屏(横屏)对应的世界距离
+    public bool                     ApplyBound;
+    public Rect                     Bound;
+    private bool                    m_IsPinching;
+    private bool                    m_WasPinching;
+    private ScreenPinchEventData    m_PinchEventData;
 
     void Awake()
     {
@@ -59,7 +60,8 @@ public class GamePlayerCamera : MonoBehaviour,
 
     void LateUpdate()
     {
-        if(m_IsMoving)
+        // process screen dragging
+        if(m_IsDraggingCommand)
         {
             // 确认目标点
             m_EndPoint = GetGroundHitPoint(m_PendingScreenPos);
@@ -75,9 +77,16 @@ public class GamePlayerCamera : MonoBehaviour,
             {
                 if((m_EndPoint - m_StartPoint).sqrMagnitude < 1 || m_Velocity.sqrMagnitude < 1)
                 {
-                    m_IsMoving = false;
+                    m_IsDraggingCommand = false;
                 }
             }
+        }
+
+        // process screen pinching
+        if(m_IsPinching)
+        {
+            Vector3 delta = GetGroundHitPoint(m_PinchEventData.Position) - GetGroundHitPoint(m_PinchEventData.PrevPosition);
+            mainCamera.transform.position -= delta;
         }
 
         if(ApplyBound)
@@ -103,61 +112,38 @@ public class GamePlayerCamera : MonoBehaviour,
     public void OnGesture(ScreenPointerDownEventData eventData)
     {
         // Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
-        m_IsMoving = false;
+        m_IsDraggingCommand = false;
         m_Velocity = Vector3.zero;
     }
 
     private void SetViewTarget(Vector2 screenPosition, float smoothTime)
     {
-        m_IsMoving = true;
+        m_IsDraggingCommand = true;
         m_PendingScreenPos = screenPosition;
         m_SmoothTime = smoothTime;
     }
 
     public void OnGesture(ScreenPinchEventData eventData)
     {
-        Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
+        // Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
 
-        // screenPinchData = eventData;
+        m_PinchEventData = eventData;
         switch (eventData.State)
         {
             case RecognitionState.Started:
                 m_WasPinching = false;
                 m_IsPinching = true;
-                BeginScreenPinching(eventData);
                 break;
             case RecognitionState.InProgress:
                 m_WasPinching = m_IsPinching;
                 m_IsPinching = true;
-                UpdateScreenPinching(eventData);
                 break;
             case RecognitionState.Failed:
             case RecognitionState.Ended:
                 m_WasPinching = m_IsPinching;
                 m_IsPinching = false;
-                EndScreenPinching(eventData);
                 break;
         }
-    }
-
-    private void BeginScreenPinching(ScreenPinchEventData eventData)
-    {
-        m_StartPoint = GetGroundHitPoint(eventData.Position);
-        SetViewTarget(eventData.Position, 0);
-    }
-    
-    private void UpdateScreenPinching(ScreenPinchEventData eventData)
-    {
-        SetViewTarget(eventData.Position, 0);
-    }
-
-    private void EndScreenPinching(ScreenPinchEventData eventData)
-    {
-        float dist = Mathf.Min(MaxCountScreen, 1000 / SpeedValueMatchOneScreen) * CalcLengthOfOneScreen();
-        Vector3 endPos = GetGroundHitPoint(eventData.Position);
-        Vector3 dir = (endPos - m_StartPoint).normalized;
-        Vector3 pendingScreenPos = mainCamera.WorldToScreenPoint(endPos + dir * dist);
-        SetViewTarget(pendingScreenPos, SlideSmoothTime);
     }
 
     public void OnGesture(ScreenDragEventData eventData)
