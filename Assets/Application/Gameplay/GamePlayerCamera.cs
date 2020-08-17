@@ -37,6 +37,7 @@ public class GamePlayerCamera : MonoBehaviour,
     private bool                    m_IsPinching;
     private bool                    m_WasPinching;
     private ScreenPinchEventData    m_PinchEventData;
+    public Vector2                  HeightRange;
 
     void Awake()
     {
@@ -84,13 +85,21 @@ public class GamePlayerCamera : MonoBehaviour,
 
         // process screen pinching
         if(m_IsPinching)
-        {
-            Vector3 pos = GetGroundHitPoint(m_PinchEventData.Position);
-            Vector3 delta = pos - GetGroundHitPoint(m_PinchEventData.PrevPosition);
+        {            
+            // XZ plane movement
+            Vector3 curPos = GetGroundHitPoint(m_PinchEventData.Position);
+            Vector3 delta = curPos - GetGroundHitPoint(m_PinchEventData.PrevPosition);
             mainCamera.transform.position -= delta;
 
-            Vector3 dir = (pos - mainCamera.transform.position).normalized;
-            mainCamera.transform.position += dir * m_PinchEventData.DeltaMove;
+            // camera to focus point movement
+            Vector3 camPos = mainCamera.transform.position;
+            Vector3 dir = (curPos - camPos).normalized;
+            if(camPos.y > HeightRange.x + 0.1f && camPos.y < HeightRange.y - 0.1f)
+            {
+                camPos += dir * m_PinchEventData.DeltaMove;
+                camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
+            }
+            mainCamera.transform.position = camPos;
         }
 
         if(ApplyBound)

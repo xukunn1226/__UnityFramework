@@ -34,7 +34,7 @@
 * unsafe和非托管内存优化
 * 三维中物体的拖拽移动效果  https://www.cnblogs.com/springword/p/6683549.html
 * ObjectPool整合进Framework
-
+* FX_Root支持特效进入对象池时控制细节更精细，不是deactive GameObject，而是disable animation
 
 
 
