@@ -64,4 +64,6 @@ public class GamePlayerInput :  MonoBehaviour,
         // Debug.Log($"ScreenPointerUpEventData:       {Screen.width}  {Screen.height}");
         PickGameObject(eventData.screenPosition);
     }
+
+    public GameObject currentSelectedGameObject { get { return playerInput?.currentSelectedGameObject; } }
 }

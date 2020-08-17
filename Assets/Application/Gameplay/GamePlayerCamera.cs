@@ -120,6 +120,17 @@ public class GamePlayerCamera : MonoBehaviour,
             pos.z = Mathf.Clamp(pos.z, Bound.yMin, Bound.yMax);
             mainCamera.transform.position = pos;
         }
+
+        // Vector3 mousePos = Input.mousePosition;
+        // mousePos.z = 0.34f;
+        // Vector3 pos1 = Camera.main.ScreenToViewportPoint (mousePos);
+        // Debug.Log($"------- VP: {pos1.z}      mousePosition: {Input.mousePosition.z}");
+
+        if(GamePlayerInput.Instance.currentSelectedGameObject != null)
+        {
+            Vector3 pos = mainCamera.WorldToViewportPoint(GamePlayerInput.Instance.currentSelectedGameObject.transform.position);
+            Debug.Log($"{pos}   {GamePlayerInput.Instance.currentSelectedGameObject.name}");
+        }
     }
  
     public void ApplyLimitedBound(Rect bound)
