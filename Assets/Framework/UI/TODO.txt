@@ -40,6 +40,8 @@
 	https://blog.csdn.net/VR_iShow/article/details/92850381
 	https://thegamedev.guru/unity-ui/optimization-strategies/
 	https://forum.unity.com/threads/unity-ui-performance-tips-sharing-my-findings.524916/
+	https://blog.uwa4d.com/archives/QA_UGUI-1.html  关于Unity中的UGUI优化，你可能遇到这些问题
+	https://blog.uwa4d.com/archives/Sparkle_Shader_UI.html  Unity手游开发札记——使用Shader进行UGUI的优化
 	
 
 
