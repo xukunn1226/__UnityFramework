@@ -79,7 +79,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Priority: 0
   MinDistance: 5
-  DeltaScale: 3
+  DeltaScale: 2
 --- !u!114 &6764658650292968933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,4 +167,4 @@ MonoBehaviour:
     y: -1035
     width: 1000
     height: 2000
-  HeightRange: {x: 400, y: 800}
+  HeightRange: {x: 300, y: 1000}
