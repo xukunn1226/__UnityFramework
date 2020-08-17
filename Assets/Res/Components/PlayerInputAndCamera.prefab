@@ -167,4 +167,4 @@ MonoBehaviour:
     y: -1035
     width: 1000
     height: 2000
-  HeightRange: {x: 350, y: 1000}
+  HeightRange: {x: 400, y: 800}

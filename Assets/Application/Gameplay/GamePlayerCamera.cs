@@ -94,10 +94,21 @@ public class GamePlayerCamera : MonoBehaviour,
             // camera to focus point movement
             Vector3 camPos = mainCamera.transform.position;
             Vector3 dir = (curPos - camPos).normalized;
-            if(camPos.y > HeightRange.x + 0.1f && camPos.y < HeightRange.y - 0.1f)
+            if(m_PinchEventData.DeltaMove > 0)      // 向前推进
             {
-                camPos += dir * m_PinchEventData.DeltaMove;
-                camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
+                if(camPos.y > HeightRange.x + 1)
+                {
+                    camPos += dir * m_PinchEventData.DeltaMove;
+                    camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
+                }
+            }
+            else if(m_PinchEventData.DeltaMove < 0)
+            {
+                if(camPos.y < HeightRange.y - 1)
+                {
+                    camPos += dir * m_PinchEventData.DeltaMove;
+                    camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
+                }
             }
             mainCamera.transform.position = camPos;
         }
