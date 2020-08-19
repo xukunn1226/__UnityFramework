@@ -11,5 +11,8 @@ namespace Framework.Gesture.Runtime
         ScreenPinch         = 2,
         ScreenPointerDown   = 3,
         ScreenPointerUp     = 4,
+        ObjectBeginDrag     = 5,
+        ObjectDragging      = 6,
+        ObjectEndDrag       = 7,
     }
 }

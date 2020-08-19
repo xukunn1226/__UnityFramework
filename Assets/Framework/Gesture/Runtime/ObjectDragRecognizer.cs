@@ -1,19 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class ScreenDragRecognizer : ContinuousGestureRecognizer<IScreenDragHandler, ScreenDragEventData>
+    public class ObjectDragRecognizer : ContinuousGestureRecognizer<IObjectDragHandler, ObjectDragEventData>
     {
-        public float MoveTolerance = 5.0f;
-
-        [Range(0.1f, 5f)]
-        public float DeltaScale = 1;
-
         private PlayerInput m_PlayerInput;
         private PlayerInput PlayerInput
         {
@@ -26,7 +19,7 @@ namespace Framework.Gesture.Runtime
                 return m_PlayerInput;
             }
         }
-
+        
         internal override void InternalUpdate()
         {
             if(InputModule != null)
@@ -39,7 +32,7 @@ namespace Framework.Gesture.Runtime
             }
             base.InternalUpdate();
         }
-
+        
         protected override bool CanBegin()
         {
             if(InputModule == null || PlayerInput == null)
@@ -48,8 +41,8 @@ namespace Framework.Gesture.Runtime
             if(m_EventData.PointerEventData.Count != requiredPointerCount)
                 return false;
 
-            if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) < MoveTolerance)
-                return false;
+            // if(m_EventData.GetAverageDistanceFromPress(requiredPointerCount) < MoveTolerance)
+            //     return false;
 
             // 指向当前选中物体时不可拖拽
             if(PlayerInput.currentSelectedGameObject != null &&
@@ -63,7 +56,7 @@ namespace Framework.Gesture.Runtime
         {
             base.OnBegin();
 
-            m_EventData.DeltaMove = Vector2.zero;
+            // m_EventData.DeltaMove = Vector2.zero;
             m_EventData.PressPosition = m_EventData.Position;           // MoveTolerance原因，重新定位PressPosition
         }
 
@@ -73,32 +66,32 @@ namespace Framework.Gesture.Runtime
                 return RecognitionState.Ended;
 
             Vector2 pos = m_EventData.GetAveragePosition(requiredPointerCount);
-            m_EventData.DeltaMove = (pos - m_EventData.PrevPosition) * DeltaScale;
+            // m_EventData.DeltaMove = (pos - m_EventData.PrevPosition) * DeltaScale;
             m_EventData.Position = pos;
             m_EventData.SetUsedBy(UsedBy.ScreenDrag);
 
-            GestureEvents.ExecuteContinous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
+            // GestureEvents.ExecuteContinous<IScreenDragHandler, ScreenDragEventData>(gameObject, m_EventData);
             return RecognitionState.InProgress;
         }
     }
-
-    public class ScreenDragEventData : GestureEventData
+    
+    public class ObjectDragEventData : GestureEventData
     {
-        public Vector2 DeltaMove { get; internal set; }
-        public Vector2 Speed { get { return DeltaMove / Time.deltaTime; } }
+        // public Vector2 DeltaMove { get; internal set; }
+        // public Vector2 Speed { get { return DeltaMove / Time.deltaTime; } }
 
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(base.ToString());
-            sb.AppendLine($"<b>DeltaMove</b>: {DeltaMove}");
-            sb.AppendLine($"<b>Speed</b>: {Speed}");
+        // public override string ToString()
+        // {
+        //     StringBuilder sb = new StringBuilder();
+        //     sb.AppendLine(base.ToString());
+        //     sb.AppendLine($"<b>DeltaMove</b>: {DeltaMove}");
+        //     sb.AppendLine($"<b>Speed</b>: {Speed}");
 
-            return sb.ToString();
-        }
+        //     return sb.ToString();
+        // }
     }
 
-    public interface IScreenDragHandler : IContinuousGestureHandler<ScreenDragEventData>
+    public interface IObjectDragHandler : IContinuousGestureHandler<ObjectDragEventData>
     {
     }
 }

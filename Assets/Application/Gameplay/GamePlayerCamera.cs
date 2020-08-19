@@ -229,7 +229,7 @@ public class GamePlayerCamera : MonoBehaviour,
         // Debug.DrawLine(m_StartPoint, pos, Color.green, 10);
     }
     
-    private Vector3 GetGroundHitPoint(Vector2 screenPosition)
+    public Vector3 GetGroundHitPoint(Vector2 screenPosition)
     {
         ///// method 1
         Ray mousePos = cam.ScreenPointToRay(screenPosition);

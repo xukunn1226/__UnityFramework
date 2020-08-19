@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Framework.Gesture.Runtime;
 
-public class TestGesture : MonoBehaviour, ISelectHandler, IDeselectHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class TestGesture : MonoBehaviour, ISelectHandler, IDeselectHandler, IObjectDragHandler
 {
     public void OnSelect(BaseEventData eventData)
     {
@@ -23,16 +23,30 @@ public class TestGesture : MonoBehaviour, ISelectHandler, IDeselectHandler, IBeg
         Debug.Log($"OnDeselect: {Time.frameCount}");
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
+    // public void OnBeginDrag(PointerEventData eventData)
+    // {
+    //     Debug.Log("OnBeginDrag");
+    //     SetDraggedPosition(eventData);
+    // }
+
+    // public void OnDrag(PointerEventData eventData)
+    // {
+    //     SetDraggedPosition(eventData);
+    // }
+
+    // public void OnEndDrag(PointerEventData eventData)
+    // {
+    //     Debug.Log($"OnEndDrag: {Time.frameCount}");
+    // }
+
+    public void OnGesture(ObjectDragEventData eventData)
     {
-        Debug.Log("OnBeginDrag");
+
     }
 
-    public void OnDrag(PointerEventData eventData)
-    {}
-
-    public void OnEndDrag(PointerEventData eventData)
+    private void SetDraggedPosition(PointerEventData eventData)
     {
-        Debug.Log($"OnEndDrag: {Time.frameCount}");
+        Vector3 newPos = GamePlayerCamera.Instance.GetGroundHitPoint(eventData.position);
+        transform.position = newPos;
     }
 }

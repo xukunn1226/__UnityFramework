@@ -18,8 +18,9 @@ namespace Framework.Gesture.Runtime
     {
         None,
         LongPress,
-        Drag,
+        ScreenDrag,
         Pinch,
+        ObjectDrag,
     }
 
     public class ScreenPointerData
