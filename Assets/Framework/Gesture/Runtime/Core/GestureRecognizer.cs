@@ -27,6 +27,8 @@ namespace Framework.Gesture.Runtime
             GestureRecognizerManager.RemoveRecognizer(this);
         }
         internal abstract void InternalUpdate();
+
+        protected virtual GameObject eventTarget { get { return gameObject; } }
     }
 
     public abstract class GestureRecognizer<T> : GestureRecognizer where T : GestureEventData, new()

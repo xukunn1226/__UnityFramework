@@ -16,7 +16,7 @@ namespace Framework.Gesture.Runtime
                     break;
                 case RecognitionState.Ended:                
                     // Debug.Log($"DiscreteGestureRecognizer:     ---- Recognized       {typeof(T).Name} -- {typeof(K).Name}");
-                    GestureEvents.ExecuteDiscrete<T, K>(gameObject, m_EventData);
+                    GestureEvents.ExecuteDiscrete<T, K>(eventTarget, m_EventData);
                     break;
                 case RecognitionState.Failed:
                     // Debug.Log($"DiscreteGestureRecognizer:     ---- Failed       {typeof(T).Name} -- {typeof(K).Name}");

@@ -15,19 +15,19 @@ namespace Framework.Gesture.Runtime
                     break;
                 case RecognitionState.Started:
                     // Debug.Log($"ContinuousGestureRecognizer:     ---- Started    {Time.frameCount}   {typeof(T).Name} -- {typeof(K).Name}");
-                    GestureEvents.ExecuteContinous<T, K>(gameObject, m_EventData);
+                    GestureEvents.ExecuteContinous<T, K>(eventTarget, m_EventData);
                     break;
                 case RecognitionState.InProgress:
                     // Debug.Log($"ContinuousGestureRecognizer:     ---- InProgress   {Time.frameCount}    {typeof(T).Name} -- {typeof(K).Name}");
-                    GestureEvents.ExecuteContinous<T, K>(gameObject, m_EventData);
+                    GestureEvents.ExecuteContinous<T, K>(eventTarget, m_EventData);
                     break;
                 case RecognitionState.Ended:
                     // Debug.Log($"ContinuousGestureRecognizer:     ---- Ended   {Time.frameCount}    {typeof(T).Name} -- {typeof(K).Name}");
-                    GestureEvents.ExecuteContinous<T, K>(gameObject, m_EventData);
+                    GestureEvents.ExecuteContinous<T, K>(eventTarget, m_EventData);
                     break;
                 case RecognitionState.Failed:
                     // Debug.Log($"ContinuousGestureRecognizer:     ---- Failed    {Time.frameCount}   {typeof(T).Name} -- {typeof(K).Name}");
-                    GestureEvents.ExecuteContinous<T, K>(gameObject, m_EventData);
+                    GestureEvents.ExecuteContinous<T, K>(eventTarget, m_EventData);
                     break;
             }
         }

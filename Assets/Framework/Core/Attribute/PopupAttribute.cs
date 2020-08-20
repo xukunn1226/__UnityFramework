@@ -21,6 +21,7 @@ namespace Framework.Core
         }
     }
     
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(PopupAttribute))]
     internal sealed class PopupDrawer : PropertyDrawer
     {
@@ -60,4 +61,5 @@ namespace Framework.Core
             }
         }
     }
+#endif
 }
