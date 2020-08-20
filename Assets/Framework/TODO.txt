@@ -35,7 +35,10 @@
 * 三维中物体的拖拽移动效果  https://www.cnblogs.com/springword/p/6683549.html
 * ObjectPool整合进Framework
 * FX_Root支持特效进入对象池时控制细节更精细，不是deactive GameObject，而是disable animation
-
+* 设置抓帧调试环境
+	1、Root设备
+	2、安装magisk（再装一个propshide模块）
+	3、改系统调试标记，如图
 
 
 

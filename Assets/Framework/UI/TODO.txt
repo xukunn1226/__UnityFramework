@@ -89,6 +89,14 @@
 
 
 
+* 同屏大量HUD的优化方案
+	目标：
+	动态字体
+	图文混排
+
+	https://www.xuanyusong.com/archives/4331  SuperTextMesh
+	https://edu.uwa4d.com/lesson-detail/127/487/0?isPreview=false   绕过Unity打造自己的HUD
+
 
 ## UGUI读书笔记
 
