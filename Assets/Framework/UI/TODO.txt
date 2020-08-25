@@ -92,10 +92,19 @@
 * 同屏大量HUD的优化方案
 	目标：
 	动态字体
-	图文混排
+	图文混排（参考Super Text Mesh），一个DC，且可以利用动态合批功能
+	遮挡关系
+	HUD使用UI制作的缺陷：摄像机位置发生变化需要实时修改UI位置，导致网格合并，UI系统本身效率没有3D高
+
 
 	https://www.xuanyusong.com/archives/4331  SuperTextMesh
 	https://edu.uwa4d.com/lesson-detail/127/487/0?isPreview=false   绕过Unity打造自己的HUD
+	https://edu.uwa4d.com/course-intro/1/109  Unity UI模块优化案例精讲
+	简化mesh
+	降低更新频率
+	拆分panel，尽可能将相同更新频率的UI放在一个UIPanel中
+
+
 
 
 ## UGUI读书笔记
