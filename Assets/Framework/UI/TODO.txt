@@ -90,11 +90,26 @@
 
 
 * 同屏大量HUD的优化方案
+	消耗点：
+		元素更新开销
+		网格更新开销
+		渲染开销
+
 	目标：
 	动态字体
 	图文混排（参考Super Text Mesh），一个DC，且可以利用动态合批功能
 	遮挡关系
 	HUD使用UI制作的缺陷：摄像机位置发生变化需要实时修改UI位置，导致网格合并，UI系统本身效率没有3D高
+
+UI的主要消耗点：
+	降低渲染开销（DC）
+	降低更新开销（网格合并）
+		动静分离
+		降低更新频率
+		避免“敏感”操作：避免FillAllDrawCalls
+			添加/删除元素时，穿插了其他UIDrawCall（尽量避免）
+			添加/删除的元素自成一个UIDrawCall（通过scale=0，alpha接近0来隐藏，而不是真正的删除）
+		优化选项
 
 
 	https://www.xuanyusong.com/archives/4331  SuperTextMesh
@@ -103,6 +118,11 @@
 	简化mesh
 	降低更新频率
 	拆分panel，尽可能将相同更新频率的UI放在一个UIPanel中
+	尽量减少激活的HUD
+	NGUI、UGUI的DC合并规则
+	NGUI.Visible优化大量网格更新时
+	分帧执行SetActive
+	TroopHeadBarName、TroopHeadBarSelected结构复杂度、更新频率不一致，考虑分开处理
 
 
 
