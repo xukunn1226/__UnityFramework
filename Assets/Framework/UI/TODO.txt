@@ -34,15 +34,16 @@
 * UI Opt
 	https://learn.unity.com/tutorial/optimizing-unity-ui
     https://create.unity3d.com/Unity-UI-optimization-tips
-	https://gameinstitute.qq.com/community/detail/112235  UGUI优化：批次合并源码分析及工具
-	https://gameinstitute.qq.com/community/detail/114203  重建 是UGUI优化的关键
-	https://zhuanlan.zhihu.com/p/55566751  				  Unity UGUI 点击性能优化
+	https://gameinstitute.qq.com/community/detail/114203  				重建 是UGUI优化的关键
+	https://zhuanlan.zhihu.com/p/55566751  				  				Unity UGUI 点击性能优化
 	https://blog.csdn.net/VR_iShow/article/details/92850381
 	https://thegamedev.guru/unity-ui/optimization-strategies/
 	https://forum.unity.com/threads/unity-ui-performance-tips-sharing-my-findings.524916/
-	https://blog.uwa4d.com/archives/QA_UGUI-1.html  关于Unity中的UGUI优化，你可能遇到这些问题
-	https://blog.uwa4d.com/archives/Sparkle_Shader_UI.html  Unity手游开发札记——使用Shader进行UGUI的优化
-	
+	https://blog.uwa4d.com/archives/QA_UGUI-1.html  					关于Unity中的UGUI优化，你可能遇到这些问题
+	https://blog.uwa4d.com/archives/Sparkle_Shader_UI.html  			Unity手游开发札记——使用Shader进行UGUI的优化
+	https://blog.csdn.net/akak2010110/article/details/80953370  		UGUI drawcall合并原理，解释了什么是BottomUI
+	https://www.jianshu.com/p/061e67308e5f  							Unity GUI(uGUI)使用心得与性能总结	
+	https://gameinstitute.qq.com/community/detail/112235  				UGUI优化：批次合并源码分析及工具
 
 
 	一切的优化围绕三个点进行：batch build、mesh build、raycast
@@ -115,6 +116,7 @@ UI的主要消耗点：
 	https://www.xuanyusong.com/archives/4331  SuperTextMesh
 	https://edu.uwa4d.com/lesson-detail/127/487/0?isPreview=false   绕过Unity打造自己的HUD
 	https://edu.uwa4d.com/course-intro/1/109  Unity UI模块优化案例精讲
+	https://blog.uwa4d.com/archives/video_UI.html  
 	简化mesh
 	降低更新频率
 	拆分panel，尽可能将相同更新频率的UI放在一个UIPanel中

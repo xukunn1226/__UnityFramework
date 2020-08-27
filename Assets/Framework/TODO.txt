@@ -39,6 +39,8 @@
 	1、Root设备
 	2、安装magisk（再装一个propshide模块）
 	3、改系统调试标记，如图
+* SBP: IBuildParameters.UseCache = false;实现rebuild bundle功能
+
 
 
 
