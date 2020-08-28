@@ -151,6 +151,7 @@ namespace Framework.AssetManagement.GameBuilder
                                                         output);
             
             buildParams.BundleCompression = setting.useLZ4Compress ? UnityEngine.BuildCompression.LZ4 : UnityEngine.BuildCompression.LZMA;
+            buildParams.UseCache = !setting.rebuildBundles;
             if(setting.DisableWriteTypeTree)
                 buildParams.ContentBuildFlags |= ContentBuildFlags.DisableWriteTypeTree;
             if(setting.DevelopmentBuild)

@@ -78,7 +78,7 @@ namespace Framework.AssetManagement.GameBuilder
             SetOverridePara(ref setting.bundleSetting.outputPath,                   "BundlesOutput",            "Assets/Deployment/AssetBundles");
             SetOverridePara(ref setting.bundleSetting.useLZ4Compress,               "UseLZ4Compress",           true);
             SetOverridePara(ref setting.bundleSetting.appendHash,                   "AppendHash",               false);
-            // SetOverridePara(ref setting.bundleSetting.rebuildBundles,               "RebuildBundles",           false);
+            SetOverridePara(ref setting.bundleSetting.rebuildBundles,               "RebuildBundles",           false);
 
             // override the player setting parameters
             SetOverridePara(ref setting.playerSetting.outputPath,                   "PlayerOutput",             "Assets/Deployment/Player");            

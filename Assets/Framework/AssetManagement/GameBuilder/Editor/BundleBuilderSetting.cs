@@ -20,6 +20,8 @@ namespace Framework.AssetManagement.GameBuilder
         /// </summary>
         public bool             useLZ4Compress;
 
+        public bool             rebuildBundles;
+
         /// <summary>
         /// 是否在bundle name附加hash
         /// </summary>
@@ -32,6 +34,7 @@ namespace Framework.AssetManagement.GameBuilder
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             sb.Append(string.Format($"outputPath: {outputPath}  \n"));
             sb.Append(string.Format($"useLZ4Compress: {useLZ4Compress}  \n"));
+            sb.Append(string.Format($"rebuildBundles: {rebuildBundles}  \n"));
             sb.Append(string.Format($"appendHash: {appendHash}  \n"));
             sb.Append(string.Format($"DisableWriteTypeTree: {DisableWriteTypeTree}  \n"));
             sb.Append(string.Format($"DevelopmentBuild: {DevelopmentBuild}  \n"));

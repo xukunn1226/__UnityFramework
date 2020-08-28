@@ -39,12 +39,14 @@
 	1、Root设备
 	2、安装magisk（再装一个propshide模块）
 	3、改系统调试标记，如图
-* SBP: IBuildParameters.UseCache = false;实现rebuild bundle功能
 
 
 
 
 
+
+
+- SBP: IBuildParameters.UseCache = false;实现rebuild bundle功能
 - SoftPath分别存储BundleName，AssetName，减少运行时字符串操作
 - 完善日志系统
 	https://www.jianshu.com/p/5163b0a0180e

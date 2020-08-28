@@ -11,6 +11,7 @@ namespace Framework.AssetManagement.GameBuilder
     {
         SerializedProperty      m_outputPathProp;
         SerializedProperty      m_useLZ4CompressProp;
+        SerializedProperty      m_rebuildBundlesProp;
         SerializedProperty      m_appendHashProp;
         SerializedProperty      m_DisableWriteTypeTreeProp;
         SerializedProperty      m_DevelopmentBuildProp;
@@ -19,6 +20,7 @@ namespace Framework.AssetManagement.GameBuilder
         {
             m_outputPathProp        = serializedObject.FindProperty("outputPath");
             m_useLZ4CompressProp    = serializedObject.FindProperty("useLZ4Compress");
+            m_rebuildBundlesProp    = serializedObject.FindProperty("rebuildBundles");
             m_appendHashProp        = serializedObject.FindProperty("appendHash");
             m_DisableWriteTypeTreeProp = serializedObject.FindProperty("DisableWriteTypeTree");
             m_DevelopmentBuildProp  = serializedObject.FindProperty("DevelopmentBuild");
@@ -93,6 +95,7 @@ namespace Framework.AssetManagement.GameBuilder
             GUILayout.BeginVertical(new GUIStyle("HelpBox"));
             {
                 m_useLZ4CompressProp.boolValue  = EditorGUILayout.Toggle(new GUIContent("UseLZ4Compress"), m_useLZ4CompressProp.boolValue);
+                m_rebuildBundlesProp.boolValue  = EditorGUILayout.Toggle(new GUIContent("RebuildBundles"), m_rebuildBundlesProp.boolValue);                
                 m_appendHashProp.boolValue      = EditorGUILayout.Toggle(new GUIContent("AppendHash"), m_appendHashProp.boolValue);
                 m_DisableWriteTypeTreeProp.boolValue    = EditorGUILayout.Toggle(new GUIContent("DisableWriteTypeTree"), m_DisableWriteTypeTreeProp.boolValue);
                 m_DevelopmentBuildProp.boolValue    = EditorGUILayout.Toggle(new GUIContent("DevelopmentBuild"), m_DevelopmentBuildProp.boolValue);
