@@ -87,5 +87,9 @@ namespace Framework.Core
             }
             return str;
         }
+
+        unsafe static public void Split_NoAlloc()
+        {
+        }
     }
 }

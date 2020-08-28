@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
+using Framework.Core;
 
 namespace Framework.Core.Tests
 {
@@ -35,8 +36,6 @@ namespace Framework.Core.Tests
             UnityEngine.Profiling.Profiler.EndSample();
 
             Debug.Log($"{str.GetHashCode()}     {bb.GetHashCode()}");
-            string aa = Framework.Core.Utility.ToLower_NoAlloc(str);
-            Debug.Log($"-------{str.GetHashCode()}     {aa.GetHashCode()}");
         }
     }
 }
