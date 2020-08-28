@@ -49,8 +49,8 @@ namespace Framework.Core.Editor
     [InitializeOnLoad]
     public class RedirectorDB
     {
-        static private string s_RefObjectDBPath = "Assets/RedirectorDB/RefObject_DB";           // 记录资源被引用的信息
-        static private string s_UserObjectDBPath = "Assets/RedirectorDB/UserObject_DB";         // 记录userObj引用的资源
+        static private string s_RefObjectDBPath = "Assets/RedirectorCache/RefObject_DB";           // 记录资源被引用的信息
+        static private string s_UserObjectDBPath = "Assets/RedirectorCache/UserObject_DB";         // 记录userObj引用的资源
 
         static RedirectorDB()
         {

@@ -69,12 +69,15 @@ crashlytics-build.properties
 [Aa]ssets/StreamingAssets
 [Aa]ssets/StreamingAssets.meta
 
-# Deployment
+
+# Customize
 Deployment/
 [Aa]ssets/[Dd]eployment/
 [Aa]ssets/[Dd]eployment.meta
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData.meta
+#[Aa]ssets/RedirectorCache
+#[Aa]ssets/RedirectorCache.meta
 
 # some plugins
 [Aa]ssets/AssetBundles-Browser-master
