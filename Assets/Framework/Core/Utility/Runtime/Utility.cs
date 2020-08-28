@@ -74,5 +74,18 @@ namespace Framework.Core
             }
             return fullPath;
         }
+
+        unsafe static public string ToLower_NoAlloc(this string str)
+        {
+            fixed(char* c = str)
+            {
+                int length = str.Length;
+                for(int i = 0; i < length; ++i)
+                {
+                    c[i] = char.ToLower(str[i]);
+                }
+            }
+            return str;
+        }
     }
 }

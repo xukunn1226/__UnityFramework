@@ -24,17 +24,15 @@
 * Inspector Field for Scene Asset  https://answers.unity.com/questions/242794/inspector-field-for-scene-asset.html?_ga=2.221217361.81844548.1594053424-350901822.1561524296
 * 监控所有的特效播放，统一特效加载接口
 * 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
-* Protobuf3优化
-* 字符串Tolower，split的unsafe实现
-* unsafe和非托管内存优化
 * 三维中物体的拖拽移动效果  https://www.cnblogs.com/springword/p/6683549.html
-* ObjectPool整合进Framework
 * FX_Root支持特效进入对象池时控制细节更精细，不是deactive GameObject，而是disable animation
 * 设置抓帧调试环境
 	1、Root设备
 	2、安装magisk（再装一个propshide模块）
 	3、改系统调试标记，如图
 * Pool的初始大小可配置化
+* Protobuf3优化
+* unsafe和非托管内存优化（字符串）
 
 
 
@@ -42,7 +40,7 @@
 
 
 
-
+- ObjectPool整合进Framework
 - 手势模块：
 	* 悬停
 	* MyStandalongInputModule添加自定义当前选中对象

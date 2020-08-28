@@ -24,5 +24,19 @@ namespace Framework.Core.Tests
         {
             return commandLine.Split(new char[] { separator });
         }
+
+        [Test]
+        public void TestUnsafeToLower()
+        {
+            UnityEngine.Profiling.Profiler.BeginSample("11111111111111");
+            string str = "AcBD";
+            
+            string bb = str.ToLower_NoAlloc();
+            UnityEngine.Profiling.Profiler.EndSample();
+
+            Debug.Log($"{str.GetHashCode()}     {bb.GetHashCode()}");
+            string aa = Framework.Core.Utility.ToLower_NoAlloc(str);
+            Debug.Log($"-------{str.GetHashCode()}     {aa.GetHashCode()}");
+        }
     }
 }
