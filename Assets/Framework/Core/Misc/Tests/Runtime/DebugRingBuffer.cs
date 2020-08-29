@@ -48,32 +48,24 @@ namespace Framework.Core.Tests
             // // bool bb = string.IsInterned(c);
             // Debug.Log($"{object.ReferenceEquals(c, d)}      {c.GetHashCode()}       {d.GetHashCode()}");
         }
-        string cc = "12sdADCDEdf";
+        
         public void TestUnsafeFunc(string str)
         {        
             UnityEngine.Profiling.Profiler.BeginSample("11111111111111");
-            string bb = str.ToLower_NoAlloc();
-            Utility.ToLower_NoAlloc(str);
-            Utility.ToLower_NoAlloc(str);
-            Utility.ToLower_NoAlloc(str);
-            Utility.ToLower_NoAlloc(str);
+            string bb = str.ToLowerNoAlloc();
             UnityEngine.Profiling.Profiler.EndSample();
             // Debug.Log($"{str}   {Time.frameCount}");
 
             string str2 = str + "ABcdEFcddf";
             UnityEngine.Profiling.Profiler.BeginSample("222222222222222");            
-            string bb2 = str.ToLower_NoAlloc();
-            Utility.ToLower_NoAlloc(str2);
-            Utility.ToLower_NoAlloc(str2);
-            Utility.ToLower_NoAlloc(str2);
-            Utility.ToLower_NoAlloc(str2);
+            string bb2 = str.ToLowerNoAlloc();
             UnityEngine.Profiling.Profiler.EndSample();   
             // Debug.Log($"{str2}   {Time.frameCount}");
 
             
             string split = "232&112&&3345&4334&345345&34234&fsdf";
             UnityEngine.Profiling.Profiler.BeginSample("3333333333333333");            
-            int count = split.Split_NoAlloc('&', results);
+            int count = split.SplitNoAlloc('&', results);
             UnityEngine.Profiling.Profiler.EndSample();
 
             UnityEngine.Profiling.Profiler.BeginSample("44444444444444");
