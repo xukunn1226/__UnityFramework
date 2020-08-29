@@ -33,6 +33,7 @@
 * Pool的初始大小可配置化
 * Protobuf3优化
 * unsafe和非托管内存优化（字符串）
+* string intern优化  https://zhuanlan.zhihu.com/p/23877335?refer=gu-lu  https://www.cnblogs.com/liuqiyun/p/9446887.html
 
 
 

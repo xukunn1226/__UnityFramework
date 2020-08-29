@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
-using Framework.Core;
 
 namespace Framework.Core.Tests
 {
@@ -24,18 +23,6 @@ namespace Framework.Core.Tests
         private string[] ToArray(string commandLine, char separator)
         {
             return commandLine.Split(new char[] { separator });
-        }
-
-        [Test]
-        public void TestUnsafeToLower()
-        {
-            UnityEngine.Profiling.Profiler.BeginSample("11111111111111");
-            string str = "AcBD";
-            
-            string bb = str.ToLower_NoAlloc();
-            UnityEngine.Profiling.Profiler.EndSample();
-
-            Debug.Log($"{str.GetHashCode()}     {bb.GetHashCode()}");
         }
     }
 }
