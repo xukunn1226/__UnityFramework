@@ -32,7 +32,8 @@
 	3、改系统调试标记，如图
 * Pool的初始大小可配置化
 * Protobuf3优化
-
+* 比较SQLite和Protobuf配表方案的异步（读取、缓存、导表）Openpyxl
+* LUA配表优化  https://blog.uwa4d.com/archives/1490.html
 
 
 
