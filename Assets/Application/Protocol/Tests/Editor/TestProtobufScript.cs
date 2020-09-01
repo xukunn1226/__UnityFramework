@@ -37,7 +37,7 @@ namespace Tests
         {
             StoreRequest toClient = new StoreRequest();
             toClient.MergeFrom(data);
-            CodedInputStream
+            
             StoreRequest toClient1 = StoreRequest.Parser.ParseFrom(data);
 
             using (var input = System.IO.File.OpenRead("assets/application/protocol/tests/editor/test_proto.bytes"))
