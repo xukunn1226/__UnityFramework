@@ -32,10 +32,11 @@ namespace Framework.NetWork
             if (stream == null) throw new ArgumentNullException();
 
             m_Stream = stream;
-            m_Buffer = new byte[Mathf.NextPowerOfTwo(Mathf.Max(m_MinCapacity, capacity))];
-            m_Head = 0;
-            m_Tail = 0;
-            m_IndexMask = m_Buffer.Length - 1;
+            EnsureCapacity(capacity);
+            // m_Buffer = new byte[Mathf.NextPowerOfTwo(Mathf.Max(m_MinCapacity, capacity))];
+            // m_Head = 0;
+            // m_Tail = 0;
+            // m_IndexMask = m_Buffer.Length - 1;
         }
 
         public void Clear()
@@ -121,7 +122,6 @@ namespace Framework.NetWork
                 m_Buffer = newBuf;
                 m_Tail = 0;
                 m_Head = length;
-
                 m_IndexMask = m_Buffer.Length - 1;
             }
         }
