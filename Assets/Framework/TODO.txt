@@ -34,7 +34,10 @@
 * Protobuf3优化
 * 比较SQLite和Protobuf配表方案的异步（读取、缓存、导表）Openpyxl
 * LUA配表优化  https://blog.uwa4d.com/archives/1490.html
-
+* Network
+	https://www.codeproject.com/Articles/83102/C-SocketAsyncEventArgs-High-Performance-Socket-Cod  高性能网络库
+	https://www.geeksforgeeks.org/socket-programming-in-c-sharp/
+	https://codereview.stackexchange.com/questions/224185/asynchronous-circular-buffer-in-c
 
 
 

@@ -13,6 +13,7 @@ namespace Framework.NetWork
     /// </summary>
     public class NetStreamBuffer
     {
+        private const int       m_MinCapacity = 1024;
         private NetworkStream   m_Stream;
 
         private byte[]          m_Buffer;
@@ -31,7 +32,7 @@ namespace Framework.NetWork
             if (stream == null) throw new ArgumentNullException();
 
             m_Stream = stream;
-            m_Buffer = new byte[Mathf.NextPowerOfTwo(capacity)];
+            m_Buffer = new byte[Mathf.NextPowerOfTwo(Mathf.Max(m_MinCapacity, capacity))];
             m_Head = 0;
             m_Tail = 0;
             m_IndexMask = m_Buffer.Length - 1;
@@ -92,6 +93,37 @@ namespace Framework.NetWork
             if (data == null)
                 throw new ArgumentNullException("data == null");
             return Write(data, 0, data.Length);
+        }
+
+        private void EnsureCapacity(int min)
+        {
+            if(m_Buffer.Length < min)
+            {
+                int newCapacity = m_Buffer.Length == 0 ? m_MinCapacity : m_Buffer.Length * 2;
+                if((uint)newCapacity > Int32.MaxValue)
+                    newCapacity = Int32.MaxValue;
+                if(newCapacity < min)
+                    newCapacity = min;
+                newCapacity = Mathf.ClosestPowerOfTwo(newCapacity);
+
+                // expand buffer
+                byte[] newBuf = new byte[newCapacity];
+                int length = GetUsedCapacity();
+                if(m_Head > m_Tail)
+                {
+                    System.Buffer.BlockCopy(m_Buffer, 0, newBuf, 0, m_Head - m_Tail);
+                }
+                else if(m_Head < m_Tail)
+                {
+                    System.Buffer.BlockCopy(m_Buffer, m_Tail, newBuf, 0, m_Buffer.Length - 1 - m_Tail);
+                    System.Buffer.BlockCopy(m_Buffer, 0, newBuf, m_Buffer.Length - 1 - m_Tail, m_Head);
+                }
+                m_Buffer = newBuf;
+                m_Tail = 0;
+                m_Head = length;
+
+                m_IndexMask = m_Buffer.Length - 1;
+            }
         }
 
         /// <summary>
