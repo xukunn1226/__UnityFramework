@@ -362,10 +362,16 @@ namespace Framework.AssetManagement.AssetBrowser
         [MenuItem("Assets/AssetBrowser/Clean Property on Selected Material", false, 5)]
         static private void MemuItem_CleanMaterial()
         {
-            Material mat = Selection.activeObject as Material;
-            if(mat == null)
-                return;
-            CleanMaterialProperties(mat);
+            List<string> assetPaths = AssetBrowserUtil.GetSelectedAllPaths(".mat");
+            foreach(string assetPath in assetPaths)
+            {
+                Material mat = AssetDatabase.LoadAssetAtPath<Material>(assetPath);
+                if(mat != null)
+                {
+                    CleanMaterialProperties(mat);
+                }
+            }
+            AssetDatabase.SaveAssets();
         }
 
         private static void CleanMaterialProperties(Material mat)
@@ -389,6 +395,59 @@ namespace Framework.AssetManagement.AssetBrowser
                 string name = property.GetArrayElementAtIndex(i).FindPropertyRelative("first").stringValue;
                 if (!mat.HasProperty(name))
                     property.DeleteArrayElementAtIndex(i);
+            }
+        }
+
+        static private bool DoCleanMotionVectors(GameObject obj)
+        {
+            if (obj == null)
+                return false;
+
+            bool isDirty = false;
+            SkinnedMeshRenderer[] smrs = obj.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            foreach (var smr in smrs)
+            {
+                if (smr != null && smr.skinnedMotionVectors)
+                {
+                    isDirty = true;
+                    smr.skinnedMotionVectors = false;
+                    EditorUtility.SetDirty(smr);
+                }
+            }
+            return isDirty;
+        }
+
+        [MenuItem("Assets/AssetBrowser/Clean MotionVectors On Selected GameObject", false, 6)]
+        static private void CleanSelectedMotionVectors()
+        {
+            bool isDirty = false;
+            List<string> assetPaths = AssetBrowserUtil.GetSelectedAllPaths(".prefab");
+            foreach(var assetPath in assetPaths)
+            {
+                GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                isDirty |= DoCleanMotionVectors(obj);
+            }
+            if(isDirty)
+            {
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+        }
+
+        [MenuItem("Assets/AssetBrowser/Clean MotionVectors On All GameObjects", false, 7)]
+        static private void CleanAllMotionVectors()
+        {
+            bool isDirty = false;
+            string[] guids = AssetDatabase.FindAssets("t:prefab");
+            foreach(var guid in guids)
+            {
+                GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid));
+                isDirty |= DoCleanMotionVectors(obj);
+            }
+            if(isDirty)
+            {
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
             }
         }
     }
