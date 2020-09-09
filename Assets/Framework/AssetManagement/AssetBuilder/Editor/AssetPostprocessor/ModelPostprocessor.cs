@@ -45,7 +45,7 @@ namespace Framework.AssetManagement.AssetBuilder
             {
                 if(importedAssets[i].EndsWith(".anim"))
                 {
-                    // OptimizeAnim(importedAssets[i]);
+                    OptimizeAnim(importedAssets[i]);
                 }
             }
         }
@@ -79,17 +79,20 @@ namespace Framework.AssetManagement.AssetBuilder
                 OptimizeAnim(theAnimation);
         }
 
-        static public void OptimizeAnim(AnimationClip theAnimation)
+        static public void OptimizeAnim(AnimationClip theAnimation, bool clearScaleCurve = true)
         {
             try
             {
                 //去除scale曲线
-                foreach (EditorCurveBinding theCurveBinding in AnimationUtility.GetCurveBindings(theAnimation))
+                if(clearScaleCurve)
                 {
-                    string name = theCurveBinding.propertyName.ToLower();
-                    if (name.Contains("scale"))
+                    foreach (EditorCurveBinding theCurveBinding in AnimationUtility.GetCurveBindings(theAnimation))
                     {
-                        AnimationUtility.SetEditorCurve(theAnimation, theCurveBinding, null);
+                        string name = theCurveBinding.propertyName.ToLower();
+                        if (name.Contains("scale"))
+                        {
+                            AnimationUtility.SetEditorCurve(theAnimation, theCurveBinding, null);
+                        }
                     }
                 }
 
