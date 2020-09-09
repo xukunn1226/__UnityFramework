@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 namespace Framework.AssetManagement.AssetBuilder
 {
@@ -15,14 +16,14 @@ namespace Framework.AssetManagement.AssetBuilder
 //#endif
 //        }
 
-//        void OnPostprocessModel(GameObject root)
-//        {
+       void OnPostprocessModel(GameObject root)
+       {
 //            ModelImporter modelImporter = assetImporter as ModelImporter;
-//#if UNITY_2019_1_OR_NEWER
+// #if UNITY_2019_1_OR_NEWER
 //            if(modelImporter.materialImportMode == ModelImporterMaterialImportMode.None)
-//#else
+// #else
 //            if (!modelImporter.importMaterials)
-//#endif
+// #endif
 //            {
 //                // 清空默认的内置引用资源
 //                Renderer[] rdrs = root.GetComponentsInChildren<Renderer>();
@@ -32,7 +33,54 @@ namespace Framework.AssetManagement.AssetBuilder
 //                    rdrs[i].sharedMaterials = mats;
 //                }
 //            }
-//        }
+
+            List<AnimationClip> animationClipList = new List<AnimationClip>(AnimationUtility.GetAnimationClips(root));
+            foreach (AnimationClip theAnimation in animationClipList)
+            {
+
+                try
+                {
+                    //去除scale曲线
+                    foreach (EditorCurveBinding theCurveBinding in AnimationUtility.GetCurveBindings(theAnimation))
+                    {
+                        string name = theCurveBinding.propertyName.ToLower();
+                        if (name.Contains("scale"))
+                        {
+                            AnimationUtility.SetEditorCurve(theAnimation, theCurveBinding, null);
+                        }
+                    }
+
+                    //浮点数精度压缩到f3
+                    AnimationClipCurveData[] curves = null;
+                    curves = AnimationUtility.GetAllCurves(theAnimation);
+                    Keyframe key;
+                    Keyframe[] keyFrames;
+                    for (int ii = 0; ii < curves.Length; ++ii)
+                    {
+                        AnimationClipCurveData curveDate = curves[ii];
+                        if (curveDate.curve == null || curveDate.curve.keys == null)
+                        {
+                            continue;
+                        }
+                        keyFrames = curveDate.curve.keys;
+                        for (int i = 0; i < keyFrames.Length; i++)
+                        {
+                            key = keyFrames[i];
+                            key.value = float.Parse(key.value.ToString("f3"));
+                            key.inTangent = float.Parse(key.inTangent.ToString("f3"));
+                            key.outTangent = float.Parse(key.outTangent.ToString("f3"));
+                            keyFrames[i] = key;
+                        }
+                        curveDate.curve.keys = keyFrames;
+                        theAnimation.SetCurve(curveDate.path, curveDate.type, curveDate.propertyName, curveDate.curve);
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError(string.Format("CompressAnimationClip Failed !!! animationPath : {0} error: {1}", assetPath, e));
+                }
+            }
+       }
 
         static public void SetClipProperty(ModelImporter mi)
         {
