@@ -33,7 +33,7 @@ namespace Framework.AssetManagement.AssetBuilder
 //                     rdrs[i].sharedMaterials = mats;
 //                 }
 //             }
-            OptimizeAnim(root);
+            // OptimizeAnim(root);
         }
         
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
@@ -45,7 +45,7 @@ namespace Framework.AssetManagement.AssetBuilder
             {
                 if(importedAssets[i].EndsWith(".anim"))
                 {
-                    OptimizeAnim(importedAssets[i]);
+                    // OptimizeAnim(importedAssets[i]);
                 }
             }
         }
