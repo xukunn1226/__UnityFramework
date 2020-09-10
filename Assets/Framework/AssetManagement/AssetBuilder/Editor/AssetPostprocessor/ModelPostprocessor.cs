@@ -33,9 +33,6 @@ namespace Framework.AssetManagement.AssetBuilder
 //                     rdrs[i].sharedMaterials = mats;
 //                 }
 //             }
-            
-            // OptimizeAnim(assetImporter.assetPath);
-            // Debug.Log($"------import animation clip: ");
         }
         
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
@@ -48,10 +45,10 @@ namespace Framework.AssetManagement.AssetBuilder
                 if(importedAssets[i].EndsWith(".anim"))
                 {
                     OptimizeAnim(importedAssets[i]);
-                    Debug.Log($"import animation clip: {importedAssets[i]}");
+                    // Debug.Log($"import animation clip: {importedAssets[i]}");
                 }
             }
-        }        
+        }
 
         static public void OptimizeAnim(GameObject go)
         {
@@ -257,7 +254,7 @@ namespace Framework.AssetManagement.AssetBuilder
             if(isDirty)
             {
                 // EditorUtility.SetDirty(theAnimation);
-                Debug.Log($"SetDirty: {theAnimation.name}");
+                // Debug.Log($"SetDirty: {theAnimation.name}");
             }
         }
 
