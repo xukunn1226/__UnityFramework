@@ -7,7 +7,9 @@ namespace Framework.AssetManagement.AssetBuilder
     {
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            bool bNeedSaved = false;
+            if(Application.isBatchMode)
+                return;
+                
             foreach(var assetPath in importedAssets)
             {
                 if(assetPath.EndsWith(".mat"))
@@ -17,14 +19,8 @@ namespace Framework.AssetManagement.AssetBuilder
                     {
                         mat.enableInstancing = true;
                         EditorUtility.SetDirty(mat);
-                        bNeedSaved = true;
                     }
                 }
-            }
-
-            if(bNeedSaved)
-            {
-                AssetDatabase.SaveAssets();
             }
         }
     }
