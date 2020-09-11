@@ -213,7 +213,8 @@ namespace Framework.AssetManagement.AssetBuilder
                         if(name.Contains("scale.x"))
                         {
                             keyFrames = curveData.curve.keys;
-                            if(keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                            if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                            || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
                             {
                                 count++;
                             }
@@ -221,7 +222,8 @@ namespace Framework.AssetManagement.AssetBuilder
                         else if(name.Contains("scale.y"))
                         {
                             keyFrames = curveData.curve.keys;
-                            if(keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                            if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                            || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
                             {
                                 count++;
                             }
@@ -229,7 +231,8 @@ namespace Framework.AssetManagement.AssetBuilder
                         else if(name.Contains("scale.z"))
                         {
                             keyFrames = curveData.curve.keys;
-                            if(keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                            if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                            || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
                             {
                                 count++;
                             }
