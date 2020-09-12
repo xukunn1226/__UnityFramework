@@ -450,5 +450,32 @@ namespace Framework.AssetManagement.AssetBrowser
                 AssetDatabase.Refresh();
             }
         }
+
+        [MenuItem("Assets/AssetBrowser/Check ParticleSystem")]
+        static private void MenuItem_CheckParticleSystem()
+        {
+            List<string> assetPaths = AssetBrowserUtil.GetSelectedAllPaths(".prefab");
+            foreach(var assetPath in assetPaths)
+            {
+                GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                if(obj == null) continue;
+                CheckParticleSystem(obj);
+            }
+        }
+
+        static private void CheckParticleSystem(GameObject go)
+        {
+            if(go == null)
+                throw new ArgumentNullException();
+
+            ParticleSystem[] pss = go.GetComponentsInChildren<ParticleSystem>(true);
+            foreach(var ps in pss)
+            {
+                if(ps.collision.enabled)
+                {
+                    Debug.LogWarning($"collision module enable, plz check [{ps.gameObject.name}]", go);
+                }
+            }
+        }
     }
 }
