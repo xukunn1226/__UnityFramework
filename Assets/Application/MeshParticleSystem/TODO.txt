@@ -1,6 +1,19 @@
 * 搭建特效制作环境（InGame、UI）
 * 去除所有FX_Component组件上的duration，统一使用FX_Root duration
 * 对象池管理特效：当特效数量达到一定值，使用LOD机制弱化效果(FX AUTOLOD)
+* 特效优化：
+    https://forum.unity.com/threads/released-off-screen-particles-render-particles-at-1-2-1-4-or-1-8-screen-resolution.358506/
+    https://github.com/slipster216/OffScreenParticleRendering
+    https://blogs.unity3d.com/2016/12/20/unitytips-particlesystem-performance-culling/
+    https://blogs.unity3d.com/2016/04/20/particle-system-modules-faq/
+* optimization tips:
+    culling仅在系统可预测时生效
+    打开单个模块不仅会增加开销，更可能因为从过程模式（可预测）切换到非过程模式（不可预测）增加了整个系统的开销
+    通过脚本改变数值将不再culling
+    哪些是可预测模式？
+        Local space
+    show bound：持续改变说明是不可预测模式
+    减少脚本控制，尽量使用系统内置功能
 
 
 
