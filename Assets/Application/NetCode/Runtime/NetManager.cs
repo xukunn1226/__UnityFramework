@@ -82,7 +82,7 @@ public class NetManager<TMessage> where TMessage : class
         ReceiveData();
     }
 
-    public void SendData(TMessage data)
+    public bool SendData(TMessage data)
     {
         // method 1. 序列化到新的空间，有GC
         //byte[] buf = m_Parser.Serialize(data);
@@ -91,9 +91,13 @@ public class NetManager<TMessage> where TMessage : class
         // method 2. 序列化到stream，因buff已预先分配、循环利用，无GC
         int length = m_Parser.CalculateSize(data);
         MemoryStream stream;
-        m_NetClient.RequestBufferToWrite(length, out stream);
-        m_Parser.Serialize(data, stream);
-        m_NetClient.FinishBufferWriting(length);
+        if(m_NetClient.RequestBufferToWrite(length, out stream))
+        {
+            m_Parser.Serialize(data, stream);
+            m_NetClient.FinishBufferWriting(length);
+            return true;
+        }
+        return false;
     }
 
     private void ReceiveData()

@@ -14,7 +14,8 @@ public class NetCode : MonoBehaviour
     async void Awake()
     {
         m_NetManager = new NetManager<IMessage>(new PacketProtobuf());
-        await m_NetManager.Connect("192.168.1.6", 11000);
+        await m_NetManager.Connect("192.168.5.170", 11000);
+        // await m_NetManager.Connect("192.168.1.6", 11000);
         await AutoSending();
     }
 
@@ -51,7 +52,8 @@ public class NetCode : MonoBehaviour
             if (index % 3 == 0)
                 msg.MyList.Add("33333333333333");
 
-            m_NetManager.SendData(msg);
+            if(!m_NetManager.SendData(msg))
+                break;
             
             await Task.Delay(10);
         }

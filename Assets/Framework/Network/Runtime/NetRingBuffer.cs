@@ -241,8 +241,10 @@ namespace Framework.NetWork
         /// <param name="offset">the position where can be written</param>
         protected void BeginWrite(int length, out byte[] buf, out int offset)
         {
-            if (length > GetConsecutiveUnusedCapacityToEnd() && length > GetConsecutiveUnusedCapacityFromStart())
-                throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}");
+            int c1 = GetConsecutiveUnusedCapacityToEnd();
+            int c2 = GetConsecutiveUnusedCapacityFromStart();
+            if (length > c1 && length > c2)
+                throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    c1: {c1}    c2: {c2}");
 
             int countToEnd = GetConsecutiveUnusedCapacityToEnd();
             if(countToEnd > 0 && length > countToEnd)

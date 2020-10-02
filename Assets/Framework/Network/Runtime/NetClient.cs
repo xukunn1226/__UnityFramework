@@ -189,9 +189,9 @@ namespace Framework.NetWork
         /// </summary>
         /// <param name="length"></param>
         /// <param name="stream"></param>
-        public void RequestBufferToWrite(int length, out MemoryStream stream)
+        public bool RequestBufferToWrite(int length, out MemoryStream stream)
         {
-            m_StreamWriter.RequestBufferToWrite(length, out stream);
+            return m_StreamWriter.RequestBufferToWrite(length, out stream);
         }
 
         public void FinishBufferWriting(int length)
