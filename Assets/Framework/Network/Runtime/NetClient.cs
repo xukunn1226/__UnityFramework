@@ -107,6 +107,11 @@ namespace Framework.NetWork
             m_StreamWriter.Flush();
 
             HandleException();
+
+            if(!IsConnected2())
+            {
+                Trace.Error("失去连接");
+            }
         }
 
         public void Close(bool isImmediately = false)
@@ -265,7 +270,7 @@ namespace Framework.NetWork
         public bool IsConnected2()
         {
             if (m_Client == null || m_Client.Client == null)
-                throw new ArgumentNullException("socket");
+                return false;
 
             if (m_Client.Client.Poll(10, SelectMode.SelectRead) && (m_Client.Client.Available == 0) || !m_Client.Client.Connected)
                 return false;
