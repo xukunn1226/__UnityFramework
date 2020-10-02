@@ -16,8 +16,8 @@ namespace Framework.NetWork
 
     public class NetClient
     {
-        public delegate void onConnected(int ret);
-        public delegate void onDisconnected(int ret);
+        public delegate void onConnected(Exception ex);
+        public delegate void onDisconnected(Exception ex);
 
         public ConnectState         state { get; private set; } = ConnectState.Disconnected;
 
@@ -33,6 +33,7 @@ namespace Framework.NetWork
         private NetStreamReader     m_StreamReader;
 
         private bool                m_HandleException;
+        private Exception           m_Exception;
 
         public NetClient(string host, int port, int sendBufferSize = 4 * 1024, int receiveBufferSize = 8 * 1024, onConnected connectionHandler = null, onDisconnected disconnectedHandler = null)
         {
@@ -52,6 +53,7 @@ namespace Framework.NetWork
             m_Client.NoDelay = true;
             //m_Client.SendTimeout = 5000;
             m_HandleException = false;
+            m_Exception = null;
 
             try
             {
@@ -91,18 +93,13 @@ namespace Framework.NetWork
         private void OnConnected(int ret, Exception e = null)
         {
             state = ret == 0 ? ConnectState.Connected : ConnectState.Disconnected;
-            m_ConnectedHandler?.Invoke(ret);
-
-            if(e != null)
-            {
-                Trace.Debug(e.ToString());
-            }
+            m_ConnectedHandler?.Invoke(e);
         }
 
-        private void OnDisconnected(int ret)
+        private void OnDisconnected()
         {
             state = ConnectState.Disconnected;
-            m_DisconnectedHandler?.Invoke(ret);
+            m_DisconnectedHandler?.Invoke(m_Exception);
         }
 
         public void Tick()
@@ -112,15 +109,19 @@ namespace Framework.NetWork
             HandleException();
         }
 
-        public void Close()
+        public void Close(bool isImmediately = false)
         {
             m_HandleException = true;
+            m_Exception = null;
+            if(isImmediately)
+                Tick();
         }
 
         internal void RaiseException(Exception e)
         {
-            Trace.Debug(e.ToString());
+            // Trace.Debug(e.ToString());
             m_HandleException = true;
+            m_Exception = e;
         }
 
         private void HandleException()
@@ -141,7 +142,7 @@ namespace Framework.NetWork
                 m_Client.Close();
                 m_Client = null;
 
-                OnDisconnected(0);
+                OnDisconnected();
             }
 
             if (m_StreamWriter != null)

@@ -20,9 +20,9 @@ using Framework.NetWork;
 /// </summary>
 public class NetManager<TMessage> where TMessage : class
 {
-    private NetClient m_NetClient;
-    private IPacket<TMessage> m_Parser;
-    private List<TMessage> m_MessageList = new List<TMessage>();
+    private NetClient           m_NetClient;
+    private IPacket<TMessage>   m_Parser;
+    private List<TMessage>      m_MessageList = new List<TMessage>();
 
     protected NetManager() { }
 
@@ -45,22 +45,31 @@ public class NetManager<TMessage> where TMessage : class
         await m_NetClient.Reconnect();
     }
 
-    public void Close()
+    public void Close(bool isImmediately = false)
     {
         if (m_NetClient == null)
             throw new ArgumentNullException();
-        m_NetClient.Close();
+        m_NetClient.Close(isImmediately);
     }
 
     public ConnectState state { get { return m_NetClient?.state ?? ConnectState.Disconnected; } }
 
-    private void OnConnected(int ret)
+    private void OnConnected(Exception e)
     {
-        Trace.Debug("Connected...");
+        if(e != null)
+        {
+            Trace.Debug(e.ToString());
+        }
+        else
+        {
+            Trace.Debug($"connect servier... ");
+        }
     }
 
-    private void OnDisconnected(int ret)
+    private void OnDisconnected(Exception e)
     {
+        if(e != null)
+            Trace.Debug(e.ToString());
         Trace.Debug("...Disconnected");
     }
 
@@ -117,10 +126,10 @@ public class NetManager<TMessage> where TMessage : class
         m_NetClient.FinishRead(totalRealLength);
 
         // dispatch
-        foreach (var msg in m_MessageList)
-        {
-            //Dispatch(msg);
-            Trace.Debug($"Receive:=== {msg}");
-        }
+        // foreach (var msg in m_MessageList)
+        // {
+        //     //Dispatch(msg);
+        //     Trace.Debug($"Receive:=== {msg}");
+        // }
     }
 }

@@ -34,7 +34,7 @@ namespace Framework.Core
 
         private Rect    m_WindowRect = new Rect(20, 40, 800, 600);
         private Vector2 m_ScrollPosition;        
-        private bool    m_isShow;
+        public bool     m_isShow;
         private Rect    m_ResizerRect;
         private bool    m_Resizing;        
 

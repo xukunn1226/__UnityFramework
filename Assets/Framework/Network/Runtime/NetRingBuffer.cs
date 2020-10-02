@@ -142,24 +142,10 @@ namespace Framework.NetWork
             return Math.Min(GetUnusedCapacity(), Head >= Tail ? m_Buffer.Length - Head : 0);
         }
 
-        // get continous free capacity from buffer start to tail
+        // get continous free capacity from buffer start(or head) to tail
         private int GetConsecutiveUnusedCapacityFromStart()
         {
-            int count = 0;
-            if (Head < Tail)
-            {
-                count = Tail - Head;
-            }
-            else if (Head > Tail)
-            {
-                count = Tail;
-            }
-            else
-            {
-                count = m_Buffer.Length - Head;
-            }
-
-            return Math.Min(GetUnusedCapacity(), count);
+            return Math.Min(GetUnusedCapacity(), Head >= Tail ? Tail : Tail - Head - 1);
         }
 
         /// <summary>
