@@ -38,7 +38,9 @@
 	https://codereview.stackexchange.com/questions/224185/asynchronous-circular-buffer-in-c
 	C# + Socket断线重连 https://blog.csdn.net/Duke147/article/details/50833745?utm_medium=distribute.pc_relevant_bbs_down.none-task--2~all~first_rank_v2~rank_v25-4.nonecase&depth_1-utm_source=distribute.pc_relevant_bbs_down.none-task--2~all~first_rank_v2~rank_v25-4.nonecase
 	https://stackoverflow.com/questions/59381847/writting-a-efficient-circular-buffer-for-use-with-c-sharp-socket
-
+	整合NetClient, NetManager
+	切换至后台可以维持很长时间的连接，飞行模式则不能，但具体情况视平台而定。没有统一的处理断线方法
+	OnApplicationFocus、OnApplicationPause
 
 
 
