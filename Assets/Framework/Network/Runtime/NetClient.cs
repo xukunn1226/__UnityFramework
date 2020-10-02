@@ -104,14 +104,17 @@ namespace Framework.NetWork
 
         public void Tick()
         {
+            // if(m_Client != null && state == ConnectState.Connected)
+            // {
+            //     if (!IsConnected())
+            //     {
+            //         Trace.Error("失去连接");
+            //     }
+            // }
+
             m_StreamWriter.Flush();
 
-            HandleException();
-
-            if(!IsConnected2())
-            {
-                Trace.Error("失去连接");
-            }
+            HandleException();            
         }
 
         public void Close(bool isImmediately = false)
@@ -242,7 +245,7 @@ namespace Framework.NetWork
 
                 m_Client.Client.Blocking = false;
                 m_Client.Client.Send(tmp, 0, 0);
-                Trace.Debug("Connected!");
+                // Trace.Debug("Connected!");
                 isConnected = true;
             }
             catch (SocketException e)

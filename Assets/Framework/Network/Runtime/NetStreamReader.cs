@@ -52,7 +52,7 @@ namespace Framework.NetWork
                 {
                     int freeCount = GetConsecutiveUnusedCapacity();             // 填充连续的空闲空间                
                     if (freeCount == 0)
-                        throw new ArgumentOutOfRangeException("ReadAsync: buff is full");
+                        throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {Head}     Tail: {Tail}   Time: {DateTime.Now.ToString()}");
 
                     int receiveByte = await m_Stream.ReadAsync(Buffer, Head, freeCount);
                     AdvanceHead(receiveByte);
