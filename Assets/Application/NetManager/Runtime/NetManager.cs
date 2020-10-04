@@ -15,7 +15,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
 
     void Awake()
     {
-        m_NetClient = new NetClient<IMessage>((INetListener<IMessage>)this);        
+        m_NetClient = new NetClient<IMessage>(this);        
     }
 
     async void OnEnable()
