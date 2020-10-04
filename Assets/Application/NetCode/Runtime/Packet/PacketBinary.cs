@@ -1,4 +1,6 @@
-﻿public class PacketBinary : IPacket<byte[]>
+﻿using Framework.NetWork;
+
+public class PacketBinary : IPacket<byte[]>
 {
     public bool Deserialize(in byte[] data, int offset, int length, out int realLength, out byte[] msg)
     {

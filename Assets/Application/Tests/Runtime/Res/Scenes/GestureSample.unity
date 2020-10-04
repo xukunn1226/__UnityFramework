@@ -4942,7 +4942,7 @@ GameObject:
   - component: {fileID: 1190773643}
   - component: {fileID: 1190773644}
   m_Layer: 0
-  m_Name: NetCode
+  m_Name: NetManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

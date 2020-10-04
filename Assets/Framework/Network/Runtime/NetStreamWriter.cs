@@ -9,7 +9,7 @@ namespace Framework.NetWork
 {
     sealed internal class NetStreamWriter : NetStream
     {
-        private NetClient                   m_NetClient;
+        private IConnector                  m_NetClient;
         private NetworkStream               m_NetworkStream;
         private SemaphoreSlim               m_SendBufferSema;                       // 控制是否可以消息发送的信号量
                                                                                     // The count is decremented each time a thread enters the semaphore, and incremented each time a thread releases the semaphore
@@ -23,7 +23,7 @@ namespace Framework.NetWork
         }
         private Queue<WriteCommand>         m_CommandQueue          = new Queue<WriteCommand>(8);
 
-        internal NetStreamWriter(NetClient netClient, int capacity = 8 * 1024)
+        internal NetStreamWriter(IConnector netClient, int capacity = 8 * 1024)
             : base(capacity)
         {
             if (netClient == null) throw new ArgumentNullException();

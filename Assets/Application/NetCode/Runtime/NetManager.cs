@@ -1,139 +1,90 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using UnityEngine;
+using Google.Protobuf;
 using System.Threading.Tasks;
-using Framework.NetWork.Log;
+using NetProtocol;
 using Framework.NetWork;
 
-/// <summary>
-/// 负责网络数据发送，主线程同步接收数据，子线程异步发送数据
-/// 测试用例：
-/// 1、连接服务器失败       [PASS]
-/// 6、主动/被动断开连接         [PASS]
-/// 2、关闭服务器，再发送消息   [PASS]
-/// 3、客户端异常断开连接（参数错误、断电等）
-/// 4、断线重连
-/// 5、任何异常情况能否退出WriteAsync    
-/// 7、持续的发送协议时重复1-6
-/// 8、测试RequestBufferToWrite
-/// 9、同时开启wifi，4G时，先断开wifi，再断开4G，然后再逐一连接
-/// </summary>
-public class NetManager<TMessage> where TMessage : class
+public class NetManager : MonoBehaviour, INetListener<IMessage>
 {
-    private NetClient           m_NetClient;
-    private IPacket<TMessage>   m_Parser;
-    private List<TMessage>      m_MessageList = new List<TMessage>();
+    static private IPacket<IMessage> s_Parser = new PacketProtobuf();
+    private NetClient<IMessage> m_NetClient;
 
-    protected NetManager() { }
+    private bool m_Quit;
 
-    public NetManager(IPacket<TMessage> parser)
+    void Awake()
     {
-        Trace.EnableConsole();
-        m_Parser = parser;
+        m_NetClient = new NetClient<IMessage>((INetListener<IMessage>)this);        
     }
 
-    async public Task Connect(string host, int port)
+    async void OnEnable()
     {
-        m_NetClient = new NetClient(host, port, 4096, 2048, OnConnected, OnDisconnected);
-        await m_NetClient.Connect();
+        await m_NetClient.Connect("192.168.5.3", 11000);
+
+        await AutoSending();
     }
 
-    async public Task Reconnect()
+    void Update()
     {
-        if (m_NetClient == null)
-            throw new ArgumentNullException();
-        await m_NetClient.Reconnect();
+        m_NetClient?.Tick();
     }
 
-    public void Close(bool isImmediately = false)
+    void OnDisable()
     {
-        if (m_NetClient == null)
-            throw new ArgumentNullException();
-        m_NetClient.Close(isImmediately);
+        m_Quit = true;
+        m_NetClient.Close(true);
     }
 
-    public ConnectState state { get { return m_NetClient?.state ?? ConnectState.Disconnected; } }
-
-    private void OnConnected(Exception e)
+    void INetListener<IMessage>.OnNetworkReceive(in List<IMessage> msgs)
     {
-        if(e != null)
+        foreach(var msg in msgs)
         {
-            Trace.Debug(e.ToString());
-        }
-        else
-        {
-            Trace.Debug($"connect servier... ");
+            // Debug.Log($"====Receive: {msg}");
         }
     }
 
-    private void OnDisconnected(Exception e)
+    void INetListener<IMessage>.OnPeerConnected()
     {
-        if(e != null)
-            Trace.Debug(e.ToString());
-        Trace.Debug("...Disconnected");
+        Debug.Log("connected");
     }
-
-    public void Tick()
+    void INetListener<IMessage>.OnPeerConnectFailed(Exception e)
     {
-        if (m_NetClient == null)
-            return;
-
-        m_NetClient.Tick();
-        ReceiveData();
+        Debug.LogWarning($"connect failed: {e.ToString()}");
     }
-
-    public bool SendData(TMessage data)
+    void INetListener<IMessage>.OnPeerDisconnected(Exception e)
     {
-        // method 1. 序列化到新的空间，有GC
-        //byte[] buf = m_Parser.Serialize(data);
-        //m_NetClient.Send(buf);
+        Debug.LogError($"network error: {e.ToString()}");
+    }
+    void INetListener<IMessage>.OnPeerClose()
+    {
+        Debug.Log("connect shutdown");
+    }
+    
+    int INetListener<IMessage>.sendBufferSize { get { return 4096; } }
+    int INetListener<IMessage>.receiveBufferSize { get { return 2048; } }
+    IPacket<IMessage> INetListener<IMessage>.parser { get { return s_Parser; } }
 
-        // method 2. 序列化到stream，因buff已预先分配、循环利用，无GC
-        int length = m_Parser.CalculateSize(data);
-        MemoryStream stream;
-        if(m_NetClient.RequestBufferToWrite(length, out stream))
+    async Task AutoSending()
+    {
+        int index = 0;
+        while (!m_Quit && m_NetClient.state == ConnectState.Connected)
         {
-            m_Parser.Serialize(data, stream);
-            m_NetClient.FinishBufferWriting(length);
-            return true;
+            string data = "Hello world..." + index++;
+            // Debug.Log("\n Sending...:" + data);
+            StoreRequest msg = new StoreRequest();
+            msg.Name = "1233";
+            msg.Num = 3;
+            msg.Result = 4;
+            if (index % 2 == 0)
+                msg.MyList.Add("22222222222");
+            if (index % 3 == 0)
+                msg.MyList.Add("33333333333333");
+
+            if(!m_NetClient.SendData(msg))
+                break;
+            
+            await Task.Delay(10);
         }
-        return false;
-    }
-
-    private void ReceiveData()
-    {
-        int offset;
-        int length;     // 已接收的消息长度
-        ref readonly byte[] data = ref m_NetClient.FetchBufferToRead(out offset, out length);
-        if (length == 0)
-            return;
-
-        int totalRealLength = 0;            // 实际解析的总长度(byte)
-        int startOffset = offset;
-        int totalLength = length;
-        m_MessageList.Clear();
-        while (true)
-        {
-            int realLength;                 // 单次解析的长度(byte)
-            TMessage msg;
-            bool success = m_Parser.Deserialize(in data, startOffset, totalLength, out realLength, out msg);
-            if (success)
-                m_MessageList.Add(msg);
-
-            totalRealLength += realLength;
-            startOffset += realLength;
-            totalLength -= realLength;
-
-            if (!success || totalRealLength == length)
-                break;                      // 解析失败或者已接收的消息长度解析完了
-        }
-        m_NetClient.FinishRead(totalRealLength);
-
-        // dispatch
-        // foreach (var msg in m_MessageList)
-        // {
-        //     //Dispatch(msg);
-        //     Trace.Debug($"Receive:=== {msg}");
-        // }
     }
 }

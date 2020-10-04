@@ -7,11 +7,11 @@ namespace Framework.NetWork
 {
     sealed internal class NetStreamReader : NetStream
     {
-        private NetClient           m_NetClient;
+        private IConnector          m_NetClient;
         private NetworkStream       m_Stream;
         private byte[]              m_SpanBuffer = new byte[1024];
 
-        internal NetStreamReader(NetClient netClient, int capacity = 8 * 1024)
+        internal NetStreamReader(IConnector netClient, int capacity = 8 * 1024)
             : base(capacity)
         {
             if (netClient == null) throw new ArgumentNullException();

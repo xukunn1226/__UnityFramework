@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Net;
 using Framework.NetWork.Log;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Framework.NetWork
 {
@@ -14,72 +15,90 @@ namespace Framework.NetWork
         Connected,
     }
 
-    public class NetClient
+    public interface INetListener<TMessage> where TMessage : class
     {
-        public delegate void onConnected(Exception ex);
-        public delegate void onDisconnected(Exception ex);
+        void OnPeerConnected();
+        void OnPeerConnectFailed(Exception e);
+        void OnPeerClose();
+        void OnPeerDisconnected(Exception e);     
+        void OnNetworkReceive(in List<TMessage> msgs);
+        int sendBufferSize { get; }
+        int receiveBufferSize { get; }
+        IPacket<TMessage> parser { get; }        
+    }
 
-        public ConnectState         state { get; private set; } = ConnectState.Disconnected;
+    public interface IConnector
+    {
+        ConnectState state { get; }
+        Task Connect(string host, int port);
+        void Close(bool isImmediate = false);
+        void RaiseException(Exception e);
+    }
 
-        private TcpClient           m_Client;
+    public class NetClient<TMessage> : IConnector where TMessage : class
+    {
+        public ConnectState             state { get; private set; } = ConnectState.Disconnected;
+
+        private TcpClient               m_Client;
         
-        private string              m_Host;
-        private int                 m_Port;
+        private string                  m_Host;
+        private int                     m_Port;
 
-        private onConnected         m_ConnectedHandler;
-        private onDisconnected      m_DisconnectedHandler;
+        private NetStreamWriter         m_StreamWriter;
+        private NetStreamReader         m_StreamReader;
 
-        private NetStreamWriter     m_StreamWriter;
-        private NetStreamReader     m_StreamReader;
+        private bool                    m_HandleException;
+        private Exception               m_Exception;
+        private IPacket<TMessage>       m_Parser;
+        private List<TMessage>          m_MessageList = new List<TMessage>();
+        private INetListener<TMessage>  m_Listener;
 
-        private bool                m_HandleException;
-        private Exception           m_Exception;
-
-        public NetClient(string host, int port, int sendBufferSize = 4 * 1024, int receiveBufferSize = 8 * 1024, onConnected connectionHandler = null, onDisconnected disconnectedHandler = null)
+        public NetClient(INetListener<TMessage> listener)
         {
-            m_ConnectedHandler = connectionHandler;
-            m_DisconnectedHandler = disconnectedHandler;
+            Trace.EnableConsole();
 
-            m_StreamWriter = new NetStreamWriter(this, sendBufferSize);
-            m_StreamReader = new NetStreamReader(this, receiveBufferSize);
+            m_Listener = listener;
+            m_Parser = listener.parser;
 
-            m_Host = host;
-            m_Port = port;
+            m_StreamWriter = new NetStreamWriter(this, listener.sendBufferSize);
+            m_StreamReader = new NetStreamReader(this, listener.receiveBufferSize);
         }
 
-        async public Task Connect()
+        async public Task Connect(string host, int port)
         {
             m_Client = new TcpClient();
             m_Client.NoDelay = true;
-            //m_Client.SendTimeout = 5000;
             m_HandleException = false;
             m_Exception = null;
+
+            m_Host = host;
+            m_Port = port;
 
             try
             {
                 IPAddress ip = IPAddress.Parse(m_Host);
                 state = ConnectState.Connecting;
                 await m_Client.ConnectAsync(ip, m_Port);
-                OnConnected(0);
+                OnConnected();
 
                 m_StreamWriter.Start(m_Client.GetStream());
                 m_StreamReader.Start(m_Client.GetStream());
             }
             catch (ArgumentNullException e)
             {
-                OnConnected(-1, e);
+                OnConnectFailed(e);
             }
             catch (ArgumentOutOfRangeException e)
             {
-                OnConnected(-1, e);
+                OnConnectFailed(e);
             }
             catch (ObjectDisposedException e)
             {
-                OnConnected(-1, e);
+                OnConnectFailed(e);
             }
             catch (SocketException e)
             {
-                OnConnected(-1, e);
+                OnConnectFailed(e);
             }
         }
 
@@ -87,19 +106,72 @@ namespace Framework.NetWork
         {
             if (state == ConnectState.Connected || state == ConnectState.Connecting)
                 throw new InvalidOperationException("连接中，不能执行重连操作");
-            await Connect();
+            await Connect(m_Host, m_Port);
         }
 
-        private void OnConnected(int ret, Exception e = null)
+        private void OnConnected()
         {
-            state = ret == 0 ? ConnectState.Connected : ConnectState.Disconnected;
-            m_ConnectedHandler?.Invoke(e);
+            // Trace.Debug($"connect servier... host: {m_Host}     port: {m_Port}");
+            state = ConnectState.Connected;
+            m_Listener.OnPeerConnected();
         }
 
-        private void OnDisconnected()
+        private void OnConnectFailed(Exception e)
+        {
+            // Trace.Debug(e.ToString());
+            state = ConnectState.Disconnected;
+            m_Listener.OnPeerConnectFailed(e);
+        }
+
+        private void OnDisconnected(Exception e)
         {
             state = ConnectState.Disconnected;
-            m_DisconnectedHandler?.Invoke(m_Exception);
+            if (e != null)
+                m_Listener.OnPeerDisconnected(e);
+            else
+                m_Listener.OnPeerClose();
+        }
+
+        public void Close(bool isImmediate = false)
+        {
+            m_HandleException = true;
+            m_Exception = null;
+            if(isImmediate)
+                Tick();
+        }
+
+        public void RaiseException(Exception e)
+        {
+            m_HandleException = true;
+            m_Exception = e;
+        }
+
+        private void HandleException()
+        {
+            if (m_HandleException)
+            {
+                m_HandleException = false;
+
+                InternalClose();
+
+                OnDisconnected(m_Exception);
+            }
+        }
+
+        private void InternalClose()
+        {
+            if (m_Client != null)
+            {
+                if (m_Client.Connected)                          // 当远端主动断开网络时，NetworkStream呈已关闭状态
+                    m_Client.GetStream().Close();
+                m_Client.Close();
+                m_Client = null;
+            }
+
+            if (m_StreamWriter != null)
+            {
+                m_StreamWriter.Shutdown();
+            }
         }
 
         public void Tick()
@@ -113,50 +185,42 @@ namespace Framework.NetWork
             // }
 
             m_StreamWriter.Flush();
+            ReceiveData();
 
             HandleException();            
         }
-
-        public void Close(bool isImmediately = false)
+        
+        private void ReceiveData()
         {
-            m_HandleException = true;
-            m_Exception = null;
-            if(isImmediately)
-                Tick();
-        }
+            int offset;
+            int length;
+            ref readonly byte[] data = ref m_StreamReader.FetchBufferToRead(out offset, out length);            // 获取已接收的消息
+            if (length == 0)
+                return;
 
-        internal void RaiseException(Exception e)
-        {
-            // Trace.Debug(e.ToString());
-            m_HandleException = true;
-            m_Exception = e;
-        }
-
-        private void HandleException()
-        {
-            if (m_HandleException)
+            int totalRealLength = 0;            // 实际解析的总长度(byte)
+            int startOffset = offset;
+            int totalLength = length;
+            m_MessageList.Clear();
+            while (true)
             {
-                m_HandleException = false;
-                InternalClose();
-            }
-        }
+                int realLength;                 // 单次解析的长度(byte)
+                TMessage msg;
+                bool success = m_Parser.Deserialize(in data, startOffset, totalLength, out realLength, out msg);
+                if (success)
+                    m_MessageList.Add(msg);
 
-        private void InternalClose()
-        {
-            if (m_Client != null)
-            {
-                if (m_Client.Connected)                          // 当远端主动断开网络时，NetworkStream呈已关闭状态
-                    m_Client.GetStream().Close();
-                m_Client.Close();
-                m_Client = null;
+                totalRealLength += realLength;
+                startOffset += realLength;
+                totalLength -= realLength;
 
-                OnDisconnected();
+                if (!success || totalRealLength == length)
+                    break;                      // 解析失败或者已接收的消息长度解析完了
             }
+            m_StreamReader.FinishRead(totalRealLength);     // 实际读取的消息长度
 
-            if (m_StreamWriter != null)
-            {
-                m_StreamWriter.Shutdown();
-            }
+            // dispatch
+            m_Listener.OnNetworkReceive(m_MessageList);
         }
 
         public void Send(byte[] buf, int offset, int length)
@@ -180,6 +244,24 @@ namespace Framework.NetWork
             Send(buf, 0, buf.Length);
         }
 
+        public bool SendData(TMessage data)
+        {
+            // method 1. 序列化到新的空间，有GC
+            //byte[] buf = m_Parser.Serialize(data);
+            //Send(buf);
+
+            // method 2. 序列化到stream，因buff已预先分配、循环利用，无GC
+            int length = m_Parser.CalculateSize(data);
+            MemoryStream stream;
+            if (m_StreamWriter.RequestBufferToWrite(length, out stream))
+            {
+                m_Parser.Serialize(data, stream);
+                m_StreamWriter.FinishBufferWriting(length);
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// 请求指定长度（length）的连续空间，写入完成后务必调用FinishBufferWriting
         /// </summary>
@@ -192,41 +274,10 @@ namespace Framework.NetWork
             m_StreamWriter.RequestBufferToWrite(length, out buf, out offset);
         }
 
-        /// <summary>
-        /// 同上
-        /// </summary>
-        /// <param name="length"></param>
-        /// <param name="stream"></param>
-        public bool RequestBufferToWrite(int length, out MemoryStream stream)
-        {
-            return m_StreamWriter.RequestBufferToWrite(length, out stream);
-        }
-
         public void FinishBufferWriting(int length)
         {
             m_StreamWriter.FinishBufferWriting(length);
         }
-
-        /// <summary>
-        /// 获取可读的连续空间
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
-        public ref readonly byte[] FetchBufferToRead(out int offset, out int length)
-        {
-            return ref m_StreamReader.FetchBufferToRead(out offset, out length);
-        }
-
-        /// <summary>
-        /// 实际读取了多少数据
-        /// </summary>
-        /// <param name="length"></param>
-        public void FinishRead(int length)
-        {
-            m_StreamReader.FinishRead(length);
-        }
-
 
         // https://docs.microsoft.com/zh-cn/dotnet/api/system.net.sockets.socket.connected?redirectedfrom=MSDN&view=netcore-3.1#System_Net_Sockets_Socket_Connected
         public bool IsConnected()
