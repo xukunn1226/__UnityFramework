@@ -23,7 +23,6 @@
 	DB Browser for SQLite 	https://sqlitebrowser.org/  SQLite查看工具
 * Inspector Field for Scene Asset  https://answers.unity.com/questions/242794/inspector-field-for-scene-asset.html?_ga=2.221217361.81844548.1594053424-350901822.1561524296
 * 监控所有的特效播放，统一特效加载接口
-* 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
 * 三维中物体的拖拽移动效果  https://www.cnblogs.com/springword/p/6683549.html
 * FX_Root支持特效进入对象池时控制细节更精细，不是deactive GameObject，而是disable animation
 * 设置抓帧调试环境
@@ -34,18 +33,22 @@
 * Protobuf3优化
 * 比较SQLite和Protobuf配表方案的异步（读取、缓存、导表）Openpyxl
 * LUA配表优化  https://blog.uwa4d.com/archives/1490.html
-* Network
+* 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
+* FPS组件   https://mp.weixin.qq.com/s/RtRxap4vnJIhY2SQ3KWHPQ
+
+
+
+
+
+
+
+- Network
 	https://codereview.stackexchange.com/questions/224185/asynchronous-circular-buffer-in-c
 	C# + Socket断线重连 https://blog.csdn.net/Duke147/article/details/50833745?utm_medium=distribute.pc_relevant_bbs_down.none-task--2~all~first_rank_v2~rank_v25-4.nonecase&depth_1-utm_source=distribute.pc_relevant_bbs_down.none-task--2~all~first_rank_v2~rank_v25-4.nonecase
 	https://stackoverflow.com/questions/59381847/writting-a-efficient-circular-buffer-for-use-with-c-sharp-socket
 	整合NetClient, NetManager
 	切换至后台可以维持很长时间的连接，飞行模式则不能，但具体情况视平台而定。没有统一的处理断线方法
 	OnApplicationFocus、OnApplicationPause
-
-
-
-
-
 - unsafe和非托管内存优化（字符串）
 - string intern优化  https://zhuanlan.zhihu.com/p/23877335?refer=gu-lu  https://www.cnblogs.com/liuqiyun/p/9446887.html
 - ObjectPool整合进Framework
