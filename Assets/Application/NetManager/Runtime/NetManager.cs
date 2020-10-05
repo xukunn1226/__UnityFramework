@@ -87,4 +87,14 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
             await Task.Delay(10);
         }
     }
+
+    void OnApplicationFocus(bool isFocus)
+    {
+        Debug.Log($"OnApplicationFocus      isFocus: {isFocus}       {System.DateTime.Now}");
+    }
+
+    void OnApplicationPause(bool isPause)
+    {
+        Debug.Log($"======OnApplicationPause      isPause: {isPause}       {System.DateTime.Now}");
+    }
 }
