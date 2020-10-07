@@ -16,7 +16,7 @@ public class ResourceManager : MonoBehaviour
     private LoaderType              m_LoaderType        = LoaderType.FromEditor;
 
     [SerializeField]
-    private string                  m_RootPath          = "Deployment/AssetBundles";
+    private string                  m_RootPath          = "Assets/Deployment/AssetBundles";
 
     static private bool             k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
 
@@ -62,7 +62,7 @@ public class ResourceManager : MonoBehaviour
         AssetManager.Uninit();
     }
 
-    static public void Init(LoaderType type, string bundleRootPath = "Deployment/AssetBundles")
+    static public void Init(LoaderType type, string bundleRootPath = "Assets/Deployment/AssetBundles")
     {
         m_AssetManager = AssetManager.Init(type, bundleRootPath);
 

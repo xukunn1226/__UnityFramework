@@ -38,7 +38,7 @@ namespace Framework.AssetManagement.Runtime
         private LoaderType              m_LoaderType;
 
         [SerializeField]
-        private string                  m_RootPath = "Deployment/AssetBundles";
+        private string                  m_RootPath = "Assets/Deployment/AssetBundles";
         
         static private bool             k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
 
