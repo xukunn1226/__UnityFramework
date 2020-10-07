@@ -6,6 +6,7 @@ namespace Framework.Core
 {
     public class FPSCounter : MonoBehaviour
     {
+        [Range(1, 2048)]
         public int          FrameRange              = 200;
         private int         m_CachedFrameRange;
         private const int   m_BufferSize            = 2048;
@@ -17,9 +18,10 @@ namespace Framework.Core
         private float       m_TotalFPS;
         private int         m_ValidCount;
 
-        public float        FPS         { get; private set; }
-        public float        HighestFPS  { get; private set; }
-        public float        LowestFPS   { get; private set; }
+        public int          FPS         { get; private set; }
+        public int          HighestFPS  { get; private set; }
+        public int          LowestFPS   { get; private set; }
+        public bool         ShowHLFPS;
 
         void Awake()
         {
@@ -43,12 +45,7 @@ namespace Framework.Core
             UpdateFPSBuffer();
             CalculateFPSProgressively();
 
-            if(HighestFPS < FPS)
-                HighestFPS = FPS;
-            if(LowestFPS > FPS)
-                LowestFPS = FPS;
-
-            Debug.Log($"{FPS.ToString()}    {HighestFPS}    {LowestFPS}");
+            // Debug.Log($"{FPS.ToString()}    {HighestFPS}    {LowestFPS}");
         }
 
         private void UpdateFPSBuffer()
@@ -61,9 +58,46 @@ namespace Framework.Core
         private void CalculateFPSProgressively()
         {
             m_FirstPosition = (m_LastPosition - m_CachedFrameRange + m_BufferSize) & m_BufferMask;
-            m_TotalFPS += (m_Buffer[m_LastPosition] - m_Buffer[m_FirstPosition]);
+
+            if(m_ValidCount == m_CachedFrameRange)
+                m_TotalFPS += (m_Buffer[m_LastPosition] - m_Buffer[m_FirstPosition]);
+            else
+                m_TotalFPS += m_Buffer[m_LastPosition];
+
+            if(ShowHLFPS)
+            {
+                HighestFPS = 0;
+                LowestFPS = int.MaxValue;
+                if(m_LastPosition >= m_FirstPosition)
+                {
+                    for(int i = 0; i < m_LastPosition - m_FirstPosition + 1; ++i)
+                    {
+                        UpdateHighestAndLowestFPS(m_Buffer[m_FirstPosition + i]);
+                    }
+                }
+                else
+                {
+                    for(int i = 0; i <= m_LastPosition; ++i)
+                    {
+                        UpdateHighestAndLowestFPS(m_Buffer[i]);
+                    }
+                    for(int i = m_FirstPosition; i < m_Buffer.Length; ++i)
+                    {
+                        UpdateHighestAndLowestFPS(m_Buffer[i]);
+                    }
+                }
+            }
+
             m_ValidCount = Mathf.Min(++m_ValidCount, m_CachedFrameRange);
-            FPS = 1.0f * m_TotalFPS / m_ValidCount;
+            FPS = (int)(m_TotalFPS / m_ValidCount);
+        }
+
+        private void UpdateHighestAndLowestFPS(float fps)
+        {
+            if(HighestFPS < fps)
+                HighestFPS = (int)fps;
+            if (LowestFPS >= fps)
+                LowestFPS = (int)fps;
         }
 
         private void CalculateFPSDirectly()
@@ -92,7 +126,7 @@ namespace Framework.Core
                 m_ValidCount = (m_LastPosition + 1) + (m_Buffer.Length - m_FirstPosition);
             }
 
-            FPS = 1.0f * m_TotalFPS / m_ValidCount;
+            FPS = (int)(m_TotalFPS / m_ValidCount);
         }
 
         public float GetLatestRangeFPS(int latestRange)
