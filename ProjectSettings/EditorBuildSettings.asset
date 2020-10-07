@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Application/Tests/Runtime/Res/Scenes/TestSpawnerRing.unity
+    guid: ff9d69c1b7cef3646866f0abde25e5e8
+  - enabled: 1
     path: Assets/Application/Tests/Runtime/Res/Scenes/GestureSample.unity
     guid: ec0be40600f8b7a42aa3bb0eaf6fb16d
   - enabled: 0
