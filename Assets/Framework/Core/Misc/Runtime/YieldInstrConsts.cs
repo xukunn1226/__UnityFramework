@@ -6,37 +6,44 @@ namespace Framework.Core
 {
     static public class YieldInstrConsts
     {
-        static private int k_CacheSize = 10;
-        static private WaitForSeconds[] k_WaitForSecondsCache = new WaitForSeconds[k_CacheSize];
+        static private int[] ss = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-        static private WaitForEndOfFrame k_WaitForEndOfFrame;
-        static private WaitForFixedUpdate k_WaitForFixedUpdate;
+        static private int s_CacheSize = 10;
+        static private WaitForSeconds[] s_WaitForSecondsCache = new WaitForSeconds[s_CacheSize];
+
+        static private WaitForEndOfFrame s_WaitForEndOfFrame;
+        static private WaitForFixedUpdate s_WaitForFixedUpdate;
 
         static public WaitForSeconds GetWaitForSeconds(float seconds)
         {
-            int sec = Mathf.Clamp(Mathf.FloorToInt(seconds + 0.5f), 0, k_CacheSize >> 1);
+            int sec = Mathf.Clamp(Mathf.FloorToInt(seconds + 0.5f), 0, s_CacheSize >> 1);
 
-            int index = Mathf.Min(2 * sec, k_CacheSize - 1);
+            int index = Mathf.Min(2 * sec, s_CacheSize - 1);
 
-            if (k_WaitForSecondsCache[index] == null)
+            if (s_WaitForSecondsCache[index] == null)
             {
-                k_WaitForSecondsCache[index] = new WaitForSeconds(sec);
+                s_WaitForSecondsCache[index] = new WaitForSeconds(sec);
             }
-            return k_WaitForSecondsCache[index];
+            return s_WaitForSecondsCache[index];
+        }
+
+        static private int Round(float v, float gap)
+        {
+            return 0;
         }
 
         static public WaitForEndOfFrame GetWaitForEndOfFrame()
         {
-            if (k_WaitForEndOfFrame == null)
-                k_WaitForEndOfFrame = new WaitForEndOfFrame();
-            return k_WaitForEndOfFrame;
+            if (s_WaitForEndOfFrame == null)
+                s_WaitForEndOfFrame = new WaitForEndOfFrame();
+            return s_WaitForEndOfFrame;
         }
 
         static public WaitForFixedUpdate GetWaitForFixedUpdate()
         {
-            if (k_WaitForFixedUpdate == null)
-                k_WaitForFixedUpdate = new WaitForFixedUpdate();
-            return k_WaitForFixedUpdate;
+            if (s_WaitForFixedUpdate == null)
+                s_WaitForFixedUpdate = new WaitForFixedUpdate();
+            return s_WaitForFixedUpdate;
         }
     }
 }

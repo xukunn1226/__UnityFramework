@@ -35,8 +35,13 @@
 * LUA配表优化  https://blog.uwa4d.com/archives/1490.html
 * 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
 * 提高打包加速问题：https://mp.weixin.qq.com/s/sCgrrRXlYzXOPC1fKCX7UA
-
-
+* 算法： 
+	https://mp.weixin.qq.com/s/DfrZHKh-QyKG_Af5H5LWGg  动画详解常用排序算法
+	https://m.toutiaocdn.com/i6737461035755635214/?app=news_article&timestamp=1602237785&use_new_style=1&req_id=20201009180305010015044029270C39BB&group_id=6737461035755635214&wxshare_count=1&tt_from=weixin&utm_source=weixin&utm_medium=toutiao_android&utm_campaign=client_share
+	https://www.toutiao.com/i6879298784736576014/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602237809&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=20201009180328010017087043020C3BC4&group_id=6879298784736576014
+	https://www.toutiao.com/i6778731130720879118/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602237827&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=20201009180346010012058046260C4B64&group_id=6778731130720879118
+	https://www.toutiao.com/i6829510116627186188/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602237964&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=202010091806040100150441561E0C7FA4&group_id=6829510116627186188
+	https://learning.snssdk.com/feoffline/toutiao_wallet_bundles/toutiao_learning_wap/online/article.html?item_id=6801416799226167822&app_name=news_article
 
 
 
