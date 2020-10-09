@@ -26,6 +26,9 @@ MonoBehaviour:
   - Editor
   - StreamingAssets
   - Examples
+  Extension:
+  - .meta
+  - .cs
   BundleNameWithParent:
   - SameToParent
   - Sprites

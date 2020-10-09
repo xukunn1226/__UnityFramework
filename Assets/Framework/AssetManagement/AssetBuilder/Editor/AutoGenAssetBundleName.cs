@@ -20,21 +20,25 @@ namespace Framework.AssetManagement.AssetBuilder
         {
             for (int i = 0; i < importedAssets.Length; ++i)
             {
+                // UnityEngine.Debug.Log($"import: {importedAssets[i]}");
                 UpdateAssetBundleName(importedAssets[i]);
             }
 
             for (int i = 0; i < deletedAssets.Length; ++i)
             {
+                // UnityEngine.Debug.Log($"delete: {deletedAssets[i]}");
                 UpdateAssetBundleName(deletedAssets[i]);
             }
 
             for (int i = 0; i < movedAssets.Length; ++i)
             {
+                // UnityEngine.Debug.Log($"move: {movedAssets[i]}");
                 UpdateAssetBundleName(movedAssets[i]);
             }
 
             for (int i = 0; i < movedFromAssetPaths.Length; ++i)
             {
+                // UnityEngine.Debug.Log($"movedFrom: {movedFromAssetPaths[i]}");
                 UpdateAssetBundleName(movedFromAssetPaths[i]);
             }
             AssetDatabase.RemoveUnusedAssetBundleNames();
@@ -46,14 +50,17 @@ namespace Framework.AssetManagement.AssetBuilder
         /// </summary>
         /// <param name="assetPath">文件的完整路径</param>
         static void UpdateAssetBundleName(string assetPath)
-        {
-            // step 1. 屏蔽指定路径
+        {            
+            // step 0. skip directory path
+            if(Directory.Exists(assetPath)) // 忽略对文件夹的处理，只有当文件夹内有文件增、删等操作才处理
+                return;
+
+            // step 1. skip those files which are not meet specification
+            if(AssetBuilderUtil.IsBlockedByExtension(assetPath))
+                return;
+
             if (!AssetBuilderUtil.IsPassByWhiteList(assetPath) || AssetBuilderUtil.IsBlockedByBlackList(assetPath))
             {
-                // cs不可以设置assetBundleName
-                if (Path.GetExtension(assetPath) == ".cs")
-                    return;
-
                 // 清空屏蔽文件的ab name
                 AssetImporter importer = AssetImporter.GetAtPath(assetPath);
                 if (importer != null)
@@ -64,61 +71,53 @@ namespace Framework.AssetManagement.AssetBuilder
                 return;
             }
 
-            // step 2. skip directory
-            bool isDirectory = string.IsNullOrEmpty(Path.GetExtension(assetPath));              // 依据后缀名判定是否是文件夹
-            if (isDirectory)
-            { // 无论增、删文件夹都不处理，只有当文件夹内有文件增、删等操作才处理
-                return;
-            }
-            else
-            {
-                // 清除文件的ab name
-                AssetImporter ai = AssetImporter.GetAtPath(assetPath);
-                if (ai != null)
-                    ai.assetBundleName = "";
-            }
+            // step 2. 清除文件的ab name
+            AssetImporter ai = AssetImporter.GetAtPath(assetPath);
+            if (ai != null)
+                ai.assetBundleName = "";
 
-            // step 3. 统计非meta文件数量
-            string directory = assetPath.Substring(0, assetPath.LastIndexOf("/"));              // 找到文件所在的文件夹
-
+            // step 3. 找到文件所在的文件夹
+            string directory = assetPath.Substring(0, assetPath.LastIndexOf("/"));
             AssetImporter ti = AssetImporter.GetAtPath(directory);
             if (ti == null)
                 return;             // 文件夹可能不存在
 
-            int count = 0;          // 统计非meta文件数量
-            string[] files = Directory.GetFiles(directory);
-            foreach (string file in files)
-            {
-                if (file.EndsWith(".meta", System.StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-                ++count;
-            }
-
-            // meta不能算是文件
-            if (count == 0)
-            {
-                ti.assetBundleName = "";
-            }
-            else
-            {
-                ti.assetBundleName = directory.ToLower() + ".ab";
-            }
-
-            // step 4. 处理特殊子文件夹bundle name与父文件夹保持一致的情况
+            // step 4. generate bundle name according to the directory
             string[] folderNames = directory.Split('/');
             if (folderNames.Length < 2)
                 return;
 
-            if (!AssetBuilderUtil.IsSpecialFolderName(folderNames[folderNames.Length - 1]))
-                return;
-            
-            string parentDirectory = directory.Substring(0, directory.LastIndexOf("/"));
-            AssetImporter parentTi = AssetImporter.GetAtPath(parentDirectory);
-            if(parentTi != null)
+            if (AssetBuilderUtil.IsSpecialFolderName(folderNames[folderNames.Length - 1]))
+            { // 处理特殊子文件夹bundle name与父文件夹保持一致的情况
+                string parentDirectory = directory.Substring(0, directory.LastIndexOf("/"));
+                AssetImporter parentTi = AssetImporter.GetAtPath(parentDirectory);
+                if (parentTi != null)
+                {
+                    ti.assetBundleName = parentTi.assetBundleName;
+                }
+            }
+            else
             {
-                ti.assetBundleName = parentTi.assetBundleName;
+                int count = 0;          // 统计非meta文件数量
+                string[] files = Directory.GetFiles(directory);
+                foreach (string file in files)
+                {
+                    if (file.EndsWith(".meta", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                    ++count;
+                }
+
+                // meta不能算是文件
+                if (count == 0)
+                {
+                    ti.assetBundleName = "";
+                }
+                else
+                {
+                    ti.assetBundleName = directory.ToLower() + ".ab";
+                }
             }
         }
     }

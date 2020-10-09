@@ -19,6 +19,7 @@ namespace Framework.AssetManagement.AssetBuilder
 
         public string[]         BlackListOfFolder       = new string[] { "Resources", "Scenes", "Scripts", "RawData", "Editor", "StreamingAssets", "Examples", "Temp" };   // 文件夹黑名单
 
+        public string[]         Extension               = new string[] { ".meta", ".cs"};
         public string[]         BundleNameWithParent    = new string[] { };
 
 #if UNITY_EDITOR
@@ -44,6 +45,7 @@ namespace Framework.AssetManagement.AssetBuilder
         SerializedProperty m_ForceDisplayDialogWhenAssetNameNotMetProp;
         SerializedProperty m_WhiteListOfPathProp;
         SerializedProperty m_BlackListOfPathProp;
+        SerializedProperty m_ExtensionProp;
         SerializedProperty m_BundleNameWithParentProp;
 
         private void OnEnable()
@@ -51,6 +53,7 @@ namespace Framework.AssetManagement.AssetBuilder
             m_ForceDisplayDialogWhenAssetNameNotMetProp = serializedObject.FindProperty("ForceDisplayDialogWhenAssetNameNotMet");
             m_WhiteListOfPathProp = serializedObject.FindProperty("WhiteListOfPath");
             m_BlackListOfPathProp = serializedObject.FindProperty("BlackListOfFolder");
+            m_ExtensionProp = serializedObject.FindProperty("Extension");
             m_BundleNameWithParentProp = serializedObject.FindProperty("BundleNameWithParent");
         }
 
@@ -82,6 +85,12 @@ namespace Framework.AssetManagement.AssetBuilder
                 EditorGUILayout.BeginHorizontal();
                 ++EditorGUI.indentLevel;
                 EditorGUILayout.PropertyField(m_BlackListOfPathProp, new GUIContent("文件夹黑名单"), true);
+                --EditorGUI.indentLevel;
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                ++EditorGUI.indentLevel;
+                EditorGUILayout.PropertyField(m_ExtensionProp, new GUIContent("无效扩展名"), true);
                 --EditorGUI.indentLevel;
                 EditorGUILayout.EndHorizontal();
 

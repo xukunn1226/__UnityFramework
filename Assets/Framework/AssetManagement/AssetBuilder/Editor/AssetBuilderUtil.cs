@@ -45,6 +45,12 @@ namespace Framework.AssetManagement.AssetBuilder
             return false;
         }
 
+        static internal bool IsBlockedByExtension(string assetPath)
+        {
+            string ext = Path.GetExtension(assetPath);
+            return AssetBuilderSetting.GetDefault().Extension.Count(t => string.Compare(t, ext, true) == 0) > 0;
+        }
+
         static internal bool IsSpecialFolderName(string folderName)
         {
             return AssetBuilderSetting.GetDefault().BundleNameWithParent.Count( t =>  string.Compare(t, folderName, true) == 0 ) > 0;
