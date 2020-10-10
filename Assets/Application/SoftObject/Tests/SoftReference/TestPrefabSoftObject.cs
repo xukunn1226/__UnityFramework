@@ -61,8 +61,14 @@ namespace Tests
             if (m_SoftObject == null)
                 yield break;
 
+            Debug.Log($"{Time.time}");
+            yield return YieldConsts.GetWaitForSeconds_03(0.84f);
+            Debug.Log($"{Time.time}------");
+
+            Debug.Log($"------ {Time.frameCount}");
             GameObjectLoaderAsync loaderAsync = m_SoftObject.InstantiateAsync();
             yield return loaderAsync;
+            Debug.Log($"{Time.frameCount}   ------");
             inst = loaderAsync.asset;
             
             info = inst != null ? "sucess to load: " : "fail to load: ";
