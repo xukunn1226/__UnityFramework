@@ -20,7 +20,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
 
     async void OnEnable()
     {
-        await m_NetClient.Connect("192.168.5.3", 11000);
+        await m_NetClient.Connect("192.168.5.15", 11000);
 
         await AutoSending();
     }

@@ -42,9 +42,17 @@
 	https://www.toutiao.com/i6778731130720879118/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602237827&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=20201009180346010012058046260C4B64&group_id=6778731130720879118
 	https://www.toutiao.com/i6829510116627186188/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602237964&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=202010091806040100150441561E0C7FA4&group_id=6829510116627186188
 	https://learning.snssdk.com/feoffline/toutiao_wallet_bundles/toutiao_learning_wap/online/article.html?item_id=6801416799226167822&app_name=news_article
+	https://mp.weixin.qq.com/s/A85ievNNzHDrQv67yBkbtA
+	https://www.toutiao.com/i6873663185333780999/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602393817&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=2020101113233701001204321612436D8E&group_id=6873663185333780999
 * sleep, pause（减少空转）, spin, 各种锁，map reduce
 	线程的几种状态：new, runnable, running, not runnable, dead
 	非可运行状态引申出三个状态：阻塞（blocked）、同步锁（locked）、等待（waiting）
+* 互斥锁、自旋锁
+	互斥锁：获取锁失败后线程进入睡眠或阻塞状态，这个过程会涉及到用户态到内核态的调度，上下文切换开销比较大
+	自旋锁：用自旋来代替阻塞操作。获取某个锁失败，则此线程将不断循环检查该锁是否被释放，而不是让此线程挂起或睡眠，一种忙等待状态，过程中会一直消耗时间片
+			需要保证各个本地缓存数据的一致性，在多处理器上，每个线程对应的处理器都对同一个变量进行读写。每次写操作都需要同步每个处理器缓存，这可能会影响性能。
+	总结：互斥锁更适合持有锁时间长的情况，而自旋锁更适合持有锁时间短的情况
+
 
 
 
