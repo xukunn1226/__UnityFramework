@@ -72,39 +72,6 @@ namespace Framework.Core
                     }
                 }
             }
-        }
-        
-        // static public void BubbleSort<T>(List<T> arr, IComparer<T> comparison) where T : IComparable
-        // {
-        //     bool swapped = true;
-        //     int length = arr.Count;
-        //     for(int i = 0; i < length - 1; ++i)
-        //     {
-        //         if(!swapped) break;         // 上一轮没有发生交换，说明剩余部分已经有序
-
-        //         swapped = false;
-        //         for(int j = 0; j < length - 1 - i; ++j)
-        //         {
-        //             if(comparison.Compare(arr[j], arr[j + 1]) > 0)
-        //             {
-        //                 T tmp = arr[j + 1];
-        //                 arr[j + 1] = arr[j];
-        //                 arr[j] = tmp;
-        //                 swapped = true;
-        //             }
-        //         }
-        //     }
-        // }
-
-        // static public void BubbleSort(List<int> arr)
-        // {
-        //     BubbleSort<int>(arr, s_Comp);
-        // }
-
-        // static private readonly Comparison<int> s_Comp = Default_Comparison;
-        // static private int Default_Comparison(int a, int b)// where T : IComparable
-        // {
-        //     return a.CompareTo(b);
-        // }
+        }        
     }
 }
