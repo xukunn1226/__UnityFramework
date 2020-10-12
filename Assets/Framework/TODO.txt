@@ -52,6 +52,33 @@
 	自旋锁：用自旋来代替阻塞操作。获取某个锁失败，则此线程将不断循环检查该锁是否被释放，而不是让此线程挂起或睡眠，一种忙等待状态，过程中会一直消耗时间片
 			需要保证各个本地缓存数据的一致性，在多处理器上，每个线程对应的处理器都对同一个变量进行读写。每次写操作都需要同步每个处理器缓存，这可能会影响性能。
 	总结：互斥锁更适合持有锁时间长的情况，而自旋锁更适合持有锁时间短的情况
+* 对象池重构：参照线程池7大核心参数
+	corePoolSize（核心线程数）
+	maximumPoolSize（最大线程数）：当项目比较多的时候，施工队就需要增加工人，但是也不能无限制地加。最多就加到 maximumPoolSize 个人，当闲下来的时候，施工队就要遣散工人，但是至少保留corePoolSize 个人。
+	keepAliveTime&unit（存活时间&单位）：很简单，当线程池内部的线程数已经大于 corePoolSize 的时候，一个线程如果在一段时间内，都没有执行任务，说明很闲。keepAliveTime 和 unit 就是用来定义这个“一段时间”的参数。也就是说，如果一个线程空闲了keepAliveTime & unit 这么久，那么这个空闲的线程就要被回收了。
+	handler（拒绝策略）：如果线程池中所有的线程都在忙碌，并且工作队列也满了（前提是工作队列是有界队列），那么此时提交任务，线程池就会拒绝接收。
+	至于拒绝的策略，可以通过 handler 这个参数来指定：
+		CallerRunsPolicy：提交任务的线程自己去执行该任务。
+		AbortPolicy：默认的拒绝策略，直接丢弃任务，抛出RejectedExecutionException。
+		DiscardPolicy：直接丢弃任务，没有任何异常抛出。
+		DiscardOldestPolicy：丢弃最老的任务，其实就是把最早进入工作队列的任务丢弃，然后把新任务加入到工作队列。
+* 扩展FPS组件，捕获帧率突变
+* Opt
+	https://secretlab.institute/2019/06/14/power-saving-in-unity-for-non-game-apps/  Power-Saving in Unity
+	https://gamedevelopertips.com/increase-performance-in-unity-games/  How To Optimise And Increase Performance In Unity Games
+	https://blogs.unity3d.com/2019/04/01/higher-fidelity-and-smoother-frame-rates-with-adaptive-performance/  Higher fidelity and smoother frame rates with Adaptive Performance
+	https://www.youtube.com/watch?v=KK2hWczq8ZY  Power Efficient Programing - Unite Europe 2015
+	https://www.youtube.com/watch?v=j4YAY36xjwE  Unite Europe 2016 - Optimizing Mobile Applications
+	https://www.youtube.com/watch?v=_wxitgdx-UI  Unite Europe 2017 - Squeezing Unity: Tips for raising performance
+
+
+
+
+
+
+
+
+
 
 
 

@@ -15,7 +15,7 @@ namespace Framework.Core
 
         static public WaitForSeconds GetWaitForSeconds_01(float seconds)
         {
-            float gap = 0.1f;
+            const float gap = 0.1f;
             int index = Round(seconds, gap);
 
             if (s_WaitForSeconds01Cache[index] == null)
@@ -27,7 +27,7 @@ namespace Framework.Core
         
         static public WaitForSeconds GetWaitForSeconds_03(float seconds)
         {
-            float gap = 0.3f;
+            const float gap = 0.3f;
             int index = Round(seconds, gap);
 
             if (s_WaitForSeconds03Cache[index] == null)
