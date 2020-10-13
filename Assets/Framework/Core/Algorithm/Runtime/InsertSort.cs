@@ -6,7 +6,13 @@ namespace Framework.Core
 {
     static public partial class Algorithm
     {
-        static public void insertSort<T>(this List<T> arr) where T : IComparable<T>
+        /**
+         * @name: 
+         * @msg: 实际应用中对于接近有序的数组，插入排序效率高
+         * @param {type} 
+         * @return {type} 
+         */
+        static public void InsertSort<T>(this List<T> arr) where T : IComparable<T>
         {
             // 从第二个数开始，往前插入数字
             int length = arr.Count;
@@ -26,7 +32,7 @@ namespace Framework.Core
             }
         }
         
-        static public void insertSort<T>(this T[] arr) where T : IComparable<T>
+        static public void InsertSort<T>(this T[] arr) where T : IComparable<T>
         {
             // 从第二个数开始，往前插入数字
             int length = arr.Length;
@@ -46,7 +52,7 @@ namespace Framework.Core
             }
         }
 
-        static public void insertSort<T>(this List<T> arr, Comparison<T> comparison)
+        static public void InsertSort<T>(this List<T> arr, Comparison<T> comparison)
         {
             // 从第二个数开始，往前插入数字
             int length = arr.Count;
@@ -66,7 +72,7 @@ namespace Framework.Core
             }
         }
 
-        static public void insertSort<T>(this T[] arr, Comparison<T> comparison)
+        static public void InsertSort<T>(this T[] arr, Comparison<T> comparison)
         {
             // 从第二个数开始，往前插入数字
             int length = arr.Length;
