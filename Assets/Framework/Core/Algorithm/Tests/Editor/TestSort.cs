@@ -21,8 +21,11 @@ namespace Framework.Core.Tests
             List<int> arr3 = new List<int>() {4, 6, 6, 0, 9, 3, 8};
             arr3.InsertSort();
 
-            List<int> arr4 = new List<int>() {4, 1, 7, 6, 9, 2, 8, 0, 3, 5};
+            List<int> arr4 = new List<int>() {4, 5, 5, 1, 7, 6, 9, 2, 8, 0, 3, 5};
             arr4.QuickSort();
+        
+            List<int> arr5 = new List<int>() {4, 5, 5, 1, 7, 6, 9, 2, 8, 0, 3, 5};
+            arr5.MergeSort();
         }
     }
 }

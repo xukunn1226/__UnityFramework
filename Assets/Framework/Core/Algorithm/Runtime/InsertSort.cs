@@ -8,7 +8,7 @@ namespace Framework.Core
     {
         /**
          * @name: 
-         * @msg: 实际应用中对于接近有序的数组，插入排序效率高
+         * @msg: 时间复杂度O(n^2)，空间复杂度O(1)，稳定排序
          * @param {type} 
          * @return {type} 
          */
