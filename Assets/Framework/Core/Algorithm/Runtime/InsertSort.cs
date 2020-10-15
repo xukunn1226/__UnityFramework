@@ -25,10 +25,7 @@ namespace Framework.Core
                 // 当前数字比前一个数字小，则将当前数字与前一个数字交换
                 while (j >= 1 && comparer.Compare(arr[j], arr[j - 1]) < 0)
                 {
-                    T temp = arr[j];
-                    arr[j] = arr[j - 1];
-                    arr[j - 1] = temp;
-                    // 更新当前数字下标
+                    arr.Swap(j, j - 1);
                     j--;
                 }
             }

@@ -28,9 +28,7 @@ namespace Framework.Core
                 {
                     if(comparer.Compare(arr[inner], arr[inner + 1]) > 0)
                     {
-                        T tmp = arr[inner + 1];
-                        arr[inner + 1] = arr[inner];
-                        arr[inner] = tmp;
+                        arr.Swap(inner, inner + 1);
                         swapped = true;
                     }
                 }
@@ -53,9 +51,7 @@ namespace Framework.Core
                 {
                     if(comparer.Compare(arr[i], arr[i + 1]) > 0)
                     {
-                        T temp = arr[i];
-                        arr[i] = arr[i + 1];
-                        arr[i + 1] = temp;
+                        arr.Swap(i, i + 1);
                         
                         swapped = true;
                         swappedIndex = i;

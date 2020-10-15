@@ -31,15 +31,18 @@ namespace Framework.Core.Tests
             arr6.HeapSort(Comparer<int>.Create(DescendingComparer));
 
             int[] arr7 = new int[] {4, 5, 5, 1, 7, 6, 9, 2, 8, 0, 3, 5};
-            arr7.BubbleSort();
+            arr7.ShellSort(Comparer<int>.Create(DescendingComparer));
+                
+            int[] arr8 = new int[] {4, 5, 5, 1, 7, 6, 9, 2, 8, 0, 3, 5};
+            arr8.BucketSort();
         }
 
         private int DescendingComparer(int left, int right)
         {
             if(left > right)
-                return 1;
-            else if(left < right)
                 return -1;
+            else if(left < right)
+                return 1;
             else
                 return 0;
         }

@@ -29,9 +29,7 @@ namespace Framework.Core
                         minIndex = j;       // 每轮遍历找到最小值下标
                     }
                 }
-                T temp = arr[i];
-                arr[i] = arr[minIndex];
-                arr[minIndex] = temp;
+                arr.Swap(i, minIndex);
             }
         }
 
@@ -60,18 +58,13 @@ namespace Framework.Core
                 }
 
                 // 将最小元素交换至首位
-                T temp = arr[i];
-                arr[i] = arr[minIndex];
-                arr[minIndex] = temp;
+                arr.Swap(i, minIndex);
 
                 // 如果最大值的下标刚好是 i，由于 arr[i] 和 arr[minIndex] 已经交换了，所以这里要更新 maxIndex 的值。
                 if (maxIndex == i) maxIndex = minIndex;
 
                 // 将最大元素交换至末尾
-                int lastIndex = length - 1 - i;
-                temp = arr[lastIndex];
-                arr[lastIndex] = arr[maxIndex];
-                arr[maxIndex] = temp;
+                arr.Swap(length - 1 - i, maxIndex);
             }
         }
     }
