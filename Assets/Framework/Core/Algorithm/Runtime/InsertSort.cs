@@ -12,8 +12,10 @@ namespace Framework.Core
          * @param {type} 
          * @return {type} 
          */
-        static public void InsertSort<T>(this List<T> arr) where T : IComparable<T>
+        static public void InsertSort<T>(this IList<T> arr, Comparer<T> comparer = null)
         {
+            comparer = comparer ?? Comparer<T>.Default;
+
             // 从第二个数开始，往前插入数字
             int length = arr.Count;
             for (int i = 1; i < length; i++)
@@ -21,7 +23,7 @@ namespace Framework.Core
                 // j 记录当前数字下标
                 int j = i;
                 // 当前数字比前一个数字小，则将当前数字与前一个数字交换
-                while (j >= 1 && arr[j].CompareTo(arr[j - 1]) < 0)
+                while (j >= 1 && comparer.Compare(arr[j], arr[j - 1]) < 0)
                 {
                     T temp = arr[j];
                     arr[j] = arr[j - 1];
@@ -32,66 +34,6 @@ namespace Framework.Core
             }
         }
         
-        static public void InsertSort<T>(this T[] arr) where T : IComparable<T>
-        {
-            // 从第二个数开始，往前插入数字
-            int length = arr.Length;
-            for (int i = 1; i < length; i++)
-            {
-                // j 记录当前数字下标
-                int j = i;
-                // 当前数字比前一个数字小，则将当前数字与前一个数字交换
-                while (j >= 1 && arr[j].CompareTo(arr[j - 1]) < 0)
-                {
-                    T temp = arr[j];
-                    arr[j] = arr[j - 1];
-                    arr[j - 1] = temp;
-                    // 更新当前数字下标
-                    j--;
-                }
-            }
-        }
-
-        static public void InsertSort<T>(this List<T> arr, Comparison<T> comparison)
-        {
-            // 从第二个数开始，往前插入数字
-            int length = arr.Count;
-            for (int i = 1; i < length; i++)
-            {
-                // j 记录当前数字下标
-                int j = i;
-                // 当前数字比前一个数字小，则将当前数字与前一个数字交换
-                while (j >= 1 && comparison(arr[j], arr[j - 1]) < 0)
-                {
-                    T temp = arr[j];
-                    arr[j] = arr[j - 1];
-                    arr[j - 1] = temp;
-                    // 更新当前数字下标
-                    j--;
-                }
-            }
-        }
-
-        static public void InsertSort<T>(this T[] arr, Comparison<T> comparison)
-        {
-            // 从第二个数开始，往前插入数字
-            int length = arr.Length;
-            for (int i = 1; i < length; i++)
-            {
-                // j 记录当前数字下标
-                int j = i;
-                // 当前数字比前一个数字小，则将当前数字与前一个数字交换
-                while (j >= 1 && comparison(arr[j], arr[j - 1]) < 0)
-                {
-                    T temp = arr[j];
-                    arr[j] = arr[j - 1];
-                    arr[j - 1] = temp;
-                    // 更新当前数字下标
-                    j--;
-                }
-            }
-        }
-
 
 
         // static public void InsertSort2<T>(this List<T> arr) where T : IComparable<T>
