@@ -27,7 +27,7 @@ namespace Framework.Core.Tests
         }
     }
 
-    public class TestBetterLinkedList
+    public class TestContainer
     {
         // A Test behaves as an ordinary method
         [Test]
@@ -69,14 +69,31 @@ namespace Framework.Core.Tests
             }
         }
 
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator TestBetterLinkedListWithEnumeratorPasses()
+        [Test]
+        public void TestHeap()
         {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
+            List<int> arr = new List<int>() {4, 6, 8, 5, 9};
+            Heap<int> heap = new Heap<int>(arr, Comparer<int>.Create(DescendingComparer));
+            heap.Add(7);
+            int a = heap.Pop();
+            a = heap.Pop();
+            a = heap.Pop();
+            a = heap.Pop();
+            a = heap.Pop();
+            a = heap.Pop();
+            a = heap.Pop();
+            a = heap.Pop();
+            a = heap.Pop();
+        }
+
+        private int DescendingComparer(int left, int right)
+        {
+            if(left > right)
+                return -1;
+            else if(left < right)
+                return 1;
+            else
+                return 0;
         }
     }
 }

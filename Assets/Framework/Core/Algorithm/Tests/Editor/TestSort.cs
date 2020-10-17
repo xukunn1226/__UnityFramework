@@ -28,7 +28,8 @@ namespace Framework.Core.Tests
             arr5.MergeSort();
 
             List<int> arr6 = new List<int>() {4, 6, 8, 5, 9};
-            arr6.HeapSort(Comparer<int>.Create(DescendingComparer));
+            // arr6.HeapSort(Comparer<int>.Create(DescendingComparer));
+            arr6.HeapSort();
 
             int[] arr7 = new int[] {4, 5, 5, 1, 7, 6, 9, 2, 8, 0, 3, 5};
             arr7.ShellSort(Comparer<int>.Create(DescendingComparer));

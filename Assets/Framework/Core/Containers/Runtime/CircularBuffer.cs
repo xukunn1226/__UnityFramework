@@ -7,7 +7,6 @@ namespace Framework.Core
 {
     /// <summary>
     /// 圆形缓冲区
-    /// 缓冲区大小取整至2的幂，为了加速索引操作使用位与替代耗时的取余
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class CircularBuffer<T>
