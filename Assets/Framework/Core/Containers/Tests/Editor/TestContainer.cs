@@ -70,11 +70,11 @@ namespace Framework.Core.Tests
         }
 
         [Test]
-        public void TestHeap()
+        public void TestPriorityQueue()
         {
             List<int> arr = new List<int>() {4, 6, 8, 5, 9};
-            Heap<int> heap = new Heap<int>(arr, Comparer<int>.Create(DescendingComparer));
-            heap.Add(7);
+            PriorityQueue<int> heap = new PriorityQueue<int>(arr, Comparer<int>.Create(DescendingComparer));
+            heap.Push(7);
             int a = heap.Pop();
             a = heap.Pop();
             a = heap.Pop();
@@ -95,5 +95,26 @@ namespace Framework.Core.Tests
             else
                 return 0;
         }
+
+        // [Test]
+        // public void TestPriorityQueue()
+        // {
+        //     PriorityQueue<int> pq = new PriorityQueue<int>(10, Comparer<int>.Default);
+        //     pq.Push(4);
+        //     pq.Push(6);
+        //     pq.Push(8);
+        //     pq.Push(5);
+        //     pq.Push(9);
+
+        //     int a = pq.Top;
+        //     pq.Pop();
+        //     a = pq.Top;
+        //     pq.Pop();
+        //     a = pq.Top;
+        //     pq.Pop();
+        //     a = pq.Top;
+        //     pq.Pop();
+        //     a = pq.Top;
+        // }
     }
 }
