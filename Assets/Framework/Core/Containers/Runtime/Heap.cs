@@ -4,24 +4,24 @@ using System;
 
 namespace Framework.Core
 {
-    public class PriorityQueue<T> : IEnumerable<T>
+    public class Heap<T>
     {
         private ArrayList<T>    m_Buffer;
         private Comparer<T>     m_Comparer;
         
-        public PriorityQueue() : this(0, null)
+        public Heap() : this(0, null)
         {}
 
-        public PriorityQueue(Comparer<T> comparer) : this(0, comparer)
+        public Heap(Comparer<T> comparer) : this(0, comparer)
         {}
 
-        public PriorityQueue(IList<T> arr, Comparer<T> comparer = null) : this(arr.Count, comparer)
+        public Heap(IList<T> arr, Comparer<T> comparer = null) : this(arr.Count, comparer)
         {
             m_Buffer.AddRange(arr);
             BuildHeap();
         }
 
-        public PriorityQueue(int capacity, Comparer<T> comparer = null)
+        public Heap(int capacity, Comparer<T> comparer = null)
         {
             m_Buffer = new ArrayList<T>(capacity);
             m_Comparer = comparer ?? Comparer<T>.Default;
@@ -155,18 +155,6 @@ namespace Framework.Core
             T tmp = arr[n];
             arr[n] = arr[m];
             arr[m] = tmp;
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            for(int i = 0; i < Count; ++i)
-            {
-                yield return m_Buffer[i];
-            }
-        }
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
     }
 }

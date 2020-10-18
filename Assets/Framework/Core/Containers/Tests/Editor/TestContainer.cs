@@ -73,17 +73,8 @@ namespace Framework.Core.Tests
         public void TestPriorityQueue()
         {
             List<int> arr = new List<int>() {4, 6, 8, 5, 9, 2, 3};
-            PriorityQueue<int> heap = new PriorityQueue<int>(arr);
-            heap.Push(1);
-            // int a = heap.Pop();
-            // a = heap.Pop();
-            // a = heap.Pop();
-            // a = heap.Pop();
-            // a = heap.Pop();
-            // a = heap.Pop();
-            // a = heap.Pop();
-            // a = heap.Pop();
-            // a = heap.Pop();
+            Heap<int> heap = new Heap<int>(arr);
+            heap.Push(1);            
         }
 
         private int DescendingComparer(int left, int right)
