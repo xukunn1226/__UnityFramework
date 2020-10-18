@@ -8,7 +8,6 @@ namespace Framework.Core
     {
         private ArrayList<T>    m_Buffer;
         private Comparer<T>     m_Comparer;
-        private bool            m_IsDirty;
         
         public PriorityQueue() : this(0, null)
         {}
@@ -32,54 +31,68 @@ namespace Framework.Core
 
         public bool IsEmpty { get { return m_Buffer.Count == 0; } }
 
-        public T this[int index]
-        {
-            get
-            {
-                if(index < 0 || index >= Count || Count == 0)
-                    throw new IndexOutOfRangeException();
+        // public T this[int index]
+        // {
+        //     get
+        //     {
+        //         if(index < 0 || index >= Count || Count == 0)
+        //             throw new IndexOutOfRangeException();
 
-                BuildHeap();
-                return m_Buffer[index];
-            }            
-        }
+        //         return m_Buffer[index];
+        //     }
+        //     set
+        //     {
+        //         if(index < 0 || index >= Count)
+        //             throw new IndexOutOfRangeException();
+
+        //         m_Buffer[index] = value;
+
+        //         if(index > 0 && m_Comparer.Compare(m_Buffer[index], m_Buffer[(index - 1) / 2]) < 0)
+        //         { // 小于父节点仅上浮即可
+        //             SiftUp(index);
+        //         }
+        //         else
+        //         { // 大于父节点则判断其子树
+        //             Heapify(index, Count - 1);
+        //         }
+        //     }
+        // }
 
         private void BuildHeap()
         {
-            if (m_IsDirty)
+            int lastIndex = m_Buffer.Count - 1;
+            int lastNodeWithChildren = lastIndex / 2;
+
+            for (int node = lastNodeWithChildren; node >= 0; --node)
             {
-                m_IsDirty = false;
-
-                int lastIndex = m_Buffer.Count - 1;
-                int lastNodeWithChildren = lastIndex / 2;
-
-                for (int node = lastNodeWithChildren; node >= 0; --node)
-                {
-                    Heapify(node, lastIndex);
-                }
-
-                while (lastIndex >= 0)
-                {
-                    Swap(m_Buffer, 0, lastIndex);
-                    --lastIndex;
-                    Heapify(0, lastIndex);
-                }
+                Heapify(node, lastIndex);
+            }
+        }
+        
+        private void SiftUp(int nodeIndex)
+        {
+            int parent = (nodeIndex - 1) / 2;
+            while (m_Comparer.Compare(m_Buffer[nodeIndex], m_Buffer[parent]) < 0)
+            {
+                Swap(m_Buffer, parent, nodeIndex);
+                nodeIndex = parent;
+                parent = (nodeIndex - 1) / 2;
             }
         }
 
         private void Heapify(int nodeIndex, int lastIndex)
         {
-            // assume left(i) and right(i) are max-heaps
+            // assume left(i) and right(i) are min-heaps
             int left = (nodeIndex * 2) + 1;
             int right = left + 1;
             int largest = nodeIndex;
 
-            // If collection[left] > collection[nodeIndex]
-            if (left <= lastIndex && m_Comparer.Compare(m_Buffer[left], m_Buffer[nodeIndex]) > 0)
+            // If collection[left] < collection[nodeIndex]
+            if (left <= lastIndex && m_Comparer.Compare(m_Buffer[left], m_Buffer[nodeIndex]) < 0)
                 largest = left;
 
-            // If collection[right] > collection[largest]
-            if (right <= lastIndex && m_Comparer.Compare(m_Buffer[right], m_Buffer[largest]) > 0)
+            // If collection[right] < collection[largest]
+            if (right <= lastIndex && m_Comparer.Compare(m_Buffer[right], m_Buffer[largest]) < 0)
                 largest = right;
 
             // Swap and heapify
@@ -93,7 +106,7 @@ namespace Framework.Core
         public void Push(T value)
         {
             m_Buffer.Add(value);
-            m_IsDirty = true;
+            SiftUp(m_Buffer.Count - 1);
         }
 
         public T Peek()
@@ -101,7 +114,6 @@ namespace Framework.Core
             if(IsEmpty)
                 throw new Exception("Heap is empty");
             
-            BuildHeap();
             return m_Buffer.First;
         }
 
@@ -115,7 +127,8 @@ namespace Framework.Core
             // 首尾交换，删除尾部数据
             Swap(m_Buffer, 0, Count - 1);
             m_Buffer.RemoveAt(Count - 1);
-            m_IsDirty = true;
+
+            Heapify(0, Count - 1);
 
             return head;
         }
