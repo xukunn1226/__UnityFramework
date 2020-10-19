@@ -57,6 +57,7 @@ namespace Framework.Core
                 if(m_Buffer[i].Equals(value))
                 {
                     m_Buffer[i] = value;
+                    break;
                 }
             }
         }
