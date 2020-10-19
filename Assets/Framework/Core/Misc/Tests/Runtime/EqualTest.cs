@@ -2,48 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using NUnit.Framework;
 
 namespace Framework.Core.Tests
-{
-    public class EqualTest : MonoBehaviour
+{    
+    public class EqualTest
     {
-        private DaichoKey m_K1;
-        private DaichoKey m_K2;
-        private object m_K3;
-
-        private Dictionary<DaichoKey, int> m_dict = new Dictionary<DaichoKey, int>();
-
-        // Start is called before the first frame update
-        void Start()
+        [Test]
+        public void TestEqual()
         {
-            m_K1 = new DaichoKey();
+            DaichoKey m_K1 = new DaichoKey();
             m_K1.ID = 1;
             m_K1.SubID = 1;
 
-            m_K2 = new DaichoKey();
+            DaichoKey m_K2 = new DaichoKey();
             m_K2.ID = 1;
             m_K2.SubID = 1;
 
-            m_K3 = new object();
+            m_K1.Equals(m_K2);
 
+            object m_K3 = new object();
+            m_K3 = m_K2;
+            m_K1.Equals(m_K3);
+
+            Dictionary<DaichoKey, int> m_dict = new Dictionary<DaichoKey, int>();
             m_dict.Add(m_K1, 1);
             m_dict.Add(m_K2, 2);
-        }
 
-        // Update is called once per frame
-        void Update()
-        {
-            //m_dict.ContainsKey(m_K1);
 
-            //if(m_K1.Equals(m_K2))
-            //{
-            //    int ii = 0;
-            //}
-
-            //if(m_K1 == m_K3)
-            //{
-            //    int ii = 0;
-            //}
 
             string a = "aasdsdsa";
             string b = "aasdsdsa";
@@ -95,7 +81,8 @@ namespace Framework.Core.Tests
         }
         public override int GetHashCode()
         {
-            return base.GetHashCode();//return object's hashcode
+            int hc = base.GetHashCode();
+            return hc;//return object's hashcode
         }
     }
 

@@ -31,32 +31,32 @@ namespace Framework.Core
 
         public bool IsEmpty { get { return m_Buffer.Count == 0; } }
 
-        // public T this[int index]
-        // {
-        //     get
-        //     {
-        //         if(index < 0 || index >= Count || Count == 0)
-        //             throw new IndexOutOfRangeException();
+        public T this[int index]
+        {
+            get
+            {
+                if(index < 0 || index >= Count || Count == 0)
+                    throw new IndexOutOfRangeException();
 
-        //         return m_Buffer[index];
-        //     }
-        //     set
-        //     {
-        //         if(index < 0 || index >= Count)
-        //             throw new IndexOutOfRangeException();
+                return m_Buffer[index];
+            }
+            set
+            {
+                if(index < 0 || index >= Count)
+                    throw new IndexOutOfRangeException();
 
-        //         m_Buffer[index] = value;
+                m_Buffer[index] = value;
 
-        //         if(index > 0 && m_Comparer.Compare(m_Buffer[index], m_Buffer[(index - 1) / 2]) < 0)
-        //         { // 小于父节点仅上浮即可
-        //             SiftUp(index);
-        //         }
-        //         else
-        //         { // 大于父节点则判断其子树
-        //             Heapify(index, Count - 1);
-        //         }
-        //     }
-        // }
+                if(index > 0 && m_Comparer.Compare(m_Buffer[index], m_Buffer[(index - 1) / 2]) < 0)
+                { // 小于父节点仅上浮即可
+                    SiftUp(index);
+                }
+                else
+                { // 大于父节点则判断其子树
+                    Heapify(index, Count - 1);
+                }
+            }
+        }
 
         private void BuildHeap()
         {
@@ -131,6 +131,20 @@ namespace Framework.Core
             Heapify(0, Count - 1);
 
             return head;
+        }
+
+        public void RemoveAt(T value)
+        {
+            int index = m_Buffer.IndexOf(value);
+            RemoveAt(index);
+        }
+
+        public void RemoveAt(int index)
+        {
+            Swap(m_Buffer, index, Count - 1);
+            m_Buffer.RemoveAt(Count - 1);
+
+            Heapify(index, Count - 1);
         }
 
         public void Clear()
