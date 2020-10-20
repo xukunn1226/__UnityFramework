@@ -70,7 +70,7 @@ namespace Framework.Core.Tests
         }
 
         [Test]
-        public void TestPriorityQueue()
+        public void TestHeap()
         {
             List<int> arr = new List<int>() {4, 6, 8, 5, 9, 2, 3};
             Heap<int> heap = new Heap<int>(arr);
@@ -85,6 +85,38 @@ namespace Framework.Core.Tests
             // Debug.Log(heap.FindIndex(4));
             // Debug.Log(heap.FindIndex(7));
             Debug.Log(heap.FindIndex(8));
+        }
+
+        public class PriorityFoo : IPriority
+        {
+            public int value;
+
+            public int GetPriority()
+            {
+                return value;
+            }
+        }
+        [Test]
+        public void TestPriorityQueue()
+        {
+            PriorityQueue<PriorityFoo> pq = new PriorityQueue<PriorityFoo>(5, false);
+            PriorityQueueNode<PriorityFoo> node1 = pq.Push(new PriorityFoo() {value = 4});
+            PriorityQueueNode<PriorityFoo> node2 = pq.Push(new PriorityFoo() {value = 6});
+            PriorityQueueNode<PriorityFoo> node3 = pq.Push(new PriorityFoo() {value = 8});
+            PriorityQueueNode<PriorityFoo> node4 = pq.Push(new PriorityFoo() {value = 5});
+            PriorityQueueNode<PriorityFoo> node5 = pq.Push(new PriorityFoo() {value = 9});
+            PriorityQueueNode<PriorityFoo> node6 = pq.Push(new PriorityFoo() {value = 2});
+            PriorityQueueNode<PriorityFoo> node7 = pq.Push(new PriorityFoo() {value = 3});
+            // pq.Remove(node2);
+            node4.Key.value = 10;
+            pq.UpdatePriority(node4);
+            Debug.Log(pq.Pop().Priority);
+            Debug.Log(pq.Pop().Priority);
+            Debug.Log(pq.Pop().Priority);
+            Debug.Log(pq.Pop().Priority);
+            Debug.Log(pq.Pop().Priority);
+            Debug.Log(pq.Pop().Priority);
+            Debug.Log(pq.Pop().Priority);
         }
 
         private int DescendingComparer(int left, int right)

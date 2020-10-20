@@ -45,9 +45,9 @@ namespace Framework.Core
             m_Heap.RemoveAt(index);
         }
 
-        public void RemoveAt(TKey value)
+        public void Remove(TKey value)
         {
-            m_Heap.RemoveAt(value);
+            m_Heap.Remove(value);
         }
 
         public int FindIndex(TKey value)

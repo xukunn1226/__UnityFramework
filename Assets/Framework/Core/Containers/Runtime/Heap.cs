@@ -133,7 +133,7 @@ namespace Framework.Core
             return head;
         }
 
-        public void RemoveAt(T value)
+        public void Remove(T value)
         {
             int index = FindIndex(value);
             if(index != -1)
