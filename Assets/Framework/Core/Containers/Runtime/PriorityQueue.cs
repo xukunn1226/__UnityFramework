@@ -87,7 +87,10 @@ namespace Framework.Core
         {
             int index = FindIndex(value);
             if(index != -1)
+            {
+                value.UpdatePriority(value.Key.GetPriority());
                 m_Heap[index] = value;
+            }
         }
     }
 
