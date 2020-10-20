@@ -74,7 +74,17 @@ namespace Framework.Core.Tests
         {
             List<int> arr = new List<int>() {4, 6, 8, 5, 9, 2, 3};
             Heap<int> heap = new Heap<int>(arr);
-            heap.Push(1);            
+            heap.Push(1);
+            int index = heap.FindIndex(6);
+            heap[index] = 1;
+
+            // Debug.Log(heap.FindIndex(0));
+            // Debug.Log(heap.FindIndex(1));
+            Debug.Log(heap.FindIndex(3));
+            // Debug.Log(heap.FindIndex(6));
+            // Debug.Log(heap.FindIndex(4));
+            // Debug.Log(heap.FindIndex(7));
+            Debug.Log(heap.FindIndex(8));
         }
 
         private int DescendingComparer(int left, int right)

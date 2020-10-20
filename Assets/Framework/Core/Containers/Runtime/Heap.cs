@@ -27,7 +27,7 @@ namespace Framework.Core
             m_Comparer = comparer ?? Comparer<T>.Default;
         }
 
-        public int Count { get { return m_Buffer.Count; } }
+        public int  Count   { get { return m_Buffer.Count; } }
 
         public bool IsEmpty { get { return m_Buffer.Count == 0; } }
 
@@ -87,11 +87,11 @@ namespace Framework.Core
             int right = left + 1;
             int largest = nodeIndex;
 
-            // If collection[left] < collection[nodeIndex]
+            // If m_Buffer[left] < m_Buffer[nodeIndex]
             if (left <= lastIndex && m_Comparer.Compare(m_Buffer[left], m_Buffer[nodeIndex]) < 0)
                 largest = left;
 
-            // If collection[right] < collection[largest]
+            // If m_Buffer[right] < m_Buffer[largest]
             if (right <= lastIndex && m_Comparer.Compare(m_Buffer[right], m_Buffer[largest]) < 0)
                 largest = right;
 
@@ -135,12 +135,45 @@ namespace Framework.Core
 
         public void RemoveAt(T value)
         {
-            int index = m_Buffer.IndexOf(value);
-            RemoveAt(index);
+            int index = FindIndex(value);
+            if(index != -1)
+                RemoveAt(index);
+        }
+
+        public int FindIndex(T value)
+        {
+            if(IsEmpty)
+                return -1;
+
+            return InternalFindIndex(value, 0, Count - 1);
+        }
+
+        private int InternalFindIndex(T value, int nodeIndex, int lastIndex)
+        {
+            int compared = m_Comparer.Compare(m_Buffer[nodeIndex], value);
+
+            if (compared > 0)
+                return -1;
+            if( compared == 0)
+                return nodeIndex;
+
+            int left = (nodeIndex * 2) + 1;
+            int right = left + 1;
+
+            int index = -1;
+            if(left <= lastIndex && index == -1)
+                index = InternalFindIndex(value, left, lastIndex);                
+            if(right <= lastIndex && index == -1)
+                index = InternalFindIndex(value, right, lastIndex);
+
+            return index;
         }
 
         public void RemoveAt(int index)
         {
+            if(index < 0 || index >= Count || Count == 0)
+                throw new IndexOutOfRangeException();
+
             Swap(m_Buffer, index, Count - 1);
             m_Buffer.RemoveAt(Count - 1);
 
