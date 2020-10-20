@@ -17,11 +17,19 @@ namespace Framework.Core
         private Heap<PriorityQueueNode<TKey>>   m_Heap;
         private bool                            m_IsMinHeap;
 
+        public PriorityQueue() : this(0, true) {}
+
         public PriorityQueue(int capacity, bool isMinHeap = true)
         {
             // m_Heap = new Heap<PriorityQueueNode<TKey>>(isMinHeap ? s_MinHeapComparer : s_MaxHeapComparer);
             m_Heap = new Heap<PriorityQueueNode<TKey>>();
             m_IsMinHeap = isMinHeap;
+        }
+
+        public PriorityQueue(IList<TKey> arr, bool isMinHeap = true) : this(arr.Count, isMinHeap)
+        {
+            foreach(var item in arr)
+                Push(item);
         }
 
         // static private int MinHeapComparison(PriorityQueueNode<TKey> left, PriorityQueueNode<TKey> right)
