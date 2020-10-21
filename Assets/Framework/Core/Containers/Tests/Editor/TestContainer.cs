@@ -163,14 +163,17 @@ namespace Framework.Core.Tests
             {
                 m_Delay = (long)(seconds * 1000);
                 
-                long span = (long)DateTime.Now.Subtract(m_Original).TotalMilliseconds;
-                Expire = span + m_Delay;
+                Expire = GetCurrentDateTime() + m_Delay;
             }
 
             public long GetDelay()
             {
-                long span = (long)DateTime.Now.Subtract(m_Original).TotalMilliseconds;
-                return Expire - span;
+                return Expire - GetCurrentDateTime();
+            }
+
+            private long GetCurrentDateTime()
+            {
+                return (long)DateTime.Now.Subtract(m_Original).TotalMilliseconds;
             }
 
             public int CompareTo(DelayedTask other)
@@ -186,20 +189,20 @@ namespace Framework.Core.Tests
         {
             DelayQueue<DelayedTask> queue = new DelayQueue<DelayedTask>();
 
-            DelayedTask task1 = new DelayedTask(3, "33333");
-            DelayedTask task2 = new DelayedTask(1, "11111");
-            DelayedTask task3 = new DelayedTask(2, "22222");
+            DelayedTask task1 = new DelayedTask(5.1f, "33333");
+            DelayedTask task2 = new DelayedTask(3.1f, "11111");
+            DelayedTask task3 = new DelayedTask(2.2f, "22222");
             queue.Push(task1);
             queue.Push(task2);
             queue.Push(task3);
 
-            Debug.Log($"start: {Time.time}");
+            Debug.Log($"start: {DateTime.Now.ToString()}");
             while(queue.Count > 0)
             {
                 DelayedTask task = queue.Poll();
                 if(task != null)
                 {
-                    Debug.Log($"{task.Msg}  {Time.time}");
+                    Debug.Log($"{task.Msg}  {DateTime.Now.ToString()}");
                 }
             }
         }
