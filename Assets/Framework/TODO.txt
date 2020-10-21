@@ -35,8 +35,6 @@
 * LUA配表优化  https://blog.uwa4d.com/archives/1490.html
 * 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
 * 提高打包加速问题：https://mp.weixin.qq.com/s/sCgrrRXlYzXOPC1fKCX7UA
-* 延迟队列
-	https://mp.weixin.qq.com/s/A85ievNNzHDrQv67yBkbtA
 * sleep, pause（减少空转）, spin, 各种锁，map reduce
 	线程的几种状态：new, runnable, running, not runnable, dead
 	非可运行状态引申出三个状态：阻塞（blocked）、同步锁（locked）、等待（waiting）
@@ -63,6 +61,13 @@
 	https://www.youtube.com/watch?v=KK2hWczq8ZY  Power Efficient Programing - Unite Europe 2015
 	https://www.youtube.com/watch?v=j4YAY36xjwE  Unite Europe 2016 - Optimizing Mobile Applications
 	https://www.youtube.com/watch?v=_wxitgdx-UI  Unite Europe 2017 - Squeezing Unity: Tips for raising performance
+* SkipList
+	https://blog.csdn.net/ict2014/article/details/17394259
+	https://www.jianshu.com/p/43039adeb122
+	https://zhuanlan.zhihu.com/p/33674267
+* JPS
+	https://blog.csdn.net/yjxxtd/article/details/93506231
+	https://blog.csdn.net/u011265162/article/details/91048927?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
 
 
 
@@ -74,14 +79,14 @@
 
 
 
-
-
-* Heap && PriorityQueue
+- 延迟队列
+	https://mp.weixin.qq.com/s/A85ievNNzHDrQv67yBkbtA
+- Heap && PriorityQueue
 	https://www.toutiao.com/i6778731130720879118/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602237827&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=20201009180346010012058046260C4B64&group_id=6778731130720879118
 	https://stackoverflow.com/questions/102398/priority-queue-in-net
 	https://www.dotnetlovers.com/article/231/priority-queue
 	https://referencesource.microsoft.com/#PresentationCore/Shared/MS/Internal/PriorityQueue.cs,3779854732f36d06
-* 排序算法： 
+- 排序算法： 
 	https://mp.weixin.qq.com/s/DfrZHKh-QyKG_Af5H5LWGg  动画详解常用排序算法	
 	https://www.toutiao.com/i6873663185333780999/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602393817&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=2020101113233701001204321612436D8E&group_id=6873663185333780999	
 	https://www.toutiao.com/i6879298784736576014/?tt_from=weixin&utm_campaign=client_share&wxshare_count=1&timestamp=1602237809&app=news_article&utm_source=weixin&utm_medium=toutiao_android&use_new_style=1&req_id=20201009180328010017087043020C3BC4&group_id=6879298784736576014	
