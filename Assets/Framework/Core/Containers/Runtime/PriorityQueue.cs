@@ -4,16 +4,13 @@ using System;
 
 namespace Framework.Core
 {
-    public interface IPriority
+    public interface IPriorityItem
     {
         int GetPriority();
     }
 
-    public class PriorityQueue<TKey> where TKey : class, IPriority
+    public class PriorityQueue<TKey> where TKey : class, IPriorityItem
     {
-        // static private Comparer<PriorityQueueNode<TKey>> s_MinHeapComparer = Comparer<PriorityQueueNode<TKey>>.Create(MinHeapComparison);
-        // static private Comparer<PriorityQueueNode<TKey>> s_MaxHeapComparer = Comparer<PriorityQueueNode<TKey>>.Create(MaxHeapComparison);
-
         private Heap<PriorityQueueNode<TKey>>   m_Heap;
         private bool                            m_IsMinHeap;
 
@@ -21,7 +18,6 @@ namespace Framework.Core
 
         public PriorityQueue(int capacity, bool isMinHeap = true)
         {
-            // m_Heap = new Heap<PriorityQueueNode<TKey>>(isMinHeap ? s_MinHeapComparer : s_MaxHeapComparer);
             m_Heap = new Heap<PriorityQueueNode<TKey>>();
             m_IsMinHeap = isMinHeap;
         }
@@ -31,24 +27,6 @@ namespace Framework.Core
             foreach(var item in arr)
                 Push(item);
         }
-
-        // static private int MinHeapComparison(PriorityQueueNode<TKey> left, PriorityQueueNode<TKey> right)
-        // {
-        //     if(left == null || left.Key == null)
-        //         return -1;
-        //     if(right == null || right.Key == null)
-        //         return 1;
-        //     return left.Key.GetPriority().CompareTo(right.Key.GetPriority());
-        // }
-        
-        // static private int MaxHeapComparison(PriorityQueueNode<TKey> left, PriorityQueueNode<TKey> right)
-        // {
-        //     if(left == null || left.Key == null)
-        //         return 1;
-        //     if(right == null || right.Key == null)
-        //         return -1;                
-        //     return right.Key.GetPriority().CompareTo(left.Key.GetPriority());
-        // }
 
         public int  Count   { get { return m_Heap.Count; } }
         public bool IsEmpty { get { return m_Heap.IsEmpty; } }
@@ -106,7 +84,7 @@ namespace Framework.Core
         }
     }
 
-    public class PriorityQueueNode<TKey> : IComparable<PriorityQueueNode<TKey>> where TKey : IPriority
+    public class PriorityQueueNode<TKey> : IComparable<PriorityQueueNode<TKey>> where TKey : IPriorityItem
     {
         public TKey     Key         { get; private set; }
         public int      Priority    { get; private set; }
@@ -129,8 +107,10 @@ namespace Framework.Core
 
         public int CompareTo(PriorityQueueNode<TKey> other)
         {
-            if (other == null)
+            if(Key == null)
                 return -1;
+            if (other == null || other.Key == null)
+                return 1;
 
             int compared = this.Priority.CompareTo(other.Priority);
             return m_IsMinHeap ? compared : compared * -1;

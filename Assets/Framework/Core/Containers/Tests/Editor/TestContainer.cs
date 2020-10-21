@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Framework.Cache;
+using System;
 
 namespace Framework.Core.Tests
 {
@@ -87,7 +88,7 @@ namespace Framework.Core.Tests
             Debug.Log(heap.FindIndex(8));
         }
 
-        public class PriorityFoo : IPriority
+        public class PriorityFoo : IPriorityItem
         {
             public int value;
 
@@ -149,5 +150,58 @@ namespace Framework.Core.Tests
         //     pq.Pop();
         //     a = pq.Top;
         // }
+
+        public class DelayedTask : IDelayed<DelayedTask>
+        {
+            static private DateTime m_Original = new DateTime(1970,1,1,0,0,0, DateTimeKind.Local);
+
+            private long m_Delay;
+            public long Expire { get; private set; }
+            public string Msg { get; private set; }
+
+            public DelayedTask(float seconds, string msg)
+            {
+                m_Delay = (long)(seconds * 1000);
+                
+                long span = (long)DateTime.Now.Subtract(m_Original).TotalMilliseconds;
+                Expire = span + m_Delay;
+            }
+
+            public long GetDelay()
+            {
+                long span = (long)DateTime.Now.Subtract(m_Original).TotalMilliseconds;
+                return Expire - span;
+            }
+
+            public int CompareTo(DelayedTask other)
+            {
+                if(Expire == other.Expire)
+                    return 0;
+                return Expire > other.Expire ? 1 : -1;
+            }
+        }
+
+        [Test]
+        public void TestDelayQueue()
+        {
+            DelayQueue<DelayedTask> queue = new DelayQueue<DelayedTask>();
+
+            DelayedTask task1 = new DelayedTask(3, "33333");
+            DelayedTask task2 = new DelayedTask(1, "11111");
+            DelayedTask task3 = new DelayedTask(2, "22222");
+            queue.Push(task1);
+            queue.Push(task2);
+            queue.Push(task3);
+
+            Debug.Log($"start: {Time.time}");
+            while(queue.Count > 0)
+            {
+                DelayedTask task = queue.Poll();
+                if(task != null)
+                {
+                    Debug.Log($"{task.Msg}  {Time.time}");
+                }
+            }
+        }
     }
 }
