@@ -161,9 +161,9 @@ namespace Framework.Core.Tests
 
             public DelayedTask(float seconds, string msg)
             {
-                m_Delay = (long)(seconds * 1000);
-                
+                m_Delay = (long)(seconds * 1000);                
                 Expire = GetCurrentDateTime() + m_Delay;
+                Msg = msg;
             }
 
             public long GetDelay()
@@ -202,7 +202,7 @@ namespace Framework.Core.Tests
                 DelayedTask task = queue.Poll();
                 if(task != null)
                 {
-                    Debug.Log($"{task.Msg}  {DateTime.Now.ToString()}");
+                    Debug.Log($"{task.Msg} ----- {DateTime.Now.ToString()}");
                 }
             }
         }
