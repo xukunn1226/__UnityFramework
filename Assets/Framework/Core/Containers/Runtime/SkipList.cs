@@ -44,6 +44,21 @@ namespace Framework.Core
             m_Sizes = new int[SKIPLIST_MAXLEVEL];
         }
 
+        public bool Find(T value)
+        {
+            return true;
+        }
+
+        public bool Add(T value)
+        {
+            return true;
+        }
+
+        public bool Remove(T value)
+        {
+            return true;
+        }
+
         private int RandomLevel()
         {
             int level = 1;
@@ -55,7 +70,7 @@ namespace Framework.Core
         }
     }
 
-    public class SkipListNode<T> : IComparable<SkipListNode<T>> where T : IComparable<T>
+    internal class SkipListNode<T> : IComparable<SkipListNode<T>> where T : IComparable<T>
     {
         public T                    Value       { get; private set; }
         public SkipListNode<T>[]    Forwards    { get; private set; }
