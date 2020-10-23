@@ -59,14 +59,12 @@ namespace Framework.Core
             
             int level = RandomLevel();
             SkipListNode<T> newNode = new SkipListNode<T>(value, level);
-
-            SkipListNode<T> closestNode = m_Pathway[0, 0];
             for(int i = 0; i < level; ++i)
             {
                 if(i < m_CurMaxLevel)
                 {
-                    newNode.Forwards[i] = closestNode.Forwards[i];
-                    closestNode.Forwards[i] = newNode;
+                    newNode.Forwards[i] = m_Pathway[i, 0].Forwards[i];
+                    m_Pathway[i, 0].Forwards[i] = newNode;
                 }
                 else
                 {
@@ -110,16 +108,41 @@ namespace Framework.Core
         
         private int RandomLevel()
         {
-            int level = 1;
-            while(m_Seed.NextDouble() < SKIPLIST_P && level <= m_CurMaxLevel && level < SKIPLIST_MAXLEVEL)
+            // int level = 1;
+            // while(m_Seed.NextDouble() < SKIPLIST_P && level <= m_CurMaxLevel && level < SKIPLIST_MAXLEVEL)
+            // {
+            //     ++level;
+            // }
+            // return level < SKIPLIST_MAXLEVEL ? level : SKIPLIST_MAXLEVEL;
+
+            switch(Count)
             {
-                ++level;
+                case 0:
+                    return 1;
+                case 1:
+                    return 4;
+                case 2:
+                    return 1;
+                case 3:
+                    return 2;
+                case 4:
+                    return 1;
+                case 5:
+                    return 2;
+                case 6:
+                    return 1;
+                case 7:
+                    return 1;
+                case 8:
+                    return 3;
+                case 9:
+                    return 1;
             }
-            return level < SKIPLIST_MAXLEVEL ? level : SKIPLIST_MAXLEVEL;
+            return 1;
         }
     }
 
-    internal class SkipListNode<T> : IComparable<SkipListNode<T>> where T : IComparable<T>
+    internal class SkipListNode<T> where T : IComparable<T>
     {
         public T                    Value       { get; private set; }
         public SkipListNode<T>[]    Forwards    { get; private set; }
@@ -134,13 +157,6 @@ namespace Framework.Core
 
             Value = value;
             Forwards = new SkipListNode<T>[level];
-        }
-
-        public int CompareTo(SkipListNode<T> other)
-        {
-            if(other == null)
-                return -1;
-            return Value.CompareTo(other.Value);
         }
     }
 }
