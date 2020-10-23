@@ -206,5 +206,22 @@ namespace Framework.Core.Tests
                 }
             }
         }
+
+        [Test]
+        public void TestSkipList()
+        {
+            SkipList<int> list = new SkipList<int>();
+            list.Add(3);
+            list.Add(3);
+            list.Add(6);
+            list.Add(7);
+            list.Add(9);
+            list.Add(12);
+            list.Add(17);
+            list.Add(19);
+            list.Add(21);
+            list.Add(25);
+            list.Add(26);
+        }
     }
 }
