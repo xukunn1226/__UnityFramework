@@ -1,22 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Text;
 using System;
 
 namespace Framework.Core
 {
     public class SkipList<T> where T : IComparable<T>
     {
-        private const int           SKIPLIST_MAXLEVEL   = 32;
-        private const float         SKIPLIST_P          = 0.25f;
+        static private readonly int     SKIPLIST_MAXLEVEL   = 32;
+        static private readonly float   SKIPLIST_P          = 0.25f;
 
-        private Random              m_Seed;
-
-        private SkipListNode<T>     m_Header;
-
-        private int                 m_CurMaxLevel;
-        private SkipListNode<T>[,]  m_Pathway;
-
-        public int                  Count               { get; private set; }
+        private Random                  m_Seed;
+        private SkipListNode<T>         m_Header;
+        private int                     m_CurMaxLevel;
+        private SkipListNode<T>[,]      m_Pathway;
+        public int                      Count               { get; private set; }
 
         public SkipList()
         {
@@ -86,7 +82,7 @@ namespace Framework.Core
             SkipListNode<T> removedNode = closestNode.Forwards[0];
             for(int i = 0; i < removedNode.Level; ++i)
             {
-                m_Pathway[i, 0] = m_Pathway[i, 1];
+                m_Pathway[i, 0].Forwards[i] = removedNode.Forwards[i];
             }
             --Count;
             return true;
@@ -108,37 +104,23 @@ namespace Framework.Core
         
         private int RandomLevel()
         {
-            // int level = 1;
-            // while(m_Seed.NextDouble() < SKIPLIST_P && level <= m_CurMaxLevel && level < SKIPLIST_MAXLEVEL)
-            // {
-            //     ++level;
-            // }
-            // return level < SKIPLIST_MAXLEVEL ? level : SKIPLIST_MAXLEVEL;
-
-            switch(Count)
+            int level = 1;
+            while(m_Seed.NextDouble() < SKIPLIST_P && level <= m_CurMaxLevel && level < SKIPLIST_MAXLEVEL)
             {
-                case 0:
-                    return 1;
-                case 1:
-                    return 4;
-                case 2:
-                    return 1;
-                case 3:
-                    return 2;
-                case 4:
-                    return 1;
-                case 5:
-                    return 2;
-                case 6:
-                    return 1;
-                case 7:
-                    return 1;
-                case 8:
-                    return 3;
-                case 9:
-                    return 1;
+                ++level;
             }
-            return 1;
+            return level < SKIPLIST_MAXLEVEL ? level : SKIPLIST_MAXLEVEL;
+        }
+
+        public void PrintIt()
+        {
+            UnityEngine.Debug.Log($"Print SkipList: Count[{Count}]  MaxLevel[{m_CurMaxLevel}]");
+            SkipListNode<T> cur = m_Header;
+            while(cur != null)
+            {
+                cur.PrintIt();
+                cur = cur.Forwards[0];
+            }            
         }
     }
 
@@ -157,6 +139,19 @@ namespace Framework.Core
 
             Value = value;
             Forwards = new SkipListNode<T>[level];
+        }
+
+        public void PrintIt()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"<b>Value:</b> {Value}");
+            sb.AppendLine($"<b>Level:</b> {Level}");
+            for(int i = 0; i < Level; ++i)
+            {
+                string info = Forwards[i] != null ? Forwards[i].Value.ToString() : "NIL";
+                sb.AppendLine($"    <b>Forward[{i}]</b>  {info}");
+            }
+            UnityEngine.Debug.Log(sb.ToString());
         }
     }
 }

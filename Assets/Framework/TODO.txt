@@ -61,10 +61,6 @@
 	https://www.youtube.com/watch?v=KK2hWczq8ZY  Power Efficient Programing - Unite Europe 2015
 	https://www.youtube.com/watch?v=j4YAY36xjwE  Unite Europe 2016 - Optimizing Mobile Applications
 	https://www.youtube.com/watch?v=_wxitgdx-UI  Unite Europe 2017 - Squeezing Unity: Tips for raising performance
-* SkipList
-	https://blog.csdn.net/ict2014/article/details/17394259
-	https://blog.csdn.net/kisimple/article/details/38706729  level随机算法
-	https://www.cnblogs.com/xuqiang/archive/2011/05/22/2053516.html
 * JPS
 	https://blog.csdn.net/yjxxtd/article/details/93506231
 	https://blog.csdn.net/u011265162/article/details/91048927?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
@@ -78,7 +74,10 @@
 
 
 
-
+* SkipList
+	https://blog.csdn.net/ict2014/article/details/17394259
+	https://blog.csdn.net/kisimple/article/details/38706729
+	https://www.cnblogs.com/xuqiang/archive/2011/05/22/2053516.html
 - 延迟队列
 	https://mp.weixin.qq.com/s/A85ievNNzHDrQv67yBkbtA
 - Heap && PriorityQueue

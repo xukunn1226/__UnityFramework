@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
+using System.Diagnostics;
 using Framework.Cache;
 using System;
 
@@ -51,15 +51,15 @@ namespace Framework.Core.Tests
 
                 foreach(var node in pool)
                 {
-                    Debug.Log(node.Value);
+                    UnityEngine.Debug.Log(node.Value);
                 }
                 pool.Clear();
 
                 foreach(var node in pool)
                 {
-                    Debug.Log("---------: " + node.Value);
+                    UnityEngine.Debug.Log("---------: " + node.Value);
                 }
-                Debug.Log("Count: " + pool.Count);
+                UnityEngine.Debug.Log("Count: " + pool.Count);
 
                 BetterLinkedList<Boo> pool2 = new BetterLinkedList<Boo>();
                 pool2.AddLast(new Boo(1.2f));
@@ -79,13 +79,13 @@ namespace Framework.Core.Tests
             int index = heap.FindIndex(6);
             heap[index] = 1;
 
-            // Debug.Log(heap.FindIndex(0));
-            // Debug.Log(heap.FindIndex(1));
-            Debug.Log(heap.FindIndex(3));
-            // Debug.Log(heap.FindIndex(6));
-            // Debug.Log(heap.FindIndex(4));
-            // Debug.Log(heap.FindIndex(7));
-            Debug.Log(heap.FindIndex(8));
+            // UnityEngine.Debug.Log(heap.FindIndex(0));
+            // UnityEngine.Debug.Log(heap.FindIndex(1));
+            UnityEngine.Debug.Log(heap.FindIndex(3));
+            // UnityEngine.Debug.Log(heap.FindIndex(6));
+            // UnityEngine.Debug.Log(heap.FindIndex(4));
+            // UnityEngine.Debug.Log(heap.FindIndex(7));
+            UnityEngine.Debug.Log(heap.FindIndex(8));
         }
 
         public class PriorityFoo : IPriorityItem
@@ -111,13 +111,13 @@ namespace Framework.Core.Tests
             // pq.Remove(node2);
             node4.Key.value = 10;
             pq.UpdatePriority(node4);
-            Debug.Log(pq.Pop().Priority);
-            Debug.Log(pq.Pop().Priority);
-            Debug.Log(pq.Pop().Priority);
-            Debug.Log(pq.Pop().Priority);
-            Debug.Log(pq.Pop().Priority);
-            Debug.Log(pq.Pop().Priority);
-            Debug.Log(pq.Pop().Priority);
+            UnityEngine.Debug.Log(pq.Pop().Priority);
+            UnityEngine.Debug.Log(pq.Pop().Priority);
+            UnityEngine.Debug.Log(pq.Pop().Priority);
+            UnityEngine.Debug.Log(pq.Pop().Priority);
+            UnityEngine.Debug.Log(pq.Pop().Priority);
+            UnityEngine.Debug.Log(pq.Pop().Priority);
+            UnityEngine.Debug.Log(pq.Pop().Priority);
         }
 
         private int DescendingComparer(int left, int right)
@@ -196,13 +196,13 @@ namespace Framework.Core.Tests
             queue.Push(task2);
             queue.Push(task3);
 
-            Debug.Log($"start: {DateTime.Now.ToString()}");
+            UnityEngine.Debug.Log($"start: {DateTime.Now.ToString()}");
             while(queue.Count > 0)
             {
                 DelayedTask task = queue.Poll();
                 if(task != null)
                 {
-                    Debug.Log($"{task.Msg} ----- {DateTime.Now.ToString()}");
+                    UnityEngine.Debug.Log($"{task.Msg} ----- {DateTime.Now.ToString()}");
                 }
             }
         }
@@ -210,18 +210,38 @@ namespace Framework.Core.Tests
         [Test]
         public void TestSkipList()
         {
+            Stopwatch sw = new Stopwatch();
+
+            System.Random rdm = new System.Random();
             SkipList<int> list = new SkipList<int>();
-            list.Add(3);
-            list.Add(3);
-            list.Add(6);
-            list.Add(7);
-            list.Add(9);
-            list.Add(12);
-            list.Add(17);
-            list.Add(19);
-            list.Add(21);
-            list.Add(25);
-            list.Add(26);
+            // list.Add(3);
+            // list.Add(3);
+            // list.Add(6);
+            // list.Add(7);
+            // list.Add(9);
+            // list.Add(12);
+            // list.Add(17);
+            // list.Add(19);
+            // list.Add(21);
+            // list.Add(25);
+            // list.Add(26);
+            // list.Add(18);
+            // list.Remove(6);
+            // list.Remove(3);
+            // list.Remove(26);
+
+            sw.Start();
+            int cnt = 1000;
+            while(cnt > 0)
+            {
+                --cnt;
+                list.Add(rdm.Next(1, 10000));
+            }
+            sw.Stop();
+
+            UnityEngine.Debug.Log($"elapsedTime: {sw.Elapsed.TotalMilliseconds}ms");
+
+            list.PrintIt();
         }
     }
 }
