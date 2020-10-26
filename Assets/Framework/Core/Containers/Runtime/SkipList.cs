@@ -1,9 +1,10 @@
 using System.Text;
 using System;
+using System.Collections.Generic;
 
 namespace Framework.Core
 {
-    public class SkipList<T> where T : IComparable<T>
+    public class SkipList<T> : ICollection<T> where T : IComparable<T>
     {
         static private readonly int     SKIPLIST_MAXLEVEL   = 32;
         static private readonly float   SKIPLIST_P          = 0.25f;
@@ -48,10 +49,10 @@ namespace Framework.Core
             return true;
         }
 
-        public bool Add(T value)
+        public void Add(T value)
         {
             if(Contains(value))
-                return false;
+                return;
             
             int level = RandomLevel();
             SkipListNode<T> newNode = new SkipListNode<T>(value, level);
@@ -70,7 +71,6 @@ namespace Framework.Core
             }
             m_CurMaxLevel = Math.Max(m_CurMaxLevel, level);
             ++Count;
-            return true;
         }
 
         public bool Remove(T value)
@@ -121,6 +121,34 @@ namespace Framework.Core
                 cur.PrintIt();
                 cur = cur.Forwards[0];
             }            
+        }
+
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+        }
+
+        public void Clear()
+        {
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            SkipListNode<T> node = m_Header;
+            while(node.Forwards[0] != null)
+            {
+                node = node.Forwards[0];
+                yield return node.Value;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 
