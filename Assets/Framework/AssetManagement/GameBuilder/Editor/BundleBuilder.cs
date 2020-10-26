@@ -194,18 +194,28 @@ namespace Framework.AssetManagement.GameBuilder
             if (exitCode < ReturnCode.Success)
             {
                 Debug.LogError($"Failed to build bundles, ReturnCode is {exitCode}");
+                ClearBundleRedundancy(output);
+                return false;
+            }
+            ClearBundleRedundancy(output);
+
+            // step4. build manifest
+            string manifestOutput = "Assets/Temp/";          // manifest必须生成在Assets/下才能CreateAsset
+            var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
+            manifest.SetResults(results.BundleInfos);
+            AssetDatabase.CreateAsset(manifest, manifestOutput + Utility.GetPlatformName() + "_Manifest.asset");
+            AssetDatabase.Refresh();
+            if(!BuildManifestAsBundle(manifestOutput))
+            {
+                Debug.LogError("Failed to build manifest");
+                // ClearManifestRedundancy(manifestOutput);
                 return false;
             }
 
-            var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
-            manifest.SetResults(results.BundleInfos);
-            AssetDatabase.CreateAsset(manifest, buildParams.GetOutputFilePathForIdentifier(Path.GetFileName(output) + "_Text.asset"));
-            AssetDatabase.Refresh();
-            if(!BuildManifestAsBundle(output))
-            {
-                Debug.LogError("Failed to build manifest");
-                return false;
-            }
+            // step5. copy manifest and clear
+            CopyManifestToOutput(manifestOutput, output);
+            // ClearManifestRedundancy(manifestOutput);
+            
             return true;
         }
 
@@ -215,7 +225,7 @@ namespace Framework.AssetManagement.GameBuilder
             AssetBundleBuild abb = new AssetBundleBuild();
             abb.assetBundleName = "manifest";
             abb.assetNames = new string[1];
-            abb.assetNames[0] = output + "/" + Path.GetFileName(output) + "_Text.asset";
+            abb.assetNames[0] = output + "/" + Utility.GetPlatformName() + "_Manifest.asset";
             abb.addressableNames = new string[1];
             abb.addressableNames[0] = "manifest";
             BuildList[0] = abb;
@@ -227,6 +237,27 @@ namespace Framework.AssetManagement.GameBuilder
             IBundleBuildResults results;
             ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
             return exitCode >= ReturnCode.Success;
+        }
+
+        static private void CopyManifestToOutput(string srcPath, string dstPath)
+        {
+            srcPath = srcPath.TrimEnd(new char[] { '/' }) + "/";
+            dstPath = dstPath.TrimEnd(new char[] { '/' }) + "/";
+            File.Copy(srcPath + "manifest", dstPath + "manifest", true);
+        }
+
+        static private void ClearManifestRedundancy(string directory)
+        {
+            directory = directory.TrimEnd(new char[] { '/' }) + "/";
+            AssetDatabase.DeleteAsset(directory + Utility.GetPlatformName() + "_Manifest.asset");
+            AssetDatabase.DeleteAsset(directory + "manifest");
+            AssetDatabase.DeleteAsset(directory + "buildlogtep.json");
+        }
+
+        static private void ClearBundleRedundancy(string directory)
+        {
+            directory = directory.TrimEnd(new char[] { '/' }) + "/";
+            File.Delete(directory + "buildlogtep.json");
         }
 
         static internal void CopyAssetBundlesToStreamingAssets(string output)

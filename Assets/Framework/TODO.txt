@@ -64,7 +64,9 @@
 * JPS
 	https://blog.csdn.net/yjxxtd/article/details/93506231
 	https://blog.csdn.net/u011265162/article/details/91048927?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
-
+* 测试batchmode模式打包
+  重构：output可以动态设置
+  "Assets/Temp/"
 
 
 

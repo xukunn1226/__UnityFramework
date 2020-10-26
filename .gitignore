@@ -72,8 +72,8 @@ crashlytics-build.properties
 
 # Customize
 Deployment/
-[Aa]ssets/[Dd]eployment/
-[Aa]ssets/[Dd]eployment.meta
+[Aa]ssets/[Tt]emp/
+[Aa]ssets/[Tt]emp.meta
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData.meta
 #[Aa]ssets/RedirectorCache
