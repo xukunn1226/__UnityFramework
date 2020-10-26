@@ -1,5 +1,6 @@
 {
     "name": "Framework.LevelManager.Runtime.Tests",
+    "rootNamespace": "",
     "references": [
         "GUID:9b5aa2d6ee708464f87f5746dfc7686a"
     ],
@@ -10,7 +11,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
+        "ENABLE_PROFILER"
     ],
     "versionDefines": [],
     "noEngineReferences": false

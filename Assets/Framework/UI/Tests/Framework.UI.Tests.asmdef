@@ -1,5 +1,6 @@
 {
     "name": "Framework.UI.Tests",
+    "rootNamespace": "",
     "references": [
         "GUID:ca7555e33a889564d963a571fb1a7d77"
     ],
@@ -10,7 +11,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
+        "ENABLE_PROFILER"
     ],
     "versionDefines": [],
     "noEngineReferences": false

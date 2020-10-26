@@ -1,5 +1,6 @@
 {
     "name": "Framework.AssetManagement.Runtime.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138",
         "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
@@ -13,7 +14,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
+        "ENABLE_PROFILER"
     ],
     "versionDefines": [],
     "noEngineReferences": false
