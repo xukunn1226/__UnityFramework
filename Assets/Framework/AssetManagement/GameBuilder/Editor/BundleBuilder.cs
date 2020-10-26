@@ -133,9 +133,8 @@ namespace Framework.AssetManagement.GameBuilder
 
         static private bool BuildBundleWithSBP(string output, BundleBuilderSetting setting)
         {
-            setting.ResourcePath = "assets/res";
             // step1. construct the new BundleBuildContent class
-            string ResourcePath = setting.ResourcePath;
+            string ResourcePath = setting.OverrideResourcePath.ToLower();
             ResourcePath = string.IsNullOrEmpty(ResourcePath) ? ResourcePath : ResourcePath.TrimEnd(new char[] { '/' }) + "/";
 
             // 过滤不输出的资源

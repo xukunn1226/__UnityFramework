@@ -15,15 +15,17 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty      m_appendHashProp;
         SerializedProperty      m_DisableWriteTypeTreeProp;
         SerializedProperty      m_DevelopmentBuildProp;
+        SerializedProperty      m_OverrideResourcePathProp;
         
         private void Awake()
         {
-            m_outputPathProp        = serializedObject.FindProperty("outputPath");
-            m_useLZ4CompressProp    = serializedObject.FindProperty("useLZ4Compress");
-            m_rebuildBundlesProp    = serializedObject.FindProperty("rebuildBundles");
-            m_appendHashProp        = serializedObject.FindProperty("appendHash");
-            m_DisableWriteTypeTreeProp = serializedObject.FindProperty("DisableWriteTypeTree");
-            m_DevelopmentBuildProp  = serializedObject.FindProperty("DevelopmentBuild");
+            m_outputPathProp            = serializedObject.FindProperty("outputPath");
+            m_useLZ4CompressProp        = serializedObject.FindProperty("useLZ4Compress");
+            m_rebuildBundlesProp        = serializedObject.FindProperty("rebuildBundles");
+            m_appendHashProp            = serializedObject.FindProperty("appendHash");
+            m_DisableWriteTypeTreeProp  = serializedObject.FindProperty("DisableWriteTypeTree");
+            m_DevelopmentBuildProp      = serializedObject.FindProperty("DevelopmentBuild");
+            m_OverrideResourcePathProp  = serializedObject.FindProperty("OverrideResourcePath");
         }
 
         public override void OnInspectorGUI()
@@ -94,11 +96,12 @@ namespace Framework.AssetManagement.GameBuilder
             EditorGUILayout.LabelField("Build AssetBundle Options", EditorStyles.largeLabel);
             GUILayout.BeginVertical(new GUIStyle("HelpBox"));
             {
-                m_useLZ4CompressProp.boolValue  = EditorGUILayout.Toggle(new GUIContent("UseLZ4Compress"), m_useLZ4CompressProp.boolValue);
-                m_rebuildBundlesProp.boolValue  = EditorGUILayout.Toggle(new GUIContent("RebuildBundles"), m_rebuildBundlesProp.boolValue);                
-                m_appendHashProp.boolValue      = EditorGUILayout.Toggle(new GUIContent("AppendHash"), m_appendHashProp.boolValue);
+                m_useLZ4CompressProp.boolValue          = EditorGUILayout.Toggle(new GUIContent("UseLZ4Compress"), m_useLZ4CompressProp.boolValue);
+                m_rebuildBundlesProp.boolValue          = EditorGUILayout.Toggle(new GUIContent("RebuildBundles"), m_rebuildBundlesProp.boolValue);                
+                m_appendHashProp.boolValue              = EditorGUILayout.Toggle(new GUIContent("AppendHash"), m_appendHashProp.boolValue);
                 m_DisableWriteTypeTreeProp.boolValue    = EditorGUILayout.Toggle(new GUIContent("DisableWriteTypeTree"), m_DisableWriteTypeTreeProp.boolValue);
-                m_DevelopmentBuildProp.boolValue    = EditorGUILayout.Toggle(new GUIContent("DevelopmentBuild"), m_DevelopmentBuildProp.boolValue);
+                m_DevelopmentBuildProp.boolValue        = EditorGUILayout.Toggle(new GUIContent("DevelopmentBuild"), m_DevelopmentBuildProp.boolValue);
+                m_OverrideResourcePathProp.stringValue  = EditorGUILayout.TextField(new GUIContent("OverrideResourcePath", "非空表示仅此目录下的资源输出，留空表示所有设置了bundle name的资源都将输出"), m_OverrideResourcePathProp.stringValue);
             }
             GUILayout.EndVertical();
         }
