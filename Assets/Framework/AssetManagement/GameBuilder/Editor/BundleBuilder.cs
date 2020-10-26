@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Globalization;
 using Framework.Core;
 using UnityEditor.Build.Pipeline.Interfaces;
 using UnityEditor.Build.Pipeline;
@@ -133,17 +133,45 @@ namespace Framework.AssetManagement.GameBuilder
 
         static private bool BuildBundleWithSBP(string output, BundleBuilderSetting setting)
         {
+            setting.ResourcePath = "assets/res";
             // step1. construct the new BundleBuildContent class
+            string ResourcePath = setting.ResourcePath;
+            ResourcePath = string.IsNullOrEmpty(ResourcePath) ? ResourcePath : ResourcePath.TrimEnd(new char[] { '/' }) + "/";
+
+            // 过滤不输出的资源
             AssetBundleBuild[] BuildList = ContentBuildInterface.GenerateAssetBundleBuilds();
+            int count = BuildList.Length;
+            if(!string.IsNullOrEmpty(ResourcePath))
+            {
+                count = 0;
+                for (int i = 0; i < BuildList.Length; ++i)
+                {
+                    AssetBundleBuild abb = BuildList[i];
+                    if (abb.assetBundleName.StartsWith(ResourcePath, true, CultureInfo.InvariantCulture))
+                    {
+                        ++count;
+                        continue;
+                    }
+                }
+            }
+
+            AssetBundleBuild[] FinalBuildList = new AssetBundleBuild[count];
+            int index = 0;
             for (int i = 0; i < BuildList.Length; ++i)
             {
+                if(!string.IsNullOrEmpty(ResourcePath) && !BuildList[i].assetBundleName.StartsWith(ResourcePath))
+                {
+                    continue;
+                }
+
                 AssetBundleBuild abb = BuildList[i];
                 abb.addressableNames = new string[abb.assetNames.Length];
                 for (int j = 0; j < abb.assetNames.Length; ++j)
                     abb.addressableNames[j] = Path.GetFileName(abb.assetNames[j]).ToLower();
-                BuildList[i] = abb;
+
+                FinalBuildList[index++] = abb;
             }
-            var buildContent = new BundleBuildContent(BuildList);
+            var buildContent = new BundleBuildContent(FinalBuildList);
 
             // step2. Construct the new parameters class
             var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
@@ -206,6 +234,7 @@ namespace Framework.AssetManagement.GameBuilder
         {
             string srcPath = output;
             string targetPath = @"Assets/StreamingAssets";
+            string finalPath = targetPath + "/" + Utility.GetPlatformName();
 
             // 删除StreamingAssets
             if (Directory.Exists(targetPath))
@@ -216,17 +245,21 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 Directory.CreateDirectory(targetPath);
             }
-            Directory.CreateDirectory(targetPath + "/" + Utility.GetPlatformName());
+            Directory.CreateDirectory(finalPath);
 
             // 把源目录文件复制到目标目录
             if (Directory.Exists(srcPath))
             {
-                CopyDirectory(srcPath, targetPath + "/" + Utility.GetPlatformName());
+                CopyDirectory(srcPath, finalPath);
             }
             else
             {
                 Debug.LogWarning("Source path does not exist!");
             }
+
+            // 删除冗余数据（buildlogtep.json & PLATFORM_Text.asset）
+            File.Delete(finalPath + "/" + "buildlogtep.json");
+            File.Delete(finalPath + "/" + Utility.GetPlatformName() + "_Text.asset");
             AssetDatabase.Refresh();
         }
 

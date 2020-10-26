@@ -70,8 +70,11 @@ namespace Framework.AssetManagement.GameBuilder
             }
             para.RestorePlayerSettings();
 
-            string appPath = Application.dataPath.Replace("Assets", "") + outputPath;
-            System.Diagnostics.Process.Start("explorer", appPath.Replace('/', '\\'));
+            if (!Application.isBatchMode)
+            {
+                string appPath = Application.dataPath.Replace("Assets", "") + outputPath;
+                System.Diagnostics.Process.Start("explorer", appPath.Replace('/', '\\'));
+            }
 
             return report;
         }

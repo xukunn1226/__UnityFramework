@@ -28,6 +28,7 @@ namespace Framework.AssetManagement.GameBuilder
         public bool             appendHash;
         public bool             DisableWriteTypeTree;
         public bool             DevelopmentBuild;
+        public string           ResourcePath;         // 非空表示唯一的资源输出目录，为空表示所有设置了bundle name的资源都将输出
 
         public override string ToString()
         {
