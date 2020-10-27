@@ -10,26 +10,22 @@ namespace Framework.AssetManagement.GameBuilder
     {
         SerializedProperty m_bundleSettingProp;
         SerializedProperty m_playerSettingProp;
+        SerializedProperty m_buildModeProp;
 
         Editor m_bundleSettingEditor;
         Editor m_playerSettingEditor;
-
-        enum BuildMode
-        {
-            BundlesAndPlayer,
-            Bundles,
-            Player,
-        }
-        BuildMode m_mode;
 
         private void Awake()
         {
             m_bundleSettingProp = serializedObject.FindProperty("bundleSetting");
             m_playerSettingProp = serializedObject.FindProperty("playerSetting");
+            m_buildModeProp = serializedObject.FindProperty("buildMode");
         }
 
         public override void OnInspectorGUI()
         {
+            EditorGUI.BeginChangeCheck();
+
             serializedObject.Update();
 
             if (m_bundleSettingProp == null || m_playerSettingProp == null)
@@ -44,7 +40,7 @@ namespace Framework.AssetManagement.GameBuilder
                                                                                     m_playerSettingProp.objectReferenceValue, 
                                                                                     typeof(PlayerBuilderSetting), 
                                                                                     false);
-            
+
             EditorGUILayout.Separator();
             DrawBundleSettingEditor();
 
@@ -52,9 +48,15 @@ namespace Framework.AssetManagement.GameBuilder
             DrawPlayerSettingEditor();
 
             EditorGUILayout.Separator();
+            EditorGUILayout.Separator();
             DrawBuildButton();
 
             serializedObject.ApplyModifiedProperties();
+
+            if(EditorGUI.EndChangeCheck())
+            {
+                AssetDatabase.SaveAssets();
+            }
         }
 
         private void DrawBundleSettingEditor()
@@ -122,42 +124,31 @@ namespace Framework.AssetManagement.GameBuilder
         private void DrawBuildButton()
         {
             EditorGUILayout.BeginHorizontal();
-            {
-                //m_mode = (BuildMode)EditorGUILayout.EnumPopup(m_mode, EditorStyles.popup, GUILayout.Width(135));
-                m_mode = BuildMode.BundlesAndPlayer;
+            {                
+                m_buildModeProp.enumValueIndex = (int)(GameBuilderSetting.BuildMode)EditorGUILayout.EnumPopup("", (GameBuilderSetting.BuildMode)m_buildModeProp.enumValueIndex, GUILayout.Width(140));
+                GameBuilderSetting.BuildMode buildMode = (GameBuilderSetting.BuildMode)m_buildModeProp.enumValueIndex;
 
-                GUIStyle boldStyle = new GUIStyle("LargeButtonLeft");
+                GUIStyle boldStyle = new GUIStyle("ButtonLeft");
                 boldStyle.fontStyle = FontStyle.Bold;
                 boldStyle.alignment = TextAnchor.MiddleCenter;
 
                 bool disable = false;
-                switch(m_mode)
+                switch(buildMode)
                 {
-                    case BuildMode.Bundles:
+                    case GameBuilderSetting.BuildMode.Bundles:
                         disable = m_bundleSettingProp.objectReferenceValue == null;
                         break;
-                    case BuildMode.Player:
+                    case GameBuilderSetting.BuildMode.Player:
                         disable = m_playerSettingProp.objectReferenceValue == null;
                         break;
-                    case BuildMode.BundlesAndPlayer:
+                    case GameBuilderSetting.BuildMode.BundlesAndPlayer:
                         disable = m_bundleSettingProp.objectReferenceValue == null || m_playerSettingProp.objectReferenceValue == null;
                         break;
                 }
                 EditorGUI.BeginDisabledGroup(disable);
-                if(GUILayout.Button("Build Bundles & Player", boldStyle))
+                if(GUILayout.Button("Build Game", boldStyle))
                 {
-                    switch(m_mode)
-                    {
-                        case BuildMode.Bundles:
-                            BundleBuilder.BuildAssetBundles(m_bundleSettingProp.objectReferenceValue as BundleBuilderSetting);
-                            break;
-                        case BuildMode.Player:
-                            PlayerBuilder.BuildPlayer(m_playerSettingProp.objectReferenceValue as PlayerBuilderSetting);
-                            break;
-                        case BuildMode.BundlesAndPlayer:
-                            GameBuilder.BuildGame((GameBuilderSetting)target);
-                            break;
-                    }
+                    GameBuilder.BuildGame((GameBuilderSetting)target);
                 }
                 EditorGUI.EndDisabledGroup();
             }

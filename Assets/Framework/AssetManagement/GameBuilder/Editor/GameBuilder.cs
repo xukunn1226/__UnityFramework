@@ -43,9 +43,20 @@ namespace Framework.AssetManagement.GameBuilder
                 throw new System.ArgumentNullException("PlayerBuilderSetting", "playerSetting == null");
             }
 
-            if(BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting))
+            switch(gameSetting.buildMode)
             {
-                PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
+                case GameBuilderSetting.BuildMode.Bundles:
+                    BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting);
+                    break;
+                case GameBuilderSetting.BuildMode.Player:
+                    PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
+                    break;
+                case GameBuilderSetting.BuildMode.BundlesAndPlayer:
+                    if(BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting))
+                    {
+                        PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
+                    }
+                    break;
             }
         }
 
@@ -74,14 +85,17 @@ namespace Framework.AssetManagement.GameBuilder
                 return;
             }
 
+            // override the game setting parameters
+            SetOverridePara(ref setting.buildMode,                                  "BuildMode",                GameBuilderSetting.BuildMode.BundlesAndPlayer);
+
             // override the bundle setting parameters
-            SetOverridePara(ref setting.bundleSetting.outputPath,                   "BundlesOutput",            "Assets/Deployment/AssetBundles");
+            SetOverridePara(ref setting.bundleSetting.outputPath,                   "BundlesOutput",            "Deployment/AssetBundles");
             SetOverridePara(ref setting.bundleSetting.useLZ4Compress,               "UseLZ4Compress",           true);
             SetOverridePara(ref setting.bundleSetting.appendHash,                   "AppendHash",               false);
             SetOverridePara(ref setting.bundleSetting.rebuildBundles,               "RebuildBundles",           false);
 
             // override the player setting parameters
-            SetOverridePara(ref setting.playerSetting.outputPath,                   "PlayerOutput",             "Assets/Deployment/Player");            
+            SetOverridePara(ref setting.playerSetting.outputPath,                   "PlayerOutput",             "Deployment/Player");            
             SetOverridePara(ref setting.playerSetting.projectName,                  "ProjectName",              "MyProject");
             SetOverridePara(ref setting.playerSetting.autoRunPlayer,                "AutoRunPlayer",            true);
             // batch mode没有连接设备会出包失败
@@ -134,6 +148,17 @@ namespace Framework.AssetManagement.GameBuilder
                 {
                     overridePara = Il2CppCompilerConfiguration.Master;
                 }
+            }
+        }
+
+        static private void SetOverridePara(ref GameBuilderSetting.BuildMode overridePara, string command, GameBuilderSetting.BuildMode defaultValue)
+        {
+            overridePara = defaultValue;
+
+            int buildMode = 0;
+            if(CommandLineReader.GetCommand(command, ref buildMode))
+            {
+                overridePara = (GameBuilderSetting.BuildMode)buildMode;
             }
         }
     }

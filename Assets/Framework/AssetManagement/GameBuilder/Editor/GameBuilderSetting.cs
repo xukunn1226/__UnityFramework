@@ -13,5 +13,13 @@ namespace Framework.AssetManagement.GameBuilder
         public string               displayName;
         public BundleBuilderSetting bundleSetting;
         public PlayerBuilderSetting playerSetting;
+
+        public enum BuildMode
+        {
+            BundlesAndPlayer,
+            Bundles,
+            Player,
+        }
+        public BuildMode            buildMode;
     }
 }

@@ -134,7 +134,7 @@ namespace Framework.AssetManagement.GameBuilder
         static private bool BuildBundleWithSBP(string output, BundleBuilderSetting setting)
         {
             // step1. construct the new BundleBuildContent class
-            string ResourcePath = setting.OverrideResourcePath.ToLower();
+            string ResourcePath = string.IsNullOrEmpty(setting.OverrideResourcePath) ? null : setting.OverrideResourcePath.ToLower();
             ResourcePath = string.IsNullOrEmpty(ResourcePath) ? ResourcePath : ResourcePath.TrimEnd(new char[] { '/' }) + "/";
 
             // 过滤不输出的资源
@@ -201,6 +201,10 @@ namespace Framework.AssetManagement.GameBuilder
 
             // step4. build manifest
             string manifestOutput = "Assets/Temp/";          // manifest必须生成在Assets/下才能CreateAsset
+            if(!Directory.Exists(manifestOutput))
+            {
+                Directory.CreateDirectory(manifestOutput);
+            }
             var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
             manifest.SetResults(results.BundleInfos);
             AssetDatabase.CreateAsset(manifest, manifestOutput + Utility.GetPlatformName() + "_Manifest.asset");
@@ -212,7 +216,7 @@ namespace Framework.AssetManagement.GameBuilder
                 return false;
             }
 
-            // step5. copy manifest and clear
+            // step5. copy manifest and clear temp files
             CopyManifestToOutput(manifestOutput, output);
             // ClearManifestRedundancy(manifestOutput);
             
@@ -287,9 +291,6 @@ namespace Framework.AssetManagement.GameBuilder
                 Debug.LogWarning("Source path does not exist!");
             }
 
-            // 删除冗余数据（buildlogtep.json & PLATFORM_Text.asset）
-            File.Delete(finalPath + "/" + "buildlogtep.json");
-            File.Delete(finalPath + "/" + Utility.GetPlatformName() + "_Text.asset");
             AssetDatabase.Refresh();
         }
 

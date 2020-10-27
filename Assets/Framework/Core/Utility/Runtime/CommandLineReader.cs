@@ -118,5 +118,29 @@ namespace Framework.Core
             }
             return true;
         }
+
+        static public bool GetCommand(string command, ref int para)
+        {
+            if (s_CommandArgsDict == null)
+            {
+                ParseCommandLine();
+            }
+
+            string value;
+            if (!s_CommandArgsDict.TryGetValue(command.ToLower(), out value))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(value))
+            {
+                para = 0;
+            }
+            else
+            {
+                para = int.Parse(value, System.Globalization.NumberStyles.Integer);
+            }
+            return true;
+        }
     }
 }

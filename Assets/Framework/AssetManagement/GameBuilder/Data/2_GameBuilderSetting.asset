@@ -15,3 +15,4 @@ MonoBehaviour:
   displayName: iOS
   bundleSetting: {fileID: 11400000, guid: 064c08829c7d5704c8d89bb608fc62a1, type: 2}
   playerSetting: {fileID: 11400000, guid: 367c286c7f15f9540b1b2c65f0c39fa1, type: 2}
+  buildMode: 0

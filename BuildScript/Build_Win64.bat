@@ -25,7 +25,7 @@ set PLATFORM_NAME=Win64
 
 
 :: Build script
-set BUILD_SCRIPT=-executeMethod Framework.GameBuilder.GameBuilder.cmdBuildGame
+set BUILD_SCRIPT=-executeMethod Framework.AssetManagement.GameBuilder.GameBuilder.cmdBuildGame
 ::echo Build script: %BUILD_SCRIPT%
 
 
@@ -62,8 +62,8 @@ echo Fixed command: %FIXED_COMMAND%
 set OPTIONAL_COMMAND=%BUNDLE_OUTPUT% %BUNDLE_PATH% %PLAYER_OUTPUT% %PLAYER_PATH% %LOG_FILE% %LOG_PATH%
 echo Optional command: %OPTIONAL_COMMAND%
 
-echo "D:\program files\2019.3.3f1\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND%
-"D:\program files\2019.3.3f1\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND%
+echo "D:\Program Files\2020.2.0b5\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND%
+"D:\Program Files\2020.2.0b5\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND% -BuildMode 1
 
 
 ::"D:\program files\2019.3.3f1\Editor\Unity.exe" %BATCH% %QUIT% %PROJECT% %PROJECT_PATH% -buildTarget Win64 -executeMethod Framework.GameBuilder.GameBuilder.cmdBuildGame -BuilderProfile win64 -bundlesOutput ./Deployment/AssetBundles -logFile "G:\MyGitHub\PoolManager\Deployment\build_win64_log.txt"

@@ -15,3 +15,4 @@ MonoBehaviour:
   displayName: Android
   bundleSetting: {fileID: 11400000, guid: e13db222bb853104d892df6a2eb54a1b, type: 2}
   playerSetting: {fileID: 11400000, guid: 764b3dc1ec058744bae5a19dacb939c5, type: 2}
+  buildMode: 0
