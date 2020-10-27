@@ -6,7 +6,7 @@ namespace Framework.AssetManagement.GameBuilder
 {
     static internal class GameBuilderUtil
     {
-        static public string s_DefaultSettingPath = "Assets/AssetManagement/GameBuilder/Data";
+        static public string s_DefaultSettingPath = "Assets/Framework/AssetManagement/GameBuilder/Data";
 
         //[MenuItem("Assets Management/Create BundleBuilder Setting", false, 21)]
         //static private void CreateBundlesSetting()
