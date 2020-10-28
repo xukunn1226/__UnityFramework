@@ -37,19 +37,19 @@ set PROFILE_NAME=win64
 
 :: Bundle Output
 set BUNDLE_OUTPUT=-bundlesOutput
-set BUNDLE_PATH=%PROJECT_PATH%\Deployment\AssetBundles
+set BUNDLE_PATH=%PROJECT_PATH%\Deployment\Latest\AssetBundles
 ::echo Bundle Output: %BUNDLE_OUTPUT% %BUNDLE_PATH%
 
 
 :: Player Output
 set PLAYER_OUTPUT=-playerOutput
-set PLAYER_PATH=%PROJECT_PATH%\Deployment\Player
+set PLAYER_PATH=%PROJECT_PATH%\Deployment\Latest\Player
 ::echo Player Output: %PLAYER_OUTPUT% %PLAYER_PATH%
 
 
 :: Log
 set LOG_FILE=-logFile
-set LOG_PATH=%PROJECT_PATH%\Deployment\build_win64_log.txt
+set LOG_PATH=%PROJECT_PATH%\Deployment\Latest\build_win64_log.txt
 ::echo Log path: %LOG_FILE% %LOG_PATH%
 
 
