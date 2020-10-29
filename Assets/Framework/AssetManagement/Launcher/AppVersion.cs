@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class AppVersion : MonoBehaviour
+public class AppVersion : ScriptableObject, IComparable<AppVersion>
 {
-    // Start is called before the first frame update
-    void Start()
+    public int      MainVersion;
+    public int      MinorVersion;
+    public int      Revision;
+    public int      BuildNumber;
+
+    new public string ToString()
     {
-        
+        return string.Format($"{MainVersion}.{MinorVersion}.{Revision}");
     }
 
-    // Update is called once per frame
-    void Update()
+    public int CompareTo(AppVersion other)
     {
-        
+        return 0;
     }
 }
