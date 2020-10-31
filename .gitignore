@@ -76,6 +76,7 @@ Deployment/
 [Aa]ssets/[Tt]emp.meta
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData.meta
+!Assets/Framework/AssetManagement/Deployment/
 #[Aa]ssets/RedirectorCache
 #[Aa]ssets/RedirectorCache.meta
 

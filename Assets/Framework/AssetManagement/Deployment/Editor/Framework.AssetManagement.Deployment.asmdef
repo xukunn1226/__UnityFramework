@@ -1,0 +1,18 @@
+{
+    "name": "Framework.AssetManagement.Deployment",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
