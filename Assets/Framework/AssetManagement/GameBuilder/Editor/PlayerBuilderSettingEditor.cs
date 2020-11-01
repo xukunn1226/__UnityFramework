@@ -21,6 +21,7 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty              m_strictModeProp;
 
         SerializedProperty              m_bundleVersionProp;
+        SerializedProperty              m_versionChangedModeProp;
         SerializedProperty              m_useIL2CPPProp;
         SerializedProperty              m_useMTRenderingProp;
         SerializedProperty              m_useAPKExpansionFilesProp;
@@ -28,6 +29,9 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty              m_excludedDefinesProp;
         SerializedProperty              m_bOverrideBuildScenesProp;
         SerializedProperty              m_overrideBuildScenesProp;
+
+        AppVersion                      m_AppVersion;
+        PlayerBuilderSetting.VersionChangedMode m_EnumValueIndex;
 
         private void Awake()
         {
@@ -43,6 +47,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_strictModeProp            = serializedObject.FindProperty("strictMode");
 
             m_bundleVersionProp         = serializedObject.FindProperty("bundleVersion");
+            m_versionChangedModeProp    = serializedObject.FindProperty("versionChangedMode");
             m_useIL2CPPProp             = serializedObject.FindProperty("useIL2CPP");
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
             m_useAPKExpansionFilesProp  = serializedObject.FindProperty("useAPKExpansionFiles");
@@ -51,6 +56,8 @@ namespace Framework.AssetManagement.GameBuilder
 
             m_bOverrideBuildScenesProp  = serializedObject.FindProperty("bOverrideBuildScenes");
             m_overrideBuildScenesProp   = serializedObject.FindProperty("overrideBuildScenes");
+
+            m_AppVersion = Resources.Load<AppVersion>("AppVersion");
         }
 
         public override void OnInspectorGUI()
@@ -207,6 +214,22 @@ namespace Framework.AssetManagement.GameBuilder
                 EditorGUILayout.LabelField("App Identifier", PlayerSettings.applicationIdentifier, GUILayout.Width(400));
 
                 m_bundleVersionProp.stringValue = EditorGUILayout.TextField("Bundle Version", m_bundleVersionProp.stringValue);
+
+                {
+                    EditorGUI.BeginDisabledGroup(m_AppVersion == null);
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField("AppVersion");
+
+                    m_EnumValueIndex = (PlayerBuilderSetting.VersionChangedMode)EditorGUILayout.EnumPopup("", (PlayerBuilderSetting.VersionChangedMode)m_EnumValueIndex, GUILayout.Width(120));
+                    ((PlayerBuilderSetting)target).mainVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).mainVersion, GUILayout.Width(80));
+                    ((PlayerBuilderSetting)target).minorVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).minorVersion, GUILayout.Width(80));
+                    ((PlayerBuilderSetting)target).revision = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).revision, GUILayout.Width(80));
+
+                    
+
+                    GUILayout.EndHorizontal();
+                    EditorGUI.EndDisabledGroup();
+                }
 
                 m_useIL2CPPProp.boolValue = EditorGUILayout.Toggle("UseIL2CPP", m_useIL2CPPProp.boolValue);
 

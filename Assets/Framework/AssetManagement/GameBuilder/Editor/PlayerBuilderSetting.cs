@@ -12,6 +12,13 @@ namespace Framework.AssetManagement.GameBuilder
     /// </summary>
     public class PlayerBuilderSetting : ScriptableObject
     {
+        public enum VersionChangedMode
+        {
+            NoChanged,      // 无变化
+            Increase,       // 自增，末位+1
+            Specific,       // 指定版本号
+        }
+
         public string                       outputPath                          = "Deployment/Player";
 
         public string                       projectName                         = "MyProject";
@@ -35,6 +42,12 @@ namespace Framework.AssetManagement.GameBuilder
 
         ////////////////////// PlayerSettings
         public string                       bundleVersion;                      // Application bundle version shared between iOS & Android platforms
+        
+        [System.NonSerialized]
+        public VersionChangedMode           versionChangedMode;                 // 版本号设定方式
+        [System.NonSerialized] public int   mainVersion;
+        [System.NonSerialized] public int   minorVersion;
+        [System.NonSerialized] public int   revision;
 
         public bool                         useIL2CPP;                          // Sets the scripting framework for a BuildTargetPlatformGroup
 
@@ -275,6 +288,28 @@ namespace Framework.AssetManagement.GameBuilder
                 opt &= ~BuildOptions.StrictMode;
 
             return opt;
+        }
+
+        static internal void SetAppVersion(this PlayerBuilderSetting para)
+        {
+            AppVersion version = AssetDatabase.LoadAssetAtPath<AppVersion>("Assets/Resources/AppVersion.asset");
+            if(version == null)
+                throw new System.Exception("can't find AppVersion.asset in Assets/Resources");
+
+            switch(para.versionChangedMode)
+            {
+                case PlayerBuilderSetting.VersionChangedMode.NoChanged:
+                    break;
+                case PlayerBuilderSetting.VersionChangedMode.Increase:
+                    version.Grow();
+                    EditorUtility.SetDirty(version);
+                    break;
+                case PlayerBuilderSetting.VersionChangedMode.Specific:
+                    version.Set(para.mainVersion, para.minorVersion, para.revision);
+                    EditorUtility.SetDirty(version);
+                    break;
+            }
+            AssetDatabase.SaveAssets();
         }
     }
 }

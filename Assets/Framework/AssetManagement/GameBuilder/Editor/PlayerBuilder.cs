@@ -37,6 +37,8 @@ namespace Framework.AssetManagement.GameBuilder
             // setup PlayerSettings
             para.SetupPlayerSettings();
 
+            para.SetAppVersion();
+
             BuildReport report = BuildPipeline.BuildPlayer(para.GenerateBuildPlayerOptions());
             if(report.summary.result == BuildResult.Succeeded)
             {

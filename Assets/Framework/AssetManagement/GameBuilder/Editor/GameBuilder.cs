@@ -116,6 +116,39 @@ namespace Framework.AssetManagement.GameBuilder
             SetOverridePara(ref setting.playerSetting.macroDefines,                 "MacroDefines",             "");
             SetOverridePara(ref setting.playerSetting.excludedDefines,              "ExcludedDefines",          "");
 
+            // 版本号修改指令
+            bool isVersionNoChanged = false;
+            SetOverridePara(ref isVersionNoChanged,                                 "VersionNoChanged",         false);
+            bool isVersionIncrease = false;
+            SetOverridePara(ref isVersionIncrease,                                  "VersionIncrease",          false);
+            string versionSpecific = "";
+            SetOverridePara(ref versionSpecific,                                    "VersionSpecific",          "");
+
+            bool isDetermined = false;
+            if(!string.IsNullOrEmpty(versionSpecific))
+            {
+                isDetermined = true;
+
+                string[] splits = versionSpecific.Split(new char[] {'.'}, 3, System.StringSplitOptions.RemoveEmptyEntries);
+                
+                if(splits.Length != 3 || !int.TryParse(splits[0], out setting.playerSetting.mainVersion)
+                || !int.TryParse(splits[1], out setting.playerSetting.minorVersion) || !int.TryParse(splits[2], out setting.playerSetting.revision))
+                {
+                    Debug.LogError("failed to parse version specific parameter");
+                    EditorApplication.Exit(1);
+                }
+                setting.playerSetting.versionChangedMode = PlayerBuilderSetting.VersionChangedMode.Specific;
+            }
+            if(!isDetermined && isVersionIncrease)
+            {
+                isDetermined = true;
+                setting.playerSetting.versionChangedMode = PlayerBuilderSetting.VersionChangedMode.Increase;
+            }
+            if(!isDetermined)
+            {
+                setting.playerSetting.versionChangedMode = PlayerBuilderSetting.VersionChangedMode.NoChanged;
+            }
+
             BuildGame(setting);
         }
 
@@ -161,5 +194,16 @@ namespace Framework.AssetManagement.GameBuilder
                 overridePara = (GameBuilderSetting.BuildMode)buildMode;
             }
         }
+
+        // static private void SetOverridePara(ref PlayerBuilderSetting.VersionChangedMode overridePara, string command, PlayerBuilderSetting.VersionChangedMode defaultValue)
+        // {
+        //     overridePara = defaultValue;
+
+        //     int versionMode = 0;
+        //     if(CommandLineReader.GetCommand(command, ref versionMode))
+        //     {
+        //         overridePara = (PlayerBuilderSetting.VersionChangedMode)versionMode;
+        //     }
+        // }
     }
 }
