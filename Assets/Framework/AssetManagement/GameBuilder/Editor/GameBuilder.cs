@@ -124,6 +124,7 @@ namespace Framework.AssetManagement.GameBuilder
             string versionSpecific = "";
             SetOverridePara(ref versionSpecific,                                    "VersionSpecific",          "");
 
+            // 指令处理优先级：VersionSpecific > VersionIncrease > VersionNoChanged
             bool isDetermined = false;
             if(!string.IsNullOrEmpty(versionSpecific))
             {
