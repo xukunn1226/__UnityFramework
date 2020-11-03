@@ -52,6 +52,13 @@ set LOG_FILE=-logFile
 set LOG_PATH=%PROJECT_PATH%\Deployment\Latest\build_android_log.txt
 ::echo Log path: %LOG_FILE% %LOG_PATH%
 
+:: Build Mode: 0(Bundles & Player)、1(Bundles)、2(Player)
+set BUILD_MODE=-BuildMode
+set BUILD_MODE_PARAMETER=0
+
+:: App Version(VersionNoChanged、VersionIncrease、VersionSpecific 1.2.3)
+set APP_VERSION=-VersionNoChanged
+
 
 :: Fixed Command
 set FIXED_COMMAND=%BATCH% %QUIT% %PROJECT% %PROJECT_PATH% %BUILD_TARGET% %PLATFORM_NAME% %BUILD_SCRIPT% %BUILD_PROFILE% %PROFILE_NAME%
@@ -59,8 +66,9 @@ echo Fixed command: %FIXED_COMMAND%
 
 
 :: Optional Command
-set OPTIONAL_COMMAND=%BUNDLE_OUTPUT% %BUNDLE_PATH% %PLAYER_OUTPUT% %PLAYER_PATH% %LOG_FILE% %LOG_PATH%
+set OPTIONAL_COMMAND=%BUNDLE_OUTPUT% %BUNDLE_PATH% %PLAYER_OUTPUT% %PLAYER_PATH% %LOG_FILE% %LOG_PATH% %BUILD_MODE% %BUILD_MODE_PARAMETER% %APP_VERSION%
 echo Optional command: %OPTIONAL_COMMAND%
+
 
 echo "D:\Program Files\2020.2.0b5\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND%
 "D:\Program Files\2020.2.0b5\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND% -UseAPKExpansionFiles
