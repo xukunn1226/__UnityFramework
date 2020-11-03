@@ -34,10 +34,11 @@ namespace Framework.AssetManagement.GameBuilder
             Directory.CreateDirectory(outputPath);
             Debug.Log($"        Player Output: {outputPath}");
 
-            // setup PlayerSettings
-            para.SetupPlayerSettings();
+            // 先更新版本号
+            AppVersion version = para.SetAppVersion();
 
-            para.SetAppVersion();
+            // setup PlayerSettings
+            para.SetupPlayerSettings(version);
 
             BuildReport report = BuildPipeline.BuildPlayer(para.GenerateBuildPlayerOptions());
             if(report.summary.result == BuildResult.Succeeded)

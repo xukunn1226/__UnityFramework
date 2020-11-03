@@ -104,7 +104,7 @@ namespace Framework.AssetManagement.GameBuilder
 
     static public class PlayerBuilderSettingExtension
     {
-        static internal void SetupPlayerSettings(this PlayerBuilderSetting para)
+        static internal void SetupPlayerSettings(this PlayerBuilderSetting para, AppVersion version)
         {
             BuildTargetGroup buildTargetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
 
@@ -117,7 +117,8 @@ namespace Framework.AssetManagement.GameBuilder
             para.cachedMacroDefines                 = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
 
             // setup new settings
-            PlayerSettings.bundleVersion = para.bundleVersion;
+            // PlayerSettings.bundleVersion = para.bundleVersion;
+            PlayerSettings.bundleVersion = version.ToString();
 
             if(buildTargetGroup == BuildTargetGroup.Android || buildTargetGroup == BuildTargetGroup.iOS)
             {
@@ -134,6 +135,11 @@ namespace Framework.AssetManagement.GameBuilder
                 if(buildTargetGroup == BuildTargetGroup.Android)
                 {
                     PlayerSettings.Android.useAPKExpansionFiles = para.useAPKExpansionFiles;
+                    PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
+                }
+                else
+                {
+                    PlayerSettings.iOS.buildNumber = version.BuildNumber.ToString();
                 }
             }
 
@@ -290,7 +296,7 @@ namespace Framework.AssetManagement.GameBuilder
             return opt;
         }
 
-        static internal void SetAppVersion(this PlayerBuilderSetting para)
+        static internal AppVersion SetAppVersion(this PlayerBuilderSetting para)
         {
             AppVersion version = AssetDatabase.LoadAssetAtPath<AppVersion>("Assets/Resources/AppVersion.asset");
             if(version == null)
@@ -310,6 +316,7 @@ namespace Framework.AssetManagement.GameBuilder
                     break;
             }
             AssetDatabase.SaveAssets();
+            return version;
         }
     }
 }
