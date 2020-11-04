@@ -20,7 +20,7 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty              m_compressWithLz4HCProp;
         SerializedProperty              m_strictModeProp;
 
-        SerializedProperty              m_bundleVersionProp;
+        // SerializedProperty              m_bundleVersionProp;
         SerializedProperty              m_versionChangedModeProp;
         SerializedProperty              m_useIL2CPPProp;
         SerializedProperty              m_useMTRenderingProp;
@@ -46,7 +46,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_compressWithLz4HCProp     = serializedObject.FindProperty("compressWithLz4HC");
             m_strictModeProp            = serializedObject.FindProperty("strictMode");
 
-            m_bundleVersionProp         = serializedObject.FindProperty("bundleVersion");
+            // m_bundleVersionProp         = serializedObject.FindProperty("bundleVersion");
             m_versionChangedModeProp    = serializedObject.FindProperty("versionChangedMode");
             m_useIL2CPPProp             = serializedObject.FindProperty("useIL2CPP");
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
@@ -213,7 +213,7 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 EditorGUILayout.LabelField("App Identifier", PlayerSettings.applicationIdentifier, GUILayout.Width(400));
 
-                m_bundleVersionProp.stringValue = EditorGUILayout.TextField("Bundle Version", m_bundleVersionProp.stringValue);
+                // m_bundleVersionProp.stringValue = EditorGUILayout.TextField("Bundle Version", m_bundleVersionProp.stringValue);
 
                 {
                     EditorGUI.BeginDisabledGroup(m_AppVersion == null);
