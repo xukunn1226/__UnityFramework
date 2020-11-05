@@ -217,16 +217,39 @@ namespace Framework.AssetManagement.GameBuilder
 
                 {
                     EditorGUI.BeginDisabledGroup(m_AppVersion == null);
-                    GUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("AppVersion");
+                    EditorGUILayout.BeginHorizontal();
 
-                    m_EnumValueIndex = (PlayerBuilderSetting.VersionChangedMode)EditorGUILayout.EnumPopup("", (PlayerBuilderSetting.VersionChangedMode)m_EnumValueIndex, GUILayout.Width(180));
-                    ((PlayerBuilderSetting)target).versionChangedMode = (PlayerBuilderSetting.VersionChangedMode)m_EnumValueIndex;
-                    ((PlayerBuilderSetting)target).mainVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).mainVersion, GUILayout.Width(60));
-                    ((PlayerBuilderSetting)target).minorVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).minorVersion, GUILayout.Width(60));
-                    ((PlayerBuilderSetting)target).revision = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).revision, GUILayout.Width(60));
-                   
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.LabelField("AppVersion");
+                    if(m_AppVersion == null)
+                    {
+                        GUIStyle style = new GUIStyle(EditorStyles.whiteLabel);
+                        style.normal.textColor = Color.red;
+                        EditorGUILayout.LabelField("Missing AppVersion asset in Resources folder", style);
+                    }
+                    else
+                    {
+                        m_EnumValueIndex = (PlayerBuilderSetting.VersionChangedMode)EditorGUILayout.EnumPopup("", (PlayerBuilderSetting.VersionChangedMode)m_EnumValueIndex, GUILayout.Width(150));
+                        ((PlayerBuilderSetting)target).versionChangedMode = (PlayerBuilderSetting.VersionChangedMode)m_EnumValueIndex;
+
+                        switch(((PlayerBuilderSetting)target).versionChangedMode)
+                        {
+                            case PlayerBuilderSetting.VersionChangedMode.NoChanged:
+                            case PlayerBuilderSetting.VersionChangedMode.Increase:
+                                EditorGUI.BeginDisabledGroup(true);
+                                EditorGUILayout.IntField("", m_AppVersion.MainVersion, GUILayout.Width(60));
+                                EditorGUILayout.IntField("", m_AppVersion.MinorVersion, GUILayout.Width(60));
+                                EditorGUILayout.IntField("", m_AppVersion.Revision, GUILayout.Width(60));
+                                EditorGUI.EndDisabledGroup();
+                                break;
+                            case PlayerBuilderSetting.VersionChangedMode.Specific:
+                                ((PlayerBuilderSetting)target).mainVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).mainVersion, GUILayout.Width(60));
+                                ((PlayerBuilderSetting)target).minorVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).minorVersion, GUILayout.Width(60));
+                                ((PlayerBuilderSetting)target).revision = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).revision, GUILayout.Width(60));
+                                break;
+                        }
+                    }
+
+                    EditorGUILayout.EndHorizontal();
                     EditorGUI.EndDisabledGroup();
                 }
 
