@@ -220,11 +220,11 @@ namespace Framework.AssetManagement.GameBuilder
                     GUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField("AppVersion");
 
-                    m_EnumValueIndex = (PlayerBuilderSetting.VersionChangedMode)EditorGUILayout.EnumPopup("", (PlayerBuilderSetting.VersionChangedMode)m_EnumValueIndex, GUILayout.Width(300));
+                    m_EnumValueIndex = (PlayerBuilderSetting.VersionChangedMode)EditorGUILayout.EnumPopup("", (PlayerBuilderSetting.VersionChangedMode)m_EnumValueIndex, GUILayout.Width(180));
                     ((PlayerBuilderSetting)target).versionChangedMode = (PlayerBuilderSetting.VersionChangedMode)m_EnumValueIndex;
-                    ((PlayerBuilderSetting)target).mainVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).mainVersion, GUILayout.Width(80));
-                    ((PlayerBuilderSetting)target).minorVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).minorVersion, GUILayout.Width(80));
-                    ((PlayerBuilderSetting)target).revision = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).revision, GUILayout.Width(80));
+                    ((PlayerBuilderSetting)target).mainVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).mainVersion, GUILayout.Width(60));
+                    ((PlayerBuilderSetting)target).minorVersion = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).minorVersion, GUILayout.Width(60));
+                    ((PlayerBuilderSetting)target).revision = EditorGUILayout.IntField("", ((PlayerBuilderSetting)target).revision, GUILayout.Width(60));
                    
                     GUILayout.EndHorizontal();
                     EditorGUI.EndDisabledGroup();

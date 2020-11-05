@@ -66,7 +66,7 @@
 	https://blog.csdn.net/u011265162/article/details/91048927?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
 * BackgroundDownload
 	https://github.com/Unity-Technologies/BackgroundDownload
-* 封装BuildNumer的修改
+* 如何优雅地接入外部插件（uwa），可定制什么时候发布
 
 
 
@@ -78,7 +78,7 @@
 
 
 
-
+- 封装BuildNumer的修改
 - 测试batchmode模式打包
   重构：output可以动态设置
   "Assets/Temp/"
