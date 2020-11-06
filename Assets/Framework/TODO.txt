@@ -67,6 +67,8 @@
 * BackgroundDownload
 	https://github.com/Unity-Technologies/BackgroundDownload
 * 如何优雅地接入外部插件（uwa），可定制什么时候发布
+* 扩展Gesture——双击功能
+
 
 
 
