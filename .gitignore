@@ -72,7 +72,7 @@ crashlytics-build.properties
 
 # Customize
 Deployment/
-UserSettings/*
+UserSettings/
 [Aa]ssets/[Tt]emp/
 [Aa]ssets/[Tt]emp.meta
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData
