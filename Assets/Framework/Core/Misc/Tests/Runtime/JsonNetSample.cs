@@ -19,8 +19,8 @@ namespace Framework.Core.Tests
             SerailizeJson();
             DeserializeJson();
 
-            //TestDicSerialize();
-            //TestDicDeserialize();
+            TestDicSerialize();
+            TestDicDeserialize();
 
             WriteLine("\nDone!");
         }
@@ -252,7 +252,7 @@ namespace Framework.Core.Tests
 
             string json = JsonConvert.SerializeObject(/*atc*/dic, Formatting.Indented);
 
-            System.IO.FileStream fs = new System.IO.FileStream("assets/scripts/core/hybrid/tests/runtime/dic.txt", System.IO.FileMode.Create);
+            System.IO.FileStream fs = new System.IO.FileStream("assets/framework/core/misc/tests/runtime/dic.txt", System.IO.FileMode.Create);
             byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
             fs.Write(bs, 0, bs.Length);
             fs.Close();
@@ -260,7 +260,7 @@ namespace Framework.Core.Tests
 
         void TestDicDeserialize()
         {
-            System.IO.FileStream fs = new System.IO.FileStream("assets/scripts/core/hybrid/tests/runtime/dic.txt", System.IO.FileMode.Open);
+            System.IO.FileStream fs = new System.IO.FileStream("assets/framework/core/misc/tests/runtime/dic.txt", System.IO.FileMode.Open);
             byte[] array = new byte[256];
             int size = fs.Read(array, 0, 256);
             fs.Close();
