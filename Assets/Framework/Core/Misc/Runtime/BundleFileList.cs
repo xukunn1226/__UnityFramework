@@ -34,10 +34,6 @@ namespace Framework.Core
 
         static public BundleFileList DeserializeFromJson(string json)
         {
-            // BundleFileList list = new BundleFileList();
-            // list = JsonConvert.DeserializeObject<BundleFileList>(json);
-            // return list;
-
             return JsonConvert.DeserializeObject<BundleFileList>(json);
         }
     }

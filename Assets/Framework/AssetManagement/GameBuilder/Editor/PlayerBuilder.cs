@@ -95,16 +95,41 @@ namespace Framework.AssetManagement.GameBuilder
                 throw new DirectoryNotFoundException($"{directory}");
             }
 
+            BundleFileList fileList = new BundleFileList();
             var dir = new DirectoryInfo(directory);
             FileInfo[] fis = dir.GetFiles("*", SearchOption.AllDirectories);
             foreach(var fi in fis)
             {
                 if(!string.IsNullOrEmpty(fi.Extension) && string.Compare(fi.Extension, ".meta", true) == 0)
                 {
-                    Debug.LogWarning(fi.Name);
                     continue;
                 }
-                Debug.Log(fi.FullName.Substring(Application.streamingAssetsPath.Length + 1));
+
+                string name = fi.FullName.Substring(Application.streamingAssetsPath.Length + 1);
+                fileList.Add(name, new BundleFileInfo() {Name = name, Hash = GetHash(fi)});
+            }
+            string json = BundleFileList.SerializeToJson(fileList);
+
+            if(!Directory.Exists("Assets/Resources"))
+                Directory.CreateDirectory("Assets/Resources");
+
+            System.IO.FileStream fs = new System.IO.FileStream(FILELIST_PATH, System.IO.FileMode.Create);
+            byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
+            fs.Write(bs, 0, bs.Length);
+            fs.Close();
+
+
+
+
+            System.IO.FileStream fs1 = new System.IO.FileStream(FILELIST_PATH, System.IO.FileMode.Open);
+            byte[] array = new byte[1024*1024];
+            int size = fs1.Read(array, 0, 1024*1024);
+            fs1.Close();
+            string jsong = System.Text.Encoding.UTF8.GetString(array, 0, size);
+            BundleFileList list = BundleFileList.DeserializeFromJson(jsong);
+            foreach(var s in list.FileList)
+            {
+                Debug.Log(s.Key);
             }
         }
 
