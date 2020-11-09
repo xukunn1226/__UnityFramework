@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -8,6 +9,8 @@ namespace Framework.AssetManagement.GameBuilder
 {
     public class PlayerBuilder
     {
+        static private string FILELIST_PATH = "Assets/Resources/FileList.bytes";
+
         /// <summary>
         /// 构建Player接口（唯一）
         /// </summary>
@@ -81,6 +84,49 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             return report;
+        }
+
+        [MenuItem("Tests/Build FileList")]
+        static private void BuildFileList()
+        {
+            string directory = Application.streamingAssetsPath + "/" + Utility.GetPlatformName();
+            if(!Directory.Exists(directory))
+            {
+                throw new DirectoryNotFoundException($"{directory}");
+            }
+
+            var dir = new DirectoryInfo(directory);
+            FileInfo[] fis = dir.GetFiles("*", SearchOption.AllDirectories);
+            foreach(var fi in fis)
+            {
+                if(!string.IsNullOrEmpty(fi.Extension) && string.Compare(fi.Extension, ".meta", true) == 0)
+                {
+                    Debug.LogWarning(fi.Name);
+                    continue;
+                }
+                Debug.Log(fi.FullName.Substring(Application.streamingAssetsPath.Length + 1));
+            }
+        }
+
+        static private string GetHash(FileInfo fi)
+        {
+            string hash = null;
+            try
+            {
+                FileStream fs = fi.Open(FileMode.Open);
+                fs.Position = 0;
+                hash = EasyMD5.Hash(fs);
+                fs.Close();
+            }
+            catch (IOException e)
+            {
+                Debug.Log($"I/O Exception: {e.Message}");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Debug.Log($"Access Exception: {e.Message}");
+            }
+            return hash;
         }
     }
 }
