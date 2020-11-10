@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Core
 {
@@ -12,6 +15,18 @@ namespace Framework.Core
         public int  MinorVersion;
         public int  Revision;
         public int  BuildNumber;
+
+        static public AppVersion Load()
+        {
+            return Resources.Load<AppVersion>("AppVersion");
+        }
+
+#if UNITY_EDITOR
+        static public AppVersion EditorLoad()
+        {
+            return AssetDatabase.LoadAssetAtPath<AppVersion>("Assets/Resources/AppVersion.asset");
+        }
+#endif        
 
         protected AppVersion()
         {}

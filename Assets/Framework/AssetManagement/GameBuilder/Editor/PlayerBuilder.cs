@@ -87,7 +87,7 @@ namespace Framework.AssetManagement.GameBuilder
             return report;
         }
 
-        [MenuItem("Tests/Build FileList")]
+        // [MenuItem("Tests/Build FileList")]
         static private void BuildBundleFileList()
         {
             string directory = Application.streamingAssetsPath + "/" + Utility.GetPlatformName();
@@ -120,7 +120,7 @@ namespace Framework.AssetManagement.GameBuilder
             fs.Close();            
         }
 
-        [MenuItem("Tests/Load FileList")]
+        // [MenuItem("Tests/Load FileList")]
         static private void TestLoadBundleFileList()
         {
             TextAsset asset = Resources.Load<TextAsset>(Path.GetFileNameWithoutExtension(FILELIST_NAME));

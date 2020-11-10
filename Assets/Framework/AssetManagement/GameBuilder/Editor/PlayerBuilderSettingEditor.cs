@@ -57,7 +57,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_bOverrideBuildScenesProp  = serializedObject.FindProperty("bOverrideBuildScenes");
             m_overrideBuildScenesProp   = serializedObject.FindProperty("overrideBuildScenes");
 
-            m_AppVersion = Resources.Load<AppVersion>("AppVersion");
+            m_AppVersion = AppVersion.Load();
         }
 
         public override void OnInspectorGUI()

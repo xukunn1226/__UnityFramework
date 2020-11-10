@@ -298,7 +298,7 @@ namespace Framework.AssetManagement.GameBuilder
 
         static internal AppVersion SetAppVersion(this PlayerBuilderSetting para)
         {
-            AppVersion version = AssetDatabase.LoadAssetAtPath<AppVersion>("Assets/Resources/AppVersion.asset");
+            AppVersion version = AppVersion.EditorLoad();
             if(version == null)
                 throw new System.Exception("can't find AppVersion.asset in Assets/Resources");
 

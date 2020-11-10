@@ -284,7 +284,7 @@ namespace Framework.AssetManagement.GameBuilder
             // 把源目录文件复制到目标目录
             if (Directory.Exists(srcPath))
             {
-                CopyDirectory(srcPath, finalPath);
+                Framework.Core.Editor.EditorUtility.CopyDirectory(srcPath, finalPath);
             }
             else
             {
@@ -292,27 +292,6 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             AssetDatabase.Refresh();
-        }
-
-        static private void CopyDirectory(string sourcePath, string destinationPath)
-        {
-            DirectoryInfo info = new DirectoryInfo(sourcePath);
-            Directory.CreateDirectory(destinationPath);
-            foreach (FileSystemInfo fsi in info.GetFileSystemInfos())
-            {
-                string destName = Path.Combine(destinationPath, fsi.Name);
-
-                if (fsi is System.IO.FileInfo)          //如果是文件，复制文件
-                {
-                    if(!fsi.FullName.EndsWith(".meta"))
-                        File.Copy(fsi.FullName, destName);
-                }
-                else                                    //如果是文件夹，新建文件夹，递归
-                {
-                    Directory.CreateDirectory(destName);
-                    CopyDirectory(fsi.FullName, destName);
-                }
-            }
         }
     }
 }
