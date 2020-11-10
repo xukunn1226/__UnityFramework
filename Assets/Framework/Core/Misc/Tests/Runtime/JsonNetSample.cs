@@ -349,9 +349,6 @@ namespace Framework.Core.Tests
         public void TestItemInfo()
         {
             m_ItemInfo = JsonConvert.DeserializeObject<AllItemInfo>(m_TextAsset.text);
-
-            TextAsset ta = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Framework/Core/Misc/Tests/Runtime/ItemList.bytes");
-            AllItemInfo ti = JsonConvert.DeserializeObject<AllItemInfo>(ta.text);
         }
     }
 }

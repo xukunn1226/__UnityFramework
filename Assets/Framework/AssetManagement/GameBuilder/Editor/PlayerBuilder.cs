@@ -9,7 +9,8 @@ namespace Framework.AssetManagement.GameBuilder
 {
     public class PlayerBuilder
     {
-        static private string FILELIST_PATH = "Assets/Resources/FileList.bytes";
+        static private string FILELIST_PATH = "Assets/Resources";
+        static private string FILELIST_NAME = "FileList.bytes";
 
         /// <summary>
         /// 构建Player接口（唯一）
@@ -39,7 +40,7 @@ namespace Framework.AssetManagement.GameBuilder
             AppVersion version = para.SetAppVersion();
 
             // 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
-            
+            BuildBundleFileList();            
 
             // setup PlayerSettings
             para.SetupPlayerSettings(version);
@@ -87,7 +88,7 @@ namespace Framework.AssetManagement.GameBuilder
         }
 
         [MenuItem("Tests/Build FileList")]
-        static private void BuildFileList()
+        static private void BuildBundleFileList()
         {
             string directory = Application.streamingAssetsPath + "/" + Utility.GetPlatformName();
             if(!Directory.Exists(directory))
@@ -110,27 +111,30 @@ namespace Framework.AssetManagement.GameBuilder
             }
             string json = BundleFileList.SerializeToJson(fileList);
 
-            if(!Directory.Exists("Assets/Resources"))
-                Directory.CreateDirectory("Assets/Resources");
+            if(!Directory.Exists(FILELIST_PATH))
+                Directory.CreateDirectory(FILELIST_PATH);
 
-            System.IO.FileStream fs = new System.IO.FileStream(FILELIST_PATH, System.IO.FileMode.Create);
+            System.IO.FileStream fs = new System.IO.FileStream(FILELIST_PATH + "/" + FILELIST_NAME, FileMode.Create);
             byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
             fs.Write(bs, 0, bs.Length);
-            fs.Close();
+            fs.Close();            
+        }
 
-
-
-
-            System.IO.FileStream fs1 = new System.IO.FileStream(FILELIST_PATH, System.IO.FileMode.Open);
-            byte[] array = new byte[1024*1024];
-            int size = fs1.Read(array, 0, 1024*1024);
-            fs1.Close();
-            string jsong = System.Text.Encoding.UTF8.GetString(array, 0, size);
-            BundleFileList list = BundleFileList.DeserializeFromJson(jsong);
+        [MenuItem("Tests/Load FileList")]
+        static private void TestLoadBundleFileList()
+        {
+            TextAsset asset = Resources.Load<TextAsset>(Path.GetFileNameWithoutExtension(FILELIST_NAME));
+            if(asset == null || asset.text == null)
+            {
+                Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
+                return;
+            }
+            BundleFileList list = BundleFileList.DeserializeFromJson(asset.text);
             foreach(var s in list.FileList)
             {
                 Debug.Log(s.Key);
             }
+            Debug.Log("load bundle file list successfully");
         }
 
         static private string GetHash(FileInfo fi)

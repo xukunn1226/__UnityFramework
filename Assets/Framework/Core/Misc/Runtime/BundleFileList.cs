@@ -15,10 +15,8 @@ namespace Framework.Core
     [Serializable]
     public class BundleFileList
     {
-        [SerializeField]
         public int Count;
 
-        [SerializeField]
         public Dictionary<string, BundleFileInfo> FileList = new Dictionary<string, BundleFileInfo>();
 
         public void Add(string key, BundleFileInfo fileInfo)
