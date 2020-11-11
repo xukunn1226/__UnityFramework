@@ -73,7 +73,8 @@ namespace Framework.AssetManagement.Runtime
                     asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
                     this.assetPath = assetPath;
                     break;
-                case LoaderType.FromAB:
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
                     LoadAssetInternal(assetPath);
                     this.assetPath = assetPath;
                     break;
@@ -94,7 +95,8 @@ namespace Framework.AssetManagement.Runtime
                         asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
                     }
                     break;
-                case LoaderType.FromAB:
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
                     {
                         LoadAssetInternal(assetBundleName, assetName);
                     }

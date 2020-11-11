@@ -53,7 +53,7 @@ namespace Framework.AssetManagement.Runtime
                 }
                 return LoaderType.FromEditor;
 #else
-                return LoaderType.FromAB;       // 移动平台强制AB加载
+                return m_LoaderType == LoaderType.FromEditor ? LoaderType.FromStreamingAssets : m_LoaderType;       // 移动平台强制AB加载
 #endif
             }
         }
@@ -83,7 +83,7 @@ namespace Framework.AssetManagement.Runtime
 
         private void OnDestroy()
         {
-            if (loaderType == LoaderType.FromAB)
+            if (loaderType == LoaderType.FromStreamingAssets || loaderType == LoaderType.FromPersistent)
             {
                 // 确保应用层持有的AssetLoader(Async)释放后再调用
                 AssetBundleManager.Uninit();
@@ -112,22 +112,25 @@ namespace Framework.AssetManagement.Runtime
         {
             m_LoaderType = type;
 
-            // 根据不同应用环境初始化资源路径，e.g. 编辑器、开发环境、正式发布环境
-#if UNITY_EDITOR
-            m_RootPath = bundleRootPath;
-#else
-#if UNITY_ANDROID
-            //rootPath = "jar:file://" + Application.dataPath + "!/assets";
-            m_RootPath = Application.streamingAssetsPath;
-#elif UNITY_IOS
-            //rootPath = Application.dataPath + "/Raw";
-            m_RootPath = Application.streamingAssetsPath;
-#else
-            //rootPath = Application.dataPath + "/StreamingAssets";
-            m_RootPath = Application.streamingAssetsPath;
-#endif
-#endif
-            if (m_LoaderType == LoaderType.FromAB)
+//             // 根据不同应用环境初始化资源路径，e.g. 编辑器、开发环境、正式发布环境
+// #if UNITY_EDITOR
+//             m_RootPath = bundleRootPath;
+// #else
+// #if UNITY_ANDROID
+//             //rootPath = "jar:file://" + Application.dataPath + "!/assets";
+//             m_RootPath = Application.streamingAssetsPath;
+// #elif UNITY_IOS
+//             //rootPath = Application.dataPath + "/Raw";
+//             m_RootPath = Application.streamingAssetsPath;
+// #else
+//             //rootPath = Application.dataPath + "/StreamingAssets";
+//             m_RootPath = Application.streamingAssetsPath;
+// #endif
+// #endif
+
+            m_RootPath = type == LoaderType.FromStreamingAssets ? Application.streamingAssetsPath : Application.persistentDataPath;
+
+            if (m_LoaderType == LoaderType.FromStreamingAssets || m_LoaderType == LoaderType.FromPersistent)
             {
                 AssetBundleManager.Init(m_RootPath);
             }

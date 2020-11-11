@@ -73,7 +73,8 @@ namespace Framework.AssetManagement.Runtime
                     }
                     this.assetPath = assetPath;
                     break;
-                case LoaderType.FromAB:
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
                     LoadAssetInternal(assetPath);
                     this.assetPath = assetPath;
                     break;
@@ -96,7 +97,8 @@ namespace Framework.AssetManagement.Runtime
                         asset = Object.Instantiate(prefabAsset);
                     }
                     break;
-                case LoaderType.FromAB:
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
                     LoadAssetInternal(assetBundleName, assetName);
                     break;
             }
