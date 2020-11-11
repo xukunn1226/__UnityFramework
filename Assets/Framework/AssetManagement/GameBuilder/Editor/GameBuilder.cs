@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Framework.Core;
+using UnityEditor.Build.Reporting;
 
 namespace Framework.AssetManagement.GameBuilder
 {

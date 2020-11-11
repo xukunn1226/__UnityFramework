@@ -5,12 +5,12 @@ using Framework.Core;
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.AssetManagement.Deployment
+namespace Framework.AssetManagement.GameBuilder
 {
     public class Deployment
     {
-        static private string s_DefaultSourcePath = "Deployment/Latest";
-        static private string s_DefaultDestPath = "Deployment/Backup";
+        static public string s_DefaultSourcePath = "Deployment/Latest";
+        static public string s_DefaultDestPath = "Deployment/Backup";
 
         // backup "app" and "assetbundles"
         static public void cmdBackup()
@@ -28,6 +28,12 @@ namespace Framework.AssetManagement.Deployment
             CommandLineReader.GetCommand("AppDirectory", ref appDirectory);
 
             Backup(srcPath, dstPath, appDirectory);
+        }
+
+        static public void Run(string appDirectory)
+        {
+            // step 1. backup
+            Backup(s_DefaultSourcePath, s_DefaultDestPath, appDirectory);
         }
 
         // srcPath: Deployment/Latest

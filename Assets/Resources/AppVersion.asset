@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: AppVersion
   m_EditorClassIdentifier: 
   MainVersion: 0
-  MinorVersion: 0
-  Revision: 1
-  BuildNumber: 1
+  MinorVersion: 12
+  Revision: 123
+  BuildNumber: 4

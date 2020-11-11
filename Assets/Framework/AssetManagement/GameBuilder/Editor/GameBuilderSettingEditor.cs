@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Framework.Core;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -11,6 +12,7 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty m_bundleSettingProp;
         SerializedProperty m_playerSettingProp;
         SerializedProperty m_buildModeProp;
+        SerializedProperty m_deployProp;
 
         Editor m_bundleSettingEditor;
         Editor m_playerSettingEditor;
@@ -20,6 +22,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_bundleSettingProp = serializedObject.FindProperty("bundleSetting");
             m_playerSettingProp = serializedObject.FindProperty("playerSetting");
             m_buildModeProp = serializedObject.FindProperty("buildMode");
+            m_deployProp = serializedObject.FindProperty("deploy");
         }
 
         public override void OnInspectorGUI()
@@ -47,6 +50,11 @@ namespace Framework.AssetManagement.GameBuilder
             EditorGUILayout.Separator();
             DrawPlayerSettingEditor();
 
+            EditorGUILayout.Separator();
+            DrawDeploymentSetting();
+
+            EditorGUILayout.Separator();
+            EditorGUILayout.Separator();
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
             DrawBuildButton();
@@ -149,10 +157,22 @@ namespace Framework.AssetManagement.GameBuilder
                 if(GUILayout.Button("Build Game", boldStyle))
                 {
                     GameBuilder.BuildGame((GameBuilderSetting)target);
+
+                    if(m_deployProp.boolValue)
+                    {
+                        Deployment.Run(AppVersion.EditorLoad().ToString());
+                    }
                 }
                 EditorGUI.EndDisabledGroup();
             }
             EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawDeploymentSetting()
+        {
+            m_deployProp.boolValue = EditorGUILayout.Toggle("Deploy", m_deployProp.boolValue);
+            string dstPath = string.Format($"{Deployment.s_DefaultDestPath}/{Framework.Core.Utility.GetPlatformName()}/{AppVersion.EditorLoad().ToString()}（视AppVersion而定）");
+            EditorGUILayout.TextField("备份目录", dstPath);
         }
     }
 }
