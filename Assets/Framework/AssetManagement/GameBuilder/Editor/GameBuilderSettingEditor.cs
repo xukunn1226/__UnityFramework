@@ -160,7 +160,7 @@ namespace Framework.AssetManagement.GameBuilder
 
                     if(m_deployProp.boolValue)
                     {
-                        Deployment.Run(AppVersion.EditorLoad().ToString());
+                        Deployment.Run(Deployment.s_DefaultSourcePath, Deployment.s_DefaultDestPath, AppVersion.EditorLoad().ToString());
                     }
                 }
                 EditorGUI.EndDisabledGroup();

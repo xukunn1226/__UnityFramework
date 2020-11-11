@@ -13,7 +13,7 @@ namespace Framework.AssetManagement.GameBuilder
         static public string s_DefaultDestPath = "Deployment/Backup";
 
         // backup "app" and "assetbundles"
-        static public void cmdBackup()
+        static public void cmdDeploy()
         {
             // source path
             string srcPath = s_DefaultSourcePath;
@@ -27,19 +27,19 @@ namespace Framework.AssetManagement.GameBuilder
             string appDirectory = AppVersion.EditorLoad().ToString();
             CommandLineReader.GetCommand("AppDirectory", ref appDirectory);
 
-            Backup(srcPath, dstPath, appDirectory);
+            Run(srcPath, dstPath, appDirectory);
         }
 
-        static public void Run(string appDirectory)
+        static public void Run(string srcPath, string dstPath, string appDirectory)
         {
             // step 1. backup
-            Backup(s_DefaultSourcePath, s_DefaultDestPath, appDirectory);
+            Backup(srcPath, dstPath, appDirectory);
         }
 
         // srcPath: Deployment/Latest
         // dstPath: Deployment/Backup
         // appDirectory: 0.1.2.1
-        static public void Backup(string srcPath, string dstPath, string appDirectory)
+        static private void Backup(string srcPath, string dstPath, string appDirectory)
         {
             // source path
             string appSrcPath = string.Format($"{srcPath}/player/{Utility.GetPlatformName()}");
