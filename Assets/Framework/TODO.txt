@@ -71,6 +71,8 @@
 * Package目录下shader如何打包？https://answer.uwa4d.com/question/5f3d10b19424416784ef1c82
 * Deployment涉及的文件夹一律小写
 * PlatformName/FileList
+* FileList记录基于Bundle的MD5和基于content的MD5
+
 
 
 
