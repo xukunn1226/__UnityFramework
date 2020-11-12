@@ -221,7 +221,10 @@ namespace Framework.AssetManagement.GameBuilder
             // ClearManifestRedundancy(manifestOutput);
 
             // copy Assets/Temp/windows_manifest.asset to Assets/Resources/windows/manifest.asset
-            File.Copy(manifestOutput + Utility.GetPlatformName() + "_manifest.asset", "Assets/Resources/" + Utility.GetPlatformName() + "/manifest.asset", true);
+            string dstPath = "Assets/Resources/" + Utility.GetPlatformName();
+            if(!Directory.Exists(dstPath))
+                Directory.CreateDirectory(dstPath);
+            File.Copy(manifestOutput + Utility.GetPlatformName() + "_manifest.asset", dstPath + "/manifest.asset", true);
             
             return true;
         }
