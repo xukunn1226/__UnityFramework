@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31aaa31a24f444640bde087a4bd59d51, type: 3}
-  m_Name: windows_manifest
+  m_Name: manifest
   m_EditorClassIdentifier: 
   m_Keys:
   - assets/application/tests/runtime/res/atlas2.ab
@@ -63,8 +63,8 @@ MonoBehaviour:
     m_Hash: ed921e777871f456c1b7306c14324bec
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/ui/prefabs.ab
-    m_Crc: 3681435040
-    m_Hash: 6eb855ddcb123ea45243a93b29d32f8d
+    m_Crc: 1315278977
+    m_Hash: 7f8482d6ea81a64cdee6e2f7dd33e051
     m_Dependencies:
     - assets/application/tests/runtime/res/ui/atlases/bag.ab
     - assets/application/tests/runtime/res/ui/atlases/common.ab
@@ -77,8 +77,8 @@ MonoBehaviour:
     m_Hash: 70b21b8dfe8286103db7c6f41b643383
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/assetmanagement/runtime/tests/res/material/111.ab
-    m_Crc: 1537290964
-    m_Hash: c7e6813f31d837b5be85b823869e1913
+    m_Crc: 3136646967
+    m_Hash: b310d4acee1542bb8ac2298ceb367727
     m_Dependencies:
     - assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
     - assets/framework/assetmanagement/runtime/tests/res/texture.ab
@@ -99,8 +99,8 @@ MonoBehaviour:
     m_Hash: 8a1a99404e92ca267bd454ece99f8831
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/scenes.ab
-    m_Crc: 149232022
-    m_Hash: e56ec754a572245b87d9e7965f113f44
+    m_Crc: 2217005155
+    m_Hash: 1725e8b2f708cc5b19d3b8a47d82814c
     m_Dependencies:
     - assets/application/tests/runtime/res/testspawnerring.ab
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/components.ab
@@ -127,8 +127,8 @@ MonoBehaviour:
     m_Hash: 137956723311c86522fca68a810f88d5
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/assetmanagement/runtime/tests/res/scenes.ab
-    m_Crc: 4293290559
-    m_Hash: 06f14af5e92a5f8b650ba8eb1a25abb1
+    m_Crc: 1286094688
+    m_Hash: fff0492f6f94739470724d1f9a8f371b
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/assetmanagement/runtime/tests/res/texture.ab
     m_Crc: 2392012934
@@ -140,16 +140,16 @@ MonoBehaviour:
     m_Hash: 4d12e88a62fc609ee241a9ae8bbe30ea
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab
-    m_Crc: 3252273509
-    m_Hash: 0d9659c202a739c06c6a8a56cef50cba
+    m_Crc: 314540260
+    m_Hash: 5c2ad25ff2f5830a82a728a5db18c32c
     m_Dependencies:
     - assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
     - assets/framework/assetmanagement/runtime/tests/res/testdep/555555555.ab
     - assets/framework/assetmanagement/runtime/tests/res/testdep/mat.ab
     - assets/framework/assetmanagement/runtime/tests/res/texture.ab
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/assetmanagement/runtime/tests/res/prefab.ab
-    m_Crc: 27807094
-    m_Hash: bf9f32bb9f5df530ea9140c633a938b3
+    m_Crc: 1882277506
+    m_Hash: 7dcf853cd50041baace109284267f0bf
     m_Dependencies:
     - assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
     - assets/framework/assetmanagement/runtime/tests/res/model.ab
@@ -164,8 +164,8 @@ MonoBehaviour:
     m_Hash: f52140d050925ea7e5d6be3089718587
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/assetmanagement/runtime/tests/res/model.ab
-    m_Crc: 102563860
-    m_Hash: cf0024e63f2e73e51a2e2f51e8b9536d
+    m_Crc: 58162622
+    m_Hash: 252061b50cb4ce6e23fa92a5254fe60d
     m_Dependencies:
     - assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
     - assets/framework/assetmanagement/runtime/tests/res/material/333.ab
@@ -185,8 +185,8 @@ MonoBehaviour:
     m_Hash: beb4f8b3d3d292d1192bb7a9404d212e
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/levelmanager/tests/res/scenes.ab
-    m_Crc: 211423930
-    m_Hash: 5cbf413ca7039d339880c390cac40112
+    m_Crc: 222326757
+    m_Hash: 436745f9d95a90cb63c1e8b4b88cde0b
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/ui/atlases/mail.ab
     m_Crc: 3515466749
@@ -197,8 +197,8 @@ MonoBehaviour:
     m_Hash: c4d17f0eed0322bcb352e04744902914
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/testfx_root/scenes.ab
-    m_Crc: 2286868512
-    m_Hash: ddb591426e5d1960f86944bbad37074b
+    m_Crc: 1439399940
+    m_Hash: 1824448a843715e4fa544c0a27621ae1
     m_Dependencies:
     - assets/application/tests/runtime/res/testfx_root/fx.ab
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
@@ -210,8 +210,8 @@ MonoBehaviour:
     m_Hash: 4df0da83b4c7582500f901524ea92400
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/assetmanagement/runtime/tests/res/material/333.ab
-    m_Crc: 2534548409
-    m_Hash: 0e74e4fe73d92c73f8783f92118badaa
+    m_Crc: 3366885363
+    m_Hash: d668226a949a253b496642429bf79a2e
     m_Dependencies:
     - assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
     - assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab

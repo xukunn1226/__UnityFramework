@@ -53,7 +53,7 @@ namespace Framework.AssetManagement.Runtime
                 }
                 return LoaderType.FromEditor;
 #else
-                return m_LoaderType == LoaderType.FromEditor ? LoaderType.FromStreamingAssets : m_LoaderType;       // 移动平台强制AB加载
+                return LoaderType.FromPersistent;       // 移动平台强制从PersistentDataPath加载
 #endif
             }
         }
