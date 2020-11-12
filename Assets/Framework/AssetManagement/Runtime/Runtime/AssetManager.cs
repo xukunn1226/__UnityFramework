@@ -36,9 +36,6 @@ namespace Framework.AssetManagement.Runtime
 
         [SerializeField]
         private LoaderType              m_LoaderType;
-
-        [SerializeField]
-        private string                  m_RootPath = "Assets/Deployment/AssetBundles";
         
         static private bool             k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
 
@@ -74,7 +71,7 @@ namespace Framework.AssetManagement.Runtime
             DontDestroyOnLoad(gameObject);
 
             if(!k_bDynamicLoad)
-                InternalInit(m_LoaderType, m_RootPath);
+                InternalInit(m_LoaderType);
 
             transform.position = Vector3.zero;
             transform.rotation = Quaternion.identity;
@@ -96,45 +93,27 @@ namespace Framework.AssetManagement.Runtime
         /// 资源管理器初始化
         /// </summary>
         /// <param name="type">AB加载模式或直接从project中加载资源</param>
-        /// <param name="bundleRootPath">bundle资源路径，仅限AB加载模式时有效</param>
-        static public AssetManager Init(LoaderType type, string bundleRootPath = "Assets/Deployment/AssetBundles")
+        static public AssetManager Init(LoaderType type)
         {
             k_bDynamicLoad = true;
 
             GameObject go = new GameObject("[AssetManager]", typeof(AssetManager));
 
-            Instance.InternalInit(type, bundleRootPath);
+            Instance.InternalInit(type);
 
             return go.GetComponent<AssetManager>();
         }
 
-        private void InternalInit(LoaderType type, string bundleRootPath)
+        private void InternalInit(LoaderType type)
         {
+            Debug.Log($"AssetManager.loaderType is {type}");
+            
             m_LoaderType = type;
-
-//             // 根据不同应用环境初始化资源路径，e.g. 编辑器、开发环境、正式发布环境
-// #if UNITY_EDITOR
-//             m_RootPath = bundleRootPath;
-// #else
-// #if UNITY_ANDROID
-//             //rootPath = "jar:file://" + Application.dataPath + "!/assets";
-//             m_RootPath = Application.streamingAssetsPath;
-// #elif UNITY_IOS
-//             //rootPath = Application.dataPath + "/Raw";
-//             m_RootPath = Application.streamingAssetsPath;
-// #else
-//             //rootPath = Application.dataPath + "/StreamingAssets";
-//             m_RootPath = Application.streamingAssetsPath;
-// #endif
-// #endif
-
-            m_RootPath = type == LoaderType.FromStreamingAssets ? Application.streamingAssetsPath : Application.persistentDataPath;
-
             if (m_LoaderType == LoaderType.FromStreamingAssets || m_LoaderType == LoaderType.FromPersistent)
             {
-                AssetBundleManager.Init(m_RootPath);
+                string rootPath = (type == LoaderType.FromStreamingAssets ? Application.streamingAssetsPath : Application.persistentDataPath);
+                AssetBundleManager.Init(rootPath);
             }
-            Debug.Log($"AssetManager.loaderType is {m_LoaderType}");
         }
 
         static public void Uninit()

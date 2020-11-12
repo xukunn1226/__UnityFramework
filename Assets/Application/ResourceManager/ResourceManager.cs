@@ -15,12 +15,9 @@ public class ResourceManager : MonoBehaviour
     [SerializeField]
     private LoaderType              m_LoaderType        = LoaderType.FromEditor;
 
-    [SerializeField]
-    private string                  m_RootPath          = "Assets/Deployment/AssetBundles";
-
     static private bool             k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
 
-    [SerializeField]
+    // [SerializeField]
     // private string                  m_UIAtlasPath       = "res/ui/atlases";
 
     private void Awake()
@@ -41,7 +38,7 @@ public class ResourceManager : MonoBehaviour
 
         if(!k_bDynamicLoad)
         {
-            m_AssetManager = AssetManager.Init(m_LoaderType, m_RootPath);
+            m_AssetManager = AssetManager.Init(m_LoaderType);
             m_AssetManager.transform.parent = transform;
         }
 
@@ -62,9 +59,9 @@ public class ResourceManager : MonoBehaviour
         AssetManager.Uninit();
     }
 
-    static public void Init(LoaderType type, string bundleRootPath = "Assets/Deployment/AssetBundles")
+    static public void Init(LoaderType type)
     {
-        m_AssetManager = AssetManager.Init(type, bundleRootPath);
+        m_AssetManager = AssetManager.Init(type);
 
         k_bDynamicLoad = true;
         GameObject go = new GameObject();
@@ -73,7 +70,6 @@ public class ResourceManager : MonoBehaviour
         m_AssetManager.transform.parent = go.transform;
 
         Instance.m_LoaderType = type;
-        Instance.m_RootPath = bundleRootPath;
     }
 
     static public void Uninit()
