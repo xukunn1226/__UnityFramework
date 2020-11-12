@@ -207,7 +207,7 @@ namespace Framework.AssetManagement.GameBuilder
             }
             var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
             manifest.SetResults(results.BundleInfos);
-            AssetDatabase.CreateAsset(manifest, manifestOutput + Utility.GetPlatformName() + "_Manifest.asset");
+            AssetDatabase.CreateAsset(manifest, manifestOutput + Utility.GetPlatformName() + "_manifest.asset");
             AssetDatabase.Refresh();
             if(!BuildManifestAsBundle(manifestOutput))
             {
@@ -219,6 +219,9 @@ namespace Framework.AssetManagement.GameBuilder
             // step5. copy manifest and clear temp files
             CopyManifestToOutput(manifestOutput, output);
             // ClearManifestRedundancy(manifestOutput);
+
+            // copy Assets/Temp/windows_manifest.asset to Assets/Resources/windows/manifest.asset
+            File.Copy(manifestOutput + Utility.GetPlatformName() + "_manifest.asset", "Assets/Resources/" + Utility.GetPlatformName() + "/manifest.asset", true);
             
             return true;
         }
@@ -229,7 +232,7 @@ namespace Framework.AssetManagement.GameBuilder
             AssetBundleBuild abb = new AssetBundleBuild();
             abb.assetBundleName = "manifest";
             abb.assetNames = new string[1];
-            abb.assetNames[0] = output + "/" + Utility.GetPlatformName() + "_Manifest.asset";
+            abb.assetNames[0] = output + "/" + Utility.GetPlatformName() + "_manifest.asset";
             abb.addressableNames = new string[1];
             abb.addressableNames[0] = "manifest";
             BuildList[0] = abb;

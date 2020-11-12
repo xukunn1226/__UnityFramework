@@ -8,8 +8,9 @@ namespace Framework.Core
     [Serializable]
     public class BundleFileInfo
     {
-        public string Name;
-        public string Hash;
+        public string   AssetPath;              // asset path base on Assets/StreamingAssets
+        public string   FileHash;
+        public string   ContentHash;
     }
 
     [Serializable]
@@ -17,7 +18,7 @@ namespace Framework.Core
     {
         public int Count;
 
-        public Dictionary<string, BundleFileInfo> FileList = new Dictionary<string, BundleFileInfo>();
+        public Dictionary<string, BundleFileInfo> FileList = new Dictionary<string, BundleFileInfo>();      // key: bundleName
 
         public void Add(string key, BundleFileInfo fileInfo)
         {

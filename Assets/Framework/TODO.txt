@@ -69,9 +69,6 @@
 * 如何优雅地接入外部插件（uwa），可定制什么时候发布
 * 扩展Gesture——双击功能
 * Package目录下shader如何打包？https://answer.uwa4d.com/question/5f3d10b19424416784ef1c82
-* Deployment涉及的文件夹一律小写
-* PlatformName/FileList
-* FileList记录基于Bundle的MD5和基于content的MD5
 
 
 
@@ -81,8 +78,9 @@
 
 
 
-
-
+- FileList记录基于文件的MD5和基于content的MD5
+- Deployment涉及的文件夹一律小写
+- PlatformName/FileList
 - 封装BuildNumer的修改
 - 测试batchmode模式打包
   重构：output可以动态设置

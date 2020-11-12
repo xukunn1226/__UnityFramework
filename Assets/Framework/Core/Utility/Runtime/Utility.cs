@@ -24,14 +24,14 @@ namespace Framework.Core
             switch (target)
             {
                 case BuildTarget.Android:
-                    return "Android";
+                    return "android";
                 case BuildTarget.iOS:
-                    return "iOS";
+                    return "ios";
                 case BuildTarget.StandaloneWindows:
                 case BuildTarget.StandaloneWindows64:
-                    return "Windows";
+                    return "windows";
                 case BuildTarget.StandaloneOSX:
-                    return "OSX";
+                    return "osx";
                 default:
                     return null;
             }
@@ -43,18 +43,18 @@ namespace Framework.Core
             switch (platform)
             {
                 case RuntimePlatform.Android:
-                    return "Android";
+                    return "android";
                 case RuntimePlatform.IPhonePlayer:
-                    return "iOS";
+                    return "ios";
                 case RuntimePlatform.WindowsPlayer:
                 case RuntimePlatform.WindowsEditor:
-                    return "Windows";
+                    return "windows";
                 case RuntimePlatform.OSXPlayer:
                 case RuntimePlatform.OSXEditor:
-                    return "OSX";
+                    return "osx";
                 case RuntimePlatform.LinuxPlayer:
                 case RuntimePlatform.LinuxEditor:
-                    return "Linux";
+                    return "linux";
                 default:
                     return null;
             }

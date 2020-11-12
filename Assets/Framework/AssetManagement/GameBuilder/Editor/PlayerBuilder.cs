@@ -3,6 +3,7 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using UnityEngine.Build.Pipeline;
 using Framework.Core;
 
 namespace Framework.AssetManagement.GameBuilder
@@ -40,7 +41,7 @@ namespace Framework.AssetManagement.GameBuilder
             AppVersion version = para.SetAppVersion();
 
             // 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
-            BuildBundleFileList();            
+            BuildBundleFileList();
 
             // setup PlayerSettings
             para.SetupPlayerSettings(version);
@@ -96,6 +97,12 @@ namespace Framework.AssetManagement.GameBuilder
                 throw new DirectoryNotFoundException($"{directory}");
             }
 
+            CompatibilityAssetBundleManifest bundleManifest = AssetDatabase.LoadAssetAtPath<CompatibilityAssetBundleManifest>(string.Format($"Assets/Resources/{Utility.GetPlatformName()}/manifest.asset"));
+            if(bundleManifest == null)
+            {
+                throw new ArgumentNullException($"Assets/Resources/{Utility.GetPlatformName()}/manifest.asset not found");
+            }
+
             BundleFileList fileList = new BundleFileList();
             var dir = new DirectoryInfo(directory);
             FileInfo[] fis = dir.GetFiles("*", SearchOption.AllDirectories);
@@ -106,24 +113,31 @@ namespace Framework.AssetManagement.GameBuilder
                     continue;
                 }
 
-                string name = fi.FullName.Substring(Application.streamingAssetsPath.Length + 1);
-                fileList.Add(name, new BundleFileInfo() {Name = name, Hash = GetHash(fi)});
+                string assetPath = fi.FullName.Substring(Application.streamingAssetsPath.Length + 1);
+                string bundleName = assetPath.Substring(Utility.GetPlatformName().Length + 1).Replace('\\', '/');
+                fileList.Add(
+                    bundleName, 
+                    new BundleFileInfo() {AssetPath = assetPath, FileHash = GetHash(fi), ContentHash = bundleManifest.GetAssetBundleHash(bundleName).ToString()}
+                    );
             }
-            string json = BundleFileList.SerializeToJson(fileList);
+            string json = BundleFileList.SerializeToJson(fileList);            
 
-            if(!Directory.Exists(FILELIST_PATH))
-                Directory.CreateDirectory(FILELIST_PATH);
+            string fileListDirectory = string.Format($"{FILELIST_PATH}/{Utility.GetPlatformName()}");
+            if(!Directory.Exists(fileListDirectory))
+                Directory.CreateDirectory(fileListDirectory);
 
-            System.IO.FileStream fs = new System.IO.FileStream(FILELIST_PATH + "/" + FILELIST_NAME, FileMode.Create);
+            System.IO.FileStream fs = new System.IO.FileStream(string.Format($"{fileListDirectory}/{FILELIST_NAME}"), FileMode.Create);
             byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
             fs.Write(bs, 0, bs.Length);
-            fs.Close();            
+            fs.Close();
+
+            AssetDatabase.Refresh();
         }
 
         // [MenuItem("Tests/Load FileList")]
         static private void TestLoadBundleFileList()
         {
-            TextAsset asset = Resources.Load<TextAsset>(Path.GetFileNameWithoutExtension(FILELIST_NAME));
+            TextAsset asset = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(FILELIST_NAME)}"));
             if(asset == null || asset.text == null)
             {
                 Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
