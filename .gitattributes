@@ -66,7 +66,6 @@ ProjectSettings/*.asset merge=unityyamlmerge eol=lf
 *.reason filter=lfs diff=lfs merge=lfs -text
 *.lxo filter=lfs diff=lfs merge=lfs -text
 *.spm filter=lfs diff=lfs merge=lfs -text
-*.bytes filter=lfs diff=lfs merge=lfs -text
 LightingData.asset filter=lfs diff=lfs merge=lfs -text
 *.exe filter=lfs diff=lfs merge=lfs -text
 

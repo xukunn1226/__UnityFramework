@@ -81,7 +81,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             if (!Application.isBatchMode)
             {
-                string appPath = Application.dataPath.Replace("Assets", "") + outputPath;
+                string appPath = Application.dataPath.Replace("Assets", "") + para.outputPath.TrimEnd(new char[] { '/' });
                 System.Diagnostics.Process.Start("explorer", appPath.Replace('/', '\\'));
             }
 
