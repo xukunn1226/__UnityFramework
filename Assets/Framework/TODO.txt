@@ -67,7 +67,7 @@
 * BackgroundDownload
 	https://github.com/Unity-Technologies/BackgroundDownload
 * 如何优雅地接入外部插件（uwa），可定制什么时候发布
-* 扩展Gesture——双击功能
+* 扩展Gesture——双击功能，贴边移动
 * Package目录下shader如何打包？https://answer.uwa4d.com/question/5f3d10b19424416784ef1c82
 // 是否wifi环境
     public static bool IsWifi()
