@@ -39,6 +39,8 @@ namespace Framework.Core
         // Callback, invoked when all data has been received from the remote server.
         protected override void CompleteContent()
         {
+            Debug.Log($"CompleteContent: {Time.frameCount}");
+
             Close();
 
             if(!File.Exists(m_TempPath))
@@ -71,12 +73,14 @@ namespace Framework.Core
             m_ContentLength = (long)contentLength;
             m_TotalLength = m_ContentLength + m_DownedLength;
             
-            Debug.Log($"已下载：{m_DownedLength}/{m_TotalLength}");
+            Debug.Log($"已下载：{m_DownedLength}/{m_TotalLength}        {Time.frameCount}");
         }
 
         // Callback, invoked as data is received from the remote server.
         protected override bool ReceiveData(byte[] data, int dataLength)
         {
+            Debug.Log($"ReceiveData: {dataLength}       {Time.frameCount}");
+
             if(m_ContentLength == 0)
                 return false;
 
