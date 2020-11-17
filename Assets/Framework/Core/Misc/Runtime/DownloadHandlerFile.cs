@@ -9,19 +9,30 @@ namespace Framework.Core
 {
     public class DownloadHandlerFile : DownloadHandlerScript
     {
-        private string      m_Path;
-        private string      m_TempPath;
-        private FileStream  m_Stream;
-        private long        m_DownedLength;
-        private long        m_ContentLength;
-        private long        m_TotalLength;
+        private string              m_Path;
+        private string              m_TempPath;
+        private FileStream          m_Stream;
+        private long                m_DownedLength;             // 已下载字节长度
+        private long                m_ContentLength;            // 剩余字节长度
+        private long                m_TotalLength;              // m_DownedLength + m_ContentLength
 
-        public long DownedLength    { get { return m_DownedLength; } }
+        public long downedLength    { get { return m_DownedLength; } }
         public bool isFinished      { get; private set; }
         public bool hasError        { get; private set; }
 
+        protected DownloadHandlerFile() {}
+
         public DownloadHandlerFile(string path, byte[] preallocatedBuffer) : base(preallocatedBuffer)
         {
+            Prepare(path);
+        }
+
+        private void Prepare(string path)
+        {
+            Close();
+            isFinished = false;
+            hasError = false;
+
             m_Path = path.Replace("\\", "/");
             string directoryPath = m_Path.Substring(0, m_Path.LastIndexOf("/"));
             if(!Directory.Exists(directoryPath))
@@ -43,7 +54,7 @@ namespace Framework.Core
             m_Stream.Position = m_DownedLength;
         }
 
-        public void Close()
+        private void Close()
         {
             if(m_Stream != null)
             {
@@ -63,6 +74,7 @@ namespace Framework.Core
             if(!File.Exists(m_TempPath))
             {
                 Debug.LogError($"Tmp file {m_TempPath} is missing");
+                hasError = true;
                 return;
             }
 
@@ -101,10 +113,18 @@ namespace Framework.Core
             Debug.Log($"ReceiveData: {dataLength}       {Time.frameCount}");
 
             if(m_ContentLength == 0)
+            {
+                Close();
+                hasError = true;
                 return false;
+            }
 
             if(data == null || data.Length < 1)
+            {
+                Close();
+                hasError = true;
                 return false;
+            }
 
             try
             {
