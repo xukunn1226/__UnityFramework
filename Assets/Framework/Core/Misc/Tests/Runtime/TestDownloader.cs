@@ -12,13 +12,16 @@ namespace Framework.Core.Tests
         IEnumerator Start()
         {
             UnityWebRequest www = new UnityWebRequest(Application.streamingAssetsPath + "/" + Utility.GetPlatformName() + "/assets/application/tests/runtime/res/prefabpooledobject.ab");
-            if(!Directory.Exists("assets/11/22"))
-                Directory.CreateDirectory("assets/11/22");
+            // if(!Directory.Exists("assets/11/22"))
+            //     Directory.CreateDirectory("assets/11/22");
             DownloadHandlerFile downloader = new DownloadHandlerFile("assets/11/22/prefabpooledobject.ab", new byte[1024*1]);
             www.disposeDownloadHandlerOnDispose = true;
             www.SetRequestHeader("Range", "bytes=" + downloader.DownedLength + "-");
             www.downloadHandler = downloader;
             yield return www.SendWebRequest();
+
+            Debug.LogError($"isDone: {www.isDone}");
+            Debug.LogError($"result: {www.result}");
         }
     }
 }

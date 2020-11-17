@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
+using System;
 
 namespace Framework.Core
 {
@@ -15,13 +16,29 @@ namespace Framework.Core
         private long        m_ContentLength;
         private long        m_TotalLength;
 
-        public long DownedLength { get { return m_DownedLength; } }
+        public long DownedLength    { get { return m_DownedLength; } }
+        public bool isFinished      { get; private set; }
+        public bool hasError        { get; private set; }
 
         public DownloadHandlerFile(string path, byte[] preallocatedBuffer) : base(preallocatedBuffer)
         {
             m_Path = path.Replace("\\", "/");
+            string directoryPath = m_Path.Substring(0, m_Path.LastIndexOf("/"));
+            if(!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
             m_TempPath = m_Path + ".tmp";
-            m_Stream = new FileStream(m_TempPath, FileMode.OpenOrCreate);
+            try
+            {
+                m_Stream = new FileStream(m_TempPath, FileMode.OpenOrCreate);
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e.Message);
+                
+                Close();
+                hasError = true;
+            }
             m_DownedLength = m_Stream.Length;
             m_Stream.Position = m_DownedLength;
         }
@@ -54,6 +71,8 @@ namespace Framework.Core
                 File.Delete(m_Path);
             }
             File.Move(m_TempPath, m_Path);
+
+            isFinished = true;
         }
 
         // Callback, invoked when UnityWebRequest.downloadProgress is accessed.
@@ -95,6 +114,7 @@ namespace Framework.Core
             {
                 Debug.LogError(e.Message);
                 Close();
+                hasError = true;
                 return false;
             }
             m_DownedLength += dataLength;
