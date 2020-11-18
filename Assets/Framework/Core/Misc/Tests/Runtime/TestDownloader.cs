@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
+using Framework.Core;
 
 namespace Framework.Core.Tests
 {

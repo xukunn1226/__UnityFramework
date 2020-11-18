@@ -29,7 +29,7 @@ namespace Framework.Core
 
         private void Prepare(string path)
         {
-            Close();
+            CloseFile();
             isFinished = false;
             hasError = false;
 
@@ -47,14 +47,14 @@ namespace Framework.Core
             {
                 Debug.LogError(e.Message);
                 
-                Close();
+                CloseFile();
                 hasError = true;
             }
             m_DownedLength = m_Stream.Length;
             m_Stream.Position = m_DownedLength;
         }
 
-        private void Close()
+        private void CloseFile()
         {
             if(m_Stream != null)
             {
@@ -69,7 +69,9 @@ namespace Framework.Core
         {
             Debug.Log($"CompleteContent: {Time.frameCount}");
 
-            Close();
+            isFinished = true;
+
+            CloseFile();
 
             if(!File.Exists(m_TempPath))
             {
@@ -83,8 +85,6 @@ namespace Framework.Core
                 File.Delete(m_Path);
             }
             File.Move(m_TempPath, m_Path);
-
-            isFinished = true;
         }
 
         // Callback, invoked when UnityWebRequest.downloadProgress is accessed.
@@ -114,14 +114,14 @@ namespace Framework.Core
 
             if(m_ContentLength == 0)
             {
-                Close();
+                CloseFile();
                 hasError = true;
                 return false;
             }
 
             if(data == null || data.Length < 1)
             {
-                Close();
+                CloseFile();
                 hasError = true;
                 return false;
             }
@@ -133,7 +133,7 @@ namespace Framework.Core
             catch(System.Exception e)
             {
                 Debug.LogError(e.Message);
-                Close();
+                CloseFile();
                 hasError = true;
                 return false;
             }
