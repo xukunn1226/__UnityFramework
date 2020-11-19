@@ -21,6 +21,11 @@ namespace Framework.Core
             return Resources.Load<AppVersion>("AppVersion");
         }
 
+        static public void Unload(AppVersion version)
+        {
+            Resources.UnloadAsset(version);
+        }
+
 #if UNITY_EDITOR
         static public AppVersion EditorLoad()
         {

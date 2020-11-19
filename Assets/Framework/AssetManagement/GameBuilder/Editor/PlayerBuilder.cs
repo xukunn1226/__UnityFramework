@@ -10,9 +10,6 @@ namespace Framework.AssetManagement.GameBuilder
 {
     public class PlayerBuilder
     {
-        static private string FILELIST_PATH = "Assets/Resources";
-        static private string FILELIST_NAME = "FileList.bytes";
-
         /// <summary>
         /// 构建Player接口（唯一）
         /// </summary>
@@ -122,11 +119,11 @@ namespace Framework.AssetManagement.GameBuilder
             }
             string json = BundleFileList.SerializeToJson(fileList);            
 
-            string fileListDirectory = string.Format($"{FILELIST_PATH}/{Utility.GetPlatformName()}");
+            string fileListDirectory = string.Format($"{Extracter.FILELIST_PATH}/{Utility.GetPlatformName()}");
             if(!Directory.Exists(fileListDirectory))
                 Directory.CreateDirectory(fileListDirectory);
 
-            System.IO.FileStream fs = new System.IO.FileStream(string.Format($"{fileListDirectory}/{FILELIST_NAME}"), FileMode.Create);
+            System.IO.FileStream fs = new System.IO.FileStream(string.Format($"{fileListDirectory}/{Extracter.FILELIST_NAME}"), FileMode.Create);
             byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
             fs.Write(bs, 0, bs.Length);
             fs.Close();
@@ -137,10 +134,10 @@ namespace Framework.AssetManagement.GameBuilder
         // [MenuItem("Tests/Load FileList")]
         static private void TestLoadBundleFileList()
         {
-            TextAsset asset = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(FILELIST_NAME)}"));
+            TextAsset asset = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(Extracter.FILELIST_NAME)}"));
             if(asset == null || asset.text == null)
             {
-                Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
+                Debug.LogError($"FileList not found.    {Extracter.FILELIST_PATH}/{Extracter.FILELIST_NAME}");
                 return;
             }
             BundleFileList list = BundleFileList.DeserializeFromJson(asset.text);

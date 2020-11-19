@@ -3,7 +3,7 @@
   "FileList": {
     "manifest": {
       "AssetPath": "windows\\manifest",
-      "FileHash": "f01db64189ecaef50556bed24647501d",
+      "FileHash": "5cbeee437fad1b88eeecf54575c52202",
       "ContentHash": "00000000000000000000000000000000"
     },
     "assets/application/tests/runtime/res/atlas.ab": {
@@ -178,8 +178,8 @@
     },
     "assets/res/scenes.ab": {
       "AssetPath": "windows\\assets\\res\\scenes.ab",
-      "FileHash": "2ffa7584870ddfae3a696776d7378f6f",
-      "ContentHash": "193feda15429737e4446faee5e4a3db1"
+      "FileHash": "a4eee24ccda7bf4671cd3779170ba373",
+      "ContentHash": "592a423488e4c0d3f4795c487874266f"
     }
   }
 }
