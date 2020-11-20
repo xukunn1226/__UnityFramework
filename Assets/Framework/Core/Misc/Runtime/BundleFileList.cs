@@ -1,16 +1,30 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using UnityEngine;
+using System.IO;
 
 namespace Framework.Core
 {
+    public enum BundleFileState
+    {
+        NoExtracted,            // 未提取
+        Extracting,             // 提取中
+        ExtractingDone,         // 提取完成
+    }
+
     [Serializable]
     public class BundleFileInfo
     {
-        public string   AssetPath;              // asset path base on Assets/StreamingAssets
-        public string   FileHash;
-        public string   ContentHash;
+        public string           BundleName;
+        public string           AssetPath;                      // asset path relative to Assets/StreamingAssets
+        public string           FileHash;
+        public string           ContentHash;
+
+        [NonSerialized]
+        public FileStream       FileStream;
+
+        [NonSerialized]
+        public BundleFileState  State;
     }
 
     [Serializable]
@@ -18,11 +32,12 @@ namespace Framework.Core
     {
         public int Count;
 
-        public Dictionary<string, BundleFileInfo> FileList = new Dictionary<string, BundleFileInfo>();      // key: bundleName
+        // public Dictionary<string, BundleFileInfo> FileList = new Dictionary<string, BundleFileInfo>();      // key: bundleName
+        public List<BundleFileInfo> FileList = new List<BundleFileInfo>();
 
-        public void Add(string key, BundleFileInfo fileInfo)
+        public void Add(BundleFileInfo fileInfo)
         {
-            FileList.Add(key, fileInfo);
+            FileList.Add(fileInfo);
             ++Count;
         }
 

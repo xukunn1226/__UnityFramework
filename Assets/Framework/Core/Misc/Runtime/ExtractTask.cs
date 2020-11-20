@@ -28,7 +28,7 @@ namespace Framework.Core
             }
         }
 
-        public bool isFinished
+        public bool isRunning
         {
             get
             {
@@ -56,10 +56,12 @@ namespace Framework.Core
             m_Request = UnityWebRequest.Get(data.srcURL);
             m_Request.disposeDownloadHandlerOnDispose = true;
 
+            // Debug.Log($"------------Begin Running       {isRunning}      {Time.frameCount}");
             m_Downloader = new DownloadHandlerFile(data.dstURL, m_CachedBuffer);
             m_Request.SetRequestHeader("Range", "bytes=" + m_Downloader.downedLength + "-");
             m_Request.downloadHandler = m_Downloader;
             yield return m_Request.SendWebRequest();
+            // Debug.Log($"End Running-------------------   {isRunning}     {Time.frameCount}");
         }
 
         public void Dispose()

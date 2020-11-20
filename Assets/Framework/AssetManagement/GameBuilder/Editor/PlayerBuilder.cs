@@ -113,8 +113,7 @@ namespace Framework.AssetManagement.GameBuilder
                 string assetPath = fi.FullName.Substring(Application.streamingAssetsPath.Length + 1);
                 string bundleName = assetPath.Substring(Utility.GetPlatformName().Length + 1).Replace('\\', '/');
                 fileList.Add(
-                    bundleName, 
-                    new BundleFileInfo() {AssetPath = assetPath, FileHash = GetHash(fi), ContentHash = bundleManifest.GetAssetBundleHash(bundleName).ToString()}
+                    new BundleFileInfo() {BundleName = bundleName, AssetPath = assetPath, FileHash = GetHash(fi), ContentHash = bundleManifest.GetAssetBundleHash(bundleName).ToString()}
                     );
             }
             string json = BundleFileList.SerializeToJson(fileList);            
@@ -143,7 +142,7 @@ namespace Framework.AssetManagement.GameBuilder
             BundleFileList list = BundleFileList.DeserializeFromJson(asset.text);
             foreach(var s in list.FileList)
             {
-                Debug.Log(s.Key);
+                Debug.Log(s.BundleName);
             }
             Debug.Log("load bundle file list successfully");
         }
