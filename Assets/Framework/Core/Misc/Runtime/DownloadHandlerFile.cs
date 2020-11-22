@@ -16,9 +16,10 @@ namespace Framework.Core
         private long                m_ContentLength;            // 剩余字节长度
         private long                m_TotalLength;              // m_DownedLength + m_ContentLength
 
-        public long downedLength    { get { return m_DownedLength; } }
-        public bool isFinished      { get; private set; }
-        public bool hasError        { get; private set; }
+        public long                 downedLength    { get { return m_DownedLength; } }
+        public bool                 isFinished      { get; private set; }
+        public bool                 hasError        { get; private set; }
+        public string               hash            { get; private set; }
 
         protected DownloadHandlerFile() {}
 
@@ -71,6 +72,9 @@ namespace Framework.Core
 
             isFinished = true;
 
+            m_Stream.Position = 0;
+            hash = EasyMD5.Hash(m_Stream);
+            
             CloseFile();
 
             if(!File.Exists(m_TempPath))

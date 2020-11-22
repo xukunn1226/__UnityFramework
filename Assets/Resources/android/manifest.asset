@@ -122,8 +122,8 @@ MonoBehaviour:
     - assets/framework/assetmanagement/runtime/tests/res/material/333.ab
     - assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/res/components.ab
-    m_Crc: 1187760659
-    m_Hash: f51d01d127250bf7b4e2348f8c6639f4
+    m_Crc: 667567636
+    m_Hash: 970ec1930a347c29ec9a9591c8506b11
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/assetmanagement/runtime/tests/res/testdep/mat.ab
     m_Crc: 2542543149
@@ -168,8 +168,8 @@ MonoBehaviour:
     m_Dependencies:
     - assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/res/scenes.ab
-    m_Crc: 78967468
-    m_Hash: 69c1e20fd6c43e92bc3c137dbdc5796a
+    m_Crc: 3841081557
+    m_Hash: 1ac66a6f9dd0df316f29b5aa72d7ee0a
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/qk.ab
     m_Crc: 1760282705

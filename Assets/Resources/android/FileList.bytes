@@ -1,185 +1,221 @@
-{ 
+{
   "Count": 36,
-  "FileList": {
-    "manifest": {
+  "FileList": [
+    {
+      "BundleName": "manifest",
       "AssetPath": "android\\manifest",
-      "FileHash": "9097b1e5a7a006edaf1610cb930799f1",
+      "FileHash": "424c68e1621725b098c5eca8c68bfc90",
       "ContentHash": "00000000000000000000000000000000"
     },
-    "assets/application/tests/runtime/res/atlas.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/atlas.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\atlas.ab",
       "FileHash": "6fbda15863646b85b44f3a57c282f4d4",
       "ContentHash": "7ac2ae0aaee24ce7f8dd55f07dff95a1"
     },
-    "assets/application/tests/runtime/res/atlas2.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/atlas2.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\atlas2.ab",
       "FileHash": "b2d497dfe100abd64ababc9c121befbd",
       "ContentHash": "ea2b1f14cec2c6dc9ff083d970ba9dc7"
     },
-    "assets/application/tests/runtime/res/prefabpooledobject.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/prefabpooledobject.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\prefabpooledobject.ab",
       "FileHash": "fe9f1e7fd265abd0d909076a812aff2d",
       "ContentHash": "20068da71340f70446ef13aace0e935a"
     },
-    "assets/application/tests/runtime/res/prefabs.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/prefabs.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\prefabs.ab",
       "FileHash": "612b32835b55452018e17a71b2b50601",
       "ContentHash": "5f82262df4019e9169a1e365e4dd3609"
     },
-    "assets/application/tests/runtime/res/qk.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/qk.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\qk.ab",
       "FileHash": "accfa8e76b0a1f18f3c31bdf3bc4399e",
       "ContentHash": "51571318ad759ba1ea59865daaf4cd4b"
     },
-    "assets/application/tests/runtime/res/scenes.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/scenes.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\scenes.ab",
       "FileHash": "690ba4dd06cc59dd53ae92f90eddbf86",
       "ContentHash": "4bf11eb0ab0da9603d664f3ed7cac92c"
     },
-    "assets/application/tests/runtime/res/testspawnerring.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/testspawnerring.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\testspawnerring.ab",
       "FileHash": "d6bd802c13fa65f9c77102ecd6cde01a",
       "ContentHash": "6784bd12a9a4333cc19ca1f7edc2f7fc"
     },
-    "assets/application/tests/runtime/res/misc/111.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/misc/111.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\misc\\111.ab",
       "FileHash": "a2b5b1b5c611ea70c0bdc26a8524abd4",
       "ContentHash": "7c3f43bf8306d110cc2c98a50631c3b1"
     },
-    "assets/application/tests/runtime/res/misc/materials.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/misc/materials.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\misc\\materials.ab",
       "FileHash": "b236cec174cd5521071c203af18d45a4",
       "ContentHash": "505bf5c51f100fccb29976f3d5144ed1"
     },
-    "assets/application/tests/runtime/res/testfx_root/fx.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/testfx_root/fx.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\testfx_root\\fx.ab",
       "FileHash": "47807b9e6a7db538c95ba34f571a9905",
       "ContentHash": "989618cf4d0f8022aca0035eaf0b7d76"
     },
-    "assets/application/tests/runtime/res/testfx_root/scenes.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/testfx_root/scenes.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\testfx_root\\scenes.ab",
       "FileHash": "225016704de254ca62645231129829b6",
       "ContentHash": "95ff66667d8fc7f3422d7600a404092a"
     },
-    "assets/application/tests/runtime/res/ui/prefabs.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/ui/prefabs.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\ui\\prefabs.ab",
       "FileHash": "d9e3261940f53cbf7b54229d6ffa39b2",
       "ContentHash": "b92b15054ec05ba717fdb2557c1a648f"
     },
-    "assets/application/tests/runtime/res/ui/atlases/bag.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/ui/atlases/bag.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\bag.ab",
       "FileHash": "fbb48e3aa9835da5774b2f418e41fdf5",
       "ContentHash": "6b34970cef0907ce595f595f4cefcc47"
     },
-    "assets/application/tests/runtime/res/ui/atlases/common.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/ui/atlases/common.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\common.ab",
       "FileHash": "638b5e8307fa0464a84d23475d725d6c",
       "ContentHash": "44943a67d85ddcfd5f8b6b86f1206aea"
     },
-    "assets/application/tests/runtime/res/ui/atlases/mail.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/ui/atlases/mail.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\mail.ab",
       "FileHash": "268c3fcb65a32df36148037cdc3e63b2",
       "ContentHash": "8bfe5fc9370d6af5f06036a8032798f8"
     },
-    "assets/application/tests/runtime/res/ui/atlases/misc.ab": {
+    {
+      "BundleName": "assets/application/tests/runtime/res/ui/atlases/misc.ab",
       "AssetPath": "android\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\misc.ab",
       "FileHash": "2f4809cbb609e5499cd5a6b40828c078",
       "ContentHash": "53fe6065b13acf23e905072c56739651"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/audio.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\audio.ab",
       "FileHash": "0fc3ab368545cb7fa7383761214a203e",
       "ContentHash": "d3be998e8e39bff1acdb718bcb8f95c7"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/builtinres.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/builtinres.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\builtinres.ab",
       "FileHash": "f5d107db1c412ce2eac9ed1e9f3b83b5",
       "ContentHash": "593ddc53705a6c79c1170bc070dfd5f1"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/model.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/model.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\model.ab",
       "FileHash": "bcc579c8ef2577f16d5d1d3a5484f015",
       "ContentHash": "99ebe82c9d4bfc477e432314af96fc22"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/prefab.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\prefab.ab",
       "FileHash": "d01093bb0f504e12a09abdf1ec16ad27",
       "ContentHash": "2e29530bea277123d70ba5ee8679139f"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/prefab2.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab2.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\prefab2.ab",
       "FileHash": "b3086d20593ce77d766f3990efb19340",
       "ContentHash": "3b832d3c5a964b4021ac661e9d2879ad"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/ps.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/ps.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\ps.ab",
       "FileHash": "4bc5f655862cf865eaa920b08a3a9b06",
       "ContentHash": "a7829df124340277d2b7f180da228551"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/scenes.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\scenes.ab",
       "FileHash": "79cad67805550413c090c10708dfdf6c",
       "ContentHash": "5904f44571beb05a9e57324bb4c06720"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/testunload.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\testunload.ab",
       "FileHash": "08d379707a1fe9fd4922d4c0224f3d7a",
       "ContentHash": "628d87e1ded0a4f91028c6e70f86b89c"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/texture.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/texture.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\texture.ab",
       "FileHash": "cb225ae69b59f5dc985de434f9244379",
       "ContentHash": "868212dc04f78be97b7f82f60c31d3c4"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/material/111.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/111.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\material\\111.ab",
       "FileHash": "59f0fdc44a1b3192995e61e1d0206b69",
       "ContentHash": "a9cabca0c59d523b3c48ec1ab59ec536"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/material/333.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/333.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\material\\333.ab",
       "FileHash": "251cbe3c25904c9fbdc1c9c4b51cb0be",
       "ContentHash": "46acbb29e640161c86e29305b7354ddc"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/prefab/1234.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab/1234.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\prefab\\1234.ab",
       "FileHash": "635f5b225e1ffdfa78ec39a4f11520e1",
       "ContentHash": "89d207f6e944349c3ec3aa741e9e1f02"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/testdep/555555555.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testdep/555555555.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\testdep\\555555555.ab",
       "FileHash": "a479d9e49ee53bdf922c211726398bf5",
       "ContentHash": "6c5d6f2cbff862571a11e035eec77a0d"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/testdep/mat.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testdep/mat.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\testdep\\mat.ab",
       "FileHash": "4698bf870f77f353d15fdf07872a7d78",
       "ContentHash": "62f6b9875148ef2a46e1cc5816fc5a97"
     },
-    "assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab": {
+    {
+      "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab",
       "AssetPath": "android\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\testdep\\tex.ab",
       "FileHash": "8a158e006c0f43acc4427f28ba01df24",
       "ContentHash": "d2a4b6da81f57e9b9d1f2398240e1f45"
     },
-    "assets/framework/levelmanager/tests/res/scenes.ab": {
+    {
+      "BundleName": "assets/framework/levelmanager/tests/res/scenes.ab",
       "AssetPath": "android\\assets\\framework\\levelmanager\\tests\\res\\scenes.ab",
       "FileHash": "5531226c9afc48efe7cd9148012aac1a",
       "ContentHash": "e3a0e90062487d004429f59be3dc7ac1"
     },
-    "assets/res/animationclip.ab": {
+    {
+      "BundleName": "assets/res/animationclip.ab",
       "AssetPath": "android\\assets\\res\\animationclip.ab",
       "FileHash": "de9ae4dce9c11915dca1457b6f0af65b",
       "ContentHash": "275905c62de58541caf00f726ceb4812"
     },
-    "assets/res/components.ab": {
+    {
+      "BundleName": "assets/res/components.ab",
       "AssetPath": "android\\assets\\res\\components.ab",
-      "FileHash": "31e0cb8011a994b233c1df2ef95f9d7d",
-      "ContentHash": "f51d01d127250bf7b4e2348f8c6639f4"
+      "FileHash": "e59d94b339320b059d120c0674857445",
+      "ContentHash": "970ec1930a347c29ec9a9591c8506b11"
     },
-    "assets/res/scenes.ab": {
+    {
+      "BundleName": "assets/res/scenes.ab",
       "AssetPath": "android\\assets\\res\\scenes.ab",
-      "FileHash": "5728bb54af0a28b413ffd34744a321f5",
-      "ContentHash": "69c1e20fd6c43e92bc3c137dbdc5796a"
+      "FileHash": "379958e76122efbdad10420604665230",
+      "ContentHash": "1ac66a6f9dd0df316f29b5aa72d7ee0a"
     }
-  }
+  ]
 }
