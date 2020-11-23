@@ -25,21 +25,27 @@ namespace Framework.Core.Tests
 
 
             ExtractTaskInfo info = new ExtractTaskInfo();
-            // info.userData = 23;
             info.srcURL = Application.streamingAssetsPath + "/" + Utility.GetPlatformName() + "/assets/application/tests/runtime/res/prefabpooledobject.ab";
             info.dstURL = "Assets/Temp/11/22/abcd";
+            info.retryCount = 3;
+            info.verifiedHash = "sdfsdfsdf";
+            info.onCompleted = OnExtractCompleted;
             
-            ExtractTask task = new ExtractTask(new byte[1024]);
+            ExtractTask task = new ExtractTask(new byte[1024*1024]);
             yield return StartCoroutine(task.Run(info));
 
             // Debug.Log($"------{task.isRunning}");
 
-            // info.userData = 34;
-            info.srcURL = Application.streamingAssetsPath + "/" + Utility.GetPlatformName() + "/assets/application/tests/runtime/res/prefabpooledobject.ab";
-            info.dstURL = "Assets/Temp/11/33/efg.cc";
-            yield return StartCoroutine(task.Run(info));
+            //info.srcURL = Application.streamingAssetsPath + "/" + Utility.GetPlatformName() + "/assets/application/tests/runtime/res/prefabpooledobject.ab";
+            //info.dstURL = "Assets/Temp/11/33/efg.cc";
+            //yield return StartCoroutine(task.Run(info));
 
             task.Dispose();
+        }
+
+        private void OnExtractCompleted(ExtractTaskInfo data, bool success)
+        {
+            Debug.Log($"œ¬‘ÿ£∫{data.dstURL} {(success ? "≥…π¶" : " ß∞‹")}");
         }
     }
 }

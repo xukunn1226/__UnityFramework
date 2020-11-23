@@ -18,94 +18,94 @@ namespace Framework.Core
 
         private AppVersion                  m_Version;
         private BundleFileList              m_BundleFileList;
-        private int                         m_PendingExtracedFileIndex;        // 
-        private List<ExtractedFileInfo>     m_PendingExtractedFileList  = new List<ExtractedFileInfo>();
+        private int                         m_PendingExtracedFileIndex;
+        private List<BundleFileInfo>        m_PendingExtractedFileList  = new List<BundleFileInfo>();
         private bool                        m_HasError;
 
-        public enum FileExtractedState
-        {
-            NoExtracted,            // 未提取
-            Extracting,             // 提取中
-            ExtractingDone,         // 提取完成
-        }
-        public class ExtractedFileInfo
-        {
-            public BundleFileInfo       target;
-            public FileExtractedState   state;
-        }
+        //public enum FileExtractedState
+        //{
+        //    NoExtracted,            // 未提取
+        //    Extracting,             // 提取中
+        //    ExtractingDone,         // 提取完成
+        //}
+        //public class ExtractedFileInfo
+        //{
+        //    public BundleFileInfo       target;
+        //    public FileExtractedState   state;
+        //}
 
         private void Awake()
         {
+            Init();
+        }
+
+        private void Update()
+        {
+            Run();
+        }
+
+        private void Init()
+        {
+            // load appVersion
             m_Version = AppVersion.Load();
-            if(m_Version == null)
+            if (m_Version == null)
             {
                 Debug.LogError("Extracter: AppVersion == null");
                 throw new System.ArgumentNullException("Extracter: AppVersion == null");
             }
 
+            // load FileList
             TextAsset asset = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(FILELIST_NAME)}"));
-            if(asset == null || asset.text == null)
+            if (asset == null || asset.text == null)
             {
                 Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
                 throw new System.ArgumentNullException($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
             }
             m_BundleFileList = BundleFileList.DeserializeFromJson(asset.text);
 
-            m_TaskWorkerList = new List<ExtractTask>(workerCount);
+            // init task workers and buffer
             m_CachedBufferList = new List<byte[]>(workerCount);
+            for (int i = 0; i < workerCount; ++i)
+            {
+                m_CachedBufferList.Add(new byte[m_BufferSize]);
+            }
+            m_TaskWorkerList = new List<ExtractTask>(workerCount);
             for(int i = 0; i < workerCount; ++i)
             {
-                m_CachedBufferList[i] = new byte[m_BufferSize];
+                m_TaskWorkerList.Add(new ExtractTask(m_CachedBufferList[i]));
             }
 
+            // generate pending extracted file list
             m_PendingExtracedFileIndex = 0;
             GeneratePendingExtractedFileList();
-
-            Run();
         }
 
-        private void Update()
-        {
-            
-        }
-
+        /// <summary>
+        /// 生成需要提取的文件列表
+        /// </summary>
         private void GeneratePendingExtractedFileList()
         {
+            // 尚不存在或hash不匹配的文件
             m_PendingExtractedFileList.Clear();
             foreach(var bfi in m_BundleFileList.FileList)
             {
                 string filePath = string.Format($"{Application.persistentDataPath}/{bfi.AssetPath}");
                 if(!File.Exists(filePath))
                 {
-                    AddPendingExtractedFile(bfi);
+                    m_PendingExtractedFileList.Add(bfi);
+                    continue;
                 }
 
                 FileStream stream = new FileStream(filePath, FileMode.Open);
                 if(!EasyMD5.Verify(stream, bfi.FileHash))
                 {
-                    AddPendingExtractedFile(bfi);
+                    m_PendingExtractedFileList.Add(bfi);
                 }
             }
         }
 
-        private void AddPendingExtractedFile(BundleFileInfo bfi)
-        {
-            ExtractedFileInfo efi = new ExtractedFileInfo();
-            efi.target = bfi;
-            efi.state = FileExtractedState.NoExtracted;
-            m_PendingExtractedFileList.Add(efi);
-        }
-
         private void Run()
         {
-            // foreach(var fileInfo in m_BundleFileList.FileList)
-            // {
-            //     // create directory
-            //     string filePath = string.Format($"{Application.persistentDataPath}/{GetDirectory(fileInfo.AssetPath)}");
-            //     if(!Directory.Exists(filePath))
-            //         Directory.CreateDirectory(filePath);
-            // }
-
             if(m_HasError)
             {
                 OnError();
@@ -117,21 +117,23 @@ namespace Framework.Core
                 if(task.isRunning) continue;
 
                 // 获取尚未提取的文件
-                m_PendingExtracedFileIndex = GetPendingExtractedFile(m_PendingExtracedFileIndex);
-                if(m_PendingExtracedFileIndex == -1) break;
-                BundleFileInfo fileInfo = m_BundleFileList.FileList[m_PendingExtracedFileIndex];
+                BundleFileInfo fileInfo = GetPendingExtractedFile();
+                if (fileInfo == null) continue;
+
+                Debug.Log($"==========Run: {fileInfo.BundleName}    frame: {Time.frameCount}");
 
                 // begin to extract file
                 ExtractTaskInfo info = new ExtractTaskInfo();
                 info.srcURL         = string.Format($"{Application.streamingAssetsPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
                 info.dstURL         = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
-                info.userData       = fileInfo;
+                info.verifiedHash   = fileInfo.FileHash;
+                info.retryCount     = 3;
                 info.onCompleted    = OnExtractCompleted;
                 StartCoroutine(task.Run(info));
             }
 
-            // step4. is over?
-            if(IsAllTaskStop() && m_PendingExtracedFileIndex == -1)
+            // step4. is done?
+            if(IsExtractDone())
             {
 
             }
@@ -145,6 +147,7 @@ namespace Framework.Core
             {
                 m_TaskWorkerList[i].Dispose();
             }
+            m_TaskWorkerList.Clear();
         }
 
         private void OnExtractCompleted(ExtractTaskInfo data, bool success)
@@ -152,20 +155,12 @@ namespace Framework.Core
             if(data == null)
                 throw new System.ArgumentNullException("ExtractTaskInfo data == null");
 
-            ExtractedFileInfo efi = (ExtractedFileInfo)data.userData;
-            if(efi == null)
-                throw new System.ArgumentNullException("data.userData can't convert to ExtractedFileInfo");
+            m_HasError = !success;
 
-            if(efi.target == null)
-                throw new System.ArgumentNullException("efi.target");
-
-            // if(string.IsNullOrEmpty(fileHash) || string.Compare(fileHash, efi.target.FileHash) != 0)
-            // {
-
-            // }
+            Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
         }
 
-        private bool IsAllTaskStop()
+        private bool IsExtractDone()
         {
             foreach(var task in m_TaskWorkerList)
             {
@@ -175,41 +170,11 @@ namespace Framework.Core
             return true;
         }
 
-        // get the next file to be extracted
-        private int GetPendingExtractedFile(int pendingIndex)
+        private BundleFileInfo GetPendingExtractedFile()
         {
-            if(pendingIndex < 0 || pendingIndex >= m_BundleFileList.FileList.Count)
-                return -1;
-
-            BundleFileInfo fileInfo = m_BundleFileList.FileList[pendingIndex];
-            string filePath = string.Format($"{Application.persistentDataPath}/{fileInfo.AssetPath}");
-            if(!File.Exists(filePath))
-            { // 文件不存在，需要提取
-                // fileInfo.FileStream = new FileStream(filePath, FileMode.Create);
-                // fileInfo.State = BundleFileState.NoExtracted;
-                return pendingIndex;
-            }
-
-            FileStream stream = new FileStream(filePath, FileMode.Open);
-            if(!EasyMD5.Verify(stream, fileInfo.FileHash))
-            { // 文件hash不匹配，需要重新提取
-                // fileInfo.FileStream = stream;
-                // fileInfo.State = BundleFileState.NoExtracted;
-                stream.Close();
-                stream.Dispose();
-                return pendingIndex;
-            }
-            stream.Close();
-            stream.Dispose();
-
-            // fileInfo.State = BundleFileState.ExtractingDone;
-            return GetPendingExtractedFile(pendingIndex + 1);
-        }
-
-        private string GetDirectory(string filePath)
-        {
-            filePath = filePath.Replace("\\", "/");
-            return filePath.Substring(0, filePath.LastIndexOf("/"));
+            if (m_PendingExtracedFileIndex < 0 || m_PendingExtracedFileIndex >= m_PendingExtractedFileList.Count)
+                return null;
+            return m_PendingExtractedFileList[m_PendingExtracedFileIndex++];
         }
 
         private void OnDestroy()

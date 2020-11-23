@@ -10,7 +10,6 @@ namespace Framework.Core
     {
         public string                           srcURL;
         public string                           dstURL;
-        public object                           userData;
         public string                           verifiedHash;               // 下载文件的hash，用来验证下载文件的正确性
         public int                              retryCount;                 // 重试次数
         public Action<ExtractTaskInfo, bool>    onCompleted;
@@ -50,6 +49,8 @@ namespace Framework.Core
             }
         }
 
+        protected ExtractTask() { }
+
         public ExtractTask(byte[] preallocatedBuffer)
         {
             m_CachedBuffer = preallocatedBuffer;       
@@ -57,7 +58,7 @@ namespace Framework.Core
 
         public IEnumerator Run(ExtractTaskInfo data)
         {
-            // Debug.Log($"------------Begin Running       {isRunning}      {Time.frameCount}");
+            Debug.Log($"------------Begin Running       {Time.frameCount}");
 
             m_isVerified = false;
             m_TryCount = 0;
@@ -69,23 +70,24 @@ namespace Framework.Core
                 yield return RunOnce(data);
             }
 
-            if(data.onCompleted != null) data.onCompleted(data, m_isVerified);
+            data.onCompleted?.Invoke(data, m_isVerified);
 
-            // Debug.Log($"End Running-------------------   {isRunning}     {Time.frameCount}");
+            Debug.Log($"End Running-------------------       {Time.frameCount}");
         }
 
         private IEnumerator RunOnce(ExtractTaskInfo data)
         {
             m_Request = UnityWebRequest.Get(data.srcURL);
             m_Request.disposeDownloadHandlerOnDispose = true;
-
+            Debug.Log($"isRunning: {isRunning}      frame: {Time.frameCount}");
             m_Downloader = new DownloadHandlerFile(data.dstURL, m_CachedBuffer);
             m_Request.SetRequestHeader("Range", "bytes=" + m_Downloader.downedLength + "-");
             m_Request.downloadHandler = m_Downloader;
             yield return m_Request.SendWebRequest();
-
             m_isVerified = !string.IsNullOrEmpty(data.verifiedHash) && string.Compare(data.verifiedHash, m_Downloader.hash) == 0;
             ++m_TryCount;
+
+            Debug.Log($"Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frame: {Time.frameCount}");
         }
 
         public void Dispose()
