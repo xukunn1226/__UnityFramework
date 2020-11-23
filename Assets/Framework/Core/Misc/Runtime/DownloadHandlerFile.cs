@@ -12,11 +12,10 @@ namespace Framework.Core
         private string              m_Path;
         private string              m_TempPath;
         private FileStream          m_Stream;
-        private long                m_DownedLength;             // 已下载字节长度
         private long                m_ContentLength;            // 剩余字节长度
-        private long                m_TotalLength;              // m_DownedLength + m_ContentLength
 
-        public long                 downedLength    { get { return m_DownedLength; } }
+        public long                 downedLength    { get; private set; }
+        public long                 totalLength     { get; private set; }
         public bool                 isFinished      { get; private set; }
         public bool                 hasError        { get; private set; }
         public string               hash            { get; private set; }
@@ -51,8 +50,8 @@ namespace Framework.Core
                 CloseFile();
                 hasError = true;
             }
-            m_DownedLength = m_Stream.Length;
-            m_Stream.Position = m_DownedLength;
+            downedLength = m_Stream.Length;
+            m_Stream.Position = downedLength;
         }
 
         private void CloseFile()
@@ -68,8 +67,6 @@ namespace Framework.Core
         // Callback, invoked when all data has been received from the remote server.
         protected override void CompleteContent()
         {
-            Debug.Log($"CompleteContent: {Time.frameCount}");
-
             isFinished = true;
 
             m_Stream.Position = 0;
@@ -89,12 +86,14 @@ namespace Framework.Core
                 File.Delete(m_Path);
             }
             File.Move(m_TempPath, m_Path);
+
+            Debug.Log($"CompleteContent:    hash:{hash}    {downedLength}/{totalLength}   frameCount:{Time.frameCount}");
         }
 
         // Callback, invoked when UnityWebRequest.downloadProgress is accessed.
         protected override float GetProgress()
         {
-            return m_DownedLength * 1.0f / m_TotalLength;
+            return downedLength * 1.0f / totalLength;
         }
 
         protected override string GetText()
@@ -106,16 +105,14 @@ namespace Framework.Core
         protected override void ReceiveContentLengthHeader(ulong contentLength)
         {
             m_ContentLength = (long)contentLength;
-            m_TotalLength = m_ContentLength + m_DownedLength;
+            totalLength = m_ContentLength + downedLength;
             
-            Debug.Log($"已下载：{m_DownedLength}/{m_TotalLength}        {Time.frameCount}");
+            Debug.Log($"ReceiveContentLengthHeader：{downedLength}/{totalLength}        frameCount: {Time.frameCount}");
         }
 
         // Callback, invoked as data is received from the remote server.
         protected override bool ReceiveData(byte[] data, int dataLength)
         {
-            Debug.Log($"ReceiveData: {dataLength}       {Time.frameCount}");
-
             if(m_ContentLength == 0)
             {
                 CloseFile();
@@ -141,7 +138,10 @@ namespace Framework.Core
                 hasError = true;
                 return false;
             }
-            m_DownedLength += dataLength;
+            downedLength += dataLength;
+            
+            Debug.Log($"ReceiveData: dataLength: {dataLength}     downedLength: {downedLength}      frameCount: {Time.frameCount}");
+
             return true;
         }
     }

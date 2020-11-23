@@ -14,25 +14,13 @@ namespace Framework.Core
         public int                          workerCount                 = 3;
         private List<ExtractTask>           m_TaskWorkerList;
         private List<byte[]>                m_CachedBufferList;
-        private const int                   m_BufferSize                = 1024 * 1024;
+        private const int                   m_BufferSize                = 1024 * 1;
 
         private AppVersion                  m_Version;
         private BundleFileList              m_BundleFileList;
         private int                         m_PendingExtracedFileIndex;
         private List<BundleFileInfo>        m_PendingExtractedFileList  = new List<BundleFileInfo>();
         private bool                        m_HasError;
-
-        //public enum FileExtractedState
-        //{
-        //    NoExtracted,            // 未提取
-        //    Extracting,             // 提取中
-        //    ExtractingDone,         // 提取完成
-        //}
-        //public class ExtractedFileInfo
-        //{
-        //    public BundleFileInfo       target;
-        //    public FileExtractedState   state;
-        //}
 
         private void Awake()
         {
