@@ -12,7 +12,7 @@ namespace Framework.Core
         private string              m_Path;
         private string              m_TempPath;
         private FileStream          m_Stream;
-        
+        private ulong               m_ContentLength;
         public ulong                downedLength    { get; private set; }
         public ulong                totalLength     { get; private set; }
         public bool                 isFinished      { get; private set; }
@@ -103,7 +103,8 @@ namespace Framework.Core
         // Callback, invoked with a Content-Length header is received.
         protected override void ReceiveContentLengthHeader(ulong contentLength)
         {
-            totalLength = contentLength;
+            m_ContentLength = contentLength;
+            totalLength = downedLength + contentLength;
             
             Debug.Log($"ReceiveContentLengthHeader：{downedLength}/{totalLength}        frameCount: {Time.frameCount}");
         }
@@ -111,7 +112,7 @@ namespace Framework.Core
         // Callback, invoked as data is received from the remote server.
         protected override bool ReceiveData(byte[] data, int dataLength)
         {
-            if(totalLength == 0)
+            if(m_ContentLength == 0)
             {
                 CloseFile();
                 hasError = true;

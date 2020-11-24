@@ -27,7 +27,7 @@ namespace Framework.Core.Tests
 
 
             ExtractTaskInfo info = new ExtractTaskInfo();
-            info.srcURL = Application.streamingAssetsPath + "/" + "lilith.zip";
+            info.srcUri = new System.Uri(Path.Combine(Application.streamingAssetsPath, "lilith.zip"));
             //info.srcURL = "assets/11223.pdf";
             info.dstURL = "Assets/Temp/lilith.zip";
             info.retryCount = 0;

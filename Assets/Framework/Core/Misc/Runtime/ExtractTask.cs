@@ -8,7 +8,7 @@ namespace Framework.Core
 {
     public class ExtractTaskInfo
     {
-        public string                           srcURL;
+        public Uri                              srcUri;
         public string                           dstURL;
         public string                           verifiedHash;               // 下载文件的hash，用来验证下载文件的正确性
         public int                              retryCount;                 // 重试次数
@@ -68,7 +68,8 @@ namespace Framework.Core
             //var totalLength = long.Parse(l);
             //Debug.Log($"===== {totalLength}");
 
-            m_Request = UnityWebRequest.Get(data.srcURL);
+            //m_Request = UnityWebRequest.Get(data.srcURL);
+            m_Request = UnityWebRequest.Get(data.srcUri);
             m_Request.disposeDownloadHandlerOnDispose = true;
 
             m_Downloader = new DownloadHandlerFile(data.dstURL, m_CachedBuffer);
