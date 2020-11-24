@@ -12,10 +12,9 @@ namespace Framework.Core
         private string              m_Path;
         private string              m_TempPath;
         private FileStream          m_Stream;
-        private long                m_ContentLength;            // 剩余字节长度
-
-        public long                 downedLength    { get; private set; }
-        public long                 totalLength     { get; private set; }
+        
+        public ulong                downedLength    { get; private set; }
+        public ulong                totalLength     { get; private set; }
         public bool                 isFinished      { get; private set; }
         public bool                 hasError        { get; private set; }
         public string               hash            { get; private set; }
@@ -50,8 +49,8 @@ namespace Framework.Core
                 CloseFile();
                 hasError = true;
             }
-            downedLength = m_Stream.Length;
-            m_Stream.Position = downedLength;
+            m_Stream.Position = m_Stream.Length;
+            downedLength = (ulong)m_Stream.Length;
         }
 
         private void CloseFile()
@@ -104,8 +103,7 @@ namespace Framework.Core
         // Callback, invoked with a Content-Length header is received.
         protected override void ReceiveContentLengthHeader(ulong contentLength)
         {
-            m_ContentLength = (long)contentLength;
-            totalLength = m_ContentLength + downedLength;
+            totalLength = contentLength;
             
             Debug.Log($"ReceiveContentLengthHeader：{downedLength}/{totalLength}        frameCount: {Time.frameCount}");
         }
@@ -113,7 +111,7 @@ namespace Framework.Core
         // Callback, invoked as data is received from the remote server.
         protected override bool ReceiveData(byte[] data, int dataLength)
         {
-            if(m_ContentLength == 0)
+            if(totalLength == 0)
             {
                 CloseFile();
                 hasError = true;
@@ -138,7 +136,7 @@ namespace Framework.Core
                 hasError = true;
                 return false;
             }
-            downedLength += dataLength;
+            downedLength += (ulong)dataLength;
             
             Debug.Log($"ReceiveData: dataLength: {dataLength}     downedLength: {downedLength}      frameCount: {Time.frameCount}");
 

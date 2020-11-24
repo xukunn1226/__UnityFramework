@@ -9,6 +9,8 @@ namespace Framework.Core.Tests
 {
     public class TestDownloader : MonoBehaviour
     {
+        private ExtractTask m_Task;
+
         // Start is called before the first frame update
         IEnumerator Start()
         {
@@ -25,22 +27,27 @@ namespace Framework.Core.Tests
 
 
             ExtractTaskInfo info = new ExtractTaskInfo();
-            info.srcURL = Application.streamingAssetsPath + "/" + Utility.GetPlatformName() + "/assets/application/tests/runtime/res/prefabpooledobject.ab";
-            info.dstURL = "Assets/Temp/11/22/abcd";
-            info.retryCount = 3;
-            info.verifiedHash = "sdfsdfsdf";
+            info.srcURL = Application.streamingAssetsPath + "/" + "lilith.zip";
+            //info.srcURL = "assets/11223.pdf";
+            info.dstURL = "Assets/Temp/lilith.zip";
+            info.retryCount = 0;
+            info.verifiedHash = "ec51729b856280fd70b3542dbb2052cb";
             info.onCompleted = OnExtractCompleted;
             
-            ExtractTask task = new ExtractTask(new byte[1024*1024]);
-            yield return StartCoroutine(task.Run(info));
+            m_Task = new ExtractTask(new byte[1024*32]);
+            yield return StartCoroutine(m_Task.Run(info));
 
             // Debug.Log($"------{task.isRunning}");
 
             //info.srcURL = Application.streamingAssetsPath + "/" + Utility.GetPlatformName() + "/assets/application/tests/runtime/res/prefabpooledobject.ab";
             //info.dstURL = "Assets/Temp/11/33/efg.cc";
             //yield return StartCoroutine(task.Run(info));
+        }
 
-            task.Dispose();
+        private void OnDestroy()
+        {
+            Debug.LogWarning("------------------");
+            m_Task?.Dispose();
         }
 
         private void OnExtractCompleted(ExtractTaskInfo data, bool success)

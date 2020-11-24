@@ -25,8 +25,8 @@ namespace Framework.Core
         private int                     m_TryCount;
 
         public float                    downloadProgress    { get { return m_Request?.downloadProgress ?? 0; } }
-        public long                     downedLength        { get { return m_Downloader?.downedLength ?? 0; } }
-        public long                     totalLength         { get { return m_Downloader?.totalLength ?? 0; } }
+        public ulong                    downedLength        { get { return m_Downloader?.downedLength ?? 0; } }
+        public ulong                    totalLength         { get { return m_Downloader?.totalLength ?? 0; } }
         public bool                     isRunning           { get; private set; }
         public bool                     hasError            { get; private set; }
 
@@ -61,6 +61,13 @@ namespace Framework.Core
 
         private IEnumerator RunOnce(ExtractTaskInfo data)
         {
+            //UnityWebRequest request = UnityWebRequest.Head(data.srcURL);
+            //yield return request.SendWebRequest();
+            //Dictionary<string, string> d = request.GetResponseHeaders();
+            //string l = request.GetResponseHeader("Content-Length");
+            //var totalLength = long.Parse(l);
+            //Debug.Log($"===== {totalLength}");
+
             m_Request = UnityWebRequest.Get(data.srcURL);
             m_Request.disposeDownloadHandlerOnDispose = true;
 
@@ -69,7 +76,7 @@ namespace Framework.Core
             m_Request.downloadHandler = m_Downloader;
             yield return m_Request.SendWebRequest();
             
-            m_isVerified = !string.IsNullOrEmpty(data.verifiedHash) && string.Compare(data.verifiedHash, m_Downloader.hash) == 0;
+            m_isVerified = string.IsNullOrEmpty(data.verifiedHash) ? true : string.Compare(data.verifiedHash, m_Downloader.hash) == 0;
             ++m_TryCount;
 
             Debug.Log($"Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frameCount: {Time.frameCount}");
