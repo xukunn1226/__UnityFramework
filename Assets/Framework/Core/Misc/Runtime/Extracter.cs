@@ -139,7 +139,7 @@ namespace Framework.Core
             m_TaskWorkerList.Clear();
         }
 
-        private void OnExtractCompleted(ExtractTaskInfo data, bool success)
+        private void OnExtractCompleted(ExtractTaskInfo data, bool success, int tryCount)
         {
             if(data == null)
                 throw new System.ArgumentNullException("ExtractTaskInfo data == null");

@@ -50,7 +50,7 @@ namespace Framework.Core.Tests
             m_Task?.Dispose();
         }
 
-        private void OnExtractCompleted(ExtractTaskInfo data, bool success)
+        private void OnExtractCompleted(ExtractTaskInfo data, bool success, int tryCount)
         {
             Debug.Log($"œ¬‘ÿ£∫{data.dstURL} {(success ? "≥…π¶" : " ß∞‹")}");
         }
