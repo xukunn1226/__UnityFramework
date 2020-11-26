@@ -20,26 +20,29 @@ namespace Framework.Core
         private BundleFileList              m_BundleFileList;
         private int                         m_PendingExtracedFileIndex;
         private List<BundleFileInfo>        m_PendingExtractedFileList  = new List<BundleFileInfo>();
-        private bool                        m_HasError;
+        private string                      m_Error;
 
-        private void Awake()
+        private Coroutine                   m_Coroutine;
+
+        private void OnEnable()
         {
-            Init();
+            if (Init())
+                StartWork();
         }
 
-        private void Update()
+        private void OnDisable()
         {
-            Run();
+            Uninit();
         }
 
-        private void Init()
+        private bool Init()
         {
             // load appVersion
             m_Version = AppVersion.Load();
             if (m_Version == null)
             {
                 Debug.LogError("Extracter: AppVersion == null");
-                throw new System.ArgumentNullException("Extracter: AppVersion == null");
+                return false;
             }
 
             // load FileList
@@ -47,7 +50,7 @@ namespace Framework.Core
             if (asset == null || asset.text == null)
             {
                 Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
-                throw new System.ArgumentNullException($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
+                return false;
             }
             m_BundleFileList = BundleFileList.DeserializeFromJson(asset.text);
 
@@ -62,10 +65,32 @@ namespace Framework.Core
             {
                 m_TaskWorkerList.Add(new ExtractTask(m_CachedBufferList[i]));
             }
+            return true;
+        }
 
+        private void Uninit()
+        {
+            if (m_Coroutine != null)
+                StopCoroutine(m_Coroutine);
+
+            if (m_Version != null)
+                AppVersion.Unload(m_Version);
+
+            m_BundleFileList = null;
+
+            for (int i = 0; i < m_TaskWorkerList.Count; ++i)
+            {
+                m_TaskWorkerList[i].Dispose();
+            }
+            m_TaskWorkerList.Clear();
+        }
+
+        private void StartWork()
+        {
             // generate pending extracted file list
-            m_PendingExtracedFileIndex = 0;
             GeneratePendingExtractedFileList();
+
+            m_Coroutine = StartCoroutine(Run());
         }
 
         /// <summary>
@@ -73,6 +98,8 @@ namespace Framework.Core
         /// </summary>
         private void GeneratePendingExtractedFileList()
         {
+            m_PendingExtracedFileIndex = 0;
+
             // 尚不存在或hash不匹配的文件
             m_PendingExtractedFileList.Clear();
             foreach(var bfi in m_BundleFileList.FileList)
@@ -89,74 +116,66 @@ namespace Framework.Core
                 {
                     m_PendingExtractedFileList.Add(bfi);
                 }
+                stream.Close();
+                stream.Dispose();
             }
         }
 
-        private void Run()
+        private IEnumerator Run()
         {
-            if(m_HasError)
+            OnExtractBegin();
+
+            while (true)
             {
-                OnError();
-                return;
+                foreach (var task in m_TaskWorkerList)
+                {
+                    if (task.isRunning)
+                    {
+                        continue;
+                    }
+
+                    // 获取尚未提取的文件
+                    BundleFileInfo fileInfo = GetPendingExtractedFile();
+                    if (fileInfo == null)
+                    {
+                        continue;
+                    }
+
+                    Debug.Log($"==========NEW FILE TO BE EXTRACTING: {fileInfo.BundleName}    frame: {Time.frameCount}");
+
+                    // begin to extract file
+                    ExtractTaskInfo info    = new ExtractTaskInfo();
+                    info.srcUri             = new System.Uri(Path.Combine(Application.streamingAssetsPath, Utility.GetPlatformName(), fileInfo.BundleName));
+                    info.dstURL             = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
+                    info.verifiedHash       = fileInfo.FileHash;
+                    info.retryCount         = 3;
+                    info.onProgress         = OnProgress;
+                    info.onCompleted        = OnCompleted;
+                    info.onRequestError     = OnRequestError;
+                    info.onDownloadError    = OnDownloadError;
+                    StartCoroutine(task.Run(info));
+                }
+
+                if (IsStillWorking() && string.IsNullOrEmpty(m_Error))
+                {
+                    yield return null;
+                }
+                else
+                {
+                    break;
+                }
             }
-
-            foreach(var task in m_TaskWorkerList)
-            {
-                if(task.isRunning) continue;
-
-                // 获取尚未提取的文件
-                BundleFileInfo fileInfo = GetPendingExtractedFile();
-                if (fileInfo == null) continue;
-
-                Debug.Log($"==========Run: {fileInfo.BundleName}    frame: {Time.frameCount}");
-
-                // begin to extract file
-                ExtractTaskInfo info = new ExtractTaskInfo();
-
-                info.srcUri         = new System.Uri(Path.Combine(Application.streamingAssetsPath, Utility.GetPlatformName(), fileInfo.BundleName));
-                info.dstURL         = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
-                info.verifiedHash   = fileInfo.FileHash;
-                info.retryCount     = 3;
-                info.onCompleted    = OnExtractCompleted;
-                StartCoroutine(task.Run(info));
-            }
-
-            // step4. is done?
-            if(IsExtractDone())
-            {
-
-            }
+            OnExtractEnd();
         }
 
-        private void OnError()
-        {
-            Debug.LogError($"Extracter:OnError");
-
-            for(int i = 0; i < m_TaskWorkerList.Count; ++i)
-            {
-                m_TaskWorkerList[i].Dispose();
-            }
-            m_TaskWorkerList.Clear();
-        }
-
-        private void OnExtractCompleted(ExtractTaskInfo data, bool success, int tryCount)
-        {
-            if(data == null)
-                throw new System.ArgumentNullException("ExtractTaskInfo data == null");
-
-            m_HasError = !success;
-
-            Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
-        }
-
-        private bool IsExtractDone()
+        private bool IsStillWorking()
         {
             foreach(var task in m_TaskWorkerList)
             {
-                if(task.isRunning)
-                    return false;                
+                if (task.isRunning)
+                    return true;
             }
-            return true;
+            return false;
         }
 
         private BundleFileInfo GetPendingExtractedFile()
@@ -166,17 +185,39 @@ namespace Framework.Core
             return m_PendingExtractedFileList[m_PendingExtracedFileIndex++];
         }
 
-        private void OnDestroy()
+        private void OnExtractBegin()
         {
-            if(m_Version != null)
-                AppVersion.Unload(m_Version);
+            Debug.Log("OnExtractBegin");
+        }
 
-            m_BundleFileList = null;
+        private void OnExtractEnd()
+        {
+            Debug.Log("OnExtractEnd");
+        }
 
-            for(int i = 0; i < m_TaskWorkerList.Count; ++i)
+        private void OnProgress(ExtractTaskInfo data, ulong downedLength, ulong totalLength, float downloadSpeed)
+        {
+            Debug.Log($"{Path.GetFileName(data.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
+        }
+
+        private void OnCompleted(ExtractTaskInfo data, bool success, int tryCount)
+        {
+            if (!success)
             {
-                m_TaskWorkerList[i].Dispose();
+                m_Error = string.Format($"OnCompleted--- failed to download {data.srcUri.ToString()}");
             }
+
+            //Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
+        }
+
+        private void OnRequestError(ExtractTaskInfo data, string error)
+        {
+            m_Error = string.Format($"OnRequestError--- {error} : {data.srcUri.ToString()}");
+        }
+
+        private void OnDownloadError(ExtractTaskInfo data, string error)
+        {
+            m_Error = string.Format($"OnDownloadError--- {error} : {data.srcUri.ToString()}");
         }
     }
 }

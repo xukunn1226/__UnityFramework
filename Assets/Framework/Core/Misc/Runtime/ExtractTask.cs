@@ -42,7 +42,7 @@ namespace Framework.Core
 
         public IEnumerator Run(ExtractTaskInfo data)
         {
-            Debug.Log($"ExtractTask: Begin Running       {Time.frameCount}");
+            //Debug.Log($"ExtractTask: Begin Running       {Time.frameCount}");
 
             m_isVerified = false;
             m_TryCount = 0;
@@ -77,7 +77,7 @@ namespace Framework.Core
                 data.onDownloadError?.Invoke(data, m_Downloader.handlerError);
             }
 
-            Debug.Log($"ExtractTask: End Running       {Time.frameCount}");
+            //Debug.Log($"ExtractTask: End Running       {Time.frameCount}");
         }
 
         private IEnumerator RunOnce(ExtractTaskInfo data)
@@ -92,7 +92,7 @@ namespace Framework.Core
             m_isVerified = string.IsNullOrEmpty(data.verifiedHash) ? true : string.Compare(data.verifiedHash, m_Downloader.hash) == 0;
             ++m_TryCount;
 
-            Debug.Log($"[RunOnce]     Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frameCount: {Time.frameCount}");
+            //Debug.Log($"[RunOnce]     Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frameCount: {Time.frameCount}");
         }
 
         public void Dispose()
