@@ -14,7 +14,7 @@ namespace Framework.Core
         public int                          workerCount                 = 3;
         private List<ExtractTask>           m_TaskWorkerList;
         private List<byte[]>                m_CachedBufferList;
-        private const int                   m_BufferSize                = 1024 * 1;
+        private const int                   m_BufferSize                = 1024 * 1024;
 
         private AppVersion                  m_Version;
         private BundleFileList              m_BundleFileList;
@@ -23,6 +23,7 @@ namespace Framework.Core
         private string                      m_Error;
 
         private Coroutine                   m_Coroutine;
+        private float                       m_BeginTime;
 
         private void OnEnable()
         {
@@ -124,7 +125,6 @@ namespace Framework.Core
         private IEnumerator Run()
         {
             OnExtractBegin();
-
             while (true)
             {
                 foreach (var task in m_TaskWorkerList)
@@ -165,7 +165,7 @@ namespace Framework.Core
                     break;
                 }
             }
-            OnExtractEnd();
+            OnExtractEnd(m_Error);
         }
 
         private bool IsStillWorking()
@@ -188,23 +188,24 @@ namespace Framework.Core
         private void OnExtractBegin()
         {
             Debug.Log("OnExtractBegin");
+            m_BeginTime = Time.time;
         }
 
-        private void OnExtractEnd()
+        private void OnExtractEnd(string error)
         {
-            Debug.Log("OnExtractEnd");
+            Debug.Log($"OnExtractEnd: {error}   {Time.time - m_BeginTime}");
         }
 
         private void OnProgress(ExtractTaskInfo data, ulong downedLength, ulong totalLength, float downloadSpeed)
         {
-            Debug.Log($"{Path.GetFileName(data.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
+            Debug.Log($"OnProgress: {Path.GetFileName(data.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
         }
 
         private void OnCompleted(ExtractTaskInfo data, bool success, int tryCount)
         {
             if (!success)
             {
-                m_Error = string.Format($"OnCompleted--- failed to download {data.srcUri.ToString()}");
+                m_Error = string.Format($"OnCompleted: failed to download {data.srcUri.ToString()}");
             }
 
             //Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
@@ -212,12 +213,12 @@ namespace Framework.Core
 
         private void OnRequestError(ExtractTaskInfo data, string error)
         {
-            m_Error = string.Format($"OnRequestError--- {error} : {data.srcUri.ToString()}");
+            m_Error = string.Format($"OnRequestError: {error} : {data.srcUri.ToString()}");
         }
 
         private void OnDownloadError(ExtractTaskInfo data, string error)
         {
-            m_Error = string.Format($"OnDownloadError--- {error} : {data.srcUri.ToString()}");
+            m_Error = string.Format($"OnDownloadError: {error} : {data.srcUri.ToString()}");
         }
     }
 }

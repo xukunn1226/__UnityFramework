@@ -44,38 +44,19 @@ namespace Framework.Core
         {
             //Debug.Log($"ExtractTask: Begin Running       {Time.frameCount}");
 
-            m_isVerified = false;
-            m_TryCount = 0;
             isRunning = true;
-
-            yield return RunOnce(data);
-            
-            while(!m_isVerified && m_TryCount < data.retryCount + 1)
             {
+                m_isVerified = false;
+                m_TryCount = 0;
+
                 yield return RunOnce(data);
-            }
 
+                while (!m_isVerified && m_TryCount < data.retryCount + 1)
+                {
+                    yield return RunOnce(data);
+                }
+            }
             isRunning = false;
-
-            switch(m_Request.result)
-            {
-                case UnityWebRequest.Result.Success:
-                    data.onCompleted?.Invoke(data, m_isVerified, m_TryCount);
-                    break;
-                case UnityWebRequest.Result.InProgress:
-                    data.onProgress?.Invoke(data, downedLength, totalLength, downloadSpeed);
-                    break;
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.ProtocolError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    data.onRequestError?.Invoke(data, m_Request.error);
-                    break;
-            }
-
-            if(!string.IsNullOrEmpty(m_Downloader.handlerError))
-            {
-                data.onDownloadError?.Invoke(data, m_Downloader.handlerError);
-            }
 
             //Debug.Log($"ExtractTask: End Running       {Time.frameCount}");
         }
@@ -87,10 +68,35 @@ namespace Framework.Core
 
             m_Downloader = new DownloadHandlerFile(data.dstURL, m_Request, m_CachedBuffer);
             m_Request.downloadHandler = m_Downloader;
-            yield return m_Request.SendWebRequest();
-            
+            m_Request.SendWebRequest();
+
+            while (!m_Request.isDone)
+            {
+                if(m_Request.result == UnityWebRequest.Result.InProgress)
+                {
+                    data.onProgress?.Invoke(data, downedLength, totalLength, downloadSpeed);
+                }
+                yield return null;
+            }
+
             m_isVerified = string.IsNullOrEmpty(data.verifiedHash) ? true : string.Compare(data.verifiedHash, m_Downloader.hash) == 0;
             ++m_TryCount;
+
+            switch (m_Request.result)
+            {
+                case UnityWebRequest.Result.Success:
+                    data.onCompleted?.Invoke(data, m_isVerified, m_TryCount);
+                    break;
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.ProtocolError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    data.onRequestError?.Invoke(data, m_Request.error);
+                    break;
+            }
+            if (!string.IsNullOrEmpty(m_Downloader.handlerError))
+            {
+                data.onDownloadError?.Invoke(data, m_Downloader.handlerError);
+            }
 
             //Debug.Log($"[RunOnce]     Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frameCount: {Time.frameCount}");
         }
