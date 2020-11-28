@@ -403,3 +403,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   workerCount: 5
+  AutoStartInEditorMode: 1

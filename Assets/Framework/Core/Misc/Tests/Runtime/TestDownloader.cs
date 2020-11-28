@@ -46,7 +46,6 @@ namespace Framework.Core.Tests
 
         private void OnDestroy()
         {
-            Debug.LogWarning("------------------");
             m_Task?.Dispose();
         }
 

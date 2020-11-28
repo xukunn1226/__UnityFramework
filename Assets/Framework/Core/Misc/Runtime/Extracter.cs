@@ -17,6 +17,7 @@ namespace Framework.Core
         private const int                   m_BufferSize                = 1024 * 1024;
 
         private AppVersion                  m_Version;
+        private TextAsset                   m_BundleFileListRawData;
         private BundleFileList              m_BundleFileList;
         private int                         m_PendingExtracedFileIndex;
         private List<BundleFileInfo>        m_PendingExtractedFileList  = new List<BundleFileInfo>();
@@ -24,16 +25,44 @@ namespace Framework.Core
 
         private Coroutine                   m_Coroutine;
         private float                       m_BeginTime;
+        private IExtractListener            m_Listener;
+        public bool                         AutoStartInEditorMode;      // 仅编辑模式下可自动运行，真机模式需调用StartWork
 
         private void OnEnable()
         {
-            if (Init())
+#if UNITY_EDITOR
+            if (AutoStartInEditorMode)
                 StartWork();
+#endif
         }
 
         private void OnDisable()
         {
             Uninit();
+        }
+
+        public void SetListener(IExtractListener listener)
+        {
+            m_Listener = listener;
+        }
+
+        public void StartWork()
+        {
+            if (Init())
+            {
+                m_Listener?.OnInit(true);
+                InternalStartWork();
+            }
+            else
+            {
+                m_Listener?.OnInit(false);
+            }
+        }
+
+        public void Restart()
+        {
+            Uninit();
+            StartWork();
         }
 
         private bool Init()
@@ -47,13 +76,13 @@ namespace Framework.Core
             }
 
             // load FileList
-            TextAsset asset = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(FILELIST_NAME)}"));
-            if (asset == null || asset.text == null)
+            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(FILELIST_NAME)}"));
+            if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
             {
                 Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
                 return false;
             }
-            m_BundleFileList = BundleFileList.DeserializeFromJson(asset.text);
+            m_BundleFileList = BundleFileList.DeserializeFromJson(m_BundleFileListRawData.text);
 
             // init task workers and buffer
             m_CachedBufferList = new List<byte[]>(workerCount);
@@ -77,16 +106,21 @@ namespace Framework.Core
             if (m_Version != null)
                 AppVersion.Unload(m_Version);
 
+            if (m_BundleFileListRawData != null)
+                Resources.UnloadAsset(m_BundleFileListRawData);
             m_BundleFileList = null;
 
-            for (int i = 0; i < m_TaskWorkerList.Count; ++i)
+            if (m_TaskWorkerList != null)
             {
-                m_TaskWorkerList[i].Dispose();
+                for (int i = 0; i < m_TaskWorkerList.Count; ++i)
+                {
+                    m_TaskWorkerList[i].Dispose();
+                }
+                m_TaskWorkerList.Clear();
             }
-            m_TaskWorkerList.Clear();
         }
 
-        private void StartWork()
+        private void InternalStartWork()
         {
             // generate pending extracted file list
             GeneratePendingExtractedFileList();
@@ -134,6 +168,10 @@ namespace Framework.Core
                         continue;
                     }
 
+                    // 遇到error不再执行后续提取
+                    if (!string.IsNullOrEmpty(m_Error))
+                        continue;
+
                     // 获取尚未提取的文件
                     BundleFileInfo fileInfo = GetPendingExtractedFile();
                     if (fileInfo == null)
@@ -156,7 +194,8 @@ namespace Framework.Core
                     StartCoroutine(task.Run(info));
                 }
 
-                if (IsStillWorking() && string.IsNullOrEmpty(m_Error))
+                // 只要仍有任务在运行就等待，即使遇到error
+                if (IsStillWorking() /*&& string.IsNullOrEmpty(m_Error)*/)
                 {
                     yield return null;
                 }
@@ -189,15 +228,19 @@ namespace Framework.Core
         {
             Debug.Log("OnExtractBegin");
             m_BeginTime = Time.time;
+            m_Listener?.OnBegin(m_PendingExtractedFileList.Count);
         }
 
         private void OnExtractEnd(string error)
         {
             Debug.Log($"OnExtractEnd: {error}   {Time.time - m_BeginTime}");
+            Uninit();
+            m_Listener?.OnEnd(error);
         }
 
         private void OnProgress(ExtractTaskInfo data, ulong downedLength, ulong totalLength, float downloadSpeed)
         {
+            m_Listener?.OnFileProgress(Path.GetFileName(data.dstURL), downedLength, totalLength, downloadSpeed);
             Debug.Log($"OnProgress: {Path.GetFileName(data.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
         }
 
@@ -207,6 +250,7 @@ namespace Framework.Core
             {
                 m_Error = string.Format($"OnCompleted: failed to download {data.srcUri.ToString()}");
             }
+            m_Listener?.OnFileCompleted(Path.GetFileName(data.dstURL), success);
 
             //Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
         }
@@ -220,5 +264,14 @@ namespace Framework.Core
         {
             m_Error = string.Format($"OnDownloadError: {error} : {data.srcUri.ToString()}");
         }
+    }
+
+    public interface IExtractListener
+    {
+        void OnInit(bool success);
+        void OnBegin(int countOfFiles);
+        void OnEnd(string error);
+        void OnFileCompleted(string filename, bool success);
+        void OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);
     }
 }
