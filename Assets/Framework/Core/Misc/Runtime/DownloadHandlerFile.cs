@@ -42,7 +42,7 @@ namespace Framework.Core
             m_TempPath = m_Path + ".tmp";
             try
             {
-                m_Stream = new FileStream(m_TempPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                m_Stream = new FileStream(m_TempPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
             }
             catch (Exception e)
             {
@@ -89,7 +89,7 @@ namespace Framework.Core
             }
             File.Move(m_TempPath, m_Path);
 
-            //Debug.Log($"CompleteContent:    hash:{hash}    {downedLength}/{totalLength}   frameCount:{Time.frameCount}");
+            Debug.LogError($"CompleteContent:    hash:{hash}    {downedLength}/{totalLength}   frameCount:{Time.frameCount}");
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Framework.Core
         protected override void ReceiveContentLengthHeader(ulong contentLength)
         {
             string contentLengthHeader = m_Request.GetResponseHeader("Content-Length");
-            if(string.IsNullOrEmpty(contentLengthHeader))
+            if (string.IsNullOrEmpty(contentLengthHeader))
             { // 本地文件无法续传，总是重新获取
                 downedLength = 0;
             }
@@ -109,8 +109,8 @@ namespace Framework.Core
 
             m_LastTime = Time.time;
             m_LastDownedLength = downedLength;
-            
-            //Debug.Log($"ReceiveContentLengthHeader：{downedLength}/{totalLength}        frameCount: {Time.frameCount}");
+
+            Debug.LogError($"ReceiveContentLengthHeader：{downedLength}/{totalLength}        frameCount: {Time.frameCount}");
         }
 
         // Callback, invoked as data is received from the remote server.
@@ -143,8 +143,8 @@ namespace Framework.Core
                 m_LastTime = Time.time;
                 m_LastDownedLength = downedLength;
             }
-            
-            //Debug.Log($"ReceiveData: dataLength: {dataLength}     downedLength: {downedLength}      frameCount: {Time.frameCount}");
+
+            Debug.LogError($"ReceiveData: dataLength: {dataLength}     downedLength: {downedLength}      frameCount: {Time.frameCount}");
 
             return true;
         }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31aaa31a24f444640bde087a4bd59d51, type: 3}
-  m_Name: manifest
+  m_Name: windows_manifest
   m_EditorClassIdentifier: 
   m_Keys:
   - assets/framework/assetmanagement/runtime/tests/res/ps.ab
@@ -68,8 +68,8 @@ MonoBehaviour:
     m_Hash: 628d87e1ded0a4f91028c6e70f86b89c
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/ui/atlases/misc.ab
-    m_Crc: 4145090523
-    m_Hash: 659ec230d24cfdbd7547a287c7a277b5
+    m_Crc: 1643734112
+    m_Hash: 242eb0ad7550d643893ff689a4f32b50
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/ui/atlases/bag.ab
     m_Crc: 976709882

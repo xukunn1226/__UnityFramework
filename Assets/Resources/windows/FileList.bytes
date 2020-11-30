@@ -4,7 +4,7 @@
     {
       "BundleName": "manifest",
       "AssetPath": "windows\\manifest",
-      "FileHash": "425e2347f7a8700d60e3a78765282add",
+      "FileHash": "4dd92f00cc7a445a5fab488896007d7b",
       "ContentHash": "00000000000000000000000000000000"
     },
     {
@@ -100,8 +100,8 @@
     {
       "BundleName": "assets/application/tests/runtime/res/ui/atlases/misc.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\misc.ab",
-      "FileHash": "cd6a5b29c38b57a23fa9b7b9e3962247",
-      "ContentHash": "659ec230d24cfdbd7547a287c7a277b5"
+      "FileHash": "9a4ca40824d5cc03bc5ee6f7f9b7780c",
+      "ContentHash": "242eb0ad7550d643893ff689a4f32b50"
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",

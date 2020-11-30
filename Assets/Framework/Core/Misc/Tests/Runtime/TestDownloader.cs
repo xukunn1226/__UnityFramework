@@ -12,36 +12,53 @@ namespace Framework.Core.Tests
         private ExtractTask m_Task;
 
         // Start is called before the first frame update
+        //void Start()
+        //{
+        //    ExtractTaskInfo info = new ExtractTaskInfo();
+        //    string path = Path.Combine(Application.streamingAssetsPath, "windows/manifest");
+        //    info.srcUri = new System.Uri(path);
+        //    info.dstURL = "Assets/Temp/lilith.zip";
+        //    info.retryCount = 0;
+        //    //info.verifiedHash = "ec51729b856280fd70b3542dbb2052cb";
+        //    info.onCompleted = OnExtractCompleted;
+        //    info.onRequestError = OnRequestError;
+        //    info.onProgress = OnProgress;
+        //    info.onDownloadError = OnDownloadError;
+            
+        //    m_Task = new ExtractTask(new byte[1024*32]);
+        //    StartCoroutine(m_Task.Run(info));
+        //}
+
         IEnumerator Start()
         {
-            // UnityWebRequest www = new UnityWebRequest(Application.streamingAssetsPath + "/" + Utility.GetPlatformName() + "/assets/application/tests/runtime/res/prefabpooledobject.ab");
-            // // if(!Directory.Exists("assets/11/22"))
-            // //     Directory.CreateDirectory("assets/11/22");
-            // DownloadHandlerFile downloader = new DownloadHandlerFile(new byte[1024*1]);
-            // www.disposeDownloadHandlerOnDispose = false;
-            // www.SetRequestHeader("Range", "bytes=" + downloader.DownedLength + "-");
-            // www.downloadHandler = downloader;
-            // yield return www.SendWebRequest();
+            yield return StartCoroutine(Extract());
+        }
 
-            // www.Dispose();
+        IEnumerator Extract()
+        {
+            string filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "windows/manifest");
+            //string filePath = "https://raw.githubusercontent.com/xukunn1226/Repo/master/fasthalffloatconversion.pdf";
+            System.Uri url = new System.Uri(filePath);
+            byte[] data;
+            //if(url.ToString().Contains("://") || url.ToString().Contains(":///"))
+            {
+                Debug.LogError("111111111111");
+                
+                
+                UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(url);
+                //www.downloadHandler = new DownloadHandlerFile(Application.persistentDataPath + "/MyFile.pdf", www, new byte[1024 * 1024]);
+                yield return www.SendWebRequest();
+                Debug.LogError($"---  {www.downloadedBytes}     {www.result}");
 
 
-            ExtractTaskInfo info = new ExtractTaskInfo();
-            info.srcUri = new System.Uri(Path.Combine(Application.streamingAssetsPath, "lilith.zip"));
-            //info.srcURL = "assets/11223.pdf";
-            info.dstURL = "Assets/Temp/lilith.zip";
-            info.retryCount = 0;
-            info.verifiedHash = "ec51729b856280fd70b3542dbb2052cb";
-            info.onCompleted = OnExtractCompleted;
-            
-            m_Task = new ExtractTask(new byte[1024*32]);
-            yield return StartCoroutine(m_Task.Run(info));
-
-            // Debug.Log($"------{task.isRunning}");
-
-            //info.srcURL = Application.streamingAssetsPath + "/" + Utility.GetPlatformName() + "/assets/application/tests/runtime/res/prefabpooledobject.ab";
-            //info.dstURL = "Assets/Temp/11/33/efg.cc";
-            //yield return StartCoroutine(task.Run(info));
+                data = www.downloadHandler.data;
+                FileStream fs = new FileStream(Application.persistentDataPath + "/MyFile.pdf", FileMode.OpenOrCreate);
+                fs.Write(data, 0, data.Length);
+                fs.Flush();
+                fs.Close();
+                fs.Dispose();
+            }
+            Debug.LogError("222222222222");
         }
 
         private void OnDestroy()
@@ -51,7 +68,21 @@ namespace Framework.Core.Tests
 
         private void OnExtractCompleted(ExtractTaskInfo data, bool success, int tryCount)
         {
-            Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
+            Debug.LogError($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
         }
+
+        private void OnRequestError(ExtractTaskInfo data, string error)
+        {
+            Debug.LogError("OnRequestError----:   " + error);
+        }
+        private void OnDownloadError(ExtractTaskInfo data, string error)
+        {
+            Debug.LogError("OnDownloadError----:   " + error);
+        }
+        private void OnProgress(ExtractTaskInfo data, ulong downedLength, ulong totalLength, float downloadSpeed)
+        {
+            Debug.LogError($"OnProgress: {Path.GetFileName(data.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
+        }
+
     }
 }
