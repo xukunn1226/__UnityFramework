@@ -31,7 +31,7 @@ namespace Framework.Core.Tests
 
         IEnumerator Start()
         {
-            yield return StartCoroutine(Extract());
+            yield return StartCoroutine(ExtractFromWeb());
         }
 
         IEnumerator Extract()
@@ -53,6 +53,29 @@ namespace Framework.Core.Tests
 
                 data = www.downloadHandler.data;
                 FileStream fs = new FileStream(Application.persistentDataPath + "/MyFile.pdf", FileMode.OpenOrCreate);
+                fs.Write(data, 0, data.Length);
+                fs.Flush();
+                fs.Close();
+                fs.Dispose();
+            }
+            Debug.LogError("222222222222");
+        }
+
+        IEnumerator ExtractFromWeb()
+        {
+            string filePath = "https://raw.githubusercontent.com/xukunn1226/Repo/master/fasthalffloatconversion.pdf";
+            System.Uri url = new System.Uri(filePath);
+            if (url.ToString().Contains("://") || url.ToString().Contains(":///"))
+            {
+                Debug.LogError("111111111111");
+
+                UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(url);
+                //www.downloadHandler = new DownloadHandlerFile(Application.persistentDataPath + "/MyFile.pdf", www, new byte[1024 * 1024]);
+                yield return www.SendWebRequest();
+                Debug.LogError($"---  {www.downloadedBytes}     {www.result}");
+
+                byte[] data = www.downloadHandler.data;
+                FileStream fs = new FileStream(Application.persistentDataPath + "/fasthalffloatconversion.pdf", FileMode.Create);
                 fs.Write(data, 0, data.Length);
                 fs.Flush();
                 fs.Close();

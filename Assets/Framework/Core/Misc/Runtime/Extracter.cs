@@ -179,7 +179,7 @@ namespace Framework.Core
                         continue;
                     }
 
-                    Debug.Log($"==========NEW FILE TO BE EXTRACTING: {fileInfo.BundleName}    frame: {Time.frameCount}");
+                    //Debug.Log($"==========NEW FILE TO BE EXTRACTING: {fileInfo.BundleName}    frame: {Time.frameCount}");
 
                     // begin to extract file
                     ExtractTaskInfo info    = new ExtractTaskInfo();
