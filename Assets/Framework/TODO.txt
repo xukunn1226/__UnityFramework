@@ -80,6 +80,8 @@
     {
         return Application.internetReachability != NetworkReachability.NotReachable;
     }
+* ACT技能编辑器的制作经验分享 https://blog.uwa4d.com/archives/USparkle_ACT.html
+
 
 
 

@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Framework.Core
 {
-    public class Extracter : MonoBehaviour
+    public class FileListExtracter : MonoBehaviour
     {
         static public string                FILELIST_PATH               = "Assets/Resources";
         static public string                FILELIST_NAME               = "FileList.bytes";
