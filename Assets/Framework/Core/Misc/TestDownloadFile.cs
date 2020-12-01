@@ -4,14 +4,33 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
 using Framework.Core;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Core.Tests
 {
-    public class TestDownloader : MonoBehaviour
+    public class TestDownloadFile : MonoBehaviour
     {
+#if UNITY_EDITOR
+        [MenuItem("Tools/Build Game")]
+        static private void Build()
+        {
+            BuildPlayerOptions opts = new BuildPlayerOptions();
+            if (Directory.Exists("111"))
+                Directory.CreateDirectory("111");
+
+            opts.locationPathName = "111/Test.exe";
+            opts.targetGroup = BuildTargetGroup.Standalone;
+            opts.target = BuildTarget.StandaloneWindows;
+            opts.options = BuildOptions.Development;
+            BuildPipeline.BuildPlayer(opts);
+        }
+#endif
+
         private void OnGUI()
         {
-            if (GUI.Button(new Rect(300, 200, 200, 120), "Test1"))
+            if (GUI.Button(new Rect(300, 200, 200, 120), "Test1---------"))
             {
                 StartCoroutine(DownloadFromLocal());
             }
