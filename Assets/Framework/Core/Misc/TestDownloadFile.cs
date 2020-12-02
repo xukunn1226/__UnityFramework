@@ -17,10 +17,10 @@ namespace Framework.Core.Tests
         static private void Build()
         {
             BuildPlayerOptions opts = new BuildPlayerOptions();
-            if (Directory.Exists("111"))
-                Directory.CreateDirectory("111");
+            if (Directory.Exists("Player"))
+                Directory.CreateDirectory("Player");
 
-            opts.locationPathName = "111/Test.exe";
+            opts.locationPathName = "Player/Test.exe";
             opts.targetGroup = BuildTargetGroup.Standalone;
             opts.target = BuildTarget.StandaloneWindows;
             opts.options = BuildOptions.Development;
@@ -53,7 +53,7 @@ namespace Framework.Core.Tests
 
         IEnumerator DownloadFromLocal()
         {
-            string filePath = Path.Combine(Application.streamingAssetsPath, "windows/manifest");
+            string filePath = Path.Combine(Application.streamingAssetsPath, "fasthalffloatconversion.pdf");
             System.Uri url = new System.Uri(filePath);
             if (url.ToString().Contains("://") || url.ToString().Contains(":///"))
             {
@@ -105,7 +105,7 @@ namespace Framework.Core.Tests
 
         IEnumerator DownloadFromLocalEx()
         {
-            string filePath = Path.Combine(Application.streamingAssetsPath, "windows/manifest");
+            string filePath = Path.Combine(Application.streamingAssetsPath, "fasthalffloatconversion.pdf");
             System.Uri url = new System.Uri(filePath);
             if (url.ToString().Contains("://") || url.ToString().Contains(":///"))
             {
@@ -115,7 +115,7 @@ namespace Framework.Core.Tests
                     Directory.CreateDirectory("Rep");
 
                 UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(url);
-                www.downloadHandler = new DownloadHandlerFile("Rep/MyFile3.pdf", www, new byte[1024 * 1024]);
+                www.downloadHandler = new DownloadFile("Rep/MyFile3.pdf", www, new byte[1024 * 1024]);
                 yield return www.SendWebRequest();
                 Debug.LogError($"---  {www.downloadedBytes}     {www.result}");
             }
@@ -134,7 +134,7 @@ namespace Framework.Core.Tests
                     Directory.CreateDirectory("Rep");
 
                 UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(url);
-                www.downloadHandler = new DownloadHandlerFile("Rep/MyFile4.pdf", www, new byte[1024 * 1024]);
+                www.downloadHandler = new DownloadFile("Rep/MyFile4.pdf", www, new byte[1024 * 1024]);
                 yield return www.SendWebRequest();
                 Debug.LogError($"---  {www.downloadedBytes}     {www.result}");
             }
