@@ -50,11 +50,11 @@ namespace Framework.Core
                 m_isVerified = false;
                 m_TryCount = 0;
 
-                yield return RunOnceEx(data);
+                yield return RunOnce(data);
 
                 while (!m_isVerified && m_TryCount < data.retryCount + 1)
                 {
-                    yield return RunOnceEx(data);
+                    yield return RunOnce(data);
                 }
             }
             isRunning = false;
@@ -101,59 +101,61 @@ namespace Framework.Core
                 data.onDownloadError?.Invoke(data, m_Downloader.handlerError);
             }
 
+            Dispose();
             //Debug.Log($"[RunOnce]     Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frameCount: {Time.frameCount}");
         }
 
-        private IEnumerator RunOnceEx(ExtractTaskInfo data)
-        {
-            Debug.LogError($"url: {data.srcUri.ToString()}");
-            m_Request = UnityWebRequest.Get(data.srcUri);
-            m_Request.disposeDownloadHandlerOnDispose = true;
-            m_Request.SendWebRequest();
+        //private IEnumerator RunOnceEx(ExtractTaskInfo data)
+        //{
+        //    Debug.LogError($"url: {data.srcUri.ToString()}");
+        //    m_Request = UnityWebRequest.Get(data.srcUri);
+        //    m_Request.disposeDownloadHandlerOnDispose = true;
+        //    m_Request.SendWebRequest();
 
-            while (!m_Request.isDone)
-            {
-                Debug.LogError($"----{m_Request.result}     {Path.GetFileName(data.dstURL)}");
-                if (m_Request.result == UnityWebRequest.Result.InProgress)
-                {
-                    data.onProgress?.Invoke(data, downedLength, totalLength, downloadSpeed);
-                }
-                yield return null;
-            }
-            Debug.LogError($"===={m_Request.result}     {Path.GetFileName(data.dstURL)}");
+        //    while (!m_Request.isDone)
+        //    {
+        //        Debug.LogError($"----{m_Request.result}     {Path.GetFileName(data.dstURL)}");
+        //        if (m_Request.result == UnityWebRequest.Result.InProgress)
+        //        {
+        //            data.onProgress?.Invoke(data, downedLength, totalLength, downloadSpeed);
+        //        }
+        //        yield return null;
+        //    }
+        //    Debug.LogError($"===={m_Request.result}     {Path.GetFileName(data.dstURL)}");
 
-            // create directory
-            string dstPath = data.dstURL.Replace("\\", "/");
-            string directoryPath = dstPath.Substring(0, dstPath.LastIndexOf("/"));
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
+        //    // create directory
+        //    string dstPath = data.dstURL.Replace("\\", "/");
+        //    string directoryPath = dstPath.Substring(0, dstPath.LastIndexOf("/"));
+        //    if (!Directory.Exists(directoryPath))
+        //        Directory.CreateDirectory(directoryPath);
 
-            byte[] buf = m_Request.downloadHandler.data;
-            FileStream fs = new FileStream(dstPath, FileMode.Create);
-            fs.Write(buf, 0, buf.Length);
-            fs.Flush();
-            fs.Close();
-            fs.Dispose();
+        //    byte[] buf = m_Request.downloadHandler.data;
+        //    FileStream fs = new FileStream(dstPath, FileMode.Create);
+        //    fs.Write(buf, 0, buf.Length);
+        //    fs.Flush();
+        //    fs.Close();
+        //    fs.Dispose();
 
-            m_isVerified = string.IsNullOrEmpty(data.verifiedHash) ? true : EasyMD5.Verify(buf, data.verifiedHash);
-            ++m_TryCount;
+        //    m_isVerified = string.IsNullOrEmpty(data.verifiedHash) ? true : EasyMD5.Verify(buf, data.verifiedHash);
+        //    ++m_TryCount;
 
-            switch (m_Request.result)
-            {
-                case UnityWebRequest.Result.Success:
-                    data.onCompleted?.Invoke(data, m_isVerified, m_TryCount);
-                    break;
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.ProtocolError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    data.onRequestError?.Invoke(data, m_Request.error);
-                    break;
-            }
-            //Debug.Log($"[RunOnce]     Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frameCount: {Time.frameCount}");
-        }
+        //    switch (m_Request.result)
+        //    {
+        //        case UnityWebRequest.Result.Success:
+        //            data.onCompleted?.Invoke(data, m_isVerified, m_TryCount);
+        //            break;
+        //        case UnityWebRequest.Result.ConnectionError:
+        //        case UnityWebRequest.Result.ProtocolError:
+        //        case UnityWebRequest.Result.DataProcessingError:
+        //            data.onRequestError?.Invoke(data, m_Request.error);
+        //            break;
+        //    }
+        //    //Debug.Log($"[RunOnce]     Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frameCount: {Time.frameCount}");
+        //}
 
         public void Dispose()
         {
+            m_Downloader?.Flush();
             m_Request?.Dispose();
         }
     }

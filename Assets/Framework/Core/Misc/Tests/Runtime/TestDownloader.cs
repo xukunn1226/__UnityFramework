@@ -28,7 +28,7 @@ namespace Framework.Core.Tests
 
             if (GUI.Button(new Rect(600, 500, 200, 120), "Test4"))
             {
-                StartCoroutine(DownloadFromWebEx());
+                StartCoroutine(TestExtract());
             }
         }
 
@@ -120,6 +120,26 @@ namespace Framework.Core.Tests
                 Debug.LogError($"---  {www.downloadedBytes}     {www.result}");
             }
             Debug.LogError("222222222222");
+        }
+
+        IEnumerator TestExtract()
+        {
+            ExtractTaskInfo info = new ExtractTaskInfo();
+            info.srcUri = new System.Uri(@"https://raw.githubusercontent.com/xukunn1226/Repo/master/fasthalffloatconversion.pdf");
+            info.dstURL = string.Format($"Rep/fasthalffloatconversion.pdf");
+            info.retryCount = 3;
+
+            if (!Directory.Exists("Rep"))
+                Directory.CreateDirectory("Rep");
+
+            ExtractTask task = new ExtractTask(new byte[1024]);
+            StartCoroutine(task.Run(info));
+
+            while(task.isRunning)
+            {
+                yield return null;
+            }
+            Debug.Log("==============Done.");
         }
     }
 }

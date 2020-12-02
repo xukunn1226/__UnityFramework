@@ -118,11 +118,11 @@ namespace Framework.AssetManagement.GameBuilder
             }
             string json = BundleFileList.SerializeToJson(fileList);            
 
-            string fileListDirectory = string.Format($"{FileListExtracter.FILELIST_PATH}/{Utility.GetPlatformName()}");
+            string fileListDirectory = string.Format($"{BundleExtracter.FILELIST_PATH}/{Utility.GetPlatformName()}");
             if(!Directory.Exists(fileListDirectory))
                 Directory.CreateDirectory(fileListDirectory);
 
-            System.IO.FileStream fs = new System.IO.FileStream(string.Format($"{fileListDirectory}/{FileListExtracter.FILELIST_NAME}"), FileMode.Create);
+            System.IO.FileStream fs = new System.IO.FileStream(string.Format($"{fileListDirectory}/{BundleExtracter.FILELIST_NAME}"), FileMode.Create);
             byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
             fs.Write(bs, 0, bs.Length);
             fs.Close();

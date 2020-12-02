@@ -27,7 +27,7 @@ namespace Framework.Core
         protected DownloadHandlerFile() {}
         ~DownloadHandlerFile()
         {
-            Clean();
+            Flush();
         }
 
         public DownloadHandlerFile(string path, UnityWebRequest request, byte[] preallocatedBuffer) : base(preallocatedBuffer)
@@ -48,7 +48,7 @@ namespace Framework.Core
             {
                 Debug.LogError(e.Message);
 
-                Clean();
+                Flush();
             }
             m_Stream.Position = m_Stream.Length;
             downedLength = (ulong)m_Stream.Length;
@@ -58,10 +58,11 @@ namespace Framework.Core
             m_Request.SetRequestHeader("Range", "bytes=" + downedLength + "-");
         }
 
-        private void Clean()
+        public void Flush()
         {
             if(m_Stream != null)
             {
+                m_Stream.Flush();
                 m_Stream.Close();
                 m_Stream.Dispose();
                 m_Stream = null;
@@ -74,7 +75,7 @@ namespace Framework.Core
             m_Stream.Position = 0;
             hash = EasyMD5.Hash(m_Stream);
             
-            Clean();
+            Flush();
 
             if(!File.Exists(m_TempPath))
             {
@@ -118,7 +119,7 @@ namespace Framework.Core
         {
             if(data == null || dataLength == 0)
             {
-                Clean();
+                Flush();
                 m_InternalError = "ReceiveData: data == null || dataLength == 0";
                 Debug.LogError(m_InternalError);
                 return false;
@@ -130,7 +131,7 @@ namespace Framework.Core
             }
             catch(Exception e)
             {
-                Clean();
+                Flush();
                 m_InternalError = e.Message;
                 Debug.LogError(m_InternalError);
                 return false;
