@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 0_PlayerBuilderSetting
   m_EditorClassIdentifier: 
   outputPath: Deployment/Latest/Player
-  projectName: MyProject
+  projectName: MyProject.exe
   autoRunPlayer: 0
   development: 1
   connectWithProfiler: 0
