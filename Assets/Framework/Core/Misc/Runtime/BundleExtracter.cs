@@ -9,6 +9,7 @@ namespace Framework.Core
     {
         static public string                FILELIST_PATH               = "Assets/Resources";
         static public string                FILELIST_NAME               = "FileList.bytes";
+        static private string               BASE_APPVERSION             = "BaseAppVersion_9695e71e3a224b408c39c7a75c0fa376";
 
         [Range(1, 10)]
         public int                          workerCount                 = 3;
@@ -30,10 +31,10 @@ namespace Framework.Core
 
         private void OnEnable()
         {
-//#if UNITY_EDITOR
+#if UNITY_EDITOR
             if (AutoStartInEditorMode)
                 StartWork();
-//#endif
+#endif
         }
 
         private void OnDisable()
@@ -48,14 +49,13 @@ namespace Framework.Core
 
         public void StartWork()
         {
-            if (Init())
+            if (Init() && ShouldExtract())
             {
-                m_Listener?.OnInit(true);
                 InternalStartWork();
             }
             else
             {
-                m_Listener?.OnInit(false);
+                Uninit();
             }
         }
 
@@ -65,14 +65,23 @@ namespace Framework.Core
             StartWork();
         }
 
+        private bool ShouldExtract()
+        {
+            bool bShould = m_Version.CompareTo(PlayerPrefs.GetString(BASE_APPVERSION)) != 0;
+            m_Listener?.OnShouldExtract(ref bShould);
+            return bShould;
+        }
+
         private bool Init()
         {
+            bool bInit = true;
+
             // load appVersion
             m_Version = AppVersion.Load();
             if (m_Version == null)
             {
                 Debug.LogError("Extracter: AppVersion == null");
-                return false;
+                bInit = false;
             }
 
             // load FileList
@@ -80,22 +89,14 @@ namespace Framework.Core
             if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
             {
                 Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
-                return false;
+                bInit = false;
             }
-            m_BundleFileList = BundleFileList.DeserializeFromJson(m_BundleFileListRawData.text);
-
-            // init task workers and buffer
-            m_CachedBufferList = new List<byte[]>(workerCount);
-            for (int i = 0; i < workerCount; ++i)
+            else
             {
-                m_CachedBufferList.Add(new byte[m_BufferSize]);
+                m_BundleFileList = BundleFileList.DeserializeFromJson(m_BundleFileListRawData.text);
             }
-            m_TaskWorkerList = new List<ExtractTask>(workerCount);
-            for(int i = 0; i < workerCount; ++i)
-            {
-                m_TaskWorkerList.Add(new ExtractTask(m_CachedBufferList[i]));
-            }
-            return true;
+            m_Listener?.OnInit(bInit);
+            return bInit;
         }
 
         private void Uninit()
@@ -122,6 +123,18 @@ namespace Framework.Core
 
         private void InternalStartWork()
         {
+            // init task workers and buffer
+            m_CachedBufferList = new List<byte[]>(workerCount);
+            for (int i = 0; i < workerCount; ++i)
+            {
+                m_CachedBufferList.Add(new byte[m_BufferSize]);
+            }
+            m_TaskWorkerList = new List<ExtractTask>(workerCount);
+            for (int i = 0; i < workerCount; ++i)
+            {
+                m_TaskWorkerList.Add(new ExtractTask(m_CachedBufferList[i]));
+            }
+
             // generate pending extracted file list
             GeneratePendingExtractedFileList();
 
@@ -146,13 +159,13 @@ namespace Framework.Core
                     continue;
                 }
 
-                FileStream stream = new FileStream(filePath, FileMode.Open);
-                if(!EasyMD5.Verify(stream, bfi.FileHash))
+                using (FileStream fs = new FileStream(filePath, FileMode.Open))
                 {
-                    m_PendingExtractedFileList.Add(bfi);
+                    if (!EasyMD5.Verify(fs, bfi.FileHash))
+                    {
+                        m_PendingExtractedFileList.Add(bfi);
+                    }
                 }
-                stream.Close();
-                stream.Dispose();
             }
         }
 
@@ -226,16 +239,21 @@ namespace Framework.Core
 
         private void OnExtractBegin()
         {
-            Debug.Log("OnExtractBegin");
+            Debug.Log("Begin to extract bundle file list");
             m_BeginTime = Time.time;
             m_Listener?.OnBegin(m_PendingExtractedFileList.Count);
         }
 
         private void OnExtractEnd(string error)
         {
-            Debug.Log($"OnExtractEnd: {error}   {Time.time - m_BeginTime}");
+            // 完全无误的提取完成后打上标签
+            if (string.IsNullOrEmpty(error))
+                PlayerPrefs.SetString(BASE_APPVERSION, m_Version.ToString());
+
             Uninit();
             m_Listener?.OnEnd(error);
+            
+            Debug.Log($"End to extract bundle file list: {(string.IsNullOrEmpty(error) ? "success" : "failed")}   {Time.time - m_BeginTime}");
         }
 
         private void OnProgress(ExtractTaskInfo data, ulong downedLength, ulong totalLength, float downloadSpeed)
@@ -252,7 +270,7 @@ namespace Framework.Core
             }
             m_Listener?.OnFileCompleted(Path.GetFileName(data.dstURL), success);
 
-            //Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
+            Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
         }
 
         private void OnRequestError(ExtractTaskInfo data, string error)
@@ -268,10 +286,11 @@ namespace Framework.Core
 
     public interface IExtractListener
     {
-        void OnInit(bool success);
-        void OnBegin(int countOfFiles);
-        void OnEnd(string error);
-        void OnFileCompleted(string filename, bool success);
-        void OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);
+        void OnInit(bool success);                                                                          // 提取数据的准备工作是否完成
+        void OnShouldExtract(ref bool shouldExtract);                                                       // 根据标签判断是否需要提取数据
+        void OnBegin(int countOfFiles);                                                                     // 开始提取数据
+        void OnEnd(string error);                                                                           // 提取结束
+        void OnFileCompleted(string filename, bool success);                                                // 一个数据提取完成通知（可能成功，也可能失败）
+        void OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);   // 每个数据提取进度通知
     }
 }

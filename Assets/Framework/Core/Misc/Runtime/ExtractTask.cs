@@ -64,7 +64,6 @@ namespace Framework.Core
 
         private IEnumerator RunOnce(ExtractTaskInfo data)
         {
-            Debug.LogError($"url: {data.srcUri.ToString()}");
             m_Request = UnityWebRequest.Get(data.srcUri);
             m_Request.disposeDownloadHandlerOnDispose = true;
 
@@ -74,14 +73,12 @@ namespace Framework.Core
 
             while (!m_Request.isDone)
             {
-                Debug.LogError($"----{m_Request.result}");
                 if(m_Request.result == UnityWebRequest.Result.InProgress)
                 {
                     data.onProgress?.Invoke(data, downedLength, totalLength, downloadSpeed);
                 }
                 yield return null;
             }
-            Debug.LogError($"===={m_Request.result}");
             m_isVerified = string.IsNullOrEmpty(data.verifiedHash) ? true : string.Compare(data.verifiedHash, m_Downloader.hash) == 0;
             ++m_TryCount;
 
@@ -102,7 +99,6 @@ namespace Framework.Core
             }
 
             Dispose();
-            //Debug.Log($"[RunOnce]     Hash: {m_Downloader.hash}  name: {data.dstURL}  isRunning: {isRunning}   tryCount: {m_TryCount}     frameCount: {Time.frameCount}");
         }
 
         //private IEnumerator RunOnceEx(ExtractTaskInfo data)

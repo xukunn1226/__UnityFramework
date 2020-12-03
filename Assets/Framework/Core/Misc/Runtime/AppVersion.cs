@@ -85,5 +85,10 @@ namespace Framework.Core
 
             return 0;
         }
+
+        public int CompareTo(string other)
+        {
+            return string.Compare(other, this.ToString());
+        }
     }
 }

@@ -90,7 +90,7 @@ namespace Framework.Core
             }
             File.Move(m_TempPath, m_Path);
 
-            Debug.LogError($"CompleteContent:    hash:{hash}    {downedLength}/{totalLength}   frameCount:{Time.frameCount}");
+            //Debug.LogError($"CompleteContent:    hash:{hash}    {downedLength}/{totalLength}   frameCount:{Time.frameCount}");
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Framework.Core
             m_LastTime = Time.time;
             m_LastDownedLength = downedLength;
 
-            Debug.LogError($"ReceiveContentLengthHeader：{downedLength}/{totalLength}        frameCount: {Time.frameCount}");
+            //Debug.LogError($"ReceiveContentLengthHeader：{downedLength}/{totalLength}        frameCount: {Time.frameCount}");
         }
 
         // Callback, invoked as data is received from the remote server.
@@ -145,7 +145,7 @@ namespace Framework.Core
                 m_LastDownedLength = downedLength;
             }
 
-            Debug.LogError($"ReceiveData: dataLength: {dataLength}     downedLength: {downedLength}      frameCount: {Time.frameCount}");
+            //Debug.LogError($"ReceiveData: dataLength: {dataLength}     downedLength: {downedLength}      frameCount: {Time.frameCount}");
 
             return true;
         }
