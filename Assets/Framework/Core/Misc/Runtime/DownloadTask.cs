@@ -7,19 +7,19 @@ using UnityEngine.Networking;
 
 namespace Framework.Core
 {
-    public class ExtractTaskInfo
+    public class DownloadTaskInfo
     {
-        public Uri                                          srcUri;
-        public string                                       dstURL;
-        public string                                       verifiedHash;               // 下载文件的hash，用来验证下载文件的正确性；为空表示不需验证
-        public int                                          retryCount;                 // 重试次数
-        public Action<ExtractTaskInfo, ulong, ulong, float> onProgress;                 // arg1: downedLength; arg2: totalLength; arg3: downloadSpeed
-        public Action<ExtractTaskInfo, bool, int>           onCompleted;                // arg1: self; arg2: success or failure; arg3: tryCount
-        public Action<ExtractTaskInfo, string>              onRequestError;             // arg1: request error
-        public Action<ExtractTaskInfo, string>              onDownloadError;            // arg1: download error
+        public Uri                                              srcUri;
+        public string                                           dstURL;
+        public string                                           verifiedHash;               // 下载文件的hash，用来验证下载文件的正确性；为空表示不需验证
+        public int                                              retryCount;                 // 重试次数
+        public Action<DownloadTaskInfo, ulong, ulong, float>    onProgress;                 // arg1: downedLength; arg2: totalLength; arg3: downloadSpeed
+        public Action<DownloadTaskInfo, bool, int>              onCompleted;                // arg1: self; arg2: success or failure; arg3: tryCount
+        public Action<DownloadTaskInfo, string>                 onRequestError;             // arg1: request error
+        public Action<DownloadTaskInfo, string>                 onDownloadError;            // arg1: download error
     }
 
-    public class ExtractTask : IDisposable
+    public class DownloadTask : IDisposable
     {
         private byte[]                  m_CachedBuffer;
         private UnityWebRequest         m_Request;
@@ -34,14 +34,14 @@ namespace Framework.Core
         private ulong                   totalLength         { get { return m_Downloader?.totalLength ?? 0; } }
         public bool                     isRunning           { get; private set; }
 
-        protected ExtractTask() { }
+        protected DownloadTask() { }
 
-        public ExtractTask(byte[] preallocatedBuffer)
+        public DownloadTask(byte[] preallocatedBuffer)
         {
             m_CachedBuffer = preallocatedBuffer;       
         }
 
-        public IEnumerator Run(ExtractTaskInfo data)
+        public IEnumerator Run(DownloadTaskInfo data)
         {
             //Debug.Log($"ExtractTask: Begin Running       {Time.frameCount}");
 
@@ -62,7 +62,7 @@ namespace Framework.Core
             //Debug.Log($"ExtractTask: End Running       {Time.frameCount}");
         }
 
-        private IEnumerator RunOnce(ExtractTaskInfo data)
+        private IEnumerator RunOnce(DownloadTaskInfo data)
         {
             m_Request = UnityWebRequest.Get(data.srcUri);
             m_Request.disposeDownloadHandlerOnDispose = true;

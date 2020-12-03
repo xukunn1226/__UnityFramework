@@ -124,7 +124,7 @@ namespace Framework.Core.Tests
 
         IEnumerator TestExtract()
         {
-            ExtractTaskInfo info = new ExtractTaskInfo();
+            DownloadTaskInfo info = new DownloadTaskInfo();
             info.srcUri = new System.Uri(@"https://raw.githubusercontent.com/xukunn1226/Repo/master/fasthalffloatconversion.pdf");
             info.dstURL = string.Format($"Rep/fasthalffloatconversion.pdf");
             info.retryCount = 3;
@@ -132,7 +132,7 @@ namespace Framework.Core.Tests
             if (!Directory.Exists("Rep"))
                 Directory.CreateDirectory("Rep");
 
-            ExtractTask task = new ExtractTask(new byte[1024]);
+            DownloadTask task = new DownloadTask(new byte[1024]);
             StartCoroutine(task.Run(info));
 
             while(task.isRunning)
