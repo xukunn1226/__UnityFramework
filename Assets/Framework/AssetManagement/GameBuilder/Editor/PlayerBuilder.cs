@@ -97,7 +97,7 @@ namespace Framework.AssetManagement.GameBuilder
             CompatibilityAssetBundleManifest bundleManifest = AssetDatabase.LoadAssetAtPath<CompatibilityAssetBundleManifest>(string.Format($"Assets/Resources/{Utility.GetPlatformName()}/{Utility.GetPlatformName()}_manifest.asset"));
             if(bundleManifest == null)
             {
-                throw new ArgumentNullException($"Assets/Resources/{Utility.GetPlatformName()}/manifest.asset not found");
+                throw new ArgumentNullException($"Assets/Resources/{Utility.GetPlatformName()}/{Utility.GetPlatformName()}_manifest.asset not found");
             }
 
             BundleFileList fileList = new BundleFileList();
