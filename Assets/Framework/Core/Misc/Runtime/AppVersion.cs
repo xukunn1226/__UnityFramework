@@ -11,10 +11,13 @@ namespace Framework.Core
     // [CreateAssetMenu(menuName = "Create AppVersion.asset")]
     public class AppVersion : ScriptableObject, IComparable<AppVersion>
     {
-        public int  MainVersion;
-        public int  MinorVersion;
-        public int  Revision;
+        public int  MainVersion;        // X
+        public int  MinorVersion;       // Y
+        public int  Revision;           // Z
         public int  BuildNumber;
+
+        [NonSerialized]
+        public int  PatchNumber;        // W——补丁包序列号，由CDN获得
 
         static public AppVersion Load()
         {
