@@ -85,7 +85,7 @@ namespace Framework.AssetManagement.GameBuilder
             return report;
         }
 
-        // [MenuItem("Tests/Build FileList")]
+        // 根据CompatibilityAssetBundleManifest（Assets/Resources/PLATFORMNAME/）生成自定义的BundleFileList
         static private void BuildBundleFileList()
         {
             string directory = Application.streamingAssetsPath + "/" + Utility.GetPlatformName();
@@ -94,7 +94,7 @@ namespace Framework.AssetManagement.GameBuilder
                 throw new DirectoryNotFoundException($"{directory}");
             }
 
-            CompatibilityAssetBundleManifest bundleManifest = AssetDatabase.LoadAssetAtPath<CompatibilityAssetBundleManifest>(string.Format($"Assets/Resources/{Utility.GetPlatformName()}/manifest.asset"));
+            CompatibilityAssetBundleManifest bundleManifest = AssetDatabase.LoadAssetAtPath<CompatibilityAssetBundleManifest>(string.Format($"Assets/Resources/{Utility.GetPlatformName()}/{Utility.GetPlatformName()}_manifest.asset"));
             if(bundleManifest == null)
             {
                 throw new ArgumentNullException($"Assets/Resources/{Utility.GetPlatformName()}/manifest.asset not found");
