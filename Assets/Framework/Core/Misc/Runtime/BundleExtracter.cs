@@ -31,10 +31,10 @@ namespace Framework.Core
 
         private void OnEnable()
         {
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
             if (AutoStartInEditorMode)
                 StartWork();
-#endif
+//#endif
         }
 
         private void OnDisable()
