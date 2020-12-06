@@ -116,6 +116,10 @@ namespace Framework.AssetManagement.GameBuilder
         {
             string appSrcPath = string.Format($"{srcRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
             string appDstPath = string.Format($"{dstRootPath}/{s_Cdn_DataPath}/{Utility.GetPlatformName()}");
+            if (Directory.Exists(appDstPath))
+            {
+                Directory.Delete(appDstPath, true);
+            }
             Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
         }
 
