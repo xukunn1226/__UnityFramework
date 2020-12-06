@@ -22,6 +22,8 @@ namespace Framework.Core.Tests
             TestDicSerialize();
             TestDicDeserialize();
 
+            SerializeBackdoor();
+
             WriteLine("\nDone!");
         }
 
@@ -349,6 +351,30 @@ namespace Framework.Core.Tests
         public void TestItemInfo()
         {
             m_ItemInfo = JsonConvert.DeserializeObject<AllItemInfo>(m_TextAsset.text);
+        }
+
+        class Backdoor
+        {
+            public string MinVersion;
+            public string CurVersion;
+            public List<string> VersionHistory;
+        }
+
+        private void SerializeBackdoor()
+        {
+            Backdoor bd = new Backdoor();
+            bd.MinVersion = "0.0.0";
+            bd.CurVersion = "1.2.3";
+            bd.VersionHistory = new List<string>();
+            bd.VersionHistory.Add("0.0.1");
+            bd.VersionHistory.Add("0.0.3");
+
+            string json = JsonConvert.SerializeObject(bd, Formatting.Indented);
+
+            System.IO.FileStream fs = new System.IO.FileStream("assets/framework/core/misc/tests/runtime/backdoor.json", System.IO.FileMode.Create);
+            byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
+            fs.Write(bs, 0, bs.Length);
+            fs.Close();
         }
     }
 }

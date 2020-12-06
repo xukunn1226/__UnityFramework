@@ -4,26 +4,26 @@
     {
       "BundleName": "manifest",
       "AssetPath": "windows\\manifest",
-      "FileHash": "434ddf8d0a2d4e52df883175dc23da15",
+      "FileHash": "459580358620ed184829ca7f9446d999",
       "ContentHash": "00000000000000000000000000000000"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\atlas.ab",
-      "FileHash": "22cc6c268b99d0efdebdccd05ac6d3ad",
-      "ContentHash": "5d83280ce3a7b2738f21da4a7de90166"
+      "FileHash": "6c72857d89039e24a101c2154f425ea1",
+      "ContentHash": "27079a8ad27ea3981b46afc7c75b05a3"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas2.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\atlas2.ab",
-      "FileHash": "4e9408ebe11ee52d7239e9d3879a7de4",
-      "ContentHash": "63088a6fbb6ce4ead2801279f99e6b30"
+      "FileHash": "f77bedaee9147962f3791daabb855085",
+      "ContentHash": "ae3a87be2c11b403882e75ac580e7ab5"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/prefabpooledobject.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\prefabpooledobject.ab",
-      "FileHash": "dbf6aa6f60975fc27e9bcc3b9bdba5a9",
-      "ContentHash": "8a1a99404e92ca267bd454ece99f8831"
+      "FileHash": "af1b7db137535deca25a787c0c4984e3",
+      "ContentHash": "04d419e9b19c35ac0559b811ef9ec428"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/prefabs.ab",
@@ -34,14 +34,14 @@
     {
       "BundleName": "assets/application/tests/runtime/res/qk.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\qk.ab",
-      "FileHash": "695c0f2eb788f90dbdca8b0d11655426",
-      "ContentHash": "647aa1b32d2e3788e384bf97bd7e0c52"
+      "FileHash": "b34c67334826cef5328487689413c6b4",
+      "ContentHash": "81b67da5ec275f3c05e3c64df8d4aff0"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/scenes.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\scenes.ab",
-      "FileHash": "eb0f70965c928b25c4785ec414bfcbec",
-      "ContentHash": "cb948b89aa1ade5bec82081e1b1fe392"
+      "FileHash": "10cf1a9fc9030295896a3685d5453955",
+      "ContentHash": "ef5c8da9b2ad239e4e3124c1e3e26942"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/testspawnerring.ab",
@@ -76,32 +76,32 @@
     {
       "BundleName": "assets/application/tests/runtime/res/ui/prefabs.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\ui\\prefabs.ab",
-      "FileHash": "74dd6caa79aaa2bc3af9b322cfa3e044",
-      "ContentHash": "8674dd7c6282718b89877d4ae450ad10"
+      "FileHash": "1c9b59a33a77ec91cedfa3b6f3fbc74e",
+      "ContentHash": "0489f3b0d943f371d1debb09c437cc9b"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/ui/atlases/bag.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\bag.ab",
-      "FileHash": "60cb2673ad88f20d9dd081bf96bb3495",
-      "ContentHash": "6233e02d1b2b4c65bc41964d2a6e5bd1"
+      "FileHash": "5cb97f1b4c7ea04446c2d32596fe2b60",
+      "ContentHash": "611b4246b88e48984d2089c9cfce8d13"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/ui/atlases/common.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\common.ab",
-      "FileHash": "28f5576f133bdbed794bdcb06e5e890d",
-      "ContentHash": "16c701784a7e436dbf33feda4ee79198"
+      "FileHash": "0735d98b2a79213b63bc6d0c48dcdb04",
+      "ContentHash": "b5a35a70edd4c56de33911003e4b7343"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/ui/atlases/mail.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\mail.ab",
-      "FileHash": "cf2f814df749f270d70e36562646c298",
-      "ContentHash": "1227ad9d33ff83322d64981a8a137275"
+      "FileHash": "352628b6d7b440212927375c1b80c095",
+      "ContentHash": "03e49160d71c880e5bc10b0a5a920598"
     },
     {
       "BundleName": "assets/application/tests/runtime/res/ui/atlases/misc.ab",
       "AssetPath": "windows\\assets\\application\\tests\\runtime\\res\\ui\\atlases\\misc.ab",
-      "FileHash": "3b9527f602d4ac4797e7d3d68a88e0a8",
-      "ContentHash": "2667cbd046081880dec929cc1fd2f07a"
+      "FileHash": "f9f314498b8dc0f008ae4b3eefe23014",
+      "ContentHash": "71d29e3224821fae46bf9a6d3e0e2cf5"
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
@@ -112,8 +112,8 @@
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/builtinres.ab",
       "AssetPath": "windows\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\builtinres.ab",
-      "FileHash": "feb28f20dffcc518ad8fc792e10c53ff",
-      "ContentHash": "750df3cbc9b81d1db0a19f9f46d28608"
+      "FileHash": "c7d0539b0b968151a82165739459805d",
+      "ContentHash": "0e031ff83aac6fd7f9a8b0c54c48b956"
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/model.ab",
@@ -142,8 +142,8 @@
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
       "AssetPath": "windows\\assets\\framework\\assetmanagement\\runtime\\tests\\res\\scenes.ab",
-      "FileHash": "4d4586e69278fbb5668f372eb534bb57",
-      "ContentHash": "988d792b1d53fa75fadcdb5ea9a46fc8"
+      "FileHash": "964b95340326d2b8a48d477b8b3820d4",
+      "ContentHash": "0b8763083dcd10a6a77924def73d1037"
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",

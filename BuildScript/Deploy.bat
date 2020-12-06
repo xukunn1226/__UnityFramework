@@ -11,11 +11,11 @@ set PROJECT=-projectPath
 
 :: Backup SrcPath
 set BACKUP_SRCPATH=-SrcPath
-set BACKUP_SRCPATH_PARAMETER=Deployment\Latest
+set BACKUP_SRCPATH_PARAMETER=Deployment
 
 :: Backup DstPath
 set BACKUP_DSTPATH=-DstPath
-set BACKUP_DSTPATH_PARAMETER=Deployment\Backup
+set BACKUP_DSTPATH_PARAMETER=Deployment
 
 :: Backup AppDirectory
 set BACKUP_APPDIRECTORY=-AppDirectory
