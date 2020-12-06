@@ -58,7 +58,7 @@ namespace Framework.AssetManagement.GameBuilder
         static private void Backup(string srcRootPath, string dstRootPath, string appDirectory)
         {
             // source path
-            string appSrcPath = string.Format($"{srcRootPath}/{s_LatestAppPath}/player/{Utility.GetPlatformName()}");
+            string appSrcPath = string.Format($"{srcRootPath}/{s_LatestAppPath}/{Utility.GetPlatformName()}");
             string bundlesSrcPath = string.Format($"{srcRootPath}/{s_LatestBundlesPath}/{Utility.GetPlatformName()}");
 
             if(!Directory.Exists(appSrcPath))
