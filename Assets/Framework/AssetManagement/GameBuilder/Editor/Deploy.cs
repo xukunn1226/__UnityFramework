@@ -16,6 +16,7 @@ namespace Framework.AssetManagement.GameBuilder
         static public string s_Cdn_DataPath         = "Cdn/data";                       // �������°汾����Դ��ַ
         static public string s_Cdn_ObbPath          = "Cdn/obb";                        // ���а汾��obb��ַ
         static public string s_Cdn_PatchPath        = "Cdn/patch";                      // ����ƽ̨��������ַ
+        static public string s_BackdoorPath         = "Cdn/backdoor.json";
 
         // backup "app" and "assetbundles"
         static public void cmdDeploy()
@@ -127,7 +128,18 @@ namespace Framework.AssetManagement.GameBuilder
         /// <param name="appDirectory"></param>
         static private void BuildPatch(string rootPath, string appDirectory)
         {
+            string path = string.Format($"{rootPath}/{s_BackdoorPath}");
+            Backdoor bd = Backdoor.Deserialize(path);
+            if(bd == null)
+            {
+                Debug.LogError($"failed to load backdoor.json. {path}");
+                return;
+            }
 
+            foreach(var version in bd.VersionHistory)
+            {
+
+            }
         }
 
         /// <summary>
