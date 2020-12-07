@@ -13,8 +13,8 @@ namespace Framework.AssetManagement.GameBuilder
         static public string s_LatestAppPath        = "Latest/player";                  // 最新app地址
         static public string s_LatestBundlesPath    = "Latest/assetbundles";            // 最新资源地址
         static public string s_BackupDirectoryPath  = "Backup";                         // 备份地址
-        static public string s_Cdn_DataPath         = "Cdn/data";                       // 放置cdn最新资源地址
-        static public string s_Cdn_ObbPath          = "Cdn/obb";                        // 所有obb地址
+        static public string s_Cdn_DataPath         = "Cdn/data";                       // 放置最新版本的资源地址
+        static public string s_Cdn_ObbPath          = "Cdn/obb";                        // 所有版本的obb地址
         static public string s_Cdn_PatchPath        = "Cdn/patch";                      // 所有平台补丁包地址
 
         // backup "app" and "assetbundles"
@@ -50,6 +50,7 @@ namespace Framework.AssetManagement.GameBuilder
             PublishDataAndObb(srcRootPath, dstRootPath, appDirectory);
 
             // step3. patch generator
+            BuildPatch(srcRootPath, dstRootPath, appDirectory);
         }
 
         // srcPath: Deployment/Latest
@@ -77,23 +78,18 @@ namespace Framework.AssetManagement.GameBuilder
                 }
                 throw new System.Exception($"{bundlesSrcPath} not found");
             }
-            
-            // destination path
-            string appDstPath = string.Format($"{dstRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/app");
-            string bundlesDstPath = string.Format($"{dstRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
 
+            // clear directory
+            string bakPath = string.Format($"{dstRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}");
+            if(Directory.Exists(bakPath))
+                Directory.Delete(bakPath, true);
+
+            // check destination path
+            string appDstPath = string.Format($"{bakPath}/app");
+            string bundlesDstPath = string.Format($"{bakPath}/assetbundles");
             try
             {
-                if(Directory.Exists(appDstPath))
-                {
-                    Directory.Delete(appDstPath, true);
-                }
                 Directory.CreateDirectory(appDstPath);
-
-                if (Directory.Exists(bundlesDstPath))
-                {
-                    Directory.Delete(bundlesDstPath, true);
-                }
                 Directory.CreateDirectory(bundlesDstPath);
             }
             catch(System.Exception e)
@@ -107,6 +103,10 @@ namespace Framework.AssetManagement.GameBuilder
 
             Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
             Framework.Core.Editor.EditorUtility.CopyDirectory(bundlesSrcPath, bundlesDstPath);
+
+            // 生成file list，便于后续diff使用
+            BundleFileList.BuildBundleFileList(bundlesDstPath,
+                                               string.Format($"{bakPath}/{BundleExtracter.FILELIST_NAME}"));
         }
 
         // srcPath: Deployment/Backup/windows/0.0.1/assetbundles
@@ -120,11 +120,12 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 Directory.Delete(appDstPath, true);
             }
+            Directory.CreateDirectory(appDstPath);
             Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
         }
 
         /// <summary>
-        /// 
+        /// 根据backdoor.json生成所有历史版本与当前版本的差异数据（diff.json）
         /// </summary>
         /// <param name="srcPath"></param>
         /// <param name="dstPath"></param>
@@ -132,6 +133,34 @@ namespace Framework.AssetManagement.GameBuilder
         static private void BuildPatch(string srcPath, string dstPath, string appDirectory)
         {
 
+        }
+
+        /// <summary>
+        /// 计算两个版本的差异
+        /// e.g     baseApp: 0.0.1  curApp: 0.0.1.1
+        /// </summary>
+        /// <param name="baseApp"></param>
+        /// <param name="curApp"></param>
+        /// <returns></returns>
+        static private Diff Diff(string baseApp, string curApp)
+        {
+            string baseAppPath = string.Format($"{s_DefaultRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{baseApp}/assetbundles");
+            string curAppPath = string.Format($"{s_DefaultRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{curApp}/assetbundles");
+            if(!Directory.Exists(baseAppPath))
+            {
+                Debug.LogError($"{baseAppPath} is not exists");
+                return null;
+            }
+            if(!Directory.Exists(curAppPath))
+            {
+                Debug.LogError($"{curAppPath} is not exists");
+                return null;
+            }
+
+            Diff data = new Diff();
+            data.Desc = string.Format($"{baseApp}-{curApp}");
+
+            return null;
         }
     }
 }

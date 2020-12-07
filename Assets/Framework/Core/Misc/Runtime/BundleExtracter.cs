@@ -152,8 +152,8 @@ namespace Framework.Core
             m_PendingExtractedFileList.Clear();
             foreach(var bfi in m_BundleFileList.FileList)
             {
-                string filePath = string.Format($"{Application.persistentDataPath}/{bfi.AssetPath}");
-                if(!File.Exists(filePath))
+                string filePath = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{bfi.BundleName}");
+                if (!File.Exists(filePath))
                 {
                     m_PendingExtractedFileList.Add(bfi);
                     continue;

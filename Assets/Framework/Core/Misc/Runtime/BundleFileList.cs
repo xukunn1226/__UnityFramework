@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using UnityEngine;
+using System.IO;
 
 namespace Framework.Core
 {
@@ -8,9 +10,8 @@ namespace Framework.Core
     public class BundleFileInfo
     {
         public string           BundleName;
-        public string           AssetPath;                      // asset path relative to Assets/StreamingAssets
         public string           FileHash;
-        public string           ContentHash;
+        public long             Size;
     }
 
     [Serializable]
@@ -35,5 +36,85 @@ namespace Framework.Core
         {
             return JsonConvert.DeserializeObject<BundleFileList>(json);
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// 对指定文件夹生成FileList，并保存至savedFile
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="savedFile"></param>
+        /// <returns></returns>
+        static public bool BuildBundleFileList(string directory, string savedFile)
+        {
+            string json = GenerateBundleFileListJson(directory);
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogError($"failed to generate json of bundle file list");
+                return false;
+            }
+
+            string savedDirectory = Path.GetDirectoryName(savedFile);
+            if (!Directory.Exists(savedDirectory))
+                Directory.CreateDirectory(savedDirectory);
+            using (FileStream fs = new FileStream(savedFile, FileMode.Create))
+            {
+                byte[] data = System.Text.Encoding.UTF8.GetBytes(json);
+                fs.Write(data, 0, data.Length);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 生成指定文件夹下所有文件的BundleFileInfo Json
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        static private string GenerateBundleFileListJson(string directory)
+        {
+            directory = directory.Replace('\\', '/').TrimEnd(new char[] { '/' });
+            if (!Directory.Exists(directory))
+            {
+                throw new DirectoryNotFoundException($"{directory}");
+            }
+
+            BundleFileList fileList = new BundleFileList();
+            FileInfo[] fis = new DirectoryInfo(directory).GetFiles("*", SearchOption.AllDirectories);
+            foreach (var fi in fis)
+            {
+                if (!string.IsNullOrEmpty(fi.Extension) && string.Compare(fi.Extension, ".meta", true) == 0)
+                {
+                    continue;
+                }
+
+                string bundleName = fi.FullName.Replace('\\', '/').Substring(directory.Length + 1);
+                fileList.Add(
+                    new BundleFileInfo() { BundleName = bundleName, FileHash = GetHash(fi), Size = fi.Length }
+                    );
+            }
+            return SerializeToJson(fileList);
+        }
+
+        static private string GetHash(FileInfo fi)
+        {
+            string hash = null;
+            try
+            {
+                FileStream fs = fi.Open(FileMode.Open);
+                fs.Position = 0;
+                hash = EasyMD5.Hash(fs);
+                fs.Close();
+                fs.Dispose();
+            }
+            catch (IOException e)
+            {
+                Debug.Log($"I/O Exception: {e.Message}");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Debug.Log($"Access Exception: {e.Message}");
+            }
+            return hash;
+        }
+#endif
     }
 }

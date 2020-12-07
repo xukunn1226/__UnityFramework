@@ -273,18 +273,16 @@ namespace Framework.AssetManagement.GameBuilder
         static internal void CopyAssetBundlesToStreamingAssets(string output)
         {
             string srcPath = output;
-            string targetPath = @"Assets/StreamingAssets";
-            string finalPath = targetPath + "/" + Utility.GetPlatformName();
+            string targetPath = @"Assets/StreamingAssets";            
 
             // 删除StreamingAssets
             if (Directory.Exists(targetPath))
             {
                 Directory.Delete(targetPath, true);
             }
-            else
-            {
-                Directory.CreateDirectory(targetPath);
-            }
+            Directory.CreateDirectory(targetPath);
+
+            string finalPath = targetPath + "/" + Utility.GetPlatformName();
             Directory.CreateDirectory(finalPath);
 
             // 把源目录文件复制到目标目录

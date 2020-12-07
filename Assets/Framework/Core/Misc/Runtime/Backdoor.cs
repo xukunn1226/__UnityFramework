@@ -7,8 +7,8 @@ namespace Framework.Core
 {
     public class Backdoor
     {
-        public string       MinVersion;
-        public string       CurVersion;
+        public string       MinVersion;             // 强更版本号，只能是三位
+        public string       CurVersion;             // 当前版本号，可能是三位或四位
         public List<string> VersionHistory;
 
         static public void Serialize(string assetPath, Backdoor bd)
