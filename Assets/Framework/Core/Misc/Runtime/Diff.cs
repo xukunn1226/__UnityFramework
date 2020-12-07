@@ -11,7 +11,7 @@ namespace Framework.Core
         {
             public string           BundleName;
             public string           FileHash;
-            public int              Size;       // byte
+            public long             Size;       // byte
         }
 
         public string               Desc;

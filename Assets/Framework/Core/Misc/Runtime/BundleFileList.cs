@@ -17,7 +17,8 @@ namespace Framework.Core
     [Serializable]
     public class BundleFileList
     {
-        public int Count;
+        public int  Count;
+        public long TotalSize;
 
         public List<BundleFileInfo> FileList = new List<BundleFileInfo>();
 
@@ -25,6 +26,7 @@ namespace Framework.Core
         {
             FileList.Add(fileInfo);
             ++Count;
+            TotalSize += fileInfo.Size;
         }
 
         static public string SerializeToJson(BundleFileList data)
@@ -78,7 +80,8 @@ namespace Framework.Core
             }
 
             BundleFileList fileList = new BundleFileList();
-            FileInfo[] fis = new DirectoryInfo(directory).GetFiles("*", SearchOption.AllDirectories);
+            DirectoryInfo di = new DirectoryInfo(directory);
+            FileInfo[] fis = di.GetFiles("*", SearchOption.AllDirectories);
             foreach (var fi in fis)
             {
                 if (!string.IsNullOrEmpty(fi.Extension) && string.Compare(fi.Extension, ".meta", true) == 0)
@@ -86,7 +89,7 @@ namespace Framework.Core
                     continue;
                 }
 
-                string bundleName = fi.FullName.Replace('\\', '/').Substring(directory.Length + 1);
+                string bundleName = fi.FullName.Replace('\\', '/').Substring(di.FullName.Replace('\\', '/').Length + 1);
                 fileList.Add(
                     new BundleFileInfo() { BundleName = bundleName, FileHash = GetHash(fi), Size = fi.Length }
                     );

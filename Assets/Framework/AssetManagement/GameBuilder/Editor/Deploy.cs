@@ -10,57 +10,53 @@ namespace Framework.AssetManagement.GameBuilder
     public class Deployment
     {
         static public string s_DefaultRootPath      = "Deployment";
-        static public string s_LatestAppPath        = "Latest/player";                  // ×îĞÂappµØÖ·
-        static public string s_LatestBundlesPath    = "Latest/assetbundles";            // ×îĞÂ×ÊÔ´µØÖ·
-        static public string s_BackupDirectoryPath  = "Backup";                         // ±¸·İµØÖ·
-        static public string s_Cdn_DataPath         = "Cdn/data";                       // ·ÅÖÃ×îĞÂ°æ±¾µÄ×ÊÔ´µØÖ·
-        static public string s_Cdn_ObbPath          = "Cdn/obb";                        // ËùÓĞ°æ±¾µÄobbµØÖ·
-        static public string s_Cdn_PatchPath        = "Cdn/patch";                      // ËùÓĞÆ½Ì¨²¹¶¡°üµØÖ·
+        static public string s_LatestAppPath        = "Latest/player";                  // ï¿½ï¿½ï¿½ï¿½appï¿½ï¿½Ö·
+        static public string s_LatestBundlesPath    = "Latest/assetbundles";            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö·
+        static public string s_BackupDirectoryPath  = "Backup";                         // ï¿½ï¿½ï¿½İµï¿½Ö·
+        static public string s_Cdn_DataPath         = "Cdn/data";                       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â°æ±¾ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ö·
+        static public string s_Cdn_ObbPath          = "Cdn/obb";                        // ï¿½ï¿½ï¿½Ğ°æ±¾ï¿½ï¿½obbï¿½ï¿½Ö·
+        static public string s_Cdn_PatchPath        = "Cdn/patch";                      // ï¿½ï¿½ï¿½ï¿½Æ½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·
 
         // backup "app" and "assetbundles"
         static public void cmdDeploy()
         {
             // source path
-            string srcRootPath = s_DefaultRootPath;
-            CommandLineReader.GetCommand("SrcPath", ref srcRootPath);
-
-            // destination path
-            string dstRootPath = s_DefaultRootPath;
-            CommandLineReader.GetCommand("DstPath", ref dstRootPath);
+            string rootPath = s_DefaultRootPath;
+            CommandLineReader.GetCommand("RootPath", ref rootPath);
 
             // determine backup folder
             string appDirectory = AppVersion.EditorLoad().ToString3();
             CommandLineReader.GetCommand("AppDirectory", ref appDirectory);
 
-            Run(srcRootPath, dstRootPath, appDirectory);
+            Run(rootPath, appDirectory);
         }
 
         /// <summary>
-        /// ²¿Êğ°æ±¾£¨±¸·İ¡¢Éú³É²¹¶¡Êı¾İµÈ£©
+        /// ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½ï¿½ï¿½ï¿½İ¡ï¿½ï¿½ï¿½ï¿½É²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµÈ£ï¿½
         /// </summary>
         /// <param name="srcRootPath"></param>
         /// <param name="dstRootPath"></param>
         /// <param name="appDirectory"></param>
-        static public void Run(string srcRootPath, string dstRootPath, string appDirectory)
+        static public void Run(string srcRootPath, string appDirectory)
         {
-            // step1. ±¸·İ×îĞÂ°æ±¾
-            Backup(srcRootPath, dstRootPath, appDirectory);
+            // step1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â°æ±¾
+            Backup(srcRootPath, appDirectory);
 
-            // step2. ·¢²¼app & obb
-            PublishDataAndObb(srcRootPath, dstRootPath, appDirectory);
+            // step2. ï¿½ï¿½ï¿½ï¿½app & obb
+            PublishDataAndObb(srcRootPath, appDirectory);
 
             // step3. patch generator
-            BuildPatch(srcRootPath, dstRootPath, appDirectory);
+            BuildPatch(srcRootPath, appDirectory);
         }
 
         // srcPath: Deployment/Latest
         // dstPath: Deployment/Backup
         // appDirectory: 0.1.2.1
-        static private void Backup(string srcRootPath, string dstRootPath, string appDirectory)
+        static private void Backup(string rootPath, string appDirectory)
         {
             // source path
-            string appSrcPath = string.Format($"{srcRootPath}/{s_LatestAppPath}/{Utility.GetPlatformName()}");
-            string bundlesSrcPath = string.Format($"{srcRootPath}/{s_LatestBundlesPath}/{Utility.GetPlatformName()}");
+            string appSrcPath = string.Format($"{rootPath}/{s_LatestAppPath}/{Utility.GetPlatformName()}");
+            string bundlesSrcPath = string.Format($"{rootPath}/{s_LatestBundlesPath}/{Utility.GetPlatformName()}");
 
             if(!Directory.Exists(appSrcPath))
             {
@@ -80,7 +76,7 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             // clear directory
-            string bakPath = string.Format($"{dstRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}");
+            string bakPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}");
             if(Directory.Exists(bakPath))
                 Directory.Delete(bakPath, true);
 
@@ -104,7 +100,7 @@ namespace Framework.AssetManagement.GameBuilder
             Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
             Framework.Core.Editor.EditorUtility.CopyDirectory(bundlesSrcPath, bundlesDstPath);
 
-            // Éú³Éfile list£¬±ãÓÚºóĞødiffÊ¹ÓÃ
+            // ï¿½ï¿½ï¿½ï¿½file listï¿½ï¿½ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½diffÊ¹ï¿½ï¿½
             BundleFileList.BuildBundleFileList(bundlesDstPath,
                                                string.Format($"{bakPath}/{BundleExtracter.FILELIST_NAME}"));
         }
@@ -112,10 +108,10 @@ namespace Framework.AssetManagement.GameBuilder
         // srcPath: Deployment/Backup/windows/0.0.1/assetbundles
         // dstPath: Deployment/CDN/data/windows/
         // appDirectory: 0.1.2.1
-        static private void PublishDataAndObb(string srcRootPath, string dstRootPath, string appDirectory)
+        static private void PublishDataAndObb(string rootPath, string appDirectory)
         {
-            string appSrcPath = string.Format($"{srcRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
-            string appDstPath = string.Format($"{dstRootPath}/{s_Cdn_DataPath}/{Utility.GetPlatformName()}");
+            string appSrcPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
+            string appDstPath = string.Format($"{rootPath}/{s_Cdn_DataPath}/{Utility.GetPlatformName()}");
             if (Directory.Exists(appDstPath))
             {
                 Directory.Delete(appDstPath, true);
@@ -125,27 +121,26 @@ namespace Framework.AssetManagement.GameBuilder
         }
 
         /// <summary>
-        /// ¸ù¾İbackdoor.jsonÉú³ÉËùÓĞÀúÊ·°æ±¾Óëµ±Ç°°æ±¾µÄ²îÒìÊı¾İ£¨diff.json£©
+        /// ï¿½ï¿½ï¿½ï¿½backdoor.jsonï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½æ±¾ï¿½ëµ±Ç°ï¿½æ±¾ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½diff.jsonï¿½ï¿½
         /// </summary>
-        /// <param name="srcPath"></param>
-        /// <param name="dstPath"></param>
+        /// <param name="rootPath"></param>
         /// <param name="appDirectory"></param>
-        static private void BuildPatch(string srcPath, string dstPath, string appDirectory)
+        static private void BuildPatch(string rootPath, string appDirectory)
         {
 
         }
 
         /// <summary>
-        /// ¼ÆËãÁ½¸ö°æ±¾µÄ²îÒì
+        /// è®¡ç®—ä¸¤ä¸ªç‰ˆæœ¬çš„å·®å¼‚æ•°æ®
         /// e.g     baseApp: 0.0.1  curApp: 0.0.1.1
         /// </summary>
         /// <param name="baseApp"></param>
         /// <param name="curApp"></param>
         /// <returns></returns>
-        static private Diff Diff(string baseApp, string curApp)
+        static private Diff Diff(string rootPath, string baseApp, string curApp)
         {
-            string baseAppPath = string.Format($"{s_DefaultRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{baseApp}/assetbundles");
-            string curAppPath = string.Format($"{s_DefaultRootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{curApp}/assetbundles");
+            string baseAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{baseApp}/assetbundles");
+            string curAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{curApp}/assetbundles");
             if(!Directory.Exists(baseAppPath))
             {
                 Debug.LogError($"{baseAppPath} is not exists");
@@ -157,10 +152,62 @@ namespace Framework.AssetManagement.GameBuilder
                 return null;
             }
 
+            string baseFileListPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{baseApp}/{BundleExtracter.FILELIST_NAME}");
+            if(!File.Exists(baseFileListPath))
+            {
+                Debug.LogError($"{baseFileListPath} not found");
+                return null;
+            }
+            
+            string curFileListPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{curApp}/{BundleExtracter.FILELIST_NAME}");
+            if (!File.Exists(curFileListPath))
+            {
+                Debug.LogError($"{curFileListPath} not found");
+                return null;
+            }
+
+            string baseFileListJson = File.ReadAllText(baseFileListPath);
+            BundleFileList baseBFL = BundleFileList.DeserializeFromJson(baseFileListJson);
+            if(baseBFL == null)
+            {
+                Debug.LogError($"can't parse to json. {baseFileListPath}");
+                return null;
+            }
+
+            string curFileListJson = File.ReadAllText(curFileListPath);
+            BundleFileList curBFL = BundleFileList.DeserializeFromJson(curFileListJson);
+            if(curBFL == null)
+            {
+                Debug.LogError($"can't parse to json. {curFileListPath}");
+                return null;
+            }
+
             Diff data = new Diff();
             data.Desc = string.Format($"{baseApp}-{curApp}");
-
-            return null;
+            foreach(var bfi in curBFL.FileList)
+            {
+                BundleFileInfo findIt = baseBFL.FileList.Find(item => item.BundleName == bfi.BundleName);
+                if (findIt == null)
+                {
+                    data.AddedFileList.Add(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
+                }
+                else
+                {
+                    if(string.Compare(findIt.FileHash, bfi.FileHash) != 0)
+                    {
+                        data.UpdatedFileList.Add(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
+                    }
+                }
+            }
+            foreach(var bfi in baseBFL.FileList)
+            {
+                BundleFileInfo findIt = curBFL.FileList.Find(item => item.BundleName == bfi.BundleName);
+                if(findIt == null)
+                {
+                    data.DeletedFileList.Add(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
+                }
+            }
+            return data;
         }
     }
 }
