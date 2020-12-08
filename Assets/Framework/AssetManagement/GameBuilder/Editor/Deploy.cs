@@ -126,20 +126,58 @@ namespace Framework.AssetManagement.GameBuilder
         /// </summary>
         /// <param name="rootPath"></param>
         /// <param name="appDirectory"></param>
-        static private void BuildPatch(string rootPath, string appDirectory)
+        static private bool BuildPatch(string rootPath, string appDirectory)
         {
             string path = string.Format($"{rootPath}/{s_BackdoorPath}");
             Backdoor bd = Backdoor.Deserialize(path);
             if(bd == null)
             {
                 Debug.LogError($"failed to load backdoor.json. {path}");
-                return;
+                return false;
             }
 
+            string targetDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{appDirectory}");
+            if (!Directory.Exists(targetDirectory))
+                Directory.CreateDirectory(targetDirectory);
+
+            // 根据所有历史版本记录，生成最新版本与其他版本的差异数据
+            AppVersion curVersion = new AppVersion(appDirectory);
             foreach(var version in bd.VersionHistory)
             {
+                AppVersion historyVer = new AppVersion(version);
+                if(historyVer.CompareTo(bd.MinVersion) >= 0 &&
+                   historyVer.CompareTo(curVersion) < 0)
+                {
+                    Diff data = Diff(rootPath, version, appDirectory);
+                    if(data == null)
+                    {
+                        Debug.LogError($"failed to Diff between {version} and {appDirectory}");
+                        return false;
+                    }
+                    else
+                    {
+                        string historyVerDirectory = string.Format($"{targetDirectory}/{version}");
+                        Directory.CreateDirectory(historyVerDirectory);
 
+                        Framework.Core.Diff.Serialize(string.Format($"{historyVerDirectory}/diff.json"), data);
+
+                        string curAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
+                        foreach (var dfi in data.AddedFileList)
+                        {
+                            try
+                            {
+                                File.Copy(string.Format($"{curAppPath}/{dfi.BundleName}"), string.Format($"{historyVerDirectory}/{dfi.BundleName}"), true);
+                            }
+                            catch(System.Exception e)
+                            {
+                                Debug.LogError(e.Message);
+                                return false;
+                            }
+                        }
+                    }
+                }
             }
+            return true;
         }
 
         /// <summary>

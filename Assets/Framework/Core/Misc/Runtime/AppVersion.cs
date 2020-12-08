@@ -173,5 +173,15 @@ namespace Framework.Core
         {
             return string.Compare(other, this.ToString3());
         }
+
+        static public int CompareTo(AppVersion lhs, AppVersion rhs)
+        {
+            return lhs.CompareTo(rhs);
+        }
+
+        static public int CompareTo(string lhs, string rhs)
+        {
+            return new AppVersion(lhs).CompareTo(new AppVersion(rhs));
+        }
     }
 }

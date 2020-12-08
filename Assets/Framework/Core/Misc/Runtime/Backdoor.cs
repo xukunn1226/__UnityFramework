@@ -31,8 +31,8 @@ namespace Framework.Core
             }
 
             System.IO.FileStream fs = new System.IO.FileStream(assetPath, System.IO.FileMode.Open);
-            byte[] array = new byte[2048];
-            int size = fs.Read(array, 0, 2048);
+            byte[] array = new byte[1024 * 32];
+            int size = fs.Read(array, 0, 1024 * 32);
             fs.Close();
             fs.Dispose();
             
