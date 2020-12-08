@@ -41,13 +41,17 @@ namespace Framework.Core
         {
             return AssetDatabase.LoadAssetAtPath<AppVersion>("Assets/Resources/AppVersion.asset");
         }
-#endif        
 
-        protected AppVersion()
-        {}
+        public void Set(int mainVersion, int minorVersion, int revision)
+        {
+            MainVersion     = mainVersion;
+            MinorVersion    = minorVersion;
+            Revision        = revision;
+            HotfixNumber    = 0;
+            ++BuildNumber;
+        }
 
-        // format: "0.1.0", "0.0.1.2"
-        public AppVersion(string version)
+        public void Set(string version)
         {
             string[] str = version.Split(new char[] { '.' });
             if (str.Length != 3 && str.Length != 4)
@@ -60,7 +64,7 @@ namespace Framework.Core
                     int n = int.Parse(str[0], System.Globalization.NumberStyles.Integer);
                     MainVersion = n;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.LogError($"AppVersion construct: {e.Message}");
                 }
@@ -104,16 +108,6 @@ namespace Framework.Core
                     Debug.LogError($"AppVersion construct: {e.Message}");
                 }
             }
-        }
-
-#if UNITY_EDITOR
-        public void Set(int mainVersion, int minorVersion, int revision)
-        {
-            MainVersion     = mainVersion;
-            MinorVersion    = minorVersion;
-            Revision        = revision;
-            HotfixNumber    = 0;
-            ++BuildNumber;
         }
 
         public void Grow()
@@ -177,11 +171,6 @@ namespace Framework.Core
         static public int CompareTo(AppVersion lhs, AppVersion rhs)
         {
             return lhs.CompareTo(rhs);
-        }
-
-        static public int CompareTo(string lhs, string rhs)
-        {
-            return new AppVersion(lhs).CompareTo(new AppVersion(rhs));
         }
     }
 }

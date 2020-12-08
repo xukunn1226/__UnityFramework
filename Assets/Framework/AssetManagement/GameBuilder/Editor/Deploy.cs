@@ -10,13 +10,13 @@ namespace Framework.AssetManagement.GameBuilder
     public class Deployment
     {
         static public string s_DefaultRootPath      = "Deployment";
-        static public string s_LatestAppPath        = "Latest/player";                  // ����app��ַ
-        static public string s_LatestBundlesPath    = "Latest/assetbundles";            // ������Դ��ַ
-        static public string s_BackupDirectoryPath  = "Backup";                         // ���ݵ�ַ
-        static public string s_Cdn_DataPath         = "Cdn/data";                       // �������°汾����Դ��ַ
-        static public string s_Cdn_ObbPath          = "Cdn/obb";                        // ���а汾��obb��ַ
-        static public string s_Cdn_PatchPath        = "Cdn/patch";                      // ����ƽ̨��������ַ
-        static public string s_BackdoorPath         = "Cdn/backdoor.json";
+        static public string s_LatestAppPath        = "latest/player";                  // ����app��ַ
+        static public string s_LatestBundlesPath    = "latest/assetbundles";            // ������Դ��ַ
+        static public string s_BackupDirectoryPath  = "backup";                         // ���ݵ�ַ
+        static public string s_Cdn_DataPath         = "cdn/data";                       // �������°汾����Դ��ַ
+        static public string s_Cdn_ObbPath          = "cdn/obb";                        // ���а汾��obb��ַ
+        static public string s_Cdn_PatchPath        = "cdn/patch";                      // ����ƽ̨��������ַ
+        static public string s_BackdoorPath         = "cdn/backdoor.json";
 
         // backup "app" and "assetbundles"
         static public void cmdDeploy()
@@ -137,15 +137,20 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             string targetDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{appDirectory}");
-            if (!Directory.Exists(targetDirectory))
-                Directory.CreateDirectory(targetDirectory);
+            if (Directory.Exists(targetDirectory))
+            {
+                Directory.Delete(targetDirectory, true);
+            }
+            Directory.CreateDirectory(targetDirectory);
 
             // 根据所有历史版本记录，生成最新版本与其他版本的差异数据
-            AppVersion curVersion = new AppVersion(appDirectory);
+            AppVersion curVersion = ScriptableObject.CreateInstance<AppVersion>();
+            curVersion.Set(appDirectory);
             foreach(var version in bd.VersionHistory)
             {
-                AppVersion historyVer = new AppVersion(version);
-                if(historyVer.CompareTo(bd.MinVersion) >= 0 &&
+                AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
+                historyVer.Set(version);
+                if (historyVer.CompareTo(bd.MinVersion) >= 0 &&
                    historyVer.CompareTo(curVersion) < 0)
                 {
                     Diff data = Diff(rootPath, version, appDirectory);

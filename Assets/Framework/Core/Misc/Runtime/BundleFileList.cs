@@ -41,7 +41,7 @@ namespace Framework.Core
 
 #if UNITY_EDITOR
         /// <summary>
-        /// 对指定文件夹生成FileList，并保存至savedFile
+        /// 锟斤拷指锟斤拷锟侥硷拷锟斤拷锟斤拷锟斤拷FileList锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷savedFile
         /// </summary>
         /// <param name="directory"></param>
         /// <param name="savedFile"></param>
@@ -67,7 +67,7 @@ namespace Framework.Core
         }
 
         /// <summary>
-        /// 生成指定文件夹下所有文件的BundleFileInfo Json
+        /// 锟斤拷锟斤拷指锟斤拷锟侥硷拷锟斤拷锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷BundleFileInfo Json
         /// </summary>
         /// <param name="directory"></param>
         /// <returns></returns>

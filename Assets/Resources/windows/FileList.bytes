@@ -1,11 +1,11 @@
 {
   "Count": 36,
-  "TotalSize": 27163048,
+  "TotalSize": 27163047,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "eb864bc4ad810f981e1225fa168d202f",
-      "Size": 2912
+      "FileHash": "90a44fdb2ad4b17bacfd460ca1a9c180",
+      "Size": 2911
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
