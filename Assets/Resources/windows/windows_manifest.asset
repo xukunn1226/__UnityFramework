@@ -59,8 +59,8 @@ MonoBehaviour:
     m_Dependencies:
     - assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/ui/atlases/misc.ab
-    m_Crc: 95443164
-    m_Hash: 2667cbd046081880dec929cc1fd2f07a
+    m_Crc: 1449248524
+    m_Hash: 8987c9d97269cc2327fe30c64f220824
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/ui/prefabs.ab
     m_Crc: 2348598435
