@@ -118,7 +118,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             // setup new settings
             // PlayerSettings.bundleVersion = para.bundleVersion;
-            PlayerSettings.bundleVersion = version.ToString3();
+            PlayerSettings.bundleVersion = version.ToString();
 
             if(buildTargetGroup == BuildTargetGroup.Android || buildTargetGroup == BuildTargetGroup.iOS)
             {

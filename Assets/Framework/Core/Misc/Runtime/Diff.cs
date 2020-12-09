@@ -15,9 +15,28 @@ namespace Framework.Core
         }
 
         public string               Desc;
-        public List<DiffFileInfo>   DeletedFileList = new List<DiffFileInfo>();
+        public long                 Size;
+
+        public List<DiffFileInfo>   AddedFileList = new List<DiffFileInfo>();
         public List<DiffFileInfo>   UpdatedFileList = new List<DiffFileInfo>();
-        public List<DiffFileInfo>   AddedFileList   = new List<DiffFileInfo>();
+        public List<DiffFileInfo>   DeletedFileList = new List<DiffFileInfo>();
+
+        public void PushAddedFile(DiffFileInfo dfi)
+        {
+            AddedFileList.Add(dfi);
+            Size += dfi.Size;
+        }
+
+        public void PushUpdatedFile(DiffFileInfo dfi)
+        {
+            UpdatedFileList.Add(dfi);
+            Size += dfi.Size;
+        }
+
+        public void PushDeletedFile(DiffFileInfo dfi)
+        {
+            DeletedFileList.Add(dfi);
+        }
 
         static public void Serialize(string assetPath, Diff diff)
         {

@@ -36,21 +36,6 @@ namespace Framework.Core
             Resources.UnloadAsset(version);
         }
 
-#if UNITY_EDITOR
-        static public AppVersion EditorLoad()
-        {
-            return AssetDatabase.LoadAssetAtPath<AppVersion>("Assets/Resources/AppVersion.asset");
-        }
-
-        public void Set(int mainVersion, int minorVersion, int revision)
-        {
-            MainVersion     = mainVersion;
-            MinorVersion    = minorVersion;
-            Revision        = revision;
-            HotfixNumber    = 0;
-            ++BuildNumber;
-        }
-
         public void Set(string version)
         {
             string[] str = version.Split(new char[] { '.' });
@@ -110,6 +95,21 @@ namespace Framework.Core
             }
         }
 
+#if UNITY_EDITOR
+        static public AppVersion EditorLoad()
+        {
+            return AssetDatabase.LoadAssetAtPath<AppVersion>("Assets/Resources/AppVersion.asset");
+        }
+
+        public void Set(int mainVersion, int minorVersion, int revision)
+        {
+            MainVersion     = mainVersion;
+            MinorVersion    = minorVersion;
+            Revision        = revision;
+            HotfixNumber    = 0;
+            ++BuildNumber;
+        }
+
         public void Grow()
         {
             ++Revision;
@@ -128,14 +128,12 @@ namespace Framework.Core
         }
 #endif
 
-        public string ToString3()
+        new public string ToString()
         {
-            return string.Format($"{MainVersion}.{MinorVersion}.{Revision}");
-        }
-
-        public string ToString4()
-        {
-            return string.Format($"{MainVersion}.{MinorVersion}.{Revision}.{HotfixNumber}");
+            if(HotfixNumber == 0)
+                return string.Format($"{MainVersion}.{MinorVersion}.{Revision}");
+            else
+                return string.Format($"{MainVersion}.{MinorVersion}.{Revision}.{HotfixNumber}");
         }
 
         /// <summary>
@@ -165,7 +163,9 @@ namespace Framework.Core
 
         public int CompareTo(string other)
         {
-            return string.Compare(other, this.ToString3());
+            AppVersion version = ScriptableObject.CreateInstance<AppVersion>();
+            version.Set(other);
+            return this.CompareTo(version);
         }
 
         static public int CompareTo(AppVersion lhs, AppVersion rhs)

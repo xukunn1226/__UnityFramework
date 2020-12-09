@@ -26,34 +26,50 @@ namespace Framework.AssetManagement.GameBuilder
             CommandLineReader.GetCommand("RootPath", ref rootPath);
 
             // determine backup folder
-            string appDirectory = AppVersion.EditorLoad().ToString3();
+            string appDirectory = AppVersion.EditorLoad().ToString();
             CommandLineReader.GetCommand("AppDirectory", ref appDirectory);
 
             Run(rootPath, appDirectory);
         }
 
         /// <summary>
-        /// ����汾�����ݡ����ɲ������ݵȣ�
+        /// 执行部署流程（备份、发布、生成diff）
         /// </summary>
         /// <param name="srcRootPath"></param>
         /// <param name="dstRootPath"></param>
         /// <param name="appDirectory"></param>
-        static public void Run(string srcRootPath, string appDirectory)
+        static public bool Run(string srcRootPath, string appDirectory)
         {
-            // step1. �������°汾
-            Backup(srcRootPath, appDirectory);
+            bool success;
 
-            // step2. ����app & obb
-            PublishDataAndObb(srcRootPath, appDirectory);
+            success = Backup(srcRootPath, appDirectory);
 
-            // step3. patch generator
-            BuildPatch(srcRootPath, appDirectory);
+            if(success)
+                success = PublishDataAndObb(srcRootPath, appDirectory);
+
+            if(success)
+                success = BuildPatch(srcRootPath, appDirectory);
+
+            if(success)
+            {
+                Debug.Log($"Deploy operator is finished successfully");
+            }
+            else
+            {
+                if (Application.isBatchMode)
+                {
+                    EditorApplication.Exit(1);
+                }
+                Debug.LogError($"Deploy operator occurs fetal error: {appDirectory}");
+            }
+
+            return success;
         }
 
         // srcPath: Deployment/Latest
         // dstPath: Deployment/Backup
         // appDirectory: 0.1.2.1
-        static private void Backup(string rootPath, string appDirectory)
+        static private bool Backup(string rootPath, string appDirectory)
         {
             // source path
             string appSrcPath = string.Format($"{rootPath}/{s_LatestAppPath}/{Utility.GetPlatformName()}");
@@ -61,68 +77,66 @@ namespace Framework.AssetManagement.GameBuilder
 
             if(!Directory.Exists(appSrcPath))
             {
-                if(Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
-                throw new System.Exception($"{appSrcPath} not found");
+                Debug.LogError($"{appSrcPath} not found");
+                return false;
             }
             if(!Directory.Exists(bundlesSrcPath))
             {
-                if(Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
-                throw new System.Exception($"{bundlesSrcPath} not found");
+                Debug.LogError($"{bundlesSrcPath} not found");
+                return false;
             }
 
-            // clear directory
+            // clear and create directory
             string bakPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}");
-            if(Directory.Exists(bakPath))
-                Directory.Delete(bakPath, true);
-
-            // check destination path
             string appDstPath = string.Format($"{bakPath}/app");
             string bundlesDstPath = string.Format($"{bakPath}/assetbundles");
             try
             {
+                if (Directory.Exists(bakPath))
+                    Directory.Delete(bakPath, true);
                 Directory.CreateDirectory(appDstPath);
                 Directory.CreateDirectory(bundlesDstPath);
+
+                Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
+                Framework.Core.Editor.EditorUtility.CopyDirectory(bundlesSrcPath, bundlesDstPath);
             }
-            catch(System.Exception e)
+            catch (System.Exception e)
             {
-                if(Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
                 Debug.LogError(e.Message);
+                return false;
             }
 
-            Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
-            Framework.Core.Editor.EditorUtility.CopyDirectory(bundlesSrcPath, bundlesDstPath);
-
-            // ����file list�����ں���diffʹ��
-            BundleFileList.BuildBundleFileList(bundlesDstPath,
-                                               string.Format($"{bakPath}/{BundleExtracter.FILELIST_NAME}"));
+            // 生成所有资源文件相关信息（FileList）
+            return BundleFileList.BuildBundleFileList(bundlesDstPath,
+                                                      string.Format($"{bakPath}/{BundleExtracter.FILELIST_NAME}"));
         }
 
         // srcPath: Deployment/Backup/windows/0.0.1/assetbundles
         // dstPath: Deployment/CDN/data/windows/
         // appDirectory: 0.1.2.1
-        static private void PublishDataAndObb(string rootPath, string appDirectory)
+        static private bool PublishDataAndObb(string rootPath, string appDirectory)
         {
             string appSrcPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
             string appDstPath = string.Format($"{rootPath}/{s_Cdn_DataPath}/{Utility.GetPlatformName()}");
-            if (Directory.Exists(appDstPath))
+            try
             {
-                Directory.Delete(appDstPath, true);
+                if (Directory.Exists(appDstPath))
+                {
+                    Directory.Delete(appDstPath, true);
+                }
+                Directory.CreateDirectory(appDstPath);
+                Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
             }
-            Directory.CreateDirectory(appDstPath);
-            Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
+            catch(System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
-        /// ����backdoor.json����������ʷ�汾�뵱ǰ�汾�Ĳ������ݣ�diff.json��
+        /// 生成其他版本到当前版本（appDirectory）的差异数据
         /// </summary>
         /// <param name="rootPath"></param>
         /// <param name="appDirectory"></param>
@@ -137,11 +151,19 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             string targetDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{appDirectory}");
-            if (Directory.Exists(targetDirectory))
+            try
             {
-                Directory.Delete(targetDirectory, true);
+                if (Directory.Exists(targetDirectory))
+                {
+                    Directory.Delete(targetDirectory, true);
+                }
+                Directory.CreateDirectory(targetDirectory);
             }
-            Directory.CreateDirectory(targetDirectory);
+            catch(System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
 
             // 根据所有历史版本记录，生成最新版本与其他版本的差异数据
             AppVersion curVersion = ScriptableObject.CreateInstance<AppVersion>();
@@ -164,16 +186,38 @@ namespace Framework.AssetManagement.GameBuilder
                         string historyVerDirectory = string.Format($"{targetDirectory}/{version}");
                         Directory.CreateDirectory(historyVerDirectory);
 
+                        // 序列号diff.json
                         Framework.Core.Diff.Serialize(string.Format($"{historyVerDirectory}/diff.json"), data);
 
+                        // 传输补丁数据
                         string curAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
                         foreach (var dfi in data.AddedFileList)
                         {
                             try
                             {
-                                File.Copy(string.Format($"{curAppPath}/{dfi.BundleName}"), string.Format($"{historyVerDirectory}/{dfi.BundleName}"), true);
+                                string dstFilename = string.Format($"{historyVerDirectory}/{dfi.BundleName}");
+                                string dstDirectory = Path.GetDirectoryName(dstFilename);
+                                if (!Directory.Exists(dstDirectory))
+                                    Directory.CreateDirectory(dstDirectory);
+                                File.Copy(string.Format($"{curAppPath}/{dfi.BundleName}"), dstFilename, true);
                             }
                             catch(System.Exception e)
+                            {
+                                Debug.LogError(e.Message);
+                                return false;
+                            }
+                        }
+                        foreach (var dfi in data.UpdatedFileList)
+                        {
+                            try
+                            {
+                                string dstFilename = string.Format($"{historyVerDirectory}/{dfi.BundleName}");
+                                string dstDirectory = Path.GetDirectoryName(dstFilename);
+                                if (!Directory.Exists(dstDirectory))
+                                    Directory.CreateDirectory(dstDirectory);
+                                File.Copy(string.Format($"{curAppPath}/{dfi.BundleName}"), dstFilename, true);
+                            }
+                            catch (System.Exception e)
                             {
                                 Debug.LogError(e.Message);
                                 return false;
@@ -244,13 +288,13 @@ namespace Framework.AssetManagement.GameBuilder
                 BundleFileInfo findIt = baseBFL.FileList.Find(item => item.BundleName == bfi.BundleName);
                 if (findIt == null)
                 {
-                    data.AddedFileList.Add(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
+                    data.PushAddedFile(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
                 }
                 else
                 {
                     if(string.Compare(findIt.FileHash, bfi.FileHash) != 0)
                     {
-                        data.UpdatedFileList.Add(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
+                        data.PushUpdatedFile(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
                     }
                 }
             }
@@ -259,7 +303,7 @@ namespace Framework.AssetManagement.GameBuilder
                 BundleFileInfo findIt = curBFL.FileList.Find(item => item.BundleName == bfi.BundleName);
                 if(findIt == null)
                 {
-                    data.DeletedFileList.Add(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
+                    data.PushDeletedFile(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
                 }
             }
             return data;

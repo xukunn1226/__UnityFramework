@@ -248,7 +248,7 @@ namespace Framework.Core
         {
             // 完全无误的提取完成后打上标签
             if (string.IsNullOrEmpty(error))
-                PlayerPrefs.SetString(BASE_APPVERSION, m_Version.ToString3());
+                PlayerPrefs.SetString(BASE_APPVERSION, m_Version.ToString());
 
             Uninit();
             m_Listener?.OnEnd(error);

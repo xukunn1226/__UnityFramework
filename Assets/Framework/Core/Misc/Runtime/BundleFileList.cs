@@ -55,13 +55,21 @@ namespace Framework.Core
                 return false;
             }
 
-            string savedDirectory = Path.GetDirectoryName(savedFile);
-            if (!Directory.Exists(savedDirectory))
-                Directory.CreateDirectory(savedDirectory);
-            using (FileStream fs = new FileStream(savedFile, FileMode.Create))
+            try
             {
-                byte[] data = System.Text.Encoding.UTF8.GetBytes(json);
-                fs.Write(data, 0, data.Length);
+                string savedDirectory = Path.GetDirectoryName(savedFile);
+                if (!Directory.Exists(savedDirectory))
+                    Directory.CreateDirectory(savedDirectory);
+                using (FileStream fs = new FileStream(savedFile, FileMode.Create))
+                {
+                    byte[] data = System.Text.Encoding.UTF8.GetBytes(json);
+                    fs.Write(data, 0, data.Length);
+                }
+            }
+            catch(System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
             }
             return true;
         }

@@ -158,9 +158,9 @@ namespace Framework.AssetManagement.GameBuilder
                 {
                     GameBuilder.BuildGame((GameBuilderSetting)target);
 
-                    if(m_deployProp.boolValue)
+                    if (m_deployProp.boolValue)
                     {
-                        Deployment.Run(Deployment.s_DefaultRootPath, AppVersion.EditorLoad().ToString3());
+                        Deployment.Run(Deployment.s_DefaultRootPath, AppVersion.EditorLoad().ToString());
                     }
                 }
                 EditorGUI.EndDisabledGroup();
@@ -171,7 +171,7 @@ namespace Framework.AssetManagement.GameBuilder
         private void DrawDeploymentSetting()
         {
             m_deployProp.boolValue = EditorGUILayout.Toggle("Deploy", m_deployProp.boolValue);
-            string dstPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_BackupDirectoryPath}/{Framework.Core.Utility.GetPlatformName()}/{AppVersion.EditorLoad().ToString3()}（视AppVersion而定）");
+            string dstPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_BackupDirectoryPath}/{Framework.Core.Utility.GetPlatformName()}/{AppVersion.EditorLoad().ToString()}（视AppVersion而定）");
             EditorGUILayout.TextField("备份目录", dstPath);
         }
     }
