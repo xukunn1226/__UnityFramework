@@ -10,12 +10,12 @@ namespace Framework.AssetManagement.GameBuilder
     public class Deployment
     {
         static public string s_DefaultRootPath      = "Deployment";
-        static public string s_LatestAppPath        = "latest/player";                  // ����app��ַ
-        static public string s_LatestBundlesPath    = "latest/assetbundles";            // ������Դ��ַ
-        static public string s_BackupDirectoryPath  = "backup";                         // ���ݵ�ַ
-        static public string s_Cdn_DataPath         = "cdn/data";                       // �������°汾����Դ��ַ
-        static public string s_Cdn_ObbPath          = "cdn/obb";                        // ���а汾��obb��ַ
-        static public string s_Cdn_PatchPath        = "cdn/patch";                      // ����ƽ̨��������ַ
+        static public string s_LatestAppPath        = "latest/player";                  // 当前编译版本的app
+        static public string s_LatestBundlesPath    = "latest/assetbundles";            // 当前编译版本的bundles
+        static public string s_BackupDirectoryPath  = "backup";                         // 
+        static public string s_Cdn_DataPath         = "cdn/data";                       // 最新版本的资源数据
+        static public string s_Cdn_ObbPath          = "cdn/obb";                        // 所有版本的obb
+        static public string s_Cdn_PatchPath        = "cdn/patch";                      // 所有平台的补丁数据
         static public string s_BackdoorPath         = "cdn/backdoor.json";
 
         // backup "app" and "assetbundles"
@@ -66,9 +66,12 @@ namespace Framework.AssetManagement.GameBuilder
             return success;
         }
 
-        // srcPath: Deployment/Latest
-        // dstPath: Deployment/Backup
-        // appDirectory: 0.1.2.1
+        /// <summary>
+        /// 从Latest中备份数据至指定文件夹，并计算其MD5
+        /// </summary>
+        /// <param name="rootPath"></param>
+        /// <param name="appDirectory"></param>
+        /// <returns></returns>
         static private bool Backup(string rootPath, string appDirectory)
         {
             // source path
@@ -111,9 +114,12 @@ namespace Framework.AssetManagement.GameBuilder
                                                       string.Format($"{bakPath}/{BundleExtracter.FILELIST_NAME}"));
         }
 
-        // srcPath: Deployment/Backup/windows/0.0.1/assetbundles
-        // dstPath: Deployment/CDN/data/windows/
-        // appDirectory: 0.1.2.1
+        /// <summary>
+        /// 发布指定版本至cdn/data
+        /// </summary>
+        /// <param name="rootPath"></param>
+        /// <param name="appDirectory"></param>
+        /// <returns></returns>
         static private bool PublishDataAndObb(string rootPath, string appDirectory)
         {
             string appSrcPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
