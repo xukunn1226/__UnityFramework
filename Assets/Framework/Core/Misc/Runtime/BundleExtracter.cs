@@ -11,13 +11,12 @@ namespace Framework.Core
         static public string                FILELIST_NAME               = "FileList.bytes";
         static private string               BASE_APPVERSION             = "BaseAppVersion_9695e71e3a224b408c39c7a75c0fa376";
 
-        [Range(1, 10)]
-        public int                          workerCount                 = 3;
-        private List<DownloadTask>           m_TaskWorkerList;
+        private int                         m_WorkerCount               = 5;
+        private List<DownloadTask>          m_TaskWorkerList;
         private List<byte[]>                m_CachedBufferList;
         private const int                   m_BufferSize                = 1024 * 1024;
 
-        private AppVersion                  m_Version;
+        private AppVersion                  m_BaseVersion;
         private TextAsset                   m_BundleFileListRawData;
         private BundleFileList              m_BundleFileList;
         private int                         m_PendingExtracedFileIndex;
@@ -33,7 +32,7 @@ namespace Framework.Core
         {
 //#if UNITY_EDITOR
             if (AutoStartInEditorMode)
-                StartWork();
+                StartWork(m_WorkerCount);
 //#endif
         }
 
@@ -47,8 +46,9 @@ namespace Framework.Core
             m_Listener = listener;
         }
 
-        public void StartWork()
+        public void StartWork(int workerCount)
         {
+            m_WorkerCount = workerCount;
             if (Init() && ShouldExtract())
             {
                 InternalStartWork();
@@ -62,12 +62,12 @@ namespace Framework.Core
         public void Restart()
         {
             Uninit();
-            StartWork();
+            StartWork(m_WorkerCount);
         }
 
         private bool ShouldExtract()
         {
-            bool bShould = m_Version.CompareTo(PlayerPrefs.GetString(BASE_APPVERSION)) != 0;
+            bool bShould = m_BaseVersion.CompareTo(PlayerPrefs.GetString(BASE_APPVERSION)) != 0;
             m_Listener?.OnShouldExtract(ref bShould);
             return bShould;
         }
@@ -77,8 +77,8 @@ namespace Framework.Core
             bool bInit = true;
 
             // load appVersion
-            m_Version = AppVersion.Load();
-            if (m_Version == null)
+            m_BaseVersion = AppVersion.Load();
+            if (m_BaseVersion == null)
             {
                 Debug.LogError("Extracter: AppVersion == null");
                 bInit = false;
@@ -102,13 +102,22 @@ namespace Framework.Core
         private void Uninit()
         {
             if (m_Coroutine != null)
+            {
                 StopCoroutine(m_Coroutine);
+                m_Coroutine = null;
+            }
 
-            if (m_Version != null)
-                AppVersion.Unload(m_Version);
+            if (m_BaseVersion != null)
+            {
+                AppVersion.Unload(m_BaseVersion);
+                m_BaseVersion = null;
+            }
 
             if (m_BundleFileListRawData != null)
+            {
                 Resources.UnloadAsset(m_BundleFileListRawData);
+                m_BundleFileListRawData = null;
+            }
             m_BundleFileList = null;
 
             if (m_TaskWorkerList != null)
@@ -124,13 +133,13 @@ namespace Framework.Core
         private void InternalStartWork()
         {
             // init task workers and buffer
-            m_CachedBufferList = new List<byte[]>(workerCount);
-            for (int i = 0; i < workerCount; ++i)
+            m_CachedBufferList = new List<byte[]>(m_WorkerCount);
+            for (int i = 0; i < m_WorkerCount; ++i)
             {
                 m_CachedBufferList.Add(new byte[m_BufferSize]);
             }
-            m_TaskWorkerList = new List<DownloadTask>(workerCount);
-            for (int i = 0; i < workerCount; ++i)
+            m_TaskWorkerList = new List<DownloadTask>(m_WorkerCount);
+            for (int i = 0; i < m_WorkerCount; ++i)
             {
                 m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
             }
@@ -248,7 +257,7 @@ namespace Framework.Core
         {
             // 完全无误的提取完成后打上标签
             if (string.IsNullOrEmpty(error))
-                PlayerPrefs.SetString(BASE_APPVERSION, m_Version.ToString());
+                PlayerPrefs.SetString(BASE_APPVERSION, m_BaseVersion.ToString());
 
             Uninit();
             m_Listener?.OnEnd(error);
@@ -286,7 +295,7 @@ namespace Framework.Core
 
     public interface IExtractListener
     {
-        void OnInit(bool success);                                                                          // 提取数据的准备工作是否完成
+        void OnInit(bool success);                                                                          // 提取数据的准备工作是否完成，失败表示有内部致命错误
         void OnShouldExtract(ref bool shouldExtract);                                                       // 根据标签判断是否需要提取数据
         void OnBegin(int countOfFiles);                                                                     // 开始提取数据
         void OnEnd(string error);                                                                           // 提取结束
