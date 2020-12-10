@@ -12,17 +12,17 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty m_bundleSettingProp;
         SerializedProperty m_playerSettingProp;
         SerializedProperty m_buildModeProp;
-        SerializedProperty m_deployProp;
 
         Editor m_bundleSettingEditor;
         Editor m_playerSettingEditor;
+
+        string m_PendingDeployVersion = "0.0.1";
 
         private void Awake()
         {
             m_bundleSettingProp = serializedObject.FindProperty("bundleSetting");
             m_playerSettingProp = serializedObject.FindProperty("playerSetting");
             m_buildModeProp = serializedObject.FindProperty("buildMode");
-            m_deployProp = serializedObject.FindProperty("deploy");
         }
 
         public override void OnInspectorGUI()
@@ -51,13 +51,14 @@ namespace Framework.AssetManagement.GameBuilder
             DrawPlayerSettingEditor();
 
             EditorGUILayout.Separator();
-            DrawDeploymentSetting();
+            EditorGUILayout.Separator();
+            DrawBuildButton();
 
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
-            EditorGUILayout.Separator();
-            DrawBuildButton();
+            EditorGUILayout.LabelField("---------------------------------------------------------------------------------", EditorStyles.boldLabel);
+            DrawDeploymentSetting();
 
             serializedObject.ApplyModifiedProperties();
 
@@ -156,12 +157,7 @@ namespace Framework.AssetManagement.GameBuilder
                 EditorGUI.BeginDisabledGroup(disable);
                 if(GUILayout.Button("Build Game", boldStyle))
                 {
-                    GameBuilder.BuildGame((GameBuilderSetting)target);
-
-                    if (m_deployProp.boolValue)
-                    {
-                        Deployment.Run(Deployment.s_DefaultRootPath, AppVersion.EditorLoad().ToString());
-                    }
+                    GameBuilder.BuildGame((GameBuilderSetting)target);                    
                 }
                 EditorGUI.EndDisabledGroup();
             }
@@ -170,9 +166,28 @@ namespace Framework.AssetManagement.GameBuilder
 
         private void DrawDeploymentSetting()
         {
-            m_deployProp.boolValue = EditorGUILayout.Toggle("Deploy", m_deployProp.boolValue);
-            string dstPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_BackupDirectoryPath}/{Framework.Core.Utility.GetPlatformName()}/{AppVersion.EditorLoad().ToString()}（视AppVersion而定）");
-            EditorGUILayout.TextField("备份目录", dstPath);
+            m_PendingDeployVersion = EditorGUILayout.TextField("Deploy Version", m_PendingDeployVersion);
+            string error = AppVersion.Check(m_PendingDeployVersion);
+            if(!string.IsNullOrEmpty(error))
+            {
+                GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
+                style.normal.textColor = Color.red;
+                EditorGUILayout.LabelField(error, style);
+            }
+
+            string directory = string.IsNullOrEmpty(error) ? m_PendingDeployVersion : "X.X.X";
+            string dstPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_BackupDirectoryPath}/{Framework.Core.Utility.GetPlatformName()}/{directory}");
+            EditorGUILayout.LabelField("备份目录", dstPath);
+
+            string patchPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{directory}");
+            EditorGUILayout.LabelField("补丁目录", patchPath);
+
+            EditorGUI.BeginDisabledGroup(!string.IsNullOrEmpty(error));
+            if (GUILayout.Button("Deploy", EditorStyles.toolbarButton))
+            {
+                Deployment.Run(Deployment.s_DefaultRootPath, m_PendingDeployVersion);
+            }
+            EditorGUI.EndDisabledGroup();
         }
     }
 }

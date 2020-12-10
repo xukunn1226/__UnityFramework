@@ -95,6 +95,62 @@ namespace Framework.Core
             }
         }
 
+        static public string Check(string version)
+        {
+            string[] str = version.Split(new char[] { '.' });
+            if (str.Length != 3 && str.Length != 4)
+                return "version format is not standard.";
+
+            if (str.Length > 0)
+            {
+                try
+                {
+                    int n = int.Parse(str[0], System.Globalization.NumberStyles.Integer);
+                }
+                catch (Exception e)
+                {
+                    return string.Format($"AppVersion construct: {e.Message}");
+                }
+            }
+
+            if (str.Length > 1)
+            {
+                try
+                {
+                    int n = int.Parse(str[1], System.Globalization.NumberStyles.Integer);
+                }
+                catch (Exception e)
+                {
+                    return string.Format($"AppVersion construct: {e.Message}");
+                }
+            }
+
+            if (str.Length > 2)
+            {
+                try
+                {
+                    int n = int.Parse(str[2], System.Globalization.NumberStyles.Integer);
+                }
+                catch (Exception e)
+                {
+                    return string.Format($"AppVersion construct: {e.Message}");
+                }
+            }
+
+            if (str.Length > 3)
+            {
+                try
+                {
+                    int n = int.Parse(str[3], System.Globalization.NumberStyles.Integer);
+                }
+                catch (Exception e)
+                {
+                    return string.Format($"AppVersion construct: {e.Message}");
+                }
+            }
+            return null;
+        }
+
 #if UNITY_EDITOR
         static public AppVersion EditorLoad()
         {
@@ -141,6 +197,38 @@ namespace Framework.Core
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
+        public int AppCompareTo(AppVersion other)
+        {
+            if (this.MainVersion < other.MainVersion)
+                return -1;
+            if (this.MainVersion > other.MainVersion)
+                return 1;
+
+            if (this.MinorVersion < other.MinorVersion)
+                return -1;
+            if (this.MinorVersion > other.MinorVersion)
+                return 1;
+
+            if (this.Revision < other.Revision)
+                return -1;
+            if (this.Revision > other.Revision)
+                return 1;
+            return 0;
+        }
+
+        public int AppCompareTo(string other)
+        {
+            AppVersion version = ScriptableObject.CreateInstance<AppVersion>();
+            version.Set(other);
+            return this.AppCompareTo(version);
+        }
+
+        static public int AppCompareTo(AppVersion lhs, AppVersion rhs)
+        {
+            return lhs.AppCompareTo(rhs);
+        }
+
+
         public int CompareTo(AppVersion other)
         {
             if(this.MainVersion < other.MainVersion)
@@ -156,6 +244,11 @@ namespace Framework.Core
             if(this.Revision < other.Revision)
                 return -1;
             if(this.Revision > other.Revision)
+                return 1;
+
+            if (this.HotfixNumber < other.HotfixNumber)
+                return -1;
+            if (this.HotfixNumber > other.HotfixNumber)
                 return 1;
 
             return 0;

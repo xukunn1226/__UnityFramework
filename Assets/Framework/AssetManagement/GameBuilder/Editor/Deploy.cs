@@ -192,9 +192,6 @@ namespace Framework.AssetManagement.GameBuilder
                         string historyVerDirectory = string.Format($"{targetDirectory}/{version}");
                         Directory.CreateDirectory(historyVerDirectory);
 
-                        // 序列号diff.json
-                        Framework.Core.Diff.Serialize(string.Format($"{historyVerDirectory}/diff.json"), data);
-
                         // 传输补丁数据
                         string curAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
                         foreach (var dfi in data.AddedFileList)
@@ -312,6 +309,13 @@ namespace Framework.AssetManagement.GameBuilder
                     data.PushDeletedFile(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
                 }
             }
+
+            // 序列化diff.json
+            string targetDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{curApp}/{baseApp}");
+            Directory.CreateDirectory(targetDirectory);
+
+            Framework.Core.Diff.Serialize(string.Format($"{targetDirectory}/diff.json"), data);
+
             return data;
         }
     }

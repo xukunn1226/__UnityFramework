@@ -14,8 +14,6 @@ namespace Framework.AssetManagement.GameBuilder
         public BundleBuilderSetting bundleSetting;
         public PlayerBuilderSetting playerSetting;
 
-        public bool                 deploy;
-
         public enum BuildMode
         {
             BundlesAndPlayer,
