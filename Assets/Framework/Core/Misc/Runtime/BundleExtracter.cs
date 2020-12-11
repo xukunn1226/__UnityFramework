@@ -67,7 +67,8 @@ namespace Framework.Core
 
         private bool ShouldExtract()
         {
-            bool bShould = m_BaseVersion.CompareTo(PlayerPrefs.GetString(BASE_APPVERSION)) != 0;
+            string versionStr = PlayerPrefs.GetString(BASE_APPVERSION);
+            bool bShould = string.IsNullOrEmpty(versionStr) ? true : m_BaseVersion.CompareTo(versionStr) != 0;
             m_Listener?.OnShouldExtract(ref bShould);
             return bShould;
         }
@@ -145,7 +146,7 @@ namespace Framework.Core
             }
 
             // generate pending extracted file list
-            GeneratePendingExtractedFileList();
+            CollectPendingExtractedFileList();
 
             m_Coroutine = StartCoroutine(Run());
         }
@@ -153,7 +154,7 @@ namespace Framework.Core
         /// <summary>
         /// 生成需要提取的文件列表
         /// </summary>
-        private void GeneratePendingExtractedFileList()
+        private void CollectPendingExtractedFileList()
         {
             m_PendingExtracedFileIndex = 0;
 
