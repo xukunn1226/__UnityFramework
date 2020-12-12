@@ -23,6 +23,7 @@ namespace Framework.Core.Tests
             TestDicDeserialize();
 
             SerializeBackdoor();
+            SerializeDiffCollection();
 
             WriteLine("\nDone!");
         }
@@ -372,6 +373,21 @@ namespace Framework.Core.Tests
             string json = JsonConvert.SerializeObject(bd, Formatting.Indented);
 
             System.IO.FileStream fs = new System.IO.FileStream("assets/framework/core/misc/tests/runtime/backdoor.json", System.IO.FileMode.Create);
+            byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
+            fs.Write(bs, 0, bs.Length);
+            fs.Close();
+        }
+
+        private void SerializeDiffCollection()
+        {
+            DiffCollection bd = new DiffCollection();
+            bd.BaseVersion = "1.2.1";
+            bd.VersionHashMap.Add("0.0.1", "sfsdfsdfsdfsf");
+            bd.VersionHashMap.Add("0.0.2", "sddseewwewe");
+
+            string json = JsonConvert.SerializeObject(bd, Formatting.Indented);
+
+            System.IO.FileStream fs = new System.IO.FileStream("assets/framework/core/misc/tests/runtime/diffcollection.json", System.IO.FileMode.Create);
             byte[] bs = System.Text.Encoding.UTF8.GetBytes(json);
             fs.Write(bs, 0, bs.Length);
             fs.Close();

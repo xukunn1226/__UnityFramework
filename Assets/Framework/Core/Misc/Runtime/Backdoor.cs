@@ -7,9 +7,19 @@ namespace Framework.Core
 {
     public class Backdoor
     {
-        public string       MinVersion;             // 强更版本号，只能是三位
-        public string       CurVersion;             // 当前版本号，可能是三位或四位
-        public List<string> VersionHistory;
+        public string                       MinVersion;             // 强更版本号，只能是三位
+        public string                       CurVersion;             // 当前版本号，可能是三位或四位
+        public Dictionary<string, string>   VersionHistory;         // [version, diffcollection json's hash]
+
+        public string GetDiffCollectionFileHash(string version)
+        {
+            if (VersionHistory == null)
+                return null;
+
+            string hash;
+            VersionHistory.TryGetValue(version, out hash);
+            return hash;
+        }
 
         static public void Serialize(string assetPath, Backdoor bd)
         {

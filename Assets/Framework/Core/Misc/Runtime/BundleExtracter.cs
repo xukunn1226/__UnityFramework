@@ -205,7 +205,7 @@ namespace Framework.Core
                     //Debug.Log($"==========NEW FILE TO BE EXTRACTING: {fileInfo.BundleName}    frame: {Time.frameCount}");
 
                     // begin to extract file
-                    DownloadTaskInfo info    = new DownloadTaskInfo();
+                    DownloadTaskInfo info   = new DownloadTaskInfo();
                     info.srcUri             = new System.Uri(Path.Combine(Application.streamingAssetsPath, Utility.GetPlatformName(), fileInfo.BundleName));
                     info.dstURL             = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
                     info.verifiedHash       = fileInfo.FileHash;
@@ -266,31 +266,31 @@ namespace Framework.Core
             Debug.Log($"End to extract bundle file list: {(string.IsNullOrEmpty(error) ? "success" : "failed")}   {Time.time - m_BeginTime}");
         }
 
-        private void OnProgress(DownloadTaskInfo data, ulong downedLength, ulong totalLength, float downloadSpeed)
+        private void OnProgress(DownloadTaskInfo taskInfo, ulong downedLength, ulong totalLength, float downloadSpeed)
         {
-            m_Listener?.OnFileProgress(Path.GetFileName(data.dstURL), downedLength, totalLength, downloadSpeed);
-            Debug.Log($"OnProgress: {Path.GetFileName(data.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
+            m_Listener?.OnFileProgress(Path.GetFileName(taskInfo.dstURL), downedLength, totalLength, downloadSpeed);
+            Debug.Log($"OnProgress: {Path.GetFileName(taskInfo.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
         }
 
-        private void OnCompleted(DownloadTaskInfo data, bool success, int tryCount)
+        private void OnCompleted(DownloadTaskInfo taskInfo, bool success, int tryCount)
         {
             if (!success)
             {
-                m_Error = string.Format($"OnCompleted: failed to download {data.srcUri.ToString()}");
+                m_Error = string.Format($"OnCompleted: failed to download {taskInfo.srcUri.ToString()}");
             }
-            m_Listener?.OnFileCompleted(Path.GetFileName(data.dstURL), success);
+            m_Listener?.OnFileCompleted(Path.GetFileName(taskInfo.dstURL), success);
 
-            Debug.Log($"下载：{data.dstURL} {(success ? "成功" : "失败")}");
+            Debug.Log($"下载：{taskInfo.dstURL} {(success ? "成功" : "失败")}");
         }
 
-        private void OnRequestError(DownloadTaskInfo data, string error)
+        private void OnRequestError(DownloadTaskInfo taskInfo, string error)
         {
-            m_Error = string.Format($"OnRequestError: {error} : {data.srcUri.ToString()}");
+            m_Error = string.Format($"OnRequestError: {error} : {taskInfo.srcUri.ToString()}");
         }
 
-        private void OnDownloadError(DownloadTaskInfo data, string error)
+        private void OnDownloadError(DownloadTaskInfo taskInfo, string error)
         {
-            m_Error = string.Format($"OnDownloadError: {error} : {data.srcUri.ToString()}");
+            m_Error = string.Format($"OnDownloadError: {error} : {taskInfo.srcUri.ToString()}");
         }
     }
 

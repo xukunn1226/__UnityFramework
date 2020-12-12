@@ -17,7 +17,7 @@ namespace Framework.Core
         public string               Desc;
         public long                 Size;
 
-        public List<DiffFileInfo>   AddedFileList = new List<DiffFileInfo>();
+        public List<DiffFileInfo>   AddedFileList   = new List<DiffFileInfo>();
         public List<DiffFileInfo>   UpdatedFileList = new List<DiffFileInfo>();
         public List<DiffFileInfo>   DeletedFileList = new List<DiffFileInfo>();
 

@@ -143,6 +143,7 @@ namespace Framework.AssetManagement.GameBuilder
 
         /// <summary>
         /// 生成其他版本到当前版本（appDirectory）的差异数据
+        /// WARNING: 调用前配置backdoor.minVersion & versionHistory
         /// </summary>
         /// <param name="rootPath"></param>
         /// <param name="appDirectory"></param>
@@ -173,23 +174,23 @@ namespace Framework.AssetManagement.GameBuilder
 
             // 根据所有历史版本记录，生成最新版本与其他版本的差异数据
             AppVersion curVersion = ScriptableObject.CreateInstance<AppVersion>();
-            curVersion.Set(appDirectory);
-            foreach(var version in bd.VersionHistory)
+            curVersion.Set(appDirectory);            
+            foreach(var item in bd.VersionHistory)
             {
                 AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
-                historyVer.Set(version);
+                historyVer.Set(item.Key);
                 if (historyVer.CompareTo(bd.MinVersion) >= 0 &&
                    historyVer.CompareTo(curVersion) < 0)
                 {
-                    Diff data = Diff(rootPath, version, appDirectory);
+                    Diff data = Diff(rootPath, item.Key, appDirectory);
                     if(data == null)
                     {
-                        Debug.LogError($"failed to Diff between {version} and {appDirectory}");
+                        Debug.LogError($"failed to Diff between {item.Key} and {appDirectory}");
                         return false;
                     }
                     else
                     {
-                        string historyVerDirectory = string.Format($"{targetDirectory}/{version}");
+                        string historyVerDirectory = string.Format($"{targetDirectory}/{item.Key}");
                         Directory.CreateDirectory(historyVerDirectory);
 
                         // 传输补丁数据
@@ -229,6 +230,33 @@ namespace Framework.AssetManagement.GameBuilder
                     }
                 }
             }
+
+            // generate diffcollection.json
+            DiffCollection dc = new DiffCollection();
+            dc.BaseVersion = appDirectory;
+            foreach (var item in bd.VersionHistory)
+            {
+                AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
+                historyVer.Set(item.Key);
+                if (historyVer.CompareTo(bd.MinVersion) >= 0 &&
+                   historyVer.CompareTo(curVersion) < 0)
+                {
+                    string subDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{appDirectory}/{item.Key}");
+                    Directory.CreateDirectory(subDirectory);
+                    string diffFilename = string.Format($"{subDirectory}/diff.json");
+
+                    using (FileStream fs = new FileStream(diffFilename, FileMode.Open))
+                    {
+                        string hash = EasyMD5.Hash(fs);
+                        dc.VersionHashMap.Add(item.Key, hash);
+                    }
+                }
+            }
+            string dcFilename = string.Format($"{targetDirectory}/diffcollection.json");
+            if (File.Exists(dcFilename))
+                File.Delete(dcFilename);
+            DiffCollection.Serialize(dcFilename, dc);
+
             return true;
         }
 
