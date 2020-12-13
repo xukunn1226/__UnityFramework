@@ -33,10 +33,10 @@ namespace Framework.Core
 
         private void OnEnable()
         {
-//#if UNITY_EDITOR
+#if UNITY_EDITOR
             if (AutoStartInEditorMode)
-                StartWork(m_WorkerCount);
-//#endif
+                StartWork(m_WorkerCount, m_Listener);
+#endif
         }
 
         private void OnDisable()
@@ -44,14 +44,11 @@ namespace Framework.Core
             Uninit();
         }
 
-        public void SetListener(IExtractListener listener)
+        public void StartWork(int workerCount, IExtractListener listener = null)
         {
             m_Listener = listener;
-        }
-
-        public void StartWork(int workerCount)
-        {
             m_WorkerCount = workerCount;
+
             if (Init() && ShouldExtract())
             {
                 InternalStartWork();
@@ -65,7 +62,7 @@ namespace Framework.Core
         public void Restart()
         {
             Uninit();
-            StartWork(m_WorkerCount);
+            StartWork(m_WorkerCount, m_Listener);
         }
 
         private bool ShouldExtract()

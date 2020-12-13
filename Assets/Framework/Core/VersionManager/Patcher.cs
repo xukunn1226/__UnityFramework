@@ -20,7 +20,7 @@ namespace Framework.Core
     {
         static public readonly string       CUR_APPVERSION              = "CurAppVersion_fe2679cf89a145ccb45b715568e6bc07";
 
-        private int                         m_WorkerCount               = 5;
+        private int                         m_WorkerCount;
         private List<DownloadTask>          m_TaskWorkerList;
         private List<byte[]>                m_CachedBufferList;
         private const int                   m_BufferSize                = 1024 * 1024;
@@ -37,18 +37,22 @@ namespace Framework.Core
         private string                      m_CdnURL;
         private string                      m_Error;
 
+        private IPatcherListener            m_Listener;
+
         private void Awake()
         {
             m_CdnURL = string.Format($"{Application.dataPath}/../Deployment/CDN");
+            m_WorkerCount = 5;
         }
 
         private void OnEnable()
         {
-            StartWork(m_CdnURL, 5);
+            StartWork(m_CdnURL, m_WorkerCount, m_Listener);
         }
 
-        public void StartWork(string cdnURL, int workerCount)
+        public void StartWork(string cdnURL, int workerCount, IPatcherListener listener = null)
         {
+            m_Listener = listener;
             m_CdnURL = cdnURL;
             m_WorkerCount = workerCount;
 
@@ -336,6 +340,7 @@ namespace Framework.Core
             m_PendingDownloadFileIndex = 0;
 
             // 考虑到断点续传，总是所有补丁数据检查一遍
+            m_DownloadFileList.Clear();
             foreach (var dfi in m_Diff.AddedFileList)
             {
                 string path = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{dfi.BundleName}");
@@ -383,6 +388,11 @@ namespace Framework.Core
                 return null;
             return m_DownloadFileList[m_PendingDownloadFileIndex++];
         }
+    }
+
+    public class IPatcherListener
+    {
+
     }
 
 #if UNITY_EDITOR
