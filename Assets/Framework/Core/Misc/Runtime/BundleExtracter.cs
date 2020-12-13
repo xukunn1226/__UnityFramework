@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Core
 {
@@ -9,7 +12,7 @@ namespace Framework.Core
     {
         static public string                FILELIST_PATH               = "Assets/Resources";
         static public string                FILELIST_NAME               = "FileList.bytes";
-        static private string               BASE_APPVERSION             = "BaseAppVersion_9695e71e3a224b408c39c7a75c0fa376";
+        static public readonly string       BASE_APPVERSION             = "BaseAppVersion_9695e71e3a224b408c39c7a75c0fa376";
 
         private int                         m_WorkerCount               = 5;
         private List<DownloadTask>          m_TaskWorkerList;
@@ -191,7 +194,7 @@ namespace Framework.Core
                         continue;
                     }
 
-                    // 遇到error不再执行后续提取
+                    // 遇到error不再执行后续操作，但已执行的操作不中断
                     if (!string.IsNullOrEmpty(m_Error))
                         continue;
 
@@ -218,7 +221,7 @@ namespace Framework.Core
                 }
 
                 // 只要仍有任务在运行就等待，即使遇到error
-                if (IsStillWorking() /*&& string.IsNullOrEmpty(m_Error)*/)
+                if (IsStillWorking())
                 {
                     yield return null;
                 }
@@ -258,7 +261,10 @@ namespace Framework.Core
         {
             // 完全无误的提取完成后打上标签
             if (string.IsNullOrEmpty(error))
+            {
                 PlayerPrefs.SetString(BASE_APPVERSION, m_BaseVersion.ToString());
+                PlayerPrefs.Save();
+            }
 
             Uninit();
             m_Listener?.OnEnd(error);
@@ -276,7 +282,7 @@ namespace Framework.Core
         {
             if (!success)
             {
-                m_Error = string.Format($"OnCompleted: failed to download {taskInfo.srcUri.ToString()}");
+                m_Error = string.Format($"OnCompleted: failed to download {taskInfo.srcUri}");
             }
             m_Listener?.OnFileCompleted(Path.GetFileName(taskInfo.dstURL), success);
 
@@ -285,12 +291,12 @@ namespace Framework.Core
 
         private void OnRequestError(DownloadTaskInfo taskInfo, string error)
         {
-            m_Error = string.Format($"OnRequestError: {error} : {taskInfo.srcUri.ToString()}");
+            m_Error = string.Format($"OnRequestError: {error} : {taskInfo.srcUri}");
         }
 
         private void OnDownloadError(DownloadTaskInfo taskInfo, string error)
         {
-            m_Error = string.Format($"OnDownloadError: {error} : {taskInfo.srcUri.ToString()}");
+            m_Error = string.Format($"OnDownloadError: {error} : {taskInfo.srcUri}");
         }
     }
 
@@ -303,4 +309,22 @@ namespace Framework.Core
         void OnFileCompleted(string filename, bool success);                                                // 一个数据提取完成通知（可能成功，也可能失败）
         void OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);   // 每个数据提取进度通知
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(BundleExtracter))]
+    public class BundleExtracter_Inspector : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            string baseVersion = PlayerPrefs.GetString(BundleExtracter.BASE_APPVERSION);
+            EditorGUILayout.LabelField("Base Version", string.IsNullOrEmpty(baseVersion) ? "None" : baseVersion);
+
+            if (GUILayout.Button("Clear Version"))
+            {
+                if (PlayerPrefs.HasKey(BundleExtracter.BASE_APPVERSION))
+                    PlayerPrefs.DeleteKey(BundleExtracter.BASE_APPVERSION);
+            }
+        }
+    }
+#endif
 }

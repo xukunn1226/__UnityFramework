@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 using System;
 using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Core
 {
@@ -16,13 +18,14 @@ namespace Framework.Core
     /// </summary>
     public class Patcher : MonoBehaviour
     {
-        static private string               CUR_APPVERSION              = "CurAppVersion_fe2679cf89a145ccb45b715568e6bc07";
+        static public readonly string       CUR_APPVERSION              = "CurAppVersion_fe2679cf89a145ccb45b715568e6bc07";
 
         private int                         m_WorkerCount               = 5;
         private List<DownloadTask>          m_TaskWorkerList;
         private List<byte[]>                m_CachedBufferList;
         private const int                   m_BufferSize                = 1024 * 1024;
         private List<Diff.DiffFileInfo>     m_DownloadFileList          = new List<Diff.DiffFileInfo>();
+        private int                         m_PendingDownloadFileIndex;
 
         private DownloadTask                m_SingleFileTask;
 
@@ -85,11 +88,7 @@ namespace Framework.Core
             }
 
             // step5. downloading...
-            BeginDownload();
-
             yield return StartCoroutine(Downloading());
-
-            EndDownload();
         }
 
         private IEnumerator DownloadBackdoor()
@@ -106,7 +105,6 @@ namespace Framework.Core
             yield return m_SingleFileTask.Run(info);
 
             m_Backdoor = null;
-            m_Error = null;
             if (string.IsNullOrEmpty(m_SingleFileTask.error))
             {
                 m_Backdoor = Backdoor.Deserialize(localBackdoorURL);
@@ -150,6 +148,7 @@ namespace Framework.Core
                 if (!string.IsNullOrEmpty(AppVersion.Check(m_CurVersion)))
                 {
                     m_CurVersion = null;
+                    throw new ArgumentNullException($"GetLocalCurVersion: {m_CurVersion} is not standard");
                 }
             }
             return m_CurVersion;
@@ -176,7 +175,6 @@ namespace Framework.Core
             yield return m_SingleFileTask.Run(info);
 
             m_DiffCollection = null;
-            m_Error = null;
             if (string.IsNullOrEmpty(m_SingleFileTask.error))
             {
                 m_DiffCollection = DiffCollection.Deserialize(localDiffCollectionURL);
@@ -209,7 +207,6 @@ namespace Framework.Core
             yield return m_SingleFileTask.Run(info);
 
             m_Diff = null;
-            m_Error = null;
             if (string.IsNullOrEmpty(m_SingleFileTask.error))
             {
                 m_Diff = Diff.Deserialize(localDiffURL);
@@ -240,18 +237,106 @@ namespace Framework.Core
 
         private IEnumerator Downloading()
         {
-            yield break;
+            BeginDownload();
+            while(true)
+            {
+                foreach(var task in m_TaskWorkerList)
+                {
+                    if (task.isRunning)
+                        continue;
+
+                    // 遇到error不再执行后续操作，但已执行的操作不中断
+                    if (!string.IsNullOrEmpty(m_Error))
+                        continue;
+
+                    // dispatch the downloading task
+                    Diff.DiffFileInfo fileInfo = GetDiffFileInfo();
+                    if (fileInfo == null)
+                        continue;
+
+                    DownloadTaskInfo info   = new DownloadTaskInfo();
+                    info.srcUri             = new System.Uri(Path.Combine(m_CdnURL, "patch", Utility.GetPlatformName(), m_Backdoor.CurVersion, m_CurVersion, fileInfo.BundleName));
+                    info.dstURL             = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
+                    info.verifiedHash       = fileInfo.FileHash;
+                    info.retryCount         = 3;
+                    info.onProgress         = OnProgress;
+                    info.onCompleted        = OnCompleted;
+                    info.onRequestError     = OnRequestError;
+                    info.onDownloadError    = OnDownloadError;
+                    StartCoroutine(task.Run(info));
+                }
+
+                // 只要仍有任务在运行就等待，即使遇到error
+                if (IsStillWorking())
+                {
+                    yield return null;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            EndDownload();
         }
 
         private void EndDownload()
         {
+            if(string.IsNullOrEmpty(m_Error))
+            {
+                PlayerPrefs.SetString(CUR_APPVERSION, m_Backdoor.CurVersion);
+                PlayerPrefs.Save();
 
+                Debug.Log($"patch completed...{m_CurVersion}  ->  {m_Backdoor.CurVersion}");
+            }
+            else
+            {
+                Debug.LogWarning($"patch failed...{m_Error}");
+            }
+        }
+
+        private void OnProgress(DownloadTaskInfo taskInfo, ulong downedLength, ulong totalLength, float downloadSpeed)
+        {
+            //m_Listener?.OnFileProgress(Path.GetFileName(taskInfo.dstURL), downedLength, totalLength, downloadSpeed);
+            Debug.Log($"OnProgress: {Path.GetFileName(taskInfo.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
+        }
+
+        private void OnCompleted(DownloadTaskInfo taskInfo, bool success, int tryCount)
+        {
+            if (!success)
+            {
+                m_Error = string.Format($"OnCompleted: failed to download {taskInfo.srcUri}");
+            }
+            //m_Listener?.OnFileCompleted(Path.GetFileName(taskInfo.dstURL), success);
+
+            Debug.Log($"下载：{taskInfo.dstURL} {(success ? "成功" : "失败")}");
+        }
+
+        private void OnRequestError(DownloadTaskInfo taskInfo, string error)
+        {
+            m_Error = string.Format($"OnRequestError: {error} : {taskInfo.srcUri}");
+        }
+
+        private void OnDownloadError(DownloadTaskInfo taskInfo, string error)
+        {
+            m_Error = string.Format($"OnDownloadError: {error} : {taskInfo.srcUri}");
+        }
+
+        private bool IsStillWorking()
+        {
+            foreach (var task in m_TaskWorkerList)
+            {
+                if (task.isRunning)
+                    return true;
+            }
+            return false;
         }
 
         private void CollectPendingDownloadFileList()
         {
+            m_PendingDownloadFileIndex = 0;
+
             // 考虑到断点续传，总是所有补丁数据检查一遍
-            foreach(var dfi in m_Diff.AddedFileList)
+            foreach (var dfi in m_Diff.AddedFileList)
             {
                 string path = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{dfi.BundleName}");
                 if(!File.Exists(path))
@@ -291,5 +376,30 @@ namespace Framework.Core
                 }
             }
         }
+
+        private Diff.DiffFileInfo GetDiffFileInfo()
+        {
+            if (m_PendingDownloadFileIndex < 0 || m_PendingDownloadFileIndex >= m_DownloadFileList.Count)
+                return null;
+            return m_DownloadFileList[m_PendingDownloadFileIndex++];
+        }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(Patcher))]
+    public class Patcher_Inspector : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            string curVersion = PlayerPrefs.GetString(Patcher.CUR_APPVERSION);
+            EditorGUILayout.LabelField("Cur Version", string.IsNullOrEmpty(curVersion) ? "None" : curVersion);
+
+            if(GUILayout.Button("Clear Version"))
+            {
+                if (PlayerPrefs.HasKey(Patcher.CUR_APPVERSION))
+                    PlayerPrefs.DeleteKey(Patcher.CUR_APPVERSION);
+            }
+        }
+    }
+#endif
 }
