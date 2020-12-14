@@ -358,7 +358,7 @@ namespace Framework.Core.Tests
         {
             public string MinVersion;
             public string CurVersion;
-            public List<string> VersionHistory;
+            public Dictionary<string, string> VersionHistory;
         }
 
         private void SerializeBackdoor()
@@ -366,9 +366,9 @@ namespace Framework.Core.Tests
             Backdoor bd = new Backdoor();
             bd.MinVersion = "0.0.0";
             bd.CurVersion = "1.2.3";
-            bd.VersionHistory = new List<string>();
-            bd.VersionHistory.Add("0.0.1");
-            bd.VersionHistory.Add("0.0.3");
+            bd.VersionHistory = new Dictionary<string, string>();
+            bd.VersionHistory.Add("0.0.1", "2323");
+            bd.VersionHistory.Add("0.0.3", "222");
 
             string json = JsonConvert.SerializeObject(bd, Formatting.Indented);
 

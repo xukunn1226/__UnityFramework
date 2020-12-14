@@ -16,7 +16,7 @@ namespace Framework.Core
 
         private int                         m_WorkerCount               = 5;
         private List<DownloadTask>          m_TaskWorkerList;
-        private List<byte[]>                m_CachedBufferList;
+        private List<byte[]>                m_CachedBufferList          = new List<byte[]>();
         private const int                   m_BufferSize                = 1024 * 1024;
 
         private AppVersion                  m_BaseVersion;
@@ -29,16 +29,7 @@ namespace Framework.Core
         private Coroutine                   m_Coroutine;
         private float                       m_BeginTime;
         private IExtractListener            m_Listener;
-        public bool                         AutoStartInEditorMode;      // 仅编辑模式下可自动运行，真机模式需调用StartWork
-
-        private void OnEnable()
-        {
-#if UNITY_EDITOR
-            if (AutoStartInEditorMode)
-                StartWork(m_WorkerCount, m_Listener);
-#endif
-        }
-
+        
         private void OnDisable()
         {
             Uninit();
@@ -49,14 +40,7 @@ namespace Framework.Core
             m_Listener = listener;
             m_WorkerCount = workerCount;
 
-            if (Init() && ShouldExtract())
-            {
-                InternalStartWork();
-            }
-            else
-            {
-                Uninit();
-            }
+            StartCoroutine(Run());
         }
 
         public void Restart()
@@ -65,12 +49,18 @@ namespace Framework.Core
             StartWork(m_WorkerCount, m_Listener);
         }
 
-        private bool ShouldExtract()
+        private IEnumerator Run()
         {
-            string versionStr = PlayerPrefs.GetString(BASE_APPVERSION);
-            bool bShould = string.IsNullOrEmpty(versionStr) ? true : m_BaseVersion.CompareTo(versionStr) != 0;
-            m_Listener?.OnShouldExtract(ref bShould);
-            return bShould;
+            if(!Init())
+            {
+                Uninit();
+                yield break;
+            }
+
+            if (!ShouldExtract())
+                yield break;
+
+            yield return StartCoroutine(Extracting());
         }
 
         private bool Init()
@@ -131,24 +121,30 @@ namespace Framework.Core
             }
         }
 
-        private void InternalStartWork()
+        private bool ShouldExtract()
         {
-            // init task workers and buffer
-            m_CachedBufferList = new List<byte[]>(m_WorkerCount);
-            for (int i = 0; i < m_WorkerCount; ++i)
-            {
-                m_CachedBufferList.Add(new byte[m_BufferSize]);
-            }
-            m_TaskWorkerList = new List<DownloadTask>(m_WorkerCount);
-            for (int i = 0; i < m_WorkerCount; ++i)
-            {
-                m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
-            }
+            string versionStr = PlayerPrefs.GetString(BASE_APPVERSION);
+            bool bShould = string.IsNullOrEmpty(versionStr) ? true : m_BaseVersion.CompareTo(versionStr) != 0;
+            m_Listener?.OnShouldExtract(ref bShould);
+            return bShould;
+        }
 
+        private void Prepare()
+        {
             // generate pending extracted file list
             CollectPendingExtractedFileList();
 
-            m_Coroutine = StartCoroutine(Run());
+            // init task workers and buffer
+            int workerCount = Mathf.Min(m_PendingExtractedFileList.Count, m_WorkerCount);
+            for (int i = m_CachedBufferList.Count; i < workerCount; ++i)
+            {
+                m_CachedBufferList.Add(new byte[m_BufferSize]);
+            }
+            m_TaskWorkerList = new List<DownloadTask>(workerCount);
+            for (int i = 0; i < workerCount; ++i)
+            {
+                m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
+            }
         }
 
         /// <summary>
@@ -179,7 +175,7 @@ namespace Framework.Core
             }
         }
 
-        private IEnumerator Run()
+        private IEnumerator Extracting()
         {
             OnExtractBegin();
             while (true)
@@ -249,8 +245,10 @@ namespace Framework.Core
 
         private void OnExtractBegin()
         {
-            Debug.Log("Begin to extract bundle file list");
+            //Debug.Log("Begin to extract bundle file list");
+            Prepare();
             m_BeginTime = Time.time;
+
             m_Listener?.OnBegin(m_PendingExtractedFileList.Count);
         }
 
@@ -264,15 +262,15 @@ namespace Framework.Core
             }
 
             Uninit();
-            m_Listener?.OnEnd(error);
+            m_Listener?.OnEnd(Time.time - m_BeginTime, error);
             
-            Debug.Log($"End to extract bundle file list: {(string.IsNullOrEmpty(error) ? "success" : "failed")}   {Time.time - m_BeginTime}");
+            //Debug.Log($"End to extract bundle file list: {(string.IsNullOrEmpty(error) ? "success" : "failed")}   {Time.time - m_BeginTime}");
         }
 
         private void OnProgress(DownloadTaskInfo taskInfo, ulong downedLength, ulong totalLength, float downloadSpeed)
         {
             m_Listener?.OnFileProgress(Path.GetFileName(taskInfo.dstURL), downedLength, totalLength, downloadSpeed);
-            Debug.Log($"OnProgress: {Path.GetFileName(taskInfo.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
+            //Debug.Log($"OnProgress: {Path.GetFileName(taskInfo.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
         }
 
         private void OnCompleted(DownloadTaskInfo taskInfo, bool success, int tryCount)
@@ -283,7 +281,7 @@ namespace Framework.Core
             }
             m_Listener?.OnFileCompleted(Path.GetFileName(taskInfo.dstURL), success);
 
-            Debug.Log($"下载：{taskInfo.dstURL} {(success ? "成功" : "失败")}");
+            //Debug.Log($"下载：{taskInfo.dstURL} {(success ? "成功" : "失败")}");
         }
 
         private void OnRequestError(DownloadTaskInfo taskInfo, string error)
@@ -302,7 +300,7 @@ namespace Framework.Core
         void OnInit(bool success);                                                                          // 提取数据的准备工作是否完成，失败表示有内部致命错误
         void OnShouldExtract(ref bool shouldExtract);                                                       // 根据标签判断是否需要提取数据
         void OnBegin(int countOfFiles);                                                                     // 开始提取数据
-        void OnEnd(string error);                                                                           // 提取结束
+        void OnEnd(float elapsedTime, string error);                                                        // 提取结束
         void OnFileCompleted(string filename, bool success);                                                // 一个数据提取完成通知（可能成功，也可能失败）
         void OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);   // 每个数据提取进度通知
     }
@@ -316,10 +314,14 @@ namespace Framework.Core
             string baseVersion = PlayerPrefs.GetString(BundleExtracter.BASE_APPVERSION);
             EditorGUILayout.LabelField("Base Version", string.IsNullOrEmpty(baseVersion) ? "None" : baseVersion);
 
-            if (GUILayout.Button("Clear Version"))
+            if (GUILayout.Button("Clear Data"))
             {
                 if (PlayerPrefs.HasKey(BundleExtracter.BASE_APPVERSION))
                     PlayerPrefs.DeleteKey(BundleExtracter.BASE_APPVERSION);
+
+                string dataPath = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}");
+                if (Directory.Exists(dataPath))
+                    Directory.Delete(dataPath, true);
             }
         }
     }

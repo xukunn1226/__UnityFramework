@@ -330,6 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba919aec9d751264fbd8907ac1924c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WorkerCountOfBundleExtracter: 5
 --- !u!114 &1365202705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,7 +338,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365202703}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d54b52f41b99f1c48b4119955be316b6, type: 3}
   m_Name: 
@@ -354,7 +355,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9180f5fd2ccd328479c997c74ec09539, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AutoStartInEditorMode: 0
 --- !u!4 &1365202707
 Transform:
   m_ObjectHideFlags: 0
