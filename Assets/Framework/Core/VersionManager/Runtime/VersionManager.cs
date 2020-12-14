@@ -1,21 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Core
 {
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class VersionManager : MonoBehaviour, IExtractListener, IPatcherListener
     {
-        private BundleExtracter m_BundleExtracter;
-        private Patcher         m_Patcher;
+        public event Action             OnVersionControlFinished;
 
-        public bool             bSimulateMobile;                // 编辑器模式下是否模拟真机环境
-        public int              WorkerCountOfBundleExtracter    = 5;
-        public int              WorkerCountOfPatcher            = 5;
+        static public readonly string   SKIP_VERSIONCONTROL             = "SKIP_VERSIONCONTROL_123456789";
+
+        private BundleExtracter         m_BundleExtracter;
+        private Patcher                 m_Patcher;
+
+        public int                      WorkerCountOfBundleExtracter    = 5;
+        public int                      WorkerCountOfPatcher            = 5;
+        private string                  m_CdnURL;
 
         private void Awake()
         {
+            m_CdnURL = "http://10.21.22.59";
+
             m_BundleExtracter = GetComponent<BundleExtracter>();
             m_Patcher = GetComponent<Patcher>();
 
@@ -31,18 +41,29 @@ namespace Framework.Core
         private void StartExtracting()
         {
 #if UNITY_EDITOR
-            // 编辑器环境通过开关控制此流程
-            if (bSimulateMobile)
+            if (SkipVersionControl())
+            { // 跳过版本控制直接结束
+                OnVersionControlFinished?.Invoke();
+            }
+            else
+            { // 本地模拟
+                m_CdnURL = string.Format($"{Application.dataPath}/../Deployment/CDN");
                 m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
+            }
 #else
             // 真机环境必定执行
             m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
 #endif
         }
 
+        private bool SkipVersionControl()
+        {
+            return !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
+        }
+
         private void StartPatch()
         {
-            m_Patcher.StartWork("", WorkerCountOfPatcher, this);
+            m_Patcher.StartWork(m_CdnURL, WorkerCountOfPatcher, this);
         }
 
         void IExtractListener.OnInit(bool success)
@@ -113,6 +134,10 @@ namespace Framework.Core
         void IPatcherListener.OnEndDownload(string error)
         {
             Debug.Log($"IPatcherListener.OnEndDownload:     error({error})");
+            if(string.IsNullOrEmpty(error))
+            {
+                OnVersionControlFinished?.Invoke();
+            }
         }
 
         void IPatcherListener.OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed)
@@ -125,4 +150,31 @@ namespace Framework.Core
             Debug.Log($"IPatcherListener.OnFileDownloadCompleted:   filename({filename})    success({success})");
         }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(VersionManager))]
+    public class VersionManager_Inspector : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            string value = PlayerPrefs.GetString(VersionManager.SKIP_VERSIONCONTROL);
+            EditorGUILayout.LabelField("Simulate Mobile", string.IsNullOrEmpty(value) ? "OFF" : "ON");
+
+            if(string.IsNullOrEmpty(value))
+            {
+                if(GUILayout.Button("Enable"))
+                {
+                    PlayerPrefs.SetString(VersionManager.SKIP_VERSIONCONTROL, "0000000000000000000");
+                }
+            }
+            else
+            {
+                if(GUILayout.Button("Disable"))
+                {
+                    PlayerPrefs.SetString(VersionManager.SKIP_VERSIONCONTROL, "");
+                }
+            }
+        }
+    }
+#endif
 }

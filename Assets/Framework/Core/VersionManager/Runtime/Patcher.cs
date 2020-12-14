@@ -22,7 +22,7 @@ namespace Framework.Core
 
         private int                         m_WorkerCount;
         private List<DownloadTask>          m_TaskWorkerList;
-        private List<byte[]>                m_CachedBufferList;
+        private List<byte[]>                m_CachedBufferList          = new List<byte[]>();
         private const int                   m_BufferSize                = 1024 * 1024;
         private List<Diff.DiffFileInfo>     m_DownloadFileList          = new List<Diff.DiffFileInfo>();
         private int                         m_PendingDownloadFileIndex;
@@ -39,17 +39,6 @@ namespace Framework.Core
 
         private IPatcherListener            m_Listener;
 
-        private void Awake()
-        {
-            m_CdnURL = string.Format($"{Application.dataPath}/../Deployment/CDN");
-            m_WorkerCount = 5;
-        }
-
-        private void OnEnable()
-        {
-            StartWork(m_CdnURL, m_WorkerCount, m_Listener);
-        }
-
         public void StartWork(string cdnURL, int workerCount, IPatcherListener listener = null)
         {
             m_Listener = listener;
@@ -59,9 +48,15 @@ namespace Framework.Core
             StartCoroutine(Run());
         }
 
+        public void Restart()
+        {
+            StartWork(m_CdnURL, m_WorkerCount, m_Listener);
+        }
+
         private IEnumerator Run()
         {
-            m_SingleFileTask = new DownloadTask(new byte[m_BufferSize]);
+            if(m_SingleFileTask == null)
+                m_SingleFileTask = new DownloadTask(new byte[m_BufferSize]);
 
             // step1. download backdoor config
             yield return StartCoroutine(DownloadBackdoor());
@@ -278,8 +273,7 @@ namespace Framework.Core
 
             // init task workers and buffer
             int workerCount = Mathf.Min(m_DownloadFileList.Count, m_WorkerCount);
-            m_CachedBufferList = new List<byte[]>(workerCount);
-            for (int i = 0; i < workerCount; ++i)
+            for (int i = m_CachedBufferList.Count; i < workerCount; ++i)
             {
                 m_CachedBufferList.Add(new byte[m_BufferSize]);
             }
