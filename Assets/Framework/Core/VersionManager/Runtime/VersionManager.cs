@@ -158,7 +158,7 @@ namespace Framework.Core
         public override void OnInspectorGUI()
         {
             string value = PlayerPrefs.GetString(VersionManager.SKIP_VERSIONCONTROL);
-            EditorGUILayout.LabelField("Simulate Mobile", string.IsNullOrEmpty(value) ? "OFF" : "ON");
+            EditorGUILayout.LabelField("Skip Version Control: ", string.IsNullOrEmpty(value) ? "OFF" : "ON", EditorStyles.boldLabel);
 
             if(string.IsNullOrEmpty(value))
             {
