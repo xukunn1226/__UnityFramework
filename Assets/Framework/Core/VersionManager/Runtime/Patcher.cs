@@ -68,18 +68,24 @@ namespace Framework.Core
             if(!string.IsNullOrEmpty(m_Error))
             {
                 Debug.LogError(m_Error);
+                m_Listener?.OnError_DownloadBackdoor(m_Error);
                 yield break;
             }
 
             // step2. check that the current version is up to date
             if (IsLatestVersion())
+            {
+                m_Listener?.OnCheck_IsLatestVersion(true);
                 yield break;
+            }
+            m_Listener?.OnCheck_IsLatestVersion(false);
 
             // step3. download the diff collection of the latest version
             yield return StartCoroutine(DownloadDiffCollection());
             if (!string.IsNullOrEmpty(m_Error))
             {
                 Debug.LogError(m_Error);
+                m_Listener?.OnError_DownloadDiffCollection(m_Error);
                 yield break;
             }
 
@@ -88,6 +94,7 @@ namespace Framework.Core
             if (!string.IsNullOrEmpty(m_Error))
             {
                 Debug.LogError(m_Error);
+                m_Listener?.OnError_DownloadDiff(m_Error);
                 yield break;
             }
 
@@ -219,25 +226,7 @@ namespace Framework.Core
             {
                 m_Error = string.Format($"Occurs fetal error when download diff.json from {info.srcUri}. {m_SingleFileTask.error}");
             }
-        }
-
-        private void BeginDownload()
-        {
-            CollectPendingDownloadFileList();
-
-            // init task workers and buffer
-            int workerCount = Mathf.Min(m_DownloadFileList.Count, m_WorkerCount);
-            m_CachedBufferList = new List<byte[]>(workerCount);
-            for (int i = 0; i < workerCount; ++i)
-            {
-                m_CachedBufferList.Add(new byte[m_BufferSize]);
-            }
-            m_TaskWorkerList = new List<DownloadTask>(workerCount);
-            for (int i = 0; i < workerCount; ++i)
-            {
-                m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
-            }
-        }
+        }        
 
         private IEnumerator Downloading()
         {
@@ -283,6 +272,26 @@ namespace Framework.Core
             EndDownload();
         }
 
+        private void BeginDownload()
+        {
+            CollectPendingDownloadFileList();
+
+            // init task workers and buffer
+            int workerCount = Mathf.Min(m_DownloadFileList.Count, m_WorkerCount);
+            m_CachedBufferList = new List<byte[]>(workerCount);
+            for (int i = 0; i < workerCount; ++i)
+            {
+                m_CachedBufferList.Add(new byte[m_BufferSize]);
+            }
+            m_TaskWorkerList = new List<DownloadTask>(workerCount);
+            for (int i = 0; i < workerCount; ++i)
+            {
+                m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
+            }
+
+            m_Listener?.OnBeginDownload(m_DownloadFileList.Count, m_Diff.Size);
+        }
+
         private void EndDownload()
         {
             if(string.IsNullOrEmpty(m_Error))
@@ -290,18 +299,21 @@ namespace Framework.Core
                 PlayerPrefs.SetString(CUR_APPVERSION, m_Backdoor.CurVersion);
                 PlayerPrefs.Save();
 
-                Debug.Log($"patch completed...{m_CurVersion}  ->  {m_Backdoor.CurVersion}");
+                //Debug.Log($"patch completed...{m_CurVersion}  ->  {m_Backdoor.CurVersion}");
             }
             else
             {
-                Debug.LogWarning($"patch failed...{m_Error}");
+                //Debug.LogWarning($"patch failed...{m_Error}");
             }
+
+            m_Listener?.OnEndDownload(m_Error);
         }
 
         private void OnProgress(DownloadTaskInfo taskInfo, ulong downedLength, ulong totalLength, float downloadSpeed)
         {
-            //m_Listener?.OnFileProgress(Path.GetFileName(taskInfo.dstURL), downedLength, totalLength, downloadSpeed);
-            Debug.Log($"OnProgress: {Path.GetFileName(taskInfo.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
+            //Debug.Log($"OnProgress: {Path.GetFileName(taskInfo.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
+
+            m_Listener?.OnFileDownloadProgress(taskInfo.dstURL, downedLength, totalLength, downloadSpeed);
         }
 
         private void OnCompleted(DownloadTaskInfo taskInfo, bool success, int tryCount)
@@ -310,9 +322,8 @@ namespace Framework.Core
             {
                 m_Error = string.Format($"OnCompleted: failed to download {taskInfo.srcUri}");
             }
-            //m_Listener?.OnFileCompleted(Path.GetFileName(taskInfo.dstURL), success);
-
-            Debug.Log($"下载：{taskInfo.dstURL} {(success ? "成功" : "失败")}");
+            //Debug.Log($"下载：{taskInfo.dstURL} {(success ? "成功" : "失败")}");
+            m_Listener?.OnFileDownloadCompleted(taskInfo.dstURL, success);
         }
 
         private void OnRequestError(DownloadTaskInfo taskInfo, string error)
@@ -390,9 +401,16 @@ namespace Framework.Core
         }
     }
 
-    public class IPatcherListener
+    public interface IPatcherListener
     {
-
+        void OnError_DownloadBackdoor(string error);
+        void OnCheck_IsLatestVersion(bool isLatestVersion);
+        void OnError_DownloadDiffCollection(string error);
+        void OnError_DownloadDiff(string error);
+        void OnBeginDownload(int count, long size);
+        void OnEndDownload(string error);
+        void OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);
+        void OnFileDownloadCompleted(string filename, bool success);
     }
 
 #if UNITY_EDITOR
