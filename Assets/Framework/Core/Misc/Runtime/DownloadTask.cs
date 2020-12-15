@@ -58,6 +58,11 @@ namespace Framework.Core
                 {
                     yield return RunOnce(data);
                 }
+
+                if(!m_isVerified)
+                {
+                    error = "Failed to download file, because hash not match";
+                }
             }
             isRunning = false;
 
@@ -81,7 +86,7 @@ namespace Framework.Core
                 }
                 yield return null;
             }
-            m_isVerified = string.IsNullOrEmpty(data.verifiedHash) ? true : string.Compare(data.verifiedHash, m_Downloader.hash) == 0;
+            m_isVerified = string.IsNullOrEmpty(data.verifiedHash) ? true : string.Compare(data.verifiedHash, m_Downloader.hash, true) == 0;
             ++m_TryCount;
 
             switch (m_Request.result)

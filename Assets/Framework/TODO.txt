@@ -82,7 +82,9 @@
     }
 * ACT技能编辑器的制作经验分享 https://blog.uwa4d.com/archives/USparkle_ACT.html
 * 利用IJob优化DynamicBones https://mp.weixin.qq.com/s/WPURBQ8lyg9eCx2bITtKiw
-
+* 配置方案：pb、flatbuffer、zeroformatter
+	内存：随用随取，不用全部进内存
+	加载：
 
 
 

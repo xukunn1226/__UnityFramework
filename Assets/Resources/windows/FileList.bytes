@@ -1,11 +1,11 @@
 {
   "Count": 36,
-  "TotalSize": 27143183,
+  "TotalSize": 27143571,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "038c9b0a7ad159012f006b1b4e80e3e5",
-      "Size": 2922
+      "FileHash": "80a9d2df462838986832b8a73ce04bec",
+      "Size": 2920
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -34,8 +34,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/scenes.ab",
-      "FileHash": "eb0f70965c928b25c4785ec414bfcbec",
-      "Size": 1575432
+      "FileHash": "d58a46a47fe65531929e3078b87f500f",
+      "Size": 1575441
     },
     {
       "BundleName": "assets/application/tests/runtime/res/testspawnerring.ab",
@@ -59,12 +59,12 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/testfx_root/scenes.ab",
-      "FileHash": "9bfc19bb1b566ce8be26b36526691e10",
+      "FileHash": "85bf5dbc723256fc6abcbf0b0f99796b",
       "Size": 9427
     },
     {
       "BundleName": "assets/application/tests/runtime/res/ui/prefabs.ab",
-      "FileHash": "74dd6caa79aaa2bc3af9b322cfa3e044",
+      "FileHash": "036ca10a8eabcadfd121407eee0d6a5e",
       "Size": 1735
     },
     {
@@ -99,12 +99,12 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/model.ab",
-      "FileHash": "f5d6583ce34e3e747a71df76cfe188ae",
+      "FileHash": "887fd51aa5955886c312c29100747110",
       "Size": 63037
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab.ab",
-      "FileHash": "9316b4514f519ca0b197ece4dd01950c",
+      "FileHash": "8434e314964ce1db342f2afbb9226e96",
       "Size": 27903
     },
     {
@@ -119,8 +119,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "4d4586e69278fbb5668f372eb534bb57",
-      "Size": 356152
+      "FileHash": "6aebbed409eab79bba58f84bad6e7d02",
+      "Size": 356157
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -134,12 +134,12 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/111.ab",
-      "FileHash": "6b8346269b40353fb468f12dbe8d959a",
+      "FileHash": "0f56b5603ac6510f0a3898f512ccb3ab",
       "Size": 15989
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/333.ab",
-      "FileHash": "c09566b8302b012ef9ef4309957d2d0c",
+      "FileHash": "279dbdf244e27ad7193026b4e1c457a3",
       "Size": 16231
     },
     {
@@ -159,13 +159,13 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab",
-      "FileHash": "a210cf2e97b496ad430b0416cee64c21",
+      "FileHash": "beb84a43679934a5b857a933756fdd2b",
       "Size": 5530118
     },
     {
       "BundleName": "assets/framework/levelmanager/tests/res/scenes.ab",
-      "FileHash": "5c5e75f6ce5e389241f367456bd8336e",
-      "Size": 5819
+      "FileHash": "5900a7b6939e1740287480d397e49b79",
+      "Size": 5822
     },
     {
       "BundleName": "assets/res/animationclip.ab",
@@ -174,8 +174,8 @@
     },
     {
       "BundleName": "assets/res/components.ab",
-      "FileHash": "340900ecd0ea923b6bf01631c7f01e31",
-      "Size": 4915
+      "FileHash": "73da6d5b6bd7b6bf8bcdf6e3d14e2f33",
+      "Size": 5288
     },
     {
       "BundleName": "assets/res/scenes.ab",

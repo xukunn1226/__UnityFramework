@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outputPath: Deployment/Latest/AssetBundles
   useLZ4Compress: 1
-  rebuildBundles: 0
+  rebuildBundles: 1
   appendHash: 0
   DisableWriteTypeTree: 1
   DevelopmentBuild: 0
