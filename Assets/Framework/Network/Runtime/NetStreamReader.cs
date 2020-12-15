@@ -92,6 +92,12 @@ namespace Framework.NetWork
             m_NetClient.RaiseException(e);
         }
 
+        /// <summary>
+        /// 主线程调用，解析协议数据
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         internal ref readonly byte[] FetchBufferToRead(out int offset, out int length)
         {
             ref readonly byte[] buf = ref BeginRead(out offset, out length);

@@ -252,7 +252,7 @@ namespace Framework.NetWork
             if (length > c1 && length > c2)
                 throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    c1: {c1}    c2: {c2}");
 
-            int countToEnd = GetConsecutiveUnusedCapacityFromHeadToBufferEnd();
+            int countToEnd = c1;
             if(countToEnd > 0 && length > countToEnd)
             { // need consecutive space, so skip the remaining buffer, start from beginning
                 Fence = Head;
