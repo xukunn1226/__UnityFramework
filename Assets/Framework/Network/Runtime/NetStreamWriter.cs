@@ -196,12 +196,12 @@ namespace Framework.NetWork
         }
 
         internal bool RequestBufferToWrite(int length, out MemoryStream stream)
-        {
-            byte[] buf;
-            int offset;
+        {            
             stream = m_MemoryStream;
             try
             {
+                byte[] buf;
+                int offset;
                 BeginWrite(length, out buf, out offset);
                 m_MemoryStream.Seek(offset, SeekOrigin.Begin);
                 return true;

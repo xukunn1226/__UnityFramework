@@ -110,7 +110,7 @@ namespace Framework.NetWork
                 int countToEnd = Buffer.Length - Tail;
                 System.Buffer.BlockCopy(buf, offset, m_SpanBuffer, 0, countToEnd);
                 System.Buffer.BlockCopy(buf, 0, m_SpanBuffer, countToEnd, length - countToEnd);
-                offset = 0;
+                offset = 0;     // 此时是m_SpanBuffer，从头开始读取
                 return ref m_SpanBuffer;
             }
             return ref buf;

@@ -137,33 +137,13 @@ namespace Framework.NetWork
         //}
 
         /// <summary>
-        /// get continous free capacity from head to buffer end
-        /// </summary>
-        /// <returns></returns>
-        private int GetConsecutiveUnusedCapacityFromHeadToBufferEnd()
-        {
-            return Math.Min(GetUnusedCapacity(), Head >= Tail ? m_Buffer.Length - Head : 0);
-        }
-
-        /// <summary>
-        /// get continous free capacity from buffer start(or head) to tail
-        /// </summary>
-        /// <returns></returns>
-        private int GetConsecutiveUnusedCapacityFromStart()
-        {
-            return Math.Min(GetUnusedCapacity(), Head >= Tail ? Tail : Tail - Head - 1);
-        }
-
-        /// <summary>
-        /// 获取连续空闲空间大小
+        /// 获取连续空闲空间大小，不跨界
         /// </summary>
         /// <returns></returns>
         protected int GetConsecutiveUnusedCapacity()
         {
-            int count = GetConsecutiveUnusedCapacityFromHeadToBufferEnd();
-            if (count == 0)
-                count = GetConsecutiveUnusedCapacityFromStart();
-            return count;
+            int count = Head >= Tail ? m_Buffer.Length - Head : Tail - Head - 1;
+            return Math.Min(GetUnusedCapacity(), count);
         }
 
         private int GetConsecutiveUsedCapacity()
@@ -247,12 +227,11 @@ namespace Framework.NetWork
         /// <param name="offset">the position where can be written</param>
         protected void BeginWrite(int length, out byte[] buf, out int offset)
         {
-            int c1 = GetConsecutiveUnusedCapacityFromHeadToBufferEnd();
-            int c2 = GetConsecutiveUnusedCapacityFromStart();
-            if (length > c1 && length > c2)
-                throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    c1: {c1}    c2: {c2}");
+            int freeCount = GetConsecutiveUnusedCapacity();
+            if (length > freeCount)
+                throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    freeCount: {freeCount}");
 
-            int countToEnd = c1;
+            int countToEnd = Math.Min(GetUnusedCapacity(), Head >= Tail ? m_Buffer.Length - Head : 0);
             if(countToEnd > 0 && length > countToEnd)
             { // need consecutive space, so skip the remaining buffer, start from beginning
                 Fence = Head;

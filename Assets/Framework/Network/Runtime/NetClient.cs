@@ -184,7 +184,10 @@ namespace Framework.NetWork
             //     }
             // }
 
+            // 发送消息
             m_StreamWriter.Flush();
+
+            // 接收消息
             ReceiveData();
 
             HandleException();            
@@ -223,7 +226,7 @@ namespace Framework.NetWork
             m_Listener.OnNetworkReceive(m_MessageList);
         }
 
-        public void Send(byte[] buf, int offset, int length)
+        public void SendData(byte[] buf, int offset, int length)
         {
             try
             {
@@ -239,9 +242,9 @@ namespace Framework.NetWork
             }
         }
 
-        public void Send(byte[] buf)
+        public void SendData(byte[] buf)
         {
-            Send(buf, 0, buf.Length);
+            SendData(buf, 0, buf.Length);
         }
 
         public bool SendData(TMessage data)
