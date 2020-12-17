@@ -185,7 +185,7 @@ namespace Framework.NetWork
             // }
 
             // 发送消息
-            m_StreamWriter.Flush();
+            //m_StreamWriter.Flush();
 
             // 接收消息
             ReceiveData();

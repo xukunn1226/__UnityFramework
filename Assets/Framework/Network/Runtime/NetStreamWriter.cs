@@ -11,17 +11,17 @@ namespace Framework.NetWork
     {
         private IConnector                  m_NetClient;
         private NetworkStream               m_NetworkStream;
-        private SemaphoreSlim               m_SendBufferSema;                       // 控制是否可以消息发送的信号量
+        //private SemaphoreSlim               m_SendBufferSema;                       // 控制是否可以消息发送的信号量
                                                                                     // The count is decremented each time a thread enters the semaphore, and incremented each time a thread releases the semaphore
-        private bool                        m_isSendingBuffer;                      // 发送消息IO是否进行中
+        //private bool                        m_isSendingBuffer;                      // 发送消息IO是否进行中
         private MemoryStream                m_MemoryStream;
 
-        struct WriteCommand
-        {
-            public int Head;
-            public int Fence;
-        }
-        private Queue<WriteCommand>         m_CommandQueue          = new Queue<WriteCommand>(8);
+        //struct WriteCommand
+        //{
+        //    public int Head;
+        //    public int Fence;
+        //}
+        //private Queue<WriteCommand>         m_CommandQueue          = new Queue<WriteCommand>(8);
 
         internal NetStreamWriter(IConnector netClient, int capacity = 8 * 1024)
             : base(capacity)
@@ -38,9 +38,9 @@ namespace Framework.NetWork
 
             Reset();
             m_MemoryStream.Seek(0, SeekOrigin.Begin);
-            m_SendBufferSema?.Dispose();
-            m_SendBufferSema = new SemaphoreSlim(0, 1);
-            m_isSendingBuffer = false;
+            //m_SendBufferSema?.Dispose();
+            //m_SendBufferSema = new SemaphoreSlim(0, 1);
+            //m_isSendingBuffer = false;
 
             Task.Run(WriteAsync);
         }
@@ -57,7 +57,7 @@ namespace Framework.NetWork
 
             // free unmanaged resources
             m_MemoryStream?.Dispose();
-            m_SendBufferSema?.Dispose();
+            //m_SendBufferSema?.Dispose();
 
             m_Disposed = true;
         }
@@ -68,12 +68,12 @@ namespace Framework.NetWork
         internal void Shutdown()
         {
             // release semaphore, make WriteAsync jump out from the while loop
-            if (m_SendBufferSema?.CurrentCount == 0)
-            {
-                m_SendBufferSema.Release();
-            }
-            m_SendBufferSema?.Dispose();
-            m_SendBufferSema = null;
+            //if (m_SendBufferSema?.CurrentCount == 0)
+            //{
+            //    m_SendBufferSema.Release();
+            //}
+            //m_SendBufferSema?.Dispose();
+            //m_SendBufferSema = null;
         }
 
         internal void Flush()
@@ -138,11 +138,9 @@ namespace Framework.NetWork
                         int head = Head;        // Head由主线程维护，记录下来保证子线程作用域中此数值一致性
                         int length = GetUsedCapacity(head);
 
-                        //UnityEngine.Debug.LogWarning($"111");
-
                         if (Fence > 0)
                         {
-                            UnityEngine.Debug.LogWarning($"------------     Tail: {Tail}    Fence: {Fence}   length: {length} head: {head}");
+                            //UnityEngine.Debug.LogWarning($"------------     Tail: {Tail}    Fence: {Fence}   length: {length} head: {head}");
                             await m_NetworkStream.WriteAsync(Buffer, Tail, Fence - Tail);
                             await m_NetworkStream.WriteAsync(Buffer, 0, head);
                         }

@@ -76,7 +76,6 @@ namespace Framework.NetWork
 
         protected int GetUsedCapacity(int head)
         {
-            UnityEngine.Debug.LogWarning($"GetUsedCapacity:     head {head}     Tail: {Tail}    Head: {Head}");
             return head >= Tail ? head - Tail : m_Buffer.Length - (Tail - head);
         }
 
@@ -257,7 +256,7 @@ namespace Framework.NetWork
             if(headToEnd < length)
             { // headToEnd空间不够则再寻找其他空间
                 int startToTail = GetConsecutiveUnusedCapacityFromStartToEnd();
-                UnityEngine.Debug.LogWarning($"headToEnd: {headToEnd}   startToTail: {startToTail}   Head: {Head}  Tail: {Tail} length: {length}");
+                //UnityEngine.Debug.LogWarning($"headToEnd: {headToEnd}   startToTail: {startToTail}   Head: {Head}  Tail: {Tail} length: {length}");
                 if(startToTail < length)
                 {
                     throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    headToEnd: {headToEnd}  startToTail: {startToTail}");
@@ -265,7 +264,13 @@ namespace Framework.NetWork
 
                 Fence = Head;
                 Head = 0;
+
+                //UnityEngine.Debug.LogError($"--------------- index: {index++}");
             }
+            //else
+            //{
+            //    UnityEngine.Debug.LogError($"index: {index++}");
+            //}
 
             offset = Head;
             buf = m_Buffer;
@@ -278,7 +283,7 @@ namespace Framework.NetWork
         protected void EndWrite(int length)
         {
             AdvanceHead(length);
-            UnityEngine.Debug.LogWarning($"EndWrite: Head {Head}");
+            //UnityEngine.Debug.LogWarning($"EndWrite: Head {Head}");
         }
 
         /// <summary>

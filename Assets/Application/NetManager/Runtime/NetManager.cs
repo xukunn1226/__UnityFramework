@@ -20,7 +20,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
 
     async void OnEnable()
     {
-        await m_NetClient.Connect("192.168.6.91", 11000);
+        await m_NetClient.Connect("192.168.5.14", 11000);
 
         await AutoSending();
     }
@@ -40,7 +40,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
     {
         foreach(var msg in msgs)
         {
-            Debug.Log($"====Receive: {msg}");
+            //Debug.Log($"====Receive: {msg}");
         }
     }
 
