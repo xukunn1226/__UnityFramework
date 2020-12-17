@@ -17,14 +17,14 @@ namespace Framework.NetWork
 
     public interface INetListener<TMessage> where TMessage : class
     {
-        void OnPeerConnected();
-        void OnPeerConnectFailed(Exception e);
-        void OnPeerClose();
-        void OnPeerDisconnected(Exception e);     
-        void OnNetworkReceive(in List<TMessage> msgs);
-        int sendBufferSize { get; }
-        int receiveBufferSize { get; }
-        IPacket<TMessage> parser { get; }        
+        void OnPeerConnected();                                 // 连接成功回调
+        void OnPeerConnectFailed(Exception e);                  // 连接失败回调
+        void OnPeerClose();                                     // 主动断开连接
+        void OnPeerDisconnected(Exception e);                   // 异常断开连接
+        void OnNetworkReceive(in List<TMessage> msgs);          // 网络包回调
+        int sendBufferSize          { get; }                    // 发送消息包缓存区大小
+        int receiveBufferSize       { get; }                    // 接收消息包缓存区大小
+        IPacket<TMessage> parser    { get; }                    // 
     }
 
     public interface IConnector
@@ -79,7 +79,7 @@ namespace Framework.NetWork
                 IPAddress ip = IPAddress.Parse(m_Host);
                 state = ConnectState.Connecting;
                 await m_Client.ConnectAsync(ip, m_Port);
-                OnConnected();
+                OnConnectSuccess();
 
                 m_StreamWriter.Start(m_Client.GetStream());
                 m_StreamReader.Start(m_Client.GetStream());
@@ -109,7 +109,7 @@ namespace Framework.NetWork
             await Connect(m_Host, m_Port);
         }
 
-        private void OnConnected()
+        private void OnConnectSuccess()
         {
             // Trace.Debug($"connect servier... host: {m_Host}     port: {m_Port}");
             state = ConnectState.Connected;

@@ -50,7 +50,7 @@ namespace Framework.NetWork
             {
                 while (m_NetClient.state == ConnectState.Connected)
                 {
-                    int freeCount = GetConsecutiveUnusedCapacity();             // 填充连续的空闲空间                
+                    int freeCount = GetConsecutiveUnusedCapacityFromHeadToEnd();             // 填充连续的空闲空间                
                     if (freeCount == 0)
                         throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {Head}     Tail: {Tail}   Time: {DateTime.Now.ToString()}");
 
@@ -59,7 +59,7 @@ namespace Framework.NetWork
 
                     if (receiveByte <= 0)              // 连接中断
                     {
-                        RaiseException(new Exception("socket disconnected"));
+                        RaiseException(new Exception("socket disconnected. receiveByte <= 0"));
                     }
                 }
             }
@@ -93,7 +93,7 @@ namespace Framework.NetWork
         }
 
         /// <summary>
-        /// 主线程调用，解析协议数据
+        /// 返回可读数据的主线程调用，解析协议数据
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="length"></param>

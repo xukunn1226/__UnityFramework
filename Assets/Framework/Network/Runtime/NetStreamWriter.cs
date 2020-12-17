@@ -78,20 +78,20 @@ namespace Framework.NetWork
 
         internal void Flush()
         {
-            if (m_NetClient?.state == ConnectState.Connected &&
-                m_SendBufferSema != null &&
-                m_SendBufferSema.CurrentCount == 0 &&           // The number of remaining threads that can enter the semaphore
-                !m_isSendingBuffer &&                           // 上次消息已发送完成
-                !IsEmpty())                                     // 已缓存一定的待发送消息
-            {
-                // cache the pending sending data
-                m_CommandQueue.Enqueue(new WriteCommand() { Head = this.Head, Fence = this.Fence });
+            //if (m_NetClient?.state == ConnectState.Connected &&
+            //    m_SendBufferSema != null &&
+            //    m_SendBufferSema.CurrentCount == 0 &&           // The number of remaining threads that can enter the semaphore
+            //    !m_isSendingBuffer &&                           // 上次消息已发送完成
+            //    !IsEmpty())                                     // 已缓存一定的待发送消息
+            //{
+            //    // cache the pending sending data
+            //    m_CommandQueue.Enqueue(new WriteCommand() { Head = this.Head, Fence = this.Fence });
 
-                // 每次push command完重置Fence
-                ResetFence();
+            //    // 每次push command完重置Fence
+            //    ResetFence();
 
-                m_SendBufferSema.Release();                     // Sema.CurrentCount += 1
-            }
+            //    m_SendBufferSema.Release();                     // Sema.CurrentCount += 1
+            //}
         }
 
         private async void WriteAsync()
@@ -100,33 +100,60 @@ namespace Framework.NetWork
             {
                 while (m_NetClient.state == ConnectState.Connected)
                 {
-                    await m_SendBufferSema.WaitAsync();         // CurrentCount==0将等待，直到Sema.CurrentCount > 0，执行完Sema.CurrentCount -= 1
+                    //await m_SendBufferSema.WaitAsync();         // CurrentCount==0将等待，直到Sema.CurrentCount > 0，执行完Sema.CurrentCount -= 1
 
-                    m_isSendingBuffer = true;
-                    if(m_CommandQueue.Count > 0)
+                    //// todo：这里还能做优化，把command queue合并，减少WriteAsync调用次数
+                    //m_isSendingBuffer = true;
+                    //if(m_CommandQueue.Count > 0)
+                    //{
+                    //    WriteCommand cmd = m_CommandQueue.Peek();
+
+                    //    int length = GetUsedCapacity(cmd.Head);
+                    //    if (cmd.Head > Tail)
+                    //    {
+                    //        await m_NetworkStream.WriteAsync(Buffer, Tail, length);
+                    //    }
+                    //    else
+                    //    {
+                    //        if (cmd.Fence > 0)
+                    //            await m_NetworkStream.WriteAsync(Buffer, Tail, cmd.Fence - Tail);
+                    //        else
+                    //            await m_NetworkStream.WriteAsync(Buffer, Tail, Buffer.Length - Tail);
+
+                    //        if (cmd.Head > 0)
+                    //            await m_NetworkStream.WriteAsync(Buffer, 0, cmd.Head);
+                    //    }
+
+                    //    FinishBufferSending(length);        // 数据发送完成，更新Tail
+                    //    m_CommandQueue.Dequeue();
+                    //}
+                    //m_isSendingBuffer = false;
+
+                    if(IsEmpty())
                     {
-                        WriteCommand cmd = m_CommandQueue.Peek();
+                        Thread.Sleep(0);
+                    }
+                    else
+                    {
+                        int head = Head;        // Head由主线程维护，记录下来保证子线程作用域中此数值一致性
+                        int length = GetUsedCapacity(head);
 
-                        int length = GetUsedCapacity(cmd.Head);
-                        if (cmd.Head > Tail)
+                        //UnityEngine.Debug.LogWarning($"111");
+
+                        if (Fence > 0)
                         {
-                            await m_NetworkStream.WriteAsync(Buffer, Tail, length);
+                            UnityEngine.Debug.LogWarning($"------------     Tail: {Tail}    Fence: {Fence}   length: {length} head: {head}");
+                            await m_NetworkStream.WriteAsync(Buffer, Tail, Fence - Tail);
+                            await m_NetworkStream.WriteAsync(Buffer, 0, head);
                         }
                         else
                         {
-                            if (cmd.Fence > 0)
-                                await m_NetworkStream.WriteAsync(Buffer, Tail, cmd.Fence - Tail);
-                            else
-                                await m_NetworkStream.WriteAsync(Buffer, Tail, Buffer.Length - Tail);
-
-                            if (cmd.Head > 0)
-                                await m_NetworkStream.WriteAsync(Buffer, 0, cmd.Head);
+                            await m_NetworkStream.WriteAsync(Buffer, Tail, head - Tail);
                         }
 
-                        FinishBufferSending(length);        // 数据发送完成，更新Tail
-                        m_CommandQueue.Dequeue();
+                        FinishBufferSending(length);
+                        ResetFence();
                     }
-                    m_isSendingBuffer = false;
                 }
             }
             catch (ObjectDisposedException e)
@@ -162,6 +189,12 @@ namespace Framework.NetWork
             m_NetClient.RaiseException(e);
         }
 
+        /// <summary>
+        /// 发送数据，主线程调用
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
         internal void Send(byte[] data, int offset, int length)
         {
             Write(data, offset, length);
@@ -173,7 +206,7 @@ namespace Framework.NetWork
         }
 
         /// <summary>
-        /// 请求指定长度（length）的连续空间
+        /// 请求指定长度（length）的连续空间由上层逻辑填充数据，填充完毕调用FinishBufferWriting，主线程调用
         /// </summary>
         /// <param name="length"></param>
         /// <param name="buf"></param>
@@ -195,6 +228,12 @@ namespace Framework.NetWork
             }
         }
 
+        /// <summary>
+        /// 同上
+        /// </summary>
+        /// <param name="length"></param>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         internal bool RequestBufferToWrite(int length, out MemoryStream stream)
         {            
             stream = m_MemoryStream;
@@ -214,7 +253,7 @@ namespace Framework.NetWork
         }
 
         /// <summary>
-        /// 通知stream写入完成
+        /// 见RequestBufferToWrite
         /// </summary>
         /// <param name="length"></param>
         internal void FinishBufferWriting(int length)

@@ -8,8 +8,8 @@ using Framework.NetWork;
 
 public class NetManager : MonoBehaviour, INetListener<IMessage>
 {
-    static private IPacket<IMessage> s_Parser = new PacketProtobuf();
-    private NetClient<IMessage> m_NetClient;
+    static private IPacket<IMessage>    s_Parser        = new PacketProtobuf();
+    private NetClient<IMessage>         m_NetClient;
 
     private bool m_Quit;
 
@@ -20,7 +20,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
 
     async void OnEnable()
     {
-        await m_NetClient.Connect("192.168.5.15", 11000);
+        await m_NetClient.Connect("192.168.6.91", 11000);
 
         await AutoSending();
     }
@@ -40,7 +40,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
     {
         foreach(var msg in msgs)
         {
-            // Debug.Log($"====Receive: {msg}");
+            Debug.Log($"====Receive: {msg}");
         }
     }
 
@@ -61,17 +61,19 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
         Debug.Log("connect shutdown");
     }
     
-    int INetListener<IMessage>.sendBufferSize { get { return 4096; } }
-    int INetListener<IMessage>.receiveBufferSize { get { return 2048; } }
+    int INetListener<IMessage>.sendBufferSize       { get { return 4096; } }
+    int INetListener<IMessage>.receiveBufferSize    { get { return 2048; } }
     IPacket<IMessage> INetListener<IMessage>.parser { get { return s_Parser; } }
 
     async Task AutoSending()
     {
         int index = 0;
+        System.Random r = new System.Random();
         while (!m_Quit && m_NetClient.state == ConnectState.Connected)
         {
-            string data = "Hello world..." + index++;
+            //string data = "Hello world..." + index++;
             // Debug.Log("\n Sending...:" + data);
+            //++index;
             StoreRequest msg = new StoreRequest();
             msg.Name = "1233";
             msg.Num = 3;
@@ -84,6 +86,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
             if(!m_NetClient.SendData(msg))
                 break;
             
+            //await Task.Delay(r.Next(100, 10000));
             await Task.Delay(10);
         }
     }

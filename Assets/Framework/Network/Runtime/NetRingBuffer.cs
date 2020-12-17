@@ -12,7 +12,7 @@ namespace Framework.NetWork
         private byte[]          m_Buffer;
 
         protected byte[]        Buffer          { get { return m_Buffer; } }
-        protected int           Head            { get; private set; }
+        protected volatile int Head;    //            { get; private set; }
         protected int           Tail            { get; private set; }
         protected int           Fence           { get; private set; }
         private int             IndexMask       { get; set; }
@@ -76,6 +76,7 @@ namespace Framework.NetWork
 
         protected int GetUsedCapacity(int head)
         {
+            UnityEngine.Debug.LogWarning($"GetUsedCapacity:     head {head}     Tail: {Tail}    Head: {Head}");
             return head >= Tail ? head - Tail : m_Buffer.Length - (Tail - head);
         }
 
@@ -137,12 +138,37 @@ namespace Framework.NetWork
         //}
 
         /// <summary>
-        /// 获取连续空闲空间大小，不跨界
+        /// 获取从Head至end（Buffer End OR Tail）的连续空闲空间大小，不跨界
         /// </summary>
         /// <returns></returns>
-        protected int GetConsecutiveUnusedCapacity()
+        protected int GetConsecutiveUnusedCapacityFromHeadToEnd()
         {
             int count = Head >= Tail ? m_Buffer.Length - Head : Tail - Head - 1;
+            return Math.Min(GetUnusedCapacity(), count);
+        }
+
+        /// <summary>
+        /// 获取从Start至end（Buffer End OR Tail）的连续空闲空间大小，不跨界
+        /// </summary>
+        /// <returns></returns>
+        protected int GetConsecutiveUnusedCapacityFromStartToEnd()
+        {
+            int count = 0;
+            if(Head > 0 && Head < Tail)
+            {
+                count = 0;
+            }
+            else
+            {
+                if(Head == 0 && Tail == 0)
+                {
+                    count = m_Buffer.Length;
+                }
+                else
+                {
+                    count = Tail;
+                }
+            }
             return Math.Min(GetUnusedCapacity(), count);
         }
 
@@ -227,13 +253,16 @@ namespace Framework.NetWork
         /// <param name="offset">the position where can be written</param>
         protected void BeginWrite(int length, out byte[] buf, out int offset)
         {
-            int freeCount = GetConsecutiveUnusedCapacity();
-            if (length > freeCount)
-                throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    freeCount: {freeCount}");
+            int headToEnd = GetConsecutiveUnusedCapacityFromHeadToEnd();        // 优先使用
+            if(headToEnd < length)
+            { // headToEnd空间不够则再寻找其他空间
+                int startToTail = GetConsecutiveUnusedCapacityFromStartToEnd();
+                UnityEngine.Debug.LogWarning($"headToEnd: {headToEnd}   startToTail: {startToTail}   Head: {Head}  Tail: {Tail} length: {length}");
+                if(startToTail < length)
+                {
+                    throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    headToEnd: {headToEnd}  startToTail: {startToTail}");
+                }
 
-            int countToEnd = Math.Min(GetUnusedCapacity(), Head >= Tail ? m_Buffer.Length - Head : 0);
-            if(countToEnd > 0 && length > countToEnd)
-            { // need consecutive space, so skip the remaining buffer, start from beginning
                 Fence = Head;
                 Head = 0;
             }
@@ -249,6 +278,7 @@ namespace Framework.NetWork
         protected void EndWrite(int length)
         {
             AdvanceHead(length);
+            UnityEngine.Debug.LogWarning($"EndWrite: Head {Head}");
         }
 
         /// <summary>
