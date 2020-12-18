@@ -12,7 +12,7 @@ namespace Framework.NetWork
         private byte[]          m_Buffer;
 
         protected byte[]        Buffer          { get { return m_Buffer; } }
-        protected volatile int Head;    //            { get; private set; }
+        protected int           Head            { get; private set; }
         protected int           Tail            { get; private set; }
         protected int           Fence           { get; private set; }
         private int             IndexMask       { get; set; }
@@ -220,7 +220,7 @@ namespace Framework.NetWork
                 throw new ArgumentOutOfRangeException("offset + length > data.Length");
 
             if (length > GetUnusedCapacity())
-                throw new System.ArgumentOutOfRangeException("NetRingBuffer is FULL, can't write anymore");
+                throw new ArgumentOutOfRangeException("NetRingBuffer is FULL, can't write anymore");
             
             if (Head + length <= m_Buffer.Length)
             {
@@ -256,7 +256,6 @@ namespace Framework.NetWork
             if(headToEnd < length)
             { // headToEnd空间不够则再寻找其他空间
                 int startToTail = GetConsecutiveUnusedCapacityFromStartToEnd();
-                //UnityEngine.Debug.LogWarning($"headToEnd: {headToEnd}   startToTail: {startToTail}   Head: {Head}  Tail: {Tail} length: {length}");
                 if(startToTail < length)
                 {
                     throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    headToEnd: {headToEnd}  startToTail: {startToTail}");
@@ -264,14 +263,7 @@ namespace Framework.NetWork
 
                 Fence = Head;
                 Head = 0;
-
-                //UnityEngine.Debug.LogError($"--------------- index: {index++}");
             }
-            //else
-            //{
-            //    UnityEngine.Debug.LogError($"index: {index++}");
-            //}
-
             offset = Head;
             buf = m_Buffer;
         }
@@ -283,11 +275,10 @@ namespace Framework.NetWork
         protected void EndWrite(int length)
         {
             AdvanceHead(length);
-            //UnityEngine.Debug.LogWarning($"EndWrite: Head {Head}");
         }
 
         /// <summary>
-        /// 撤销fence，主线程调用
+        /// reset Fence
         /// </summary>
         protected void ResetFence()
         {

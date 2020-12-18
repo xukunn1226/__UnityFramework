@@ -93,7 +93,7 @@ namespace Framework.NetWork
         }
 
         /// <summary>
-        /// 返回可读数据的主线程调用，解析协议数据
+        /// 返回Socket已接收的数据，主线程调用
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="length"></param>

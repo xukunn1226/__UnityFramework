@@ -140,7 +140,6 @@ namespace Framework.NetWork
 
                         if (Fence > 0)
                         {
-                            //UnityEngine.Debug.LogWarning($"------------     Tail: {Tail}    Fence: {Fence}   length: {length} head: {head}");
                             await m_NetworkStream.WriteAsync(Buffer, Tail, Fence - Tail);
                             await m_NetworkStream.WriteAsync(Buffer, 0, head);
                         }
