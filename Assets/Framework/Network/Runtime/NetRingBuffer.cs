@@ -254,7 +254,7 @@ namespace Framework.NetWork
         {
             int headToEnd = GetConsecutiveUnusedCapacityFromHeadToEnd();        // 优先使用
             if(headToEnd < length)
-            { // headToEnd空间不够则再寻找其他空间
+            { // headToEnd空间不够则跨界从头寻找
                 int startToTail = GetConsecutiveUnusedCapacityFromStartToEnd();
                 if(startToTail < length)
                 {

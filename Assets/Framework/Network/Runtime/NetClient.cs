@@ -17,7 +17,7 @@ namespace Framework.NetWork
 
     public interface INetListener<TMessage> where TMessage : class
     {
-        void OnPeerConnected();                                 // 连接成功回调
+        void OnPeerConnectSuccess();                            // 连接成功回调
         void OnPeerConnectFailed(Exception e);                  // 连接失败回调
         void OnPeerClose();                                     // 主动断开连接
         void OnPeerDisconnected(Exception e);                   // 异常断开连接
@@ -31,7 +31,7 @@ namespace Framework.NetWork
     {
         ConnectState state { get; }
         Task Connect(string host, int port);
-        void Close(bool isImmediate = false);
+        void Close();
         void RaiseException(Exception e);
     }
 
@@ -68,6 +68,8 @@ namespace Framework.NetWork
         {
             m_Client = new TcpClient();
             m_Client.NoDelay = true;
+            m_Client.ReceiveBufferSize = 256 * 1024;
+            m_Client.SendBufferSize = 256 * 1024;
             m_HandleException = false;
             m_Exception = null;
 
@@ -113,7 +115,7 @@ namespace Framework.NetWork
         {
             // Trace.Debug($"connect servier... host: {m_Host}     port: {m_Port}");
             state = ConnectState.Connected;
-            m_Listener.OnPeerConnected();
+            m_Listener.OnPeerConnectSuccess();
         }
 
         private void OnConnectFailed(Exception e)
@@ -127,17 +129,15 @@ namespace Framework.NetWork
         {
             state = ConnectState.Disconnected;
             if (e != null)
-                m_Listener.OnPeerDisconnected(e);
+                m_Listener.OnPeerDisconnected(e);   // 异常断开连接
             else
-                m_Listener.OnPeerClose();
+                m_Listener.OnPeerClose();           // 主动断开连接
         }
 
-        public void Close(bool isImmediate = false)
+        public void Close()
         {
             m_HandleException = true;
             m_Exception = null;
-            if(isImmediate)
-                Tick();
         }
 
         public void RaiseException(Exception e)
@@ -166,11 +166,6 @@ namespace Framework.NetWork
                     m_Client.GetStream().Close();
                 m_Client.Close();
                 m_Client = null;
-            }
-
-            if (m_StreamWriter != null)
-            {
-                m_StreamWriter.Shutdown();
             }
         }
 

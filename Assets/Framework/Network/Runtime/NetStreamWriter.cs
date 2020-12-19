@@ -57,6 +57,7 @@ namespace Framework.NetWork
 
             // free unmanaged resources
             m_MemoryStream?.Dispose();
+            m_NetworkStream?.Dispose();
             //m_SendBufferSema?.Dispose();
 
             m_Disposed = true;
@@ -131,7 +132,7 @@ namespace Framework.NetWork
 
                     if(IsEmpty())
                     {
-                        Thread.Sleep(0);
+                        await Task.Yield();
                     }
                     else
                     {
@@ -152,6 +153,7 @@ namespace Framework.NetWork
                         ResetFence();
                     }
                 }
+                UnityEngine.Debug.Log("Quit stream writer thread");
             }
             catch (ObjectDisposedException e)
             {

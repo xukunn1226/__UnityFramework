@@ -40,6 +40,7 @@ namespace Framework.NetWork
             }
 
             // free unmanaged resources
+            m_Stream?.Dispose();
 
             m_Disposed = true;
         }
@@ -62,6 +63,7 @@ namespace Framework.NetWork
                         RaiseException(new Exception("socket disconnected. receiveByte <= 0"));
                     }
                 }
+                UnityEngine.Debug.Log("Quit stream reader thread");
             }
             catch (SocketException e)
             {
