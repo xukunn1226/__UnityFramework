@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 
@@ -10,6 +11,7 @@ namespace Framework.NetWork
         private IConnector          m_NetClient;
         private NetworkStream       m_Stream;
         private byte[]              m_SpanBuffer = new byte[1024];
+        private CancellationTokenSource m_Ts = new CancellationTokenSource();
 
         internal NetStreamReader(IConnector netClient, int capacity = 8 * 1024)
             : base(capacity)
@@ -26,7 +28,7 @@ namespace Framework.NetWork
             // setup environment
             Reset();
             
-            Task.Run(ReceiveAsync);
+            Task.Run(ReceiveAsync, m_Ts.Token);
         }
 
         protected override void Dispose(bool disposing)
@@ -41,6 +43,7 @@ namespace Framework.NetWork
 
             // free unmanaged resources
             m_Stream?.Dispose();
+            m_Ts?.Dispose();
 
             m_Disposed = true;
         }
@@ -55,7 +58,7 @@ namespace Framework.NetWork
                     if (freeCount == 0)
                         throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {Head}     Tail: {Tail}   Time: {DateTime.Now.ToString()}");
 
-                    int receiveByte = await m_Stream.ReadAsync(Buffer, Head, freeCount);
+                    int receiveByte = await m_Stream.ReadAsync(Buffer, Head, freeCount, m_Ts.Token);
                     AdvanceHead(receiveByte);
 
                     if (receiveByte <= 0)              // 连接中断

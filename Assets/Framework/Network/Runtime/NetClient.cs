@@ -148,14 +148,13 @@ namespace Framework.NetWork
 
         private void HandleException()
         {
-            if (m_HandleException)
+            if (m_HandleException && m_Client != null)
             {
-                m_HandleException = false;
-
                 InternalClose();
 
                 OnDisconnected(m_Exception);
             }
+            m_HandleException = false;
         }
 
         private void InternalClose()
