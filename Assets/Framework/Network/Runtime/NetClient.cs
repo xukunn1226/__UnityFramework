@@ -143,7 +143,6 @@ namespace Framework.NetWork
 
         public void RaiseException(Exception e)
         {
-            UnityEngine.Debug.LogError($"RaiseException:    {e.Message}");
             m_HandleException = true;
             m_Exception = e;
         }
@@ -161,9 +160,15 @@ namespace Framework.NetWork
 
         private void InternalClose()
         {
+            if(m_Cts != null)
+            {
+                m_Cts.Cancel();
+                m_Cts.Dispose();
+                m_Cts = null;
+            }
+
             if (m_Client != null)
             {
-                UnityEngine.Debug.LogWarning("----------------");
                 if (m_Client.Connected)                          // 当远端主动断开网络时，NetworkStream呈已关闭状态
                     m_Client.GetStream().Close();
                 m_Client.Close();
