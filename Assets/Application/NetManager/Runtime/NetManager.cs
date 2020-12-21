@@ -54,6 +54,11 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
         m_NetClient?.Close();
     }
 
+    public void Cancel()
+    {
+        m_NetClient?.Cancel();
+    }
+
     public void Reconnect()
     {
         m_NetClient?.Reconnect();
@@ -63,7 +68,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
     {
         foreach(var msg in msgs)
         {
-            //Debug.Log($"====Receive: {msg}");
+            Debug.Log($"====Receive: {msg}");
         }
     }
 
@@ -134,8 +139,16 @@ public class NetManager_Inspector : Editor
 {
     public override void OnInspectorGUI()
     {
+        EditorGUI.BeginChangeCheck();
+
         ((NetManager)target).Ip = EditorGUILayout.TextField("Ip", ((NetManager)target).Ip);
         ((NetManager)target).Port = EditorGUILayout.IntField("Port", ((NetManager)target).Port);
+
+        if(EditorGUI.EndChangeCheck())
+        {
+            EditorUtility.SetDirty(target);
+            AssetDatabase.SaveAssets();
+        }
 
         if (GUILayout.Button("Connect"))
         {
@@ -148,6 +161,11 @@ public class NetManager_Inspector : Editor
         if (GUILayout.Button("Reconnect"))
         {
             ((NetManager)target).Reconnect();
+        }
+
+        if (GUILayout.Button("Cancel"))
+        {
+            ((NetManager)target).Cancel();
         }
     }
 }

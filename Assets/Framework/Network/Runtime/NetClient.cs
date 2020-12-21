@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
@@ -50,8 +51,9 @@ namespace Framework.NetWork
         private bool                    m_HandleException;
         private Exception               m_Exception;
         private IPacket<TMessage>       m_Parser;
-        private List<TMessage>          m_MessageList = new List<TMessage>();
+        private List<TMessage>          m_MessageList   = new List<TMessage>();
         private INetListener<TMessage>  m_Listener;
+        private CancellationTokenSource m_Cts;
 
         public NetClient(INetListener<TMessage> listener)
         {
@@ -83,8 +85,9 @@ namespace Framework.NetWork
                 await m_Client.ConnectAsync(ip, m_Port);
                 OnConnectSuccess();
 
-                m_StreamWriter.Start(m_Client.GetStream());
-                m_StreamReader.Start(m_Client.GetStream());
+                m_Cts = new CancellationTokenSource();
+                m_StreamWriter.Start(m_Client.GetStream(), m_Cts);
+                m_StreamReader.Start(m_Client.GetStream(), m_Cts);
             }
             catch (ArgumentNullException e)
             {
@@ -113,14 +116,12 @@ namespace Framework.NetWork
 
         private void OnConnectSuccess()
         {
-            // Trace.Debug($"connect servier... host: {m_Host}     port: {m_Port}");
             state = ConnectState.Connected;
             m_Listener.OnPeerConnectSuccess();
         }
 
         private void OnConnectFailed(Exception e)
         {
-            // Trace.Debug(e.ToString());
             state = ConnectState.Disconnected;
             m_Listener.OnPeerConnectFailed(e);
         }
@@ -142,6 +143,7 @@ namespace Framework.NetWork
 
         public void RaiseException(Exception e)
         {
+            UnityEngine.Debug.LogError($"RaiseException:    {e.Message}");
             m_HandleException = true;
             m_Exception = e;
         }
@@ -161,11 +163,17 @@ namespace Framework.NetWork
         {
             if (m_Client != null)
             {
+                UnityEngine.Debug.LogWarning("----------------");
                 if (m_Client.Connected)                          // 当远端主动断开网络时，NetworkStream呈已关闭状态
                     m_Client.GetStream().Close();
                 m_Client.Close();
                 m_Client = null;
             }
+        }
+        
+        public void Cancel()
+        {
+            m_Cts?.Cancel();
         }
 
         public void Tick()

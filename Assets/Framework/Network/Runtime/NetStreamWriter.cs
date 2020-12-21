@@ -15,6 +15,7 @@ namespace Framework.NetWork
                                                                                     // The count is decremented each time a thread enters the semaphore, and incremented each time a thread releases the semaphore
         //private bool                        m_isSendingBuffer;                      // 发送消息IO是否进行中
         private MemoryStream                m_MemoryStream;
+        private CancellationTokenSource     m_Cts;
 
         //struct WriteCommand
         //{
@@ -32,9 +33,10 @@ namespace Framework.NetWork
             m_MemoryStream = new MemoryStream(Buffer, true);
         }
 
-        internal void Start(NetworkStream stream)
+        internal void Start(NetworkStream stream, CancellationTokenSource cts)
         {
             m_NetworkStream = stream;
+            m_Cts = cts;
 
             Reset();
             m_MemoryStream.Seek(0, SeekOrigin.Begin);
@@ -42,7 +44,7 @@ namespace Framework.NetWork
             //m_SendBufferSema = new SemaphoreSlim(0, 1);
             //m_isSendingBuffer = false;
 
-            Task.Run(WriteAsync);
+            Task.Run(WriteAsync, m_Cts.Token);
         }
 
         protected override void Dispose(bool disposing)
@@ -141,19 +143,18 @@ namespace Framework.NetWork
 
                         if (Fence > 0)
                         {
-                            await m_NetworkStream.WriteAsync(Buffer, Tail, Fence - Tail);
-                            await m_NetworkStream.WriteAsync(Buffer, 0, head);
+                            await m_NetworkStream.WriteAsync(Buffer, Tail, Fence - Tail, m_Cts.Token);
+                            await m_NetworkStream.WriteAsync(Buffer, 0, head, m_Cts.Token);
                         }
                         else
                         {
-                            await m_NetworkStream.WriteAsync(Buffer, Tail, head - Tail);
+                            await m_NetworkStream.WriteAsync(Buffer, Tail, head - Tail, m_Cts.Token);
                         }
 
                         FinishBufferSending(length);
                         ResetFence();
                     }
                 }
-                UnityEngine.Debug.Log("Quit stream writer thread");
             }
             catch (ObjectDisposedException e)
             {
@@ -180,6 +181,17 @@ namespace Framework.NetWork
             catch (SocketException e)
             {
                 RaiseException(e);
+            }
+            catch (TaskCanceledException e)
+            {
+                if (e.CancellationToken == m_Cts.Token && m_Cts.IsCancellationRequested)
+                {
+                    UnityEngine.Debug.Log("NetStreamWriter is cancel normally.");
+                }
+                else
+                {
+                    RaiseException(e);
+                }
             }
         }
 

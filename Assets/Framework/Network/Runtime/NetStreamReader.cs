@@ -8,10 +8,10 @@ namespace Framework.NetWork
 {
     sealed internal class NetStreamReader : NetStream
     {
-        private IConnector          m_NetClient;
-        private NetworkStream       m_Stream;
-        private byte[]              m_SpanBuffer = new byte[1024];
-        private CancellationTokenSource m_Ts = new CancellationTokenSource();
+        private IConnector              m_NetClient;
+        private NetworkStream           m_Stream;
+        private byte[]                  m_SpanBuffer    = new byte[1024];
+        private CancellationTokenSource m_Cts;
 
         internal NetStreamReader(IConnector netClient, int capacity = 8 * 1024)
             : base(capacity)
@@ -21,14 +21,15 @@ namespace Framework.NetWork
             m_NetClient = netClient;
         }
 
-        internal void Start(NetworkStream stream)
+        internal void Start(NetworkStream stream, CancellationTokenSource cts)
         {
             m_Stream = stream;
+            m_Cts = cts;
 
             // setup environment
             Reset();
             
-            Task.Run(ReceiveAsync, m_Ts.Token);
+            Task.Run(ReceiveAsync, m_Cts.Token);
         }
 
         protected override void Dispose(bool disposing)
@@ -43,7 +44,6 @@ namespace Framework.NetWork
 
             // free unmanaged resources
             m_Stream?.Dispose();
-            m_Ts?.Dispose();
 
             m_Disposed = true;
         }
@@ -58,7 +58,7 @@ namespace Framework.NetWork
                     if (freeCount == 0)
                         throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {Head}     Tail: {Tail}   Time: {DateTime.Now.ToString()}");
 
-                    int receiveByte = await m_Stream.ReadAsync(Buffer, Head, freeCount, m_Ts.Token);
+                    int receiveByte = await m_Stream.ReadAsync(Buffer, Head, freeCount, m_Cts.Token);
                     AdvanceHead(receiveByte);
 
                     if (receiveByte <= 0)              // 连接中断
@@ -66,7 +66,6 @@ namespace Framework.NetWork
                         RaiseException(new Exception("socket disconnected. receiveByte <= 0"));
                     }
                 }
-                UnityEngine.Debug.Log("Quit stream reader thread");
             }
             catch (SocketException e)
             {
@@ -89,6 +88,17 @@ namespace Framework.NetWork
             catch (ArgumentOutOfRangeException e)
             {
                 RaiseException(e);
+            }
+            catch(TaskCanceledException e)
+            {
+                if (e.CancellationToken == m_Cts.Token && m_Cts.IsCancellationRequested)
+                {
+                    UnityEngine.Debug.Log("NetStreamReader is cancel normally.");
+                }
+                else
+                {
+                    RaiseException(e);
+                }
             }
         }
 
