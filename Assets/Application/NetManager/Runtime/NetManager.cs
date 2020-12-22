@@ -19,27 +19,28 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
     public string   Ip      = "192.168.5.14";
     public int      Port    = 11000;
 
-    void Awake()
+    async void Awake()
     {
-        m_NetClient = new NetClient<IMessage>(this);        
-    }
-
-    async void OnEnable()
-    {
-        m_Quit = false;
-
+        m_NetClient = new NetClient<IMessage>(this);
         await AutoSending();
     }
+
+    //async void OnEnable()
+    //{
+    //    m_Quit = false;
+
+    //    await AutoSending();
+    //}
+
+    //void OnDisable()
+    //{
+    //    m_Quit = true;
+    //    m_NetClient.Close();
+    //}
 
     void Update()
     {
         m_NetClient?.Tick();
-    }
-
-    void OnDisable()
-    {
-        m_Quit = true;
-        m_NetClient.Close();
     }
 
     async public void Connect()
@@ -51,12 +52,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
     public void Disconnect()
     {
         m_Quit = true;
-        m_NetClient?.Close();
-    }
-
-    public void Cancel()
-    {
-        m_NetClient?.Cancel();
+        m_NetClient?.Shutdown();
     }
 
     public void Reconnect()
@@ -74,7 +70,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
 
     void INetListener<IMessage>.OnPeerConnectSuccess()
     {
-        Debug.Log("connected");
+        Debug.Log($"connected    {Ip}:{Port}");
     }
     void INetListener<IMessage>.OnPeerConnectFailed(Exception e)
     {
@@ -161,11 +157,6 @@ public class NetManager_Inspector : Editor
         if (GUILayout.Button("Reconnect"))
         {
             ((NetManager)target).Reconnect();
-        }
-
-        if (GUILayout.Button("Cancel"))
-        {
-            ((NetManager)target).Cancel();
         }
     }
 }

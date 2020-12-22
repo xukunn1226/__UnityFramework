@@ -32,7 +32,7 @@ namespace Framework.NetWork
     {
         ConnectState state { get; }
         Task Connect(string host, int port);
-        void Close();
+        void Shutdown();
         void RaiseException(Exception e);
     }
 
@@ -135,13 +135,20 @@ namespace Framework.NetWork
                 m_Listener.OnPeerClose();           // 主动断开连接
         }
 
-        public void Close()
+        /// <summary>
+        /// 主动断开连接
+        /// </summary>
+        public void Shutdown()
         {
             m_HandleException = true;
             m_Exception = null;
         }
 
-        public void RaiseException(Exception e)
+        /// <summary>
+        /// 异常断开连接
+        /// </summary>
+        /// <param name="e"></param>
+        void IConnector.RaiseException(Exception e)
         {
             m_HandleException = true;
             m_Exception = e;
@@ -176,11 +183,6 @@ namespace Framework.NetWork
             }
         }
         
-        public void Cancel()
-        {
-            m_Cts?.Cancel();
-        }
-
         public void Tick()
         {
             // if(m_Client != null && state == ConnectState.Connected)
@@ -241,11 +243,11 @@ namespace Framework.NetWork
             }
             catch (ArgumentNullException e)
             {
-                RaiseException(e);
+                ((IConnector)this).RaiseException(e);
             }
             catch (ArgumentOutOfRangeException e)
             {
-                RaiseException(e);
+                ((IConnector)this).RaiseException(e);
             }
         }
 
