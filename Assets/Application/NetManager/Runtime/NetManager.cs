@@ -93,7 +93,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
     {
         int index = 0;
         System.Random r = new System.Random();
-        while (true)
+        while (Application.isPlaying)
         {
             while (!m_Quit && m_NetClient?.state == ConnectState.Connected)
             {
@@ -108,7 +108,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
                     msg.MyList.Add("22222222222");
                 if (index % 3 == 0)
                     msg.MyList.Add("33333333333333");
-
+                UnityEngine.Debug.LogWarning("");
                 if (!m_NetClient.SendData(msg))
                     break;
 
