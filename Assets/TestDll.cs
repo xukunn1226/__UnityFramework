@@ -7,7 +7,7 @@ using XDelta = XDelta.IOS;
 #elif UNITY_ANDROID
 using XDelta = XDelta.XDelta;       // XDelta.Android
 #elif UNITY_STANDALONE_WIN
-using XDelta = XDelta.Windows;
+using XDelta = XDelta.XDelta;   // XDelta.Windows;
 #else
 using XDelta = XDelta.XDelta;
 
