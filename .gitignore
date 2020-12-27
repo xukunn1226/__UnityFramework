@@ -81,6 +81,7 @@ UserSettings/
 #[Aa]ssets/RedirectorCache
 #[Aa]ssets/RedirectorCache.meta
 
+
 # some plugins
 [Aa]ssets/AssetBundles-Browser-master
 [Aa]ssets/AssetBundles-Browser-master.meta
@@ -88,4 +89,21 @@ UserSettings/
 [Aa]ssets/AssetUsageDetector.meta
 [Aa]ssets/BuildReports
 [Aa]ssets/BuildReports.meta
+
+
+# some native plugin projects
+*vcxproj.filters
+*vcxproj.user
+TestNative/Release
+TestNative/Debug
+TestNative/x64
+
+
+
+
+
+
+
+
+
 
