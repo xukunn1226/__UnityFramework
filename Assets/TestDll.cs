@@ -25,14 +25,14 @@ public class TestDll : MonoBehaviour
 #if UNITY_IOS
     const string dllName = "__Internal";
 #elif UNITY_ANDROID
-    const string dllName = "Project1";
+    const string dllName = "TestNative";
 #elif UNITY_STANDALONE_WIN
-    const string dllName = "Project1";
+    const string dllName = "TestNative";
 #else
-    const string dllName = "Project1";
+    const string dllName = "TestNative";
 #endif
 
-    [DllImport("dllName")] //这里就是调用的dll名字
+    [DllImport(dllName)] //这里就是调用的dll名字
     public static extern int MyAddFunc(int x, int y);
 
     // Use this for initialization
