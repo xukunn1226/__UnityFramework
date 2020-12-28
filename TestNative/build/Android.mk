@@ -5,10 +5,10 @@ include $(CLEAR_VARS)
 
 LOCAL_ARM_MODE  := arm
 LOCAL_PATH      := $(NDK_PROJECT_PATH)
-LOCAL_MODULE    := libnative
+LOCAL_MODULE    := TestNative
 LOCAL_CFLAGS    := -Werror
 LOCAL_SRC_FILES := ../src/NativeCode.cpp \
-					../src/NativeCode.h
+				   ../src/NativeCode.h
 LOCAL_LDLIBS    := -llog
 
 include $(BUILD_SHARED_LIBRARY)

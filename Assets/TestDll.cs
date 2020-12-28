@@ -25,11 +25,11 @@ public class TestDll : MonoBehaviour
 #if UNITY_IOS
     const string dllName = "__Internal";
 #elif UNITY_ANDROID
-    const string dllName = "TestNative";
+    const string dllName = "libTestNative";
 #elif UNITY_STANDALONE_WIN
-    const string dllName = "TestNative";
+    const string dllName = "libTestNative";
 #else
-    const string dllName = "TestNative";
+    const string dllName = "libTestNative";
 #endif
 
     [DllImport(dllName)] //这里就是调用的dll名字

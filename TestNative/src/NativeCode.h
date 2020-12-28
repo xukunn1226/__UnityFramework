@@ -1,8 +1,17 @@
 #pragma once
 
-#ifndef EXPORT_DLL
-#define EXPORT_DLL __declspec(dllexport) //导出dll声明
+#ifdef _MSC_VER
+
+	#ifndef EXPORT_DLL
+	#define EXPORT_DLL __declspec(dllexport) //导出dll声明
+	#endif
+
+#else
+
+	#define EXPORT_DLL __attribute((visibility("default")))
+
 #endif
+
 
 extern "C"
 {
