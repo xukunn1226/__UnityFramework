@@ -86,6 +86,8 @@
 	内存：随用随取，不用全部进内存
 	加载：
 * 网络库在android&ios上网络切换时的响应：4G & WIFI互相切换、网络彻底断开等
+* OBB管理  https://stackoverflow.com/questions/25832334/i-have-mounted-my-obb-file-but-how-to-get-the-final-path-to-my-assets
+		   https://answers.unity.com/questions/1228809/where-to-put-my-obb-file.html
 
 
 

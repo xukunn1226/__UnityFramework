@@ -59,8 +59,8 @@ MonoBehaviour:
     m_Dependencies:
     - assets/framework/assetmanagement/runtime/tests/res/builtinres.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/ui/atlases/misc.ab
-    m_Crc: 3775082762
-    m_Hash: 1146d52250c965a6cc7d6e663fadd8bb
+    m_Crc: 523929624
+    m_Hash: 58664215ae0347535890691e5bfd1914
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/ui/prefabs.ab
     m_Crc: 1317274437
@@ -160,8 +160,8 @@ MonoBehaviour:
     m_Hash: 989618cf4d0f8022aca0035eaf0b7d76
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/res/scenes.ab
-    m_Crc: 3861380473
-    m_Hash: ac9be2959195623b66e1afa7fb51cceb
+    m_Crc: 3841081557
+    m_Hash: 1ac66a6f9dd0df316f29b5aa72d7ee0a
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/assetmanagement/runtime/tests/res/model.ab
     m_Crc: 2717378633

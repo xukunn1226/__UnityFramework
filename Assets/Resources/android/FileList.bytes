@@ -1,11 +1,11 @@
 {
   "Count": 36,
-  "TotalSize": 30029331,
+  "TotalSize": 30029333,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "412c35ed23f71e00e541a441645c5928",
-      "Size": 2934
+      "FileHash": "ffd0c57d654a0ab0b1d383254d1ebc50",
+      "Size": 2935
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -84,8 +84,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/ui/atlases/misc.ab",
-      "FileHash": "3e2812d302ea58e662b213c1dd2c9dd8",
-      "Size": 3232461
+      "FileHash": "8b72e1018743d36f9ce328c0117087ee",
+      "Size": 3232466
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
@@ -179,8 +179,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "d32f1b14fdab2d9c3967b4d824965c50",
-      "Size": 13505
+      "FileHash": "379958e76122efbdad10420604665230",
+      "Size": 13501
     }
   ]
 }
