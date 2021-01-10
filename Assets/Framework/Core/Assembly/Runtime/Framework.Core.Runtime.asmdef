@@ -1,6 +1,9 @@
 {
     "name": "Framework.Core.Runtime",
-    "references": [],
+    "rootNamespace": "",
+    "references": [
+        "GUID:5c1ff9bd975acec488150743d53a93ca"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
