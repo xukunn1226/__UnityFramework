@@ -25,16 +25,10 @@ namespace Framework.Core
     [FileConfig("_actor")]
     public class Actor
     {
-        [PropertyConfig] static public float s_value;
-        [PropertyConfig] static private int s_int;
-
-        [PropertyConfig] private float   m_Float = 1.23f;
-        [PropertyConfig] protected int      m_Int = 2;
-        [PropertyConfig] public string   m_Str = "122332223dsfsd";
-
-
-        [PropertyConfig] private object   Obj1 { get; }
-        [PropertyConfig] static public string s_staticStr { get; }
+        [PropertyConfig] private float   m_Float;
+        [PropertyConfig] public int      m_Int;
+        [PropertyConfig] public string   m_Str;
+        [PropertyConfig] public object   Obj { get; }
 
         public void PrintAttribute()
         {
@@ -43,32 +37,7 @@ namespace Framework.Core
 
         public void LoadConfig()
         {
-            // [Framework.Core].[Actor]
-            string ns = GetType().Namespace;
-            string cn = GetType().Name;
 
-            Type type = GetType();
-            Attribute fileConfigAttr = type.GetCustomAttribute(typeof(FileConfigAttribute), true);
-            if (fileConfigAttr == null)
-                return;
-
-            foreach(var prop in type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
-            {
-                Attribute propAttr = prop.GetCustomAttribute(typeof(PropertyConfigAttribute));
-                if (propAttr == null) continue;
-
-                Debug.Log($"{prop.Name}     {prop.PropertyType}     {prop.GetValue(this)}");
-            }
-
-            Debug.Log("--------------------------");
-
-            foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
-            {
-                Attribute propAttr = field.GetCustomAttribute(typeof(PropertyConfigAttribute));
-                if (propAttr == null) continue;
-
-                Debug.Log($"{field.Name}     {field.FieldType}     {field.GetValue(this)}");
-            }
         }
     }
 
