@@ -187,6 +187,8 @@ namespace Framework.Core.Tests
         {
             public string Name = "";
             public int Value;
+            public float F;
+            [NonSerialized]public string str;
 
             public TestClass(string n, int v)
             {
@@ -264,8 +266,8 @@ namespace Framework.Core.Tests
         void TestDicDeserialize()
         {
             System.IO.FileStream fs = new System.IO.FileStream("assets/framework/core/misc/tests/runtime/dic.txt", System.IO.FileMode.Open);
-            byte[] array = new byte[256];
-            int size = fs.Read(array, 0, 256);
+            byte[] array = new byte[1024 * 256];
+            int size = fs.Read(array, 0, 1024 * 256);
             fs.Close();
             string jsong = System.Text.Encoding.UTF8.GetString(array, 0, size);
 

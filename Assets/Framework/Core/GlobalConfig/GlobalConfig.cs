@@ -23,21 +23,26 @@ namespace Framework.Core
             return TryGetValue(property, out value);
         }
 
-        public void SetValue(string property, string value)
+        public bool SetValue(string property, string value)
         {
+            bool isDirty = true;
             if(ContainsKey(property))
             {
+                isDirty = string.Compare(this[property], value) != 0;
                 this[property] = value;
             }
             else
             {
                 Add(property, value);
             }
+            return isDirty;
         }
     }
 
     public class GlobalConfig : Dictionary<string, ConfigSection>       // key: namespace
     {
+        [System.NonSerialized] public bool isDirty;
+
         // 修复不存在的数据
         public void Repair(GlobalConfig other)
         {
@@ -74,8 +79,9 @@ namespace Framework.Core
             {
                 section = new ConfigSection();
                 Add(ns, section);
+                isDirty = true;
             }
-            section.SetValue(property, value);
+            isDirty |= section.SetValue(property, value);
         }
     }
 }

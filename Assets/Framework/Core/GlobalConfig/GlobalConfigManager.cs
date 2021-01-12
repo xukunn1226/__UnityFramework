@@ -69,15 +69,14 @@ namespace Framework.Core
             {
                 GlobalConfig savedConfig = new GlobalConfig();
 
-                string filePath = string.Format($"{directory}/{defaultConfig.Key}");
+                string filePath = string.Format($"{directory}/{defaultConfig.Key}.json");
                 bool isExist = File.Exists(filePath);
                 {
                     FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
                     if (isExist)
                     {
-                        int size = fs.Read(m_Buffer, 0, m_Buffer.Length);
-                        string json = System.Text.Encoding.UTF8.GetString(m_Buffer, 0, size);
+                        string json = System.Text.Encoding.UTF8.GetString(m_Buffer, 0, fs.Read(m_Buffer, 0, m_Buffer.Length));
                         savedConfig = JsonConvert.DeserializeObject<GlobalConfig>(json);
                     }
 
@@ -86,9 +85,9 @@ namespace Framework.Core
 
                     // write to file
                     string data = JsonConvert.SerializeObject(savedConfig, Formatting.Indented);
-                    byte[] buf = System.Text.Encoding.UTF8.GetBytes(data);
+                    int size = System.Text.Encoding.UTF8.GetBytes(data, 0, data.Length, m_Buffer, 0);
                     fs.Position = 0;
-                    fs.Write(buf, 0, buf.Length);
+                    fs.Write(m_Buffer, 0, size);
                     fs.Dispose();
                     fs.Close();
                 }
@@ -115,14 +114,18 @@ namespace Framework.Core
                 return;
             }
 
-            string filePath = string.Format($"{Application.persistentDataPath}/Saved/{filename}");
+            if (!config.isDirty)
+                return;
+
+            string filePath = string.Format($"{Application.persistentDataPath}/Saved/{filename}.json");
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Write))
             {
                 string data = JsonConvert.SerializeObject(config, Formatting.Indented);
-                byte[] buf = System.Text.Encoding.UTF8.GetBytes(data);
-                fs.Write(buf, 0, buf.Length);
+                int size = System.Text.Encoding.UTF8.GetBytes(data, 0, data.Length, m_Buffer, 0);
+                fs.Write(m_Buffer, 0, size);
                 fs.Close();
             }
+            config.isDirty = false;
         }
 
         static public void FlushAll()
