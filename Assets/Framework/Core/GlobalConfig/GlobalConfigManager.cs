@@ -246,7 +246,7 @@ namespace Framework.Core
             config.SetValue(sectionName, propertyName, value);
         }
 
-        static public void LoadConfig(this IConfig instance)
+        static public void LoadFromConfig(this IConfig instance)
         {
             if (instance == null)
                 throw new ArgumentNullException("instance");
@@ -255,14 +255,40 @@ namespace Framework.Core
             string cn = instance.GetType().Name;
 
             Type type = instance.GetType();
-            Attribute fileConfigAttr = type.GetCustomAttribute(typeof(FileConfigAttribute), true);
+            FileConfigAttribute fileConfigAttr = (FileConfigAttribute)type.GetCustomAttribute(typeof(FileConfigAttribute), true);
             if (fileConfigAttr == null)
+            {
+                Debug.LogWarning($"can't find FileConfigAttribute in {type.Name}");
                 return;
+            }
+
+            if(fileConfigAttr.Filename != ns)
+            {
+                Debug.LogWarning($"FileConfigAttribute({fileConfigAttr.Filename}) does not match {ns}");
+                return;
+            }
 
             foreach (var prop in type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
             {
                 Attribute propAttr = prop.GetCustomAttribute(typeof(PropertyConfigAttribute));
                 if (propAttr == null) continue;
+
+                if(Attribute.IsDefined(prop, typeof(IntPropertyConfigAttribute)))
+                {
+                    //prop.SetValue(null, GetInt(fileConfigAttr.Filename, ns, cn, prop.Name));
+                }
+                else if(Attribute.IsDefined(prop, typeof(FloatPropertyConfigAttribute)))
+                {
+                    prop.SetValue(null, GetFloat(ns, cn, prop.Name));
+                }
+                else if(Attribute.IsDefined(prop, typeof(StringPropertyConfigAttribute)))
+                {
+                    prop.SetValue(null, GetString(ns, cn, prop.Name));
+                }
+                else
+                {
+                    Debug.LogWarning($"");
+                }
 
                 Debug.Log($"{prop.Name}     {prop.PropertyType}     {prop.GetValue(instance)}");
             }
@@ -274,6 +300,23 @@ namespace Framework.Core
                 Attribute propAttr = field.GetCustomAttribute(typeof(PropertyConfigAttribute));
                 if (propAttr == null) continue;
 
+                if(Attribute.IsDefined(field, typeof(IntPropertyConfigAttribute)))
+                {
+                    field.SetValue(null, GetInt(ns, cn, field.Name));
+                }
+                else if(Attribute.IsDefined(field, typeof(FloatPropertyConfigAttribute)))
+                {
+                    field.SetValue(null, GetFloat(ns, cn, field.Name));
+                }
+                else if(Attribute.IsDefined(field, typeof(StringPropertyConfigAttribute)))
+                {
+                    field.SetValue(null, GetString(ns, cn, field.Name));
+                }
+                else
+                {
+                    Debug.LogWarning($"");
+                }
+
                 Debug.Log($"{field.Name}     {field.FieldType}     {field.GetValue(instance)}");
             }
         }        
@@ -281,6 +324,72 @@ namespace Framework.Core
 
     public interface IConfig
     {
-        void LoadConfig();
+        void Load();
+    }
+
+
+
+
+
+
+
+    [FileConfig("Engine")]
+    public class Actor : IConfig
+    {
+        [FloatPropertyConfig] private float m_Float;
+        [IntPropertyConfig] public int m_Int;
+        [StringPropertyConfig] public string m_Str;
+        public object Obj { get; }
+
+        public void PrintAttribute()
+        {
+            FileConfigAttribute[] attr = (FileConfigAttribute[])GetType().GetCustomAttributes(typeof(FileConfigAttribute), false);
+        }
+
+        public void Load()
+        {
+            this.LoadFromConfig();
+        }
+    }
+
+
+
+    public class TestAttributes
+    {
+        public void Test()
+        {
+            PrintAuthorInfo(typeof(Actor));
+            TestAssignableFrom();
+        }
+
+        private static void PrintAuthorInfo(System.Type t)
+        {
+            System.Attribute[] attrs = System.Attribute.GetCustomAttributes(t);  // reflection
+
+            foreach (System.Attribute attr in attrs)
+            {
+                if (attr is FileConfigAttribute)
+                {
+                    FileConfigAttribute a = (FileConfigAttribute)attr;
+                    Debug.Log($"   {a.Filename}");
+                }
+            }
+        }
+
+        public static void TestAssignableFrom()
+        {
+            TestAttributes aa = new TestAttributes();
+            Assembly assembly = aa.GetType().Assembly;
+            Type[] types = assembly.GetTypes();
+            Type type = typeof(Actor);
+            for (int i = 0; i < types.Length; i++)
+            {
+                Debug.Log($"{types[i].Namespace}    {types[i].Name}     {types[i].FullName}");
+                if (type.IsAssignableFrom(types[i]) && !types[i].IsInterface)
+                {
+                    Debug.Log($"{types[i].Name}");
+                }
+            }
+        }
     }
 }

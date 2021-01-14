@@ -8,6 +8,8 @@ public class NewBehaviourScript : MonoBehaviour
     void Start()
     {
         GlobalConfigManager.Init();
+        Actor actor = new Actor();
+        actor.Load();
     }
 
     // Update is called once per frame
