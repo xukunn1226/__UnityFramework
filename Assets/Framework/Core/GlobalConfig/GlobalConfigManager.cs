@@ -136,6 +136,11 @@ namespace Framework.Core
             }
         }
 
+        static private bool IsExist(string filename)
+        {
+            return s_Configs.ContainsKey(filename);
+        }
+
         static public int GetInt(string filename, string sectionName, string propertyName)
         {
             GlobalConfig config;
@@ -262,9 +267,9 @@ namespace Framework.Core
                 return;
             }
 
-            if(fileConfigAttr.Filename != ns)
+            if(!IsExist(fileConfigAttr.Filename))
             {
-                Debug.LogWarning($"FileConfigAttribute({fileConfigAttr.Filename}) does not match {ns}");
+                Debug.LogWarning($"{fileConfigAttr.Filename} not exist");
                 return;
             }
 
@@ -275,15 +280,15 @@ namespace Framework.Core
 
                 if(Attribute.IsDefined(prop, typeof(IntPropertyConfigAttribute)))
                 {
-                    //prop.SetValue(null, GetInt(fileConfigAttr.Filename, ns, cn, prop.Name));
+                    prop.SetValue(null, GetInt(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
                 }
                 else if(Attribute.IsDefined(prop, typeof(FloatPropertyConfigAttribute)))
                 {
-                    prop.SetValue(null, GetFloat(ns, cn, prop.Name));
+                    prop.SetValue(null, GetFloat(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
                 }
                 else if(Attribute.IsDefined(prop, typeof(StringPropertyConfigAttribute)))
                 {
-                    prop.SetValue(null, GetString(ns, cn, prop.Name));
+                    prop.SetValue(null, GetString(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
                 }
                 else
                 {
@@ -302,15 +307,15 @@ namespace Framework.Core
 
                 if(Attribute.IsDefined(field, typeof(IntPropertyConfigAttribute)))
                 {
-                    field.SetValue(null, GetInt(ns, cn, field.Name));
+                    field.SetValue(null, GetInt(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
                 }
                 else if(Attribute.IsDefined(field, typeof(FloatPropertyConfigAttribute)))
                 {
-                    field.SetValue(null, GetFloat(ns, cn, field.Name));
+                    field.SetValue(null, GetFloat(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
                 }
                 else if(Attribute.IsDefined(field, typeof(StringPropertyConfigAttribute)))
                 {
-                    field.SetValue(null, GetString(ns, cn, field.Name));
+                    field.SetValue(null, GetString(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
                 }
                 else
                 {
@@ -319,7 +324,7 @@ namespace Framework.Core
 
                 Debug.Log($"{field.Name}     {field.FieldType}     {field.GetValue(instance)}");
             }
-        }        
+        }
     }
 
     public interface IConfig
