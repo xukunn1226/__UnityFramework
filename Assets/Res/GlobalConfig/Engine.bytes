@@ -1,12 +1,12 @@
 {
   "Framework.Core": {
-    "Actor.m_Float": "1.2f",
+    "Actor.m_Float": "1.2",
 	"Actor.m_Int": "3",
     "Actor.m_Str": "1234354",
 	"Actor.m_Str11111": "1234354"
   },
   "Framework.Asset": {
-    "Player.m_Float": "1.2f",
+    "Player.m_Float": "1.2",
     "Player.m_Str": "1234354",
 	"Player.m_Double": "1234354"
   }

@@ -164,7 +164,7 @@ namespace Framework.Core
             }
             catch(Exception e)
             {
-                Debug.LogError($"GlobalConfigManager.GetInt throw exception: {e.Message}");
+                Debug.LogError($"GlobalConfigManager.GetInt throw exception: {e.Message}  filename: {filename}    sectionName: {sectionName}  propertyName: {propertyName}");
             }
             return v;
         }
@@ -192,7 +192,7 @@ namespace Framework.Core
             }
             catch (Exception e)
             {
-                Debug.LogError($"GlobalConfigManager.GetFloat throw exception: {e.Message}");
+                Debug.LogError($"GlobalConfigManager.GetFloat throw exception: {e.Message}  filename: {filename}    sectionName: {sectionName}  propertyName: {propertyName}");
             }
             return v;
         }
@@ -280,25 +280,23 @@ namespace Framework.Core
 
                 if(Attribute.IsDefined(prop, typeof(IntPropertyConfigAttribute)))
                 {
-                    prop.SetValue(null, GetInt(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
+                    prop.SetValue(instance, GetInt(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
                 }
                 else if(Attribute.IsDefined(prop, typeof(FloatPropertyConfigAttribute)))
                 {
-                    prop.SetValue(null, GetFloat(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
+                    prop.SetValue(instance, GetFloat(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
                 }
                 else if(Attribute.IsDefined(prop, typeof(StringPropertyConfigAttribute)))
                 {
-                    prop.SetValue(null, GetString(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
+                    prop.SetValue(instance, GetString(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
                 }
                 else
                 {
                     Debug.LogWarning($"");
                 }
 
-                Debug.Log($"{prop.Name}     {prop.PropertyType}     {prop.GetValue(instance)}");
+                // Debug.Log($"{prop.Name}     {prop.PropertyType}     {prop.GetValue(instance)}");
             }
-
-            Debug.Log("--------------------------");
 
             foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
             {
@@ -307,22 +305,22 @@ namespace Framework.Core
 
                 if(Attribute.IsDefined(field, typeof(IntPropertyConfigAttribute)))
                 {
-                    field.SetValue(null, GetInt(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
+                    field.SetValue(instance, GetInt(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
                 }
                 else if(Attribute.IsDefined(field, typeof(FloatPropertyConfigAttribute)))
                 {
-                    field.SetValue(null, GetFloat(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
+                    field.SetValue(instance, GetFloat(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
                 }
                 else if(Attribute.IsDefined(field, typeof(StringPropertyConfigAttribute)))
                 {
-                    field.SetValue(null, GetString(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
+                    field.SetValue(instance, GetString(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
                 }
                 else
                 {
                     Debug.LogWarning($"");
                 }
 
-                Debug.Log($"{field.Name}     {field.FieldType}     {field.GetValue(instance)}");
+                // Debug.Log($"{field.Name}     {field.FieldType}     {field.GetValue(instance)}");
             }
         }
     }
@@ -341,7 +339,7 @@ namespace Framework.Core
     [FileConfig("Engine")]
     public class Actor : IConfig
     {
-        [FloatPropertyConfig] private float m_Float;
+        [FloatPropertyConfig] static private float m_Float;
         [IntPropertyConfig] public int m_Int;
         [StringPropertyConfig] public string m_Str;
         public object Obj { get; }
@@ -354,6 +352,11 @@ namespace Framework.Core
         public void Load()
         {
             this.LoadFromConfig();
+
+            FileConfigAttribute fileConfigAttr = (FileConfigAttribute)GetType().GetCustomAttribute(typeof(FileConfigAttribute), true);
+            string ns = GetType().Namespace;
+            GlobalConfigManager.SetFloat(fileConfigAttr.Filename, ns, "Actor.m_Float", 2.1f);
+            GlobalConfigManager.Flush(fileConfigAttr.Filename);
         }
     }
 
