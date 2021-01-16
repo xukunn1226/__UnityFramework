@@ -1,13 +1,13 @@
 {
-  "Framework.Core": {
-    "Actor.m_Float": "1.2",
-	"Actor.m_Int": "3",
-    "Actor.m_Str": "1234354",
-	"Actor.m_Str11111": "1234354"
+  "Framework.Core.TestActorConfig": {
+    "m_Float": "1.2",
+	"m_Int": "3",
+    "m_Str": "1234354",
+	"m_Str11111": "1234354"
   },
-  "Framework.Asset": {
-    "Player.m_Float": "1.2",
-    "Player.m_Str": "1234354",
-	"Player.m_Double": "1234354"
+  "Framework.Asset.Player": {
+    "m_Float": "1.2",
+    "m_Str": "1234354",
+	"m_Double": "1234354"
   }
 }

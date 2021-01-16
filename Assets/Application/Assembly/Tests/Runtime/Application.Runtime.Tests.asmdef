@@ -1,9 +1,9 @@
 {
     "name": "Application.Runtime.Tests",
+    "rootNamespace": "",
     "references": [
         "GUID:c406c7e6e47bcb24da7f05f9918fba4e",
         "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf",
-        "GUID:5a507f253ac3aff4aa7e2d7dd8dcc138",
         "GUID:bf86db89479a47742b8f4d49d1a39a8a"
     ],
     "includePlatforms": [],

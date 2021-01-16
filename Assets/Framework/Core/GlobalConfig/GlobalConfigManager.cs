@@ -27,6 +27,8 @@ namespace Framework.Core
 
             // 根据默认配置创建可修改配置
             BuildSavedConfigs();
+
+            LoadStaticVariants();
         }
 
         static private void LoadDefaultConfigs(bool InEditorMode = true)
@@ -94,6 +96,92 @@ namespace Framework.Core
             }
         }
 
+        // 初始化所有的静态变量
+        static private void LoadStaticVariants()
+        {
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach(var assem in assemblies)
+            {
+                string assemblyName = assem.GetName().Name.ToLower();
+                if(assemblyName.StartsWith("com.unity") ||
+                   assemblyName.StartsWith("unityengine") ||
+                   assemblyName.StartsWith("system") ||
+                   assemblyName.StartsWith("unityeditor") ||
+                   assemblyName.StartsWith("unity") ||
+                   assemblyName.StartsWith("cinemachine") ||
+                   assemblyName.Contains("editor") ||
+                   assemblyName.Contains("tests") ||
+                   assemblyName.StartsWith("google.") ||
+                   assemblyName.StartsWith("newtonsoft") ||
+                   assemblyName.StartsWith("excss.unity") ||
+                   assemblyName.StartsWith("nunit.framework") ||
+                   assemblyName.StartsWith("icsharpcode") ||
+                   assemblyName.StartsWith("mscorlib"))
+                    continue;
+
+                // Debug.Log($"{assem.FullName}-------------{assem.GetName().Name}");                
+                foreach(var t in assem.GetTypes())
+                {
+                    // Debug.LogWarning($"---: {t.FullName}");
+
+                    FileConfigAttribute attr = (FileConfigAttribute)t.GetCustomAttribute(typeof(FileConfigAttribute), true);
+                    if(attr == null)
+                        continue;
+
+                    BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+                    string sectionName = string.Format($"{t.Namespace}.{t.Name}");
+
+                    FieldInfo[] fis = t.GetFields(flags);
+                    foreach(var fi in fis)
+                    {
+                        Attribute propAttr = fi.GetCustomAttribute(typeof(PropertyConfigAttribute));
+                        if (propAttr == null) continue;
+
+                        if (Attribute.IsDefined(fi, typeof(IntPropertyConfigAttribute)))
+                        {
+                            fi.SetValue(null, GetInt(attr.Filename, sectionName, fi.Name));
+                        }
+                        else if (Attribute.IsDefined(fi, typeof(FloatPropertyConfigAttribute)))
+                        {
+                            fi.SetValue(null, GetFloat(attr.Filename, sectionName, fi.Name));
+                        }
+                        else if (Attribute.IsDefined(fi, typeof(StringPropertyConfigAttribute)))
+                        {
+                            fi.SetValue(null, GetString(attr.Filename, sectionName, fi.Name));
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"unknown PropertyConfigAttribute: {propAttr}");
+                        }
+                    }
+
+                    PropertyInfo[] pis = t.GetProperties(flags);
+                    foreach(var pi in pis)
+                    {
+                        Attribute propAttr = pi.GetCustomAttribute(typeof(PropertyConfigAttribute));
+                        if (propAttr == null) continue;
+
+                        if (Attribute.IsDefined(pi, typeof(IntPropertyConfigAttribute)))
+                        {
+                            pi.SetValue(null, GetInt(attr.Filename, sectionName, pi.Name));
+                        }
+                        else if (Attribute.IsDefined(pi, typeof(FloatPropertyConfigAttribute)))
+                        {
+                            pi.SetValue(null, GetFloat(attr.Filename, sectionName, pi.Name));
+                        }
+                        else if (Attribute.IsDefined(pi, typeof(StringPropertyConfigAttribute)))
+                        {
+                            pi.SetValue(null, GetString(attr.Filename, sectionName, pi.Name));
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"unknown PropertyConfigAttribute: {propAttr}");
+                        }
+                    }
+                }
+            }
+        }
+        
         static private void Uninit()
         {
             if(m_BundleLoader != null)
@@ -141,19 +229,19 @@ namespace Framework.Core
             return s_Configs.ContainsKey(filename);
         }
 
-        static public int GetInt(string filename, string sectionName, string propertyName)
+        static public int GetInt(string configName, string sectionName, string propertyName)
         {
             GlobalConfig config;
-            if(!s_Configs.TryGetValue(filename, out config))
+            if(!s_Configs.TryGetValue(configName, out config))
             {
-                Debug.LogWarning($"can't find config file: {filename}");
+                Debug.LogWarning($"can't find config file: {configName}");
                 return 0;
             }
 
             string value;
             if(!config.GetValue(sectionName, propertyName, out value))
             {
-                Debug.LogWarning($"can't find [{sectionName}].[{propertyName}] from file: {filename}");
+                Debug.LogWarning($"can't find [{sectionName}].[{propertyName}] from file: {configName}");
                 return 0;
             }
 
@@ -164,24 +252,29 @@ namespace Framework.Core
             }
             catch(Exception e)
             {
-                Debug.LogError($"GlobalConfigManager.GetInt throw exception: {e.Message}  filename: {filename}    sectionName: {sectionName}  propertyName: {propertyName}");
+                Debug.LogError($"GlobalConfigManager.GetInt throw exception: {e.Message}  filename: {configName}    sectionName: {sectionName}  propertyName: {propertyName}");
             }
             return v;
         }
 
-        static public float GetFloat(string filename, string sectionName, string propertyName)
+        static public int GetInt(this IConfig inst, string propertyName)
+        {
+            return GetInt(inst.ConfigName, inst.SectionName, propertyName);
+        }
+
+        static public float GetFloat(string configName, string sectionName, string propertyName)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(filename, out config))
+            if(!s_Configs.TryGetValue(configName, out config))
             {
-                Debug.LogWarning($"can't find config file: {filename}");
+                Debug.LogWarning($"can't find config file: {configName}");
                 return 0;
             }
 
             string value;
-            if (!config.GetValue(sectionName, propertyName, out value))
+            if(!config.GetValue(sectionName, propertyName, out value))
             {
-                Debug.LogWarning($"can't find [{sectionName}].[{propertyName}] from file: {filename}");
+                Debug.LogWarning($"can't find [{sectionName}].[{propertyName}] from file: {configName}");
                 return 0;
             }
 
@@ -190,144 +283,284 @@ namespace Framework.Core
             {
                 v = float.Parse(value);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                Debug.LogError($"GlobalConfigManager.GetFloat throw exception: {e.Message}  filename: {filename}    sectionName: {sectionName}  propertyName: {propertyName}");
+                Debug.LogError($"GlobalConfigManager.GetFloat throw exception: {e.Message}  filename: {configName}    sectionName: {sectionName}  propertyName: {propertyName}");
             }
             return v;
         }
 
-        static public string GetString(string filename, string sectionName, string propertyName)
+        static public float GetFloat(this IConfig inst, string propertyName)
+        {
+            return GetFloat(inst.ConfigName, inst.SectionName, propertyName);
+        }
+
+        static public string GetString(string configName, string sectionName, string propertyName)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(filename, out config))
+            if (!s_Configs.TryGetValue(configName, out config))
             {
-                Debug.LogWarning($"can't find config file: {filename}");
+                Debug.LogWarning($"can't find config file: {configName}");
                 return null;
             }
 
             string value;
             if (!config.GetValue(sectionName, propertyName, out value))
             {
-                Debug.LogWarning($"can't find [{sectionName}].[{propertyName}] from file: {filename}");
+                Debug.LogWarning($"can't find [{sectionName}].[{propertyName}] from file: {configName}");
                 return null;
             }
             return value;
         }
 
-        static public void SetInt(string filename, string sectionName, string propertyName, int value)
+        static public string GetString(this IConfig inst, string propertyName)
+        {
+            return GetString(inst.ConfigName, inst.SectionName, propertyName);
+        }
+
+        static public void SetInt(this IConfig inst, string propName, int value, bool flush = false)
+        {
+            BindingFlags flag = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+            Type t = inst.GetType();
+            FieldInfo fi = t.GetField(propName, flag);
+            if(fi != null)
+            {
+                SetInt(inst, fi, value, flush);
+            }
+            else
+            {
+                PropertyInfo pi = t.GetProperty(propName, flag);
+                if(pi != null)
+                {
+                    SetInt(inst, pi, value, flush);
+                }
+                else
+                {
+                    Debug.LogWarning($"can't find propName({propName}) in Fields or Properties");
+                }
+            }
+        }
+
+        static public void SetInt(this IConfig inst, FieldInfo fieldInfo, int value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(filename, out config))
+            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
             {
-                Debug.LogWarning($"can't find config file: {filename}");
+                Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
             }
 
-            config.SetValue(sectionName, propertyName, value.ToString());
+            fieldInfo.SetValue(inst, value);
+            config.SetValue(inst.SectionName, fieldInfo.Name, value.ToString());
+
+            if(flush)
+            {
+                Flush(inst.ConfigName);
+            }
         }
 
-        static public void SetFloat(string filename, string sectionName, string propertyName, float value)
+        static public void SetInt(this IConfig inst, PropertyInfo propertyInfo, int value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(filename, out config))
+            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
             {
-                Debug.LogWarning($"can't find config file: {filename}");
+                Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
             }
 
-            config.SetValue(sectionName, propertyName, value.ToString());
+            propertyInfo.SetValue(inst, value);
+            config.SetValue(inst.SectionName, propertyInfo.Name, value.ToString());
+
+            if(flush)
+            {
+                Flush(inst.ConfigName);
+            }
+        }        
+
+        static public void SetFloat(this IConfig inst, string propName, float value, bool flush = false)
+        {
+            BindingFlags flag = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+            Type t = inst.GetType();
+            FieldInfo fi = t.GetField(propName, flag);
+            if(fi != null)
+            {
+                SetFloat(inst, fi, value, flush);
+            }
+            else
+            {
+                PropertyInfo pi = t.GetProperty(propName, flag);
+                if(pi != null)
+                {
+                    SetFloat(inst, pi, value, flush);
+                }
+                else
+                {
+                    Debug.LogWarning($"can't find propName({propName}) in Fields or Properties");
+                }
+            }
         }
 
-        static public void SetString(string filename, string sectionName, string propertyName, string value)
+        static public void SetFloat(this IConfig inst, FieldInfo fieldInfo, float value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(filename, out config))
+            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
             {
-                Debug.LogWarning($"can't find config file: {filename}");
+                Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
             }
 
-            config.SetValue(sectionName, propertyName, value);
+            fieldInfo.SetValue(inst, value);
+            config.SetValue(inst.SectionName, fieldInfo.Name, value.ToString());
+
+            if(flush)
+            {
+                Flush(inst.ConfigName);
+            }
         }
 
+        static public void SetFloat(this IConfig inst, PropertyInfo propertyInfo, float value, bool flush = false)
+        {
+            GlobalConfig config;
+            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            {
+                Debug.LogWarning($"can't find config file: {inst.ConfigName}");
+                return;
+            }
+
+            propertyInfo.SetValue(inst, value);
+            config.SetValue(inst.SectionName, propertyInfo.Name, value.ToString());
+
+            if(flush)
+            {
+                Flush(inst.ConfigName);
+            }
+        }
+
+        static public void SetString(this IConfig inst, string propName, string value, bool flush = false)
+        {
+            BindingFlags flag = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+            Type t = inst.GetType();
+            FieldInfo fi = t.GetField(propName, flag);
+            if(fi != null)
+            {
+                SetString(inst, fi, value, flush);
+            }
+            else
+            {
+                PropertyInfo pi = t.GetProperty(propName, flag);
+                if(pi != null)
+                {
+                    SetString(inst, pi, value, flush);
+                }
+                else
+                {
+                    Debug.LogWarning($"can't find propName({propName}) in Fields or Properties");
+                }
+            }
+        }
+
+        static public void SetString(this IConfig inst, FieldInfo fieldInfo, string value, bool flush = false)
+        {
+            GlobalConfig config;
+            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            {
+                Debug.LogWarning($"can't find config file: {inst.ConfigName}");
+                return;
+            }
+
+            fieldInfo.SetValue(inst, value);
+            config.SetValue(inst.SectionName, fieldInfo.Name, value);
+
+            if(flush)
+            {
+                Flush(inst.ConfigName);
+            }
+        }
+
+        static public void SetString(this IConfig inst, PropertyInfo propertyInfo, string value, bool flush = false)
+        {
+            GlobalConfig config;
+            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            {
+                Debug.LogWarning($"can't find config file: {inst.ConfigName}");
+                return;
+            }
+
+            propertyInfo.SetValue(inst, value);
+            config.SetValue(inst.SectionName, propertyInfo.Name, value);
+
+            if(flush)
+            {
+                Flush(inst.ConfigName);
+            }
+        }
+
+        // 加载非静态变量
         static public void LoadFromConfig(this IConfig instance)
         {
             if (instance == null)
                 throw new ArgumentNullException("instance");
 
-            string ns = instance.GetType().Namespace;
-            string cn = instance.GetType().Name;
+            if(!IsExist(instance.ConfigName))
+            {
+                Debug.LogWarning($"{instance.ConfigName} not exist");
+                return;
+            }
 
             Type type = instance.GetType();
-            FileConfigAttribute fileConfigAttr = (FileConfigAttribute)type.GetCustomAttribute(typeof(FileConfigAttribute), true);
-            if (fileConfigAttr == null)
-            {
-                Debug.LogWarning($"can't find FileConfigAttribute in {type.Name}");
-                return;
-            }
-
-            if(!IsExist(fileConfigAttr.Filename))
-            {
-                Debug.LogWarning($"{fileConfigAttr.Filename} not exist");
-                return;
-            }
-
-            foreach (var prop in type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+            foreach (var prop in type.GetProperties(flags))
             {
                 Attribute propAttr = prop.GetCustomAttribute(typeof(PropertyConfigAttribute));
                 if (propAttr == null) continue;
 
                 if(Attribute.IsDefined(prop, typeof(IntPropertyConfigAttribute)))
                 {
-                    prop.SetValue(instance, GetInt(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
+                    prop.SetValue(instance, GetInt(instance, prop.Name));
                 }
                 else if(Attribute.IsDefined(prop, typeof(FloatPropertyConfigAttribute)))
                 {
-                    prop.SetValue(instance, GetFloat(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
+                    prop.SetValue(instance, GetFloat(instance, prop.Name));
                 }
                 else if(Attribute.IsDefined(prop, typeof(StringPropertyConfigAttribute)))
                 {
-                    prop.SetValue(instance, GetString(fileConfigAttr.Filename, ns, string.Format($"{cn}.{prop.Name}")));
+                    prop.SetValue(instance, GetString(instance, prop.Name));
                 }
                 else
                 {
-                    Debug.LogWarning($"");
+                    Debug.LogWarning($"unknown PropertyConfigAttribute: {propAttr}");
                 }
-
-                // Debug.Log($"{prop.Name}     {prop.PropertyType}     {prop.GetValue(instance)}");
             }
 
-            foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+            foreach (var field in type.GetFields(flags))
             {
                 Attribute propAttr = field.GetCustomAttribute(typeof(PropertyConfigAttribute));
                 if (propAttr == null) continue;
 
                 if(Attribute.IsDefined(field, typeof(IntPropertyConfigAttribute)))
                 {
-                    field.SetValue(instance, GetInt(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
+                    field.SetValue(instance, GetInt(instance, field.Name));
                 }
                 else if(Attribute.IsDefined(field, typeof(FloatPropertyConfigAttribute)))
                 {
-                    field.SetValue(instance, GetFloat(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
+                    field.SetValue(instance, GetFloat(instance, field.Name));
                 }
                 else if(Attribute.IsDefined(field, typeof(StringPropertyConfigAttribute)))
                 {
-                    field.SetValue(instance, GetString(fileConfigAttr.Filename, ns, string.Format($"{cn}.{field.Name}")));
+                    field.SetValue(instance, GetString(instance, field.Name));
                 }
                 else
                 {
-                    Debug.LogWarning($"");
+                    Debug.LogWarning($"unknown PropertyConfigAttribute: {propAttr}");
                 }
-
-                // Debug.Log($"{field.Name}     {field.FieldType}     {field.GetValue(instance)}");
             }
         }
     }
 
     public interface IConfig
     {
-        void Load();
+        string ConfigName { get; }
+        string SectionName { get; }
     }
 
 
@@ -337,26 +570,46 @@ namespace Framework.Core
 
 
     [FileConfig("Engine")]
-    public class Actor : IConfig
+    public class TestActorConfig : IConfig
     {
-        [FloatPropertyConfig] static private float m_Float;
-        [IntPropertyConfig] public int m_Int;
-        [StringPropertyConfig] public string m_Str;
-        public object Obj { get; }
+        [FloatPropertyConfig]   static private float    m_Float;
+        [IntPropertyConfig]     public int              m_Int;
+        [StringPropertyConfig]  public string           m_Str;
 
-        public void PrintAttribute()
+        private string m_ConfigName;
+        public string ConfigName
+        { 
+            get
+            {
+                if(string.IsNullOrEmpty(m_ConfigName))
+                {
+                    FileConfigAttribute attr = (FileConfigAttribute)GetType().GetCustomAttribute(typeof(FileConfigAttribute), true);
+                    m_ConfigName = attr?.Filename ?? "Global";
+                }
+                return m_ConfigName;
+            }
+        }
+
+        private string m_SectionName;
+        public string SectionName
         {
-            FileConfigAttribute[] attr = (FileConfigAttribute[])GetType().GetCustomAttributes(typeof(FileConfigAttribute), false);
+            get
+            {
+                if(string.IsNullOrEmpty(m_SectionName))
+                {
+                    Type t = GetType();
+                    m_SectionName = string.Format($"{t.Namespace}.{t.Name}");
+                }
+                return m_SectionName;
+            }
         }
 
         public void Load()
         {
             this.LoadFromConfig();
 
-            FileConfigAttribute fileConfigAttr = (FileConfigAttribute)GetType().GetCustomAttribute(typeof(FileConfigAttribute), true);
-            string ns = GetType().Namespace;
-            GlobalConfigManager.SetFloat(fileConfigAttr.Filename, ns, "Actor.m_Float", 2.1f);
-            GlobalConfigManager.Flush(fileConfigAttr.Filename);
+            this.SetFloat("m_Float", 0.1111111f, true);
+            Debug.Log(this.GetFloat("m_Float"));
         }
     }
 
@@ -366,7 +619,7 @@ namespace Framework.Core
     {
         public void Test()
         {
-            PrintAuthorInfo(typeof(Actor));
+            PrintAuthorInfo(typeof(TestActorConfig));
             TestAssignableFrom();
         }
 
@@ -389,7 +642,7 @@ namespace Framework.Core
             TestAttributes aa = new TestAttributes();
             Assembly assembly = aa.GetType().Assembly;
             Type[] types = assembly.GetTypes();
-            Type type = typeof(Actor);
+            Type type = typeof(TestActorConfig);
             for (int i = 0; i < types.Length; i++)
             {
                 Debug.Log($"{types[i].Namespace}    {types[i].Name}     {types[i].FullName}");

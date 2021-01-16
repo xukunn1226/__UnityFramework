@@ -8,7 +8,7 @@ public class NewBehaviourScript : MonoBehaviour
     void Start()
     {
         GlobalConfigManager.Init();
-        Actor actor = new Actor();
+        TestActorConfig actor = new TestActorConfig();
         actor.Load();
     }
 
