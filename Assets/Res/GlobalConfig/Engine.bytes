@@ -1,5 +1,5 @@
 {
-  "Framework.Core.TestActorConfig": {
+  "Framework.Core.Tests.TestActorConfig": {
     "m_Float": "1.2",
 	"m_Int": "3",
     "m_Str": "1234354",

@@ -110,7 +110,7 @@ namespace Framework.Core
                    assemblyName.StartsWith("unity") ||
                    assemblyName.StartsWith("cinemachine") ||
                    assemblyName.Contains("editor") ||
-                   assemblyName.Contains("tests") ||
+                //    assemblyName.Contains("tests") ||
                    assemblyName.StartsWith("google.") ||
                    assemblyName.StartsWith("newtonsoft") ||
                    assemblyName.StartsWith("excss.unity") ||
@@ -561,96 +561,5 @@ namespace Framework.Core
     {
         string ConfigName { get; }
         string SectionName { get; }
-    }
-
-
-
-
-
-
-
-    [FileConfig("Engine")]
-    public class TestActorConfig : IConfig
-    {
-        [FloatPropertyConfig]   static private float    m_Float;
-        [IntPropertyConfig]     public int              m_Int;
-        [StringPropertyConfig]  public string           m_Str;
-
-        private string m_ConfigName;
-        public string ConfigName
-        { 
-            get
-            {
-                if(string.IsNullOrEmpty(m_ConfigName))
-                {
-                    FileConfigAttribute attr = (FileConfigAttribute)GetType().GetCustomAttribute(typeof(FileConfigAttribute), true);
-                    m_ConfigName = attr?.Filename ?? "Global";
-                }
-                return m_ConfigName;
-            }
-        }
-
-        private string m_SectionName;
-        public string SectionName
-        {
-            get
-            {
-                if(string.IsNullOrEmpty(m_SectionName))
-                {
-                    Type t = GetType();
-                    m_SectionName = string.Format($"{t.Namespace}.{t.Name}");
-                }
-                return m_SectionName;
-            }
-        }
-
-        public void Load()
-        {
-            this.LoadFromConfig();
-
-            this.SetFloat("m_Float", 0.1111111f, true);
-            Debug.Log(this.GetFloat("m_Float"));
-        }
-    }
-
-
-
-    public class TestAttributes
-    {
-        public void Test()
-        {
-            PrintAuthorInfo(typeof(TestActorConfig));
-            TestAssignableFrom();
-        }
-
-        private static void PrintAuthorInfo(System.Type t)
-        {
-            System.Attribute[] attrs = System.Attribute.GetCustomAttributes(t);  // reflection
-
-            foreach (System.Attribute attr in attrs)
-            {
-                if (attr is FileConfigAttribute)
-                {
-                    FileConfigAttribute a = (FileConfigAttribute)attr;
-                    Debug.Log($"   {a.Filename}");
-                }
-            }
-        }
-
-        public static void TestAssignableFrom()
-        {
-            TestAttributes aa = new TestAttributes();
-            Assembly assembly = aa.GetType().Assembly;
-            Type[] types = assembly.GetTypes();
-            Type type = typeof(TestActorConfig);
-            for (int i = 0; i < types.Length; i++)
-            {
-                Debug.Log($"{types[i].Namespace}    {types[i].Name}     {types[i].FullName}");
-                if (type.IsAssignableFrom(types[i]) && !types[i].IsInterface)
-                {
-                    Debug.Log($"{types[i].Name}");
-                }
-            }
-        }
     }
 }
