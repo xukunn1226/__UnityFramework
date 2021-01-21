@@ -453,6 +453,10 @@ namespace Framework.AssetManagement.AssetBrowser
         // 删除ParticleSystemRender中已不用但仍引用着的mesh
         static public void FixRedundantMeshOfParticleSystemRender(string assetPath, bool makeDirty = true)
         {
+            string ext = Path.GetExtension(assetPath);
+            if(string.IsNullOrEmpty(ext) || string.Compare(ext, ".prefab") != 0)
+                return;
+
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (prefab == null)
                 return;
