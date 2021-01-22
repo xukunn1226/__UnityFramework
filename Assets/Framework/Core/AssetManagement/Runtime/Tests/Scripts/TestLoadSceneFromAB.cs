@@ -14,7 +14,7 @@ namespace Framework.AssetManagement.Runtime.Tests
     /// </summary>
     public class TestLoadSceneFromAB : MonoBehaviour
     {
-        private const string        m_SceneBundlePath = "assets/framework/assetmanagement/runtime/tests/res/scenes.ab";
+        private const string        m_SceneBundlePath = "assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab";
         private SceneLoader         m_SceneLoader1;
         private SceneLoader         m_SceneLoader2;
 
@@ -52,7 +52,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             if (GUI.Button(new Rect(100, 100, 150, 60), "Load Scene1"))
             {
-                m_SceneLoader1 = LoadScene("Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestScene1", LoadSceneMode.Additive);
+                m_SceneLoader1 = LoadScene("Assets/Framework/Core/AssetManagement/Runtime/Tests/Res/Scenes/TestScene1", LoadSceneMode.Additive);
             }
 
             if (GUI.Button(new Rect(300, 100, 150, 60), "Unload Scene1"))
