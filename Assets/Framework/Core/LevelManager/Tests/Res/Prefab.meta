@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: ef43cfca1264f7147999cb51916d1b2e
+guid: dbfdc0be06c5ea848bb49d2b4a3aa809
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
   userData: 
-  assetBundleName: assets/framework/core/levelmanager/tests/res/scenes.ab
+  assetBundleName: assets/framework/core/levelmanager/tests/res/prefab.ab
   assetBundleVariant: 
