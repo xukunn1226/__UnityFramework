@@ -31,7 +31,7 @@ namespace Framework.AssetManagement.Runtime
         /// 从Bundle同步加载场景接口
         /// </summary>
         /// <param name="bundlePath">场景文件所在的Bundle路径</param>
-        /// <param name="sceneName">不带后缀名，大小写敏感，与资源名严格一致</param>
+        /// <param name="sceneName">不带后缀名，小写</param>
         /// <param name="mode"></param>
         /// <returns></returns>
         static internal SceneLoader Get(string bundlePath, string sceneName, LoadSceneMode mode)
@@ -53,7 +53,7 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
         /// 从Build Settings加载场景接口
         /// </summary>
-        /// <param name="sceneName">大小写不敏感，但为了与其他Get接口一致务必与资源名严格一致</param>
+        /// <param name="sceneName">不带后缀名，小写</param>
         /// <param name="mode"></param>
         /// <returns></returns>
         static internal SceneLoader Get(string sceneName, LoadSceneMode mode)
@@ -88,6 +88,11 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.Exception("failed to load scene bundle");
             if (!m_BundleLoader.assetBundle.isStreamedSceneAssetBundle)
                 throw new System.Exception($"{bundlePath} is not streamed scene asset bundle");
+
+            // foreach(string path in m_BundleLoader.assetBundle.GetAllScenePaths())
+            // {
+            //     Debug.Log($"======== {path}");
+            // }
 
             SceneManager.LoadScene(sceneName, mode);
         }

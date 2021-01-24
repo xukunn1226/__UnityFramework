@@ -50,19 +50,20 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         private void OnGUI()
         {
-            if (GUI.Button(new Rect(100, 100, 150, 60), "Load Scene1"))
+            if (GUI.Button(new Rect(100, 100, 300, 120), "Load Scene1 From Bundle"))
             {
-                m_SceneLoader1 = LoadScene("Assets/Framework/Core/AssetManagement/Runtime/Tests/Res/Scenes/TestScene1", LoadSceneMode.Additive);
+                // m_SceneLoader1 = LoadSceneFromBundle("assets/framework/core/assetmanagement/runtime/tests/res/scenes/Testscene1.unity", LoadSceneMode.Additive);
+                m_SceneLoader1 = LoadSceneFromBundle("testscene1", LoadSceneMode.Additive);
             }
 
-            if (GUI.Button(new Rect(300, 100, 150, 60), "Unload Scene1"))
+            if (GUI.Button(new Rect(500, 100, 300, 120), "Unload Scene1"))
             {
                 StartCoroutine(UnloadSceneAsync(m_SceneLoader1));
             }
 
             if (GUI.Button(new Rect(100, 200, 150, 60), "Load Scene2"))
             {
-                m_SceneLoader2 = LoadScene("TestScene2", LoadSceneMode.Additive);
+                m_SceneLoader2 = LoadSceneFromBundle("TestScene2", LoadSceneMode.Additive);
             }
 
             if (GUI.Button(new Rect(300, 200, 150, 60), "Unload Scene2"))
@@ -129,10 +130,11 @@ namespace Framework.AssetManagement.Runtime.Tests
         /// </summary>
         /// <param name="sceneName"></param>
         /// <param name="mode"></param>
-        SceneLoader LoadScene(string sceneName, LoadSceneMode mode)
+        SceneLoader LoadSceneFromBundle(string sceneName, LoadSceneMode mode)
         {
             Debug.Log($"----Begin LoadScene: [{Time.frameCount}]");
             SceneLoader loader = AssetManager.LoadScene(m_SceneBundlePath, sceneName, mode);
+            // SceneLoader loader = AssetManager.LoadScene(sceneName, mode);
             Debug.Log($"----End LoadScene: [{Time.frameCount}]");
 
             return loader;

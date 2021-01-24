@@ -30,10 +30,10 @@ namespace Framework.AssetManagement.Runtime
         { }
 
         /// <summary>
-        /// 从Bundle同步加载场景接口
+        /// 从Bundle异步加载场景接口
         /// </summary>
         /// <param name="bundlePath">场景文件所在的Bundle路径</param>
-        /// <param name="sceneName">不带后缀名，大小写敏感，与资源名严格一致</param>
+        /// <param name="sceneName">不带后缀名，小写</param>
         /// <param name="mode"></param>
         /// <returns></returns>
         static internal SceneLoaderAsync Get(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
@@ -55,7 +55,7 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
         /// 从Build Settings加载场景接口
         /// </summary>
-        /// <param name="sceneName">大小写不敏感，但为了与其他Get接口一致务必与资源名严格一致</param>
+        /// <param name="sceneName">不带后缀名，小写</param>
         /// <param name="mode"></param>
         /// <returns></returns>
         static internal SceneLoaderAsync Get(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
