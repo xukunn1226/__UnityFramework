@@ -153,9 +153,10 @@ MonoBehaviour:
     m_Hash: 9133b486099c873f9c89ba6831a3725f
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab
-    m_Crc: 1786220419
-    m_Hash: 89ff314639bbc334ebb529519b406c21
-    m_Dependencies: []
+    m_Crc: 894549006
+    m_Hash: 315bc7809a1ed439ac0053ecb7e891eb
+    m_Dependencies:
+    - assets/framework/core/assetmanagement/runtime/tests/res/prefab.ab
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/core/assetmanagement/runtime/tests/res/prefab/1234.ab
     m_Crc: 2126389771
     m_Hash: c7f5a5d13eb2652aaead04db53a6f21f
@@ -219,8 +220,8 @@ MonoBehaviour:
     m_Hash: ff6fcd102a1300ff8249e672072116c2
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/framework/core/assetmanagement/runtime/tests/res/prefab.ab
-    m_Crc: 1601759448
-    m_Hash: f849efc4ffc7fdd79182976431c7d843
+    m_Crc: 2215746738
+    m_Hash: 3c992cf3b2bc249359429ccfa753abba
     m_Dependencies:
     - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
     - assets/framework/core/assetmanagement/runtime/tests/res/model.ab
