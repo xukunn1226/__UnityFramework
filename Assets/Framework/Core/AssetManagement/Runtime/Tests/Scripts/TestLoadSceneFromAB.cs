@@ -16,9 +16,7 @@ namespace Framework.AssetManagement.Runtime.Tests
     {
         private const string        m_SceneBundlePath = "assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab";
         private SceneLoader         m_SceneLoader1;
-        private SceneLoader         m_SceneLoader2;
 
-        private SceneLoaderAsync    m_SceneLoaderAsync1;
         private SceneLoaderAsync    m_SceneLoaderAsync2;
 
         private SceneLoaderAsync    m_LoaderAsync;
@@ -50,6 +48,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         private void OnGUI()
         {
+            /////////////////////// 同步加载场景（From Bundle）
             if (GUI.Button(new Rect(100, 100, 300, 120), "Load Scene1 From Bundle"))
             {
                 // m_SceneLoader1 = LoadSceneFromBundle("assets/framework/core/assetmanagement/runtime/tests/res/scenes/Testscene1.unity", LoadSceneMode.Additive);
@@ -61,60 +60,32 @@ namespace Framework.AssetManagement.Runtime.Tests
                 StartCoroutine(UnloadSceneAsync(m_SceneLoader1));
             }
 
-            if (GUI.Button(new Rect(100, 200, 150, 60), "Load Scene2"))
+            /////////////////////// 异步加载场景（From Bundle）
+            if (GUI.Button(new Rect(100, 300, 300, 120), "Load Scene2 Async From Bundle"))
             {
-                m_SceneLoader2 = LoadSceneFromBundle("TestScene2", LoadSceneMode.Additive);
-            }
-
-            if (GUI.Button(new Rect(300, 200, 150, 60), "Unload Scene2"))
-            {
-                StartCoroutine(UnloadSceneAsync(m_SceneLoader2));
-            }
-
-            ////////////////// Async Load Scene
-
-            if (GUI.Button(new Rect(100, 300, 150, 60), "Load Scene1 Async"))
-            {
-                m_SceneLoaderAsync1 = LoadSceneAsync("TestScene1", LoadSceneMode.Additive);
-                StartCoroutine(m_SceneLoaderAsync1);
-            }
-
-            if (GUI.Button(new Rect(300, 300, 150, 60), "Unload Scene1"))
-            {
-                StartCoroutine(UnloadSceneAsync(m_SceneLoaderAsync1));
-            }
-            //if (GUI.Button(new Rect(500, 300, 150, 60), "Unload Scene1"))
-            //{
-            //    SceneManager.UnloadSceneAsync("TestScene1");
-            //}
-
-
-
-            if (GUI.Button(new Rect(100, 400, 150, 60), "Load Scene2 Async"))
-            {
-                m_SceneLoaderAsync2 = LoadSceneAsync("TestScene2", LoadSceneMode.Single);
+                m_SceneLoaderAsync2 = LoadSceneAsyncFromBundle("testscene2", LoadSceneMode.Single);
                 StartCoroutine(m_SceneLoaderAsync2);
             }
 
-            if (GUI.Button(new Rect(300, 400, 150, 60), "Unload Scene2"))
+            if (GUI.Button(new Rect(500, 300, 300, 120), "Unload Scene2"))
             {
                 StartCoroutine(UnloadSceneAsync(m_SceneLoaderAsync2));
             }
 
             //////////////////// Async Load Scene allow actived
-            if (GUI.Button(new Rect(100, 500, 220, 60), "Load Scene1 Allow Activation"))
+            if (GUI.Button(new Rect(100, 500, 300, 120), "Load Scene1 Allow Activation"))
             {
-                m_LoaderAsync = LoadSceneAsync("TestScene1", LoadSceneMode.Additive, false);
+                m_LoaderAsync = LoadSceneAsyncFromBundle("testscene1", LoadSceneMode.Additive, false);
                 StartCoroutine(m_LoaderAsync);
             }
 
-            if(GUI.Button(new Rect(350, 500, 100, 60), "Continue"))
+            if(GUI.Button(new Rect(500, 500, 300, 120), "Continue"))
             {
                 m_LoaderAsync.loadAsyncOp.allowSceneActivation = true;
             }
         }        
 
-        SceneLoaderAsync LoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+        SceneLoaderAsync LoadSceneAsyncFromBundle(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             Debug.Log($"----Begin LoadSceneAsync: [{Time.frameCount}]");
             
