@@ -21,7 +21,7 @@ namespace Framework.LevelManager
         public class LoadLevelContext
         {
             public string                               identifier;                 // for display or identifying
-            public string                               levelPath;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），且大小写敏感
+            public string                               levelPath;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），小写
             public bool                                 fromBundle;                 // true：从AB包加载；false：需在Build Setting中预设
             public string                               bundlePath;
             public bool                                 additive;                   // true: add模式加载场景；false：替换之前场景
@@ -46,17 +46,17 @@ namespace Framework.LevelManager
         private LoadLevelContext                        m_MasterLevel;
         private Dictionary<string, LoadLevelContext>    m_LevelsDict = new Dictionary<string, LoadLevelContext>();
 
-        private static LevelManager m_kInstance;
+        private static LevelManager s_Instance;
         static public LevelManager Instance
         {
             get
             {
-                if (m_kInstance == null)
+                if (s_Instance == null)
                 {
                     GameObject go = new GameObject();
-                    m_kInstance = go.AddComponent<LevelManager>();
+                    s_Instance = go.AddComponent<LevelManager>();
                 }
-                return m_kInstance;
+                return s_Instance;
             }
         }
 
@@ -68,7 +68,7 @@ namespace Framework.LevelManager
                 DestroyImmediate(this);
                 throw new Exception("LevelManager has already exist...");
             }
-            m_kInstance = this;
+            s_Instance = this;
 
             gameObject.name = "[LevelManager]";
             transform.parent = null;
@@ -84,7 +84,7 @@ namespace Framework.LevelManager
 
         private void OnDestroy()
         {
-            m_kInstance = null;
+            s_Instance = null;
         }
 
         //void OnActiveSceneChanged(Scene oldScene, Scene newScene)
