@@ -20,10 +20,9 @@ namespace Framework.LevelManager
         
         public class LoadLevelContext
         {
-            public string                               identifier;                 // for display or identifying
-            public string                               levelPath;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），小写
-            public bool                                 fromBundle;                 // true：从AB包加载；false：需在Build Setting中预设
-            public string                               bundlePath;
+            public string                               identifier;                 // unique identifier, for display
+            public string                               sceneName;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），小写
+            public string                               bundlePath;                 // 有效路径表示从AB包加载；null表示静态方式加载场景，需在Build Setting中预设
             public bool                                 additive;                   // true: add模式加载场景；false：替换之前场景
             
             public SceneLoaderAsync                     loader      { get; set; }
@@ -211,10 +210,10 @@ namespace Framework.LevelManager
                 throw new System.ArgumentNullException("cmd.loadingContext");
 
             SceneLoaderAsync loader;
-            if (context.fromBundle)
-                loader = AssetManager.LoadSceneAsync(context.bundlePath, context.levelPath, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
+            if (!string.IsNullOrEmpty(context.bundlePath))
+                loader = AssetManager.LoadSceneAsync(context.bundlePath, context.sceneName, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
             else
-                loader = AssetManager.LoadSceneAsync(context.levelPath, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
+                loader = AssetManager.LoadSceneAsync(context.sceneName, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
             context.loader = loader;
             yield return loader;
         }
