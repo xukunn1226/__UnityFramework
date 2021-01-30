@@ -18,9 +18,9 @@ namespace Framework.LevelManager
         static public event LevelCommandBegin           levelCommandBegin;
         static public event LevelCommandEnd             levelCommandEnd;
         
-        public class LoadLevelContext
+        public class LevelContext
         {
-            public string                               identifier;                 // unique identifier, for display
+            public string                               identifier;                 // unique identifier
             public string                               sceneName;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），小写
             public string                               bundlePath;                 // 有效路径表示从AB包加载；null表示静态方式加载场景，需在Build Setting中预设
             public bool                                 additive;                   // true: add模式加载场景；false：替换之前场景
@@ -30,20 +30,20 @@ namespace Framework.LevelManager
 
         class LevelCommand
         {
-            public bool                                 unload;                     // 加载 or 卸载场景指令
+            public bool                                 isUnload;                   // 加载 or 卸载场景指令
 
-            public LoadLevelContext                     loadingContext;             // 加载场景指令数据
+            public LevelContext                         loadingContext;             // 加载场景指令数据
 
-            public LevelCommand(bool unload, LoadLevelContext context)
+            public LevelCommand(bool unload, LevelContext context)
             {
-                this.unload = unload;
+                this.isUnload = unload;
                 this.loadingContext = context;
             }
         }
         private LinkedList<LevelCommand>                m_Commands = new LinkedList<LevelCommand>();
 
-        private LoadLevelContext                        m_MasterLevel;
-        private Dictionary<string, LoadLevelContext>    m_LevelsDict = new Dictionary<string, LoadLevelContext>();
+        private LevelContext                            m_MasterLevel;
+        private Dictionary<string, LevelContext>        m_LevelsDict = new Dictionary<string, LevelContext>();
 
         private static LevelManager s_Instance;
         static public LevelManager Instance
@@ -76,9 +76,11 @@ namespace Framework.LevelManager
             transform.localScale = Vector3.one;
             DontDestroyOnLoad(gameObject);
 
-            //SceneManager.sceneLoaded += OnSceneLoaded;
-            //SceneManager.sceneUnloaded += OnSceneUnloaded;
-            //SceneManager.activeSceneChanged += OnActiveSceneChanged;
+            m_MasterLevel = new LevelContext() { identifier = SceneManager.GetActiveScene().name };
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            SceneManager.activeSceneChanged += OnActiveSceneChanged;
         }
 
         private void OnDestroy()
@@ -86,22 +88,22 @@ namespace Framework.LevelManager
             s_Instance = null;
         }
 
-        //void OnActiveSceneChanged(Scene oldScene, Scene newScene)
-        //{
-        //    Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
-        //}
+        void OnActiveSceneChanged(Scene oldScene, Scene newScene)
+        {
+           Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
+        }
 
-        //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        //{
-        //    Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
-        //}
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+           Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
+        }
 
-        //void OnSceneUnloaded(Scene scene)
-        //{
-        //    Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
-        //}
+        void OnSceneUnloaded(Scene scene)
+        {
+           Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
+        }
 
-        public void LoadAsync(LoadLevelContext context)
+        public void LoadAsync(LevelContext context)
         {
             if (m_Commands.Count != 0)
                 throw new System.InvalidOperationException("load commands havn't finished.");
@@ -146,7 +148,7 @@ namespace Framework.LevelManager
             if (m_LevelsDict.Count == 1)
                 throw new System.Exception("Unloading the last loaded scene is not supported");
 
-            LoadLevelContext context;
+            LevelContext context;
             if(!m_LevelsDict.TryGetValue(identifier, out context))
                 throw new System.Exception($"level {identifier} not loaded");
 
@@ -163,7 +165,7 @@ namespace Framework.LevelManager
             {
                 LevelCommand cmd = m_Commands.First.Value;
                 
-                if(cmd.unload)
+                if(cmd.isUnload)
                 {
                     yield return UnloadLevelAsync(cmd);
 
@@ -205,7 +207,7 @@ namespace Framework.LevelManager
             if (cmd == null)
                 throw new System.ArgumentNullException("cmd");
 
-            LoadLevelContext context = cmd.loadingContext;
+            LevelContext context = cmd.loadingContext;
             if (context == null)
                 throw new System.ArgumentNullException("cmd.loadingContext");
 

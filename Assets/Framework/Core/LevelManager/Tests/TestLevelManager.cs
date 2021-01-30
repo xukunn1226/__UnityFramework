@@ -37,7 +37,7 @@ namespace Framework.LevelManager.Tests
         {
             if (GUI.Button(new Rect(100, 100, 300, 120), "Load Scene2"))
             {
-                LevelManager.LoadLevelContext ctx = new LevelManager.LoadLevelContext();
+                LevelManager.LevelContext ctx = new LevelManager.LevelContext();
                 ctx.identifier = "tscene2";
                 ctx.sceneName = "Assets/Framework/Core/LevelManager/Tests/Res/Scenes/TestScene2.unity";
                 // ctx.levelPath = "TestScene2";
@@ -54,7 +54,7 @@ namespace Framework.LevelManager.Tests
 
             if (GUI.Button(new Rect(100, 300, 300, 120), "Load Scene3"))
             {
-                LevelManager.LoadLevelContext ctx = new LevelManager.LoadLevelContext();
+                LevelManager.LevelContext ctx = new LevelManager.LevelContext();
                 ctx.identifier = "tscene3";
                 ctx.sceneName = "Assets/Framework/Core/LevelManager/Tests/Res/Scenes/TestScene3.unity";
                 ctx.additive = false;
