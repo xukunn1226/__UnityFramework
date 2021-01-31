@@ -12,6 +12,7 @@ namespace Framework.LevelManager
     /// </summary>
     public sealed class LevelManager : MonoBehaviour
     {
+        static public bool s_LevelStreamingConcurrentlyWhenLoading = true;          // 是否并发执行多个场景的异步加载
         public delegate void LevelCommandBegin(string identifier, bool isLoaded);
         public delegate void LevelCommandEnd(string identifier, bool isLoaded);
         
@@ -20,12 +21,11 @@ namespace Framework.LevelManager
         
         public class LevelContext
         {
-            public string                               identifier;                 // unique identifier
-            public string                               sceneName;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），小写
+            public string                               identifier;                 // unique identifier, 以sceneName为唯一标识符
+            public string                               scenePath;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），小写
             public string                               bundlePath;                 // 有效路径表示从AB包加载；null表示静态方式加载场景，需在Build Setting中预设
             public bool                                 additive;                   // true: add模式加载场景；false：替换之前场景
-            
-            public SceneLoaderAsync                     loader      { get; set; }
+            internal SceneLoaderAsync                   loader      { get; set; }
         }
 
         class LevelCommand
@@ -105,19 +105,17 @@ namespace Framework.LevelManager
 
         public void LoadAsync(LevelContext context)
         {
-            if (m_Commands.Count != 0)
-                throw new System.InvalidOperationException("load commands havn't finished.");
+            // if (m_Commands.Count != 0)
+            //     throw new System.InvalidOperationException("load commands havn't finished.");
+
+            if(m_MasterLevel == null)
+                throw new Exception($"m_MasterLevel == null");
             
             if (context == null)
                 throw new System.ArgumentNullException("parameters");
 
             if (m_LevelsDict.ContainsKey(context.identifier))
                 throw new Exception($"{context.identifier} has already loaded");
-
-            if(m_MasterLevel == null)
-            { // 首次加载场景时强制以single方式加载
-                context.additive = false;
-            }
 
             if(context.additive)
             {
@@ -213,9 +211,9 @@ namespace Framework.LevelManager
 
             SceneLoaderAsync loader;
             if (!string.IsNullOrEmpty(context.bundlePath))
-                loader = AssetManager.LoadSceneAsync(context.bundlePath, context.sceneName, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
+                loader = AssetManager.LoadSceneAsync(context.bundlePath, context.scenePath, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
             else
-                loader = AssetManager.LoadSceneAsync(context.sceneName, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
+                loader = AssetManager.LoadSceneAsync(context.scenePath, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
             context.loader = loader;
             yield return loader;
         }

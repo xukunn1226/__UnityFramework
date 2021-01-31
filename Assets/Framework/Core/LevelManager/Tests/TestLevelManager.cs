@@ -39,7 +39,7 @@ namespace Framework.LevelManager.Tests
             {
                 LevelManager.LevelContext ctx = new LevelManager.LevelContext();
                 ctx.identifier = "tscene2";
-                ctx.sceneName = "Assets/Framework/Core/LevelManager/Tests/Res/Scenes/TestScene2.unity";
+                ctx.scenePath = "Assets/Framework/Core/LevelManager/Tests/Res/Scenes/TestScene2.unity";
                 // ctx.levelPath = "TestScene2";
                 ctx.additive = true;
                 ctx.bundlePath = m_SceneBundlePath;
@@ -56,7 +56,7 @@ namespace Framework.LevelManager.Tests
             {
                 LevelManager.LevelContext ctx = new LevelManager.LevelContext();
                 ctx.identifier = "tscene3";
-                ctx.sceneName = "Assets/Framework/Core/LevelManager/Tests/Res/Scenes/TestScene3.unity";
+                ctx.scenePath = "Assets/Framework/Core/LevelManager/Tests/Res/Scenes/TestScene3.unity";
                 ctx.additive = false;
                 ctx.bundlePath = m_SceneBundlePath;
 
