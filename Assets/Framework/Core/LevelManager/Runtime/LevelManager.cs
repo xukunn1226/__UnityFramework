@@ -87,7 +87,10 @@ namespace Framework.LevelManager
             transform.localScale = Vector3.one;
             DontDestroyOnLoad(gameObject);
 
-            m_MasterLevel = new LevelContext() { sceneName = SceneManager.GetActiveScene().name, state = StreamingState.Done, isMaster = true, isFirst = true };
+            m_MasterLevel = new LevelContext() { sceneName = SceneManager.GetActiveScene().name, 
+                                                 state = StreamingState.Done, 
+                                                 isMaster = true, 
+                                                 isFirst = true };
             m_LevelsDict.Add(m_MasterLevel.sceneName, m_MasterLevel);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -104,14 +107,20 @@ namespace Framework.LevelManager
         {
             Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
 
+            // update newScene context
             LevelContext newContext = FindLevel(newScene.name);
             if(newContext == null)
                 throw new Exception($"OnActiveSceneChanged: can't find newScene({newScene.name})");
+            newContext.isMaster = true;
 
+            // update oldScene context
             LevelContext oldContext = FindLevel(newScene.name);
-            if(oldContext == null)
-                throw new Exception($"OnActiveSceneChanged: can't find oldScene({oldScene.name})");
+            if(oldContext != null)
+            { // oldScene可能已卸载
+                oldContext.isMaster = false;
+            }
 
+            // update master level
             m_MasterLevel = newContext;
         }
 
@@ -123,20 +132,22 @@ namespace Framework.LevelManager
             if(ctx == null)
                 throw new Exception($"OnSceneLoaded: can't find {scene.name}");
 
-            if(mode == LoadSceneMode.Additive)
-            {
-
-            }
+            ctx.scene = scene;
+            ctx.state = StreamingState.Done;
+            // if(mode == LoadSceneMode.Additive)
+            // {
+            //     ctx.isMaster = false;
+            // }
+            // else
+            // {
+            //     ctx.isMaster = true;
+            //     m_MasterLevel = ctx;
+            // }
         }
 
         void OnSceneUnloaded(Scene scene)
         {
            Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
-
-           LevelContext ctx = FindLevel(scene.name);
-            if(ctx == null)
-                throw new Exception($"OnSceneUnloaded: can't find {scene.name}");
-
         }
 
         private LevelContext FindLevel(string sceneName)
