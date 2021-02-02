@@ -9,6 +9,7 @@ namespace Framework.LevelManager
 {
     /// <summary>
     /// 场景管理器，负责场景之间切换逻辑
+    /// NOTE: sceneName can't repeat
     /// </summary>
     public sealed class LevelManager : MonoBehaviour
     {
@@ -31,27 +32,30 @@ namespace Framework.LevelManager
             public string                               sceneName;                  // unique identifier
             public string                               scenePath;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），小写
             public string                               bundlePath;                 // 有效路径表示从AB包加载；null表示静态方式加载场景，需在Build Setting中预设
-            public bool                                 additive;                   // true: add模式加载场景；false：替换之前场景
-            internal SceneLoaderAsync                   loader      { get; set; }
+            public bool                                 additive;                   // true: add模式加载场景；false：替换之前场景            
             internal StreamingState                     state;
+            internal SceneLoaderAsync                   loader;
+            internal Scene                              scene;
+            internal bool                               isMaster;                   // whether or not active scene
+            internal bool                               isFirst;                    // 第一个场景不是由LevelManager载入，需要特殊处理
         }
 
         class LevelCommand
         {
-            public bool                                 isUnload;                   // 加载 or 卸载场景指令
+            public bool                                 isLoad;                     // true: 加载场景; false:卸载场景
 
             public LevelContext                         loadingContext;             // 加载场景指令数据
 
-            public LevelCommand(bool unload, LevelContext context)
+            public LevelCommand(LevelContext context, bool isLoad)
             {
-                this.isUnload = unload;
+                this.isLoad = isLoad;
                 this.loadingContext = context;
             }
         }
         private LinkedList<LevelCommand>                m_Commands = new LinkedList<LevelCommand>();
 
-        private LevelContext                            m_MasterLevel;
-        private Dictionary<string, LevelContext>        m_LevelsDict = new Dictionary<string, LevelContext>();
+        private LevelContext                            m_MasterLevel;              // 当前激活的场景
+        private Dictionary<string, LevelContext>        m_LevelsDict = new Dictionary<string, LevelContext>();      // 所有场景的集合
 
         private static LevelManager s_Instance;
         static public LevelManager Instance
@@ -83,7 +87,8 @@ namespace Framework.LevelManager
             transform.localScale = Vector3.one;
             DontDestroyOnLoad(gameObject);
 
-            m_MasterLevel = new LevelContext() { sceneName = SceneManager.GetActiveScene().name };
+            m_MasterLevel = new LevelContext() { sceneName = SceneManager.GetActiveScene().name, state = StreamingState.Done, isMaster = true, isFirst = true };
+            m_LevelsDict.Add(m_MasterLevel.sceneName, m_MasterLevel);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
@@ -97,17 +102,41 @@ namespace Framework.LevelManager
 
         void OnActiveSceneChanged(Scene oldScene, Scene newScene)
         {
-           Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
+            Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
+
+            LevelContext newContext = FindLevel(newScene.name);
+            if(newContext == null)
+                throw new Exception($"OnActiveSceneChanged: can't find newScene({newScene.name})");
+
+            LevelContext oldContext = FindLevel(newScene.name);
+            if(oldContext == null)
+                throw new Exception($"OnActiveSceneChanged: can't find oldScene({oldScene.name})");
+
+            m_MasterLevel = newContext;
         }
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-           Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
+            Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
+
+            LevelContext ctx = FindLevel(scene.name);
+            if(ctx == null)
+                throw new Exception($"OnSceneLoaded: can't find {scene.name}");
+
+            if(mode == LoadSceneMode.Additive)
+            {
+
+            }
         }
 
         void OnSceneUnloaded(Scene scene)
         {
            Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
+
+           LevelContext ctx = FindLevel(scene.name);
+            if(ctx == null)
+                throw new Exception($"OnSceneUnloaded: can't find {scene.name}");
+
         }
 
         private LevelContext FindLevel(string sceneName)
@@ -125,14 +154,15 @@ namespace Framework.LevelManager
 
         public void SetActiveScene(string sceneName)
         {
+            LevelContext ctx = FindLevel(sceneName);
+            if(ctx == null)
+                throw new Exception($"SetActiveScene: can't find {sceneName}");
 
+            SceneManager.SetActiveScene(ctx.scene);
         }
 
         public void LoadAsync(LevelContext context)
         {
-            // if (m_Commands.Count != 0)
-            //     throw new System.InvalidOperationException("load commands havn't finished.");
-
             if(m_MasterLevel == null)
                 throw new Exception($"m_MasterLevel == null");
             
@@ -142,20 +172,15 @@ namespace Framework.LevelManager
             if (FindLevel(context.sceneName) != null)
                 throw new Exception($"{context.sceneName} has already loaded");
 
-            if(context.additive)
+            // single模式加载时需要卸载add模式加载的场景
+            if(!context.additive)
             {
-                m_Commands.AddLast(new LevelCommand(false, context));
-            }
-            else
-            {
-                // context.additive = m_MasterLevel == null ? false : true;        // 非首次加载强制以add方式加载
-                m_Commands.AddLast(new LevelCommand(false, context));
                 foreach(var ctx in m_LevelsDict)
                 {
-                    m_Commands.AddLast(new LevelCommand(true, ctx.Value));
+                    m_Commands.AddLast(new LevelCommand(ctx.Value, false));
                 }
-                m_MasterLevel = context;
             }
+            m_Commands.AddLast(new LevelCommand(context, true));
 
             StartCoroutine(ExecuteCommands(context.sceneName, true));
         }
@@ -175,7 +200,7 @@ namespace Framework.LevelManager
             if(!m_LevelsDict.TryGetValue(sceneName, out context))
                 throw new System.Exception($"level {sceneName} not loaded");
 
-            m_Commands.AddLast(new LevelCommand(true, context));
+            m_Commands.AddLast(new LevelCommand(context, false));
 
             StartCoroutine(ExecuteCommands(sceneName, false));
         }
@@ -188,7 +213,7 @@ namespace Framework.LevelManager
             {
                 LevelCommand cmd = m_Commands.First.Value;
                 
-                if(cmd.isUnload)
+                if(cmd.isLoad)
                 {
                     yield return UnloadLevelAsync(cmd);
 
