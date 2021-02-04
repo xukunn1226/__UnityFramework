@@ -49,7 +49,7 @@ namespace Framework.LevelManager.Tests
 
             if (GUI.Button(new Rect(500, 100, 300, 120), "Unload Scene2"))
             {
-                LevelManager.Instance.UnloadLevelAsync("tscene2");
+                LevelManager.Instance.UnloadAsync("tscene2");
             }
 
             if (GUI.Button(new Rect(100, 300, 300, 120), "Load Scene3"))
@@ -65,7 +65,7 @@ namespace Framework.LevelManager.Tests
 
             if (GUI.Button(new Rect(500, 300, 300, 120), "Unload Scene3"))
             {
-                LevelManager.Instance.UnloadLevelAsync("tscene3");
+                LevelManager.Instance.UnloadAsync("tscene3");
             }
         }
     }

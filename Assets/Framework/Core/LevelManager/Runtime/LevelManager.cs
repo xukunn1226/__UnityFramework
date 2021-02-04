@@ -175,8 +175,62 @@ namespace Framework.LevelManager
             SceneManager.SetActiveScene(ctx.scene);
         }
 
+
 /// 1、additive模式加载：可控制是否并发执行，若前置任务有single模式加载的场景需等待其完成
 /// 2、single模式加载：等待加载中的场景加载完成或卸载中的场景卸载完成，再执行
+/// 3、卸载无限制
+        private void Update()
+        {
+            if(m_Commands.Count == 0)
+                return;
+            
+            LevelCommand cmd = m_Commands.First.Value;
+            if(cmd.isLoad)
+            {
+                if(cmd.loadingContext.additive)
+                {
+                    bool waiting = false;
+                    foreach(var info in m_LevelsDict)
+                    {
+                        if(!info.Value.additive && info.Value.state != StreamingState.Done)
+                        {
+                            waiting = true;
+                            break;      // 前置有single模式加载任务，且未完成则继续等待
+                        }
+                    }
+
+                    if(!waiting)
+                    {
+                        StartCoroutine(InternalLoadAsync(cmd));
+                        m_Commands.RemoveFirst();
+                    }
+                }
+                else
+                {
+                    bool waiting = false;
+                    foreach(var info in m_LevelsDict)
+                    {
+                        if(info.Value.state != StreamingState.Done)
+                        {
+                            waiting = true;
+                            break;      // 前置有任务未完成是继续等待
+                        }
+                    }
+
+                    if(!waiting)
+                    {
+                        StartCoroutine(InternalLoadAsync(cmd));
+                        m_Commands.RemoveFirst();
+                    }
+                }
+            }
+            else
+            {
+                StartCoroutine(InternalUnloadAsync(cmd));
+                m_Commands.RemoveFirst();
+            }
+        }
+
         public void LoadAsync(LevelContext context)
         {
             if(m_MasterLevel == null)
@@ -185,74 +239,59 @@ namespace Framework.LevelManager
             if (context == null)
                 throw new System.ArgumentNullException("context");
 
-            // if (FindLevel(context.sceneName) != null)
-            //     throw new Exception($"{context.sceneName} has already loaded");
-
-            // single模式加载时需要卸载add模式加载的场景
-            if(!context.additive)
-            {
-                foreach(var ctx in m_LevelsDict)
-                {
-                    if(ctx.Value.state == StreamingState.Done)
-                        m_Commands.AddLast(new LevelCommand(ctx.Value, false));
-                }
-            }
             m_Commands.AddLast(new LevelCommand(context, true));
 
-            StartCoroutine(ExecuteCommands(context.sceneName, true));
+            context.state = StreamingState.InQueue;
+            context.loader = null;
+            context.isMaster = false;
+            context.isFirst = false;
+            m_LevelsDict.Add(context.sceneName, context);
         }
 
-        public void UnloadLevelAsync(string sceneName)
+        public void UnloadAsync(string sceneName)
         {
-            if (m_Commands.Count != 0)
-                throw new System.InvalidOperationException("load commands havn't finished.");
-
             if (m_MasterLevel == null)
                 throw new System.ArgumentNullException("m_MasterLevel");
-
-            if (m_LevelsDict.Count == 1)
-                throw new System.Exception("Unloading the last loaded scene is not supported");
 
             LevelContext context;
             if(!m_LevelsDict.TryGetValue(sceneName, out context))
                 throw new System.Exception($"level {sceneName} not loaded");
 
+            context.state = StreamingState.InQueue;
             m_Commands.AddLast(new LevelCommand(context, false));
-
-            StartCoroutine(ExecuteCommands(sceneName, false));
         }
 
-        private IEnumerator ExecuteCommands(string sceneName, bool isLoaded)
-        {
-            levelCommandBegin?.Invoke(sceneName, isLoaded);
+        // private IEnumerator ExecuteCommands(string sceneName, bool isLoaded)
+        // {
+        //     levelCommandBegin?.Invoke(sceneName, isLoaded);
 
-            while(m_Commands.Count > 0)
-            {
-                LevelCommand cmd = m_Commands.First.Value;
+        //     while(m_Commands.Count > 0)
+        //     {
+        //         LevelCommand cmd = m_Commands.First.Value;
                 
-                if(cmd.isLoad)
-                {
-                    yield return UnloadLevelAsync(cmd);
+        //         if(cmd.isLoad)
+        //         {
+        //             yield return UnloadLevelAsync(cmd);
 
-                    // 指令执行完更新数据现场
-                    m_LevelsDict.Remove(cmd.loadingContext.sceneName);
-                    m_Commands.RemoveFirst();
-                }
-                else
-                {
-                    yield return LoadLevelAsync(cmd);
+        //             // 指令执行完更新数据现场
+        //             m_LevelsDict.Remove(cmd.loadingContext.sceneName);
+        //             m_Commands.RemoveFirst();
+        //         }
+        //         else
+        //         {
+        //             yield return LoadLevelAsync(cmd);
 
-                    // 指令执行完更新数据现场
-                    m_LevelsDict.Add(cmd.loadingContext.sceneName, cmd.loadingContext);
-                    m_Commands.RemoveFirst();
-                }
-            }
+        //             // 指令执行完更新数据现场
+        //             m_LevelsDict.Add(cmd.loadingContext.sceneName, cmd.loadingContext);
+        //             m_Commands.RemoveFirst();
+        //         }
+        //     }
 
-            levelCommandEnd?.Invoke(sceneName, isLoaded);
-        }
+        //     levelCommandEnd?.Invoke(sceneName, isLoaded);
+        // }
 
         // 执行异步卸载场景
-        private IEnumerator UnloadLevelAsync(LevelCommand cmd)
+        private IEnumerator InternalUnloadAsync(LevelCommand cmd)
         {
             if (cmd == null)
                 throw new System.ArgumentNullException("cmd");
@@ -263,11 +302,12 @@ namespace Framework.LevelManager
             if (cmd.loadingContext.loader == null)
                 throw new System.ArgumentNullException("cmd.loadingContext.loader");
 
+            cmd.loadingContext.state = StreamingState.Streaming;
             yield return AssetManager.UnloadSceneAsync(cmd.loadingContext.loader);
         }
 
         // 执行异步加载场景
-        private IEnumerator LoadLevelAsync(LevelCommand cmd)
+        private IEnumerator InternalLoadAsync(LevelCommand cmd)
         {
             if (cmd == null)
                 throw new System.ArgumentNullException("cmd");
@@ -282,6 +322,7 @@ namespace Framework.LevelManager
             else
                 loader = AssetManager.LoadSceneAsync(context.scenePath, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
             context.loader = loader;
+            context.state = StreamingState.Streaming;
             yield return loader;
         }
 
