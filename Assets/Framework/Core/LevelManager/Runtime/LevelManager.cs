@@ -10,10 +10,13 @@ namespace Framework.LevelManager
     /// <summary>
     /// 场景管理器，负责场景之间切换逻辑
     /// NOTE: sceneName can't repeat
+    /// 规则：
+    /// 1、additive模式加载：可控制是否并发执行，若前置任务有single模式加载的场景需等待其完成
+    /// 2、single模式加载：等待加载中的场景加载完成再执行
     /// </summary>
     public sealed class LevelManager : MonoBehaviour
     {
-        static public bool s_LevelStreamingConcurrentlyWhenLoading = true;          // 是否并发执行多个场景的异步加载
+        static public bool s_StreamingConcurrentlyWhenLoading = true;          // 是否并发执行多个场景的异步加载
         public delegate void LevelCommandBegin(string identifier, bool isLoaded);
         public delegate void LevelCommandEnd(string identifier, bool isLoaded);
         
@@ -23,8 +26,8 @@ namespace Framework.LevelManager
         internal enum StreamingState
         {
             InQueue,            // 队列中
-            Streaming,          // 加载/卸载中
-            Done,               // 加载/卸载完成
+            Streaming,          // 加载或卸载中
+            Done,               // 加载或卸载完成
         }
 
         public class LevelContext
@@ -172,6 +175,8 @@ namespace Framework.LevelManager
             SceneManager.SetActiveScene(ctx.scene);
         }
 
+/// 1、additive模式加载：可控制是否并发执行，若前置任务有single模式加载的场景需等待其完成
+/// 2、single模式加载：等待加载中的场景加载完成或卸载中的场景卸载完成，再执行
         public void LoadAsync(LevelContext context)
         {
             if(m_MasterLevel == null)
@@ -180,15 +185,16 @@ namespace Framework.LevelManager
             if (context == null)
                 throw new System.ArgumentNullException("context");
 
-            if (FindLevel(context.sceneName) != null)
-                throw new Exception($"{context.sceneName} has already loaded");
+            // if (FindLevel(context.sceneName) != null)
+            //     throw new Exception($"{context.sceneName} has already loaded");
 
             // single模式加载时需要卸载add模式加载的场景
             if(!context.additive)
             {
                 foreach(var ctx in m_LevelsDict)
                 {
-                    m_Commands.AddLast(new LevelCommand(ctx.Value, false));
+                    if(ctx.Value.state == StreamingState.Done)
+                        m_Commands.AddLast(new LevelCommand(ctx.Value, false));
                 }
             }
             m_Commands.AddLast(new LevelCommand(context, true));

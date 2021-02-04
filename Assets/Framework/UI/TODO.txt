@@ -23,6 +23,8 @@
 	* 搭建美术UI制作环境(特效预览、分辨率适配等)
 	* UIView跳转流程，参照新闻app的用户习惯设计
 	* 特效、模型与UI混排的解决方案   https://zhuanlan.zhihu.com/p/33579005
+	* 特效、动画、safeArea、图文混排，TextMeshPro、DrawCall可视化显示
+	
 
 
 	参考：
