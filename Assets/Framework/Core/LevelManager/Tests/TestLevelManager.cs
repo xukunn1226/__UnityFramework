@@ -13,8 +13,10 @@ namespace Framework.LevelManager.Tests
         {
             DontDestroyOnLoad(gameObject);
 
-            LevelManager.levelCommandBegin += LevelCommandBegin;
-            LevelManager.levelCommandEnd += LevelCommandEnd;
+            LevelManager.onLevelLoadBegin += OnLevelLoadBegin;
+            LevelManager.onLevelLoadEnd += OnLevelLoadEnd;
+            LevelManager.onLevelUnloadBegin += OnLevelUnloadBegin;
+            LevelManager.onLevelUnloadEnd += OnLevelUnloadEnd;
 
             // LevelManager.LoadLevelContext ctx = new LevelManager.LoadLevelContext();
             // ctx.identifier = "tscene1";
@@ -26,14 +28,24 @@ namespace Framework.LevelManager.Tests
             // LevelManager.Instance.LoadAsync(ctx);
         }
 
-        private void LevelCommandBegin(string identifier, bool isLoaded)
+        private void OnLevelLoadBegin(string sceneName)
         {
-            Debug.Log($"LevelCommandBegin: {Time.frameCount}    {identifier}    {isLoaded}");
+            Debug.Log($"OnLevelLoadBegin: {sceneName}");
         }
-        
-        private void LevelCommandEnd(string identifier, bool isLoaded)
+
+        private void OnLevelLoadEnd(string sceneName)
         {
-            Debug.Log($"LevelCommandEnd: {Time.frameCount}    {identifier}    {isLoaded}");
+            Debug.Log($"OnLevelLoadEnd: {sceneName}");
+        }
+
+        private void OnLevelUnloadBegin(string sceneName)
+        {
+            Debug.Log($"OnLevelUnloadBegin: {sceneName}");
+        }
+
+        private void OnLevelUnloadEnd(string sceneName)
+        {
+            Debug.Log($"OnLevelUnloadEnd: {sceneName}");
         }
 
         private void OnGUI()
