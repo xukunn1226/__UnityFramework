@@ -9,10 +9,10 @@ namespace Framework.LevelManager
 {
     /// <summary>
     /// 场景管理器，负责场景之间切换逻辑
-    /// 规则：
+    /// 注意事项：
     /// 0、场景名小写，且不能重名
-    /// 1、additive模式加载：若前置任务有single模式加载的场景需等待其完成
-    /// 2、single模式加载：等待加载中的场景加载完成再执行
+    /// 1、加载（additive）：若前置任务有single模式加载的场景需等待其完成
+    /// 2、加载（single）：等待正在加载中的场景加载完成再执行
     /// 3、卸载：此场景已加载完成
     /// </summary>
     public sealed class LevelManager : MonoBehaviour
