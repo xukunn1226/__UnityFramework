@@ -22,7 +22,6 @@ MonoBehaviour:
   - assets/application/tests/runtime/res/scenes.ab
   - assets/application/tests/runtime/res/misc/111.ab
   - assets/application/tests/runtime/res/ui/atlases/common.ab
-  - assets/res/components.ab
   - assets/res/animationclip.ab
   - assets/application/tests/runtime/res/prefabs.ab
   - assets/application/tests/runtime/res/testfx_root/fx.ab
@@ -50,6 +49,7 @@ MonoBehaviour:
   - assets/framework/core/assetmanagement/runtime/tests/res/material/111.ab
   - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
   - assets/framework/core/assetmanagement/runtime/tests/res/testdep/mat.ab
+  - assets/res/core.ab
   m_Values:
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/atlas2.ab
     m_Crc: 912409493
@@ -91,10 +91,6 @@ MonoBehaviour:
     m_Crc: 1866117299
     m_Hash: 6a01145ff5304901ca6d62d450354cfd
     m_Dependencies: []
-  - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/components.ab
-    m_Crc: 1248047618
-    m_Hash: 944888ce4ca4cf450767ef8174f3cf41
-    m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/animationclip.ab
     m_Crc: 1727746380
     m_Hash: 137956723311c86522fca68a810f88d5
@@ -108,8 +104,8 @@ MonoBehaviour:
     m_Hash: a2d081f19a220927a91e0c948252371f
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/scenes.ab
-    m_Crc: 1846725720
-    m_Hash: 0fad04b162b50472b5b324399f2e8982
+    m_Crc: 945408856
+    m_Hash: 592a423488e4c0d3f4795c487874266f
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/qk.ab
     m_Crc: 1969933504
@@ -227,3 +223,7 @@ MonoBehaviour:
     m_Dependencies:
     - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
     - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
+  - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/core.ab
+    m_Crc: 2511656658
+    m_Hash: a359e4ac7037f5ee549a22a6b9653000
+    m_Dependencies: []

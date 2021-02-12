@@ -8,6 +8,9 @@ using UnityEditor;
 
 namespace Framework.Core
 {
+    /// <summary>
+    /// ç‰ˆæœ¬ç®¡ç†ï¼Œè´Ÿè´£obbä¸‹è½½ã€èµ„æºæå–ã€è¡¥ä¸ä¸‹è½½ç­‰
+    /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class VersionManager : MonoBehaviour, IExtractListener, IPatcherListener
     {
@@ -20,12 +23,11 @@ namespace Framework.Core
 
         public int                      WorkerCountOfBundleExtracter    = 5;
         public int                      WorkerCountOfPatcher            = 5;
-        private string                  m_CdnURL;
+        [SerializeField]
+        private string                  m_CdnURL                        = "http://10.21.22.59";
 
         private void Awake()
         {
-            m_CdnURL = "http://10.21.22.59";
-
             m_BundleExtracter = GetComponent<BundleExtracter>();
             m_Patcher = GetComponent<Patcher>();
 
@@ -42,16 +44,14 @@ namespace Framework.Core
         {
 #if UNITY_EDITOR
             if (SkipVersionControl())
-            { // Ìø¹ı°æ±¾¿ØÖÆÖ±½Ó½áÊø
+            {
                 OnVersionControlFinished?.Invoke();
             }
             else
-            { // ±¾µØÄ£Äâ
-                m_CdnURL = string.Format($"{Application.dataPath}/../Deployment/CDN");
+            {
                 m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
             }
 #else
-            // Õæ»ú»·¾³±Ø¶¨Ö´ĞĞ
             m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
 #endif
         }
@@ -61,9 +61,18 @@ namespace Framework.Core
             return !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
         }
 
+        private string GetCDNURL()
+        {
+#if UNITY_EDITOR
+            return string.Format($"{Application.dataPath}/../Deployment/CDN");          // ç¼–è¾‘æ¨¡å¼ä¸‹é»˜è®¤çš„CDNåœ°å€
+#else
+            return m_CdnURL;
+#endif
+        }
+
         private void StartPatch()
         {
-            m_Patcher.StartWork(m_CdnURL, WorkerCountOfPatcher, this);
+            m_Patcher.StartWork(GetCDNURL(), WorkerCountOfPatcher, this);
         }
 
         void IExtractListener.OnInit(bool success)
@@ -76,7 +85,7 @@ namespace Framework.Core
             Debug.Log($"IExtractListener.OnShouldExtract:   {shouldExtract}");
 
             if(!shouldExtract)
-            { // ÎŞĞèÌáÈ¡Ä¸°üÊı¾İÔòÖ´ĞĞ²¹¶¡²Ù×÷
+            { // ä¸éœ€è¦æå–ç›´æ¥æ‰§è¡Œè¡¥ä¸æµç¨‹
                 StartPatch();
             }
         }
@@ -88,10 +97,17 @@ namespace Framework.Core
 
         void IExtractListener.OnEnd(float elapsedTime, string error)
         {
-            Debug.Log($"IExtractListener.OnEnd:     elapsedTime({elapsedTime})      error({error})");
+            if(string.IsNullOrEmpty(error))
+            {
+                Debug.Log($"IExtractListener.OnEnd:     elapsedTime({elapsedTime})      error({error})");
+            }
+            else
+            {
+                Debug.LogError($"IExtractListener.OnEnd:     elapsedTime({elapsedTime})      error({error})");
+            }            
 
             if(string.IsNullOrEmpty(error))
-            { // ÌáÈ¡Ä¸°üÊı¾İÍê³ÉÔòÖ´ĞĞ²¹¶¡²Ù×÷
+            { // æå–ç»“æŸæ‰§è¡Œè¡¥ä¸æµç¨‹
                 StartPatch();
             }
         }
@@ -155,8 +171,21 @@ namespace Framework.Core
     [CustomEditor(typeof(VersionManager))]
     public class VersionManager_Inspector : Editor
     {
+        private SerializedProperty m_WorkerCountOfBundleExtracterProp;
+        private SerializedProperty m_WorkerCountOfPatcherProp;
+        private SerializedProperty m_CdnURLProp;
+
+        void OnEnable()
+        {
+            m_WorkerCountOfBundleExtracterProp = serializedObject.FindProperty("WorkerCountOfPatcher");
+            m_WorkerCountOfPatcherProp = serializedObject.FindProperty("WorkerCountOfPatcher");
+            m_CdnURLProp = serializedObject.FindProperty("m_CdnURL");
+        }
+
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
+            
             string value = PlayerPrefs.GetString(VersionManager.SKIP_VERSIONCONTROL);
             EditorGUILayout.LabelField("Skip Version Control: ", string.IsNullOrEmpty(value) ? "OFF" : "ON", EditorStyles.boldLabel);
 
@@ -174,6 +203,16 @@ namespace Framework.Core
                     PlayerPrefs.SetString(VersionManager.SKIP_VERSIONCONTROL, "");
                 }
             }
+
+            EditorGUILayout.Separator();
+            EditorGUILayout.Separator();
+
+            EditorGUILayout.IntSlider(m_WorkerCountOfBundleExtracterProp, 1, 10, "Extracter Worker");
+            EditorGUILayout.IntSlider(m_WorkerCountOfPatcherProp, 1, 10, "Patcher Worker");
+
+            EditorGUILayout.LabelField("CDN", m_CdnURLProp.stringValue, EditorStyles.boldLabel);
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 #endif

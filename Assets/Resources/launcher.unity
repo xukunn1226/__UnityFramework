@@ -130,6 +130,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 975338070474096453, guid: 98d029bf9e06a1a43be84b3da0ee4c6e,
+        type: 3}
+      propertyPath: WorkerCountOfPatcher
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 975338070474096454, guid: 98d029bf9e06a1a43be84b3da0ee4c6e,
         type: 3}
       propertyPath: m_LocalPosition.x
