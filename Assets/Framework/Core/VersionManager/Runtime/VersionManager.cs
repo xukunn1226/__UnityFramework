@@ -43,6 +43,12 @@ namespace Framework.Core
             StartExtracting();
         }
 
+        // 失败或网络中断时需要restart
+        public void Restart()
+        {
+            m_BundleExtracter?.Restart();            
+        }
+
         private void StartExtracting()
         {
 #if UNITY_EDITOR
@@ -224,6 +230,11 @@ namespace Framework.Core
                 {
                     PlayerPrefs.SetString(VersionManager.SKIP_VERSIONCONTROL, "");
                 }
+            }
+
+            if(GUILayout.Button("Restart"))
+            {
+                ((VersionManager)target).Restart();
             }
 
             EditorGUILayout.Separator();

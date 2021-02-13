@@ -26,7 +26,6 @@ namespace Framework.Core
         private List<BundleFileInfo>        m_PendingExtractedFileList  = new List<BundleFileInfo>();
         private string                      m_Error;
 
-        private Coroutine                   m_Coroutine;
         private float                       m_BeginTime;
         private IExtractListener            m_Listener;
         
@@ -92,12 +91,6 @@ namespace Framework.Core
 
         private void Uninit()
         {
-            if (m_Coroutine != null)
-            {
-                StopCoroutine(m_Coroutine);
-                m_Coroutine = null;
-            }
-
             if (m_BaseVersion != null)
             {
                 AppVersion.Unload(m_BaseVersion);
@@ -322,6 +315,11 @@ namespace Framework.Core
                 string dataPath = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}");
                 if (Directory.Exists(dataPath))
                     Directory.Delete(dataPath, true);
+            }
+
+            if(GUILayout.Button("Restart"))
+            {
+                ((BundleExtracter)target).Restart();
             }
         }
     }

@@ -47,12 +47,7 @@ namespace Framework.Core
 
             StartCoroutine(Run());
         }
-
-        public void Restart()
-        {
-            StartWork(m_CdnURL, m_WorkerCount, m_Listener);
-        }
-
+        
         private IEnumerator Run()
         {
             if(m_SingleFileTask == null)
