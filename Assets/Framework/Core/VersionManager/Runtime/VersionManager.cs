@@ -14,7 +14,7 @@ namespace Framework.Core
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class VersionManager : MonoBehaviour, IExtractListener, IPatcherListener
     {
-        public event Action             OnVersionControlFinished;
+        public event Action<string>     OnVersionControlFinished;
 
         static public readonly string   SKIP_VERSIONCONTROL             = "SKIP_VERSIONCONTROL_123456789";
 
@@ -23,8 +23,11 @@ namespace Framework.Core
 
         public int                      WorkerCountOfBundleExtracter    = 5;
         public int                      WorkerCountOfPatcher            = 5;
+#pragma warning disable CS0414        
         [SerializeField]
         private string                  m_CdnURL                        = "http://10.21.22.59";
+#pragma warning restore CS0414
+        private string                  m_Error;
 
         private void Awake()
         {
@@ -45,7 +48,7 @@ namespace Framework.Core
 #if UNITY_EDITOR
             if (SkipVersionControl())
             {
-                OnVersionControlFinished?.Invoke();
+                VersionControlFinished();
             }
             else
             {
@@ -99,16 +102,15 @@ namespace Framework.Core
         {
             if(string.IsNullOrEmpty(error))
             {
-                Debug.Log($"IExtractListener.OnEnd:     elapsedTime({elapsedTime})      error({error})");
+                Debug.Log($"IExtractListener.OnEnd:     elapsedTime({elapsedTime})");
+
+                StartPatch();       // 提取结束执行补丁流程
             }
             else
             {
                 Debug.LogError($"IExtractListener.OnEnd:     elapsedTime({elapsedTime})      error({error})");
-            }            
 
-            if(string.IsNullOrEmpty(error))
-            { // 提取结束执行补丁流程
-                StartPatch();
+                m_Error = error;
             }
         }
 
@@ -125,21 +127,29 @@ namespace Framework.Core
         void IPatcherListener.OnError_DownloadBackdoor(string error)
         {
             Debug.Log($"IPatcherListener.OnError_DownloadBackdoor:  error({error})");
+            m_Error = error;
         }
 
         void IPatcherListener.OnCheck_IsLatestVersion(bool isLatestVersion)
         {
             Debug.Log($"IPatcherListener.OnCheck_IsLatestVersion:   isLatestVersion({isLatestVersion})");
+
+            if(isLatestVersion)
+            {
+                VersionControlFinished();
+            }
         }
 
         void IPatcherListener.OnError_DownloadDiffCollection(string error)
         {
             Debug.Log($"IPatcherListener.OnError_DownloadDiffCollection:    error({error})");
+            m_Error = error;
         }
 
         void IPatcherListener.OnError_DownloadDiff(string error)
         {
             Debug.Log($"IPatcherListener.OnError_DownloadDiff:    error({error})");
+            m_Error = error;
         }
 
         void IPatcherListener.OnBeginDownload(int count, long size)
@@ -150,10 +160,9 @@ namespace Framework.Core
         void IPatcherListener.OnEndDownload(string error)
         {
             Debug.Log($"IPatcherListener.OnEndDownload:     error({error})");
-            if(string.IsNullOrEmpty(error))
-            {
-                OnVersionControlFinished?.Invoke();
-            }
+
+            m_Error = error;
+            VersionControlFinished();
         }
 
         void IPatcherListener.OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed)
@@ -164,6 +173,19 @@ namespace Framework.Core
         void IPatcherListener.OnFileDownloadCompleted(string filename, bool success)
         {
             Debug.Log($"IPatcherListener.OnFileDownloadCompleted:   filename({filename})    success({success})");
+        }
+
+        void VersionControlFinished()
+        {
+            if(string.IsNullOrEmpty(m_Error))
+            {
+                Debug.Log($"VersionControl finished successfully");
+            }
+            else
+            {
+                Debug.LogError($"VersionControl finished, there is error: {m_Error}");
+            }
+            OnVersionControlFinished?.Invoke(m_Error);
         }
     }
 

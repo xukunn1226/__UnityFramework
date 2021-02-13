@@ -10,11 +10,11 @@ using UnityEditor;
 namespace Framework.Core
 {
     /// <summary>
-    /// 1¡¢ÏÂÔØbackdoor.json
-    /// 2¡¢»ñÈ¡PlayerPrefsÓëbackdoorÖĞ×îĞÂ°æ±¾ºÅ¶Ô±È£¬ÅĞ¶ÏÊÇ·ñÊÇ×îĞÂ°æ±¾»ò²¹¶¡ÒÑÏÂÔØÍê³É
-    /// 3¡¢³õÊ¼»¯ÏÂÔØ»·¾³(ÏÂÔØdiffcollection.json & diff.json)
-    /// 4¡¢ÏÂÔØ²¹¶¡
-    /// 5¡¢±ê¼ÇPlayerPrefsÍê³É
+    /// 1ã€ä¸‹è½½backdoor.json
+    /// 2ã€è·å–PlayerPrefsä¸backdoorä¸­æœ€æ–°ç‰ˆæœ¬å·å¯¹æ¯”ï¼Œåˆ¤æ–­æ˜¯å¦æ˜¯æœ€æ–°ç‰ˆæœ¬æˆ–è¡¥ä¸å·²ä¸‹è½½å®Œæˆ
+    /// 3ã€åˆå§‹åŒ–ä¸‹è½½ç¯å¢ƒ(ä¸‹è½½diffcollection.json & diff.json)
+    /// 4ã€ä¸‹è½½è¡¥ä¸
+    /// 5ã€æ ‡è®°PlayerPrefså®Œæˆ
     /// </summary>
     public class Patcher : MonoBehaviour
     {
@@ -29,10 +29,10 @@ namespace Framework.Core
 
         private DownloadTask                m_SingleFileTask;
 
-        private Backdoor                    m_Backdoor;                 // ·şÎñÆ÷ÏÂÔØµÄbackdoor
-        private DiffCollection              m_DiffCollection;           // ¶ÔÓ¦×îĞÂ°æ±¾µÄdiffcollection.json
-        private Diff                        m_Diff;                     // ²¹¶¡°ü²îÒìÅäÖÃÊı¾İ
-        private string                      m_CurVersion;               // µ±Ç°°æ±¾ºÅ£¨¼ÇÂ¼ÔÚPlayerPrefs£©
+        private Backdoor                    m_Backdoor;                 // æœåŠ¡å™¨ä¸‹è½½çš„backdoor
+        private DiffCollection              m_DiffCollection;           // å¯¹åº”æœ€æ–°ç‰ˆæœ¬çš„diffcollection.json
+        private Diff                        m_Diff;                     // è¡¥ä¸åŒ…å·®å¼‚é…ç½®æ•°æ®
+        private string                      m_CurVersion;               // å½“å‰ç‰ˆæœ¬å·ï¼ˆè®°å½•åœ¨PlayerPrefsï¼‰
 
         private string                      m_CdnURL;
         private string                      m_Error;
@@ -62,7 +62,7 @@ namespace Framework.Core
             yield return StartCoroutine(DownloadBackdoor());
             if(!string.IsNullOrEmpty(m_Error))
             {
-                Debug.LogError(m_Error);
+                // Debug.LogError(m_Error);
                 m_Listener?.OnError_DownloadBackdoor(m_Error);
                 yield break;
             }
@@ -79,7 +79,7 @@ namespace Framework.Core
             yield return StartCoroutine(DownloadDiffCollection());
             if (!string.IsNullOrEmpty(m_Error))
             {
-                Debug.LogError(m_Error);
+                // Debug.LogError(m_Error);
                 m_Listener?.OnError_DownloadDiffCollection(m_Error);
                 yield break;
             }
@@ -88,7 +88,7 @@ namespace Framework.Core
             yield return StartCoroutine(DownloadDiff());
             if (!string.IsNullOrEmpty(m_Error))
             {
-                Debug.LogError(m_Error);
+                // Debug.LogError(m_Error);
                 m_Listener?.OnError_DownloadDiff(m_Error);
                 yield break;
             }
@@ -122,7 +122,7 @@ namespace Framework.Core
         }
 
         /// <summary>
-        /// ¸ù¾İ±¾µØ°æ±¾ºÅÓëÔ¶¶Ë×îĞÂ°æ±¾ºÅÅĞ¶ÏÊÇ·ñÊÇ×îĞÂ°æ±¾
+        /// æ ¹æ®æœ¬åœ°ç‰ˆæœ¬å·ä¸è¿œç«¯æœ€æ–°ç‰ˆæœ¬å·åˆ¤æ–­æ˜¯å¦æ˜¯æœ€æ–°ç‰ˆæœ¬
         /// </summary>
         /// <returns></returns>
         private bool IsLatestVersion()
@@ -136,7 +136,7 @@ namespace Framework.Core
         }
 
         /// <summary>
-        /// »ñÈ¡±¾µØµ±Ç°°æ±¾ºÅ
+        /// è·å–æœ¬åœ°å½“å‰ç‰ˆæœ¬å·
         /// </summary>
         /// <returns></returns>
         private string GetLocalCurVersion()
@@ -145,7 +145,7 @@ namespace Framework.Core
             {
                 m_CurVersion = PlayerPrefs.GetString(CUR_APPVERSION);
                 if (string.IsNullOrEmpty(m_CurVersion))
-                { // Ê×´Î°²×°£¬ÉĞÎ´ÏÂÔØ¹ı»áÃ»ÓĞCUR_APPVERSION±ê¼Ç£¬ÔòÊ¹ÓÃÄ¸°üµÄ°æ±¾ºÅ
+                { // é¦–æ¬¡å®‰è£…ï¼Œå°šæœªä¸‹è½½è¿‡ä¼šæ²¡æœ‰CUR_APPVERSIONæ ‡è®°ï¼Œåˆ™ä½¿ç”¨æ¯åŒ…çš„ç‰ˆæœ¬å·
                     AppVersion version = AppVersion.Load();
                     m_CurVersion = version.ToString();
                     AppVersion.Unload(version);
@@ -233,7 +233,7 @@ namespace Framework.Core
                     if (task.isRunning)
                         continue;
 
-                    // Óöµ½error²»ÔÙÖ´ĞĞºóĞø²Ù×÷£¬µ«ÒÑÖ´ĞĞµÄ²Ù×÷²»ÖĞ¶Ï
+                    // é‡åˆ°errorä¸å†æ‰§è¡Œåç»­æ“ä½œï¼Œä½†å·²æ‰§è¡Œçš„æ“ä½œä¸ä¸­æ–­
                     if (!string.IsNullOrEmpty(m_Error))
                         continue;
 
@@ -254,7 +254,7 @@ namespace Framework.Core
                     StartCoroutine(task.Run(info));
                 }
 
-                // Ö»ÒªÈÔÓĞÈÎÎñÔÚÔËĞĞ¾ÍµÈ´ı£¬¼´Ê¹Óöµ½error
+                // åªè¦ä»æœ‰ä»»åŠ¡åœ¨è¿è¡Œå°±ç­‰å¾…ï¼Œå³ä½¿é‡åˆ°error
                 if (IsStillWorking())
                 {
                     yield return null;
@@ -316,7 +316,7 @@ namespace Framework.Core
             {
                 m_Error = string.Format($"OnCompleted: failed to download {taskInfo.srcUri}");
             }
-            //Debug.Log($"ÏÂÔØ£º{taskInfo.dstURL} {(success ? "³É¹¦" : "Ê§°Ü")}");
+            //Debug.Log($"ä¸‹è½½ï¼š{taskInfo.dstURL} {(success ? "æˆåŠŸ" : "å¤±è´¥")}");
             m_Listener?.OnFileDownloadCompleted(taskInfo.dstURL, success);
         }
 
@@ -344,7 +344,7 @@ namespace Framework.Core
         {
             m_PendingDownloadFileIndex = 0;
 
-            // ¿¼ÂÇµ½¶ÏµãĞø´«£¬×ÜÊÇËùÓĞ²¹¶¡Êı¾İ¼ì²éÒ»±é
+            // è€ƒè™‘åˆ°æ–­ç‚¹ç»­ä¼ ï¼Œæ€»æ˜¯æ‰€æœ‰è¡¥ä¸æ•°æ®æ£€æŸ¥ä¸€é
             m_DownloadFileList.Clear();
             foreach (var dfi in m_Diff.AddedFileList)
             {
