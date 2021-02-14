@@ -42,6 +42,9 @@ namespace Framework.Core
             StartCoroutine(Run());
         }
 
+        /// <summary>
+        /// 重新执行提取操作，不可在之前提取操作未完成时执行
+        /// </summary>
         public void Restart()
         {
             Uninit();

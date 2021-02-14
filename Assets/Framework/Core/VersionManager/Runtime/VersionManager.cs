@@ -43,7 +43,7 @@ namespace Framework.Core
             StartExtracting();
         }
 
-        // 失败或网络中断时需要restart
+        // 异常失败或网络中断时才可执行
         public void Restart()
         {
             m_BundleExtracter?.Restart();            
@@ -232,11 +232,6 @@ namespace Framework.Core
                 }
             }
 
-            if(GUILayout.Button("Restart"))
-            {
-                ((VersionManager)target).Restart();
-            }
-
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
 
@@ -244,6 +239,11 @@ namespace Framework.Core
             EditorGUILayout.IntSlider(m_WorkerCountOfPatcherProp, 1, 10, "Patcher Worker");
 
             EditorGUILayout.LabelField("CDN", m_CdnURLProp.stringValue, EditorStyles.boldLabel);
+            
+            if(GUILayout.Button("Restart"))
+            {
+                ((VersionManager)target).Restart();
+            }
 
             serializedObject.ApplyModifiedProperties();
         }
