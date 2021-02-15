@@ -7,8 +7,8 @@ namespace Framework.Core
 {
     public class Backdoor
     {
-        public string                       MinVersion;             // Ç¿¸ü°æ±¾ºÅ£¬Ö»ÄÜÊÇÈıÎ»
-        public string                       CurVersion;             // µ±Ç°°æ±¾ºÅ£¬¿ÉÄÜÊÇÈıÎ»»òËÄÎ»
+        public string                       MinVersion;             // å¼ºæ›´ç‰ˆæœ¬å·ï¼Œåªèƒ½æ˜¯ä¸‰ä½
+        public string                       CurVersion;             // å½“å‰ç‰ˆæœ¬å·ï¼Œå¯èƒ½æ˜¯ä¸‰ä½æˆ–å››ä½
         public Dictionary<string, string>   VersionHistory;         // [version, diffcollection json's hash]
 
         public string GetDiffCollectionFileHash(string version)
