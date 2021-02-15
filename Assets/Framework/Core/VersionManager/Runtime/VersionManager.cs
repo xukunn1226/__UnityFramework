@@ -38,18 +38,29 @@ namespace Framework.Core
                 throw new System.ArgumentNullException("m_BundleExtracter == null || m_Patcher == null");
         }
 
-        void Start()
-        {
-            StartExtracting();
-        }
+        // void Start()
+        // {
+        //     StartWork();
+        // }
 
         // 异常失败或网络中断时才可执行
         public void Restart()
         {
-            m_BundleExtracter?.Restart();            
+#if UNITY_EDITOR
+            if(SkipVersionControl())
+            {
+                VersionControlFinished();
+            }
+            else
+            {
+                m_BundleExtracter?.Restart();
+            }
+#else
+            m_BundleExtracter?.Restart();
+#endif            
         }
 
-        private void StartExtracting()
+        public void StartWork()
         {
 #if UNITY_EDITOR
             if (SkipVersionControl())
@@ -158,12 +169,13 @@ namespace Framework.Core
             m_Error = error;
         }
 
-        void IPatcherListener.OnBeginDownload(int count, long size)
+        bool IPatcherListener.Prepare(int count, long size)
         {
             Debug.Log($"IPatcherListener.OnBeginDownload:   count({count})  size({size})");
+            return true;
         }
 
-        void IPatcherListener.OnEndDownload(string error)
+        void IPatcherListener.OnPatchCompleted(string error)
         {
             Debug.Log($"IPatcherListener.OnEndDownload:     error({error})");
 
@@ -189,7 +201,7 @@ namespace Framework.Core
             }
             else
             {
-                Debug.LogError($"VersionControl finished, there is error: {m_Error}");
+                Debug.LogError($"VersionControl finished, there is an error: {m_Error}");
             }
             OnVersionControlFinished?.Invoke(m_Error);
         }

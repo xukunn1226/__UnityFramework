@@ -87,6 +87,10 @@ namespace Framework.Core
                 m_Listener?.OnError_DownloadDiff(m_Error);
                 yield break;
             }
+            
+            // prepare for downloading
+            if(!Prepare())
+                yield break;
 
             // step5. downloading...
             yield return StartCoroutine(Downloading());
@@ -220,7 +224,6 @@ namespace Framework.Core
 
         private IEnumerator Downloading()
         {
-            BeginDownload();
             while(true)
             {
                 foreach(var task in m_TaskWorkerList)
@@ -242,8 +245,8 @@ namespace Framework.Core
                     info.dstURL             = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
                     info.verifiedHash       = fileInfo.FileHash;
                     info.retryCount         = 3;
-                    info.onProgress         = OnProgress;
-                    info.onCompleted        = OnCompleted;
+                    info.onProgress         = OnTaskProgress;
+                    info.onCompleted        = OnTaskCompleted;
                     info.onRequestError     = OnRequestError;
                     info.onDownloadError    = OnDownloadError;
                     StartCoroutine(task.Run(info));
@@ -259,10 +262,10 @@ namespace Framework.Core
                     break;
                 }
             }
-            EndDownload();
+            DownloadingFinished();
         }
 
-        private void BeginDownload()
+        private bool Prepare()
         {
             CollectPendingDownloadFileList();
 
@@ -278,10 +281,10 @@ namespace Framework.Core
                 m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
             }
 
-            m_Listener?.OnBeginDownload(m_DownloadFileList.Count, m_Diff.Size);
+            return m_Listener != null ? m_Listener.Prepare(m_DownloadFileList.Count, m_Diff.Size) : false;
         }
 
-        private void EndDownload()
+        private void DownloadingFinished()
         {
             if(string.IsNullOrEmpty(m_Error))
             {
@@ -295,17 +298,17 @@ namespace Framework.Core
                 //Debug.LogWarning($"patch failed...{m_Error}");
             }
 
-            m_Listener?.OnEndDownload(m_Error);
+            m_Listener?.OnPatchCompleted(m_Error);
         }
 
-        private void OnProgress(DownloadTaskInfo taskInfo, ulong downedLength, ulong totalLength, float downloadSpeed)
+        private void OnTaskProgress(DownloadTaskInfo taskInfo, ulong downedLength, ulong totalLength, float downloadSpeed)
         {
             //Debug.Log($"OnProgress: {Path.GetFileName(taskInfo.dstURL)}     {downedLength}/{totalLength}    downloadSpeed({downloadSpeed})");
 
             m_Listener?.OnFileDownloadProgress(taskInfo.dstURL, downedLength, totalLength, downloadSpeed);
         }
 
-        private void OnCompleted(DownloadTaskInfo taskInfo, bool success, int tryCount)
+        private void OnTaskCompleted(DownloadTaskInfo taskInfo, bool success, int tryCount)
         {
             if (!success)
             {
@@ -396,8 +399,8 @@ namespace Framework.Core
         void OnCheck_IsLatestVersion(bool isLatestVersion);
         void OnError_DownloadDiffCollection(string error);
         void OnError_DownloadDiff(string error);
-        void OnBeginDownload(int count, long size);
-        void OnEndDownload(string error);
+        bool Prepare(int count, long size);     // true: 开始下载；false：取消下载
+        void OnPatchCompleted(string error);
         void OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);
         void OnFileDownloadCompleted(string filename, bool success);
     }

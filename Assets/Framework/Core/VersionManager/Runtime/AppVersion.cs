@@ -11,20 +11,20 @@ namespace Framework.Core
     // [CreateAssetMenu(menuName = "Create AppVersion.asset")]
     /// <summary>
     /// Format: X.Y.Z.W
-    /// X: ÖØ´ó°æ±¾Ê±±ä¶¯£¬Á½Î»Êı
-    /// Y: ÉÌµêĞèÒª°æ±¾ºÅÔö¼Ó£¬Ã¿´ÎÌá½»+1£¬Á½Î»Êı
-    /// Z: Í¬Y£¬¼ì²âµ½SDK»òC#¸Ä¶¯Ôò+1£¬Á½Î»Êı
-    /// W: ÈÈ¸üĞÂ°æ±¾ºÅ£¨²»¸Ä±äapp binary»ù´¡ÉÏµÄ²¹¶¡°üĞòºÅ£©£¬Ã¿´Î+1£¬´óÓÚÁ½Î»Êı¡£ÈôX.Y.ZÓĞ±ä¶¯ÔòWÇåÁã
+    /// X: é‡å¤§ç‰ˆæœ¬æ—¶å˜åŠ¨ï¼Œä¸¤ä½æ•°
+    /// Y: å•†åº—éœ€è¦ç‰ˆæœ¬å·å¢åŠ ï¼Œæ¯æ¬¡æäº¤+1ï¼Œä¸¤ä½æ•°
+    /// Z: åŒYï¼Œæ£€æµ‹åˆ°SDKæˆ–C#æ”¹åŠ¨åˆ™+1ï¼Œä¸¤ä½æ•°
+    /// W: çƒ­æ›´æ–°ç‰ˆæœ¬å·ï¼ˆä¸æ”¹å˜app binaryåŸºç¡€ä¸Šçš„è¡¥ä¸åŒ…åºå·ï¼‰ï¼Œæ¯æ¬¡+1ï¼Œå¤§äºä¸¤ä½æ•°ã€‚è‹¥X.Y.Zæœ‰å˜åŠ¨åˆ™Wæ¸…é›¶
     /// </summary>
     public class AppVersion : ScriptableObject, IComparable<AppVersion>
     {
         public int  MainVersion;        // X
         public int  MinorVersion;       // Y
         public int  Revision;           // Z
-        public int  BuildNumber;        // Ã¿´Î´ò°ü×ÔÔö£¬¶ÔÓ¦android.bundleVersionCode & ios.buildNumber
+        public int  BuildNumber;        // æ¯æ¬¡æ‰“åŒ…è‡ªå¢ï¼Œå¯¹åº”android.bundleVersionCode & ios.buildNumber
 
         [NonSerialized]
-        public int  HotfixNumber;       // W¡ª¡ª²¹¶¡°üĞòÁĞºÅ
+        public int  HotfixNumber;       // Wâ€”â€”è¡¥ä¸åŒ…åºåˆ—å·
 
         static public AppVersion Load()
         {
@@ -193,7 +193,7 @@ namespace Framework.Core
         }
 
         /// <summary>
-        /// ½öÊ¹ÓÃÇ°ÈıÎ»X.Y.Z×ö±È½Ï£¬Í¨³£ÓÃÓÚ¼æÈİ°üÂß¼­
+        /// ä»…ä½¿ç”¨å‰ä¸‰ä½X.Y.Zåšæ¯”è¾ƒï¼Œé€šå¸¸ç”¨äºå…¼å®¹åŒ…é€»è¾‘
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>

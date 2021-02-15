@@ -69,17 +69,6 @@
 * 如何优雅地接入外部插件（uwa），可定制什么时候发布
 * 扩展Gesture——双击功能，贴边移动
 * Package目录下shader如何打包？https://answer.uwa4d.com/question/5f3d10b19424416784ef1c82
-// 是否wifi环境
-    public static bool IsWifi()
-    {
-        return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
-    }
-
-    // 网络链接是否断开
-    public static bool IsNetworkReachability()
-    {
-        return Application.internetReachability != NetworkReachability.NotReachable;
-    }
 * ACT技能编辑器的制作经验分享 https://blog.uwa4d.com/archives/USparkle_ACT.html
 * 利用IJob优化DynamicBones https://mp.weixin.qq.com/s/WPURBQ8lyg9eCx2bITtKiw
 * 配置方案：pb、flatbuffer、zeroformatter
@@ -89,7 +78,6 @@
 * OBB管理  https://stackoverflow.com/questions/25832334/i-have-mounted-my-obb-file-but-how-to-get-the-final-path-to-my-assets
 		   https://answers.unity.com/questions/1228809/where-to-put-my-obb-file.html
 * 对象池管理：常驻内存机制与预加载机制
-
 
 
 
