@@ -10,6 +10,7 @@ namespace Framework.Core
 {
     /// <summary>
     /// 版本管理，负责obb下载、资源提取、补丁下载等
+    /// 负责游戏启动（obb下载、补丁、资源提取、修复、启动画面显示、隐藏，多语言，网络状态提示等等）
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class VersionManager : MonoBehaviour, IExtractListener, IPatcherListener
@@ -29,19 +30,58 @@ namespace Framework.Core
 #pragma warning restore CS0414
         private string                  m_Error;
 
+        [SerializeField]
+        new private Camera              camera;
+        [SerializeField]
+        private Canvas                  canvas;
+
+        static public VersionManager          Instance
+        {
+            get; private set;
+        }
+
         private void Awake()
         {
+            if (FindObjectsOfType<VersionManager>().Length > 1)
+            {
+                DestroyImmediate(this);
+                throw new Exception("Launcher has already exist...");
+            }
+
+            gameObject.name = "[Launcher]";
+
+            Instance = this;
+
+            DontDestroyOnLoad(gameObject);
+
             m_BundleExtracter = GetComponent<BundleExtracter>();
             m_Patcher = GetComponent<Patcher>();
 
             if (m_BundleExtracter == null || m_Patcher == null)
                 throw new System.ArgumentNullException("m_BundleExtracter == null || m_Patcher == null");
+
+            if(camera == null)
+                throw new ArgumentNullException("camera");
+
+            if(canvas == null)
+                throw new ArgumentNullException("canvas");
         }
 
-        // void Start()
-        // {
-        //     StartWork();
-        // }
+        void Start()
+        {
+            StartWork();
+        }
+
+        static public bool IsWifi()
+        {
+            return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
+        }
+
+        // 网络链接是否断开
+        static public bool IsNetworkReachability()
+        {
+            return Application.internetReachability != NetworkReachability.NotReachable;
+        }
 
         // 异常失败或网络中断时才可执行
         public void Restart()
@@ -62,6 +102,7 @@ namespace Framework.Core
 
         public void StartWork()
         {
+            canvas.enabled = true;
 #if UNITY_EDITOR
             if (SkipVersionControl())
             {
@@ -204,6 +245,7 @@ namespace Framework.Core
                 Debug.LogError($"VersionControl finished, there is an error: {m_Error}");
             }
             OnVersionControlFinished?.Invoke(m_Error);
+            canvas.enabled = false;
         }
     }
 
@@ -214,17 +256,24 @@ namespace Framework.Core
         private SerializedProperty m_WorkerCountOfBundleExtracterProp;
         private SerializedProperty m_WorkerCountOfPatcherProp;
         private SerializedProperty m_CdnURLProp;
+        private SerializedProperty m_CameraProp;
+        private SerializedProperty m_CanvasProp;
 
         void OnEnable()
         {
             m_WorkerCountOfBundleExtracterProp = serializedObject.FindProperty("WorkerCountOfPatcher");
             m_WorkerCountOfPatcherProp = serializedObject.FindProperty("WorkerCountOfPatcher");
             m_CdnURLProp = serializedObject.FindProperty("m_CdnURL");
+            m_CameraProp = serializedObject.FindProperty("camera");
+            m_CanvasProp = serializedObject.FindProperty("canvas");
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+
+            EditorGUILayout.ObjectField(m_CameraProp, typeof(Camera));
+            EditorGUILayout.ObjectField(m_CanvasProp, typeof(Canvas));
             
             string value = PlayerPrefs.GetString(VersionManager.SKIP_VERSIONCONTROL);
             EditorGUILayout.LabelField("Skip Version Control: ", string.IsNullOrEmpty(value) ? "OFF" : "ON", EditorStyles.boldLabel);
