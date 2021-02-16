@@ -13,10 +13,8 @@ namespace Framework.Core
     /// 负责游戏启动（obb下载、补丁、资源提取、修复、启动画面显示、隐藏，多语言，网络状态提示等等）
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
-    public class VersionManager : MonoBehaviour, IExtractListener, IPatcherListener
+    public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
     {
-        public event Action<string>     OnVersionControlFinished;
-
         static public readonly string   SKIP_VERSIONCONTROL             = "SKIP_VERSIONCONTROL_123456789";
 
         private BundleExtracter         m_BundleExtracter;
@@ -24,25 +22,27 @@ namespace Framework.Core
 
         public int                      WorkerCountOfBundleExtracter    = 5;
         public int                      WorkerCountOfPatcher            = 5;
-#pragma warning disable CS0414        
+#pragma warning disable CS0414
         [SerializeField]
         private string                  m_CdnURL                        = "http://10.21.22.59";
 #pragma warning restore CS0414
         private string                  m_Error;
 
+#pragma warning disable CS0649
         [SerializeField]
         new private Camera              camera;
         [SerializeField]
         private Canvas                  canvas;
+#pragma warning restore CS0649        
 
-        static public VersionManager          Instance
+        static public Launcher          Instance
         {
             get; private set;
         }
 
         private void Awake()
         {
-            if (FindObjectsOfType<VersionManager>().Length > 1)
+            if (FindObjectsOfType<Launcher>().Length > 1)
             {
                 DestroyImmediate(this);
                 throw new Exception("Launcher has already exist...");
@@ -72,15 +72,20 @@ namespace Framework.Core
             StartWork();
         }
 
-        static public bool IsWifi()
+        private bool IsWifi()
         {
             return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
         }
 
         // 网络链接是否断开
-        static public bool IsNetworkReachability()
+        private bool IsNetworkReachability()
         {
             return Application.internetReachability != NetworkReachability.NotReachable;
+        }
+
+        void Update()
+        {
+            Debug.Log($"IsNetworkReachability: {Application.internetReachability}   {IsNetworkReachability()}   {IsWifi()}");
         }
 
         // 异常失败或网络中断时才可执行
@@ -244,14 +249,13 @@ namespace Framework.Core
             {
                 Debug.LogError($"VersionControl finished, there is an error: {m_Error}");
             }
-            OnVersionControlFinished?.Invoke(m_Error);
             canvas.enabled = false;
         }
     }
 
 #if UNITY_EDITOR
-    [CustomEditor(typeof(VersionManager))]
-    public class VersionManager_Inspector : Editor
+    [CustomEditor(typeof(Launcher))]
+    public class Launcher_Inspector : Editor
     {
         private SerializedProperty m_WorkerCountOfBundleExtracterProp;
         private SerializedProperty m_WorkerCountOfPatcherProp;
@@ -275,21 +279,21 @@ namespace Framework.Core
             EditorGUILayout.ObjectField(m_CameraProp, typeof(Camera));
             EditorGUILayout.ObjectField(m_CanvasProp, typeof(Canvas));
             
-            string value = PlayerPrefs.GetString(VersionManager.SKIP_VERSIONCONTROL);
+            string value = PlayerPrefs.GetString(Launcher.SKIP_VERSIONCONTROL);
             EditorGUILayout.LabelField("Skip Version Control: ", string.IsNullOrEmpty(value) ? "OFF" : "ON", EditorStyles.boldLabel);
 
             if(string.IsNullOrEmpty(value))
             {
                 if(GUILayout.Button("Enable"))
                 {
-                    PlayerPrefs.SetString(VersionManager.SKIP_VERSIONCONTROL, "0000000000000000000");
+                    PlayerPrefs.SetString(Launcher.SKIP_VERSIONCONTROL, "0000000000000000000");
                 }
             }
             else
             {
                 if(GUILayout.Button("Disable"))
                 {
-                    PlayerPrefs.SetString(VersionManager.SKIP_VERSIONCONTROL, "");
+                    PlayerPrefs.SetString(Launcher.SKIP_VERSIONCONTROL, "");
                 }
             }
 
@@ -303,7 +307,7 @@ namespace Framework.Core
             
             if(GUILayout.Button("Restart"))
             {
-                ((VersionManager)target).Restart();
+                ((Launcher)target).Restart();
             }
 
             serializedObject.ApplyModifiedProperties();
