@@ -78,8 +78,8 @@ MonoBehaviour:
     m_Hash: 8a1a99404e92ca267bd454ece99f8831
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/scenes.ab
-    m_Crc: 44788186
-    m_Hash: 80d7de8348a9fcf367339f697c256805
+    m_Crc: 2948430394
+    m_Hash: da4b3c8907ff993b2692e119edd9e0b8
     m_Dependencies:
     - assets/application/tests/runtime/res/testspawnerring.ab
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/misc/111.ab
@@ -104,8 +104,8 @@ MonoBehaviour:
     m_Hash: a2d081f19a220927a91e0c948252371f
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/scenes.ab
-    m_Crc: 945408856
-    m_Hash: 592a423488e4c0d3f4795c487874266f
+    m_Crc: 982284020
+    m_Hash: 860d74f272d9f44a02a2806539ca8665
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/qk.ab
     m_Crc: 1969933504

@@ -1,11 +1,11 @@
 {
   "Count": 38,
-  "TotalSize": 32718598,
+  "TotalSize": 32718603,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "5a6bbdd507ec6e2dfdf420b5fc995781",
-      "Size": 2997
+      "FileHash": "41ec266506e9b42f74e6c43f529b3bf5",
+      "Size": 2998
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -34,8 +34,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/scenes.ab",
-      "FileHash": "5f9f28a2ad2d91ef9640c2cb521f91a2",
-      "Size": 1575494
+      "FileHash": "27b57b6936828fd23771bcc26a068d2c",
+      "Size": 1575499
     },
     {
       "BundleName": "assets/application/tests/runtime/res/testspawnerring.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "8a1c1bdc232c96c74918f34bba9daf1e",
-      "Size": 5914
+      "FileHash": "906e5c344c81a5c0b08117d12f8e7b3b",
+      "Size": 5913
     }
   ]
 }

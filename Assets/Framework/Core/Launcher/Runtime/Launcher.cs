@@ -85,7 +85,7 @@ namespace Framework.Core
 
         void Update()
         {
-            Debug.Log($"IsNetworkReachability: {Application.internetReachability}   {IsNetworkReachability()}   {IsWifi()}");
+            Debug.Log($"IsNetworkReachability: {Application.internetReachability}   {Time.frameCount}");
         }
 
         // 异常失败或网络中断时才可执行
