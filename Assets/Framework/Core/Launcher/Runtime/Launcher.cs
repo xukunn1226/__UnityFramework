@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Net;
+using System.Threading.Tasks;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -69,23 +71,9 @@ namespace Framework.Core
 
         void Start()
         {
+            // await TestPing("202.108.22.5", 3);
+            
             StartWork();
-        }
-
-        private bool IsWifi()
-        {
-            return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
-        }
-
-        // 网络链接是否断开
-        private bool IsNetworkReachability()
-        {
-            return Application.internetReachability != NetworkReachability.NotReachable;
-        }
-
-        void Update()
-        {
-            Debug.Log($"IsNetworkReachability: {Application.internetReachability}   {Time.frameCount}");
         }
 
         // 异常失败或网络中断时才可执行
@@ -251,6 +239,46 @@ namespace Framework.Core
             }
             canvas.enabled = false;
         }
+        
+        public async Task<bool> TestPing(string ipString, int tryCount = 3)
+        {
+            System.Net.NetworkInformation.Ping ping = new System.Net.NetworkInformation.Ping();
+            System.Net.NetworkInformation.PingOptions opt = new System.Net.NetworkInformation.PingOptions();
+            opt.DontFragment = true;
+            byte[] buf = System.Text.Encoding.ASCII.GetBytes("123");
+
+            tryCount = tryCount <= 0 ? Int16.MaxValue : tryCount;
+            while(tryCount > 0)
+            {
+                --tryCount;
+
+                try
+                {
+                    System.Net.NetworkInformation.PingReply result = await ping.SendPingAsync(IPAddress.Parse(ipString), 1000, buf, opt);
+                    Debug.Log($"Ping: {ipString}    {result.Status}   {result.RoundtripTime}");
+                    if(result.Status == System.Net.NetworkInformation.IPStatus.Success)
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.Message);
+                }
+            }
+            return false;
+        }
+
+        private bool IsWifi()
+        {
+            return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
+        }
+
+        // 网络链接是否断开
+        private bool IsNetworkReachability()
+        {
+            return Application.internetReachability != NetworkReachability.NotReachable;
+        }
     }
 
 #if UNITY_EDITOR
@@ -262,6 +290,8 @@ namespace Framework.Core
         private SerializedProperty m_CdnURLProp;
         private SerializedProperty m_CameraProp;
         private SerializedProperty m_CanvasProp;
+        private string m_ipString = "202.108.22.5";
+        private string m_pingResult = "No Information";
 
         void OnEnable()
         {
@@ -272,13 +302,16 @@ namespace Framework.Core
             m_CanvasProp = serializedObject.FindProperty("canvas");
         }
 
-        public override void OnInspectorGUI()
+        async public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
             EditorGUILayout.ObjectField(m_CameraProp, typeof(Camera));
             EditorGUILayout.ObjectField(m_CanvasProp, typeof(Canvas));
             
+            EditorGUILayout.Separator();
+            EditorGUILayout.Separator();
+
             string value = PlayerPrefs.GetString(Launcher.SKIP_VERSIONCONTROL);
             EditorGUILayout.LabelField("Skip Version Control: ", string.IsNullOrEmpty(value) ? "OFF" : "ON", EditorStyles.boldLabel);
 
@@ -309,6 +342,19 @@ namespace Framework.Core
             {
                 ((Launcher)target).Restart();
             }
+
+            EditorGUILayout.Separator();
+            EditorGUILayout.Separator();
+
+            EditorGUILayout.BeginHorizontal();
+            if(GUILayout.Button("Ping"))
+            {
+                bool ret = await ((Launcher)target).TestPing(m_ipString);
+                m_pingResult = ret ? "Network connectivity" : "Network not reachable";
+            }
+            m_ipString = EditorGUILayout.TextField(m_ipString);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.LabelField("Ping reply", m_pingResult, EditorStyles.boldLabel);
 
             serializedObject.ApplyModifiedProperties();
         }
