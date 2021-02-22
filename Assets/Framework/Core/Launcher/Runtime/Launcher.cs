@@ -12,7 +12,7 @@ namespace Framework.Core
 {
     /// <summary>
     /// 版本管理，负责obb下载、资源提取、补丁下载等
-    /// 负责游戏启动（obb下载、补丁、资源提取、修复、启动画面显示、隐藏，多语言，网络状态提示等等）
+    /// 负责游戏启动（obb下载、补丁、资源提取、修复、启动画面显示/隐藏，公告、多语言，网络状态提示等等）
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
@@ -76,26 +76,10 @@ namespace Framework.Core
             StartWork();
         }
 
-        // 异常失败或网络中断时才可执行
-        public void Restart()
+        private void StartWork()
         {
-#if UNITY_EDITOR
-            if(SkipVersionControl())
-            {
-                VersionControlFinished();
-            }
-            else
-            {
-                m_BundleExtracter?.Restart();
-            }
-#else
-            m_BundleExtracter?.Restart();
-#endif            
-        }
+            ShowBackground(true);
 
-        public void StartWork()
-        {
-            canvas.enabled = true;
 #if UNITY_EDITOR
             if (SkipVersionControl())
             {
@@ -109,7 +93,7 @@ namespace Framework.Core
             m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
 #endif
         }
-
+        
         private bool SkipVersionControl()
         {
             return !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
@@ -237,9 +221,40 @@ namespace Framework.Core
             {
                 Debug.LogError($"VersionControl finished, there is an error: {m_Error}");
             }
-            canvas.enabled = false;
+
+            // 加载下个场景
         }
         
+        private void ShowBackground(bool show)
+        {
+            canvas.enabled = show;
+        }
+
+        // 再次执行完整流程（异常失败、网络中断、从游戏中退出时）
+        public void Restart()
+        {
+            ShowBackground(true);
+
+#if UNITY_EDITOR
+            if(SkipVersionControl())
+            {
+                VersionControlFinished();
+            }
+            else
+            {
+                m_BundleExtracter?.Restart();
+            }
+#else
+            m_BundleExtracter?.Restart();
+#endif            
+        }
+
+        // 隐藏启动画面
+        public void Disable()
+        {
+            ShowBackground(false);
+        }
+
         public async Task<bool> TestPing(string ipString, int tryCount = 3)
         {
             System.Net.NetworkInformation.Ping ping = new System.Net.NetworkInformation.Ping();
