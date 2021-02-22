@@ -228,6 +228,7 @@ namespace Framework.Core
         private void ShowBackground(bool show)
         {
             canvas.enabled = show;
+            camera.enabled = show;
         }
 
         // 再次执行完整流程（异常失败、网络中断、从游戏中退出时）
