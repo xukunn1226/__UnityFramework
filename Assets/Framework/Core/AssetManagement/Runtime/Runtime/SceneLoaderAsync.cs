@@ -44,7 +44,7 @@ namespace Framework.AssetManagement.Runtime
             }
 
             SceneLoaderAsync loader = (SceneLoaderAsync)m_Pool.Get();
-            loader.InternalLoadSceneAsyncFromBundle(bundlePath, sceneName, mode, allowSceneActivation);
+            loader.LoadSceneAsyncFromBundle(bundlePath, sceneName, mode, allowSceneActivation);
             loader.Pool = m_Pool;
             loader.sceneName = sceneName;
             loader.mode = mode;
@@ -66,7 +66,7 @@ namespace Framework.AssetManagement.Runtime
             }
 
             SceneLoaderAsync loader = (SceneLoaderAsync)m_Pool.Get();
-            loader.InternalLoadSceneAsync(sceneName, mode, allowSceneActivation);
+            loader.LoadSceneAsync(sceneName, mode, allowSceneActivation);
             loader.Pool = m_Pool;
             loader.sceneName = sceneName;
             loader.mode = mode;
@@ -83,7 +83,27 @@ namespace Framework.AssetManagement.Runtime
             return loader.unloadAsyncOp;
         }
 
-        private void InternalLoadSceneAsyncFromBundle(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation)
+        private void LoadSceneAsyncFromBundle(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation)
+        {
+#if UNITY_EDITOR
+            switch (AssetManager.Instance.loaderType)
+            {
+                case LoaderType.FromEditor:
+                    string assetPath;
+                    AssetManager.ParseBundleAndAssetName(bundlePath, sceneName, out assetPath);
+                    UnityEngine.SceneManagement.SceneManager.LoadScene(assetPath + ".unity", mode);
+                    break;
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
+                    InternalLoadSceneAsyncFromBundle(bundlePath, sceneName, mode, allowSceneActivation);
+                    break;
+            }
+#else
+            InternalLoadSceneAsyncFromBundle(bundlePath, sceneName, mode, allowSceneActivation);
+#endif
+        }
+
+        private void InternalLoadSceneAsyncFromBundle(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             m_BundleLoader = AssetManager.LoadAssetBundle(bundlePath);
             if (m_BundleLoader.assetBundle == null)
@@ -93,6 +113,24 @@ namespace Framework.AssetManagement.Runtime
 
             loadAsyncOp = SceneManager.LoadSceneAsync(sceneName, mode);
             loadAsyncOp.allowSceneActivation = allowSceneActivation;
+        }
+
+        private void LoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation)
+        {
+#if UNITY_EDITOR
+            switch (AssetManager.Instance.loaderType)
+            {
+                case LoaderType.FromEditor:
+                    SceneManager.LoadScene(sceneName + ".unity", mode);
+                    break;
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
+                    InternalLoadSceneAsync(sceneName, mode, allowSceneActivation);
+                    break;
+            }
+#else
+            InternalLoadSceneAsync(sceneName, mode, allowSceneActivation);
+#endif
         }
 
         private void InternalLoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation)
@@ -115,7 +153,7 @@ namespace Framework.AssetManagement.Runtime
         private bool IsDone()
         {
             if (loadAsyncOp == null)
-                throw new System.Exception("loadAsyncOp == null");
+                return true;
 
             //Debug.Log($"[{Time.frameCount}]  {loadAsyncOp.progress}     {loadAsyncOp.isDone}");
 

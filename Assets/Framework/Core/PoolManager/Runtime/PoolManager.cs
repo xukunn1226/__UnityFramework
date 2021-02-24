@@ -71,7 +71,7 @@ namespace Framework.Cache
             }
 
             m_kInstance = this;
-            transform.parent = null;
+            // transform.parent = null;
             transform.gameObject.name = "[PoolManager]";
             DontDestroyOnLoad(gameObject);
 

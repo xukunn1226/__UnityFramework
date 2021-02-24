@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Cache;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.AssetManagement.Runtime
 {
@@ -42,7 +45,7 @@ namespace Framework.AssetManagement.Runtime
             }
 
             SceneLoader loader = (SceneLoader)m_Pool.Get();
-            loader.InternalLoadSceneFromBundle(bundlePath, sceneName, mode);
+            loader.LoadSceneFromBundle(bundlePath, sceneName, mode);
             loader.Pool = m_Pool;
             loader.sceneName = sceneName;
             loader.mode = mode;
@@ -64,7 +67,7 @@ namespace Framework.AssetManagement.Runtime
             }
 
             SceneLoader loader = (SceneLoader)m_Pool.Get();
-            loader.InternalLoadScene(sceneName, mode);
+            loader.LoadScene(sceneName, mode);
             loader.Pool = m_Pool;
             loader.sceneName = sceneName;
             loader.mode = mode;
@@ -81,6 +84,26 @@ namespace Framework.AssetManagement.Runtime
             return loader.unloadAsyncOp;
         }
 
+        private void LoadSceneFromBundle(string bundlePath, string sceneName, LoadSceneMode mode)
+        {
+#if UNITY_EDITOR
+            switch (AssetManager.Instance.loaderType)
+            {
+                case LoaderType.FromEditor:
+                    string assetPath;
+                    AssetManager.ParseBundleAndAssetName(bundlePath, sceneName, out assetPath);
+                    SceneManager.LoadScene(assetPath + ".unity", mode);
+                    break;
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
+                    InternalLoadSceneFromBundle(bundlePath, sceneName, mode);
+                    break;
+            }
+#else
+            InternalLoadSceneFromBundle(bundlePath, sceneName, mode);
+#endif
+        }
+
         private void InternalLoadSceneFromBundle(string bundlePath, string sceneName, LoadSceneMode mode)
         {
             m_BundleLoader = AssetManager.LoadAssetBundle(bundlePath);
@@ -89,17 +112,25 @@ namespace Framework.AssetManagement.Runtime
             if (!m_BundleLoader.assetBundle.isStreamedSceneAssetBundle)
                 throw new System.Exception($"{bundlePath} is not streamed scene asset bundle");
 
-            // foreach(string path in m_BundleLoader.assetBundle.GetAllScenePaths())
-            // {
-            //     Debug.Log($"======== {path}");
-            // }
-
             SceneManager.LoadScene(sceneName, mode);
         }
 
-        private void InternalLoadScene(string sceneName, LoadSceneMode mode)
-        {
+        private void LoadScene(string sceneName, LoadSceneMode mode)
+        {            
+#if UNITY_EDITOR
+            switch (AssetManager.Instance.loaderType)
+            {
+                case LoaderType.FromEditor:
+                    SceneManager.LoadScene(sceneName + ".unity", mode);
+                    break;
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
+                    SceneManager.LoadScene(sceneName, mode);
+                    break;
+            }
+#else
             SceneManager.LoadScene(sceneName, mode);
+#endif
         }
 
         private void InternalUnloadScene()

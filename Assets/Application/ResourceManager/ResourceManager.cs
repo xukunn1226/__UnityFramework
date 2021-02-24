@@ -172,7 +172,7 @@ public class ResourceManager : MonoBehaviour
     {
         return AssetManager.LoadSceneAsync(sceneName, mode, allowSceneActivation);
     }
-    static public SceneLoader LoadScene(string bundlePath, string sceneName, LoadSceneMode mode)
+    static public SceneLoader LoadScene(string bundlePath, string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
     {
         return AssetManager.LoadScene(bundlePath, sceneName, mode);
     }
