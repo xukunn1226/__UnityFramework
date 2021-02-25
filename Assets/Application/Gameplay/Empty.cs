@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class Empty : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
-        
-    }
+        if(Core.Instance == null)
+            throw new System.Exception("Empty: Core.Instance == null");
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(Launcher.Instance == null)
+            throw new System.Exception("Empty: Launcher.Instance == null");
+
+        // 删除核心组件
+        Destroy(Core.Instance.gameObject);
+
+        // 重启launcher流程
+        Launcher.Instance.Restart();
     }
 }

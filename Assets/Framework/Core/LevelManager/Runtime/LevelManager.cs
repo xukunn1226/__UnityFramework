@@ -5,7 +5,7 @@ using Framework.AssetManagement.Runtime;
 using System;
 using UnityEngine.SceneManagement;
 
-namespace Framework.LevelManager
+namespace Framework.Core
 {
     /// <summary>
     /// 场景管理器，负责场景之间切换逻辑

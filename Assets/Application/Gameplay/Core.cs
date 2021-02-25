@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Framework.AssetManagement.Runtime;
-using Framework.LevelManager;
+using Framework.Core;
 
 public class Core : MonoBehaviour
 {
