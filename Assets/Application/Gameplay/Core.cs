@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Framework.AssetManagement.Runtime;
+using Framework.LevelManager;
 
 public class Core : MonoBehaviour
 {
-    public string               SceneBundlePath;
     public string               TheFirstGameSceneName;
-    private SceneLoaderAsync    m_SceneLoader;
+    public string               ScenePath;
+    public string               BundlePath;
 
     static public Core Instance
     {
@@ -34,6 +35,11 @@ public class Core : MonoBehaviour
     {
         yield return null;
 
-        // m_SceneLoader = ResourceManager.LoadSceneAsync(SceneBundlePath, TheFirstGameSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+        LevelManager.LevelContext ctx = new LevelManager.LevelContext();
+        ctx.sceneName = TheFirstGameSceneName;
+        ctx.scenePath = ScenePath;
+        ctx.additive = false;
+        ctx.bundlePath = BundlePath;
+        LevelManager.Instance.LoadAsync(ctx);
     }
 }

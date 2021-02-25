@@ -170,8 +170,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11211269d2c21dd47be1341fe2b115cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SceneBundlePath: 
-  TheFirstGameSceneName: 
+  TheFirstGameSceneName: world
+  ScenePath: assets/res/scenes/world.unity
+  BundlePath: assets/res/scenes.ab
 --- !u!1001 &1010063948
 PrefabInstance:
   m_ObjectHideFlags: 0

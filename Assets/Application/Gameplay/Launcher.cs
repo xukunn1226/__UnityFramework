@@ -6,20 +6,18 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Framework.Core;
-using Framework.AssetManagement.Runtime;
 using Framework.LevelManager;
-using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 /// <summary>
 /// 版本管理，负责obb下载、资源提取、补丁下载等
-/// 负责游戏启动（obb下载、补丁、资源提取、修复、启动画面显示/隐藏，公告、多语言，网络状态提示等等）
+/// 负责游戏启动（obb下载、补丁、资源提取、修复、启动画面显示/隐藏，公告、多语言，网络状态提示、check devices等等）
 /// launcher -> core -> theFirstGameScene
 /// launcher: resource extracted & check obb & patch & board
 /// core: init core components
-/// theFirstGameScene: 
+/// theFirstGameScene: game play scene
 /// </summary>
 [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
 public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
@@ -47,8 +45,6 @@ public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
     public string SceneName;
     public string ScenePath;
     public string BundlePath;
-
-    private LevelManager.LevelContext m_LevelCtx;
 
     static public Launcher Instance
     {
@@ -80,8 +76,6 @@ public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
 
         if (canvas == null)
             throw new ArgumentNullException("canvas");
-
-        UnityEngine.SceneManagement.SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
     void Start()
@@ -93,7 +87,7 @@ public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
 
     private void StartWork()
     {
-        ShowBackground(true);
+        ShowUI(true);
 
 #if UNITY_EDITOR
         if (SkipVersionControl())
@@ -119,7 +113,7 @@ public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
 #if UNITY_EDITOR
         return string.Format($"{Application.dataPath}/../Deployment/CDN");          // 编辑模式下默认的CDN地址
 #else
-            return m_CdnURL;
+        return m_CdnURL;
 #endif
     }
 
@@ -240,48 +234,24 @@ public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
         LoadCoreScene();
     }
 
-    private void OnSceneUnloaded(Scene scene)
-    {
-        // if(scene.name == coreSceneName)
-        // { // 卸载coreScene时释放scene loader
-        //     // if(m_SceneLoader != null)
-        //     // {
-        //     //     StartCoroutine(UnloadCoreScene());
-        //     // }
-        // }
-    }
-
-    // 以场景的形式(core.unity)加载核心组件(此时尚未加载AssetManager，使用原生API加载场景)
+    // 以场景的形式(core.unity)加载核心组件
     // 相比以prefab(core.prefab)的方式加载核心组件优势有：
     // 1、core.unity可以热更
     // 2、核心组件数据便于修改，可以热更
     private void LoadCoreScene()
     {
-        // m_SceneLoader = ResourceManager.LoadScene(bundlePath, coreSceneName);
-        m_LevelCtx = new LevelManager.LevelContext();
-        m_LevelCtx.sceneName = SceneName;
-        m_LevelCtx.scenePath = ScenePath;
-        m_LevelCtx.additive = false;
-        m_LevelCtx.bundlePath = BundlePath;
-        LevelManager.Instance.LoadAsync(m_LevelCtx);
-    }
-
-    // private IEnumerator UnloadCoreScene()
-    // {
-    //     if(m_SceneLoader != null)
-    //         yield return ResourceManager.UnloadSceneAsync(m_SceneLoader);
-    // }
-
-    private void ShowBackground(bool show)
-    {
-        canvas.enabled = show;
-        camera.enabled = show;
+        LevelManager.LevelContext ctx = new LevelManager.LevelContext();
+        ctx.sceneName = SceneName;
+        ctx.scenePath = ScenePath;
+        ctx.additive = false;
+        ctx.bundlePath = BundlePath;
+        LevelManager.Instance.LoadAsync(ctx);
     }
 
     // 再次执行完整流程（异常失败、网络中断、从游戏中退出时）
     public void Restart()
     {
-        ShowBackground(true);
+        ShowUI(true);
 
 #if UNITY_EDITOR
         if (SkipVersionControl())
@@ -300,9 +270,15 @@ public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
     // 隐藏启动画面
     public void Disable()
     {
-        ShowBackground(false);
+        ShowUI(false);
     }
 
+    private void ShowUI(bool show)
+    {
+        canvas.enabled = show;
+        camera.enabled = show;
+    }
+    
     public async Task<bool> TestPing(string ipString, int tryCount = 3)
     {
         System.Net.NetworkInformation.Ping ping = new System.Net.NetworkInformation.Ping();

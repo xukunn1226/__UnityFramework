@@ -104,8 +104,8 @@ MonoBehaviour:
     m_Hash: a2d081f19a220927a91e0c948252371f
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/scenes.ab
-    m_Crc: 530010987
-    m_Hash: e22ff8ea3fa0fd6dffb9db5b6069ed9b
+    m_Crc: 2740771867
+    m_Hash: 70063f2b65c330e45b9f2cfca9ada5ad
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/qk.ab
     m_Crc: 2670666800
@@ -224,6 +224,6 @@ MonoBehaviour:
     - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
     - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/core.ab
-    m_Crc: 3022823656
-    m_Hash: b17dfc831e825c91ace7d81a33221249
+    m_Crc: 907188702
+    m_Hash: 486ae463121588dbaa8d46759c9a4aa3
     m_Dependencies: []
