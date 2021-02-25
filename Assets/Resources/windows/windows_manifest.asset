@@ -104,8 +104,8 @@ MonoBehaviour:
     m_Hash: a2d081f19a220927a91e0c948252371f
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/res/scenes.ab
-    m_Crc: 2740771867
-    m_Hash: 70063f2b65c330e45b9f2cfca9ada5ad
+    m_Crc: 1094999546
+    m_Hash: 8ff0937b652bbe223f75f3a07ccb6ba5
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/windows/assets/application/tests/runtime/res/qk.ab
     m_Crc: 2670666800

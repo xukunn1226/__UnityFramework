@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework.LevelManager;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 public class MainLoop : MonoBehaviour
 {
+    private const string kSceneName = "empty";
+    private const string kScenePath = "assets/res/scenes/empty.unity";
+    private const string kBundlePath = "assets/res/scenes.ab";
+
     void Awake()
     {
         if(Launcher.Instance == null)
@@ -14,10 +19,15 @@ public class MainLoop : MonoBehaviour
 
         Launcher.Instance.Disable();        // 结束Launcher流程
     }
-    
+
     public void Restart()
     {
-        
+        LevelManager.LevelContext ctx = new LevelManager.LevelContext();
+        ctx.sceneName = kSceneName;
+        ctx.scenePath = kScenePath;
+        ctx.additive = false;
+        ctx.bundlePath = kBundlePath;
+        LevelManager.Instance.LoadAsync(ctx);
     }
 
     public void Reconnect()

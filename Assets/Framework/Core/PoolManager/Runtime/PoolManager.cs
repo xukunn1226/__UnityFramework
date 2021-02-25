@@ -73,7 +73,7 @@ namespace Framework.Cache
             m_kInstance = this;
             // transform.parent = null;
             transform.gameObject.name = "[PoolManager]";
-            DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoad(gameObject);
 
             transform.position = Vector3.zero;
             transform.rotation = Quaternion.identity;
