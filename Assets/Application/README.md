@@ -1,28 +1,12 @@
-# Assembly:   Framework.Core.Runtime.dll
+# Assembly:   Application.Runtime.dll
 
 ## Dependent
-	Unity.ScriptableBuildPipeline
+	Framework.Core.Runtime
+	Framework.Gesture.Runtime
+	Framework.NetWork.Runtime
 
 ## Namespace
-	Framework.Core
-	Framework.Gesture.Runtime
-	Framework.Cache
-	Framework.AssetManagement.Runtime
-
-
-<br></br>
-
-# Assembly:		Framework.Gesture.Runtime.dll
-## Dependent
-	UnityEngine.UI
-## Namespace
-	Framework.Gesture.Runtime
-
-	
-<br></br>
-# Assembly: Framework.Network.Runtime.dll
-## Dependent
 	None
 
-## Namespace
-	Framework.NetWork
+
+<br></br>
