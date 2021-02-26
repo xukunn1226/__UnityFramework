@@ -19,28 +19,30 @@ namespace XDelta
     }
 }
 
-
-public class TestDll : MonoBehaviour
+namespace Application.Runtime.Tests
 {
+    public class TestDll : MonoBehaviour
+    {
 #if UNITY_IOS
     const string dllName = "__Internal";
 #elif UNITY_ANDROID
     const string dllName = "libTestNative";
 #elif UNITY_STANDALONE_WIN
-    const string dllName = "libTestNative";
+        const string dllName = "libTestNative";
 #else
     const string dllName = "libTestNative";
 #endif
 
-    [DllImport(dllName)] //这里就是调用的dll名字
-    public static extern int MyAddFunc(int x, int y);
+        [DllImport(dllName)] //这里就是调用的dll名字
+        public static extern int MyAddFunc(int x, int y);
 
-    // Use this for initialization
-    IEnumerator Start()
-    {
-        yield return new WaitForSeconds(2);
+        // Use this for initialization
+        IEnumerator Start()
+        {
+            yield return new WaitForSeconds(2);
 
-        int ret = MyAddFunc(200, 200);
-        Debug.Log($"--- ret:{ret}");
+            int ret = MyAddFunc(200, 200);
+            Debug.Log($"--- ret:{ret}");
+        }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
 
-namespace Tests
+namespace Application.Runtime.Tests
 {
     /// <summary>
     /// 

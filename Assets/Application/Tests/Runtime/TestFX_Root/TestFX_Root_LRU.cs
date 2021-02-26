@@ -5,7 +5,7 @@ using Framework.AssetManagement.Runtime;
 using Framework.Core;
 using MeshParticleSystem;
 
-namespace Tests
+namespace Application.Runtime.Tests
 {
     public class TestFX_Root_LRU : MonoBehaviour
     {

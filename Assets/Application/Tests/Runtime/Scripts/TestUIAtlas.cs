@@ -4,7 +4,7 @@ using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using UnityEngine.U2D;
 
-namespace Tests
+namespace Application.Runtime.Tests
 {
     public class TestUIAtlas : MonoBehaviour
     {

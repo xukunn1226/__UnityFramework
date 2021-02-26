@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
-namespace Tests
+namespace Application.Runtime.Tests
 {
     public class TestUIPersistentAtlas : MonoBehaviour
     {

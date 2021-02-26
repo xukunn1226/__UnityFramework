@@ -5,7 +5,7 @@ using Framework.AssetManagement.Runtime;
 using Framework.Core;
 using Framework.Cache;
 
-namespace Tests
+namespace Application.Runtime.Tests
 {
     /// <summary>
     /// 测试两种对象池的使用方法

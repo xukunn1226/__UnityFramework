@@ -3,53 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Cache;
 
-public class Decal : LivingPooledObject
+namespace Application.Runtime.Tests
 {
-    private ParticleSystem m_PS;
-
-    private float m_Speed;
-    public override float Speed
+    public class Decal : LivingPooledObject
     {
-        get
+        private ParticleSystem m_PS;
+
+        private float m_Speed;
+        public override float Speed
         {
-            return m_Speed;
+            get
+            {
+                return m_Speed;
+            }
+            set
+            {
+                m_Speed = value;
+
+                if (m_PS != null)
+                {
+                    ParticleSystem.MainModule main = m_PS.main;
+                    main.simulationSpeed = m_Speed;
+                }
+            }
         }
-        set
+
+        protected override void Awake()
         {
-            m_Speed = value;
+            m_PS = GetComponent<ParticleSystem>();
+
+            base.Awake();
+        }
+
+        public override void OnGet()
+        {
+            base.OnGet();
 
             if (m_PS != null)
             {
-                ParticleSystem.MainModule main = m_PS.main;
-                main.simulationSpeed = m_Speed;
+                m_PS.Play();
             }
         }
-    }
 
-    protected override void Awake()
-    {
-        m_PS = GetComponent<ParticleSystem>();
-
-        base.Awake();
-    }
-
-    public override void OnGet()
-    {
-        base.OnGet();
-
-        if (m_PS != null)
+        public override void OnRelease()
         {
-            m_PS.Play();
-        }
-    }
+            if (m_PS != null)
+            {
+                m_PS.Stop();
+            }
 
-    public override void OnRelease()
-    {
-        if (m_PS != null)
-        {
-            m_PS.Stop();
+            base.OnRelease();
         }
-
-        base.OnRelease();
     }
 }

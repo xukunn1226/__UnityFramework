@@ -1,28 +1,31 @@
 ﻿using UnityEngine;
 
-[System.Serializable]
-public struct FloatRange
+namespace Application.Runtime.Tests
 {
-
-    public float min, max;
-
-    public float RandomInRange
+    [System.Serializable]
+    public struct FloatRange
     {
-        get
+
+        public float min, max;
+
+        public float RandomInRange
         {
-            return Random.Range(min, max);
+            get
+            {
+                return Random.Range(min, max);
+            }
         }
-    }
 
-    public Vector3 RandomInRange3
-    {
-        get
+        public Vector3 RandomInRange3
         {
-            Vector3 v;
-            v.x = RandomInRange;
-            v.y = RandomInRange;
-            v.z = RandomInRange;
-            return v;
+            get
+            {
+                Vector3 v;
+                v.x = RandomInRange;
+                v.y = RandomInRange;
+                v.z = RandomInRange;
+                return v;
+            }
         }
     }
 }

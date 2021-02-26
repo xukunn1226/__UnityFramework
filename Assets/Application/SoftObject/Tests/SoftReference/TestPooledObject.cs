@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Cache;
 
-namespace Tests
+namespace Application.Runtime.Tests
 {
     public class TestPooledObject : MonoPooledObjectBase
     {

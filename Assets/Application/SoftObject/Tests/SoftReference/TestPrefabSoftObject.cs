@@ -4,7 +4,7 @@ using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using Framework.Core;
 
-namespace Tests
+namespace Application.Runtime.Tests
 {
     public class TestPrefabSoftObject : MonoBehaviour
     {
