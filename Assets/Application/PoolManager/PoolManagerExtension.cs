@@ -4,6 +4,8 @@ using UnityEngine;
 using Framework.Cache;
 using Framework.AssetManagement.Runtime;
 
+namespace Application.Runtime
+{
 public static class PoolManagerExtension
 {
     /// <summary>
@@ -53,4 +55,5 @@ public class AssetLoaderEx : IAssetLoader
     {
         ResourceManager.UnloadAsset(m_Loader);
     }
+}
 }

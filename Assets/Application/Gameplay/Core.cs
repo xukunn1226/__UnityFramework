@@ -2,44 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Framework.AssetManagement.Runtime;
 using Framework.Core;
 
-public class Core : MonoBehaviour
+namespace Application.Runtime
 {
-    public string               TheFirstGameSceneName;
-    public string               ScenePath;
-    public string               BundlePath;
-
-    static public Core Instance
+    /// <summary>
+    /// 负责初始核心组件，然后加载游戏场景
+    /// <summary>
+    public class Core : MonoBehaviour
     {
-        get; private set;
-    }
+        public string   TheFirstGameSceneName;
+        public string   ScenePath;
+        public string   BundlePath;
 
-    private void Awake()
-    {
-        if (FindObjectsOfType<Core>().Length > 1)
+        static public Core Instance
         {
-            DestroyImmediate(this);
-            throw new Exception("Core has already exist...");
+            get; private set;
         }
 
-        gameObject.name = "[Core]";
+        private void Awake()
+        {
+            if (FindObjectsOfType<Core>().Length > 1)
+            {
+                DestroyImmediate(this);
+                throw new Exception("Core has already exist...");
+            }
 
-        Instance = this;
+            gameObject.name = "[Core]";
 
-        DontDestroyOnLoad(gameObject);
-    }
+            Instance = this;
 
-    IEnumerator Start()
-    {
-        yield return null;
+            DontDestroyOnLoad(gameObject);
+        }
 
-        LevelManager.LevelContext ctx = new LevelManager.LevelContext();
-        ctx.sceneName = TheFirstGameSceneName;
-        ctx.scenePath = ScenePath;
-        ctx.additive = false;
-        ctx.bundlePath = BundlePath;
-        LevelManager.Instance.LoadAsync(ctx);
+        IEnumerator Start()
+        {
+            yield return null;
+
+            LevelManager.LevelContext ctx = new LevelManager.LevelContext();
+            ctx.sceneName = TheFirstGameSceneName;
+            ctx.scenePath = ScenePath;
+            ctx.additive = false;
+            ctx.bundlePath = BundlePath;
+            LevelManager.Instance.LoadAsync(ctx);
+        }
     }
 }

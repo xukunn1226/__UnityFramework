@@ -4,7 +4,7 @@ using NUnit.Framework;
 using NetProtocol;
 using Google.Protobuf;
 
-namespace Tests
+namespace Application.Editor.Tests
 {
     public class TestProtobufScript
     {

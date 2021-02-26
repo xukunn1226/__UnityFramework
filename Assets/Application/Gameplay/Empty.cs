@@ -2,20 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Empty : MonoBehaviour
+namespace Application.Runtime
 {
-    void Start()
+    /// <summary>
+    /// 重启游戏时
+    /// <summary>
+    public class Empty : MonoBehaviour
     {
-        if(Core.Instance == null)
-            throw new System.Exception("Empty: Core.Instance == null");
+        void Start()
+        {
+            if (Core.Instance == null)
+                throw new System.Exception("Empty: Core.Instance == null");
 
-        if(Launcher.Instance == null)
-            throw new System.Exception("Empty: Launcher.Instance == null");
+            if (Launcher.Instance == null)
+                throw new System.Exception("Empty: Launcher.Instance == null");
 
-        // 删除核心组件
-        Destroy(Core.Instance.gameObject);
+            // 删除核心组件
+            Destroy(Core.Instance.gameObject);
 
-        // 重启launcher流程
-        Launcher.Instance.Restart();
+            // 重启launcher流程
+            Launcher.Instance.Restart();
+        }
     }
 }

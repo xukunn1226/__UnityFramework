@@ -129,7 +129,7 @@ namespace MeshParticleSystem
             }
 
 #if UNITY_EDITOR
-            if (SimulatedMode && !Application.isPlaying && m_ParticleComps != null)
+            if (SimulatedMode && !UnityEngine.Application.isPlaying && m_ParticleComps != null)
             { // 模拟模式且非运行时才执行
                 foreach (var ps in m_ParticleComps)
                 {
@@ -142,7 +142,7 @@ namespace MeshParticleSystem
         private void OnEffectEnd()
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying)     // 方便美术编辑，非运行模式下不处理回收
+            if (!UnityEngine.Application.isPlaying)     // 方便美术编辑，非运行模式下不处理回收
                 return;
 #endif
             switch (m_RecyclingType)

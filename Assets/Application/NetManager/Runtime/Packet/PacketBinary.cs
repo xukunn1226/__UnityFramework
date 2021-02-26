@@ -1,5 +1,7 @@
 ﻿using Framework.NetWork;
 
+namespace Application.Runtime
+{
 public class PacketBinary : IPacket<byte[]>
 {
     public bool Deserialize(in byte[] data, int offset, int length, out int realLength, out byte[] msg)
@@ -21,4 +23,5 @@ public class PacketBinary : IPacket<byte[]>
     {
         return 0;
     }
+}
 }

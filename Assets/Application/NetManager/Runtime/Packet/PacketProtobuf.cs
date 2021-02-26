@@ -4,6 +4,8 @@ using Google.Protobuf;
 using NetProtocol;
 using Framework.NetWork;
 
+namespace Application.Runtime
+{
 /// <summary>
 /// Packet format: [length | message]
 /// </summary>
@@ -74,4 +76,5 @@ public class PacketProtobuf : IPacket<IMessage>
     {
         return m_HeadLength + msg.CalculateSize();
     }
+}
 }

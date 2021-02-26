@@ -7,6 +7,8 @@ using Framework.Core;
 using UnityEditor;
 #endif
 
+namespace Application.Runtime
+{
 [AttributeUsage(AttributeTargets.Field)]
 public sealed class SoftObjectAttribute : PropertyAttribute
 {
@@ -47,3 +49,4 @@ public class SoftObjectDrawer : PropertyDrawer
     }
 }
 #endif
+}

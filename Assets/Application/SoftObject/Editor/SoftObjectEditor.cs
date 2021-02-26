@@ -7,7 +7,10 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using UnityEditor;
 using Framework.Core.Editor;
+using Application.Runtime;
 
+namespace Application.Editor
+{
 [CustomEditor(typeof(SoftObject))]
 public class SoftObjectEditor : SoftObjectPathEditor
 {
@@ -37,4 +40,5 @@ public class SoftObjectEditor : SoftObjectPathEditor
 
         serializedObject.ApplyModifiedProperties();
     }
+}
 }

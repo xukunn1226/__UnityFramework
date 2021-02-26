@@ -9,6 +9,8 @@ using Framework.NetWork;
 using UnityEditor;
 #endif
 
+namespace Application.Runtime
+{
 public class NetManager : MonoBehaviour, INetListener<IMessage>
 {
     static private IPacket<IMessage>    s_Parser        = new PacketProtobuf();
@@ -93,7 +95,7 @@ public class NetManager : MonoBehaviour, INetListener<IMessage>
     {
         int index = 0;
         System.Random r = new System.Random();
-        while (Application.isPlaying)
+        while (UnityEngine.Application.isPlaying)
         {
             while (!m_Quit && m_NetClient?.state == ConnectState.Connected)
             {
@@ -161,3 +163,4 @@ public class NetManager_Inspector : Editor
     }
 }
 #endif
+}

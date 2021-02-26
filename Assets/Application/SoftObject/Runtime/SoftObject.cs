@@ -10,6 +10,8 @@ using Object = UnityEngine.Object;
 // using Framework.Core.Editor;
 // #endif
 
+namespace Application.Runtime
+{
     public sealed class SoftObject : SoftObjectPath
     {
         private GameObjectLoader m_PrefabLoader;
@@ -238,3 +240,4 @@ using Object = UnityEngine.Object;
 // }
 
 // #endif
+}

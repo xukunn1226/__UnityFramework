@@ -5,6 +5,8 @@ using Framework.Cache;
 using MeshParticleSystem;
 using Framework.AssetManagement.Runtime;
 
+namespace Application.Runtime
+{
 // 不足：以assetPath为KEY，所以同一资源不能有多个实例
 // 改善：以isntanceID为KEY可以解决上述问题
 public class LRUPool_FX : LRUPoolBase
@@ -100,4 +102,5 @@ public class LRUPool_FX : LRUPoolBase
 
         obj.OnRelease();
     }
+}
 }

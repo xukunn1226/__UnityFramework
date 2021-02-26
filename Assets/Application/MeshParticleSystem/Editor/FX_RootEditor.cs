@@ -22,7 +22,7 @@ namespace MeshParticleSystem.Editor
             m_FX = (FX_Root)target;
             m_FX.SimulatedMode = true;
             
-            if (!Application.isPlaying)
+            if (!UnityEngine.Application.isPlaying)
                 UnityEditor.EditorApplication.update += UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
         }
 
@@ -30,7 +30,7 @@ namespace MeshParticleSystem.Editor
         {
             m_FX.SimulatedMode = false;
 
-            if (!Application.isPlaying)
+            if (!UnityEngine.Application.isPlaying)
                 UnityEditor.EditorApplication.update -= UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
         }
 

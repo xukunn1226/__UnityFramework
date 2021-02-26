@@ -12,13 +12,13 @@ namespace MeshParticleSystem.Editor
 
         protected virtual void OnEnable()
         {
-            if (!Application.isPlaying)
+            if (!UnityEngine.Application.isPlaying)
                 UnityEditor.EditorApplication.update += UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
         }
 
         protected virtual void OnDisable()
         {
-            if (!Application.isPlaying)
+            if (!UnityEngine.Application.isPlaying)
                 UnityEditor.EditorApplication.update -= UnityEditor.EditorApplication.QueuePlayerLoopUpdate;
         }
 

@@ -85,7 +85,7 @@ namespace MeshParticleSystem.Profiler
 
         void Update()
         {
-            if(!Application.isPlaying)
+            if(!UnityEngine.Application.isPlaying)
                 return;
 #if UNITY_EDITOR
             // update stats

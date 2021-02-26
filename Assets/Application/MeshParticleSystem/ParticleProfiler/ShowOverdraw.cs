@@ -75,7 +75,7 @@ namespace MeshParticleSystem.Profiler
             m_Data.m_pixActualTotal = 0;
             m_Data.m_FrameCount = 0;
 
-            Application.targetFrameRate = 30;           // 固定帧率测试
+            UnityEngine.Application.targetFrameRate = 30;           // 固定帧率测试
         }
 
         void OnDisable()

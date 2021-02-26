@@ -6,6 +6,8 @@ using Framework.AssetManagement.Runtime;
 using UnityEngine.SceneManagement;
 using System;
 
+namespace Application.Runtime
+{
 public class ResourceManager : MonoBehaviour
 {
     static private ResourceManager  Instance            { get; set; }
@@ -400,4 +402,5 @@ public class ResourceManager : MonoBehaviour
     // {
     //     return string.Format($"{Instance.m_UIAtlasPath}/{atlasName}/{atlasName}.spriteatlas");
     // }
+}
 }
