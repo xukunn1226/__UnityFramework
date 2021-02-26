@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using System.Runtime.InteropServices; //DllImport需要的namespace
+using System.Runtime.InteropServices; //DllImport闇�瑕佺殑namespace
 
 #if UNITY_IOS
 using XDelta = XDelta.IOS;
@@ -32,7 +32,7 @@ public class TestDll : MonoBehaviour
     const string dllName = "libTestNative";
 #endif
 
-    [DllImport(dllName)] //这里就是调用的dll名字
+    [DllImport(dllName)] //杩欓噷灏辨槸璋冪敤鐨刣ll鍚嶅瓧
     public static extern int MyAddFunc(int x, int y);
 
     // Use this for initialization
