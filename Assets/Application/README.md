@@ -14,9 +14,48 @@
 	Framework.NetWork.Runtime
 
 ## Namespace
-	Application.Runtime
-	Application.Runtime.Tests
+	Application.Runtime	
 	MeshParticleSystem
+
+
+<br></br>
+
+
+
+# Assembly:   Application.Editor.dll
+
+## Dependent
+	Application.Runtime
+	Framework.Core.Runtime
+	Framework.Core.Editor
+
+## Namespace
+	Application.Editor
+	MeshParticleSystem.Editor
+
+
+<br></br>
+
+# Assembly:   Application.Runtime.Tests.dll
+
+## Dependent
+	Application.Runtime
+	Framework.Core.Runtime
+	Framework.Gesture.Runtime
+
+## Namespace
+	Application.Runtime.Tests
+
+
+<br></br>
+
+# Assembly:   Application.Editor.Tests.dll
+
+## Dependent
+	Application.Runtime
+
+## Namespace
+	Application.Editor.Tests
 
 
 <br></br>

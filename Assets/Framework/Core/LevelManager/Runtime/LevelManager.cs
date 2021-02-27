@@ -15,7 +15,7 @@ namespace Framework.Core
     /// 2、加载（single）：等待正在加载中的场景加载完成再执行
     /// 3、卸载：此场景已加载完成
     /// </summary>
-    public sealed class LevelManager : MonoBehaviour
+    public sealed class LevelManager : SingletonMono<LevelManager>
     {
         public delegate void LevelOperationBegin(string sceneName);
         public delegate void LevelOperationEnd(string sceneName);
@@ -97,36 +97,10 @@ namespace Framework.Core
 
         private LevelContext                            m_MasterLevel;                                              // 当前激活的场景        
         private Dictionary<string, LevelContext>        m_LevelsList = new Dictionary<string, LevelContext>();
-        
-        private static LevelManager s_Instance;
-        static public LevelManager Instance
-        {
-            get
-            {
-                if (s_Instance == null)
-                {
-                    GameObject go = new GameObject();
-                    s_Instance = go.AddComponent<LevelManager>();
-                }
-                return s_Instance;
-            }
-        }
 
-        private void Awake()
+        protected override void Awake()
         {
-            // 已有AssetManager，则自毁
-            if (FindObjectsOfType<LevelManager>().Length > 1)
-            {
-                DestroyImmediate(this);
-                throw new Exception("LevelManager has already exist...");
-            }
-            s_Instance = this;
-
-            gameObject.name = "[LevelManager]";
-            transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
-            transform.localScale = Vector3.one;
-            DontDestroyOnLoad(gameObject);
+            base.Awake();
 
             m_MasterLevel = new LevelContext() { sceneName = SceneManager.GetActiveScene().name, 
                                                  state = StreamingState.Done };
@@ -135,11 +109,6 @@ namespace Framework.Core
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
-        }
-
-        private void OnDestroy()
-        {
-            s_Instance = null;
         }
 
         void OnActiveSceneChanged(Scene oldScene, Scene newScene)

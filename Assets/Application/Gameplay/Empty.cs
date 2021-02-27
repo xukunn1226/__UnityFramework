@@ -20,6 +20,8 @@ namespace Application.Runtime
             // 删除核心组件
             Destroy(Core.Instance.gameObject);
 
+            Resources.UnloadUnusedAssets();
+
             // 重启launcher流程
             Launcher.Instance.Restart();
         }

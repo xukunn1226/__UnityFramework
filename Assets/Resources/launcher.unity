@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 73561825}
   - component: {fileID: 73561824}
   m_Layer: 0
-  m_Name: launcher
+  m_Name: Launcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -173,8 +173,8 @@ MonoBehaviour:
   WorkerCountOfBundleExtracter: 5
   WorkerCountOfPatcher: 5
   m_CdnURL: http://10.21.22.59
-  camera: {fileID: 755209597}
-  canvas: {fileID: 1301741746}
+  Camera: {fileID: 755209597}
+  Canvas: {fileID: 1301741746}
   SceneName: core
   ScenePath: assets/res/scenes/core.unity
   BundlePath: assets/res/scenes.ab
@@ -482,7 +482,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 299514f972fb7e947966bfbce96cb47b, type: 3}
---- !u!1001 &1929522057
+--- !u!1001 &1612249547
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -493,6 +493,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LevelManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6677904503841295086, guid: 9060eec7715352842bb322c0bfd3761d,
+        type: 3}
+      propertyPath: isPersistent
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6677904503841295087, guid: 9060eec7715352842bb322c0bfd3761d,
         type: 3}

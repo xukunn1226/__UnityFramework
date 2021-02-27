@@ -13,7 +13,7 @@ using UnityEditor;
 namespace Application.Runtime
 {
     /// <summary>
-    /// 版本管理，负责obb下载、资源提取、补丁下载等
+    /// 版本管理————负责obb下载、资源提取、补丁下载等
     /// 负责游戏启动（obb下载、补丁、资源提取、修复、启动画面显示/隐藏，公告、多语言，网络状态提示、check devices等等）
     /// launcher -> core -> theFirstGameScene
     /// launcher: resource extracted & check obb & patch & board
@@ -100,6 +100,25 @@ namespace Application.Runtime
             m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
 #endif
         }
+        
+        // 再次执行完整流程（异常失败、网络中断、从游戏中退出时）
+        public void Restart()
+        {
+            ShowUI(true);
+
+#if UNITY_EDITOR
+            if (SkipVersionControl())
+            {
+                VersionControlFinished();
+            }
+            else
+            {
+                m_BundleExtracter?.Restart();
+            }
+#else
+            m_BundleExtracter?.Restart();
+#endif
+        }
 
         private bool SkipVersionControl()
         {
@@ -111,7 +130,7 @@ namespace Application.Runtime
 #if UNITY_EDITOR
             return string.Format($"{UnityEngine.Application.dataPath}/../Deployment/CDN");          // 编辑模式下默认的CDN地址
 #else
-        return m_CdnURL;
+            return m_CdnURL;
 #endif
         }
 
@@ -232,9 +251,8 @@ namespace Application.Runtime
             LoadCoreScene();
         }
 
-        // 以场景的形式(core.unity)加载核心组件
-        // 相比以prefab(core.prefab)的方式加载核心组件优势有：
-        // 1、core.unity可以热更
+        // 以场景的形式(core.unity)加载核心组件，相比以prefab(core.prefab)的方式加载核心组件优势有：
+        // 1、加载场景更方便
         // 2、核心组件数据便于修改，可以热更
         private void LoadCoreScene()
         {
@@ -244,28 +262,9 @@ namespace Application.Runtime
             ctx.additive = false;
             ctx.bundlePath = BundlePath;
             LevelManager.Instance.LoadAsync(ctx);
-        }
+        }        
 
-        // 再次执行完整流程（异常失败、网络中断、从游戏中退出时）
-        public void Restart()
-        {
-            ShowUI(true);
-
-#if UNITY_EDITOR
-            if (SkipVersionControl())
-            {
-                VersionControlFinished();
-            }
-            else
-            {
-                m_BundleExtracter?.Restart();
-            }
-#else
-            m_BundleExtracter?.Restart();
-#endif
-        }
-
-        // 隐藏启动画面
+        // disable Launcher
         public void Disable()
         {
             ShowUI(false);
@@ -354,7 +353,23 @@ namespace Application.Runtime
             EditorGUILayout.PropertyField(m_SceneNameProp);
             EditorGUILayout.PropertyField(m_ScenePathProp);
             EditorGUILayout.PropertyField(m_BundlePathProp);
+            EditorGUILayout.IntSlider(m_WorkerCountOfBundleExtracterProp, 1, 10, "Extracter Worker");
+            EditorGUILayout.IntSlider(m_WorkerCountOfPatcherProp, 1, 10, "Patcher Worker");
+            EditorGUILayout.LabelField("CDN", m_CdnURLProp.stringValue, EditorStyles.boldLabel);
 
+            EditorGUILayout.Separator();
+            EditorGUILayout.Separator();
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Ping"))
+            {
+                bool ret = await ((Launcher)target).TestPing(m_ipString);
+                m_pingResult = ret ? "Network connectivity" : "Network not reachable";
+            }
+            m_ipString = EditorGUILayout.TextField(m_ipString);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.LabelField("Ping reply", m_pingResult, EditorStyles.boldLabel);
+            
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
 
@@ -379,28 +394,11 @@ namespace Application.Runtime
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
 
-            EditorGUILayout.IntSlider(m_WorkerCountOfBundleExtracterProp, 1, 10, "Extracter Worker");
-            EditorGUILayout.IntSlider(m_WorkerCountOfPatcherProp, 1, 10, "Patcher Worker");
 
-            EditorGUILayout.LabelField("CDN", m_CdnURLProp.stringValue, EditorStyles.boldLabel);
-
-            if (GUILayout.Button("Restart"))
+            if (GUILayout.Button("Restart Launcher"))
             {
                 ((Launcher)target).Restart();
             }
-
-            EditorGUILayout.Separator();
-            EditorGUILayout.Separator();
-
-            EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Ping"))
-            {
-                bool ret = await ((Launcher)target).TestPing(m_ipString);
-                m_pingResult = ret ? "Network connectivity" : "Network not reachable";
-            }
-            m_ipString = EditorGUILayout.TextField(m_ipString);
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.LabelField("Ping reply", m_pingResult, EditorStyles.boldLabel);
 
             serializedObject.ApplyModifiedProperties();
         }
