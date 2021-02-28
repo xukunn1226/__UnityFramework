@@ -10,7 +10,7 @@ namespace Framework.AssetManagement.Runtime
     /// 设计目标：
     /// 1、即可动态生成又可静态挂载；
     /// 2、初始化后立即可用；
-    /// 3、只允许一个AssetManager存在
+    /// 3、全局唯一
     
     /// <summary>
     /// 生成AssetManager有两种方式：
@@ -19,7 +19,7 @@ namespace Framework.AssetManagement.Runtime
     /// 注意事项：
     /// 1、两种方式只能选其一，同时使用概不负责
     /// </summary>
-    public sealed class AssetManager : MonoBehaviour
+    public sealed class AssetManager : SingletonMono<AssetManager>
     {
         public delegate bool AssetPathToBundleAndAsset_EventHandler(string assetPath, out string assetBundleName, out string assetName);
         static public event AssetPathToBundleAndAsset_EventHandler CustomizedParser_AssetPathToBundleAndAsset;
@@ -27,66 +27,55 @@ namespace Framework.AssetManagement.Runtime
         public delegate bool BundleAndAssetToAssetPath_EventHandler(string assetBundleName, string assetName, out string assetPath);
         static public event BundleAndAssetToAssetPath_EventHandler CustomizedParser_BundleAndAssetToAssetPath;
 
-        static public AssetManager      Instance { get; private set; }
+        static internal int             PreAllocateAssetBundlePoolSize          = 200;                      // 预分配缓存AssetBundleRef对象池大小
+        static internal int             PreAllocateAssetBundleLoaderPoolSize    = 100;                      // 预分配缓存AssetBundleLoader对象池大小
+        static internal int             PreAllocateAssetLoaderPoolSize          = 50;                       // 预分配缓存AssetLoader对象池大小
+        static internal int             PreAllocateAssetLoaderAsyncPoolSize     = 50;                       // 预分配缓存AssetLoaderAsync对象池大小
 
-        static internal int             PreAllocateAssetBundlePoolSize        = 200;                                // 预分配缓存AssetBundleRef对象池大小
-        static internal int             PreAllocateAssetBundleLoaderPoolSize  = 100;                                // 预分配缓存AssetBundleLoader对象池大小
-        static internal int             PreAllocateAssetLoaderPoolSize        = 50;                                 // 预分配缓存AssetLoader对象池大小
-        static internal int             PreAllocateAssetLoaderAsyncPoolSize   = 50;                                 // 预分配缓存AssetLoaderAsync对象池大小
-
+#pragma warning disable CS0649
         [SerializeField]
-        private LoaderType              m_LoaderType;
-        
-        static private bool             k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
+        private LoaderType              m_LoaderType;                                                       // 资源加载方式（readonly）
+#pragma warning restore CS0649
+        static private bool             bOverrideLoaderType;
+        static private LoaderType       overrideLoaderType;
 
         internal LoaderType             loaderType
         {
             get
             {
 #if UNITY_EDITOR
-                if (Instance != null)
-                {
-                    return m_LoaderType;
-                }
-                return LoaderType.FromEditor;
+                return bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
 #else
                 return LoaderType.FromPersistent;       // 移动平台强制从PersistentDataPath加载
 #endif
             }
         }
 
-        private void Awake()
+        protected override void Awake()
         {
-            // 已有AssetManager，则自毁
-            if (FindObjectsOfType<AssetManager>().Length > 1)
+            base.Awake();
+            
+            switch(loaderType)
             {
-                DestroyImmediate(this);
-                throw new Exception("AssetManager has already exist...");
+                case LoaderType.FromStreamingAssets:
+                    AssetBundleManager.Init(Application.streamingAssetsPath);
+                    break;
+                case LoaderType.FromPersistent:
+                    AssetBundleManager.Init(Application.persistentDataPath);
+                    break;
             }
-
-            gameObject.name = "[AssetManager]";
-
-            Instance = this;
-
-            DontDestroyOnLoad(gameObject);
-
-            if(!k_bDynamicLoad)
-                InternalInit(m_LoaderType);
-
-            transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
-            transform.localScale = Vector3.one;
+            Debug.Log($"AssetManager.loaderType is {loaderType}");
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             if (loaderType == LoaderType.FromStreamingAssets || loaderType == LoaderType.FromPersistent)
             {
                 // 确保应用层持有的AssetLoader(Async)释放后再调用
                 AssetBundleManager.Uninit();
             }
-            k_bDynamicLoad = false;
-            Instance = null;
+
+            base.OnDestroy();
         }
 
         /// <summary>
@@ -95,25 +84,12 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="type">AB加载模式或直接从project中加载资源</param>
         static public AssetManager Init(LoaderType type)
         {
-            k_bDynamicLoad = true;
+            bOverrideLoaderType = true;
+            overrideLoaderType = type;
 
             GameObject go = new GameObject("[AssetManager]", typeof(AssetManager));
 
-            Instance.InternalInit(type);
-
             return go.GetComponent<AssetManager>();
-        }
-
-        private void InternalInit(LoaderType type)
-        {
-            Debug.Log($"AssetManager.loaderType is {type}");
-            
-            m_LoaderType = type;
-            if (m_LoaderType == LoaderType.FromStreamingAssets || m_LoaderType == LoaderType.FromPersistent)
-            {
-                string rootPath = (type == LoaderType.FromStreamingAssets ? Application.streamingAssetsPath : Application.persistentDataPath);
-                AssetBundleManager.Init(rootPath);
-            }
         }
 
         static public void Uninit()
@@ -122,6 +98,7 @@ namespace Framework.AssetManagement.Runtime
             {
                 Destroy(Instance);
             }
+            bOverrideLoaderType = false;
         }
 
         static public void RegisterCustomizedParser(AssetPathToBundleAndAsset_EventHandler parser1, BundleAndAssetToAssetPath_EventHandler parser2)

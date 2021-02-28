@@ -5,80 +5,58 @@ using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using UnityEngine.SceneManagement;
 using System;
+using Framework.Core;
 
 namespace Application.Runtime
 {
-    public class ResourceManager : MonoBehaviour
+    public class ResourceManager : SingletonMono<ResourceManager>
     {
-        static private ResourceManager Instance { get; set; }
-
-        static private AssetManager m_AssetManager;
+        static private AssetManager     m_AssetManager;
 
         [SerializeField]
-        private LoaderType m_LoaderType = LoaderType.FromEditor;
+        private LoaderType              m_LoaderType = LoaderType.FromEditor;
+        static private bool             bOverrideLoaderType;
+        static private LoaderType       overrideLoaderType;
 
-        public bool isPersistent;
-
-        static private bool k_bDynamicLoad;                                                             // true: dynamic loading AssetManager; false: static loading AssetManager
+        internal LoaderType             loaderType
+        {
+            get
+            {
+#if UNITY_EDITOR
+                return bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
+#else
+                return LoaderType.FromPersistent;       // 移动平台强制从PersistentDataPath加载
+#endif
+            }
+        }
 
         // [SerializeField]
         // private string                  m_UIAtlasPath       = "res/ui/atlases";
 
-        private void Awake()
+        protected override void Awake()
         {
-            // 已有ResourceManager，则自毁
-            if (FindObjectsOfType<ResourceManager>().Length > 1)
-            {
-                DestroyImmediate(this);
-                throw new Exception("ResourceManager has already exist...");
-            }
+            base.Awake();
 
-            gameObject.name = "[ResourceManager]";
-
-            Instance = this;
-
-            gameObject.transform.parent = null;
-
-            if(isPersistent)
-            {
-                transform.parent = null;
-                DontDestroyOnLoad(gameObject);
-            }
-
-            if (!k_bDynamicLoad)
-            {
-                m_AssetManager = AssetManager.Init(m_LoaderType);
-                m_AssetManager.transform.parent = transform;
-            }
-
-            transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
-            transform.localScale = Vector3.one;
+            m_AssetManager = AssetManager.Init(loaderType);
+            m_AssetManager.transform.parent = transform;
 
             //UnityEngine.U2D.SpriteAtlasManager.atlasRequested += RequestAtlas;
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             //UnityEngine.U2D.SpriteAtlasManager.atlasRequested -= RequestAtlas;
 
-            k_bDynamicLoad = false;
-            Instance = null;
-
             AssetManager.Uninit();
+            base.OnDestroy();
         }
 
         static public void Init(LoaderType type)
         {
-            m_AssetManager = AssetManager.Init(type);
+            bOverrideLoaderType = true;
+            overrideLoaderType = type;
 
-            k_bDynamicLoad = true;
-            GameObject go = new GameObject();
-            go.AddComponent<ResourceManager>();
-
-            m_AssetManager.transform.parent = go.transform;
-
-            Instance.m_LoaderType = type;
+            new GameObject("[ResourceManager]", typeof(ResourceManager));
         }
 
         static public void Uninit()
@@ -87,6 +65,7 @@ namespace Application.Runtime
             {
                 Destroy(Instance);
             }
+            bOverrideLoaderType = false;
         }
 
         static public void RegisterCustomizedAssetPathParser(AssetManager.AssetPathToBundleAndAsset_EventHandler parser1, AssetManager.BundleAndAssetToAssetPath_EventHandler parser2)

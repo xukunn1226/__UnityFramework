@@ -250,7 +250,7 @@ namespace Framework.Core
 
         private void OnExtractEnd(string error)
         {
-            // 完全无误的提取完成后打上标签
+            // 提取完成后打上标签
             if (string.IsNullOrEmpty(error))
             {
                 PlayerPrefs.SetString(BASE_APPVERSION, m_BaseVersion.ToString());
