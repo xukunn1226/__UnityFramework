@@ -6,6 +6,9 @@ using Framework.AssetManagement.Runtime;
 using UnityEngine.SceneManagement;
 using System;
 using Framework.Core;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Application.Runtime
 {
@@ -23,6 +26,14 @@ namespace Application.Runtime
             get
             {
 #if UNITY_EDITOR
+                // 优先响应记录在PlayerPrefs中的数据
+                string mode = PlayerPrefs.GetString(LauncherModeTool.OVERRIDE_VERSIONCONTROL, "FromEditor");
+                if(mode == "FromEditor")
+                    return LoaderType.FromEditor;
+                else if(mode == "FromStreamingAssets")
+                    return LoaderType.FromStreamingAssets;
+
+                // 仅当mode == FromPersistent时才判断overrideLoaderType和m_LoaderType
                 return bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
 #else
                 return LoaderType.FromPersistent;       // 移动平台强制从PersistentDataPath加载
@@ -389,4 +400,19 @@ namespace Application.Runtime
         //     return string.Format($"{Instance.m_UIAtlasPath}/{atlasName}/{atlasName}.spriteatlas");
         // }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(ResourceManager))]
+    public class ResourceManagerEditor : UnityEditor.Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.EnumFlagsField("Final Loader Type", ((ResourceManager)target).loaderType);
+            EditorGUI.EndDisabledGroup();
+        }
+    }
+#endif
 }

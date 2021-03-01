@@ -23,7 +23,8 @@ namespace Application.Runtime
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
     {
-        static public readonly string   SKIP_VERSIONCONTROL = "SKIP_VERSIONCONTROL_123456789";
+        static public readonly string   SKIP_VERSIONCONTROL     = "SKIP_VERSIONCONTROL_123456789";
+        
 
         private BundleExtracter         m_BundleExtracter;
         private Patcher                 m_Patcher;
@@ -101,7 +102,7 @@ namespace Application.Runtime
 #endif
         }
         
-        // 再次执行完整流程（异常失败、网络中断、从游戏中退出时）
+        // 再次执行完整流程（异常失败、网络中断、从游戏中退出时执行，正常情况下不可使用）
         public void Restart()
         {
             ShowUI(true);
@@ -120,10 +121,13 @@ namespace Application.Runtime
 #endif
         }
 
+#if UNITY_EDITOR
         private bool SkipVersionControl()
         {
-            return !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
+            string mode = PlayerPrefs.GetString(LauncherModeTool.OVERRIDE_VERSIONCONTROL, "FromEditor");
+            return mode == "FromEditor" || mode == "FromStreamingAssets" || !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
         }
+#endif
 
         private string GetCDNURL()
         {
@@ -394,13 +398,74 @@ namespace Application.Runtime
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
 
-
             if (GUILayout.Button("Restart Launcher"))
             {
                 ((Launcher)target).Restart();
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+    }
+
+    [InitializeOnLoad]
+    public static class LauncherModeTool
+    {
+        static public readonly string   OVERRIDE_VERSIONCONTROL = "OVERRIDE_VERSIONCONTROL_8a0848d861a7eee48aad2b8083a7db8d";
+
+        private const string MenuName_FromEditor            = "Tools/Launcher Mode/From Editor";
+        private const string MenuName_FromStreamingAssets   = "Tools/Launcher Mode/From StreamingAssets";
+        private const string MenuName_FromPersistent        = "Tools/Launcher Mode/From Persistent";
+
+        static LauncherModeTool()
+        {
+            string mode = PlayerPrefs.GetString(OVERRIDE_VERSIONCONTROL, "FromEditor");
+            UpdateMenu(mode);
+        }
+
+        static private void UpdateMenu(string mode)
+        {
+            switch(mode)
+            {
+                case "FromEditor":
+                    Menu.SetChecked(MenuName_FromEditor, true);
+                    Menu.SetChecked(MenuName_FromStreamingAssets, false);
+                    Menu.SetChecked(MenuName_FromPersistent, false);
+                    break;
+                case "FromStreamingAssets":
+                    Menu.SetChecked(MenuName_FromEditor, false);
+                    Menu.SetChecked(MenuName_FromStreamingAssets, true);
+                    Menu.SetChecked(MenuName_FromPersistent, false);
+                    break;
+                case "FromPersistent":
+                    Menu.SetChecked(MenuName_FromEditor, false);
+                    Menu.SetChecked(MenuName_FromStreamingAssets, false);
+                    Menu.SetChecked(MenuName_FromPersistent, true);
+                    break;
+            }
+        }
+
+        [MenuItem(MenuName_FromEditor, priority = 1)]
+        static public void Launcher_FromEditor()
+        {
+            PlayerPrefs.SetString(OVERRIDE_VERSIONCONTROL, "FromEditor");
+            PlayerPrefs.Save();
+            UpdateMenu("FromEditor");
+        }
+
+        [MenuItem(MenuName_FromStreamingAssets, priority = 2)]
+        static public void Launcher_FromStreamingAssets()
+        {
+            PlayerPrefs.SetString(OVERRIDE_VERSIONCONTROL, "FromStreamingAssets");
+            PlayerPrefs.Save();
+            UpdateMenu("FromStreamingAssets");
+        }
+
+        [MenuItem(MenuName_FromPersistent, priority = 3)]
+        static public void Launcher_FromPersistent()
+        {
+            PlayerPrefs.SetString(OVERRIDE_VERSIONCONTROL, "FromPersistent");
+            PlayerPrefs.Save();
+            UpdateMenu("FromPersistent");
         }
     }
 #endif
