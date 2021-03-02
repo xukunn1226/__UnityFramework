@@ -19,6 +19,10 @@ namespace Application.Runtime
     /// launcher: resource extracted & check obb & patch & board
     /// core: init core components
     /// theFirstGameScene: game play scene
+    /// 提供三种启动方式：
+    /// 1、FromEditor：略过版控流程（obb下载、资源提取、补丁下载），从AssetDatabase加载资源，无需打bundle
+    /// 2、FromStreamingAssets：
+    /// 3、
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
@@ -102,7 +106,7 @@ namespace Application.Runtime
 #endif
         }
         
-        // 再次执行完整流程（异常失败、网络中断、从游戏中退出时执行，正常情况下不可使用）
+        // 再次执行完整流程（流程结束或异常时才可restart，过程中不可使用）
         public void Restart()
         {
             ShowUI(true);
@@ -124,6 +128,7 @@ namespace Application.Runtime
 #if UNITY_EDITOR
         private bool SkipVersionControl()
         {
+            // 满足以下条件时略过版控流程（FromEditor or FromStreamingAssets or SKIP_VERSIONCONTROL）
             string mode = PlayerPrefs.GetString(LauncherModeTool.OVERRIDE_VERSIONCONTROL, "FromEditor");
             return mode == "FromEditor" || mode == "FromStreamingAssets" || !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
         }
