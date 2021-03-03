@@ -20,9 +20,11 @@ namespace Application.Runtime
     /// core: init core components
     /// theFirstGameScene: game play scene
     /// 提供三种启动方式：
-    /// 1、FromEditor：略过版控流程（obb下载、资源提取、补丁下载），从AssetDatabase加载资源，无需打bundle
-    /// 2、FromStreamingAssets：
-    /// 3、
+    /// 1、FromEditor(Dev)：略过版控流程（obb下载、资源提取、补丁下载），从AssetDatabase加载资源，无需打bundle
+    /// 2、FromStreamingAssets(Dev)：略过版控流程（obb下载、资源提取、补丁下载），从StreamingAssets加载资源，需打bundle
+    /// 3、FromPersistent(Dev & Runtime)：执行版控流程（obb下载、资源提取、补丁下载），从persistentDataPath加载资源
+    ///     3.1、完整包（安卓和ios）—— 资源提取、补丁下载
+    ///     3.2、分包（仅安卓）—— obb下载、资源提取、补丁下载
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
