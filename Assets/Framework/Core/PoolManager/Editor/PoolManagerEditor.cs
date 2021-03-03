@@ -34,6 +34,8 @@ namespace Framework.Cache.Editor
 
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
+            
             DrawPools();
 
             EditorGUILayout.Space();

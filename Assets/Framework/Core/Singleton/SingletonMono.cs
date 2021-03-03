@@ -48,13 +48,14 @@ namespace Framework.Core
             }
 
             _instance = this as T;
-
             _instance.gameObject.name = "[S] " + typeof(T).Name;
             if (isPersistent)
             {
                 transform.parent = null;
                 DontDestroyOnLoad(_instance.gameObject);
             }
+
+            applicationIsQuitting = false;
         }
 
         private static bool applicationIsQuitting = false;
@@ -69,6 +70,7 @@ namespace Framework.Core
         protected virtual void OnDestroy()
         {
             applicationIsQuitting = true;
+            // Debug.LogWarning($"OnDestroy: {gameObject.name}");
         }
     }
 

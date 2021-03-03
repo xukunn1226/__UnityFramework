@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.Core
 {
-    public class FPSCounter : MonoBehaviour
+    public class FPSCounter : SingletonMono<FPSCounter>
     {
         [Range(1, 2048)]
         public int          FrameRange              = 200;
@@ -23,8 +23,9 @@ namespace Framework.Core
         public int          LowestFPS   { get; private set; }
         public bool         ShowHLFPS;
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             SetFrameRange(FrameRange);
         }
 

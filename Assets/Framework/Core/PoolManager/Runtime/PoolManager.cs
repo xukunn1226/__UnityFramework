@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework.Core;
 using Object = UnityEngine.Object;
 
 namespace Framework.Cache
@@ -8,21 +9,21 @@ namespace Framework.Cache
     /// <summary>
     /// 负责管理所有Mono及非Mono对象池
     /// </summary>
-    public sealed class PoolManager : MonoBehaviour
+    public sealed class PoolManager : SingletonMono<PoolManager>
     {
-        private static PoolManager                      m_kInstance;
-        static public PoolManager                       Instance
-        {
-            get
-            {
-                if(m_kInstance == null)
-                {
-                    GameObject go = new GameObject();
-                    m_kInstance = go.AddComponent<PoolManager>();
-                }
-                return m_kInstance;
-            }
-        }
+        // private static PoolManager                      m_kInstance;
+        // static public PoolManager                       Instance
+        // {
+        //     get
+        //     {
+        //         if(m_kInstance == null)
+        //         {
+        //             GameObject go = new GameObject();
+        //             m_kInstance = go.AddComponent<PoolManager>();
+        //         }
+        //         return m_kInstance;
+        //     }
+        // }
 
         private static Dictionary<long, MonoPoolBase>           m_MonoPools         = new Dictionary<long, MonoPoolBase>();         // key: instanceId | poolType.hashcode << 32
                                                                                                                                     // 同一个PrefabAsset支持由多个不同类型Pool
@@ -61,29 +62,31 @@ namespace Framework.Cache
         static public Dictionary<string, LRUPoolInfo>           LRUPools            { get { return m_LRUPoolDict; } }
 #endif
 
-        private void Awake()
+        protected override void Awake()
         {
-            if(GameObject.FindObjectsOfType<PoolManager>().Length > 1)
-            {
-                Debug.LogErrorFormat("PoolManager has already exist [{0}], kill it", name);
-                DestroyImmediate(gameObject);
-                throw new Exception("PoolManager has already exist...");
-            }
+            base.Awake();
 
-            m_kInstance = this;
-            // transform.parent = null;
-            transform.gameObject.name = "[PoolManager]";
-            // DontDestroyOnLoad(gameObject);
+            // if(GameObject.FindObjectsOfType<PoolManager>().Length > 1)
+            // {
+            //     Debug.LogErrorFormat("PoolManager has already exist [{0}], kill it", name);
+            //     DestroyImmediate(gameObject);
+            //     throw new Exception("PoolManager has already exist...");
+            // }
 
-            transform.position = Vector3.zero;
-            transform.rotation = Quaternion.identity;
-            transform.localScale = Vector3.one;
+            // m_kInstance = this;
+            // // transform.parent = null;
+            // transform.gameObject.name = "[PoolManager]";
+            // // DontDestroyOnLoad(gameObject);
+
+            // transform.position = Vector3.zero;
+            // transform.rotation = Quaternion.identity;
+            // transform.localScale = Vector3.one;
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             Destroy();
-            m_kInstance = null;
+            base.OnDestroy();
         }
 
         static public void Destroy()
