@@ -19,10 +19,11 @@ namespace Application.Runtime
     /// launcher: resource extracted & check obb & patch & board
     /// core: init core components
     /// theFirstGameScene: game play scene
-    /// 提供三种启动方式：
-    /// 1、FromEditor(Dev)：略过版控流程（obb下载、资源提取、补丁下载），从AssetDatabase加载资源，无需打bundle
-    /// 2、FromStreamingAssets(Dev)：略过版控流程（obb下载、资源提取、补丁下载），从StreamingAssets加载资源，需打bundle
-    /// 3、FromPersistent(Dev & Runtime)：执行版控流程（obb下载、资源提取、补丁下载），从persistentDataPath加载资源
+    /// 提供四种启动方式，将影响版控流程和资源加载方式：
+    /// 0、None（Dev）：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager自主控制
+    /// 1、FromEditor(Dev)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle
+    /// 2、FromStreamingAssets(Dev)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle
+    /// 3、FromPersistent(Dev & Runtime)：1、执行版控流程（完整包和分包会有小区别，如下）；2、资源加载方式从persistentDataPath加载，需打bundle
     ///     3.1、完整包（安卓和ios）—— 资源提取、补丁下载
     ///     3.2、分包（仅安卓）—— obb下载、资源提取、补丁下载
     /// </summary>
@@ -130,9 +131,8 @@ namespace Application.Runtime
 #if UNITY_EDITOR
         private bool SkipVersionControl()
         {
-            // 满足以下条件时略过版控流程（FromEditor or FromStreamingAssets or SKIP_VERSIONCONTROL）
-            string mode = PlayerPrefs.GetString(LauncherModeTool.OVERRIDE_VERSIONCONTROL, "FromEditor");
-            return mode == "FromEditor" || mode == "FromStreamingAssets" || !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
+            // 满足以下条件时略过版控流程
+            return EditorLauncherMode.Mode() != LauncherMode.FromPersistent || !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
         }
 #endif
 
@@ -414,65 +414,111 @@ namespace Application.Runtime
         }
     }
 
-    [InitializeOnLoad]
-    public static class LauncherModeTool
+    public enum LauncherMode
     {
-        static public readonly string   OVERRIDE_VERSIONCONTROL = "OVERRIDE_VERSIONCONTROL_8a0848d861a7eee48aad2b8083a7db8d";
+        None,
+        FromEditor,
+        FromStreamingAssets,
+        FromPersistent,
+    }
 
-        private const string MenuName_FromEditor            = "Tools/Launcher Mode/From Editor";
-        private const string MenuName_FromStreamingAssets   = "Tools/Launcher Mode/From StreamingAssets";
-        private const string MenuName_FromPersistent        = "Tools/Launcher Mode/From Persistent";
+    [InitializeOnLoad]
+    public static class EditorLauncherMode
+    {        
+        static private readonly string   LAUNCHER_MODE_FLAG             = "LAUNCHER_MODE_FLAG_8a0848d861a7eee48aad2b8083a7db8d";
+        private const string            MenuName_None                   = "Tools/Launcher Mode/None";
+        private const string            MenuName_FromEditor             = "Tools/Launcher Mode/From Editor";
+        private const string            MenuName_FromStreamingAssets    = "Tools/Launcher Mode/From StreamingAssets";
+        private const string            MenuName_FromPersistent         = "Tools/Launcher Mode/From Persistent";
 
-        static LauncherModeTool()
+        static EditorLauncherMode()
         {
-            string mode = PlayerPrefs.GetString(OVERRIDE_VERSIONCONTROL, "FromEditor");
-            UpdateMenu(mode);
+            UpdateMenu(Mode());
         }
 
-        static private void UpdateMenu(string mode)
+        static public LauncherMode Mode()
+        {
+            string mode = PlayerPrefs.GetString(LAUNCHER_MODE_FLAG, LauncherMode.FromEditor.ToString());
+            if(mode == LauncherMode.None.ToString())
+            {
+                return LauncherMode.None;
+            }
+            else if(mode == LauncherMode.FromEditor.ToString())
+            {
+                return LauncherMode.FromEditor;
+            }
+            else if(mode == LauncherMode.FromStreamingAssets.ToString())
+            {
+                return LauncherMode.FromStreamingAssets;
+            }
+            else if(mode == LauncherMode.FromPersistent.ToString())
+            {
+                return LauncherMode.FromPersistent;
+            }            
+            return LauncherMode.FromEditor;
+        }
+
+        static private void UpdateMenu(LauncherMode mode)
         {
             switch(mode)
             {
-                case "FromEditor":
-                    Menu.SetChecked(MenuName_FromEditor, true);
-                    Menu.SetChecked(MenuName_FromStreamingAssets, false);
-                    Menu.SetChecked(MenuName_FromPersistent, false);
+                case LauncherMode.None:
+                    Menu.SetChecked(MenuName_None,                  true);
+                    Menu.SetChecked(MenuName_FromEditor,            false);
+                    Menu.SetChecked(MenuName_FromStreamingAssets,   false);
+                    Menu.SetChecked(MenuName_FromPersistent,        false);
                     break;
-                case "FromStreamingAssets":
-                    Menu.SetChecked(MenuName_FromEditor, false);
-                    Menu.SetChecked(MenuName_FromStreamingAssets, true);
-                    Menu.SetChecked(MenuName_FromPersistent, false);
+                case LauncherMode.FromEditor:
+                    Menu.SetChecked(MenuName_None,                  false);
+                    Menu.SetChecked(MenuName_FromEditor,            true);
+                    Menu.SetChecked(MenuName_FromStreamingAssets,   false);
+                    Menu.SetChecked(MenuName_FromPersistent,        false);
                     break;
-                case "FromPersistent":
-                    Menu.SetChecked(MenuName_FromEditor, false);
-                    Menu.SetChecked(MenuName_FromStreamingAssets, false);
-                    Menu.SetChecked(MenuName_FromPersistent, true);
+                case LauncherMode.FromStreamingAssets:
+                    Menu.SetChecked(MenuName_None,                  false);
+                    Menu.SetChecked(MenuName_FromEditor,            false);
+                    Menu.SetChecked(MenuName_FromStreamingAssets,   true);
+                    Menu.SetChecked(MenuName_FromPersistent,        false);
+                    break;
+                case LauncherMode.FromPersistent:
+                    Menu.SetChecked(MenuName_None,                  false);
+                    Menu.SetChecked(MenuName_FromEditor,            false);
+                    Menu.SetChecked(MenuName_FromStreamingAssets,   false);
+                    Menu.SetChecked(MenuName_FromPersistent,        true);
                     break;
             }
+        }
+
+        [MenuItem(MenuName_None, priority = 0)]
+        static public void Launcher_None()
+        {
+            PlayerPrefs.SetString(LAUNCHER_MODE_FLAG, LauncherMode.None.ToString());
+            PlayerPrefs.Save();
+            UpdateMenu(LauncherMode.None);
         }
 
         [MenuItem(MenuName_FromEditor, priority = 1)]
         static public void Launcher_FromEditor()
         {
-            PlayerPrefs.SetString(OVERRIDE_VERSIONCONTROL, "FromEditor");
+            PlayerPrefs.SetString(LAUNCHER_MODE_FLAG, LauncherMode.FromEditor.ToString());
             PlayerPrefs.Save();
-            UpdateMenu("FromEditor");
+            UpdateMenu(LauncherMode.FromEditor);
         }
 
         [MenuItem(MenuName_FromStreamingAssets, priority = 2)]
         static public void Launcher_FromStreamingAssets()
         {
-            PlayerPrefs.SetString(OVERRIDE_VERSIONCONTROL, "FromStreamingAssets");
+            PlayerPrefs.SetString(LAUNCHER_MODE_FLAG, LauncherMode.FromStreamingAssets.ToString());
             PlayerPrefs.Save();
-            UpdateMenu("FromStreamingAssets");
+            UpdateMenu(LauncherMode.FromStreamingAssets);
         }
 
         [MenuItem(MenuName_FromPersistent, priority = 3)]
         static public void Launcher_FromPersistent()
         {
-            PlayerPrefs.SetString(OVERRIDE_VERSIONCONTROL, "FromPersistent");
+            PlayerPrefs.SetString(LAUNCHER_MODE_FLAG, LauncherMode.FromPersistent.ToString());
             PlayerPrefs.Save();
-            UpdateMenu("FromPersistent");
+            UpdateMenu(LauncherMode.FromPersistent);
         }
     }
 #endif

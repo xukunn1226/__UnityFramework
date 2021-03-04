@@ -27,11 +27,16 @@ namespace Application.Runtime
             {
 #if UNITY_EDITOR
                 // 优先响应记录在PlayerPrefs中的数据
-                string mode = PlayerPrefs.GetString(LauncherModeTool.OVERRIDE_VERSIONCONTROL, "FromEditor");
-                if(mode == "FromEditor")
-                    return LoaderType.FromEditor;
-                else if(mode == "FromStreamingAssets")
-                    return LoaderType.FromStreamingAssets;
+                LauncherMode mode = EditorLauncherMode.Mode();
+                switch(mode)
+                {
+                    case LauncherMode.FromEditor:
+                        return LoaderType.FromEditor;
+                    case LauncherMode.FromStreamingAssets:
+                        return LoaderType.FromStreamingAssets;
+                    case LauncherMode.FromPersistent:
+                        return LoaderType.FromPersistent;
+                }
 
                 // 仅当mode == FromPersistent时才判断overrideLoaderType和m_LoaderType
                 return bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
