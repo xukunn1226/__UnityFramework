@@ -415,7 +415,14 @@ namespace Application.Runtime
             base.OnInspectorGUI();
 
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.EnumFlagsField("Final Loader Type", ((ResourceManager)target).loaderType);
+            EditorGUILayout.EnumFlagsField("Final Loader Type", ((ResourceManager)target).loaderType);            
+
+            LauncherMode mode = EditorLauncherMode.Mode();
+            if(mode == LauncherMode.None)
+            {
+                EditorGUILayout.TextField($"LauncherMode: {mode}    资源加载方式由自身控制");
+            }
+
             EditorGUI.EndDisabledGroup();
         }
     }
