@@ -19,7 +19,7 @@ namespace Application.Runtime
     /// launcher: resource extracted & check obb & patch & board
     /// core: init core components
     /// theFirstGameScene: game play scene
-    /// 提供四种启动方式，将影响版控流程和资源加载方式：
+    /// 提供四种启动方式，将影响版控流程和资源加载方式（见LauncherMode）：
     /// 0、None（Dev）：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager自主控制
     /// 1、FromEditor(Dev)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle
     /// 2、FromStreamingAssets(Dev)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle
@@ -410,16 +410,26 @@ namespace Application.Runtime
                 ((Launcher)target).Restart();
             }
 
+            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+            EditorGUILayout.LabelField("启动项目的四种方式：见Tools/Launcher Mode", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField(@"None：                        1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager配置决定", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField(@"FromEditor：                1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField(@"FromStreamingAssets：  1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField(@"FromPersistent：           1、执行版控流程（完整包和分包会有小区别，如下）；2、资源加载方式从persistentDataPath加载，需打bundle", new GUIStyle("LargeLabel"));
+            GUILayout.EndVertical();
+
             serializedObject.ApplyModifiedProperties();
         }
     }
-
+    
     public enum LauncherMode
     {
-        None,
-        FromEditor,
-        FromStreamingAssets,
-        FromPersistent,
+        None,                   // 1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager自主控制
+        FromEditor,             // 1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle
+        FromStreamingAssets,    // 1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle
+        FromPersistent,         // 1、执行版控流程（完整包和分包会有小区别，如下）；2、资源加载方式从persistentDataPath加载，需打bundle
+                                //      * 完整包（安卓和ios）—— 资源提取、补丁下载
+                                //      * 分包（仅安卓）—— obb下载、资源提取、补丁下载
     }
 
     [InitializeOnLoad]
