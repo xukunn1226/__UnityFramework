@@ -13,7 +13,7 @@ namespace Framework.Core
     {
         static private string                           s_ConfigPath        = "assets/res/globalconfig";
         static private Dictionary<string, GlobalConfig> s_DefaultConfigs    = new Dictionary<string, GlobalConfig>();
-        static private Dictionary<string, GlobalConfig> s_Configs           = new Dictionary<string, GlobalConfig>();
+        static private Dictionary<string, GlobalConfig> s_SavedConfigs      = new Dictionary<string, GlobalConfig>();
 
         static private AssetBundleLoader                m_BundleLoader;
         static private byte[]                           m_Buffer            = new byte[128 * 1024];
@@ -25,10 +25,22 @@ namespace Framework.Core
             // 加载默认配置
             LoadDefaultConfigs(InEditorMode);
 
-            // 根据默认配置创建可修改配置
+            // 根据默认配置创建本地可修改配置
             BuildSavedConfigs();
 
+            // 赋值全局静态变量
             LoadStaticVariants();
+        }
+
+        static private void Uninit()
+        {
+            if(m_BundleLoader != null)
+            {
+                AssetManager.UnloadAssetBundle(m_BundleLoader);
+                m_BundleLoader = null;
+            }
+            s_DefaultConfigs.Clear();
+            s_SavedConfigs.Clear();
         }
 
         static private void LoadDefaultConfigs(bool InEditorMode = true)
@@ -83,7 +95,7 @@ namespace Framework.Core
                     }
 
                     savedConfig.Repair(defaultConfig.Value);
-                    s_Configs.Add(defaultConfig.Key, savedConfig);
+                    s_SavedConfigs.Add(defaultConfig.Key, savedConfig);
 
                     // write to file
                     string data = JsonConvert.SerializeObject(savedConfig, Formatting.Indented);
@@ -182,21 +194,10 @@ namespace Framework.Core
             }
         }
         
-        static private void Uninit()
-        {
-            if(m_BundleLoader != null)
-            {
-                AssetManager.UnloadAssetBundle(m_BundleLoader);
-                m_BundleLoader = null;
-            }
-            s_DefaultConfigs.Clear();
-            s_Configs.Clear();
-        }
-
         static public void Flush(string filename)
         {
             GlobalConfig config;
-            if(!s_Configs.TryGetValue(filename, out config))
+            if(!s_SavedConfigs.TryGetValue(filename, out config))
             {
                 Debug.LogError($"can't find file in global configs: {filename}");
                 return;
@@ -218,7 +219,7 @@ namespace Framework.Core
 
         static public void FlushAll()
         {
-            foreach(var config in s_Configs)
+            foreach(var config in s_SavedConfigs)
             {
                 Flush(config.Key);
             }
@@ -226,13 +227,13 @@ namespace Framework.Core
 
         static private bool IsExist(string filename)
         {
-            return s_Configs.ContainsKey(filename);
+            return s_SavedConfigs.ContainsKey(filename);
         }
 
         static public int GetInt(string configName, string sectionName, string propertyName)
         {
             GlobalConfig config;
-            if(!s_Configs.TryGetValue(configName, out config))
+            if(!s_SavedConfigs.TryGetValue(configName, out config))
             {
                 Debug.LogWarning($"can't find config file: {configName}");
                 return 0;
@@ -265,7 +266,7 @@ namespace Framework.Core
         static public float GetFloat(string configName, string sectionName, string propertyName)
         {
             GlobalConfig config;
-            if(!s_Configs.TryGetValue(configName, out config))
+            if(!s_SavedConfigs.TryGetValue(configName, out config))
             {
                 Debug.LogWarning($"can't find config file: {configName}");
                 return 0;
@@ -298,7 +299,7 @@ namespace Framework.Core
         static public string GetString(string configName, string sectionName, string propertyName)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(configName, out config))
+            if (!s_SavedConfigs.TryGetValue(configName, out config))
             {
                 Debug.LogWarning($"can't find config file: {configName}");
                 return null;
@@ -344,7 +345,7 @@ namespace Framework.Core
         static public void SetInt(this IConfig inst, FieldInfo fieldInfo, int value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            if (!s_SavedConfigs.TryGetValue(inst.ConfigName, out config))
             {
                 Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
@@ -362,7 +363,7 @@ namespace Framework.Core
         static public void SetInt(this IConfig inst, PropertyInfo propertyInfo, int value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            if (!s_SavedConfigs.TryGetValue(inst.ConfigName, out config))
             {
                 Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
@@ -403,7 +404,7 @@ namespace Framework.Core
         static public void SetFloat(this IConfig inst, FieldInfo fieldInfo, float value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            if (!s_SavedConfigs.TryGetValue(inst.ConfigName, out config))
             {
                 Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
@@ -421,7 +422,7 @@ namespace Framework.Core
         static public void SetFloat(this IConfig inst, PropertyInfo propertyInfo, float value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            if (!s_SavedConfigs.TryGetValue(inst.ConfigName, out config))
             {
                 Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
@@ -462,7 +463,7 @@ namespace Framework.Core
         static public void SetString(this IConfig inst, FieldInfo fieldInfo, string value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            if (!s_SavedConfigs.TryGetValue(inst.ConfigName, out config))
             {
                 Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
@@ -480,7 +481,7 @@ namespace Framework.Core
         static public void SetString(this IConfig inst, PropertyInfo propertyInfo, string value, bool flush = false)
         {
             GlobalConfig config;
-            if (!s_Configs.TryGetValue(inst.ConfigName, out config))
+            if (!s_SavedConfigs.TryGetValue(inst.ConfigName, out config))
             {
                 Debug.LogWarning($"can't find config file: {inst.ConfigName}");
                 return;
