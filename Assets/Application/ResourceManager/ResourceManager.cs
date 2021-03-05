@@ -417,13 +417,19 @@ namespace Application.Runtime
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.EnumFlagsField("Final Loader Type", ((ResourceManager)target).loaderType);            
 
-            LauncherMode mode = EditorLauncherMode.Mode();            
+            EditorGUI.EndDisabledGroup();
+
+            LauncherMode mode = EditorLauncherMode.Mode();
+            string info = string.Empty;
             if(mode == LauncherMode.None)
             {
-                EditorGUILayout.TextField($"LauncherMode: {mode}    资源加载方式由自身控制");
+                info = $"LauncherMode: {mode}   资源加载方式由LoaderType控制";                
             }
-
-            EditorGUI.EndDisabledGroup();
+            else
+            {
+                info = $"LauncherMode: {mode}   资源加载方式由Tools/Launcher Mode控制";
+            }
+            EditorGUILayout.HelpBox(info, MessageType.Info);
         }
     }
 #endif
