@@ -16,7 +16,7 @@ namespace Framework.Core
         static private Dictionary<string, GlobalConfig> s_SavedConfigs      = new Dictionary<string, GlobalConfig>();
 
         static private AssetBundleLoader                m_BundleLoader;
-        static private byte[]                           m_Buffer            = new byte[128 * 1024];
+        static private byte[]                           m_Buffer            = new byte[256 * 1024];
 
         static public void Init(bool InEditorMode = true)
         {
@@ -32,8 +32,10 @@ namespace Framework.Core
             LoadStaticVariants();
         }
 
-        static private void Uninit()
+        static public void Uninit()
         {
+            FlushAll();
+
             if(m_BundleLoader != null)
             {
                 AssetManager.UnloadAssetBundle(m_BundleLoader);

@@ -17,6 +17,8 @@ namespace Application.Runtime
 
         IEnumerator Start()
         {
+            GlobalConfigManager.Init(ResourceManager.loaderType == Framework.AssetManagement.Runtime.LoaderType.FromEditor);
+
             yield return null;
 
             LevelManager.LevelContext ctx = new LevelManager.LevelContext();
@@ -25,6 +27,18 @@ namespace Application.Runtime
             ctx.additive = false;
             ctx.bundlePath = BundlePath;
             LevelManager.Instance.LoadAsync(ctx);
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            GlobalConfigManager.FlushAll();
+        }
+
+        protected override void OnDestroy()
+        {
+            GlobalConfigManager.Uninit();
+
+            base.OnDestroy();
         }
     }
 }

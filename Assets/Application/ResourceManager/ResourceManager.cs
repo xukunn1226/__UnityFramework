@@ -21,7 +21,7 @@ namespace Application.Runtime
         static private bool             bOverrideLoaderType;
         static private LoaderType       overrideLoaderType;
 
-        internal LoaderType             loaderType
+        static public LoaderType        loaderType
         {
             get
             {
@@ -39,7 +39,7 @@ namespace Application.Runtime
                 }
 
                 // 仅当mode == FromPersistent时才判断overrideLoaderType和m_LoaderType
-                return bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
+                return bOverrideLoaderType ? overrideLoaderType : Instance.m_LoaderType;
 #else
                 return LoaderType.FromPersistent;       // 移动平台强制从PersistentDataPath加载
 #endif
@@ -415,7 +415,7 @@ namespace Application.Runtime
             base.OnInspectorGUI();
 
             EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.EnumFlagsField("Final Loader Type", ((ResourceManager)target).loaderType);            
+            EditorGUILayout.EnumFlagsField("Final Loader Type", (ResourceManager.loaderType));
 
             EditorGUI.EndDisabledGroup();
 
