@@ -72,6 +72,13 @@ namespace Framework.Core
             { // from asset bundle
                 m_BundleLoader = AssetManager.LoadAssetBundle(s_ConfigPath + ".ab");
                 TextAsset[] tas = m_BundleLoader.assetBundle.LoadAllAssets<TextAsset>();
+                foreach(var ta in tas)
+                {
+                    string json = System.Text.Encoding.UTF8.GetString(ta.bytes);
+                    GlobalConfig config = JsonConvert.DeserializeObject<GlobalConfig>(json);
+
+                    s_DefaultConfigs.Add(ta.name, config);
+                }
             }
         }
 
