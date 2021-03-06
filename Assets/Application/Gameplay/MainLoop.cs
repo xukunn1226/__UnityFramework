@@ -34,6 +34,20 @@ namespace Application.Runtime
             ctx.bundlePath = kBundlePath;
             LevelManager.Instance.LoadAsync(ctx);
         }
+        
+#if UNITY_EDITOR        
+        public void RestartAndStay()
+        {
+            LevelManager.LevelContext ctx = new LevelManager.LevelContext();
+            ctx.sceneName = kEmptySceneName;
+            ctx.scenePath = kEmptyScenePath;
+            ctx.additive = false;
+            ctx.bundlePath = kBundlePath;
+            LevelManager.Instance.LoadAsync(ctx);
+
+            Launcher.s_shouldStay = true;
+        }
+#endif        
 
         public void Reconnect()
         {
@@ -50,6 +64,11 @@ namespace Application.Runtime
             if (GUILayout.Button("Restart"))
             {
                 ((MainLoop)target).Restart();
+            }
+            
+            if (GUILayout.Button("Restart And Stay"))
+            {
+                ((MainLoop)target).RestartAndStay();
             }
 
             if (GUILayout.Button("Reconnect"))

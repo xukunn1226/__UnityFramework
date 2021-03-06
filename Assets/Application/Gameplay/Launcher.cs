@@ -57,6 +57,8 @@ namespace Application.Runtime
 
         private bool                    m_theFirstStart;
 
+        static public bool              s_shouldStay;       // 返回launcher后是否继续后续流程
+
         static public Launcher          Instance    { get; private set; }
 
         private void Awake()
@@ -117,7 +119,8 @@ namespace Application.Runtime
         public void Restart()
         {
             m_theFirstStart = false;
-            StartWork();
+            if(!s_shouldStay)
+                StartWork();
         }
 
 #if USE_APK_EXPANSIONFILES
@@ -148,7 +151,7 @@ namespace Application.Runtime
             return m_CdnURL;
 #endif
         }
-        
+
         void IExtractListener.OnInit(bool success)
         {
             Debug.Log($"IExtractListener.OnInit:    {success}");
@@ -404,11 +407,6 @@ namespace Application.Runtime
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
 
-            if (GUILayout.Button("Restart Launcher"))
-            {
-                ((Launcher)target).Restart();
-            }
-
             GUILayout.BeginVertical(new GUIStyle("HelpBox"));
             EditorGUILayout.LabelField("启动项目的四种方式：见Tools/Launcher Mode", new GUIStyle("LargeLabel"));
             EditorGUILayout.LabelField(@"None：                        1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager配置决定", new GUIStyle("LargeLabel"));
@@ -416,6 +414,12 @@ namespace Application.Runtime
             EditorGUILayout.LabelField(@"FromStreamingAssets：  1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle", new GUIStyle("LargeLabel"));
             EditorGUILayout.LabelField(@"FromPersistent：           1、执行版控流程（完整包和分包会有一些区别）；2、资源加载方式从persistentDataPath加载，需打bundle", new GUIStyle("LargeLabel"));
             GUILayout.EndVertical();
+
+            if (GUILayout.Button("Restart Launcher"))
+            {
+                Launcher.s_shouldStay = false;
+                ((Launcher)target).Restart();
+            }
 
             serializedObject.ApplyModifiedProperties();
         }
