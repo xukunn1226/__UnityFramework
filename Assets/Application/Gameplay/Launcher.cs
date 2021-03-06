@@ -30,7 +30,7 @@ namespace Application.Runtime
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
     {
-        static public readonly string   SKIP_VERSIONCONTROL     = "SKIP_VERSIONCONTROL_123456789";
+        // static public readonly string   SKIP_VERSIONCONTROL     = "SKIP_VERSIONCONTROL_123456789";
         
 
         private BundleExtracter         m_BundleExtracter;
@@ -55,10 +55,14 @@ namespace Application.Runtime
         public string                   ScenePath;
         public string                   BundlePath;
 
+        private bool                    m_theFirstStart;
+
         static public Launcher          Instance    { get; private set; }
 
         private void Awake()
         {
+            m_theFirstStart = true;
+
             if (FindObjectsOfType<Launcher>().Length > 1)
             {
                 DestroyImmediate(this);
@@ -96,45 +100,45 @@ namespace Application.Runtime
             ShowUI(true);
 
 #if UNITY_EDITOR
-            if (SkipVersionControl())
+            if (EditorLauncherMode.Mode() != LauncherMode.FromPersistent)
             {
                 VersionControlFinished();
             }
             else
             {
-                m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
+                StartBundleExtracted();
             }
 #else
-            m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
+            StartBundleExtracted();
 #endif
         }
         
         // 再次执行完整流程（流程结束或异常时才可restart，过程中不可使用）
         public void Restart()
         {
-            ShowUI(true);
-
-#if UNITY_EDITOR
-            if (SkipVersionControl())
-            {
-                VersionControlFinished();
-            }
-            else
-            {
-                m_BundleExtracter?.Restart();
-            }
-#else
-            m_BundleExtracter?.Restart();
-#endif
+            m_theFirstStart = false;
+            StartWork();
         }
 
-#if UNITY_EDITOR
-        private bool SkipVersionControl()
+#if USE_APK_EXPANSIONFILES
+        private void StartObbDownload()
         {
-            // 满足以下条件时略过版控流程
-            return EditorLauncherMode.Mode() != LauncherMode.FromPersistent || !string.IsNullOrEmpty(PlayerPrefs.GetString(SKIP_VERSIONCONTROL));
+
         }
 #endif
+
+        private void StartBundleExtracted()
+        {            
+            if(m_theFirstStart)
+                m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
+            else
+                m_BundleExtracter.Restart();
+        }
+
+        private void StartPatch()
+        {
+            m_Patcher.StartWork(GetCDNURL(), WorkerCountOfPatcher, this);
+        }
 
         private string GetCDNURL()
         {
@@ -144,12 +148,7 @@ namespace Application.Runtime
             return m_CdnURL;
 #endif
         }
-
-        private void StartPatch()
-        {
-            m_Patcher.StartWork(GetCDNURL(), WorkerCountOfPatcher, this);
-        }
-
+        
         void IExtractListener.OnInit(bool success)
         {
             Debug.Log($"IExtractListener.OnInit:    {success}");
@@ -381,26 +380,26 @@ namespace Application.Runtime
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.LabelField("Ping reply", m_pingResult, EditorStyles.boldLabel);
             
-            EditorGUILayout.Separator();
-            EditorGUILayout.Separator();
+            // EditorGUILayout.Separator();
+            // EditorGUILayout.Separator();
 
-            string value = PlayerPrefs.GetString(Launcher.SKIP_VERSIONCONTROL);
-            EditorGUILayout.LabelField("Skip Version Control: ", string.IsNullOrEmpty(value) ? "OFF" : "ON", EditorStyles.boldLabel);
+            // string value = PlayerPrefs.GetString(Launcher.SKIP_VERSIONCONTROL);
+            // EditorGUILayout.LabelField("Skip Version Control: ", string.IsNullOrEmpty(value) ? "OFF" : "ON", EditorStyles.boldLabel);
 
-            if (string.IsNullOrEmpty(value))
-            {
-                if (GUILayout.Button("Enable"))
-                {
-                    PlayerPrefs.SetString(Launcher.SKIP_VERSIONCONTROL, "0000000000000000000");
-                }
-            }
-            else
-            {
-                if (GUILayout.Button("Disable"))
-                {
-                    PlayerPrefs.SetString(Launcher.SKIP_VERSIONCONTROL, "");
-                }
-            }
+            // if (string.IsNullOrEmpty(value))
+            // {
+            //     if (GUILayout.Button("Enable"))
+            //     {
+            //         PlayerPrefs.SetString(Launcher.SKIP_VERSIONCONTROL, "0000000000000000000");
+            //     }
+            // }
+            // else
+            // {
+            //     if (GUILayout.Button("Disable"))
+            //     {
+            //         PlayerPrefs.SetString(Launcher.SKIP_VERSIONCONTROL, "");
+            //     }
+            // }
 
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
@@ -415,7 +414,7 @@ namespace Application.Runtime
             EditorGUILayout.LabelField(@"None：                        1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager配置决定", new GUIStyle("LargeLabel"));
             EditorGUILayout.LabelField(@"FromEditor：                1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle", new GUIStyle("LargeLabel"));
             EditorGUILayout.LabelField(@"FromStreamingAssets：  1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle", new GUIStyle("LargeLabel"));
-            EditorGUILayout.LabelField(@"FromPersistent：           1、执行版控流程（完整包和分包会有小区别，如下）；2、资源加载方式从persistentDataPath加载，需打bundle", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField(@"FromPersistent：           1、执行版控流程（完整包和分包会有一些区别）；2、资源加载方式从persistentDataPath加载，需打bundle", new GUIStyle("LargeLabel"));
             GUILayout.EndVertical();
 
             serializedObject.ApplyModifiedProperties();

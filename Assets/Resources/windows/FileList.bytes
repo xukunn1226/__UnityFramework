@@ -1,11 +1,11 @@
 {
   "Count": 38,
-  "TotalSize": 32721289,
+  "TotalSize": 32721654,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "794c6cf5416bdcf8d97e1331b4c515da",
-      "Size": 2997
+      "FileHash": "bb8c0bc3e66e303ccb8aece7af7e28bc",
+      "Size": 2990
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -34,8 +34,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/scenes.ab",
-      "FileHash": "6185764e79eb3873691fb9be2e91385d",
-      "Size": 1575596
+      "FileHash": "561932e4a9816f89e1447e08eac902e8",
+      "Size": 1575595
     },
     {
       "BundleName": "assets/application/tests/runtime/res/testspawnerring.ab",
@@ -119,8 +119,8 @@
     },
     {
       "BundleName": "assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "ff7b41f97e076f79be0a1afb433f1c4f",
-      "Size": 356875
+      "FileHash": "54cbd38e2f006f796ef4612779c402e5",
+      "Size": 356886
     },
     {
       "BundleName": "assets/framework/core/assetmanagement/runtime/tests/res/testunload.ab",
@@ -179,8 +179,8 @@
     },
     {
       "BundleName": "assets/res/core.ab",
-      "FileHash": "6ae6a1d08b10a0410f0b5c2d4defbdda",
-      "Size": 4748
+      "FileHash": "80844a517d6b972da8fb0e0bb535dacc",
+      "Size": 4772
     },
     {
       "BundleName": "assets/res/globalconfig.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "fef57a9cd30f78f9d4b331193f577185",
-      "Size": 8733
+      "FileHash": "287830a35e7d955df7a8522a8fbd11bb",
+      "Size": 9071
     }
   ]
 }

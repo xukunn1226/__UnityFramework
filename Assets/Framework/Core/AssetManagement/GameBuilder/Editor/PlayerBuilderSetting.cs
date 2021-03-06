@@ -154,6 +154,12 @@ namespace Framework.AssetManagement.GameBuilder
                 macroSet.Remove(ex);
             }
 
+            // 分包发布时加上特定macro以控制obb流程
+            if(para.useAPKExpansionFiles && buildTargetGroup == BuildTargetGroup.Android)
+            {
+                macroSet.Add("USE_APK_EXPANSIONFILES");
+            }
+
             string finalMacroDefines = string.Join(";", macroSet.ToArray());
             PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, finalMacroDefines.Trim(new char[] {';'}));
         }
