@@ -57,8 +57,6 @@ namespace Application.Runtime
 
         private bool                    m_theFirstStart;
 
-        static public bool              s_shouldStay;       // 返回launcher后是否继续后续流程
-
         static public Launcher          Instance    { get; private set; }
 
         private void Awake()
@@ -119,8 +117,7 @@ namespace Application.Runtime
         public void Restart()
         {
             m_theFirstStart = false;
-            if(!s_shouldStay)
-                StartWork();
+            StartWork();
         }
 
 #if USE_APK_EXPANSIONFILES
@@ -417,7 +414,6 @@ namespace Application.Runtime
 
             if (GUILayout.Button("Restart Launcher"))
             {
-                Launcher.s_shouldStay = false;
                 ((Launcher)target).Restart();
             }
 

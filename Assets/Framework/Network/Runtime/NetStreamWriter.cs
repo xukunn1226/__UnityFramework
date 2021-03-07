@@ -186,13 +186,14 @@ namespace Framework.NetWork
             {
                 if (e.CancellationToken == m_Cts.Token && m_Cts.IsCancellationRequested)
                 {
-                    UnityEngine.Debug.Log("NetStreamWriter is cancel normally.");
+                    UnityEngine.Debug.Log("==================== NetStreamWriter is cancel normally.");
                 }
                 else
                 {
                     RaiseException(e);
                 }
             }
+            UnityEngine.Debug.Log($"Exit to net writing thread");
         }
 
         private void RaiseException(Exception e)

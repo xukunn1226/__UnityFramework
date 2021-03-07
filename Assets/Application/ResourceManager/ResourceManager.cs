@@ -59,7 +59,6 @@ namespace Application.Runtime
             //UnityEngine.U2D.SpriteAtlasManager.atlasRequested += RequestAtlas;
         }
 
-        // ResourceManager生命周期是整个app，长于其他singleton，其他单件仍可能使用ResourceManager，故退出时
         protected override void OnDestroy()
         {
             //UnityEngine.U2D.SpriteAtlasManager.atlasRequested -= RequestAtlas;

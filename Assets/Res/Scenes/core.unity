@@ -491,6 +491,16 @@ PrefabInstance:
       propertyPath: isPersistent
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2171096385742986700, guid: 230a56b5f07ad3e42b381a3194f34a63,
+        type: 3}
+      propertyPath: Ip
+      value: 192.168.2.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2171096385742986700, guid: 230a56b5f07ad3e42b381a3194f34a63,
+        type: 3}
+      propertyPath: AutoConnect
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 230a56b5f07ad3e42b381a3194f34a63, type: 3}
 --- !u!4 &2139664791 stripped

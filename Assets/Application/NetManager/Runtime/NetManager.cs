@@ -14,49 +14,52 @@ namespace Application.Runtime
 {
     public class NetManager : SingletonMono<NetManager>, INetListener<IMessage>
     {
-        static private IPacket<IMessage>    s_Parser    = new PacketProtobuf();
-        private NetClient<IMessage>         m_NetClient;
+        static private IPacket<IMessage>        s_Parser    = new PacketProtobuf();
+        private NetClient<IMessage>             m_NetClient;
+        private INetManagerListener<IMessage>   m_Listener;
 
-        private bool                        m_Quit;
+        public string                           Ip          = "192.168.2.7";
+        public int                              Port        = 11000;
 
-        public string                       Ip          = "192.168.5.14";
-        public int                          Port        = 11000;
+        public ConnectState state
+        {
+            get
+            {
+                return m_NetClient?.state ?? ConnectState.Disconnected;
+            }
+        }
 
-        protected async override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 
             m_NetClient = new NetClient<IMessage>(this);
-            await AutoSending();
         }
-
-        //async void OnEnable()
-        //{
-        //    m_Quit = false;
-
-        //    await AutoSending();
-        //}
-
-        //void OnDisable()
-        //{
-        //    m_Quit = true;
-        //    m_NetClient.Close();
-        //}
 
         void Update()
         {
             m_NetClient?.Tick();
         }
 
-        async public void Connect()
+        public void SetListener(INetManagerListener<IMessage> listener)
         {
-            m_Quit = false;
+            m_Listener = listener;
+        }
+
+        async public Task Connect(string ip, int port)
+        {
+            Ip = ip;
+            Port = port;
+            await Connect();
+        }
+
+        async public Task Connect()
+        {
             await m_NetClient.Connect(Ip, Port);
         }
 
         public void Disconnect()
         {
-            m_Quit = true;
             m_NetClient?.Shutdown();
         }
 
@@ -65,73 +68,62 @@ namespace Application.Runtime
             m_NetClient?.Reconnect();
         }
 
+        public bool SendData(IMessage data)
+        {
+            return m_NetClient?.SendData(data) ?? false;
+        }
+
+        public void SendData(byte[] buf, int offset, int length)
+        {
+            m_NetClient?.SendData(buf, offset, length);
+        }
+
+        public void SendData(byte[] buf)
+        {
+            m_NetClient?.SendData(buf);
+        }
+
         void INetListener<IMessage>.OnNetworkReceive(in List<IMessage> msgs)
         {
-            foreach (var msg in msgs)
-            {
-                Debug.Log($"====Receive: {msg}");
-            }
+            m_Listener?.OnNetworkReceive(msgs);
         }
 
+        // 连接成功
         void INetListener<IMessage>.OnPeerConnectSuccess()
         {
-            Debug.Log($"connected    {Ip}:{Port}");
+            m_Listener?.OnPeerConnectSuccess();
         }
+
+        // 连接失败
         void INetListener<IMessage>.OnPeerConnectFailed(Exception e)
         {
-            Debug.LogWarning($"connect failed: {e.ToString()}");
+            m_Listener?.OnPeerConnectFailed(e);
         }
+
+        // 异常断开连接
         void INetListener<IMessage>.OnPeerDisconnected(Exception e)
         {
-            Debug.LogError($"network error: {e.ToString()}");
+            m_Listener?.OnPeerDisconnected(e);
         }
+
+        // 主动断开连接
         void INetListener<IMessage>.OnPeerClose()
         {
-            Debug.Log("connect shutdown");
+            m_Listener?.OnPeerClose();
         }
 
-        int INetListener<IMessage>.sendBufferSize { get { return 4096; } }
-        int INetListener<IMessage>.receiveBufferSize { get { return 2048; } }
+        int INetListener<IMessage>.sendBufferSize       { get { return 4096; } }
+        int INetListener<IMessage>.receiveBufferSize    { get { return 2048; } }
         IPacket<IMessage> INetListener<IMessage>.parser { get { return s_Parser; } }
+    }
 
-        async Task AutoSending()
-        {
-            int index = 0;
-            System.Random r = new System.Random();
-            while (UnityEngine.Application.isPlaying)
-            {
-                while (!m_Quit && m_NetClient?.state == ConnectState.Connected)
-                {
-                    //string data = "Hello world..." + index++;
-                    // Debug.Log("\n Sending...:" + data);
-                    //++index;
-                    StoreRequest msg = new StoreRequest();
-                    msg.Name = "1233";
-                    msg.Num = 3;
-                    msg.Result = 4;
-                    if (index % 2 == 0)
-                        msg.MyList.Add("22222222222");
-                    if (index % 3 == 0)
-                        msg.MyList.Add("33333333333333");
-                    UnityEngine.Debug.LogWarning("");
-                    if (!m_NetClient.SendData(msg))
-                        break;
-
-                    await Task.Yield();
-                }
-                await Task.Yield();
-            }
-        }
-
-        void OnApplicationFocus(bool isFocus)
-        {
-            Debug.Log($"OnApplicationFocus      isFocus: {isFocus}       {System.DateTime.Now}");
-        }
-
-        void OnApplicationPause(bool isPause)
-        {
-            Debug.Log($"======OnApplicationPause      isPause: {isPause}       {System.DateTime.Now}");
-        }
+    public interface INetManagerListener<TMessage> where TMessage : class
+    {
+        void OnPeerConnectSuccess();
+        void OnPeerConnectFailed(Exception e);
+        void OnPeerDisconnected(Exception e);
+        void OnPeerClose();
+        void OnNetworkReceive(in List<TMessage> msgs);
     }
 
 #if UNITY_EDITOR
@@ -145,7 +137,7 @@ namespace Application.Runtime
             m_IsPersistentProp = serializedObject.FindProperty("isPersistent");
         }
 
-        public override void OnInspectorGUI()
+        async public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
@@ -164,7 +156,7 @@ namespace Application.Runtime
 
             if (GUILayout.Button("Connect"))
             {
-                ((NetManager)target).Connect();
+                await ((NetManager)target).Connect();
             }
             if (GUILayout.Button("Disconnect"))
             {
