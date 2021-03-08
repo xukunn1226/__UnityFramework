@@ -25,7 +25,7 @@ namespace Application.Runtime
         public string           Ip                 = "192.168.2.7";
         public int              Port               = 11000;
         public bool             AutoConnect;
-        private bool            m_isAwake;
+        private bool            m_NeedReconnect;
         private float           m_TimeToLostFocus;
 
         async void Awake()
@@ -59,6 +59,7 @@ namespace Application.Runtime
 
         async public Task Reconnect()
         {
+            await Task.Delay(500);          // hack: ensure that the socket is closed completely
             await NetManager.Instance.Reconnect();
         }
         
@@ -81,15 +82,15 @@ namespace Application.Runtime
         }
 
         // 异常断开连接
-        void INetManagerListener<IMessage>.OnPeerDisconnected(Exception e)
+        async void INetManagerListener<IMessage>.OnPeerDisconnected(Exception e)
         {
             Debug.LogError($"network error: {e.ToString()}");
 
-            // if(m_isAwake)
-            // {
-            //     Reconnect();
-            //     m_isAwake = false;
-            // }
+            if(m_NeedReconnect)
+            {
+                await Reconnect();
+                m_NeedReconnect = false;
+            }
         }
 
         // 主动断开连接
@@ -97,11 +98,10 @@ namespace Application.Runtime
         {
             Debug.Log($"connect shutdown:   {Time.frameCount}");
 
-            if(m_isAwake)
+            if(m_NeedReconnect)
             {
-                await Task.Delay(500);          // hack: ensure that the socket is closed completely
                 await Reconnect();
-                m_isAwake = false;
+                m_NeedReconnect = false;
             }
         }
 
@@ -115,12 +115,12 @@ namespace Application.Runtime
 
         void OnApplicationFocus(bool isFocus)
         {
-            Debug.Log($"OnApplicationFocus      isFocus: {isFocus}       {System.DateTime.Now}  {Time.frameCount}");
+            // Debug.Log($"OnApplicationFocus      isFocus: {isFocus}       {System.DateTime.Now}  {Time.frameCount}");
             if(isFocus)
             {
                 if(Time.time - m_TimeToLostFocus > 5)
                 {
-                    m_isAwake = true;
+                    m_NeedReconnect = true;
                     NetManager.Instance.Shutdown();
                 }
             }
@@ -128,11 +128,6 @@ namespace Application.Runtime
             {
                 m_TimeToLostFocus = Time.time;
             }
-        }
-
-        void OnApplicationPause(bool isPause)
-        {
-            Debug.Log($"======OnApplicationPause      isPause: {isPause}       {System.DateTime.Now}");
         }
 
         async Task AutoSendingForDebug()
@@ -184,7 +179,7 @@ namespace Application.Runtime
             EditorGUILayout.PropertyField(m_PortProp);
             EditorGUILayout.PropertyField(m_AutoConnectProp);
 
-            if (GUILayout.Button("Restart"))
+            if (GUILayout.Button("ReturnToLauncher"))
             {
                 ((MainLoop)target).ReturnToLauncher();
             }
@@ -196,6 +191,7 @@ namespace Application.Runtime
 
             if (GUILayout.Button("Reconnect"))
             {
+                ((MainLoop)target).Shutdown();
                 await ((MainLoop)target).Reconnect();
             }
 
