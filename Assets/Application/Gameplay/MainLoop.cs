@@ -26,6 +26,7 @@ namespace Application.Runtime
         public int              Port               = 11000;
         public bool             AutoConnect;
         private bool            m_isAwake;
+        private float           m_TimeToLostFocus;
 
         async void Awake()
         {
@@ -36,12 +37,12 @@ namespace Application.Runtime
 
             NetManager.Instance.SetListener(this);
             if(AutoConnect)
-                await NetManager.Instance.Connect(Ip, Port);
+                await Connect();
 
             Launcher.Instance.Disable();        // 结束Launcher流程
         }
 
-        public void Restart()
+        public void ReturnToLauncher()
         {
             LevelManager.LevelContext ctx = new LevelManager.LevelContext();
             ctx.sceneName = kEmptySceneName;
@@ -50,10 +51,20 @@ namespace Application.Runtime
             ctx.bundlePath = kBundlePath;
             LevelManager.Instance.LoadAsync(ctx);
         }
-
-        public void Reconnect()
+        
+        async public Task Connect()
         {
-            NetManager.Instance.Reconnect();
+            await NetManager.Instance.Connect(Ip, Port);
+        }
+
+        async public Task Reconnect()
+        {
+            await NetManager.Instance.Reconnect();
+        }
+        
+        public void Shutdown()
+        {
+            NetManager.Instance.Shutdown();
         }
 
         // 连接成功
@@ -74,23 +85,24 @@ namespace Application.Runtime
         {
             Debug.LogError($"network error: {e.ToString()}");
 
-            if(m_isAwake)
-            {
-                Reconnect();
-                m_isAwake = false;
-            }
-        }
-
-        // 主动断开连接
-        void INetManagerListener<IMessage>.OnPeerClose()
-        {
-            Debug.Log("connect shutdown");
-
             // if(m_isAwake)
             // {
             //     Reconnect();
             //     m_isAwake = false;
             // }
+        }
+
+        // 主动断开连接
+        async void INetManagerListener<IMessage>.OnPeerClose()
+        {
+            Debug.Log($"connect shutdown:   {Time.frameCount}");
+
+            if(m_isAwake)
+            {
+                await Task.Delay(500);          // hack: ensure that the socket is closed completely
+                await Reconnect();
+                m_isAwake = false;
+            }
         }
 
         void INetManagerListener<IMessage>.OnNetworkReceive(in List<IMessage> msgs)
@@ -103,12 +115,19 @@ namespace Application.Runtime
 
         void OnApplicationFocus(bool isFocus)
         {
-            Debug.Log($"OnApplicationFocus      isFocus: {isFocus}       {System.DateTime.Now}");
-            // if(isFocus)
-            // {
-            //     m_isAwake = true;
-            //     NetManager.Instance.Disconnect();
-            // }
+            Debug.Log($"OnApplicationFocus      isFocus: {isFocus}       {System.DateTime.Now}  {Time.frameCount}");
+            if(isFocus)
+            {
+                if(Time.time - m_TimeToLostFocus > 5)
+                {
+                    m_isAwake = true;
+                    NetManager.Instance.Shutdown();
+                }
+            }
+            else
+            {
+                m_TimeToLostFocus = Time.time;
+            }
         }
 
         void OnApplicationPause(bool isPause)
@@ -157,7 +176,7 @@ namespace Application.Runtime
             m_AutoConnectProp = serializedObject.FindProperty("AutoConnect");
         }
 
-        public override void OnInspectorGUI()
+        async public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
@@ -167,12 +186,17 @@ namespace Application.Runtime
 
             if (GUILayout.Button("Restart"))
             {
-                ((MainLoop)target).Restart();
+                ((MainLoop)target).ReturnToLauncher();
+            }
+
+            if (GUILayout.Button("Disconnect"))
+            {
+                ((MainLoop)target).Shutdown();
             }
 
             if (GUILayout.Button("Reconnect"))
             {
-                ((MainLoop)target).Reconnect();
+                await ((MainLoop)target).Reconnect();
             }
 
             serializedObject.ApplyModifiedProperties();

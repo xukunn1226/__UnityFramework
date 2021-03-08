@@ -58,14 +58,14 @@ namespace Application.Runtime
             await m_NetClient.Connect(Ip, Port);
         }
 
-        public void Disconnect()
+        public void Shutdown()
         {
             m_NetClient?.Shutdown();
         }
 
-        public void Reconnect()
+        async public Task Reconnect()
         {
-            m_NetClient?.Reconnect();
+            await m_NetClient?.Reconnect();
         }
 
         public bool SendData(IMessage data)
@@ -160,11 +160,11 @@ namespace Application.Runtime
             }
             if (GUILayout.Button("Disconnect"))
             {
-                ((NetManager)target).Disconnect();
+                ((NetManager)target).Shutdown();
             }
             if (GUILayout.Button("Reconnect"))
             {
-                ((NetManager)target).Reconnect();
+                await ((NetManager)target).Reconnect();
             }
 
             serializedObject.ApplyModifiedProperties();

@@ -114,6 +114,15 @@ namespace Framework.NetWork
             await Connect(m_Host, m_Port);
         }
 
+        /// <summary>
+        /// 主动断开连接
+        /// </summary>
+        public void Shutdown()
+        {
+            m_HandleException = true;
+            m_Exception = null;
+        }
+
         private void OnConnectSuccess()
         {
             state = ConnectState.Connected;
@@ -134,16 +143,7 @@ namespace Framework.NetWork
             else
                 m_Listener.OnPeerClose();           // 主动断开连接
         }
-
-        /// <summary>
-        /// 主动断开连接
-        /// </summary>
-        public void Shutdown()
-        {
-            m_HandleException = true;
-            m_Exception = null;
-        }
-
+        
         /// <summary>
         /// 异常断开连接
         /// </summary>
