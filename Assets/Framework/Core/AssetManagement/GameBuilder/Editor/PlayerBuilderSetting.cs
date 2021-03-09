@@ -159,6 +159,10 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 macroSet.Add("USE_APK_EXPANSIONFILES");
             }
+            else
+            {
+                macroSet.Remove("USE_APK_EXPANSIONFILES");
+            }
 
             string finalMacroDefines = string.Join(";", macroSet.ToArray());
             PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, finalMacroDefines.Trim(new char[] {';'}));

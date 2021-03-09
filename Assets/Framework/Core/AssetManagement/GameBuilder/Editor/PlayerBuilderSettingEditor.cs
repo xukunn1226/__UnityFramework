@@ -163,6 +163,11 @@ namespace Framework.AssetManagement.GameBuilder
         {
             EditorGUILayout.LabelField("Scenes In Build", EditorStyles.largeLabel);
 
+            if(!m_developmentProp.boolValue)
+            {
+                EditorGUILayout.HelpBox("发布release版本时，仅发布Build Settings中第一个激活的场景", MessageType.Info);
+            }
+
             m_bOverrideBuildScenesProp.boolValue = EditorGUILayout.Toggle(new GUIContent("Override Build Scenes"), m_bOverrideBuildScenesProp.boolValue, EditorStyles.toggle);
 
             EditorGUI.BeginDisabledGroup(!m_bOverrideBuildScenesProp.boolValue);
