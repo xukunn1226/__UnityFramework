@@ -17,7 +17,7 @@ namespace Application.Runtime
 
         IEnumerator Start()
         {
-            GlobalConfigManager.Init(ResourceManager.loaderType == Framework.AssetManagement.Runtime.LoaderType.FromEditor);
+            GlobalConfigManager.Init(ResourceManager.Instance.loaderType == Framework.AssetManagement.Runtime.LoaderType.FromEditor);
 
             yield return null;
 

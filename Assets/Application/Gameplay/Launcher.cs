@@ -22,7 +22,7 @@ namespace Application.Runtime
     /// 提供四种启动方式，将影响版控流程和资源加载方式（见LauncherMode）：
     /// 0、None（Dev）：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager自主控制
     /// 1、FromEditor(Dev)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle
-    /// 2、FromStreamingAssets(Dev)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle
+    /// 2、FromStreamingAssets(Dev & Runtime)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle
     /// 3、FromPersistent(Dev & Runtime)：1、执行版控流程（完整包和分包会有小区别，如下）；2、资源加载方式从persistentDataPath加载，需打bundle
     ///     3.1、完整包（安卓和ios）—— 资源提取、补丁下载
     ///     3.2、分包（仅安卓）—— obb下载、资源提取、补丁下载
@@ -30,9 +30,6 @@ namespace Application.Runtime
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
     {
-        // static public readonly string   SKIP_VERSIONCONTROL     = "SKIP_VERSIONCONTROL_123456789";
-        
-
         private BundleExtracter         m_BundleExtracter;
         private Patcher                 m_Patcher;
 
@@ -197,7 +194,7 @@ namespace Application.Runtime
 
         void IPatcherListener.OnError_DownloadBackdoor(string error)
         {
-            Debug.Log($"IPatcherListener.OnError_DownloadBackdoor:  error({error})");
+            Debug.LogError($"IPatcherListener.OnError_DownloadBackdoor:  error({error})");
             m_Error = error;
         }
 
@@ -213,13 +210,13 @@ namespace Application.Runtime
 
         void IPatcherListener.OnError_DownloadDiffCollection(string error)
         {
-            Debug.Log($"IPatcherListener.OnError_DownloadDiffCollection:    error({error})");
+            Debug.LogError($"IPatcherListener.OnError_DownloadDiffCollection:    error({error})");
             m_Error = error;
         }
 
         void IPatcherListener.OnError_DownloadDiff(string error)
         {
-            Debug.Log($"IPatcherListener.OnError_DownloadDiff:    error({error})");
+            Debug.LogError($"IPatcherListener.OnError_DownloadDiff:    error({error})");
             m_Error = error;
         }
 
@@ -380,27 +377,6 @@ namespace Application.Runtime
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.LabelField("Ping reply", m_pingResult, EditorStyles.boldLabel);
             
-            // EditorGUILayout.Separator();
-            // EditorGUILayout.Separator();
-
-            // string value = PlayerPrefs.GetString(Launcher.SKIP_VERSIONCONTROL);
-            // EditorGUILayout.LabelField("Skip Version Control: ", string.IsNullOrEmpty(value) ? "OFF" : "ON", EditorStyles.boldLabel);
-
-            // if (string.IsNullOrEmpty(value))
-            // {
-            //     if (GUILayout.Button("Enable"))
-            //     {
-            //         PlayerPrefs.SetString(Launcher.SKIP_VERSIONCONTROL, "0000000000000000000");
-            //     }
-            // }
-            // else
-            // {
-            //     if (GUILayout.Button("Disable"))
-            //     {
-            //         PlayerPrefs.SetString(Launcher.SKIP_VERSIONCONTROL, "");
-            //     }
-            // }
-
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
 

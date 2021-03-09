@@ -44,9 +44,11 @@ namespace Framework.AssetManagement.Runtime
             get
             {
 #if UNITY_EDITOR
-                return bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
+                LoaderType finalType = bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
+                return finalType;
 #else
-                return LoaderType.FromPersistent;       // 移动平台强制从PersistentDataPath加载
+                LoaderType finalType = bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
+                return finalType == LoaderType.FromEditor ? LoaderType.FromPersistent : finalType;
 #endif
             }
         }

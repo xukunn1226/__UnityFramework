@@ -34,52 +34,52 @@ MonoBehaviour:
   - assets/res/globalconfig.ab
   - assets/framework/core/levelmanager/tests/res/scenes.ab
   - assets/framework/core/levelmanager/tests/res/prefab.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/testunload.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab
   - assets/framework/core/assetmanagement/runtime/tests/res/prefab/1234.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/material/111.ab
   - assets/framework/core/assetmanagement/runtime/tests/res/audio.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/ps.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/testdep/555555555.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/prefab.ab
   - assets/framework/core/assetmanagement/runtime/tests/res/material/333.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/model.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/testdep/555555555.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/testdep/mat.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
   - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
   - assets/framework/core/assetmanagement/runtime/tests/res/prefab2.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/model.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/testunload.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/material/111.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
-  - assets/framework/core/assetmanagement/runtime/tests/res/testdep/mat.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/ps.ab
+  - assets/framework/core/assetmanagement/runtime/tests/res/prefab.ab
   - assets/res/core.ab
   m_Values:
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/atlas2.ab
-    m_Crc: 924079326
-    m_Hash: 47b524f9fb2d2ea6941c0ec8c07c7fb3
+    m_Crc: 385604644
+    m_Hash: 3c1564ea390b5b745854c773b2f29e3b
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/ui/atlases/misc.ab
-    m_Crc: 2383877773
-    m_Hash: 6a61251263a918ff0e7c43bc0e672f49
+    m_Crc: 523929624
+    m_Hash: 58664215ae0347535890691e5bfd1914
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/ui/prefabs.ab
-    m_Crc: 669095580
-    m_Hash: 5aeb52d2bcf9d2f9961eaef885dd81ae
+    m_Crc: 3829119789
+    m_Hash: a54d8806cf0f7be94c623fa409c49cb7
     m_Dependencies:
     - assets/application/tests/runtime/res/ui/atlases/bag.ab
     - assets/application/tests/runtime/res/ui/atlases/common.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/atlas.ab
-    m_Crc: 3300076987
-    m_Hash: b7f771d64ef46d5a8697792344de1b5b
+    m_Crc: 721883675
+    m_Hash: e0ccb02c9b388e48c8618610e3249065
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/testspawnerring.ab
-    m_Crc: 617070061
-    m_Hash: 6784bd12a9a4333cc19ca1f7edc2f7fc
+    m_Crc: 4032047845
+    m_Hash: 7430cadb160b29e637ad9d513b5d1d49
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/prefabpooledobject.ab
-    m_Crc: 2431047357
-    m_Hash: e8ac8fae6fcf5711783cf8b1bec68e3a
+    m_Crc: 354361087
+    m_Hash: 37f8be3358fd8f75604ead778f380d07
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/scenes.ab
-    m_Crc: 1562363483
-    m_Hash: c6427df27bf2ac3f4b676236ccd5bd53
+    m_Crc: 1027337733
+    m_Hash: cc41d9af417f7003b4e37c9056939bc0
     m_Dependencies:
     - assets/application/tests/runtime/res/testspawnerring.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/misc/111.ab
@@ -88,8 +88,8 @@ MonoBehaviour:
     m_Dependencies:
     - assets/application/tests/runtime/res/misc/materials.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/ui/atlases/common.ab
-    m_Crc: 1294206839
-    m_Hash: 7127e712a781cab14c000aa5001c9b27
+    m_Crc: 1649311026
+    m_Hash: 42128ceade8976f58442d7a3b8dd457f
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/res/animationclip.ab
     m_Crc: 2347070689
@@ -100,28 +100,28 @@ MonoBehaviour:
     m_Hash: 5f82262df4019e9169a1e365e4dd3609
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/testfx_root/fx.ab
-    m_Crc: 60134719
-    m_Hash: 989618cf4d0f8022aca0035eaf0b7d76
+    m_Crc: 98632044
+    m_Hash: caf9ac4b5b5f6271fd322a1cb4c5aa5f
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/res/scenes.ab
-    m_Crc: 3861380473
-    m_Hash: ac9be2959195623b66e1afa7fb51cceb
+    m_Crc: 2837177678
+    m_Hash: 10053f4e17b88057f691b01acc9fbc99
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/qk.ab
-    m_Crc: 2914842306
-    m_Hash: 97d4d85ba6a40e8dd25fb5288b23e0bf
+    m_Crc: 780225092
+    m_Hash: c4608bb13b5813a6926142aa05d699d2
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/ui/atlases/bag.ab
-    m_Crc: 2645450091
-    m_Hash: 4a5637b91659c57fec27d6bed1feb95c
+    m_Crc: 3589270084
+    m_Hash: 49a572958814cac36c5f2a927b3317e5
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/ui/atlases/mail.ab
-    m_Crc: 2656603092
-    m_Hash: 46c52771d1eacfd590f419ff3cc1075f
+    m_Crc: 172182914
+    m_Hash: 06a05c17bdde7a0d1c81c5de7857d96e
     m_Dependencies: []
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/testfx_root/scenes.ab
-    m_Crc: 653058718
-    m_Hash: 656eb79164ecc0a07bc5cb5daed2ad07
+    m_Crc: 1131486220
+    m_Hash: 539db065caa9771fa348a841b5407894
     m_Dependencies:
     - assets/application/tests/runtime/res/testfx_root/fx.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/application/tests/runtime/res/misc/materials.ab
@@ -140,36 +140,34 @@ MonoBehaviour:
     m_Crc: 3935374370
     m_Hash: e90b1210c95a5d2cfd68532b5a6b0c91
     m_Dependencies: []
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
+    m_Crc: 1424933725
+    m_Hash: dca92c5729b8ac2b97ee5d70c32ceaa2
+    m_Dependencies: []
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/testunload.ab
+    m_Crc: 2315192827
+    m_Hash: 9133b486099c873f9c89ba6831a3725f
+    m_Dependencies: []
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab
+    m_Crc: 549972234
+    m_Hash: 8a3910bf1ce67cc214cfb2d4bc86922c
+    m_Dependencies:
+    - assets/framework/core/assetmanagement/runtime/tests/res/prefab.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/prefab/1234.ab
     m_Crc: 2681500228
     m_Hash: c7f5a5d13eb2652aaead04db53a6f21f
     m_Dependencies:
     - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
-    m_Crc: 3041196166
-    m_Hash: 66b840de63be8a8e67e480a9f838d340
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/material/111.ab
+    m_Crc: 3470696238
+    m_Hash: 843403e8ec80e4a4a4ed25a9f76a59d1
     m_Dependencies:
-    - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
+    - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
+    - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/audio.ab
     m_Crc: 765046464
     m_Hash: c1a1abdaa290dd7302201dcfe0e55f35
     m_Dependencies: []
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/ps.ab
-    m_Crc: 3582735616
-    m_Hash: b8dbfff1ef3d0f2df554d5f3a2261294
-    m_Dependencies: []
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/testdep/555555555.ab
-    m_Crc: 3583117689
-    m_Hash: b42caf1090f08459b369598ced68f83a
-    m_Dependencies: []
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/prefab.ab
-    m_Crc: 3795908765
-    m_Hash: 3395239288449efca353a2642aafc723
-    m_Dependencies:
-    - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
-    - assets/framework/core/assetmanagement/runtime/tests/res/model.ab
-    - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
-    - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/material/333.ab
     m_Crc: 2981356172
     m_Hash: dab39e87660994799e92b3d8ac3df221
@@ -177,6 +175,28 @@ MonoBehaviour:
     - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
     - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
     - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/model.ab
+    m_Crc: 3943124453
+    m_Hash: ec50033f81060cb012bfd9a6b2e7153d
+    m_Dependencies:
+    - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
+    - assets/framework/core/assetmanagement/runtime/tests/res/material/333.ab
+    - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/testdep/555555555.ab
+    m_Crc: 3583117689
+    m_Hash: b42caf1090f08459b369598ced68f83a
+    m_Dependencies: []
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/testdep/mat.ab
+    m_Crc: 613138563
+    m_Hash: 593321bbe5ed908c703aad0e9967992b
+    m_Dependencies:
+    - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
+    - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
+    m_Crc: 3041196166
+    m_Hash: 66b840de63be8a8e67e480a9f838d340
+    m_Dependencies:
+    - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
     m_Crc: 3170965597
     m_Hash: cac6e3609a468aee179386ec823a08db
@@ -191,39 +211,19 @@ MonoBehaviour:
     m_Dependencies:
     - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
     - assets/framework/core/assetmanagement/runtime/tests/res/model.ab
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/model.ab
-    m_Crc: 3943124453
-    m_Hash: ec50033f81060cb012bfd9a6b2e7153d
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/ps.ab
+    m_Crc: 3582735616
+    m_Hash: b8dbfff1ef3d0f2df554d5f3a2261294
+    m_Dependencies: []
+  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/prefab.ab
+    m_Crc: 3795908765
+    m_Hash: 3395239288449efca353a2642aafc723
     m_Dependencies:
     - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
-    - assets/framework/core/assetmanagement/runtime/tests/res/material/333.ab
-    - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab
-    m_Crc: 3932008278
-    m_Hash: 268069ed880684b13ae8d95e6f39e3ec
-    m_Dependencies:
-    - assets/framework/core/assetmanagement/runtime/tests/res/prefab.ab
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/testunload.ab
-    m_Crc: 2315192827
-    m_Hash: 9133b486099c873f9c89ba6831a3725f
-    m_Dependencies: []
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/material/111.ab
-    m_Crc: 3470696238
-    m_Hash: 843403e8ec80e4a4a4ed25a9f76a59d1
-    m_Dependencies:
-    - assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
-    - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/builtinres.ab
-    m_Crc: 1424933725
-    m_Hash: dca92c5729b8ac2b97ee5d70c32ceaa2
-    m_Dependencies: []
-  - m_FileName: Deployment/Latest/AssetBundles/android/assets/framework/core/assetmanagement/runtime/tests/res/testdep/mat.ab
-    m_Crc: 613138563
-    m_Hash: 593321bbe5ed908c703aad0e9967992b
-    m_Dependencies:
+    - assets/framework/core/assetmanagement/runtime/tests/res/model.ab
     - assets/framework/core/assetmanagement/runtime/tests/res/testdep/tex.ab
     - assets/framework/core/assetmanagement/runtime/tests/res/texture.ab
   - m_FileName: Deployment/Latest/AssetBundles/android/assets/res/core.ab
-    m_Crc: 1699995755
-    m_Hash: a359e4ac7037f5ee549a22a6b9653000
+    m_Crc: 2701779471
+    m_Hash: c18d9d005be81766880d02d123f0f525
     m_Dependencies: []
