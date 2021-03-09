@@ -21,7 +21,7 @@ namespace Application.Runtime
         static private bool             bOverrideLoaderType;
         static private LoaderType       overrideLoaderType;
 
-        public LoaderType        loaderType
+        public LoaderType               loaderType
         {
             get
             {

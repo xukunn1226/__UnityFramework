@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Framework.Core;
+using Framework.AssetManagement.Runtime;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -96,8 +97,8 @@ namespace Application.Runtime
         {
             ShowUI(true);
 
-#if UNITY_EDITOR
-            if (EditorLauncherMode.Mode() != LauncherMode.FromPersistent)
+            if(ResourceManager.Instance.loaderType == LoaderType.FromEditor || 
+               ResourceManager.Instance.loaderType == LoaderType.FromStreamingAssets)
             {
                 VersionControlFinished();
             }
@@ -105,9 +106,6 @@ namespace Application.Runtime
             {
                 StartBundleExtracted();
             }
-#else
-            StartBundleExtracted();
-#endif
         }
         
         // 再次执行完整流程（流程结束或异常时才可restart，过程中不可使用）
