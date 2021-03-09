@@ -204,7 +204,21 @@ namespace Framework.AssetManagement.GameBuilder
         static string[] GetBuildScenes(PlayerBuilderSetting para)
         {
             List<string> names = new List<string>();
-            if (para.bOverrideBuildScenes)
+            if(!para.development)
+            { // NOTE: 发布release版本时仅发布Build Settings中第一个激活的场景
+                foreach(var scene in EditorBuildSettings.scenes)
+                {
+                    if(scene == null || !scene.enabled)
+                        continue;
+
+                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(scene.guid.ToString())) == null)
+                        continue;
+
+                    names.Add(scene.path);
+                    break;
+                }
+            }
+            else if (para.bOverrideBuildScenes)
             {
                 foreach(var scenePath in para.overrideBuildScenes)
                 {
