@@ -41,7 +41,7 @@ namespace Framework.AssetManagement.GameBuilder
         public bool                         strictMode;                         // Do not allow the build to succeed if any errors are reporting during it.
 
         ////////////////////// PlayerSettings
-        public string                       bundleVersion;                      // Application bundle version shared between iOS & Android platforms
+        // public string                       bundleVersion;                      // Application bundle version shared between iOS & Android platforms
         
         [System.NonSerialized]
         public VersionChangedMode           versionChangedMode;                 // 版本号设定方式
@@ -61,7 +61,7 @@ namespace Framework.AssetManagement.GameBuilder
 
         public string                       excludedDefines;
 
-        public string                       cachedBundleVersion                 { get; set; }
+        // public string                       cachedBundleVersion                 { get; set; }
 
         public bool                         cachedUseIL2CPP                     { get; set; }
 
@@ -91,7 +91,7 @@ namespace Framework.AssetManagement.GameBuilder
             sb.Append(string.Format($"compressWithLz4: {compressWithLz4}  \n"));
             sb.Append(string.Format($"compressWithLz4HC: {compressWithLz4HC}  \n"));
             sb.Append(string.Format($"strictMode: {strictMode}  \n"));
-            sb.Append(string.Format($"bundleVersion: {bundleVersion}  \n"));
+            // sb.Append(string.Format($"bundleVersion: {bundleVersion}  \n"));
             sb.Append(string.Format($"useIL2CPP: {useIL2CPP}  \n"));
             sb.Append(string.Format($"il2CppCompilerConfiguration: {il2CppCompilerConfiguration}  \n"));
             sb.Append(string.Format($"useMTRendering: {useMTRendering}  \n"));
@@ -109,7 +109,7 @@ namespace Framework.AssetManagement.GameBuilder
             BuildTargetGroup buildTargetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
 
             // cache player settings
-            para.cachedBundleVersion                = PlayerSettings.bundleVersion;
+            // para.cachedBundleVersion                = PlayerSettings.bundleVersion;
             para.cachedUseIL2CPP                    = PlayerSettings.GetScriptingBackend(buildTargetGroup) == ScriptingImplementation.IL2CPP;
             para.cachedIl2CppCompilerConfigureation = PlayerSettings.GetIl2CppCompilerConfiguration(buildTargetGroup);
             para.cachedUseMTRendering               = PlayerSettings.GetMobileMTRendering(buildTargetGroup);
@@ -118,7 +118,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             // setup new settings
             // PlayerSettings.bundleVersion = para.bundleVersion;
-            PlayerSettings.bundleVersion = version.ToString();
+            // PlayerSettings.bundleVersion = version.ToString();
 
             if(buildTargetGroup == BuildTargetGroup.Android || buildTargetGroup == BuildTargetGroup.iOS)
             {
@@ -172,7 +172,7 @@ namespace Framework.AssetManagement.GameBuilder
         {
             BuildTargetGroup buildTargetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
 
-            PlayerSettings.bundleVersion = para.cachedBundleVersion;
+            // PlayerSettings.bundleVersion = para.cachedBundleVersion;
 
             if (buildTargetGroup == BuildTargetGroup.Android || buildTargetGroup == BuildTargetGroup.iOS)
             {
