@@ -29,7 +29,7 @@ namespace Application.Runtime
     ///     3.2、分包（仅安卓）—— obb下载、资源提取、补丁下载
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
-    public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
+    public class Launcher : SingletonMono<Launcher>, IExtractListener, IPatcherListener
     {
         private BundleExtracter         m_BundleExtracter;
         private Patcher                 m_Patcher;
@@ -55,23 +55,11 @@ namespace Application.Runtime
 
         private bool                    m_theFirstStart;
 
-        static public Launcher          Instance    { get; private set; }
-
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             m_theFirstStart = true;
-
-            if (FindObjectsOfType<Launcher>().Length > 1)
-            {
-                DestroyImmediate(this);
-                throw new Exception("Launcher has already exist...");
-            }
-
-            gameObject.name = "[Launcher]";
-
-            Instance = this;
-
-            DontDestroyOnLoad(gameObject);
 
             m_BundleExtracter = GetComponent<BundleExtracter>();
             m_Patcher = GetComponent<Patcher>();
@@ -84,6 +72,12 @@ namespace Application.Runtime
 
             if (Canvas == null)
                 throw new ArgumentNullException("canvas");
+
+#if UNITY_EDITOR
+            ResourceManager.Init(LoaderType.FromEditor);
+#else
+            ResourceManager.Init(LoaderType.FromPersistent);
+#endif            
         }
 
         void Start()
@@ -93,12 +87,31 @@ namespace Application.Runtime
             StartWork();
         }
 
+        private LoaderType GetFinalLauncherType()
+        {
+#if UNITY_EDITOR
+            LauncherMode mode = EditorLauncherMode.Mode();
+            switch (mode)
+            {
+                case LauncherMode.FromEditor:
+                    return LoaderType.FromEditor;
+                case LauncherMode.FromStreamingAssets:
+                    return LoaderType.FromStreamingAssets;
+                case LauncherMode.FromPersistent:
+                    return LoaderType.FromPersistent;
+            }
+            return LoaderType.FromEditor;
+#else
+            return LoaderType.FromPersistent;
+#endif            
+        }
+
         private void StartWork()
         {
             ShowUI(true);
 
-            if(ResourceManager.Instance.loaderType == LoaderType.FromEditor || 
-               ResourceManager.Instance.loaderType == LoaderType.FromStreamingAssets)
+            LoaderType type = GetFinalLauncherType();
+            if(type == LoaderType.FromEditor || type == LoaderType.FromStreamingAssets)
             {
                 VersionControlFinished();
             }
@@ -326,6 +339,7 @@ namespace Application.Runtime
     [CustomEditor(typeof(Launcher))]
     public class Launcher_Inspector : Editor
     {
+        private SerializedProperty  m_IsPersistentProp;
         private SerializedProperty  m_WorkerCountOfBundleExtracterProp;
         private SerializedProperty  m_WorkerCountOfPatcherProp;
         private SerializedProperty  m_CdnURLProp;
@@ -339,6 +353,7 @@ namespace Application.Runtime
 
         void OnEnable()
         {
+            m_IsPersistentProp = serializedObject.FindProperty("isPersistent");
             m_WorkerCountOfBundleExtracterProp = serializedObject.FindProperty("WorkerCountOfPatcher");
             m_WorkerCountOfPatcherProp = serializedObject.FindProperty("WorkerCountOfPatcher");
             m_CdnURLProp = serializedObject.FindProperty("m_CdnURL");
@@ -353,6 +368,7 @@ namespace Application.Runtime
         {
             serializedObject.Update();
 
+            EditorGUILayout.PropertyField(m_IsPersistentProp);
             EditorGUILayout.ObjectField(m_CameraProp, typeof(Camera));
             EditorGUILayout.ObjectField(m_CanvasProp, typeof(Canvas));
             EditorGUILayout.PropertyField(m_SceneNameProp);

@@ -27,16 +27,16 @@ namespace Application.Runtime
             {
 #if UNITY_EDITOR
                 // 优先响应记录在PlayerPrefs中的数据
-                LauncherMode mode = EditorLauncherMode.Mode();
-                switch(mode)
-                {
-                    case LauncherMode.FromEditor:
-                        return LoaderType.FromEditor;
-                    case LauncherMode.FromStreamingAssets:
-                        return LoaderType.FromStreamingAssets;
-                    case LauncherMode.FromPersistent:
-                        return LoaderType.FromPersistent;
-                }
+                // LauncherMode mode = EditorLauncherMode.Mode();
+                // switch(mode)
+                // {
+                //     case LauncherMode.FromEditor:
+                //         return LoaderType.FromEditor;
+                //     case LauncherMode.FromStreamingAssets:
+                //         return LoaderType.FromStreamingAssets;
+                //     case LauncherMode.FromPersistent:
+                //         return LoaderType.FromPersistent;
+                // }
 
                 LoaderType finalType = bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
                 return finalType;
