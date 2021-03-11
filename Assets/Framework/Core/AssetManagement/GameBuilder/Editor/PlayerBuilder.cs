@@ -37,9 +37,6 @@ namespace Framework.AssetManagement.GameBuilder
             // 先更新版本号
             AppVersion version = para.SetAppVersion();
 
-            // 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
-            BuildBundleFileList();
-
             // setup PlayerSettings
             para.SetupPlayerSettings(version);
 
@@ -83,14 +80,6 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             return report;
-        }
-
-        static private void BuildBundleFileList()
-        {
-            BundleFileList.BuildBundleFileList(string.Format($"{Application.streamingAssetsPath}/{Utility.GetPlatformName()}"), 
-                                               string.Format($"{BundleExtracter.FILELIST_PATH}/{Utility.GetPlatformName()}/{BundleExtracter.FILELIST_NAME}"));
-
-            AssetDatabase.Refresh();
         }
     }
 }

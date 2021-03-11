@@ -41,7 +41,7 @@ namespace Framework.Core
 
 #if UNITY_EDITOR
         /// <summary>
-        /// ��ָ���ļ�������FileList����������savedFile
+        /// 把文件夹（directory）下数据生成BundleFileList，并保存至savedFile
         /// </summary>
         /// <param name="directory"></param>
         /// <param name="savedFile"></param>
@@ -75,7 +75,7 @@ namespace Framework.Core
         }
 
         /// <summary>
-        /// ����ָ���ļ����������ļ���BundleFileInfo Json
+        /// 依据文件夹下所有数据生成BundleFileList，并序列化为json
         /// </summary>
         /// <param name="directory"></param>
         /// <returns></returns>

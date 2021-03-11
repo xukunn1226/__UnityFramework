@@ -200,7 +200,7 @@ namespace Framework.Core
                     DownloadTaskInfo info   = new DownloadTaskInfo();
                     info.srcUri             = new System.Uri(Path.Combine(Application.streamingAssetsPath, Utility.GetPlatformName(), fileInfo.BundleName));
                     info.dstURL             = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
-                    // info.verifiedHash       = fileInfo.FileHash;
+                    info.verifiedHash       = fileInfo.FileHash;
                     info.retryCount         = 3;
                     info.onProgress         = OnProgress;
                     info.onCompleted        = OnCompleted;

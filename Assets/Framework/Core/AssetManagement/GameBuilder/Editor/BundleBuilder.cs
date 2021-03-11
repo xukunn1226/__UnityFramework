@@ -108,6 +108,9 @@ namespace Framework.AssetManagement.GameBuilder
             Debug.Log($"        BundleSettings: {para.ToString()}");
             Debug.Log($"End Build AssetBundles: Succeeded");
 
+            // step 4. 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
+            BuildBundleFileList();
+
             return true;
         }
 
@@ -294,6 +297,14 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 Debug.LogWarning("Source path does not exist!");
             }
+
+            AssetDatabase.Refresh();
+        }
+        
+        static private void BuildBundleFileList()
+        {
+            BundleFileList.BuildBundleFileList(string.Format($"{Application.streamingAssetsPath}/{Utility.GetPlatformName()}"), 
+                                               string.Format($"{BundleExtracter.FILELIST_PATH}/{Utility.GetPlatformName()}/{BundleExtracter.FILELIST_NAME}"));
 
             AssetDatabase.Refresh();
         }
