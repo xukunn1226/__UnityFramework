@@ -113,7 +113,7 @@ namespace Framework.Core
 
         void OnActiveSceneChanged(Scene oldScene, Scene newScene)
         {
-            Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
+            // Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
 
             // update newScene context
             LevelContext newContext = FindLevel(newScene.name);
@@ -126,7 +126,7 @@ namespace Framework.Core
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
+            // Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
 
             LevelContext ctx = FindLevel(scene.name);
             if(ctx == null)
@@ -138,7 +138,7 @@ namespace Framework.Core
 
         void OnSceneUnloaded(Scene scene)
         {
-            Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
+            // Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
 
             LevelContext ctx = FindLevel(scene.name);
             if(ctx == null)

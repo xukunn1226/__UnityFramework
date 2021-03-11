@@ -20,13 +20,15 @@ namespace Application.Runtime
     /// launcher: resource extracted & check obb & patch & board
     /// core: init core components
     /// theFirstGameScene: game play scene
-    /// 提供四种启动方式，将影响版控流程和资源加载方式（见LauncherMode）：
-    /// 0、None（Dev）：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager自主控制
+    /// 提供三种启动方式，将影响版控流程和资源加载方式（见LauncherMode）：
     /// 1、FromEditor(Dev)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle
     /// 2、FromStreamingAssets(Dev & Runtime)：1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle
     /// 3、FromPersistent(Dev & Runtime)：1、执行版控流程（完整包和分包会有小区别，如下）；2、资源加载方式从persistentDataPath加载，需打bundle
     ///     3.1、完整包（安卓和ios）—— 资源提取、补丁下载
     ///     3.2、分包（仅安卓）—— obb下载、资源提取、补丁下载
+    /// MACROS:
+    ///     USE_APK_EXPANSIONFILES: 是否处理obb流程
+    ///     LOAD_FROM_PERSISTENT:从persistent data path下加载资源（意味着执行版控流程）
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class Launcher : SingletonMono<Launcher>, IExtractListener, IPatcherListener
@@ -85,7 +87,7 @@ namespace Application.Runtime
 
         // 启动模式
         // 编辑器下：由Tools/Launcher mode控制
-        // 真机模式：由LOAD_FROM_STREAMINGASSETS控制从Streaming Assets下加载还是persistentPath
+        // 真机模式：由LOAD_FROM_PERSISTENT控制从Streaming Assets下加载还是persistentPath
         private LoaderType GetFinalLauncherType()
         {
 #if UNITY_EDITOR
@@ -100,10 +102,10 @@ namespace Application.Runtime
                     return LoaderType.FromPersistent;
             }
             return LoaderType.FromEditor;
-#elif LOAD_FROM_STREAMINGASSETS
-            return LoaderType.FromStreamingAssets;
+#elif LOAD_FROM_PERSISTENT
+            return LoaderType.FromPersistent;
 #else
-            return LoaderType.FromPersistent;            
+            return LoaderType.FromStreamingAssets;            
 #endif
         }
 
@@ -112,13 +114,14 @@ namespace Application.Runtime
             ShowUI(true);
 
             LoaderType type = GetFinalLauncherType();
-            if(type == LoaderType.FromEditor || type == LoaderType.FromStreamingAssets)
-            {
-                VersionControlFinished();
+            Debug.Log($"launcher mode is {type}");
+            if(type == LoaderType.FromPersistent)
+            { // 启动模式是FromPersistent时执行版控流程
+                StartBundleExtracted();
             }
             else
-            {
-                StartBundleExtracted();
+            { // 略过版控流程
+                VersionControlFinished();
             }
         }
         
@@ -182,7 +185,7 @@ namespace Application.Runtime
         {
             if (string.IsNullOrEmpty(error))
             {
-                Debug.Log($"IExtractListener.OnEnd:     elapsedTime({elapsedTime})");
+                Debug.Log($"========================= IExtractListener.OnEnd:     elapsedTime({elapsedTime})");
 
                 StartPatch();       // 提取结束执行补丁流程
             }
@@ -396,8 +399,7 @@ namespace Application.Runtime
             EditorGUILayout.Separator();
 
             GUILayout.BeginVertical(new GUIStyle("HelpBox"));
-            EditorGUILayout.LabelField("启动项目的四种方式：见Tools/Launcher Mode", new GUIStyle("LargeLabel"));
-            EditorGUILayout.LabelField(@"None：                        1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager配置决定", new GUIStyle("LargeLabel"));
+            EditorGUILayout.LabelField("启动项目的三种方式：见Tools/Launcher Mode", new GUIStyle("LargeLabel"));
             EditorGUILayout.LabelField(@"FromEditor：                1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle", new GUIStyle("LargeLabel"));
             EditorGUILayout.LabelField(@"FromStreamingAssets：  1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle", new GUIStyle("LargeLabel"));
             EditorGUILayout.LabelField(@"FromPersistent：           1、执行版控流程（完整包和分包会有一些区别）；2、资源加载方式从persistentDataPath加载，需打bundle", new GUIStyle("LargeLabel"));
@@ -414,7 +416,6 @@ namespace Application.Runtime
     
     public enum LauncherMode
     {
-        None,                   // 1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式由ResourceManager自主控制
         FromEditor,             // 1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从AssetDatabase加载，无需打bundle
         FromStreamingAssets,    // 1、略过版控流程（obb下载、资源提取、补丁下载）；2、资源加载方式从StreamingAssets加载，需打bundle
         FromPersistent,         // 1、执行版控流程（完整包和分包会有小区别，如下）；2、资源加载方式从persistentDataPath加载，需打bundle
@@ -426,10 +427,9 @@ namespace Application.Runtime
     public static class EditorLauncherMode
     {        
         static private readonly string   LAUNCHER_MODE_FLAG             = "LAUNCHER_MODE_FLAG_8a0848d861a7eee48aad2b8083a7db8d";
-        private const string            MenuName_None                   = "Tools/Launcher Mode/None";
-        private const string            MenuName_FromEditor             = "Tools/Launcher Mode/From Editor";
-        private const string            MenuName_FromStreamingAssets    = "Tools/Launcher Mode/From StreamingAssets";
-        private const string            MenuName_FromPersistent         = "Tools/Launcher Mode/From Persistent";
+        private const string            MenuName_FromEditor             = "Tools/Editor Launcher Mode/From Editor";
+        private const string            MenuName_FromStreamingAssets    = "Tools/Editor Launcher Mode/From StreamingAssets";
+        private const string            MenuName_FromPersistent         = "Tools/Editor Launcher Mode/From Persistent";
 
         static EditorLauncherMode()
         {
@@ -439,11 +439,7 @@ namespace Application.Runtime
         static public LauncherMode Mode()
         {
             string mode = PlayerPrefs.GetString(LAUNCHER_MODE_FLAG, LauncherMode.FromEditor.ToString());
-            if(mode == LauncherMode.None.ToString())
-            {
-                return LauncherMode.None;
-            }
-            else if(mode == LauncherMode.FromEditor.ToString())
+            if(mode == LauncherMode.FromEditor.ToString())
             {
                 return LauncherMode.FromEditor;
             }
@@ -462,39 +458,22 @@ namespace Application.Runtime
         {
             switch(mode)
             {
-                case LauncherMode.None:
-                    Menu.SetChecked(MenuName_None,                  true);
-                    Menu.SetChecked(MenuName_FromEditor,            false);
-                    Menu.SetChecked(MenuName_FromStreamingAssets,   false);
-                    Menu.SetChecked(MenuName_FromPersistent,        false);
-                    break;
                 case LauncherMode.FromEditor:
-                    Menu.SetChecked(MenuName_None,                  false);
                     Menu.SetChecked(MenuName_FromEditor,            true);
                     Menu.SetChecked(MenuName_FromStreamingAssets,   false);
                     Menu.SetChecked(MenuName_FromPersistent,        false);
                     break;
                 case LauncherMode.FromStreamingAssets:
-                    Menu.SetChecked(MenuName_None,                  false);
                     Menu.SetChecked(MenuName_FromEditor,            false);
                     Menu.SetChecked(MenuName_FromStreamingAssets,   true);
                     Menu.SetChecked(MenuName_FromPersistent,        false);
                     break;
                 case LauncherMode.FromPersistent:
-                    Menu.SetChecked(MenuName_None,                  false);
                     Menu.SetChecked(MenuName_FromEditor,            false);
                     Menu.SetChecked(MenuName_FromStreamingAssets,   false);
                     Menu.SetChecked(MenuName_FromPersistent,        true);
                     break;
             }
-        }
-
-        [MenuItem(MenuName_None, priority = 0)]
-        static public void Launcher_None()
-        {
-            PlayerPrefs.SetString(LAUNCHER_MODE_FLAG, LauncherMode.None.ToString());
-            PlayerPrefs.Save();
-            UpdateMenu(LauncherMode.None);
         }
 
         [MenuItem(MenuName_FromEditor, priority = 1)]

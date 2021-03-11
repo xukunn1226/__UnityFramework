@@ -66,7 +66,7 @@ namespace Framework.AssetManagement.Runtime
                     AssetBundleManager.Init(Application.persistentDataPath);
                     break;
             }
-            Debug.Log($"AssetManager.loaderType is {loaderType}");
+            // Debug.Log($"AssetManager.loaderType is {loaderType}");
         }
 
         protected override void OnDestroy()

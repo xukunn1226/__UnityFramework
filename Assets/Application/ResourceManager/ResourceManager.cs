@@ -21,7 +21,7 @@ namespace Application.Runtime
         static private bool             bOverrideLoaderType;
         static private LoaderType       overrideLoaderType;
 
-        public LoaderType               loaderType
+        internal LoaderType             loaderType
         {
             get
             {
@@ -395,31 +395,31 @@ namespace Application.Runtime
         // }
     }
 
-#if UNITY_EDITOR
-    [CustomEditor(typeof(ResourceManager))]
-    public class ResourceManagerEditor : UnityEditor.Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
+// #if UNITY_EDITOR
+//     [CustomEditor(typeof(ResourceManager))]
+//     public class ResourceManagerEditor : UnityEditor.Editor
+//     {
+//         public override void OnInspectorGUI()
+//         {
+//             base.OnInspectorGUI();
 
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.EnumFlagsField("Final Loader Type", ((ResourceManager)target).loaderType);
+//             EditorGUI.BeginDisabledGroup(true);
+//             EditorGUILayout.EnumFlagsField("Final Loader Type", ((ResourceManager)target).loaderType);
 
-            EditorGUI.EndDisabledGroup();
+//             EditorGUI.EndDisabledGroup();
 
-            LauncherMode mode = EditorLauncherMode.Mode();
-            string info = string.Empty;
-            if(mode == LauncherMode.None)
-            {
-                info = $"LauncherMode: {mode}   资源加载方式由LoaderType控制";                
-            }
-            else
-            {
-                info = $"LauncherMode: {mode}   资源加载方式由Tools/Launcher Mode控制";
-            }
-            EditorGUILayout.HelpBox(info, MessageType.Info);
-        }
-    }
-#endif
+//             LauncherMode mode = EditorLauncherMode.Mode();
+//             string info = string.Empty;
+//             if(mode == LauncherMode.None)
+//             {
+//                 info = $"LauncherMode: {mode}   资源加载方式由LoaderType控制";                
+//             }
+//             else
+//             {
+//                 info = $"LauncherMode: {mode}   资源加载方式由Tools/Launcher Mode控制";
+//             }
+//             EditorGUILayout.HelpBox(info, MessageType.Info);
+//         }
+//     }
+// #endif
 }
