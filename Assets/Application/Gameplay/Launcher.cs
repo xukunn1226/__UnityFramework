@@ -73,11 +73,7 @@ namespace Application.Runtime
             if (Canvas == null)
                 throw new ArgumentNullException("canvas");
 
-#if UNITY_EDITOR
-            ResourceManager.Init(LoaderType.FromEditor);
-#else
-            ResourceManager.Init(LoaderType.FromPersistent);
-#endif            
+            ResourceManager.Init(GetFinalLauncherType());
         }
 
         void Start()
@@ -87,6 +83,9 @@ namespace Application.Runtime
             StartWork();
         }
 
+        // 启动模式
+        // 编辑器下：由Tools/Launcher mode控制
+        // 真机模式：由LOAD_FROM_STREAMINGASSETS控制从Streaming Assets下加载还是persistentPath
         private LoaderType GetFinalLauncherType()
         {
 #if UNITY_EDITOR
@@ -101,9 +100,11 @@ namespace Application.Runtime
                     return LoaderType.FromPersistent;
             }
             return LoaderType.FromEditor;
+#elif LOAD_FROM_STREAMINGASSETS
+            return LoaderType.FromStreamingAssets;
 #else
-            return LoaderType.FromPersistent;
-#endif            
+            return LoaderType.FromPersistent;            
+#endif
         }
 
         private void StartWork()
