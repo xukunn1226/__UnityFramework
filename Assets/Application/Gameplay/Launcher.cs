@@ -74,8 +74,6 @@ namespace Application.Runtime
 
             if (Canvas == null)
                 throw new ArgumentNullException("canvas");
-
-            ResourceManager.Init(GetFinalLauncherType());
         }
 
         void Start()
@@ -261,6 +259,9 @@ namespace Application.Runtime
 
         private void VersionControlFinished()
         {
+            // 资源更新完再初始化管理器            
+            ResourceManager.Init(GetFinalLauncherType());
+
             if (string.IsNullOrEmpty(m_Error))
             {
                 Debug.Log($"VersionControl finished successfully");
