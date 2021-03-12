@@ -24,7 +24,7 @@ namespace Framework.Core
         public int  BuildNumber;        // 每次打包自增，对应android.bundleVersionCode & ios.buildNumber
 
         [NonSerialized]
-        public int  HotfixNumber;       // W——补丁包序列号
+        private int HotfixNumber;       // W——补丁包序列号
 
         static public AppVersion Load()
         {
