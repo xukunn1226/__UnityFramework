@@ -32,7 +32,7 @@ namespace Application.Runtime
         {
             if (Launcher.Instance == null)
                 throw new System.Exception("MainLoop: Launcher.Instance == null");
-            if(NetManager.Instance == null)
+            if (NetManager.Instance == null)
                 throw new System.Exception("MainLoop: NetManager.Instance == null");
 
             NetManager.Instance.SetListener(this);
