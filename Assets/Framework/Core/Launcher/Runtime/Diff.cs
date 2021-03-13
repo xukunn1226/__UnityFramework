@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Framework.Core
 {
+    /// <summary>
+    /// 记录版本间的差异信息
+    /// <summary>
     public class Diff
     {
         public class DiffFileInfo
@@ -58,8 +61,8 @@ namespace Framework.Core
             }
 
             System.IO.FileStream fs = new System.IO.FileStream(assetPath, System.IO.FileMode.Open);
-            byte[] array = new byte[1024 * 32];
-            int size = fs.Read(array, 0, 1024 * 32);
+            byte[] array = new byte[1024 * 128];
+            int size = fs.Read(array, 0, 1024 * 128);
             fs.Close();
             fs.Dispose();
 

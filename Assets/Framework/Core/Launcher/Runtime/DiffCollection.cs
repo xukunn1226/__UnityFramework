@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Framework.Core
 {
     /// <summary>
-    /// 记录其他版本到当前版本（BaseVersion）的差异数据（diff.json）的集合
+    /// 璁板綍鍘嗗彶鐗堟湰鍒癇aseVersion鐨勬墍鏈塪iff鏂囦欢hash
     /// </summary>
     public class DiffCollection
     {
@@ -42,8 +42,8 @@ namespace Framework.Core
             }
 
             System.IO.FileStream fs = new System.IO.FileStream(assetPath, System.IO.FileMode.Open);
-            byte[] array = new byte[1024 * 32];
-            int size = fs.Read(array, 0, 1024 * 32);
+            byte[] array = new byte[1024 * 128];
+            int size = fs.Read(array, 0, 1024 * 128);
             fs.Close();
             fs.Dispose();
 

@@ -12,7 +12,7 @@ namespace Framework.AssetManagement.GameBuilder
         static public string s_DefaultRootPath      = "Deployment";
         static public string s_LatestAppPath        = "latest/player";                  // 当前编译版本的app
         static public string s_LatestBundlesPath    = "latest/assetbundles";            // 当前编译版本的bundles
-        static public string s_BackupDirectoryPath  = "backup";                         // 
+        static public string s_BackupDirectoryPath  = "backup";                         // 备份各平台下发布的资源（app & bundles）
         static public string s_Cdn_DataPath         = "cdn/data";                       // 最新版本的资源数据
         static public string s_Cdn_ObbPath          = "cdn/obb";                        // 所有版本的obb
         static public string s_Cdn_PatchPath        = "cdn/patch";                      // 所有平台的补丁数据
@@ -36,7 +36,6 @@ namespace Framework.AssetManagement.GameBuilder
         /// 执行部署流程（备份、发布、生成diff）
         /// </summary>
         /// <param name="srcRootPath"></param>
-        /// <param name="dstRootPath"></param>
         /// <param name="appDirectory"></param>
         static public bool Run(string srcRootPath, string appDirectory)
         {
@@ -174,59 +173,18 @@ namespace Framework.AssetManagement.GameBuilder
 
             // 根据所有历史版本记录，生成最新版本与其他版本的差异数据
             AppVersion curVersion = ScriptableObject.CreateInstance<AppVersion>();
-            curVersion.Set(appDirectory);            
+            curVersion.Set(appDirectory);
             foreach(var item in bd.VersionHistory)
             {
                 AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
                 historyVer.Set(item.Key);
-                if (historyVer.CompareTo(bd.MinVersion) >= 0 &&
-                   historyVer.CompareTo(curVersion) < 0)
+                
+                if (historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0)
                 {
-                    Diff data = Diff(rootPath, item.Key, appDirectory);
-                    if(data == null)
+                    if(Diff(rootPath, item.Key, appDirectory) == null)
                     {
                         Debug.LogError($"failed to Diff between {item.Key} and {appDirectory}");
                         return false;
-                    }
-                    else
-                    {
-                        string historyVerDirectory = string.Format($"{targetDirectory}/{item.Key}");
-                        Directory.CreateDirectory(historyVerDirectory);
-
-                        // 传输补丁数据
-                        string curAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
-                        foreach (var dfi in data.AddedFileList)
-                        {
-                            try
-                            {
-                                string dstFilename = string.Format($"{historyVerDirectory}/{dfi.BundleName}");
-                                string dstDirectory = Path.GetDirectoryName(dstFilename);
-                                if (!Directory.Exists(dstDirectory))
-                                    Directory.CreateDirectory(dstDirectory);
-                                File.Copy(string.Format($"{curAppPath}/{dfi.BundleName}"), dstFilename, true);
-                            }
-                            catch(System.Exception e)
-                            {
-                                Debug.LogError(e.Message);
-                                return false;
-                            }
-                        }
-                        foreach (var dfi in data.UpdatedFileList)
-                        {
-                            try
-                            {
-                                string dstFilename = string.Format($"{historyVerDirectory}/{dfi.BundleName}");
-                                string dstDirectory = Path.GetDirectoryName(dstFilename);
-                                if (!Directory.Exists(dstDirectory))
-                                    Directory.CreateDirectory(dstDirectory);
-                                File.Copy(string.Format($"{curAppPath}/{dfi.BundleName}"), dstFilename, true);
-                            }
-                            catch (System.Exception e)
-                            {
-                                Debug.LogError(e.Message);
-                                return false;
-                            }
-                        }
                     }
                 }
             }
@@ -238,11 +196,9 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
                 historyVer.Set(item.Key);
-                if (historyVer.CompareTo(bd.MinVersion) >= 0 &&
-                   historyVer.CompareTo(curVersion) < 0)
+                if (historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0)
                 {
                     string subDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{appDirectory}/{item.Key}");
-                    Directory.CreateDirectory(subDirectory);
                     string diffFilename = string.Format($"{subDirectory}/diff.json");
 
                     using (FileStream fs = new FileStream(diffFilename, FileMode.Open))
@@ -253,27 +209,25 @@ namespace Framework.AssetManagement.GameBuilder
                 }
             }
             string dcFilename = string.Format($"{targetDirectory}/diffcollection.json");
-            if (File.Exists(dcFilename))
-                File.Delete(dcFilename);
             DiffCollection.Serialize(dcFilename, dc);
 
             return true;
         }
 
         /// <summary>
-        /// 计算两个版本的差异数据
-        /// e.g     baseApp: 0.0.1  curApp: 0.0.1.1
+        /// 计算从版本prevApp升级到curApp需要的数据，输出至Deployment/cdn/patch/windows/curApp/prevApp/diff.json
+        /// e.g     prevApp: 0.0.1.1  curApp: 0.0.2
         /// </summary>
-        /// <param name="baseApp"></param>
+        /// <param name="prevApp"></param>
         /// <param name="curApp"></param>
         /// <returns></returns>
-        static private Diff Diff(string rootPath, string baseApp, string curApp)
+        static private Diff Diff(string rootPath, string prevApp, string curApp)
         {
-            string baseAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{baseApp}/assetbundles");
+            string prevAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{prevApp}/assetbundles");
             string curAppPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{curApp}/assetbundles");
-            if(!Directory.Exists(baseAppPath))
+            if(!Directory.Exists(prevAppPath))
             {
-                Debug.LogError($"{baseAppPath} is not exists");
+                Debug.LogError($"{prevAppPath} is not exists");
                 return null;
             }
             if(!Directory.Exists(curAppPath))
@@ -282,10 +236,10 @@ namespace Framework.AssetManagement.GameBuilder
                 return null;
             }
 
-            string baseFileListPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{baseApp}/{BundleExtracter.FILELIST_NAME}");
-            if(!File.Exists(baseFileListPath))
+            string prevFileListPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{prevApp}/{BundleExtracter.FILELIST_NAME}");
+            if(!File.Exists(prevFileListPath))
             {
-                Debug.LogError($"{baseFileListPath} not found");
+                Debug.LogError($"{prevFileListPath} not found");
                 return null;
             }
             
@@ -296,11 +250,11 @@ namespace Framework.AssetManagement.GameBuilder
                 return null;
             }
 
-            string baseFileListJson = File.ReadAllText(baseFileListPath);
-            BundleFileList baseBFL = BundleFileList.DeserializeFromJson(baseFileListJson);
-            if(baseBFL == null)
+            string prevFileListJson = File.ReadAllText(prevFileListPath);
+            BundleFileList prevBFL = BundleFileList.DeserializeFromJson(prevFileListJson);
+            if(prevBFL == null)
             {
-                Debug.LogError($"can't parse to json. {baseFileListPath}");
+                Debug.LogError($"can't parse to json. {prevFileListPath}");
                 return null;
             }
 
@@ -313,10 +267,10 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             Diff data = new Diff();
-            data.Desc = string.Format($"{baseApp}-{curApp}");
+            data.Desc = string.Format($"{prevApp}-{curApp}");
             foreach(var bfi in curBFL.FileList)
             {
-                BundleFileInfo findIt = baseBFL.FileList.Find(item => item.BundleName == bfi.BundleName);
+                BundleFileInfo findIt = prevBFL.FileList.Find(item => item.BundleName == bfi.BundleName);
                 if (findIt == null)
                 {
                     data.PushAddedFile(new Core.Diff.DiffFileInfo() { BundleName = bfi.BundleName, FileHash = bfi.FileHash, Size = bfi.Size });
@@ -329,7 +283,7 @@ namespace Framework.AssetManagement.GameBuilder
                     }
                 }
             }
-            foreach(var bfi in baseBFL.FileList)
+            foreach(var bfi in prevBFL.FileList)
             {
                 BundleFileInfo findIt = curBFL.FileList.Find(item => item.BundleName == bfi.BundleName);
                 if(findIt == null)
@@ -339,12 +293,41 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             // 序列化diff.json
-            string targetDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{curApp}/{baseApp}");
+            string targetDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{curApp}/{prevApp}");
             Directory.CreateDirectory(targetDirectory);
-
             Framework.Core.Diff.Serialize(string.Format($"{targetDirectory}/diff.json"), data);
 
+            // 根据diff结果填充历史版本升级到当前版本需要的数据
+            foreach (var dfi in data.AddedFileList)
+            {
+                if (!CopyFile(targetDirectory, curAppPath, dfi.BundleName))
+                    return null;
+            }
+            foreach (var dfi in data.UpdatedFileList)
+            {
+                if (!CopyFile(targetDirectory, curAppPath, dfi.BundleName))
+                    return null;
+            }
+
             return data;
+        }
+        
+        static private bool CopyFile(string prevAssetPath, string curAssetPath, string bundleName)
+        {
+            try
+            {
+                string dstFilename = string.Format($"{prevAssetPath}/{bundleName}");
+                string dstDirectory = Path.GetDirectoryName(dstFilename);
+                if (!Directory.Exists(dstDirectory))
+                    Directory.CreateDirectory(dstDirectory);
+                File.Copy(string.Format($"{curAssetPath}/{bundleName}"), dstFilename, true);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
+            return true;
         }
     }
 }

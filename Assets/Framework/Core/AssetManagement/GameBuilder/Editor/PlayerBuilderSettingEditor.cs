@@ -55,8 +55,11 @@ namespace Framework.AssetManagement.GameBuilder
             m_excludedDefinesProp       = serializedObject.FindProperty("excludedDefines");
 
             m_bOverrideBuildScenesProp  = serializedObject.FindProperty("bOverrideBuildScenes");
-            m_overrideBuildScenesProp   = serializedObject.FindProperty("overrideBuildScenes");
+            m_overrideBuildScenesProp   = serializedObject.FindProperty("overrideBuildScenes");            
+        }
 
+        void OnEnable()
+        {
             m_AppVersion = AppVersion.EditorLoad();
         }
 

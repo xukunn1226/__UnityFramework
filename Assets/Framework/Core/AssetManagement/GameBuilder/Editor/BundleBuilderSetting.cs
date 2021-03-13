@@ -13,7 +13,7 @@ namespace Framework.AssetManagement.GameBuilder
         /// <summary>
         /// bundles输出目录
         /// </summary>
-        public string           outputPath      = "Deployment/AssetBundles";
+        public string           outputPath      = "Deployment/Latest/AssetBundles";
         
         /// <summary>
         /// 是否使用LZ4压缩模式

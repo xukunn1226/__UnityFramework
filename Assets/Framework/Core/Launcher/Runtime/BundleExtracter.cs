@@ -255,6 +255,7 @@ namespace Framework.Core
             {
                 PlayerPrefs.SetString(BASE_APPVERSION, m_BaseVersion.ToString());
                 PlayerPrefs.Save();
+                Debug.Log($"BundleExtracter: asset extracted finished, mark the version {m_BaseVersion.ToString()}");
             }
 
             Uninit();

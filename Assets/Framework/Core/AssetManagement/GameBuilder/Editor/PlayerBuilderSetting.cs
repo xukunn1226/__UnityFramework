@@ -19,7 +19,7 @@ namespace Framework.AssetManagement.GameBuilder
             Specific,       // 指定版本号
         }
 
-        public string                       outputPath                          = "Deployment/Player";
+        public string                       outputPath                          = "Deployment/Latest/Player";
 
         public string                       projectName                         = "MyProject";
         
