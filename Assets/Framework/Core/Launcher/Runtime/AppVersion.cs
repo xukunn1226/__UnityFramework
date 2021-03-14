@@ -18,6 +18,7 @@ namespace Framework.Core
     /// </summary>
     public class AppVersion : ScriptableObject, IComparable<AppVersion>
     {
+        static private string s_AppVersionPath = "Assets/Resources/AppVersion.asset";
         public int  MainVersion;        // X
         public int  MinorVersion;       // Y
         public int  Revision;           // Z
@@ -154,7 +155,7 @@ namespace Framework.Core
 #if UNITY_EDITOR
         static public AppVersion EditorLoad()
         {
-            return AssetDatabase.LoadAssetAtPath<AppVersion>("Assets/Resources/AppVersion.asset");
+            return AssetDatabase.LoadAssetAtPath<AppVersion>(s_AppVersionPath);
         }
 
         public void Set(int mainVersion, int minorVersion, int revision)

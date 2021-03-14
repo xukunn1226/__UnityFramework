@@ -1,11 +1,11 @@
 {
   "Count": 38,
-  "TotalSize": 34200470,
+  "TotalSize": 32758496,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "43dd0e2a1f37eb39571cba49fd138d8e",
-      "Size": 2990
+      "FileHash": "44590f4b55d8d7e004f0ebbb62709fcf",
+      "Size": 2992
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "3772f4a103141a22ced6f639e56855ac",
-      "Size": 1487887
+      "FileHash": "988a77ef2412ad4c4aa896591e6be7ef",
+      "Size": 45911
     }
   ]
 }

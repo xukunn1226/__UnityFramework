@@ -22,7 +22,6 @@ MonoBehaviour:
   compressWithLz4: 0
   compressWithLz4HC: 1
   strictMode: 1
-  bundleVersion: 0.1
   useIL2CPP: 0
   il2CppCompilerConfiguration: 2
   useMTRendering: 0
@@ -30,5 +29,4 @@ MonoBehaviour:
   macroDefines: 
   excludedDefines: 
   bOverrideBuildScenes: 0
-  overrideBuildScenes:
-  - 
+  overrideBuildScenes: []

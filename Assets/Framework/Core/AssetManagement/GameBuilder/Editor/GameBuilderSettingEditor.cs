@@ -9,20 +9,23 @@ namespace Framework.AssetManagement.GameBuilder
     [CustomEditor(typeof(GameBuilderSetting))]
     public class GameBuilderSettingEditor : Editor
     {
-        SerializedProperty m_bundleSettingProp;
-        SerializedProperty m_playerSettingProp;
-        SerializedProperty m_buildModeProp;
+        SerializedProperty  m_bundleSettingProp;
+        SerializedProperty  m_playerSettingProp;
+        SerializedProperty  m_buildModeProp;
 
-        Editor m_bundleSettingEditor;
-        Editor m_playerSettingEditor;
+        Editor              m_bundleSettingEditor;
+        Editor              m_playerSettingEditor;
 
-        string m_PendingDeployVersion = "0.0.1";
+        AppVersion          m_AppVersion;
+        bool                m_isForceUpdate = true;
+        int                 m_HotfixNumber = 1;
 
         private void Awake()
         {
             m_bundleSettingProp = serializedObject.FindProperty("bundleSetting");
             m_playerSettingProp = serializedObject.FindProperty("playerSetting");
-            m_buildModeProp = serializedObject.FindProperty("buildMode");
+            m_buildModeProp     = serializedObject.FindProperty("buildMode");
+            m_AppVersion        = AppVersion.EditorLoad();
         }
 
         public override void OnInspectorGUI()
@@ -166,8 +169,24 @@ namespace Framework.AssetManagement.GameBuilder
 
         private void DrawDeploymentSetting()
         {
-            m_PendingDeployVersion = EditorGUILayout.TextField("Deploy Version", m_PendingDeployVersion);
-            string error = AppVersion.Check(m_PendingDeployVersion);
+            m_isForceUpdate = EditorGUILayout.Toggle("强更版本", m_isForceUpdate);
+
+            EditorGUILayout.LabelField("AppVersion");
+            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+            EditorGUI.BeginDisabledGroup(true);
+            int mainVersion = EditorGUILayout.IntField("MainVersion", m_AppVersion.MainVersion, GUILayout.Width(400));
+            int minorVersion = EditorGUILayout.IntField("MinorVersion", m_AppVersion.MinorVersion, GUILayout.Width(400));
+            int revision = EditorGUILayout.IntField("Revision", m_AppVersion.Revision, GUILayout.Width(400));
+            EditorGUI.EndDisabledGroup();
+            if(!m_isForceUpdate)
+                m_HotfixNumber = Mathf.Min(1, EditorGUILayout.IntField("HotfixNumber", m_HotfixNumber, GUILayout.Width(400)));
+            GUILayout.EndVertical();
+
+            string deployVersion = string.Format($"{mainVersion}.{minorVersion}.{revision}");
+            if(!m_isForceUpdate)
+                deployVersion = string.Format($"{deployVersion}.{m_HotfixNumber}");
+
+            string error = AppVersion.Check(deployVersion);
             if(!string.IsNullOrEmpty(error))
             {
                 GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
@@ -175,8 +194,8 @@ namespace Framework.AssetManagement.GameBuilder
                 EditorGUILayout.LabelField(error, style);
             }
 
-            string directory = string.IsNullOrEmpty(error) ? m_PendingDeployVersion : "X.X.X";
-            string dstPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_BackupDirectoryPath}/{Framework.Core.Utility.GetPlatformName()}/{directory}");
+            string directory = string.IsNullOrEmpty(error) ? deployVersion : "X.X.X";
+            string dstPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{directory}");
             EditorGUILayout.LabelField("备份目录", dstPath);
 
             string patchPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{directory}");
@@ -185,7 +204,7 @@ namespace Framework.AssetManagement.GameBuilder
             EditorGUI.BeginDisabledGroup(!string.IsNullOrEmpty(error));
             if (GUILayout.Button("Deploy", EditorStyles.toolbarButton))
             {
-                Deployment.Run(Deployment.s_DefaultRootPath, m_PendingDeployVersion);
+                Deployment.Run(Deployment.s_DefaultRootPath, deployVersion);
             }
             EditorGUI.EndDisabledGroup();
         }
