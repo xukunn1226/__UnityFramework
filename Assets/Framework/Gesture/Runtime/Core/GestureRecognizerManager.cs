@@ -8,7 +8,7 @@ namespace Framework.Gesture.Runtime
     {
         private static readonly List<GestureRecognizer> s_Recognizers = new List<GestureRecognizer>();
 
-        public static void AddRecognizer(GestureRecognizer recognizer)
+        internal static void AddRecognizer(GestureRecognizer recognizer)
         {
             if (s_Recognizers.Contains(recognizer))
                 return;
@@ -22,14 +22,14 @@ namespace Framework.Gesture.Runtime
             return s_Recognizers;
         }
 
-        public static void RemoveRecognizer(GestureRecognizer recognizer)
+        internal static void RemoveRecognizer(GestureRecognizer recognizer)
         {
             if (!s_Recognizers.Contains(recognizer))
                 return;
             s_Recognizers.Remove(recognizer);
         }
 
-        public static void Update()
+        internal static void Update()
         {
             foreach(var recognizer in s_Recognizers)
             {
