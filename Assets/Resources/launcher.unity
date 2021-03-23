@@ -419,7 +419,7 @@ PrefabInstance:
     - target: {fileID: 6677904503841294993, guid: 9060eec7715352842bb322c0bfd3761d,
         type: 3}
       propertyPath: m_Name
-      value: LevelManager
+      value: StreamingLevelManager
       objectReference: {fileID: 0}
     - target: {fileID: 6677904503841295086, guid: 9060eec7715352842bb322c0bfd3761d,
         type: 3}

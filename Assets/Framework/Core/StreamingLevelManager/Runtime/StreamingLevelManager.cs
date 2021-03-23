@@ -15,7 +15,7 @@ namespace Framework.Core
     /// 2、加载（single）：等待正在加载中的场景加载完成再执行
     /// 3、卸载：此场景已加载完成
     /// </summary>
-    public sealed class LevelManager : SingletonMono<LevelManager>
+    public sealed class StreamingLevelManager : SingletonMono<StreamingLevelManager>
     {
         public delegate void LevelOperationBegin(string sceneName);
         public delegate void LevelOperationEnd(string sceneName);

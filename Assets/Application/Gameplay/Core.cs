@@ -21,12 +21,12 @@ namespace Application.Runtime
 
             yield return null;
 
-            LevelManager.LevelContext ctx = new LevelManager.LevelContext();
+            StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
             ctx.sceneName = TheFirstGameSceneName;
             ctx.scenePath = ScenePath;
             ctx.additive = false;
             ctx.bundlePath = BundlePath;
-            LevelManager.Instance.LoadAsync(ctx);
+            StreamingLevelManager.Instance.LoadAsync(ctx);
         }
 
         private void OnApplicationFocus(bool hasFocus)

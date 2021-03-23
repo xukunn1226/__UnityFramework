@@ -44,12 +44,12 @@ namespace Application.Runtime
 
         public void ReturnToLauncher()
         {
-            LevelManager.LevelContext ctx = new LevelManager.LevelContext();
+            StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
             ctx.sceneName = kEmptySceneName;
             ctx.scenePath = kEmptyScenePath;
             ctx.additive = false;
             ctx.bundlePath = kBundlePath;
-            LevelManager.Instance.LoadAsync(ctx);
+            StreamingLevelManager.Instance.LoadAsync(ctx);
         }
         
         async public Task Connect()

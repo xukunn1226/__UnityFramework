@@ -279,12 +279,12 @@ namespace Application.Runtime
         // 2、核心组件数据便于修改，可以热更
         private void LoadCoreScene()
         {
-            LevelManager.LevelContext ctx = new LevelManager.LevelContext();
+            StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
             ctx.sceneName = SceneName;
             ctx.scenePath = ScenePath;
             ctx.additive = false;
             ctx.bundlePath = BundlePath;
-            LevelManager.Instance.LoadAsync(ctx);
+            StreamingLevelManager.Instance.LoadAsync(ctx);
         }        
 
         // disable Launcher
