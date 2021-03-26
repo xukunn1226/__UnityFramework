@@ -26,10 +26,10 @@ namespace Framework.Gesture.Runtime
     public class ScreenPointerData
     {
         public PointerEventData pointerEventData;
-        internal UsedBy usedBy;
-        public float startTime;
-        public bool bPressedThisFrame;
-        public bool bReleasedThisFrame;
+        internal UsedBy         usedBy;
+        public float            startTime;
+        public bool             bPressedThisFrame;
+        public bool             bReleasedThisFrame;
     }
 
     public class GestureEventData
