@@ -386,6 +386,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5544628819662609867, guid: 331d02b71b293cf43af57c9493f1d098,
+        type: 3}
+      propertyPath: isPersistent
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5544628819662609870, guid: 331d02b71b293cf43af57c9493f1d098,
         type: 3}
       propertyPath: m_Name
@@ -412,7 +417,7 @@ GameObject:
   - component: {fileID: 2099892689}
   - component: {fileID: 2099892688}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UICanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

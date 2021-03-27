@@ -16,7 +16,7 @@ namespace Framework.Core
     /// 3、Console模式仅支持Development Build
     /// 4、FileLogOutput默认打开
     /// </summary>
-    public class GameDebug : MonoBehaviour
+    public class GameDebug : SingletonMono<GameDebug>
     {
         static public bool EnableLog = true;            // 仅控制DevLog, Log
 

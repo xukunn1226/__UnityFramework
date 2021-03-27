@@ -74,6 +74,13 @@ namespace Application.Runtime
 
             if (Canvas == null)
                 throw new ArgumentNullException("canvas");
+
+            // set all root gameobjects flag of dont destroy on load
+            GameObject[] gos = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (UnityEngine.Object go in gos)
+            {
+                DontDestroyOnLoad(go);
+            }
         }
 
         void Start()
@@ -123,9 +130,13 @@ namespace Application.Runtime
             }
         }
         
-        // 再次执行完整流程（流程结束或异常时才可restart，过程中不可使用）
+        // 再次执行完整流程（WARNING: 流程结束或异常时才可restart，过程中不可使用）
         public void Restart()
         {
+            // 因可能有补丁下载，需要删除资源管理器，待补丁下载完毕再创建
+            if(ResourceManager.Instance != null)
+                DestroyImmediate(ResourceManager.Instance.gameObject);
+
             m_theFirstStart = false;
             StartWork();
         }
@@ -259,7 +270,7 @@ namespace Application.Runtime
 
         private void VersionControlFinished()
         {
-            // 资源更新完再初始化管理器            
+            // 管理器的初始化需要manifest，待manifest更新完再初始化管理器
             ResourceManager.Init(GetFinalLauncherType());
 
             if (string.IsNullOrEmpty(m_Error))
