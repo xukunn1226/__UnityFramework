@@ -13,19 +13,19 @@ namespace Framework.Gesture.Runtime
 
         protected override bool CanBegin()
         {
-            return true;
+            return InputModule.screenPointerData.Count > 0;
         }
 
         protected override RecognitionState OnProgress()
         {
-            if(InputModule == null)
-                return RecognitionState.InProgress;
+            if(InputModule.screenPointerData.Count == 0)
+                return RecognitionState.Failed;
 
             foreach(var data in InputModule.screenPointerData)
             {
                 if(data.Value.usedBy != UsedBy.None)
-                    continue;
-
+                    return RecognitionState.Failed;         // 触发了其他手势，则返回失败
+                    
                 if(Vector2.Distance(data.Value.pointerEventData.pressPosition, data.Value.pointerEventData.position) > MoveTolerance)
                     continue;
 
@@ -33,7 +33,8 @@ namespace Framework.Gesture.Runtime
                 {
                     data.Value.usedBy = UsedBy.LongPress;
                     m_EventData.screenPosition = data.Value.pointerEventData.position;
-                    GestureEvents.ExecuteDiscrete<ILongPressHandler, ScreenLongPressEventData>(gameObject, m_EventData);
+                    // GestureEvents.ExecuteDiscrete<ILongPressHandler, ScreenLongPressEventData>(gameObject, m_EventData);
+                    return RecognitionState.Ended;
                 }
             }
 

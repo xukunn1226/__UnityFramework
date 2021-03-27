@@ -33,7 +33,7 @@ namespace Framework.Gesture.Runtime
             {
                 m_EventData.ClearPointerDatas();
                 foreach(var data in InputModule.screenPointerData)
-                {
+                { // 统计所有非OverUI的pointerData
                     m_EventData.AddPointerData(data.Value);
                 }
             }
