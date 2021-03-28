@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Gesture.Runtime;
+using Framework.Core;
 
 namespace Application.Runtime
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class GamePlayerInput :  MonoBehaviour,
+    public class GamePlayerInput :  SingletonMono<GamePlayerInput>,
                                     ILongPressHandler,
                                     IScreenPointerDownHandler,
                                     IScreenPointerUpHandler
     {
-        static public GamePlayerInput   Instance { get; private set; }
-
         private PlayerInput             m_PlayerInput;
         private PlayerInput             playerInput { get { if (m_PlayerInput == null) m_PlayerInput = GetComponent<PlayerInput>(); return m_PlayerInput; } }
 
@@ -21,25 +20,6 @@ namespace Application.Runtime
 
         public LayerMask                BaseLayer;
         public LayerMask                TerrainLayer;
-
-        void Awake()
-        {
-            if (FindObjectsOfType<GamePlayerInput>().Length > 1)
-            {
-                DestroyImmediate(this);
-                throw new System.Exception("GamePlayerInput has already exist...");
-            }
-
-            if (playerInput == null)
-                throw new System.ArgumentNullException("playerInput");
-
-            Instance = this;
-        }
-
-        void OnDestroy()
-        {
-            Instance = null;
-        }
 
         private void PickGameObject(Vector2 screenPosition)
         {
