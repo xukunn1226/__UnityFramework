@@ -1,11 +1,11 @@
 {
   "Count": 38,
-  "TotalSize": 32758496,
+  "TotalSize": 32758259,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "44590f4b55d8d7e004f0ebbb62709fcf",
-      "Size": 2992
+      "FileHash": "f1a8381c2633182f23247914ba78767a",
+      "Size": 2993
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -34,8 +34,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/scenes.ab",
-      "FileHash": "561932e4a9816f89e1447e08eac902e8",
-      "Size": 1575595
+      "FileHash": "67ccfea69cb395301c4584096765a0bb",
+      "Size": 1575634
     },
     {
       "BundleName": "assets/application/tests/runtime/res/testspawnerring.ab",
@@ -169,8 +169,8 @@
     },
     {
       "BundleName": "assets/framework/core/levelmanager/tests/res/scenes.ab",
-      "FileHash": "be9b8d7fec5b97d33a1df782e60c9032",
-      "Size": 20219
+      "FileHash": "a7209e9fe1e5e71f50a25bf3bef58a1c",
+      "Size": 20217
     },
     {
       "BundleName": "assets/res/animationclip.ab",
@@ -179,8 +179,8 @@
     },
     {
       "BundleName": "assets/res/core.ab",
-      "FileHash": "80844a517d6b972da8fb0e0bb535dacc",
-      "Size": 4772
+      "FileHash": "2758a252559461e9fa2acb289e6c7f76",
+      "Size": 4777
     },
     {
       "BundleName": "assets/res/globalconfig.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "988a77ef2412ad4c4aa896591e6be7ef",
-      "Size": 45911
+      "FileHash": "bebc73723aa531632bfef43701bfe4b9",
+      "Size": 45631
     }
   ]
 }

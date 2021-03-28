@@ -257,6 +257,9 @@ namespace Framework.AssetManagement.GameBuilder
             switch(EditorUserBuildSettings.activeBuildTarget)
             {
                 case BuildTarget.StandaloneWindows64:
+                    extension = "_64.exe";
+                    break;
+                case BuildTarget.StandaloneWindows:
                     extension = ".exe";
                     break;
                 case BuildTarget.Android:
