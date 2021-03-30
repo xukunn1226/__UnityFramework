@@ -522,8 +522,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 580316941}
-  m_Father: {fileID: 6764658650292968929}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 60, y: 90, z: 0}
 --- !u!114 &149533199
 MonoBehaviour:
@@ -12182,10 +12182,6 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 149533203}
-    - target: {fileID: 591085602, guid: 67eb073e7f9a21b428a76378bd7d7c96, type: 3}
-      propertyPath: ApplyBound
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6764658650940765554, guid: 67eb073e7f9a21b428a76378bd7d7c96,
         type: 3}
       propertyPath: m_Name
@@ -12248,9 +12244,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67eb073e7f9a21b428a76378bd7d7c96, type: 3}
---- !u!4 &6764658650292968929 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6764658650940765556, guid: 67eb073e7f9a21b428a76378bd7d7c96,
-    type: 3}
-  m_PrefabInstance: {fileID: 6764658650292968928}
-  m_PrefabAsset: {fileID: 0}

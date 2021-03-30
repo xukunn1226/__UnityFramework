@@ -174,7 +174,7 @@ MonoBehaviour:
   SlideSmoothTime: 0.3
   SpeedValueMatchOneScreen: 10000
   MaxCountScreen: 1
-  ApplyBound: 1
+  ApplyBound: 0
   Bound:
     serializedVersion: 2
     x: -1140

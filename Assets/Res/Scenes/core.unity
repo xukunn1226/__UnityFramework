@@ -181,21 +181,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2099892691}
     m_Modifications:
-    - target: {fileID: 2233366071769655629, guid: c64e1e8388ff5a84cb2618929f8ae1cc,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2233366072094853806, guid: c64e1e8388ff5a84cb2618929f8ae1cc,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2233366072617124352, guid: c64e1e8388ff5a84cb2618929f8ae1cc,
-        type: 3}
-      propertyPath: isPersistent
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2233366072617124356, guid: c64e1e8388ff5a84cb2618929f8ae1cc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -264,12 +249,12 @@ PrefabInstance:
     - target: {fileID: 2233366072617124356, guid: c64e1e8388ff5a84cb2618929f8ae1cc,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 24
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 2233366072617124356, guid: c64e1e8388ff5a84cb2618929f8ae1cc,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 54
+      value: 108
       objectReference: {fileID: 0}
     - target: {fileID: 2233366072617124356, guid: c64e1e8388ff5a84cb2618929f8ae1cc,
         type: 3}
@@ -305,11 +290,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FPSPanel
-      objectReference: {fileID: 0}
-    - target: {fileID: 2233366073638359360, guid: c64e1e8388ff5a84cb2618929f8ae1cc,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c64e1e8388ff5a84cb2618929f8ae1cc, type: 3}
