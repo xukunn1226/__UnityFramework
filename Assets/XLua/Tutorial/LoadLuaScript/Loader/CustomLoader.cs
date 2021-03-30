@@ -19,16 +19,19 @@ namespace Tutorial
         void Start()
         {
             luaenv = new LuaEnv();
-            luaenv.AddLoader((ref string filename) =>
-            {
-                if (filename == "InMemory")
-                {
-                    string script = "return {ccc = 9999}";
-                    return System.Text.Encoding.UTF8.GetBytes(script);
-                }
-                return null;
-            });
+            luaenv.AddLoader(MyCustomLoader);
             luaenv.DoString("print('InMemory.ccc=', require('InMemory').ccc)");
+        }
+
+        // 优先执行CustomLoader，失败再执行内置loader
+        public byte[] MyCustomLoader(ref string filepath)
+        {
+            if (filepath == "InMemory")
+            {
+                string script = "return {ccc = 9991}";
+                return System.Text.Encoding.UTF8.GetBytes(script);
+            }
+            return null;        // 表示loader执行失败，通知系统执行下一个loader
         }
 
         // Update is called once per frame
