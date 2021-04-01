@@ -79,6 +79,8 @@
 		   https://answers.unity.com/questions/1228809/where-to-put-my-obb-file.html
 * 对象池管理：常驻内存机制与预加载机制
 * OBB管理：判断是分包方式还是整包方式，分包方式才需要下载obb
+* bundle加密   https://www.xuanyusong.com/archives/4607
+* 一种Shader变体收集打包以及编译优化的思路  https://answer.uwa4d.com/question/5da86670e84db43d6efbda72
 
 
 
