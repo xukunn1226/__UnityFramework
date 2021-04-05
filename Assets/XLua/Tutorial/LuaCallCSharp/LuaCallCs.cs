@@ -296,8 +296,17 @@ public class LuaCallCs : MonoBehaviour
 	void Start()
 	{
 		luaenv = new LuaEnv();
-		luaenv.DoString(script);
+		luaenv.AddLoader(MyCustomLoader);
+		// luaenv.DoString(script);
+		string newCommand = string.Format($"require 'Assets/XLua/Tutorial/LuaCallCSharp/Resources/LuaCallCSharp.lua'");
+		luaenv.DoString(newCommand);
 	}
+
+	public byte[] MyCustomLoader(ref string filepath)
+    {
+		string txtString = System.IO.File.ReadAllText(filepath);
+		return System.Text.Encoding.UTF8.GetBytes(txtString);
+    }
 
 	// Update is called once per frame
 	void Update()
