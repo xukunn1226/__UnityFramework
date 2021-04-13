@@ -78,9 +78,10 @@ UserSettings/
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData
 [Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData.meta
 !Assets/Framework/AssetManagement/Deployment/
-#[Aa]ssets/RedirectorCache
-#[Aa]ssets/RedirectorCache.meta
-
+[Aa]ssets/RedirectorCache
+[Aa]ssets/RedirectorCache.meta
+[Aa]ssets/Application/XLua/Gen
+[Aa]ssets/Application/XLua/Gen.meta
 
 # some plugins
 [Aa]ssets/AssetBundles-Browser-master

@@ -13,7 +13,7 @@ namespace XLuaTest
 
     public static class CoroutineConfig
     {
-        [LuaCallCSharp]
+        // [LuaCallCSharp]
         public static List<Type> LuaCallCSharp
         {
             get

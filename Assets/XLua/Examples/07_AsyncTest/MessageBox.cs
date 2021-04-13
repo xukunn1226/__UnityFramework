@@ -100,7 +100,7 @@ namespace XLuaTest
 
     public static class MessageBoxConfig
     {
-        [CSharpCallLua]
+        // [CSharpCallLua]
         public static List<Type> CSharpCallLua = new List<Type>()
     {
         typeof(Action),
