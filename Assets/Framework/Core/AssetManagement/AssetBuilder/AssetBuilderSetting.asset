@@ -18,6 +18,7 @@ MonoBehaviour:
   - Assets/Application/Tests/Runtime/Res
   - Assets/Framework/Core/AssetManagement/Runtime/Tests/Res/
   - Assets/Framework/Core/LevelManager/Tests/Res
+  - Assets/Application/XLua/Lua
   BlackListOfFolder:
   - Resources
   - Temp

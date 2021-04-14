@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using XLua;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Runtime
 {
     static public class LuaMainLoop
     {
-        private const string m_CustomLuaPath = "Assets/Application/XLua/Lua";
+        private const string m_CustomLuaPath = "assets/application/xlua/lua";
 
         static private LuaEnv m_LuaEnv;
 
@@ -18,7 +19,7 @@ namespace Application.Runtime
                 throw new System.Exception("LuaMainLoop::Init   m_LuaEnv != null");
             }
             m_LuaEnv = new LuaEnv();
-            m_LuaEnv.AddLoader(MyCustomLoader);
+            m_LuaEnv.AddLoader(CustomLoaderFromEditor);
             m_LuaEnv.DoString("require 'LuaMainLoop.lua'");
         }
 
@@ -28,11 +29,18 @@ namespace Application.Runtime
             m_LuaEnv = null;
         }
 
-	    static private byte[] MyCustomLoader(ref string filepath)
+	    static private byte[] CustomLoaderFromEditor(ref string filepath)
         {
             filepath = m_CustomLuaPath + "/" + filepath;
             string txtString = System.IO.File.ReadAllText(filepath);
             return System.Text.Encoding.UTF8.GetBytes(txtString);
+        }
+
+        static private byte[] CustomLoaderFromBundle(ref string filepath)
+        {
+            filepath = m_CustomLuaPath + "/" + filepath;
+            AssetLoader<TextAsset> loader = ResourceManager.LoadAsset<TextAsset>(filepath);
+            return null;
         }
     }
 }

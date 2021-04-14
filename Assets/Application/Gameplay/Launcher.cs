@@ -93,7 +93,7 @@ namespace Application.Runtime
         // 启动模式
         // 编辑器下：由Tools/Launcher mode控制
         // 真机模式：由LOAD_FROM_PERSISTENT控制从Streaming Assets下加载还是persistentPath
-        private LoaderType GetFinalLauncherType()
+        static public LoaderType GetLauncherMode()
         {
 #if UNITY_EDITOR
             LauncherMode mode = EditorLauncherMode.Mode();
@@ -118,7 +118,7 @@ namespace Application.Runtime
         {
             ShowUI(true);
 
-            LoaderType type = GetFinalLauncherType();
+            LoaderType type = GetLauncherMode();
             Debug.Log($"launcher mode is {type}");
             if(type == LoaderType.FromPersistent)
             { // 启动模式是FromPersistent时执行版控流程
@@ -271,7 +271,7 @@ namespace Application.Runtime
         private void VersionControlFinished()
         {
             // 管理器的初始化需要manifest，待manifest更新完再初始化管理器
-            ResourceManager.Init(GetFinalLauncherType());
+            ResourceManager.Init(GetLauncherMode());
 
             if (string.IsNullOrEmpty(m_Error))
             {
