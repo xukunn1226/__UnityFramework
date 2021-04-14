@@ -7,7 +7,7 @@ using CSObjectWrapEditor;
 using XLua;
 
 [InitializeOnLoad]
-public class XLuaConfig
+static public class XLuaConfig
 {
     static XLuaConfig()
     {
