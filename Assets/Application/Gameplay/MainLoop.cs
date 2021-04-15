@@ -49,6 +49,11 @@ namespace Application.Runtime
             LuaMainLoop.Uninit();
         }
 
+        void Update()
+        {
+            LuaMainLoop.Tick();
+        }
+
         public void ReturnToLauncher()
         {
             StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();

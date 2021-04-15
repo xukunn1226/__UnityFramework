@@ -35,6 +35,11 @@ namespace Application.Runtime
             m_LuaEnv = null;
         }
 
+        static public void Tick()
+        {
+            m_LuaEnv?.Tick();
+        }
+
         static private void SetupCustomLoader()
         {
             LoaderType type = Launcher.GetLauncherMode();
