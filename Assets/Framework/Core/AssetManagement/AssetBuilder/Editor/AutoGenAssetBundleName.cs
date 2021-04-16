@@ -50,27 +50,23 @@ namespace Framework.AssetManagement.AssetBuilder
         /// </summary>
         /// <param name="assetPath">文件的完整路径</param>
         static void UpdateAssetBundleName(string assetPath)
-        {            
-            // step 0. skip directory path
-            if(Directory.Exists(assetPath)) // 忽略对文件夹的处理，只有当文件夹内有文件增、删等操作才处理
-                return;
-
-            // step 1. skip those files which are not meet specification
+        {
+            // step 0. skip those files which are not meet specification
             if(AssetBuilderUtil.IsBlockedByExtension(assetPath))
                 return;
 
-            if (!AssetBuilderUtil.IsPassByWhiteList(assetPath) || AssetBuilderUtil.IsBlockedByBlackList(assetPath))
+            // step 1. skip directory path
+            if(Directory.Exists(assetPath)) // 忽略对文件夹的处理，只有当文件夹内有文件增、删等操作才处理
             {
-                // 清空屏蔽文件的ab name
-                AssetImporter importer = AssetImporter.GetAtPath(assetPath);
-                if (importer != null)
-                {
-                    importer.assetBundleName = "";
-                }
-
+                ClearBundleNameIfNotMeetSpecification(assetPath);
                 return;
             }
 
+            // 此时assetPath指向文件
+            if(ClearBundleNameIfNotMeetSpecification(assetPath))
+                return;
+
+            //////////////////////////////////////// 文件符合规范，设置bundle name
             // step 2. 清除文件的ab name
             AssetImporter ai = AssetImporter.GetAtPath(assetPath);
             if (ai != null)
@@ -119,6 +115,23 @@ namespace Framework.AssetManagement.AssetBuilder
                     ti.assetBundleName = directory.ToLower() + ".ab";
                 }
             }
+        }
+
+        // 清除不符合规范的文件或文件夹的bundlename
+        // 若assetPath不符合规范则返回true，否则false
+        static private bool ClearBundleNameIfNotMeetSpecification(string assetPath)
+        {
+            if (!AssetBuilderUtil.IsPassByWhiteList(assetPath) || AssetBuilderUtil.IsBlockedByBlackList(assetPath))
+            {
+                // 清空屏蔽文件的ab name
+                AssetImporter importer = AssetImporter.GetAtPath(assetPath);
+                if (importer != null)
+                {
+                    importer.assetBundleName = "";
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

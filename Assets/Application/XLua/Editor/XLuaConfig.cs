@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using CSObjectWrapEditor;
 using XLua;
+using Framework.AssetManagement.GameBuilder;
 
 [InitializeOnLoad]
 static public class XLuaConfig
@@ -12,6 +13,15 @@ static public class XLuaConfig
     static XLuaConfig()
     {
         GeneratorConfig.common_path = UnityEngine.Application.dataPath + "/Application/XLua/Gen/";
+
+        PlayerBuilder.OnPreprocessPlayerBuild += RebuildXLuaWrapCode;
+    }
+
+    static private void RebuildXLuaWrapCode()
+    {
+        DelegateBridge.Gen_Flag = true;
+        Generator.ClearAll();
+        Generator.GenAll();
     }
 
     //lua中要使用到C#库的配置，比如C#标准库，或者Unity API，第三方库等。

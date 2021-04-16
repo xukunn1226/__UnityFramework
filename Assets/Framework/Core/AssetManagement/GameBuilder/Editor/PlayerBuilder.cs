@@ -10,6 +10,12 @@ namespace Framework.AssetManagement.GameBuilder
 {
     public class PlayerBuilder
     {
+        public delegate void onPreprocessPlayerBuild();
+        public delegate void onPostprocessPlayerBuild();
+
+        static public event onPreprocessPlayerBuild OnPreprocessPlayerBuild;
+        static public event onPostprocessPlayerBuild OnPostprocessPlayerBuild;
+
         /// <summary>
         /// 构建Player接口（唯一）
         /// </summary>
@@ -33,6 +39,8 @@ namespace Framework.AssetManagement.GameBuilder
                 Directory.Delete(outputPath, true);
             Directory.CreateDirectory(outputPath);
             Debug.Log($"        Player Output: {outputPath}");
+
+            OnPreprocessPlayerBuild?.Invoke();
 
             // 先更新版本号
             AppVersion version = para.SetAppVersion();
@@ -72,6 +80,8 @@ namespace Framework.AssetManagement.GameBuilder
                 }
             }
             para.RestorePlayerSettings();
+
+            OnPostprocessPlayerBuild?.Invoke();
 
             if (!Application.isBatchMode)
             {
