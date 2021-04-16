@@ -14,61 +14,17 @@ namespace Framework.AssetManagement.GameBuilder
 {
     public class BundleBuilder
     {
+        public delegate void onPreprocessBundleBuild();
+        public delegate void onPostprocessBundleBuild();
+
+        static public event onPreprocessBundleBuild OnPreprocessBundleBuild;
+        static public event onPostprocessBundleBuild OnPostprocessBundleBuild;
+
         /// <summary>
         /// 构建Bundles接口（唯一）
         /// </summary>
         /// <param name="para"></param>
-        /// <returns></returns>
-        // static public AssetBundleManifest BuildAssetBundles(BundleBuilderSetting para)
-        // {
-        //     if (para == null)
-        //     {
-        //         Debug.LogError($"BundleBuilderSetting para == null");
-        //         if (Application.isBatchMode)
-        //         {
-        //             EditorApplication.Exit(1);
-        //         }
-        //         return null;
-        //     }
-
-        //     Debug.Log("Begin Build AssetBundles");
-
-        //     // step 1. create directory
-        //     string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
-        //     if (Directory.Exists(outputPath))
-        //         Directory.Delete(outputPath, true);
-        //     Directory.CreateDirectory(outputPath);
-        //     Debug.Log($"        Bundles Output: {outputPath}");
-
-        //     // step 2. build bundles
-        //     AssetBundleManifest manifest = BuildPipeline.BuildAssetBundles(outputPath, para.GenerateOptions(), EditorUserBuildSettings.activeBuildTarget);
-        //     Debug.Log($"        BuildAssetBundleOptions: {para.GenerateOptions()}");
-
-        //     // step 3. copy bundles to streamingAssets
-        //     if (manifest != null)
-        //     {
-        //         CopyAssetBundlesToStreamingAssets(outputPath);
-        //         Debug.Log($"        Copy bundles to streaming assets");
-        //     }
-
-        //     Debug.Log($"        BundleSettings: {para.ToString()}");
-
-        //     if(manifest != null)
-        //     {
-        //         Debug.Log($"End Build AssetBundles: Succeeded");
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError($"End Build AssetBundles: Failed");
-        //         if (Application.isBatchMode)
-        //         {
-        //             EditorApplication.Exit(1);
-        //         }
-        //     }
-
-        //     return manifest;
-        // }
-
+        /// <returns></returns>        
         static public bool BuildAssetBundles(BundleBuilderSetting para)
         {
             if (para == null)
@@ -82,6 +38,8 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             Debug.Log("Begin Build AssetBundles");
+
+            OnPreprocessBundleBuild?.Invoke();
 
             // step 1. create directory
             string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
@@ -110,6 +68,8 @@ namespace Framework.AssetManagement.GameBuilder
 
             // step 4. 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
             BuildBundleFileList();
+
+            OnPostprocessBundleBuild?.Invoke();
 
             return true;
         }

@@ -14,11 +14,14 @@ static public class XLuaConfig
     {
         GeneratorConfig.common_path = UnityEngine.Application.dataPath + "/Application/XLua/Gen/";
 
+        BundleBuilder.OnPreprocessBundleBuild += OnPreprocessBundleBuild;
+        BundleBuilder.OnPostprocessBundleBuild += OnPostprocessBundleBuild;
         PlayerBuilder.OnPreprocessPlayerBuild += OnPreprocessPlayerBuild;
     }
 
-    static private void OnPreprocessPlayerBuild()
+    static private void OnPreprocessBundleBuild()
     {
+        Debug.Log("OnPreprocessBundleBuild");
         // step 1. 把XLua/Gen下lua脚本复制到Temp
 
         // step 2. 修改扩展名为*.bytes
@@ -26,8 +29,16 @@ static public class XLuaConfig
         // step 3. 设置更名后lua脚本的bundle name
 
         // step 4. 删除老的lua脚本
+    }
 
-        // step 5. 重新编译脚本
+    static private void OnPostprocessBundleBuild()
+    {
+        Debug.Log("OnPostprocessBundleBuild");
+    }
+
+    static private void OnPreprocessPlayerBuild()
+    {
+        // 重新生成代码
         DelegateBridge.Gen_Flag = true;
         Generator.ClearAll();
         Generator.GenAll();

@@ -18,6 +18,9 @@ namespace Framework.AssetManagement.AssetBuilder
         /// 移动操作：movedAssets, movedFromAssetPaths从哪里移动至哪里
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
+            if(UnityEngine.Application.isBatchMode)
+                return;
+                
             for (int i = 0; i < importedAssets.Length; ++i)
             {
                 // UnityEngine.Debug.Log($"import: {importedAssets[i]}");
