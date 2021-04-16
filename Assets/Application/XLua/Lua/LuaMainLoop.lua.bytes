@@ -7,4 +7,4 @@ LastEditors: xukun
 LastEditTime: 2021-04-14 22:51:24
 --]]
 print("hello world...")
-require 'Test1.lua'
+require 'core/Test1.lua'

@@ -1,11 +1,11 @@
 {
-  "Count": 39,
-  "TotalSize": 32762206,
+  "Count": 40,
+  "TotalSize": 32762650,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "d14387fe0ffe0bf1f66a4273dbdfd0e6",
-      "Size": 3017
+      "FileHash": "f8aa2ec92dcc2f43ed72f46a552e282f",
+      "Size": 3047
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -89,8 +89,13 @@
     },
     {
       "BundleName": "assets/application/xlua/lua.ab",
-      "FileHash": "1b90cd6011c4b987e51606c9d44b9768",
-      "Size": 618
+      "FileHash": "edc931cc170515b8209e3b84daf1f3ef",
+      "Size": 539
+    },
+    {
+      "BundleName": "assets/application/xlua/lua/core.ab",
+      "FileHash": "e944323b28dc93d97c5e09f7a7bc16d1",
+      "Size": 493
     },
     {
       "BundleName": "assets/framework/core/assetmanagement/runtime/tests/res/audio.ab",
