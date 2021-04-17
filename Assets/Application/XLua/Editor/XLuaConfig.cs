@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,8 @@ using Framework.AssetManagement.GameBuilder;
 [InitializeOnLoad]
 static public class XLuaConfig
 {
+    static private string s_LuaRootPath = "assets/application/xlua/lua";
+
     static XLuaConfig()
     {
         GeneratorConfig.common_path = UnityEngine.Application.dataPath + "/Application/XLua/Gen/";
@@ -22,13 +25,38 @@ static public class XLuaConfig
     static private void OnPreprocessBundleBuild()
     {
         Debug.Log("OnPreprocessBundleBuild");
-        // step 1. 把XLua/Gen下lua脚本复制到Temp
 
-        // step 2. 修改扩展名为*.bytes
+        // step 1. 把s_LuaRootPath下lua脚本复制到Temp/Lua，并添加后缀名.bytes
+        const string targetPath = "Assets/Temp/Lua";
+        if(Directory.Exists(targetPath))
+        {
+            Directory.Delete(targetPath, true);
+        }
+        Directory.CreateDirectory(targetPath);
 
-        // step 3. 设置更名后lua脚本的bundle name
+        Framework.Core.Editor.EditorUtility.CopyUnityAsset(s_LuaRootPath, targetPath, ".bytes");
+        
+        // step 2. 设置更名后lua脚本的bundle name
+        string[] guids = AssetDatabase.FindAssets("", new string[] {targetPath});
+        List<string> directoryPathList = new List<string>();
+        directoryPathList.Add(targetPath);
+        foreach(var guid in guids)
+        {
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            if(Directory.Exists(assetPath))
+                directoryPathList.Add(assetPath);
+        }
 
-        // step 4. 删除老的lua脚本
+        string srcRoot = s_LuaRootPath.Substring(0, s_LuaRootPath.LastIndexOf("/")).ToLower();        // "assets/application/xlua"
+        string dstRoot = targetPath.Substring(0, targetPath.LastIndexOf("/")).ToLower();              // "assets/temp"
+        foreach(var dirPath in directoryPathList)
+        {
+            AssetImporter ti = AssetImporter.GetAtPath(dirPath);
+            if(ti != null)
+            {
+                ti.assetBundleName = string.Format($"{srcRoot}/{dirPath.Substring(dstRoot.Length)}.ab");
+            }
+        }
     }
 
     static private void OnPostprocessBundleBuild()

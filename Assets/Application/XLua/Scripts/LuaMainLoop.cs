@@ -57,7 +57,7 @@ namespace Application.Runtime
 
 	    static private byte[] CustomLoaderFromEditor(ref string filepath)
         {
-            filepath = string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}.bytes");
+            filepath = string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}");
             string txtString = System.IO.File.ReadAllText(filepath);
             return System.Text.Encoding.UTF8.GetBytes(txtString);
         }

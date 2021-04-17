@@ -97,7 +97,7 @@ namespace Framework.AssetManagement.GameBuilder
                     string newPath = EditorUtility.OpenFolderPanel("", m_outputPathProp.stringValue, "");
                     if (!string.IsNullOrEmpty(newPath))
                     {
-                        m_outputPathProp.stringValue = Utility.GetRelativeProjectPath(newPath);
+                        m_outputPathProp.stringValue = Utility.GetProjectPath(newPath);
                     }
                 }
                 EditorGUILayout.EndHorizontal();

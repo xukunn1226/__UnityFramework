@@ -178,6 +178,7 @@ namespace Framework.Core.Editor
             return data;
         }
 
+        // 复制源目录下所有文件至目标目录（深度遍历）
         static public void CopyDirectory(string sourcePath, string destinationPath)
         {
             DirectoryInfo info = new DirectoryInfo(sourcePath);
@@ -194,6 +195,35 @@ namespace Framework.Core.Editor
                 else                                    //如果是文件夹，新建文件夹，递归
                 {
                     CopyDirectory(fsi.FullName, destName);
+                }
+            }
+        }
+
+        // 复制sourcePath目录下的所有资源至目标目录，并逐文件添加后缀名suffix
+        static public void CopyUnityAsset(string sourcePath, string destinationPath, string suffix = null)
+        {
+            DirectoryInfo srcDir = new DirectoryInfo(sourcePath);
+            if(!srcDir.Exists)
+                throw new System.InvalidOperationException($"The path ({sourcePath}) not exists");
+
+            Directory.CreateDirectory(destinationPath);
+
+            foreach(FileSystemInfo fsi in srcDir.GetFileSystemInfos())
+            {
+                if(fsi is System.IO.FileInfo)
+                {
+                    if(!fsi.FullName.EndsWith(".meta"))
+                    {
+                        string oldPath = Utility.GetProjectPath(fsi.FullName);
+                        string newPath = string.Format($"{Utility.GetProjectPath(destinationPath)}/{fsi.Name + (string.IsNullOrEmpty(suffix) ? "" : suffix)}");
+                        AssetDatabase.CopyAsset(oldPath, newPath);
+                    }
+                }
+                else
+                {
+                    string oldPath = Utility.GetProjectPath(fsi.FullName);
+                    string newPath = Utility.GetProjectPath(Path.Combine(destinationPath, fsi.Name));
+                    CopyUnityAsset(oldPath, newPath, suffix);
                 }
             }
         }

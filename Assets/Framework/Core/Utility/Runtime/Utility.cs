@@ -65,9 +65,10 @@ namespace Framework.Core
         /// </summary>
         /// <param name="fullPath"></param>
         /// <returns>e.g. "Assets/Res/tex.png"</returns>
-        static public string GetRelativeProjectPath(string fullPath)
+        static public string GetProjectPath(string fullPath)
         {
             string projectFolder = Application.dataPath.Replace("Assets", "");
+            fullPath = fullPath.Replace("\\", "/");
             if(fullPath.StartsWith(projectFolder, System.StringComparison.OrdinalIgnoreCase))
             {
                 return fullPath.Substring(projectFolder.Length);
