@@ -81,6 +81,15 @@
 * OBB管理：判断是分包方式还是整包方式，分包方式才需要下载obb
 * bundle加密   https://www.xuanyusong.com/archives/4607
 * 一种Shader变体收集打包以及编译优化的思路  https://answer.uwa4d.com/question/5da86670e84db43d6efbda72
+* RTS中的避障算法
+	https://zhuanlan.zhihu.com/p/109556568
+	https://gamma.cs.unc.edu/RVO/
+	https://gamma.cs.unc.edu/RVO2/
+	https://gamma.cs.unc.edu/ORCA/
+	https://github.com/snape
+	https://blog.csdn.net/KubilityDef/article/details/79483414
+	https://www.jianshu.com/p/8fc4e90e3850  RVO（Reciprocal Velocity Obstacles）障碍物规避算法
+	http://www.red3d.com/cwr/boids/
 
 
 
