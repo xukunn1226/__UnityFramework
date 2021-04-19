@@ -80,8 +80,8 @@ UserSettings/
 !Assets/Framework/AssetManagement/Deployment/
 [Aa]ssets/RedirectorCache
 [Aa]ssets/RedirectorCache.meta
-[Aa]ssets/Application/XLua/Gen
-[Aa]ssets/Application/XLua/Gen.meta
+#[Aa]ssets/Application/XLua/Gen
+#[Aa]ssets/Application/XLua/Gen.meta
 
 
 # some plugins

@@ -72,6 +72,94 @@ static public class XLuaConfig
         Generator.GenAll();
     }
 
+
+
+
+
+    static List<string> exclude = new List<string> {
+       "HideInInspector", "ExecuteInEditMode",
+       "AddComponentMenu", "ContextMenu",
+       "RequireComponent", "DisallowMultipleComponent",
+       "SerializeField", "AssemblyIsEditorAssembly",
+       "Attribute", "Types",
+       "UnitySurrogateSelector", "TrackedReference",
+       "TypeInferenceRules", "FFTWindow",
+       "RPC", "Network", "MasterServer",
+       "BitStream", "HostData",
+       "ConnectionTesterStatus", "GUI", "EventType",
+       "EventModifiers", "FontStyle", "TextAlignment",
+       "TextEditor", "TextEditorDblClickSnapping",
+       "TextGenerator", "TextClipping", "Gizmos",
+       "ADBannerView", "ADInterstitialAd",
+       "Android", "Tizen", "jvalue",
+       "iPhone", "iOS", "Windows", "CalendarIdentifier",
+       "CalendarUnit", "CalendarUnit",
+       "ClusterInput", "FullScreenMovieControlMode",
+       "FullScreenMovieScalingMode", "Handheld",
+       "LocalNotification", "NotificationServices",
+       "RemoteNotificationType", "RemoteNotification",
+       "SamsungTV", "TextureCompressionQuality",
+       "TouchScreenKeyboardType", "TouchScreenKeyboard",
+       "MovieTexture", "UnityEngineInternal",
+       "Terrain", "Tree", "SplatPrototype",
+       "DetailPrototype", "DetailRenderMode",
+       "MeshSubsetCombineUtility", "AOT", "Social", "Enumerator",
+       "SendMouseEvents", "Cursor", "Flash", "ActionScript",
+       "OnRequestRebuild", "Ping",
+       "ShaderVariantCollection", "SimpleJson.Reflection",
+       "CoroutineTween", "GraphicRebuildTracker",
+       "Advertisements", "UnityEditor", "WSA",
+       "EventProvider", "Apple",
+       "ClusterInput", "Motion",
+       "UnityEngine.UI.ReflectionMethodsCache", "NativeLeakDetection",
+       "NativeLeakDetectionMode", "WWWAudioExtensions", "UnityEngine.Experimental",
+    };
+
+    static bool isExcluded(Type type)
+    {
+       var fullName = type.FullName;
+       for (int i = 0; i < exclude.Count; i++)
+       {
+           if (fullName.Contains(exclude[i]))
+           {
+               return true;
+           }
+       }
+       return false;
+    }
+
+    // [LuaCallCSharp]
+    // public static IEnumerable<Type> LuaCallCSharp
+    // {
+    //    get
+    //    {
+    //        List<string> namespaces = new List<string>() // 在这里添加名字空间
+    //        {
+    //            "UnityEngine",
+    //            "UnityEngine.UI"
+    //        };
+    //        var unityTypes = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+    //                          where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
+    //                          from type in assembly.GetExportedTypes()
+    //                          where type.Namespace != null && namespaces.Contains(type.Namespace) && !isExcluded(type)
+    //                                  && type.BaseType != typeof(MulticastDelegate) && !type.IsInterface && !type.IsEnum
+    //                          select type);
+
+    //        string[] customAssemblys = new string[] {
+    //            "Assembly-CSharp",
+    //        };
+    //        var customTypes = (from assembly in customAssemblys.Select(s => Assembly.Load(s))
+    //                           from type in assembly.GetExportedTypes()
+    //                           where type.Namespace == null || !type.Namespace.StartsWith("XLua")
+    //                                   && type.BaseType != typeof(MulticastDelegate) && !type.IsInterface && !type.IsEnum
+    //                           select type);
+    //        return unityTypes.Concat(customTypes);
+    //    }
+    // }
+
+
+
+
     //lua中要使用到C#库的配置，比如C#标准库，或者Unity API，第三方库等。
     [LuaCallCSharp]
     public static List<Type> LuaCallCSharp = new List<Type>() {
