@@ -244,17 +244,17 @@ static public class XLuaConfig
                             where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder) && !isExcluded(assembly)
                             select assembly );
 
-        foreach(var ass in assemblies)
-            Debug.Log(ass.GetName());
+        // foreach(var ass in assemblies)
+        //     Debug.Log(ass.GetName());
 
         var unityTypes = (  from ass in assemblies
                             from type in ass.GetExportedTypes()
-                            where /*type.Namespace != null && namespaces.Contains(type.Namespace) &&*/ !isExcluded(type)
+                            where (type.Namespace != null && namespaces.Contains(type.Namespace)) && !isExcluded(type)
                             && type.BaseType != typeof(MulticastDelegate) && !type.IsInterface && !type.IsEnum
                             select type );
 
-        // foreach(var type in unityTypes)
-        //     Debug.Log(type);
+        foreach(var type in unityTypes)
+            Debug.Log(type);
 
 
 
