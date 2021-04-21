@@ -90,7 +90,15 @@
 	https://blog.csdn.net/KubilityDef/article/details/79483414
 	https://www.jianshu.com/p/8fc4e90e3850  RVO（Reciprocal Velocity Obstacles）障碍物规避算法
 	http://www.red3d.com/cwr/boids/
-
+* 一种Shader变体收集和打包编译优化的思路
+	https://mp.weixin.qq.com/s/9_Wl-cm-4ZF2lAl4FLnYxg
+* Unity游戏性能优化之内存篇
+	https://mp.weixin.qq.com/s/2VufiCiU7TT8rM9BK-CTZA
+	https://mp.weixin.qq.com/s/LWTDjqEY2YbZHZeksrtBvA
+	https://mp.weixin.qq.com/s/an36v8erNS7HKrh9HRylcQ
+* Unity CommandBuffer或是Camera重定向RenderTarget的ColorBuffer & DepthBuffer
+	https://blog.csdn.net/linjf520/article/details/104964803
+			
 
 
 
