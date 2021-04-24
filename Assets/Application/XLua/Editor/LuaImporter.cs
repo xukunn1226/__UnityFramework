@@ -14,15 +14,58 @@ using UnityEditor.AssetImporters;
 using UnityEditor.Experimental.AssetImporters;
 #endif
 
+
 [ScriptedImporter(2, new[] {"lua"})]
 public class LuaImporter : ScriptedImporter
 {
-    const string Tag = "LuaImporter";
-    public static bool compile = false; // compile to lua byte code
-    public static bool strip = false;   // strip lua debug info
-    public static bool encode = true;
+    public static bool compile  = false;    // compile to lua byte code
+    public static bool strip    = false;    // strip lua debug info
+    public static bool encode   = true;
 
-    public static void Compile(string exe, string prmt)
+    public override void OnImportAsset(AssetImportContext ctx)
+    {
+        Debug.Log($"------------OnImportAsset: {ctx.assetPath}");
+
+        var prefax = Path.GetExtension(ctx.assetPath).Substring(1);
+
+        var asset = LuaAsset.CreateInstance<LuaAsset>();
+        byte[] data;
+        if (compile)
+        {
+            // compile to lua byte code
+            var outDir = $"obj/{Path.GetDirectoryName(ctx.assetPath)}";
+            if (!Directory.Exists(outDir))
+                Directory.CreateDirectory(outDir);
+            var outPath = $"obj/{ctx.assetPath}c";
+            #if UNITY_EDITOR_OSX
+            var luac = "build/luac/build_unix/luac";
+            #elif UNITY_EDITOR_WIN
+            var luac = "build/luac/build32/luac.exe";
+            #elif UNITY_EDITOR_WIN64
+            var luac = "build/luac/build64/luac.exe";
+            #endif
+            var prmt = $"{(strip ? "-s" : "")} -o {outPath} -- {ctx.assetPath}";
+            Compile(luac, prmt);
+            data = File.ReadAllBytes(outPath);
+        }
+        else
+        {
+            data = File.ReadAllBytes(ctx.assetPath);
+        }
+
+        // TODO: your encode function, like xxtea
+        if(encode)
+        {
+            data = Security.XXTEA.Encrypt(data, LuaAsset.LuaDecodeKey);
+        }
+        
+        asset.data = data;
+        asset.encode = encode;
+        ctx.AddObjectToAsset("main obj", asset, LoadIconTexture(prefax));
+        ctx.SetMainObject(asset);
+    }
+
+    private static void Compile(string exe, string prmt)
     {
         bool finished = false;
         var process = new System.Diagnostics.Process();
@@ -68,61 +111,22 @@ public class LuaImporter : ScriptedImporter
         // UnityEngine.Debug.Log("finished: " + process.ExitCode);
         EditorUtility.ClearProgressBar();
     }
-            
-    public override void OnImportAsset(AssetImportContext ctx)
-    {
-        var prefax = Path.GetExtension(ctx.assetPath).Substring(1);
-
-        var asset = LuaAsset.CreateInstance<LuaAsset>();
-        byte[] data;
-        if (compile)
-        {
-            // compile to lua byte code
-            var outDir = $"obj/{Path.GetDirectoryName(ctx.assetPath)}";
-            if (!Directory.Exists(outDir))
-                Directory.CreateDirectory(outDir);
-            var outPath = $"obj/{ctx.assetPath}c";
-            #if UNITY_EDITOR_OSX
-            var luac = "build/luac/build_unix/luac";
-            #elif UNITY_EDITOR_WIN
-            var luac = "build/luac/build32/luac.exe";
-            #elif UNITY_EDITOR_WIN64
-            var luac = "build/luac/build64/luac.exe";
-            #endif
-            var prmt = $"{(strip ? "-s" : "")} -o {outPath} -- {ctx.assetPath}";
-            Compile(luac, prmt);
-            data = File.ReadAllBytes(outPath);
-        }
-        else
-        {
-            data = File.ReadAllBytes(ctx.assetPath);
-        }
-
-        // TODO: your encode function, like xxtea
-        if(encode)
-        {
-            data = Security.XXTEA.Encrypt(data, LuaAsset.LuaDecodeKey);
-        }
-        
-        asset.data = data;
-        asset.encode = encode;
-        ctx.AddObjectToAsset("main obj", asset, LoadIconTexture(prefax));
-        ctx.SetMainObject(asset);
-    }
-
+    
     private Texture2D LoadIconTexture(string prefax)
     {
-        return AssetDatabase.LoadAssetAtPath("Assets/XLua/Editor/lua.png", typeof(Texture2D)) as
+        return AssetDatabase.LoadAssetAtPath("Assets/Application/XLua/Editor/lua.png", typeof(Texture2D)) as
             Texture2D;
     }
 }
 
-    
+
+#if UNITY_EDITOR
 [CustomEditor(typeof(LuaAsset))]
-public class LuaAssetEditor :  UnityEditor.Editor
+public class LuaAssetEditor : Editor
 {
     private static bool decode = true;
     private LuaAsset mTarget;
+
     private void OnEnable()
     {
         mTarget = target as LuaAsset;
@@ -131,10 +135,10 @@ public class LuaAssetEditor :  UnityEditor.Editor
     public override void OnInspectorGUI()
     {
         GUI.enabled = true;
-        EditorGUILayout.LabelField("Import Config(重新导入时生效)");
+        EditorGUILayout.LabelField("Global Config (need reimport asset)");
         {
             ++EditorGUI.indentLevel;
-            LuaImporter.compile = EditorGUILayout.Toggle("compile(编译为字节码)", LuaImporter.compile);
+            LuaImporter.compile = EditorGUILayout.Toggle("compile to lua byte code", LuaImporter.compile);
             if (LuaImporter.compile)
             {
                 ++EditorGUI.indentLevel;
@@ -142,32 +146,34 @@ public class LuaAssetEditor :  UnityEditor.Editor
                 --EditorGUI.indentLevel;
             }
 
-            LuaImporter.encode = EditorGUILayout.Toggle("encode(加密)", LuaImporter.encode);
+            LuaImporter.encode = EditorGUILayout.Toggle("encode", LuaImporter.encode);
             --EditorGUI.indentLevel;
         }
         EditorGUILayout.Space();
-        
-        EditorGUILayout.LabelField("Display Config");
+
+        EditorGUILayout.LabelField("Preview");
         {
             ++EditorGUI.indentLevel;
             GUI.enabled = false;
-            EditorGUILayout.Toggle("encoded(加密)", mTarget.encode);
+            EditorGUILayout.Toggle("encoded", mTarget.encode);
             GUI.enabled = true;
-            
-            if(mTarget.encode)
+
+            if (mTarget.encode)
                 decode = EditorGUILayout.Toggle("decode", decode);
             --EditorGUI.indentLevel;
         }
-        
+
+        // draw lua script text
         var text = string.Empty;
         if (mTarget.encode && decode)
         {
-            // TODO: your decode function
             text = Encoding.UTF8.GetString(Security.XXTEA.Decrypt(mTarget.data, LuaAsset.LuaDecodeKey));
-        }else
+        }
+        else
         {
             text = Encoding.UTF8.GetString(mTarget.data);
         }
+
         var MaxTextPreviewLength = 4096;
         if (text.Length > MaxTextPreviewLength + 3)
         {
@@ -180,5 +186,26 @@ public class LuaAssetEditor :  UnityEditor.Editor
         rect.y -= 3f;
         rect.width = EditorGUIUtility.currentViewWidth + 1f;
         GUI.Box(rect, text, style);
+    }
+}
+#endif
+
+
+class AutoSetLabelForLuaScript : AssetPostprocessor
+{
+    static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+    {
+        if(UnityEngine.Application.isBatchMode)
+            return;
+        
+        foreach (string str in importedAssets)
+        {
+            if (str.ToLower().EndsWith(".lua"))
+            {
+                var lua_obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(str);
+ 
+                AssetDatabase.SetLabels(lua_obj, new string[] { "lua" });
+            }
+        }
     }
 }

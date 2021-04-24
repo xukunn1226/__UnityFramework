@@ -28,6 +28,11 @@ static public class XLuaConfig
     {
         Debug.Log("OnPreprocessBundleBuild");
 
+        // BuildLuaAssetBundle();       // 另有更优方案，见LuaAsset, LuaImporter
+    }
+
+    static private void BuildLuaAssetBundle()
+    {
         // step 1. 把s_LuaRootPath下lua脚本复制到Temp/Lua，并添加后缀名.bytes
         const string targetPath = "Assets/Temp/Lua";
         if(Directory.Exists(targetPath))

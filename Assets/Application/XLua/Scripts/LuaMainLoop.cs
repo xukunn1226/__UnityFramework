@@ -10,7 +10,8 @@ namespace Application.Runtime
     {
         private const string m_CustomLuaPath = "assets/application/xlua/lua";
         static private LuaEnv m_LuaEnv;
-        static private Dictionary<string, AssetLoader<TextAsset>> m_LuaScriptLoaders = new Dictionary<string, AssetLoader<TextAsset>>();
+        // static private Dictionary<string, AssetLoader<TextAsset>> m_LuaScriptLoaders = new Dictionary<string, AssetLoader<TextAsset>>();
+        static private Dictionary<string, AssetLoader<LuaAsset>> m_LuaScriptLoaders = new Dictionary<string, AssetLoader<LuaAsset>>();
 
         static public void Init()
         {
@@ -62,22 +63,42 @@ namespace Application.Runtime
             return System.Text.Encoding.UTF8.GetBytes(txtString);
         }
 
+        // lua脚本当作TextAsset加载
+        // static private byte[] CustomLoaderFromBundle(ref string filepath)
+        // {
+        //     if(m_LuaScriptLoaders.ContainsKey(filepath))
+        //     {
+        //         Debug.LogError($"lua script [{filepath}] has already loaded.");
+        //         return null;
+        //     }
+            
+        //     AssetLoader<TextAsset> loader = ResourceManager.LoadAsset<TextAsset>(string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}.bytes"));
+        //     if(loader == null || loader.asset == null)
+        //     {
+        //         Debug.LogError($"failed to load TextAsset from {m_CustomLuaPath}/{filepath}");
+        //         return null;
+        //     }
+        //     m_LuaScriptLoaders.Add(filepath, loader);
+        //     return loader.asset.bytes;
+        // }
+
+        // lua脚本当作LuaAsset加载
         static private byte[] CustomLoaderFromBundle(ref string filepath)
         {
-            if(m_LuaScriptLoaders.ContainsKey(filepath))
+            if (m_LuaScriptLoaders.ContainsKey(filepath))
             {
                 Debug.LogError($"lua script [{filepath}] has already loaded.");
                 return null;
             }
-            
-            AssetLoader<TextAsset> loader = ResourceManager.LoadAsset<TextAsset>(string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}.bytes"));
-            if(loader == null || loader.asset == null)
+
+            AssetLoader<LuaAsset> loader = ResourceManager.LoadAsset<LuaAsset>(string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}"));
+            if (loader == null || loader.asset == null)
             {
                 Debug.LogError($"failed to load TextAsset from {m_CustomLuaPath}/{filepath}");
                 return null;
             }
             m_LuaScriptLoaders.Add(filepath, loader);
-            return loader.asset.bytes;
+            return loader.asset.Require();
         }
     }
 }
