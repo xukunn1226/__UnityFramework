@@ -24,10 +24,6 @@ public class LuaImporter : ScriptedImporter
 
     public override void OnImportAsset(AssetImportContext ctx)
     {
-        Debug.Log($"99999999999999999999------------OnImportAsset: {ctx.assetPath}");
-
-        var prefax = Path.GetExtension(ctx.assetPath).Substring(1);
-
         var asset = LuaAsset.CreateInstance<LuaAsset>();
         byte[] data;
         if (compile)
@@ -59,10 +55,9 @@ public class LuaImporter : ScriptedImporter
             data = Security.XXTEA.Encrypt(data, LuaAsset.LuaDecodeKey);
         }
         
-        Debug.Log($"{ctx.assetPath}     len: {data.Length}");
         asset.data = data;
         asset.encode = encode;
-        ctx.AddObjectToAsset("main obj", asset, LoadIconTexture(prefax));
+        ctx.AddObjectToAsset("main obj", asset, LoadIconTexture(Path.GetExtension(ctx.assetPath).Substring(1)));
         ctx.SetMainObject(asset);
     }
 
@@ -113,7 +108,7 @@ public class LuaImporter : ScriptedImporter
         EditorUtility.ClearProgressBar();
     }
     
-    private Texture2D LoadIconTexture(string prefax)
+    private Texture2D LoadIconTexture(string prefix)
     {
         return AssetDatabase.LoadAssetAtPath("Assets/Application/XLua/Editor/lua.png", typeof(Texture2D)) as
             Texture2D;
