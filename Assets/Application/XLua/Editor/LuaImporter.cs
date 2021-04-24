@@ -24,7 +24,7 @@ public class LuaImporter : ScriptedImporter
 
     public override void OnImportAsset(AssetImportContext ctx)
     {
-        Debug.Log($"------------OnImportAsset: {ctx.assetPath}");
+        Debug.Log($"99999999999999999999------------OnImportAsset: {ctx.assetPath}");
 
         var prefax = Path.GetExtension(ctx.assetPath).Substring(1);
 
@@ -59,6 +59,7 @@ public class LuaImporter : ScriptedImporter
             data = Security.XXTEA.Encrypt(data, LuaAsset.LuaDecodeKey);
         }
         
+        Debug.Log($"{ctx.assetPath}     len: {data.Length}");
         asset.data = data;
         asset.encode = encode;
         ctx.AddObjectToAsset("main obj", asset, LoadIconTexture(prefax));
@@ -137,6 +138,7 @@ public class LuaAssetEditor : Editor
         GUI.enabled = true;
         EditorGUILayout.LabelField("Global Config (need reimport asset)");
         {
+            EditorGUI.BeginChangeCheck();
             ++EditorGUI.indentLevel;
             LuaImporter.compile = EditorGUILayout.Toggle("compile to lua byte code", LuaImporter.compile);
             if (LuaImporter.compile)
@@ -148,6 +150,15 @@ public class LuaAssetEditor : Editor
 
             LuaImporter.encode = EditorGUILayout.Toggle("encode", LuaImporter.encode);
             --EditorGUI.indentLevel;
+            if(EditorGUI.EndChangeCheck())
+            {
+                string[] guids = AssetDatabase.FindAssets("t:LuaAsset", new string[] {XLuaConfig.s_LuaRootPath});
+                foreach(var guid in guids)
+                {
+                    AssetDatabase.ImportAsset(AssetDatabase.GUIDToAssetPath(guid));
+                }
+                AssetDatabase.Refresh();
+            }
         }
         EditorGUILayout.Space();
 

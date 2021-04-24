@@ -13,7 +13,7 @@ using System.Linq;
 [InitializeOnLoad]
 static public class XLuaConfig
 {
-    static private string s_LuaRootPath = "assets/application/xlua/lua";
+    static public string s_LuaRootPath = "assets/application/xlua/lua";
 
     static XLuaConfig()
     {
