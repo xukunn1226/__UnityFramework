@@ -63,9 +63,7 @@ public class LuaImporter : ScriptedImporter
 
     private static void Compile(string exe, string prmt)
     {
-        bool finished = false;
         var process = new System.Diagnostics.Process();
-        var processing = 0f;
         try
         {
             var pi = new System.Diagnostics.ProcessStartInfo(exe, prmt);

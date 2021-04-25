@@ -98,7 +98,13 @@
 	https://mp.weixin.qq.com/s/an36v8erNS7HKrh9HRylcQ
 * Unity CommandBuffer或是Camera重定向RenderTarget的ColorBuffer & DepthBuffer
 	https://blog.csdn.net/linjf520/article/details/104964803
-			
+* XLua开发环境的整合
+	pbc
+	luac
+	lua profiler
+	lua break ponit
+	与C#共享内存 https://github.com/Tencent/xLua/issues/764			
+	常用库的集成 https://github.com/chexiongsheng/build_xlua_with_libs
 
 
 
