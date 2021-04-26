@@ -95,7 +95,7 @@
 	https://blog.csdn.net/zhiai315/article/details/113931422
 	http://www.meltycriss.com/2017/01/13/paper-rvo/
 	https://github.com/anders007/RVO/blob/master/%E7%A2%B0%E6%92%9E%E8%A7%84%E9%81%BF%E7%AE%97%E6%B3%95RVO(Reciprocal%20Velocity%20Obstacles)%E7%AE%80%E4%BB%8B.pdf
-	
+
 * 一种Shader变体收集和打包编译优化的思路
 	https://mp.weixin.qq.com/s/9_Wl-cm-4ZF2lAl4FLnYxg
 * Unity游戏性能优化之内存篇
@@ -111,6 +111,14 @@
 	lua break ponit
 	与C#共享内存 https://github.com/Tencent/xLua/issues/764			
 	常用库的集成 https://github.com/chexiongsheng/build_xlua_with_libs
+* UI框架功能划分
+	图集
+	DC可视化组件
+	修改基础控件的默认参数
+	HUD
+	红点系统
+	新手引导
+	
 
 
 
