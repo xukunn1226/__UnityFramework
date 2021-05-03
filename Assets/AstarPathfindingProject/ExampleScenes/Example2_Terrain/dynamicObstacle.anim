@@ -29,13 +29,13 @@ AnimationClip:
         outWeight: {x: 0.333, y: 0.333, z: 0.333}
       - serializedVersion: 3
         time: 10.017
-        value: {x: 0, y: 0, z: 14.946095}
-        inSlope: {x: 0, y: 0, z: 0.0012659838}
-        outSlope: {x: 0, y: 0, z: 0.0012659838}
+        value: {x: 0, y: 0, z: 14.946}
+        inSlope: {x: 0, y: 0, z: 0.001}
+        outSlope: {x: 0, y: 0, z: 0.001}
         tangentMode: 0
         weightedMode: 0
-        inWeight: {x: 0.333, y: 0.333, z: 0.33333334}
-        outWeight: {x: 0.333, y: 0.333, z: 0.33333334}
+        inWeight: {x: 0.333, y: 0.333, z: 0.333}
+        outWeight: {x: 0.333, y: 0.333, z: 0.333}
       - serializedVersion: 3
         time: 10.033
         value: {x: 0, y: 0, z: 14.946}
@@ -43,8 +43,8 @@ AnimationClip:
         outSlope: {x: 0, y: 0, z: -0.013}
         tangentMode: 0
         weightedMode: 0
-        inWeight: {x: 0.33333334, y: 0.33333334, z: 0.333}
-        outWeight: {x: 0.33333334, y: 0.33333334, z: 0.333}
+        inWeight: {x: 0.333, y: 0.333, z: 0.333}
+        outWeight: {x: 0.333, y: 0.333, z: 0.333}
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -109,8 +109,8 @@ AnimationClip:
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+        inWeight: 0.333
+        outWeight: 0.333
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -146,8 +146,8 @@ AnimationClip:
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+        inWeight: 0.333
+        outWeight: 0.333
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -169,13 +169,13 @@ AnimationClip:
         outWeight: 0.333
       - serializedVersion: 3
         time: 10.017
-        value: 14.946095
-        inSlope: 0.0012659838
-        outSlope: 0.0012659838
+        value: 14.946
+        inSlope: 0.001
+        outSlope: 0.001
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+        inWeight: 0.333
+        outWeight: 0.333
       - serializedVersion: 3
         time: 10.033
         value: 14.946
