@@ -119,7 +119,18 @@
 	HUD
 	红点系统
 	新手引导
-
+* AOI
+	https://mp.weixin.qq.com/s/3srAV6SOW4CCIN57mYDYng
+	https://www.zhihu.com/question/43625409
+	https://zhuanlan.zhihu.com/p/56114206
+	https://blog.csdn.net/a374826954/article/details/17642587
+	https://gameinstitute.qq.com/community/detail/108545
+	https://blog.codingnow.com/2012/03/dev_note_13.html
+	https://blog.codingnow.com/2008/07/aoi.html
+	https://blog.codingnow.com/2008/11/aoi_server.html
+	https://www.cnblogs.com/persistentsnail/p/3294842.html
+	https://www.bookstack.cn/read/zinx/dadf967af9c153a4.md
+	http://www.cppblog.com/jaxe/archive/2014/10/17/148998.html
 
 
 
