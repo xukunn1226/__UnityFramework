@@ -11,7 +11,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         public string bundleName;
         public string assetName;
 
-        AssetLoader<UnityEngine.Object> loader;
+        AssetLoader<UnityEngine.Texture2D> loader;
         string info;
 
         private void Awake()
@@ -49,7 +49,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void StartTask()
         {
-            loader = AssetManager.LoadAsset<UnityEngine.Object>(bundleName, assetName);
+            loader = AssetManager.LoadAsset<UnityEngine.Texture2D>(bundleName, assetName);
 
             info = loader == null ? "fail to load: " : "sucess to load: ";
             info += assetName;

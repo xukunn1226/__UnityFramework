@@ -30,6 +30,18 @@ namespace Framework.Cache.Editor
             PrefabedPools = PoolManager.PrefabedPools;
 
             LRUPools = PoolManager.LRUPools;
+
+            EditorApplication.hierarchyChanged += ForceUpdate;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.hierarchyChanged -= ForceUpdate;
+        }
+
+        private void ForceUpdate()
+        {
+            Repaint();
         }
 
         public override void OnInspectorGUI()
