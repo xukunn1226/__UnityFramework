@@ -136,9 +136,14 @@
 	https://blog.csdn.net/u011265162/article/details/91048927
 * dll热更方案
 	https://blog.csdn.net/baidu_28955655/article/details/52661698
-	https://www.cnblogs.com/eniac1946/p/7244400.html
+	https://gameinstitute.qq.com/community/detail/124979
 	https://zhuanlan.zhihu.com/p/37291067
-	https://www.cnblogs.com/Leo_wl/p/4255533.html		
+	https://www.jianshu.com/p/ebb7a6080540
+	https://juejin.cn/post/6844903713635581965
+	https://www.yangzhenlin.com/unity-android-dll-hotupdate-encrypt/
+	http://blog.sina.cn/dpool/blog/s/blog_9e5d42ee0102vvtg.html
+	https://blog.csdn.net/u011643833/article/details/47261015
+	
 
 
 
