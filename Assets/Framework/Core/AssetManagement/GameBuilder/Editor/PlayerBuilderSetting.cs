@@ -134,6 +134,7 @@ namespace Framework.AssetManagement.GameBuilder
 
                 if(buildTargetGroup == BuildTargetGroup.Android)
                 {
+                    PlayerSettings.Android.targetArchitectures = AndroidArchitecture.All;
                     PlayerSettings.Android.useAPKExpansionFiles = para.useAPKExpansionFiles;
                     PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
                 }
