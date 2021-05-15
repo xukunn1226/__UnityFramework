@@ -243,7 +243,7 @@ PlayerSettings:
   useCustomBaseGradleTemplate: 0
   useCustomGradlePropertiesTemplate: 0
   useCustomProguardFile: 0
-  AndroidTargetArchitectures: 1
+  AndroidTargetArchitectures: -3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
   AndroidKeystoreName: '{inproject}: '
@@ -701,7 +701,7 @@ PlayerSettings:
     Android: 0
     Standalone: 0
   il2cppCompilerConfiguration:
-    Android: 0
+    Android: 2
   managedStrippingLevel:
     Android: 1
     Standalone: 1

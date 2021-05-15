@@ -1,11 +1,11 @@
 {
   "Count": 40,
-  "TotalSize": 35728802,
+  "TotalSize": 35654838,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "17bb038a0ab9482d43f118ed247c4ac4",
-      "Size": 3086
+      "FileHash": "d8990069da9fff9c20ed5f065a61787f",
+      "Size": 3090
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -34,8 +34,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/scenes.ab",
-      "FileHash": "383601efa345a9b8551143ae091b1dd6",
-      "Size": 1574056
+      "FileHash": "a23a330bfd5ae6af241eacd2a80a79ae",
+      "Size": 1602311
     },
     {
       "BundleName": "assets/application/tests/runtime/res/testspawnerring.ab",
@@ -84,8 +84,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/ui/atlases/misc.ab",
-      "FileHash": "e5e76c6a48f51e6adbbcb26de6df16ff",
-      "Size": 3216646
+      "FileHash": "7df6f63d37060ec2894dd9c0e5236d84",
+      "Size": 3216651
     },
     {
       "BundleName": "assets/application/xlua/lua.ab",
@@ -129,8 +129,8 @@
     },
     {
       "BundleName": "assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "36216f954f9c404e71c203c4e5da5d54",
-      "Size": 218720
+      "FileHash": "97a0b8f18374c535b086ca846ced07a5",
+      "Size": 149279
     },
     {
       "BundleName": "assets/framework/core/assetmanagement/runtime/tests/res/testunload.ab",
@@ -179,8 +179,8 @@
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/scenes.ab",
-      "FileHash": "9a28c0e8e511332655a566254039cf0f",
-      "Size": 101171
+      "FileHash": "6c25e889957c9bb1cfe30da74da4eed9",
+      "Size": 58384
     },
     {
       "BundleName": "assets/res/animationclip.ab",
@@ -199,8 +199,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "36ba42fbac7e7027312785d5e09cdc9b",
-      "Size": 98291
+      "FileHash": "450c2e192b79c6a6c378bd53037b2cd7",
+      "Size": 108291
     }
   ]
 }
