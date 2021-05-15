@@ -120,28 +120,25 @@ namespace Framework.AssetManagement.GameBuilder
             // PlayerSettings.bundleVersion = para.bundleVersion;
             // PlayerSettings.bundleVersion = version.ToString();
 
-            if(buildTargetGroup == BuildTargetGroup.Android || buildTargetGroup == BuildTargetGroup.iOS)
+            PlayerSettings.SetScriptingBackend(buildTargetGroup, para.useIL2CPP ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
+
+            if (para.useIL2CPP)
             {
-                PlayerSettings.SetScriptingBackend(buildTargetGroup, para.useIL2CPP ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
+                PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, para.il2CppCompilerConfiguration);
+            }
 
-                if(para.useIL2CPP)
-                {
-                    PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, para.il2CppCompilerConfiguration);
-                }
+            PlayerSettings.SetMobileMTRendering(buildTargetGroup, para.useMTRendering);
+            PlayerSettings.MTRendering = para.useMTRendering;
 
-                PlayerSettings.SetMobileMTRendering(buildTargetGroup, para.useMTRendering);
-                PlayerSettings.MTRendering = para.useMTRendering;
-
-                if(buildTargetGroup == BuildTargetGroup.Android)
-                {
-                    PlayerSettings.Android.targetArchitectures = AndroidArchitecture.All;
-                    PlayerSettings.Android.useAPKExpansionFiles = para.useAPKExpansionFiles;
-                    PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
-                }
-                else
-                {
-                    PlayerSettings.iOS.buildNumber = version.BuildNumber.ToString();
-                }
+            if(buildTargetGroup == BuildTargetGroup.Android)
+            {
+                PlayerSettings.Android.targetArchitectures = para.useIL2CPP ? AndroidArchitecture.All : AndroidArchitecture.ARMv7;
+                PlayerSettings.Android.useAPKExpansionFiles = para.useAPKExpansionFiles;
+                PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
+            }
+            else if(buildTargetGroup == BuildTargetGroup.iOS)
+            {
+                PlayerSettings.iOS.buildNumber = version.BuildNumber.ToString();
             }
 
             // final macro defines = PlayerSetting.ScriptingDefineSymbols + PlayerBuilderSetting.macroDefines - PlayerBuilderSetting.excludedDefines
