@@ -61,7 +61,7 @@ namespace Framework.AssetManagement.AssetBuilder
             // step 1. skip directory path
             if(Directory.Exists(assetPath)) // 忽略对文件夹的处理，只有当文件夹内有文件增、删等操作才处理
             {
-                ClearBundleNameIfNotMeetSpecification(assetPath);
+                // ClearBundleNameIfNotMeetSpecification(assetPath);
                 return;
             }
 
