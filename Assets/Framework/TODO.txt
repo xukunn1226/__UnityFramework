@@ -141,7 +141,9 @@
 	http://blog.sina.cn/dpool/blog/s/blog_9e5d42ee0102vvtg.html   Unity Android动态更新Assembly-CSharp.dll
 	https://blog.csdn.net/u011643833/article/details/47261015   【Unity】代码加密（一）编译libmono
 	https://www.jianshu.com/p/7b205ebcb54a  通过IL2CPP热更代码
-
+* Unity内置资源如何打包避免冗余
+	https://mp.weixin.qq.com/s/thEI6NoyCrWnkrqF9Y346g
+	
 
 
 
