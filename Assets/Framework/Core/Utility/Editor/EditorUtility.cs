@@ -227,5 +227,44 @@ namespace Framework.Core.Editor
                 }
             }
         }
+
+        static public int Exec(string filename, string args)
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.FileName = filename;
+            process.StartInfo.Arguments = args;
+            process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+
+            int exit_code = -1;
+
+            try
+            {
+                process.Start();
+                
+                while (!process.StandardError.EndOfStream)
+                {
+                    Debug.LogError(process.StandardError.ReadLine());
+                }
+
+                while (!process.StandardOutput.EndOfStream)
+                {
+                    Debug.Log(process.StandardOutput.ReadLine());
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                return -1;
+            }
+
+            process.WaitForExit();
+            exit_code = process.ExitCode;
+            process.Close();
+            return exit_code;
+        }
     }
 }
