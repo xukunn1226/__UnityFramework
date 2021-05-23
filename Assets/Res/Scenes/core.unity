@@ -171,8 +171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPersistent: 1
-  TheFirstGameSceneName: testpatch
-  ScenePath: assets/res/scenes/testpatch.unity
+  TheFirstGameSceneName: world
+  ScenePath: assets/res/scenes/world.unity
   BundlePath: assets/res/scenes.ab
 --- !u!1001 &418048788
 PrefabInstance:

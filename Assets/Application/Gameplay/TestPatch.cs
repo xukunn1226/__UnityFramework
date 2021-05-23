@@ -156,14 +156,14 @@ namespace Application.Runtime
         public static string SO_DIR_NAME = "lib";
         public static string ZIP_PATH = PROJECT_DIR + "/Assets/Framework/Core/Utility/Editor/zip.exe";
 
-        [MenuItem("TestPatch/Generate Bin Patches", false, 103)]
+        [MenuItem("Tools/TestPatch/Generate Bin Patches", false, 103)]
         public static void GenerateBinPatches()
         {
             // GenerateBinPatches(ANDROID_PROJECT_PATH + "/MyProject", "Patch_0");
             GenerateBinPatchesEx(ANDROID_PROJECT_PATH + "/MyProject", "Patch_1");
         }
 
-        [MenuItem("TestPatch/Unzip Bin Patches", false, 103)]
+        [MenuItem("Tools/TestPatch/Unzip Bin Patches", false, 103)]
         public static void UnzipBinPatches()
         {
             ZipHelper.UnZip(ANDROID_PROJECT_PATH + "/Patch_1.zip", ANDROID_PROJECT_PATH, "", true);
