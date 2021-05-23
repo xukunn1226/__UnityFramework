@@ -1,10 +1,10 @@
 {
   "Count": 40,
-  "TotalSize": 35658277,
+  "TotalSize": 35658272,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "1d6dce115c42d46ebd1d37d42714c9c1",
+      "FileHash": "80c2083e5ddec4c203bb0bde12f215c4",
       "Size": 3087
     },
     {
@@ -199,8 +199,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "7c3dc35dc19258f736485b7c58f90cba",
-      "Size": 110113
+      "FileHash": "a39dece05c634ac37ae02e44534ee520",
+      "Size": 110108
     }
   ]
 }

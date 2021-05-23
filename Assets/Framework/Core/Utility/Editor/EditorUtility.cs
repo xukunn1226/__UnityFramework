@@ -244,15 +244,21 @@ namespace Framework.Core.Editor
             try
             {
                 process.Start();
-                
-                while (!process.StandardError.EndOfStream)
-                {
-                    Debug.LogError(process.StandardError.ReadLine());
-                }
 
-                while (!process.StandardOutput.EndOfStream)
+                if (process.StartInfo.RedirectStandardOutput && process.StartInfo.RedirectStandardError)
                 {
-                    Debug.Log(process.StandardOutput.ReadLine());
+                    process.BeginOutputReadLine();
+                    Debug.LogError(process.StandardError.ReadToEnd());
+                }
+                else if (process.StartInfo.RedirectStandardOutput)
+                {
+                    string data = process.StandardOutput.ReadToEnd();
+                    Debug.Log(data);
+                }
+                else if (process.StartInfo.RedirectStandardError)
+                {
+                    string data = process.StandardError.ReadToEnd();
+                    Debug.LogError(data);
                 }
             }
             catch (Exception e)

@@ -9,6 +9,7 @@ public class Boostrap
 		System.loadLibrary("main");
         System.loadLibrary("unity");
         System.loadLibrary("bootstrap");
+		System.loadLibrary("xlua");
         init(filePath);		
 	}
 }
