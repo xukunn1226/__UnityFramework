@@ -5,8 +5,32 @@ using UnityEngine.EventSystems;
 
 namespace Framework.Gesture.Runtime
 {
-    public class PlayerInput :  MonoBehaviour
+    [RequireComponent(typeof(ScreenPointerDownRecognizer))]
+    [RequireComponent(typeof(ScreenPointerUpRecognizer))]
+    [RequireComponent(typeof(LongPressRecognizer))]
+    [RequireComponent(typeof(ObjectDragRecognizer))]
+    [RequireComponent(typeof(ScreenDragRecognizer))]
+    [RequireComponent(typeof(ScreenPinchRecognizer))]
+    public class PlayerInput :  MonoBehaviour,
+                                IScreenPointerDownHandler,
+                                IScreenPointerUpHandler,
+                                ILongPressHandler,
+                                IScreenDragHandler,
+                                IScreenPinchHandler
     {
+        static public PlayerInput   Instance { get; private set; }
+
+        public delegate void onScreenPointerDownHandler(ScreenPointerDownEventData eventData);
+        public delegate void onScreenPointerUpHandler(ScreenPointerUpEventData eventData);
+        public delegate void onLongPressHandler(ScreenLongPressEventData eventData);
+        public delegate void onScreenDragHandler(ScreenDragEventData eventData);
+        public delegate void onScreenPinchHandler(ScreenPinchEventData eventData);
+        public event onScreenPointerDownHandler OnScreenPointerDownHandler;
+        public event onScreenPointerUpHandler   OnScreenPointerUpHandler;
+        public event onLongPressHandler         OnLongPressHandler;
+        public event onScreenDragHandler        OnScreenDragHandler;
+        public event onScreenPinchHandler       OnScreenPinchHandler;
+
         public class HitEventData : BaseEventData
         {
             public RaycastHit hitInfo;
@@ -38,6 +62,16 @@ namespace Framework.Gesture.Runtime
         }
 
         private bool m_SelectionGuard;
+
+        void Awake()
+        {
+            Instance = this;
+        }
+
+        void OnDestroy()
+        {
+            Instance = null;
+        }
         
         public void SetSelectedGameObject(GameObject selected, HitEventData eventData)
         {
@@ -64,6 +98,36 @@ namespace Framework.Gesture.Runtime
         public void SetSelectedGameObject(GameObject selected)
         {
             SetSelectedGameObject(selected, hitEventData);
+        }
+
+        public void OnGesture(ScreenPointerDownEventData eventData)
+        {
+            // Debug.Log($"PlayerInput.ScreenPointerDown:       {Time.frameCount}");
+            OnScreenPointerDownHandler?.Invoke(eventData);
+        }
+
+        public void OnGesture(ScreenPointerUpEventData eventData)
+        {
+            // Debug.Log($"PlayerInput.ScreenPointerUp:       {Time.frameCount}");
+            OnScreenPointerUpHandler?.Invoke(eventData);
+        }
+
+        public void OnGesture(ScreenLongPressEventData eventData)
+        {
+            // Debug.Log($"PlayerInput.LongPress  {eventData.State}   {eventData.screenPosition}    {Time.frameCount}");
+            OnLongPressHandler?.Invoke(eventData);
+        }
+
+        public void OnGesture(ScreenDragEventData eventData)
+        {
+            // Debug.Log($"PlayerInput.Drag    {eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
+            OnScreenDragHandler?.Invoke(eventData);
+        }
+
+        public void OnGesture(ScreenPinchEventData eventData)
+        {
+            // Debug.Log($"PlayerInput.Pinch   {eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
+            OnScreenPinchHandler?.Invoke(eventData);
         }
     }
 }

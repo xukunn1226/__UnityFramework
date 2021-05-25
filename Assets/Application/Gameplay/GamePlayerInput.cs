@@ -7,12 +7,8 @@ using Framework.Core;
 namespace Application.Runtime
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class GamePlayerInput :  MonoBehaviour,
-                                    ILongPressHandler,
-                                    IScreenPointerDownHandler,
-                                    IScreenPointerUpHandler
+    public class GamePlayerInput :  SingletonMono<GamePlayerInput>
     {
-        static public GamePlayerInput   Instance { get; private set; }
         private PlayerInput             m_PlayerInput;
         private PlayerInput             playerInput { get { if (m_PlayerInput == null) m_PlayerInput = GetComponent<PlayerInput>(); return m_PlayerInput; } }
 
@@ -22,20 +18,22 @@ namespace Application.Runtime
         public LayerMask                BaseLayer;
         public LayerMask                TerrainLayer;
 
-        void Awake()
+        void Start()
         {
-            if (FindObjectsOfType<GamePlayerInput>().Length > 1)
-            {
-                DestroyImmediate(this);
-                throw new System.Exception("GamePlayerInput has already exist.");
-            }
+            if(PlayerInput.Instance == null)
+                throw new System.Exception("PlayerInput == null");
 
-            Instance = this;
+            PlayerInput.Instance.OnLongPressHandler += OnGesture;
+            PlayerInput.Instance.OnScreenPointerUpHandler += OnGesture;
         }
 
-        void OnDestroy()
+        void OnDisable()
         {
-            Instance = null;
+            if(PlayerInput.Instance != null)
+            {
+                PlayerInput.Instance.OnLongPressHandler -= OnGesture;
+                PlayerInput.Instance.OnScreenPointerUpHandler -= OnGesture;
+            }
         }
 
         private void PickGameObject(Vector2 screenPosition)
@@ -54,10 +52,6 @@ namespace Application.Runtime
             PickGameObject(eventData.screenPosition);
         }
 
-        public void OnGesture(ScreenPointerDownEventData eventData)
-        {
-            // Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
-        }
         public void OnGesture(ScreenPointerUpEventData eventData)
         {
             // Debug.Log($"ScreenPointerUpEventData:       {Screen.width}  {Screen.height}");

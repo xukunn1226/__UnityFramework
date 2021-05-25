@@ -5,10 +5,7 @@ using Framework.Gesture.Runtime;
 
 namespace Application.Runtime
 {
-    public class GamePlayerCamera : MonoBehaviour,
-                                    IScreenDragHandler,
-                                    IScreenPointerDownHandler,
-                                    IScreenPinchHandler
+    public class GamePlayerCamera : MonoBehaviour
     {
         static public GamePlayerCamera Instance { get; private set; }
 
@@ -56,6 +53,26 @@ namespace Application.Runtime
 
             Instance = this;
             m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
+        }
+
+        void Start()
+        {
+            if(PlayerInput.Instance == null)
+                throw new System.Exception("PlayerInput == null");
+
+            PlayerInput.Instance.OnScreenDragHandler += OnGesture;
+            PlayerInput.Instance.OnScreenPinchHandler += OnGesture;
+            PlayerInput.Instance.OnScreenPointerDownHandler += OnGesture;
+        }
+
+        void OnDisable()
+        {
+            if(PlayerInput.Instance != null)
+            {
+                PlayerInput.Instance.OnScreenDragHandler -= OnGesture;
+                PlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
+                PlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
+            }
         }
 
         void OnDestroy()
