@@ -79,7 +79,9 @@
 * 对象池管理：常驻内存机制与预加载机制
 * OBB管理：判断是分包方式还是整包方式，分包方式才需要下载obb
 * bundle加密   https://www.xuanyusong.com/archives/4607
-* 一种Shader变体收集打包以及编译优化的思路  https://answer.uwa4d.com/question/5da86670e84db43d6efbda72
+* 一种Shader变体收集打包以及编译优化的思路
+	https://answer.uwa4d.com/question/5da86670e84db43d6efbda72
+	https://mp.weixin.qq.com/s/9_Wl-cm-4ZF2lAl4FLnYxg
 * RTS中的避障算法
 	https://zhuanlan.zhihu.com/p/109556568
 	https://gamma.cs.unc.edu/RVO/
@@ -95,8 +97,6 @@
 	http://www.meltycriss.com/2017/01/13/paper-rvo/
 	https://github.com/anders007/RVO/blob/master/%E7%A2%B0%E6%92%9E%E8%A7%84%E9%81%BF%E7%AE%97%E6%B3%95RVO(Reciprocal%20Velocity%20Obstacles)%E7%AE%80%E4%BB%8B.pdf
 	https://zhuanlan.zhihu.com/p/74888471
-* 一种Shader变体收集和打包编译优化的思路
-	https://mp.weixin.qq.com/s/9_Wl-cm-4ZF2lAl4FLnYxg
 * Unity游戏性能优化之内存篇
 	https://mp.weixin.qq.com/s/2VufiCiU7TT8rM9BK-CTZA
 	https://mp.weixin.qq.com/s/LWTDjqEY2YbZHZeksrtBvA
@@ -134,6 +134,22 @@
 	https://blog.csdn.net/u011265162/article/details/91048927
 * Unity内置资源如何打包避免冗余
 	https://mp.weixin.qq.com/s/thEI6NoyCrWnkrqF9Y346g
+* 搭建特效制作环境（InGame、UI）
+* 去除所有FX_Component组件上的duration，统一使用FX_Root duration
+* 对象池管理特效：当特效数量达到一定值，使用LOD机制弱化效果(FX AUTOLOD)
+* 特效优化：
+    https://forum.unity.com/threads/released-off-screen-particles-render-particles-at-1-2-1-4-or-1-8-screen-resolution.358506/
+    https://github.com/slipster216/OffScreenParticleRendering
+    https://blogs.unity3d.com/2016/12/20/unitytips-particlesystem-performance-culling/
+    https://blogs.unity3d.com/2016/04/20/particle-system-modules-faq/
+* optimization tips:
+    culling仅在系统可预测时生效
+    打开单个模块不仅会增加开销，更可能因为从过程模式（可预测）切换到非过程模式（不可预测）增加了整个系统的开销
+    通过脚本改变数值将不再culling
+    哪些是可预测模式？
+        Local space
+    show bound：持续改变说明是不可预测模式
+    减少脚本控制，尽量使用系统内置功能
 	
 
 
@@ -217,3 +233,27 @@
 - SpawnerRing使用AB，PoolManager方式重制
 - 参考GameFramework设置目录结构
 - 打包出现modified的问题
+- 使用ResourceManager的标准用法重构SpawnRing
+- 配置：所有缓存对象可配置化（初始化大小等）
+  PrefabObjectPool支持可视化配置，非MonoPool暂不支持
+- PoolManager可配置Pool   Pool = PoolManagerExtension.GetOrCreatePool<Decal, LivingPrefabObjectPool>(assetPath);
+  不支持assetPath方式Pool静态配置，可以把PrefabObjectPool做成Prefab，然后动态加载
+- 退出Play Mode时PoolManager数据清除干净
+- LRU
+- PrefabObjectPool.m_ActivedObjects无法优化，考虑加宏控制是否启用(还有一个思路：自定义BetterLinkedList)
+-- PoolManager EditorWindow, stat memory info
+- review ObjectPool inspector
+- 隐藏IBetterLinkedListNode。Next的set接口
+- LinkedObjectPool Testcase
+- LinkedObjectPool
+- BetterLinkedList
+- PoolManager inspector
+- review LivingPrefabObjectPool
+- GetOrCreatePool(string assetPath)
+- Pool支持可选是否DontDestroyOnLoad
+- 工具监测特效制作是否规范
+- 工具检测特效是否符合合批规范
+https://github.com/gmhevinci/MotionFramework/blob/master/Docs/Editor.ParticleProfiler.md
+https://github.com/sunbrando/ParticleEffectProfiler
+- FX_Root配置回收类型（Destroy、IPool），可配置有哪些对象池可供选择
+- 完善FX_Root，接入对象池* 去除所有FX_Component组件上的duration，统一使用FX_Root duration
