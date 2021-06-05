@@ -104,12 +104,7 @@
 	Github:
 		https://github.com/snape
 
-* 寻路
-	https://zhuanlan.zhihu.com/p/109108400  RTS游戏中的寻路
-	https://zhuanlan.zhihu.com/p/109556568 	
- 	https://blog.csdn.net/KubilityDef/article/details/79483414 	
- 	https://www.gameres.com/340777.html  即时战略游戏中实用的寻路算法分享 	
- 	https://blog.csdn.net/liweizhao/article/details/82106886  集群算法介绍
+* 寻路 	
  	https://cloud.tencent.com/developer/article/1502519  A*寻路初探
  	https://www.cnblogs.com/technology/archive/2011/05/26/2058842.html  理解A*寻路算法具体过程
  	https://blog.csdn.net/XieNaoban/article/details/53524165?spm=1001.2014.3001.5501  [笔记]A*寻路算法初探
@@ -117,6 +112,27 @@
  	https://blog.csdn.net/qq_32270109/article/details/90673151?spm=1001.2014.3001.5501  RVO算法探究. 和AStarPathFinding插件研究
  	https://www.gamasutra.com/view/feature/131721/implementing_coordinated_movement.php  Implementing Coordinated Movement
 	https://blog.csdn.net/q764424567/article/details/80528457?spm=1001.2014.3001.5501  Unity3d 寻路插件A*Pathfinding学习与研究
+	http://aigamedev.com/open/review/total-war-ai/
+	https://blog.csdn.net/needmorecode/article/details/82050409  寻路建模的三种方式比较
+	https://my.oschina.net/u/1859679/blog/1486636  深入理解游戏中寻路算法
+	https://www.cnblogs.com/flyinggod/p/8671053.html  D*是动态A*，适合动态网格，环境如权重不断变化情况下
+	https://blog.csdn.net/lqzdreamer/article/details/85055569  D*路径搜索算法原理解析及Python实现
+	https://blog.csdn.net/banzhuan133/article/details/100532206  D*(Dynamic A*) 算法详细解析
+	http://liweizhaolili.lofter.com/post/1cc70144_86a939e  多边形寻路算法简单介绍
+	https://zhuanlan.zhihu.com/p/40177186 NavMesh生成原理
+	https://zhuanlan.zhihu.com/p/38053482 NavMesh导航寻路使用
+	https://blog.csdn.net/needmorecode  NavMesh生成研究 && Recast源码解析
+	http://www.luzexi.com/2013/10/06/Unity3D%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1NavMesh%E5%AF%BB%E8%B7%AF  Unity3D架构设计NavMesh寻路  有代码
+	路径平滑算法：佛洛依德路径平滑算法（FLOYD）、漏斗算法
+
+	https://zhuanlan.zhihu.com/p/109108400  RTS游戏中的寻路
+	https://zhuanlan.zhihu.com/p/109556568 	
+	https://blog.csdn.net/KubilityDef/article/details/79483414 
+	https://www.gameres.com/340777.html  即时战略游戏中实用的寻路算法分享 
+	https://www.zhihu.com/question/20298134  即时战略游戏中实用的寻路算法都有哪些，比较如何？
+	https://blog.csdn.net/liweizhao/article/details/82106886  集群算法介绍
+	Flocking Behaviour
+	Steering Behaviour
 
 
 	
