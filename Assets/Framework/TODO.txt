@@ -116,7 +116,7 @@
 	https://www.cnblogs.com/flyinggod/p/8671053.html  D*是动态A*，适合动态网格，环境如权重不断变化情况下
 	https://blog.csdn.net/lqzdreamer/article/details/85055569  D*路径搜索算法原理解析及Python实现
 	https://blog.csdn.net/banzhuan133/article/details/100532206  D*(Dynamic A*) 算法详细解析
-	http://liweizhaolili.lofter.com/post/1cc70144_86a939e  多边形寻路算法简单介绍
+	https://www.shangmayuan.com/a/2cb9439dd987480b86c171d8.html  多边形寻路算法简单介绍
 	https://zhuanlan.zhihu.com/p/40177186 NavMesh生成原理
 	https://zhuanlan.zhihu.com/p/38053482 NavMesh导航寻路使用
 	https://blog.csdn.net/needmorecode  NavMesh生成研究 && Recast源码解析
@@ -124,7 +124,9 @@
 	https://zhuanlan.zhihu.com/p/270363845  A星寻路和navmesh寻路的技巧和优化
 	https://zhuanlan.zhihu.com/p/108361733  寻路算法之A*算法 Unity项目实战 优化
 	https://zhuanlan.zhihu.com/p/355887068  Unity 实现各种寻路算法
+	http://frankorz.com/2017/12/16/greedy-best-find-search/  寻路算法 - 贪婪最佳优先算法
 	路径平滑算法：佛洛依德路径平滑算法（FLOYD）、漏斗算法
+
 
 	https://zhuanlan.zhihu.com/p/109108400  RTS游戏中的寻路
 	https://zhuanlan.zhihu.com/p/109556568 	
