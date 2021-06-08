@@ -116,9 +116,7 @@
 	https://www.cnblogs.com/flyinggod/p/8671053.html  D*是动态A*，适合动态网格，环境如权重不断变化情况下
 	https://blog.csdn.net/lqzdreamer/article/details/85055569  D*路径搜索算法原理解析及Python实现
 	https://blog.csdn.net/banzhuan133/article/details/100532206  D*(Dynamic A*) 算法详细解析	
-	https://zhuanlan.zhihu.com/p/38053482 NavMesh导航寻路使用
 	https://blog.csdn.net/needmorecode  NavMesh生成研究 && Recast源码解析	
-	https://zhuanlan.zhihu.com/p/270363845  A星寻路和navmesh寻路的技巧和优化
 	https://zhuanlan.zhihu.com/p/108361733  寻路算法之A*算法 Unity项目实战 优化
 	https://zhuanlan.zhihu.com/p/355887068  Unity 实现各种寻路算法
 	http://frankorz.com/2017/12/16/greedy-best-find-search/  寻路算法 - 贪婪最佳优先算法
@@ -137,6 +135,8 @@
 	https://www.cnblogs.com/neoragex2002/archive/2007/09/09/887556.html  Navigation Mesh与Line-of-Sight Test
 	http://www.luzexi.com/2013/10/06/Unity3D%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1NavMesh%E5%AF%BB%E8%B7%AF  Unity3D架构设计NavMesh寻路  有代码
 	https://zhuanlan.zhihu.com/p/40177186 NavMesh生成原理
+	https://zhuanlan.zhihu.com/p/38053482 NavMesh导航寻路使用
+	https://zhuanlan.zhihu.com/p/270363845  A星寻路和navmesh寻路的技巧和优化
 	Flocking Behaviour
 	Steering Behaviour
 
