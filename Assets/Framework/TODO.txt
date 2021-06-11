@@ -105,21 +105,14 @@
 		https://github.com/snape
 
 * 寻路 	
+	https://blog.csdn.net/needmorecode  NavMesh生成研究 && Recast源码解析	
  	https://cloud.tencent.com/developer/article/1502519  A*寻路初探
  	https://www.cnblogs.com/technology/archive/2011/05/26/2058842.html  理解A*寻路算法具体过程
- 	https://blog.csdn.net/XieNaoban/article/details/53524165?spm=1001.2014.3001.5501  [笔记]A*寻路算法初探 	
- 	https://blog.csdn.net/qq_32270109/article/details/90673151?spm=1001.2014.3001.5501  RVO算法探究. 和AStarPathFinding插件研究
- 	https://www.gamasutra.com/view/feature/131721/implementing_coordinated_movement.php  Implementing Coordinated Movement
-	https://blog.csdn.net/q764424567/article/details/80528457?spm=1001.2014.3001.5501  Unity3d 寻路插件A*Pathfinding学习与研究
-	http://aigamedev.com/open/review/total-war-ai/	
-	https://my.oschina.net/u/1859679/blog/1486636  深入理解游戏中寻路算法
+ 	https://blog.csdn.net/XieNaoban/article/details/53524165?spm=1001.2014.3001.5501  [笔记]A*寻路算法初探
+	http://aigamedev.com/open/review/total-war-ai/		
 	https://www.cnblogs.com/flyinggod/p/8671053.html  D*是动态A*，适合动态网格，环境如权重不断变化情况下
 	https://blog.csdn.net/lqzdreamer/article/details/85055569  D*路径搜索算法原理解析及Python实现
 	https://blog.csdn.net/banzhuan133/article/details/100532206  D*(Dynamic A*) 算法详细解析	
-	https://blog.csdn.net/needmorecode  NavMesh生成研究 && Recast源码解析	
-	https://zhuanlan.zhihu.com/p/108361733  寻路算法之A*算法 Unity项目实战 优化
-	https://zhuanlan.zhihu.com/p/355887068  Unity 实现各种寻路算法
-	http://frankorz.com/2017/12/16/greedy-best-find-search/  寻路算法 - 贪婪最佳优先算法
 	路径平滑算法：佛洛依德路径平滑算法（FLOYD）、漏斗算法
 
 
@@ -137,6 +130,12 @@
 	https://zhuanlan.zhihu.com/p/40177186 NavMesh生成原理
 	https://zhuanlan.zhihu.com/p/38053482 NavMesh导航寻路使用
 	https://zhuanlan.zhihu.com/p/270363845  A星寻路和navmesh寻路的技巧和优化
+	https://my.oschina.net/u/1859679/blog/1486636  深入理解游戏中寻路算法
+	https://blog.csdn.net/qq_32270109/article/details/90673151?spm=1001.2014.3001.5501  RVO算法探究. 和AStarPathFinding插件研究
+	https://zhuanlan.zhihu.com/p/355887068  Unity 实现各种寻路算法
+	https://blog.csdn.net/q764424567/article/details/80528457?spm=1001.2014.3001.5501  Unity3d 寻路插件A*Pathfinding学习与研究
+	https://zhuanlan.zhihu.com/p/108361733  寻路算法之A*算法 Unity项目实战 优化
+	http://frankorz.com/2017/12/16/greedy-best-find-search/  寻路算法 - 贪婪最佳优先算法
 	Flocking Behaviour
 	Steering Behaviour
 
