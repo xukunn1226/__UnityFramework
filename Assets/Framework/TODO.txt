@@ -8,15 +8,25 @@
 	https://blog.csdn.net/qq_33413868/article/details/104725966  
 	https://blog.csdn.net/qq_33413868/article/details/104725268  
 	https://blog.csdn.net/qq_33413868/article/details/104721686
-	https://blog.csdn.net/luoyikun/article/details/79442201
-	https://www.jianshu.com/p/bf82beb41f7f
+	https://blog.csdn.net/luoyikun/article/details/79442201  unity3d无需进行装箱/拆箱的【事件管理器
+	https://www.jianshu.com/p/bf82beb41f7f  Unity 3D 教你打造自己的EventSystem(事件总线)
+	https://blog.csdn.net/u013108312/article/details/52351826  Unity3D游戏开发框架-消息机制
+	https://blog.csdn.net/lovethRain/article/details/52100067?spm=1001.2014.3001.5501  Unity 客户端框架（三）：消息机制
+	http://www.manew.com/blog-52341-2366.html  Unity3D游戏框架设计3——事件机制、模块
 * 配表方案：https://blog.csdn.net/linshuhe1/article/details/52062969
 * GPU Skinning: 
+	https://zhuanlan.zhihu.com/p/87583171  [Unity3d杂记]骨骼蒙皮动画
 	https://github.com/chengkehan/GPUSkinning   
 	https://github.com/Unity-Technologies/Animation-Instancing
 	https://blogs.unity3d.com/2018/04/16/animation-instancing-instancing-for-skinnedmeshrenderer/
-	https://www.cnblogs.com/smallrainf/p/11746909.html
-	http://www.xuanyusong.com/archives/4488
+	https://www.cnblogs.com/smallrainf/p/11746909.html  GPU Skinning 结合 Instanced 高效实现大量单位动画
+	http://www.xuanyusong.com/archives/4488  Unity3D研究院GPU Instancing测试
+	https://zhuanlan.zhihu.com/p/26200956  GPU Skinning 加速骨骼动画
+	https://zhuanlan.zhihu.com/p/268891238  Unity 使用 ECS With Burst 来再次加速你的GPUSkinning
+	https://zhuanlan.zhihu.com/p/108367119  Unity大规模角色的GPU顶点动画表达方式
+	https://zhuanlan.zhihu.com/p/108725072  Unity大规模角色的GPU蒙皮动画表达方式
+	https://blog.csdn.net/yxriyin/article/details/83018985  gpu instancing animation代替骨骼动画的做法
+	https://www.cnblogs.com/murongxiaopifu/p/7250772.html  利用GPU实现大规模动画角色的渲染
 * 也许用的到的工具
 	asset-bundle-analyzer   https://github.com/faelenor/asset-bundle-analyzer   通过py脚本分析Bundles信息，并存储至SQLite
 	DB Browser for SQLite 	https://sqlitebrowser.org/  SQLite查看工具
