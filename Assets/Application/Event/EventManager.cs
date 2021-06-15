@@ -19,7 +19,7 @@ namespace Application.Runtime
         static private void AddEventListener(string evt, Delegate func)
         {
             if(func == null)
-                throw new ArgumentNullException("func");
+                throw new ArgumentNullException("AddEventListener.func");
 
             Delegate listener;
             if(m_Listeners.TryGetValue(evt, out listener))
@@ -70,6 +70,9 @@ namespace Application.Runtime
 
         static private void RemoveEventListener(string evt, Delegate func)
         {
+            if(func == null)
+                throw new ArgumentNullException("RemoveEventListener.func");
+
             Delegate listener;
             if(m_Listeners.TryGetValue(evt, out listener))
             {
@@ -112,11 +115,15 @@ namespace Application.Runtime
 
         // 移除所有事件
         static public void RemoveAllListener()
-        {}
+        {
+            m_Listeners.Clear();
+        }
 
         // 移除某一种类的所有事件
         static public void RemoveEventListener(string evt)
-        {}
+        {
+            m_Listeners.Remove(evt);
+        }
 
         static public void Dispatch(string evt)
         {
