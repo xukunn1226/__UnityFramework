@@ -5,112 +5,51 @@ using System;
 
 namespace Application.Runtime
 {
-    // https://github.com/Bian-Sh/UniEventSystem
-    // http://www.manew.com/blog-52341-2366.html
     static public class EventManager
     {
-        static private Dictionary<string, Delegate> m_Listeners = new Dictionary<string, Delegate>();
+        static private Dictionary<Enum, Action<EventArgs>>  m_Listeners = new Dictionary<Enum, Action<EventArgs>>();
+        static private Dictionary<Type, EventArgs>          m_EventPool = new Dictionary<Type, EventArgs>();
 
-        static public bool HasEventListener(string evt)
+        static public void AddEventListener(Enum type, Action<EventArgs> action)
         {
-            return m_Listeners.ContainsKey(evt);
-        }
+            if(action == null)
+                throw new ArgumentNullException("AddEventListener.action");
 
-        static private void AddEventListener(string evt, Delegate func)
-        {
-            if(func == null)
-                throw new ArgumentNullException("AddEventListener.func");
-
-            Delegate listener;
-            if(m_Listeners.TryGetValue(evt, out listener))
+            Action<EventArgs> actions = GetEventList(type);
+            Delegate[] delegates = actions?.GetInvocationList();
+            if(delegates != null)
             {
-                Delegate[] actions = listener.GetInvocationList();
-                if(actions == null)
-                    throw new ArgumentNullException("actions");
-                
-                if(Array.Exists(actions, v => v == (Delegate)func))
+                if(Array.Exists(delegates, item => item == (Delegate)action))
                 {
-                    Debug.LogWarning($"duplicated event listener: {evt}.{func}");
+                    Debug.LogWarning($"duplicated event listener: {type}.{action}");
                 }
                 else
                 {
-                    m_Listeners[evt] = Delegate.Combine(listener, func);
+                    actions += action;
                 }
             }
             else
             {
-                m_Listeners[evt] = func;
+                actions = action;
             }
+            m_Listeners[type] = actions;
         }
 
-        static public void AddEventListener(string evt, Action func)
+        static public void RemoveEventListener(Enum type, Action<EventArgs> action)
         {
-            AddEventListener(evt, (Delegate)func);
-        }
+            if(action == null)
+                throw new ArgumentNullException("RemoveEventListener.action");
 
-        static public void AddEventListener<T>(string evt, Action<T> func)
-        {
-            AddEventListener(evt, (Delegate)func);
-        }
-
-        static public void AddEventListener<T1, T2>(string evt, Action<T1, T2> func)
-        {
-            AddEventListener(evt, (Delegate)func);
-        }
-
-        static public void AddEventListener<T1, T2, T3>(string evt, Action<T1, T2, T3> func)
-        {
-            AddEventListener(evt, (Delegate)func);
-        }
-
-        static public void AddEventListener<T1, T2, T3, T4>(string evt, Action<T1, T2, T3, T4> func)
-        {
-            AddEventListener(evt, (Delegate)func);
-        }
-
-        static private void RemoveEventListener(string evt, Delegate func)
-        {
-            if(func == null)
-                throw new ArgumentNullException("RemoveEventListener.func");
-
-            Delegate listener;
-            if(m_Listeners.TryGetValue(evt, out listener))
+            Action<EventArgs> actions = GetEventList(type);
+            if(actions != null)
             {
-                listener = Delegate.Remove(listener, func);
-                if(listener == null)
-                {
-                    m_Listeners.Remove(evt);
-                }
-                else
-                {
-                    m_Listeners[evt] = listener;
-                }
+                actions -= action;
+                m_Listeners[type] = actions;
             }
-        }
-
-        static public void RemoveEventListener(string evt, Action func)
-        {
-            RemoveEventListener(evt, (Delegate)func);
-        }
-
-        static public void RemoveEventListener<T>(string evt, Action<T> func)
-        {
-            RemoveEventListener(evt, (Delegate)func);
-        }
-
-        static public void RemoveEventListener<T1, T2>(string evt, Action<T1, T2> func)
-        {
-            RemoveEventListener(evt, (Delegate)func);
-        }
-
-        static public void RemoveEventListener<T1, T2, T3>(string evt, Action<T1, T2, T3> func)
-        {
-            RemoveEventListener(evt, (Delegate)func);
-        }
-
-        static public void RemoveEventListener<T1, T2, T3, T4>(string evt, Action<T1, T2, T3, T4> func)
-        {
-            RemoveEventListener(evt, (Delegate)func);
+            else
+            {
+                Debug.LogWarning($"there is no {type} event list");
+            }
         }
 
         // 移除所有事件
@@ -120,129 +59,66 @@ namespace Application.Runtime
         }
 
         // 移除某一种类的所有事件
-        static public void RemoveEventListener(string evt)
+        static public void RemoveEventListener(Enum type)
         {
-            m_Listeners.Remove(evt);
+            m_Listeners.Remove(type);
         }
 
-        static public void Dispatch(string evt)
+        static public void Dispatch(EventArgs args)
         {
-            Delegate[] methods = GetMethods(evt);
-            if(methods != null)
+            Action<EventArgs> actions = GetEventList(args.eventType);
+            if(actions == null)
             {
-                foreach(Delegate f in methods)
-                {
-                    try
-                    {
-                        if(f.Target != null)
-                        {
-                            ((Action)f).Invoke();
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.LogError(e);
-                    }
-                }
+                Debug.LogWarning($"Dispatch failed, because there is no {args.eventType} event listener");
+            }
+            else
+            {
+                actions?.Invoke(args);
+            }
+            ReturnToPool(args);     // EventArgs使用完毕立即回收
+        }
+
+        static public T Allocate<T>() where T : EventArgs, new()
+        {
+            EventArgs args;
+            Type type = typeof(T);
+            if(m_EventPool.TryGetValue(type, out args) && args != null)
+            {
+                m_EventPool[type] = null;
+                return (T)args;
+            }
+            return new T();
+        }
+
+        static private void ReturnToPool(EventArgs args)
+        {
+            Type type = args.GetType();            
+            if(m_EventPool.ContainsKey(type))
+            {
+                m_EventPool[type] = args;
+            }
+            else
+            {
+                m_EventPool.Add(type, args);
             }
         }
 
-        static public void Dispatch<T>(string evt, T arg)
+        static private Action<EventArgs> GetEventList(Enum type)
         {
-            Delegate[] methods = GetMethods(evt);
-            if(methods != null)
+            Action<EventArgs> listener;
+            if(m_Listeners.TryGetValue(type, out listener))
             {
-                foreach(Delegate f in methods)
-                {
-                    try
-                    {
-                        if(f.Target != null)
-                        {
-                            ((Action<T>)f).Invoke(arg);
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.LogError(e);
-                    }
-                }
-            }
-        }
-
-        static public void Dispatch<T1, T2>(string evt, T1 arg1, T2 arg2)
-        {
-            Delegate[] methods = GetMethods(evt);
-            if(methods != null)
-            {
-                foreach(Delegate f in methods)
-                {
-                    try
-                    {
-                        if(f.Target != null)
-                        {
-                            ((Action<T1, T2>)f).Invoke(arg1, arg2);
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.LogError(e);
-                    }
-                }
-            }
-        }
-
-        static public void Dispatch<T1, T2, T3>(string evt, T1 arg1, T2 arg2, T3 arg3)
-        {
-            Delegate[] methods = GetMethods(evt);
-            if(methods != null)
-            {
-                foreach(Delegate f in methods)
-                {
-                    try
-                    {
-                        if(f.Target != null)
-                        {
-                            ((Action<T1, T2, T3>)f).Invoke(arg1, arg2, arg3);
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.LogError(e);
-                    }
-                }
-            }
-        }
-
-        static public void Dispatch<T1, T2, T3, T4>(string evt, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
-        {
-            Delegate[] methods = GetMethods(evt);
-            if(methods != null)
-            {
-                foreach(Delegate f in methods)
-                {
-                    try
-                    {
-                        if(f.Target != null)
-                        {
-                            ((Action<T1, T2, T3, T4>)f).Invoke(arg1, arg2, arg3, arg4);
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.LogError(e);
-                    }
-                }
-            }
-        }
-
-        static private Delegate[] GetMethods(string evt)
-        {
-            Delegate listener;
-            if(m_Listeners.TryGetValue(evt, out listener))
-            {
-                return listener.GetInvocationList();
+                return listener;
             }
             return null;
+        }
+    }
+
+    static public class EventManagerExtension
+    {
+        static public void Dispatch(this EventArgs args)
+        {
+            EventManager.Dispatch(args);
         }
     }
 }
