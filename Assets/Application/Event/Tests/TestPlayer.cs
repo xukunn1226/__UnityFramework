@@ -21,7 +21,7 @@ namespace Application.Runtime.Tests
 
         public void OnFoo2(EventArgs args)
         {
-            Debug.Log($"OnFoo2:     {Time.frameCount}   {gameObject.name}");
+            Debug.Log($"OnFoo2:     {Time.frameCount}");
         }
     }    
 }

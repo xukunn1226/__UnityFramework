@@ -19,8 +19,14 @@ namespace Application.Runtime.Tests
             {
                 EventManager.RemoveEventListener(HPEvent.HPChange, m_Player.OnFoo1);
             }
-            if(GUI.Button(new Rect(100, 500, 200, 60), "GC"))
+            if(GUI.Button(new Rect(100, 500, 200, 60), "Destroy Player && GC"))
             {
+                if(m_Player != null)
+                {
+                    Destroy(m_Player.gameObject);
+                    m_Player = null;
+                }
+                Resources.UnloadUnusedAssets();
                 System.GC.Collect();
             }
         }
