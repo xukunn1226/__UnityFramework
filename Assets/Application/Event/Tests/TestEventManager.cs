@@ -9,6 +9,12 @@ namespace Application.Runtime.Tests
     {
         public TestPlayer m_Player;
 
+        void Start()
+        {
+            m_Player = new TestPlayer();
+            m_Player.Start();
+        }
+
         void OnGUI()
         {
             if(GUI.Button(new Rect(100, 100, 200, 60), "Trigger"))
@@ -23,7 +29,7 @@ namespace Application.Runtime.Tests
             {
                 if(m_Player != null)
                 {
-                    Destroy(m_Player.gameObject);
+                    // Destroy(m_Player.gameObject);
                     m_Player = null;
                 }
                 Resources.UnloadUnusedAssets();

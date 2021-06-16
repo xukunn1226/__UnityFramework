@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Application.Runtime.Tests
 {
-    public class TestPlayer : MonoBehaviour
+    public class TestPlayer// : MonoBehaviour
     {
         // Start is called before the first frame update
-        void Start()
+        public void Start()
         {            
             EventManager.AddEventListener(HPEvent.HPChange, OnFoo1);
             EventManager.AddEventListener(HPEvent.HPChange, OnFoo2);
