@@ -16,23 +16,17 @@ namespace Application.Runtime.Tests
 
         void OnGUI()
         {
-            if(GUI.Button(new Rect(100, 100, 200, 60), "Trigger"))
+            if(GUI.Button(new Rect(100, 100, 200, 60), "Add Listener"))
             {
-                EventManager.Allocate<EventArgs_HP>().Set(HPEvent.HPChange, 2).Dispatch();
+                // m_Player.Start();
             }
-            if(GUI.Button(new Rect(100, 300, 200, 60), "Remove Listener"))
+            if(GUI.Button(new Rect(100, 300, 200, 60), "Dispatch"))
             {
-                EventManager.RemoveEventListener(HPEvent.HPChange, m_Player.OnFoo1);
+                EventManagerExtension.Dispatch(EventManager.Allocate<EventArgs_HP>().Set(HPEvent.HPChange, 2));
             }
-            if(GUI.Button(new Rect(100, 500, 200, 60), "Destroy Player && GC"))
+            if(GUI.Button(new Rect(100, 500, 200, 60), "Remove Listener"))
             {
-                if(m_Player != null)
-                {
-                    Destroy(m_Player.gameObject);
-                    m_Player = null;
-                }
-                Resources.UnloadUnusedAssets();
-                System.GC.Collect();                
+                // m_Player.OnDestroy();
             }
 
             if(GUI.Button(new Rect(100, 700, 200, 60), "Test WeakReference"))
