@@ -22,7 +22,7 @@ namespace Application.Runtime.Tests
             }
             if(GUI.Button(new Rect(100, 300, 200, 60), "Dispatch"))
             {
-                EventManagerExtension.Dispatch(EventManager.Allocate<EventArgs_HP>().Set(HPEvent.HPChange, 2));
+                EventManager.Allocate<EventArgs_HP>().Set(HPEvent.HPChange, 2).Dispatch();
             }
             if(GUI.Button(new Rect(100, 500, 200, 60), "Remove Listener"))
             {
