@@ -116,7 +116,7 @@ namespace Application.Runtime
 
     static public class EventManagerExtensionEx
     {
-        static public void Dispatch(this EventArgs args)
+        static public void DispatchEx(this EventArgs args)
         {
             EventManagerEx.Dispatch(args);
         }

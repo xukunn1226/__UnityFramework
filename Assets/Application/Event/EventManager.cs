@@ -5,6 +5,19 @@ using System;
 
 namespace Application.Runtime
 {
+    /// <summary>
+    /// 事件系统
+    /// Usage：
+    ///     1、Defines: 事件枚举（HPEvent）及事件对象（EventArgs_HP）
+    ///     2、Receiver: EventManager.AddEventListener(HPEvent.HPChange, OnFoo1);
+    ///     3、Dispatcher: EventManager.Allocate<EventArgs_HP>().Set(HPEvent.HPChange, 2).Dispatch();
+    /// Lack: 
+    ///     the gc brings by enum as a key
+    /// Note:
+    ///     AddEventListener(Enum type, Action<EventArgs> listener, bool useWeakReference = false, bool isOnce = false)
+    ///     监听Monobehaviour对象不推荐使用weakReference，因为其有生命周期函数（OnDestroy），引擎底层有对其进行管理
+    ///     监听非Monobehaviour对象可以使用weakReference，一旦使用可以不用RemoveEventListener，在其被GC后系统自动删除
+    /// <summary>
     static public class EventManager
     {
         static private Dictionary<Type, EventArgs>              m_EventPool = new Dictionary<Type, EventArgs>();
