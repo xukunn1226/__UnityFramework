@@ -115,6 +115,11 @@
 	https://blog.csdn.net/lqzdreamer/article/details/85055569  D*路径搜索算法原理解析及Python实现
 	https://blog.csdn.net/banzhuan133/article/details/100532206  D*(Dynamic A*) 算法详细解析	
 	路径平滑算法：佛洛依德路径平滑算法（FLOYD）、漏斗算法
+	https://www.geeksforgeeks.org/a-search-algorithm/
+	https://www.redblobgames.com/pathfinding/a-star/implementation.html
+	https://en.wikipedia.org/wiki/A*_search_algorithm
+
+
 
 
 	https://zhuanlan.zhihu.com/p/109108400  RTS游戏中的寻路
