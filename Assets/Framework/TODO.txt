@@ -200,6 +200,7 @@
         Local space
     show bound：持续改变说明是不可预测模式
     减少脚本控制，尽量使用系统内置功能
+* AI插件推荐：https://answer.uwa4d.com/question/60cafcefe58b4719dd3e25ac
 	
 
 
