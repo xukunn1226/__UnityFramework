@@ -12,9 +12,13 @@ namespace Framework.Pathfinding
         [Range(0.1f, 100.0f)] public float  gridSize    = 1;
         public Heuristic                    heuristic   = Heuristic.Euclidean;
         public GridData[]                   data        = new GridData[0];
-        public GridDetails[]                tempData    = new GridDetails[0];
 
-        private GridData GetGridData(int rowIndex, int colIndex)
+        public int GetGridIndex(int rowIndex, int colIndex)
+        {
+            return countOfCol * rowIndex + colIndex;
+        }
+
+        public GridData GetGridData(int rowIndex, int colIndex)
         {
             if(data.Length != countOfRow * countOfCol)
                 throw new System.Exception($"the data's length not equal to countOfRow*countOfCol({countOfRow}*{countOfCol})");
@@ -22,7 +26,7 @@ namespace Framework.Pathfinding
             if(rowIndex < 0 || rowIndex > countOfRow - 1 || colIndex < 0 || colIndex > countOfCol - 1)
                 throw new System.ArgumentOutOfRangeException($"InRow({rowIndex}) OR InCol({colIndex})");
 
-            return data[countOfCol * rowIndex + colIndex];
+            return data[GetGridIndex(rowIndex, colIndex)];
         }
 
         public void SetGridData(int rowIndex, int colIndex, GridState state)
@@ -36,14 +40,14 @@ namespace Framework.Pathfinding
         public void UpdateData(int newCountOfRow, int newCountOfCol)
         {
             GridData[] newData = new GridData[newCountOfRow * newCountOfCol];
-            for(int i = 0; i < newCountOfRow; ++i)
+            for(int rowIndex = 0; rowIndex < newCountOfRow; ++rowIndex)
             {
-                for(int j = 0; j < newCountOfCol; ++j)
+                for(int colIndex = 0; colIndex < newCountOfCol; ++colIndex)
                 {
-                    int index = i * newCountOfCol + j;
-                    if(i >= countOfRow || j >= countOfCol || index >= data.Length)
+                    int index = rowIndex * newCountOfCol + colIndex;
+                    if(rowIndex >= countOfRow || colIndex >= countOfCol || index >= data.Length)
                     {
-                        newData[index] = new GridData(i, j);
+                        newData[index] = new GridData(rowIndex, colIndex);
                     }
                     else
                     {

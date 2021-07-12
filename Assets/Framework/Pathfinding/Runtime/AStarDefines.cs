@@ -28,15 +28,16 @@ namespace Framework.Pathfinding
     {
         public GridData(int rowIndex, int colIndex, GridState state = GridState.Reachable)
         {
-            this.rowIndex = rowIndex;
-            this.colIndex = colIndex;
-            this.state = state;
+            this.rowIndex   = rowIndex;
+            this.colIndex   = colIndex;
+            this.state      = state;
         }
 
         public int                          rowIndex;
         public int                          colIndex;
         public GridState                    state           = GridState.Reachable;
         public int                          cost;
+        [NonSerialized] public GridDetails  details;
     }
 
     /// <summary>
@@ -44,6 +45,15 @@ namespace Framework.Pathfinding
     /// <summary>
     public class GridDetails
     {
+        public GridDetails(GridData parent)
+        {
+            this.parent = parent;
+            f = 0;
+            g = 0;
+            h = 0;
+            inClosedList = false;
+        }
+
         [NonSerialized] public GridData     parent;
         [NonSerialized] public int          f;              // f = g + h
         [NonSerialized] public int          g;
@@ -51,12 +61,28 @@ namespace Framework.Pathfinding
         [NonSerialized] public bool         inClosedList;
     }
 
+    public struct PathPos
+    {
+        public int rowIndex;
+        public int colIndex;
+    }
+
+    public enum PathReporterStatus
+    {
+        Success,            // 寻路成功
+        UnReachable,        // 寻路不成功，因目标点是不可到达
+        Blocked,            // 寻路不成功，因目标点是阻挡
+        Invalid,            // 寻路不成功，因目标点为无效
+    }
+
     public class PathReporter
     {
+        public PathReporterStatus status;
+
         public PathReporter()
         {}
 
-        public int GetPathsNonAlloc(out Vector2[] results)
+        public int GetPathsNonAlloc(out PathPos[] results)
         {
             results = null;
             return 0;
