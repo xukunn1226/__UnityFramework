@@ -1,0 +1,16 @@
+{
+    "name": "Framework.Pathfinding.Tests",
+    "rootNamespace": "",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "ENABLE_PROFILER"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

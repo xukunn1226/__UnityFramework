@@ -108,8 +108,7 @@
 * 寻路 	
 	https://blog.csdn.net/needmorecode  NavMesh生成研究 && Recast源码解析	
  	https://cloud.tencent.com/developer/article/1502519  A*寻路初探
- 	https://www.cnblogs.com/technology/archive/2011/05/26/2058842.html  理解A*寻路算法具体过程
- 	https://blog.csdn.net/XieNaoban/article/details/53524165?spm=1001.2014.3001.5501  [笔记]A*寻路算法初探
+ 	https://www.cnblogs.com/technology/archive/2011/05/26/2058842.html  理解A*寻路算法具体过程 	
 	http://aigamedev.com/open/review/total-war-ai/		
 	https://www.cnblogs.com/flyinggod/p/8671053.html  D*是动态A*，适合动态网格，环境如权重不断变化情况下
 	https://blog.csdn.net/lqzdreamer/article/details/85055569  D*路径搜索算法原理解析及Python实现
@@ -118,6 +117,8 @@
 	https://www.geeksforgeeks.org/a-search-algorithm/
 	https://www.redblobgames.com/pathfinding/a-star/implementation.html
 	https://en.wikipedia.org/wiki/A*_search_algorithm
+	http://theory.stanford.edu/~amitp/GameProgramming/
+	https://www.redblobgames.com/pathfinding/grids/algorithms.html
 
 
 
@@ -144,6 +145,7 @@
 	http://frankorz.com/2017/12/16/greedy-best-find-search/  寻路算法 - 贪婪最佳优先算法
 	Flocking Behaviour
 	Steering Behaviour
+	https://blog.csdn.net/XieNaoban/article/details/53524165?spm=1001.2014.3001.5501  [笔记]A*寻路算法初探
 
 
 	
