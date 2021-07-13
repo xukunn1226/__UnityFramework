@@ -27,9 +27,11 @@ namespace Framework.Core.Tests
             List<int> arr5 = new List<int>() {4, 5, 5, 1, 7, 6, 9, 2, 8, 0, 3, 5};
             arr5.MergeSort();
 
-            List<int> arr6 = new List<int>() {4, 6, 8, 5, 9};
+            List<int> arr6 = new List<int>() {46, 45, 96, 44, 66, 86, 70};
             // arr6.HeapSort(Comparer<int>.Create(DescendingComparer));
             arr6.HeapSort();
+            for(int i = 0; i < arr6.Count; ++i)
+                UnityEngine.Debug.Log(arr6[i]);
 
             int[] arr7 = new int[] {4, 5, 5, 1, 7, 6, 9, 2, 8, 0, 3, 5};
             arr7.ShellSort(Comparer<int>.Create(DescendingComparer));

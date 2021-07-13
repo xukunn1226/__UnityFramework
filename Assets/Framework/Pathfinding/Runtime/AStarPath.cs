@@ -9,12 +9,12 @@ namespace Framework.Pathfinding
     public class AStarPath : MonoBehaviour
     {
         private AStarData                   m_Data;
-        private BinaryHeap<GridData>              m_OpenList              = new BinaryHeap<GridData>(s_AscendingComparer);
+        private BinaryHeap<GridData>        m_OpenList              = new BinaryHeap<GridData>(s_AscendingComparer);        // 小顶堆管理开启列表
         static private Comparer<GridData>   s_AscendingComparer     = Comparer<GridData>.Create(AscendingComparer);
 
         void Awake()
         {
-            m_Data = GetComponent<AStarData>();            
+            m_Data = GetComponent<AStarData>();
         }
 
         /// <summary>
@@ -61,10 +61,10 @@ namespace Framework.Pathfinding
             while(m_OpenList.Count > 0)
             {
                 // 取f值最小的格子，因是二叉堆数据结构，内部会重新排序
-                GridData minData = m_OpenList.Pop();
+                GridData curGrid = m_OpenList.Pop();
 
                 // 标记为关闭列表中
-                minData.details.inClosedList = true;
+                curGrid.details.inClosedList = true;
 
                 // 遍历所有相邻的点
             }
