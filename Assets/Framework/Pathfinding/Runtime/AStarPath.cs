@@ -50,7 +50,9 @@ namespace Framework.Pathfinding
 
             // check whether destination grid has been reached or not
             if(src.rowIndex == dst.rowIndex && src.colIndex == dst.colIndex)
+            {
                 return true;
+            }
             
             m_OpenList.Clear();
             
@@ -67,9 +69,37 @@ namespace Framework.Pathfinding
                 curGrid.details.inClosedList = true;
 
                 // 遍历所有相邻的点
+                DoNeighbor(curGrid, dstGridData, curGrid.rowIndex - 1, curGrid.colIndex, path);        // North
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 处理相邻节点
+        /// true：找到目标点；false：未找到目标点
+        /// <summary>
+        private bool DoNeighbor(GridData curGrid, GridData dstGrid, int rowIndex, int colIndex, PathReporter path)
+        {
+            if(dstGrid.rowIndex == rowIndex && dstGrid.colIndex == colIndex)
+            {
+                return true;
+            }
+
+            GridData neighborGridData = m_Data.GetGridData(rowIndex, colIndex);
+            if(neighborGridData.state == GridState.Invalid)
+            {
+                path.status = PathReporterStatus.Invalid;
+                return false;
+            }
+            if(neighborGridData.state == GridState.Blocked)
+            {
+                path.status = PathReporterStatus.Blocked;
+                return false;
+            }
+
+
+            return false;
         }
 
         static private int AscendingComparer(GridData left, GridData right)
