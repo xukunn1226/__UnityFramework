@@ -9,7 +9,7 @@ namespace Framework.Pathfinding
     public class AStarPath : MonoBehaviour
     {
         private AStarData                   m_Data;
-        private Heap<GridData>              m_OpenList              = new Heap<GridData>(s_AscendingComparer);
+        private BinaryHeap<GridData>              m_OpenList              = new BinaryHeap<GridData>(s_AscendingComparer);
         static private Comparer<GridData>   s_AscendingComparer     = Comparer<GridData>.Create(AscendingComparer);
 
         void Awake()

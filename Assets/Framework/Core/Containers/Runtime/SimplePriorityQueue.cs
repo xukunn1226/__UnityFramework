@@ -6,7 +6,7 @@ namespace Framework.Core
 {
     public class SimplePriorityQueue<TKey> where TKey : IComparable<TKey>
     {
-        private Heap<TKey>       m_Heap;
+        private BinaryHeap<TKey>       m_Heap;
 
         public SimplePriorityQueue() : this(0, null) {}
 
@@ -14,12 +14,12 @@ namespace Framework.Core
 
         public SimplePriorityQueue(int capacity, Comparer<TKey> comparer = null)
         {
-            m_Heap = new Heap<TKey>(capacity, comparer);
+            m_Heap = new BinaryHeap<TKey>(capacity, comparer);
         }
 
         public SimplePriorityQueue(IList<TKey> arr, Comparer<TKey> comparer = null)
         {
-            m_Heap = new Heap<TKey>(arr, comparer);
+            m_Heap = new BinaryHeap<TKey>(arr, comparer);
         }
 
         public int  Count   { get { return m_Heap.Count; } }

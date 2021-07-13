@@ -4,24 +4,24 @@ using System;
 
 namespace Framework.Core
 {
-    public class Heap<T>
+    public class BinaryHeap<T>
     {
         private ArrayList<T>    m_Buffer;
         private Comparer<T>     m_Comparer;
         
-        public Heap() : this(0, null)
+        public BinaryHeap() : this(0, null)
         {}
 
-        public Heap(Comparer<T> comparer) : this(0, comparer)
+        public BinaryHeap(Comparer<T> comparer) : this(0, comparer)
         {}
 
-        public Heap(IList<T> arr, Comparer<T> comparer = null) : this(arr.Count, comparer)
+        public BinaryHeap(IList<T> arr, Comparer<T> comparer = null) : this(arr.Count, comparer)
         {
             m_Buffer.AddRange(arr);
             BuildHeap();
         }
 
-        public Heap(int capacity, Comparer<T> comparer = null)
+        public BinaryHeap(int capacity, Comparer<T> comparer = null)
         {
             m_Buffer = new ArrayList<T>(capacity);
             m_Comparer = comparer ?? Comparer<T>.Default;

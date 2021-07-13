@@ -11,14 +11,14 @@ namespace Framework.Core
 
     public class PriorityQueue<TKey> where TKey : class, IPriorityItem
     {
-        private Heap<PriorityQueueNode<TKey>>   m_Heap;
+        private BinaryHeap<PriorityQueueNode<TKey>>   m_Heap;
         private bool                            m_IsMinHeap;
 
         public PriorityQueue() : this(0, true) {}
 
         public PriorityQueue(int capacity, bool isMinHeap = true)
         {
-            m_Heap = new Heap<PriorityQueueNode<TKey>>();
+            m_Heap = new BinaryHeap<PriorityQueueNode<TKey>>();
             m_IsMinHeap = isMinHeap;
         }
 
