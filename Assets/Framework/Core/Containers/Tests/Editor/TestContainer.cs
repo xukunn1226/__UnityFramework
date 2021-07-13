@@ -74,7 +74,7 @@ namespace Framework.Core.Tests
         public void TestHeap()
         {
             List<int> arr = new List<int>() {4, 6, 8, 5, 9, 2, 3};
-            Heap<int> heap = new Heap<int>(arr);
+            BinaryHeap<int> heap = new BinaryHeap<int>(arr);
             heap.Push(1);
             int index = heap.FindIndex(6);
             heap[index] = 1;

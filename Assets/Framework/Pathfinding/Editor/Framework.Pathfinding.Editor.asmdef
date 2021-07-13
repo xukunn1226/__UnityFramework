@@ -1,0 +1,16 @@
+{
+    "name": "Framework.Pathfinding.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c6236fdc908d6c2499f574e3570d4650"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

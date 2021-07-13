@@ -162,7 +162,7 @@ namespace Application.Runtime
             if (m_PrefabedPool == null)
             {
                 ResourceManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
-                m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoaderEx>(m_PoolPath);
+                m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoader>(m_PoolPath);
             }
             return m_PrefabedPool.Get();
         }
@@ -186,7 +186,7 @@ namespace Application.Runtime
                     throw new System.ArgumentNullException("m_LRUedPoolAsset");
 
                 ResourceManager.ParseBundleAndAssetName(m_LRUedPoolAsset.bundleName, m_LRUedPoolAsset.assetName, out m_PoolPath);
-                m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_PoolPath);
+                m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoader>(m_PoolPath);
                 // m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_LRUedPoolAsset.assetPath);
             }
             // return m_LRUedPool.Get(assetPath);
