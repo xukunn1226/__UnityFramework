@@ -5,7 +5,7 @@ using System;
 
 namespace Framework.Pathfinding
 {    
-    public enum GridState
+    public enum CellState
     {
         Invalid,            // 无效（不在可寻路范围内）
         UnReachable,        // 不可到达（在可寻路范围内）
@@ -22,30 +22,21 @@ namespace Framework.Pathfinding
     }
 
     /// <summary>
-    /// 格子数据，序列化数据
+    /// A*算法使用的基础数据结构接口
     /// <summary>
-    public class GridData
+    public interface ICellData : IEquatable<ICellData>
     {
-        public GridData(int rowIndex, int colIndex, GridState state = GridState.Reachable)
-        {
-            this.rowIndex   = rowIndex;
-            this.colIndex   = colIndex;
-            this.state      = state;
-        }
-
-        public int                          rowIndex;
-        public int                          colIndex;
-        public GridState                    state           = GridState.Reachable;
-        public int                          cost;
-        [NonSerialized] public GridDetails  details;
+        CellState           state       { get; set; }
+        List<ICellData>     neighbors   { get; set; }
+        CellDetails         details     { get; set; }
     }
 
     /// <summary>
     /// 计算路径时格子的临时数据，非序列化数据
     /// <summary>
-    public class GridDetails
+    public class CellDetails
     {
-        public GridDetails(GridData parent)
+        public CellDetails(ICellData parent)
         {
             this.parent = parent;
             f = 0;
@@ -54,17 +45,11 @@ namespace Framework.Pathfinding
             inClosedList = false;
         }
 
-        [NonSerialized] public GridData     parent;
+        [NonSerialized] public ICellData    parent;
         [NonSerialized] public int          f;              // f = g + h
         [NonSerialized] public int          g;
         [NonSerialized] public int          h;        
         [NonSerialized] public bool         inClosedList;
-    }
-
-    public struct PathPos
-    {
-        public int rowIndex;
-        public int colIndex;
     }
 
     public enum PathReporterStatus
@@ -77,12 +62,14 @@ namespace Framework.Pathfinding
 
     public class PathReporter
     {
+        internal List<ICellData> pathNodeList { get; set; }
+
         public PathReporterStatus status;
 
         public PathReporter()
         {}
 
-        public int GetPathsNonAlloc(out PathPos[] results)
+        public int GetPathsNonAlloc(out ICellData[] results)
         {
             results = null;
             return 0;

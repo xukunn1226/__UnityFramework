@@ -11,14 +11,26 @@ namespace Framework.Pathfinding
         [Range(1, 10000)] public int        countOfCol  = 8;
         [Range(0.1f, 100.0f)] public float  gridSize    = 1;
         public Heuristic                    heuristic   = Heuristic.Euclidean;
-        public GridData[]                   data        = new GridData[0];
+        public ICellData[]                  data        = new ICellData[0];
 
-        public int GetGridIndex(int rowIndex, int colIndex)
+        // 使用外部数据序列化对象
+        public void ImportSerializer(IGridDataSerializer serializer)
+        {
+            countOfRow  = serializer.OnSerializeCountOfRow();
+            countOfCol  = serializer.OnSerializeCountOfCol();
+            gridSize    = serializer.OnSerializeGridSize();
+            heuristic   = serializer.OnSerializeHeuristic();
+            data        = serializer.OnSerializeData();
+
+            serializer.OnPostprocessData();
+        }
+
+        private int GetGridIndex(int rowIndex, int colIndex)
         {
             return countOfCol * rowIndex + colIndex;
         }
 
-        public GridData GetGridData(int rowIndex, int colIndex)
+        public ICellData GetGridData(int rowIndex, int colIndex)
         {
             if(data.Length != countOfRow * countOfCol)
                 throw new System.Exception($"the data's length not equal to countOfRow*countOfCol({countOfRow}*{countOfCol})");
@@ -29,9 +41,9 @@ namespace Framework.Pathfinding
             return data[GetGridIndex(rowIndex, colIndex)];
         }
 
-        public void SetGridData(int rowIndex, int colIndex, GridState state)
+        public void SetGridData(int rowIndex, int colIndex, CellState state)
         {
-            GridData gridData = GetGridData(rowIndex, colIndex);
+            ICellData gridData = GetGridData(rowIndex, colIndex);
             gridData.state = state;
         }
 
@@ -39,25 +51,25 @@ namespace Framework.Pathfinding
         // 区域大小发生变化时更新接口，默认保留之前的数据
         public void UpdateData(int newCountOfRow, int newCountOfCol)
         {
-            GridData[] newData = new GridData[newCountOfRow * newCountOfCol];
-            for(int rowIndex = 0; rowIndex < newCountOfRow; ++rowIndex)
-            {
-                for(int colIndex = 0; colIndex < newCountOfCol; ++colIndex)
-                {
-                    int index = rowIndex * newCountOfCol + colIndex;
-                    if(rowIndex >= countOfRow || colIndex >= countOfCol || index >= data.Length)
-                    {
-                        newData[index] = new GridData(rowIndex, colIndex);
-                    }
-                    else
-                    {
-                        newData[index] = data[index];
-                    }
-                }
-            }
-            countOfRow = newCountOfRow;
-            countOfCol = newCountOfCol;
-            data = newData;
+            // CellData[] newData = new CellData[newCountOfRow * newCountOfCol];
+            // for(int rowIndex = 0; rowIndex < newCountOfRow; ++rowIndex)
+            // {
+            //     for(int colIndex = 0; colIndex < newCountOfCol; ++colIndex)
+            //     {
+            //         int index = rowIndex * newCountOfCol + colIndex;
+            //         if(rowIndex >= countOfRow || colIndex >= countOfCol || index >= data.Length)
+            //         {
+            //             newData[index] = new CellData(rowIndex, colIndex);
+            //         }
+            //         else
+            //         {
+            //             newData[index] = data[index];
+            //         }
+            //     }
+            // }
+            // countOfRow = newCountOfRow;
+            // countOfCol = newCountOfCol;
+            // data = newData;
         }
 #endif
     }
