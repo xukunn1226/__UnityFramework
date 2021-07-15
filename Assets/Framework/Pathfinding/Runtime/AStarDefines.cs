@@ -24,7 +24,7 @@ namespace Framework.Pathfinding
     /// <summary>
     /// A*算法使用的基础数据结构接口
     /// <summary>
-    public interface ICellData : IEquatable<ICellData>
+    public interface ICellData : IEquatable<ICellData>, IComparable<ICellData>
     {
         CellState           state       { get; set; }
         List<ICellData>     neighbors   { get; set; }
@@ -46,9 +46,9 @@ namespace Framework.Pathfinding
         }
 
         [NonSerialized] public ICellData    parent;
-        [NonSerialized] public int          f;              // f = g + h
-        [NonSerialized] public int          g;
-        [NonSerialized] public int          h;        
+        [NonSerialized] public float        f;
+        [NonSerialized] public float        g;
+        [NonSerialized] public float        h;        
         [NonSerialized] public bool         inClosedList;
     }
 
