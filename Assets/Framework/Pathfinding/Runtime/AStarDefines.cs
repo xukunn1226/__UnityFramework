@@ -62,17 +62,65 @@ namespace Framework.Pathfinding
 
     public class PathReporter
     {
-        internal List<ICellData> pathNodeList { get; set; }
+        internal ICellData dstCell { get; set; }
+        private Stack<ICellData> m_Paths = new Stack<ICellData>();
 
         public PathReporterStatus status;
 
-        public PathReporter()
-        {}
-
-        public int GetPathsNonAlloc(out ICellData[] results)
+        public ICellData[] paths
         {
-            results = null;
-            return 0;
+            get
+            {
+                if(status == PathReporterStatus.Success)
+                {
+                    m_Paths.Clear();
+
+                    ICellData curCell = dstCell;
+                    while (curCell != null)
+                    {
+                        m_Paths.Push(curCell);
+                        curCell = curCell.details.parent;
+                    }
+
+                    ICellData[] list = new ICellData[m_Paths.Count];
+                    int index = 0;
+                    while(m_Paths.Count != 0)
+                    {
+                        list[index++] = m_Paths.Pop();
+                    }
+                    return list;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public int GetPathsNonAlloc(ICellData[] results)
+        {
+            if(status == PathReporterStatus.Success)
+            {
+                m_Paths.Clear();
+
+                ICellData curCell = dstCell;
+                while(curCell != null)
+                {
+                    m_Paths.Push(curCell);
+                    curCell = curCell.details.parent;
+                }
+                
+                int count = Mathf.Min(results.Length, m_Paths.Count);
+                for(int i = 0; i < count; ++i)
+                {
+                    results[i] = m_Paths.Pop();
+                }
+                return count;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

@@ -92,6 +92,7 @@ namespace Framework.Pathfinding
                     if(neighbor.Equals(dstCellData))
                     {
                         neighbor.details.parent = curGrid;
+                        result.dstCell = dstCellData;
                         return true;
                     }
 
