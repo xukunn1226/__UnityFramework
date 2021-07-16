@@ -5,13 +5,19 @@ using System;
 
 namespace Framework.Pathfinding
 {
-    public class AStarData : MonoBehaviour
+    // for Grid
+    public class GridCollection : MonoBehaviour
     {        
-        [Range(1, 10000)] public int        countOfRow  = 8;
-        [Range(1, 10000)] public int        countOfCol  = 8;
+        [Range(1, 2000)] public int         countOfRow  = 8;
+        [Range(1, 2000)] public int         countOfCol  = 8;
         [Range(0.1f, 100.0f)] public float  gridSize    = 1;
         public Heuristic                    heuristic   = Heuristic.Euclidean;
-        public ICellData[]                  data        = new ICellData[0];
+        public GridData[]                   data        = new GridData[0];
+
+        void Awake()
+        {
+            OnPostprocessData();
+        }
 
         // 使用外部数据序列化对象
         public void ImportSerializer(IGridDataSerializer serializer)
@@ -22,7 +28,13 @@ namespace Framework.Pathfinding
             heuristic   = serializer.OnSerializeHeuristic();
             data        = serializer.OnSerializeData();
 
-            serializer.OnPostprocessData();
+            OnPostprocessData();
+        }
+
+        // 序列化之后对数据再处理，例如details, neighbors
+        private void OnPostprocessData()
+        {
+
         }
 
         private int GetGridIndex(int rowIndex, int colIndex)
@@ -70,6 +82,8 @@ namespace Framework.Pathfinding
             // countOfRow = newCountOfRow;
             // countOfCol = newCountOfCol;
             // data = newData;
+
+            OnPostprocessData();
         }
 #endif
     }

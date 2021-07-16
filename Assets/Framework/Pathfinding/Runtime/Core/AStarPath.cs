@@ -5,15 +5,11 @@ using Framework.Core;
 
 namespace Framework.Pathfinding
 {
-    [RequireComponent(typeof(AStarData))]
     public class AStarPath : MonoBehaviour
     {
         public delegate float OnCalculateValue(ICellData cur, ICellData neighbor);
 
-        // private OnCalculateValue                m_GValueFunc;
-        // private OnCalculateValue                m_HValueFunc;
         private SimplePriorityQueue<ICellData>  m_OpenList              = new SimplePriorityQueue<ICellData>(100);       // 小顶堆管理开启列表
-        // static private Comparer<ICellData>      s_AscendingComparer     = Comparer<ICellData>.Create(AscendingComparer);
 
         /// <summary>
         /// A star algorithm
@@ -58,9 +54,6 @@ namespace Framework.Pathfinding
                 return true;
             }
 
-            // m_GValueFunc = gValueFunc;
-            // m_HValueFunc = hValueFunc;
-            
             m_OpenList.Clear();
             
             // init the starting path node
@@ -92,6 +85,8 @@ namespace Framework.Pathfinding
                     if(neighbor.Equals(dstCellData))
                     {
                         neighbor.details.parent = curGrid;
+
+                        result.status = PathReporterStatus.Success;
                         result.dstCell = dstCellData;
                         return true;
                     }
@@ -127,15 +122,5 @@ namespace Framework.Pathfinding
             result.status = PathReporterStatus.UnReachable;
             return false;
         }
-
-        // static private int AscendingComparer(ICellData left, ICellData right)
-        // {
-        //     if(left.details.f > right.details.f)
-        //         return 1;
-        //     else if(left.details.f < right.details.f)
-        //         return -1;
-        //     else
-        //         return 0;
-        // }
     }
 }

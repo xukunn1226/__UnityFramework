@@ -24,7 +24,8 @@ namespace Framework.Pathfinding
     /// <summary>
     /// A*算法使用的基础数据结构接口
     /// <summary>
-    public interface ICellData : IEquatable<ICellData>, IComparable<ICellData>
+    public interface ICellData :    IEquatable<ICellData>,              // 以此判断是否为目标点
+                                    IComparable<ICellData>              // 以此比较f值大小，重排序开启列表
     {
         CellState           state       { get; set; }
         List<ICellData>     neighbors   { get; set; }
@@ -62,10 +63,9 @@ namespace Framework.Pathfinding
 
     public class PathReporter
     {
-        internal ICellData dstCell { get; set; }
-        private Stack<ICellData> m_Paths = new Stack<ICellData>();
-
-        public PathReporterStatus status;
+        internal ICellData          dstCell     { get; set; }
+        private Stack<ICellData>    m_Paths     = new Stack<ICellData>();
+        public PathReporterStatus   status;
 
         public ICellData[] paths
         {
@@ -109,6 +109,9 @@ namespace Framework.Pathfinding
                     m_Paths.Push(curCell);
                     curCell = curCell.details.parent;
                 }
+
+                if(results == null || results.Length < 2)
+                    throw new ArgumentException($"GetPathsNonAlloc: results == null || results.Length < 2");
                 
                 int count = Mathf.Min(results.Length, m_Paths.Count);
                 for(int i = 0; i < count; ++i)
