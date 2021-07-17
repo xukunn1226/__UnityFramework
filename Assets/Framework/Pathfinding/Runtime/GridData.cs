@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace Framework.Pathfinding
 {    
-    public interface IGridDataSerializer
-    {
-        int         OnSerializeCountOfRow();
-        int         OnSerializeCountOfCol();
-        float       OnSerializeGridSize();
-        Heuristic   OnSerializeHeuristic();        
-        GridData[]  OnSerializeData();                      // 二进制数据序列化为GridData
-    }
+    // public interface IGridDataSerializer
+    // {
+    //     int         OnSerializeCountOfRow();
+    //     int         OnSerializeCountOfCol();
+    //     float       OnSerializeGridSize();
+    //     Heuristic   OnSerializeHeuristic();        
+    //     GridData[]  OnSerializeData();                      // 二进制数据序列化为GridData
+    // }
 
     public class GridData : ICellData
     {

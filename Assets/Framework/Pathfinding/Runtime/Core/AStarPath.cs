@@ -7,18 +7,19 @@ namespace Framework.Pathfinding
 {
     public class AStarPath : MonoBehaviour
     {
-        public delegate float OnCalculateValue(ICellData cur, ICellData neighbor);
+        public delegate float OnCalculateValue<T>(T cur, T other) where T : ICellData;
 
-        private SimplePriorityQueue<ICellData>  m_OpenList              = new SimplePriorityQueue<ICellData>(100);       // 小顶堆管理开启列表
+        private SimplePriorityQueue<ICellData>  m_OpenList          = new SimplePriorityQueue<ICellData>(100);       // 小顶堆管理开启列表
 
         /// <summary>
         /// A star algorithm
         /// <summary>
-        public bool CalculatePath(ICellData srcCellData,
-                                  ICellData dstCellData, 
-                                  OnCalculateValue gValueFunc,
-                                  OnCalculateValue hValueFunc, 
-                                  PathReporter result)
+        public bool CalculatePath<T>(   T srcCellData, 
+                                        T dstCellData,
+                                        OnCalculateValue<T> gValueFunc,
+                                        OnCalculateValue<T> hValueFunc,
+                                        PathReporter result)
+                                        where T : ICellData
         {
             // check source path node validity
             if(srcCellData.state == CellState.Invalid)
@@ -92,8 +93,8 @@ namespace Framework.Pathfinding
                     }
 
                     // 计算新的g、h、f
-                    float gNew = gValueFunc?.Invoke(curGrid, neighbor) ?? 0;
-                    float hNew = hValueFunc?.Invoke(curGrid, neighbor) ?? 0;
+                    float gNew = curGrid.details.g + gValueFunc?.Invoke((T)curGrid, (T)neighbor) ?? 0;
+                    float hNew = hValueFunc?.Invoke((T)curGrid, (T)dstCellData) ?? 0;
                     float fNew = gNew + hNew;
 
                     if( neighbor.details.parent == null ||          // 不在开启列表
