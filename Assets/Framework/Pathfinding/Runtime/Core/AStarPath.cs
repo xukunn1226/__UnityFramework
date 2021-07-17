@@ -14,12 +14,11 @@ namespace Framework.Pathfinding
         /// <summary>
         /// A star algorithm
         /// <summary>
-        public bool CalculatePath<T>(   T srcCellData, 
+        internal bool CalculatePath<T>( T srcCellData, 
                                         T dstCellData,
                                         OnCalculateValue<T> gValueFunc,
                                         OnCalculateValue<T> hValueFunc,
-                                        PathReporter result)
-                                        where T : ICellData
+                                        ref PathReporter result) where T : ICellData
         {
             // check source path node validity
             if(srcCellData.state == CellState.Invalid)
@@ -52,7 +51,9 @@ namespace Framework.Pathfinding
             // check whether destination grid has been reached or not
             if(srcCellData.Equals(dstCellData))
             {
-                return true;
+                result.status = PathReporterStatus.Invalid;
+                Debug.LogError($"Calculate path failed, because destination path node is same as source path node");
+                return false;
             }
 
             m_OpenList.Clear();

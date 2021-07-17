@@ -13,6 +13,18 @@ namespace Framework.Pathfinding
     //     GridData[]  OnSerializeData();                      // 二进制数据序列化为GridData
     // }
 
+        // 使用外部数据序列化对象
+        // public void ImportSerializer(IGridDataSerializer serializer)
+        // {
+        //     countOfRow  = serializer.OnSerializeCountOfRow();
+        //     countOfCol  = serializer.OnSerializeCountOfCol();
+        //     gridSize    = serializer.OnSerializeGridSize();
+        //     heuristic   = serializer.OnSerializeHeuristic();
+        //     data        = serializer.OnSerializeData();
+
+        //     OnPostprocessData();
+        // }
+
     public class GridData : ICellData
     {
         [SerializeField]
@@ -23,6 +35,12 @@ namespace Framework.Pathfinding
 
         public int                  rowIndex;
         public int                  colIndex;
+
+        public GridData(int rowIndex, int colIndex)
+        {
+            this.rowIndex = rowIndex;
+            this.colIndex = colIndex;
+        }
 
         public bool Equals(ICellData other)
         {
@@ -41,6 +59,48 @@ namespace Framework.Pathfinding
                 return -1;
             else
                 return 0;
+        }
+    }
+
+    public class GridPathReporter
+    {
+        private static GridData[] m_Paths = new GridData[32];
+        internal PathReporter pathReporter = new PathReporter();        
+        public PathReporterStatus status { get { return pathReporter.status; } }
+
+        public Vector2Int[] paths
+        {
+            get
+            {                
+                ICellData[] data = pathReporter.paths;
+                if(data == null)
+                    return null;
+
+                Vector2Int[] results = new Vector2Int[data.Length];
+                for(int i = 0; i < results.Length; ++i)
+                {
+                    results[i].x = ((GridData)data[i]).colIndex;
+                    results[i].y = ((GridData)data[i]).rowIndex;
+                }
+                return results;
+            }
+        }
+
+        public int GetPathsNonAlloc(Vector2Int[] results)
+        {
+            if(results.Length > m_Paths.Length)
+                m_Paths = new GridData[results.Length];
+                
+            int count = pathReporter.GetPathsNonAlloc(m_Paths);
+            if(count == 0)
+                return 0;
+
+            for(int i = 0; i < count; ++i)
+            {
+                results[i].x = ((GridData)m_Paths[i]).colIndex;
+                results[i].y = ((GridData)m_Paths[i]).rowIndex;
+            }
+            return count;
         }
     }
 }

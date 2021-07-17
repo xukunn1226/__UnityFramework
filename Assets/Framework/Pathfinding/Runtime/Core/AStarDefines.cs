@@ -29,7 +29,7 @@ namespace Framework.Pathfinding
     {
         CellState           state       { get; set; }
         List<ICellData>     neighbors   { get; set; }
-        CellDetails         details     { get; set; }
+        CellDetails         details     { get; set; }                   // 记录寻路过程的临时数据，每次寻路时需要重置
     }
 
     /// <summary>
