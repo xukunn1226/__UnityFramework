@@ -11,6 +11,8 @@ namespace Framework.Pathfinding.Editor
     {
         private GridGraph           m_Target;
         private int                 m_HandleGrid;
+        private int                 m_SelectedRowIndex;
+        private int                 m_SelectedColIndex;
 
         void OnEnable()
         {
@@ -67,7 +69,7 @@ namespace Framework.Pathfinding.Editor
             Handles.BeginGUI();
             switch(m_HandleGrid)
             {
-                case 0:
+                case 0:     // for "Reachable" flag
                     GUI.Button(new Rect(20, 80, 100, 40), "Reachable");
                     if(GUI.Button(new Rect(20, 150, 80, 30), "Block"))
                     {
@@ -78,7 +80,7 @@ namespace Framework.Pathfinding.Editor
                         m_HandleGrid = 2;
                     }
                     break;
-                case 1:
+                case 1:     // for "Block" flag
                     if(GUI.Button(new Rect(20, 80, 80, 30), "Reachable"))
                     {
                         m_HandleGrid = 0;
@@ -89,7 +91,7 @@ namespace Framework.Pathfinding.Editor
                         m_HandleGrid = 2;
                     }
                     break;
-                case 2:
+                case 2:     // for "Invalid" flag
                     if(GUI.Button(new Rect(20, 80, 80, 30), "Reachable"))
                     {
                         m_HandleGrid = 0;
@@ -101,11 +103,14 @@ namespace Framework.Pathfinding.Editor
                     GUI.Button(new Rect(20, 220, 100, 40), "Invalid");
                     break;
             }
+            
+            GUI.Label(new Rect(20, 280, 120, 150), "Shift: \n刷新单个格子的状态\n\nShift + Alt：\n连续设置格子状态\n", EditorStyles.helpBox);
             Handles.EndGUI();
+
 
             Handles.color = Color.green;
             float thickness = 0.5f;
-            const float lineGap = 0.005f;
+            const float lineGap = 0.03f;
             float gridSize = m_Target.gridSize;
             for(int row = 0; row < m_Target.countOfRow; ++row)
             {
@@ -128,17 +133,25 @@ namespace Framework.Pathfinding.Editor
                         continue;
                     
                     Handles.color = Color.red;
-                    switch(grid.state)
+                    if(row == m_SelectedRowIndex && col == m_SelectedColIndex)
                     {
-                        case CellState.Reachable:
-                            Handles.color = Color.green;
-                            break;
-                        case CellState.Blocked:
-                            Handles.color = Color.blue;
-                            break;
-                        case CellState.Invalid:
-                            Handles.color = Color.gray;
-                            break;
+                        // Debug.LogWarning($"=======================   {m_SelectedRowIndex}  {m_SelectedColIndex}");
+                        Handles.color = Color.red;
+                    }
+                    else
+                    {
+                        switch (grid.state)
+                        {
+                            case CellState.Reachable:
+                                Handles.color = Color.green;
+                                break;
+                            case CellState.Blocked:
+                                Handles.color = Color.blue;
+                                break;
+                            case CellState.Invalid:
+                                Handles.color = Color.white;
+                                break;
+                        }
                     }
                     Handles.DrawLine(p0, p1, thickness);
                     Handles.DrawLine(p1, p2, thickness);
@@ -147,18 +160,38 @@ namespace Framework.Pathfinding.Editor
                 }
             }
 
-            if (m_HandleGrid >= 0 && m_HandleGrid <= 2 && Event.current.modifiers == EventModifiers.Shift)
+            // Event.current.type == EventType.MouseMove && 
+            m_SelectedRowIndex = -1;
+            m_SelectedColIndex = -1;
+            if (Event.current.modifiers == EventModifiers.Shift)
             {
-                if (Event.current.type == EventType.MouseMove)
+                Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+                Plane grid = new Plane(m_Target.transform.TransformVector(Vector3.up), m_Target.transform.position);
+                float enter;
+                if (grid.Raycast(ray, out enter))
                 {
-                    Debug.LogWarning("");
-                    Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-                    Plane grid = new Plane(m_Target.transform.TransformVector(Vector3.up), m_Target.transform.position);
-                    float enter;
-                    if(grid.Raycast(ray, out enter))
+                    Vector3 intersection = ray.origin + ray.direction * enter;
+                    m_SelectedRowIndex = (int)((intersection.x - m_Target.transform.position.x) / gridSize);
+                    m_SelectedColIndex = (int)((intersection.z - m_Target.transform.position.z) / gridSize);
+                }                
+            }
+            if(Event.current.type == EventType.MouseDown)
+            {
+                if(m_SelectedRowIndex >= 0 && m_SelectedRowIndex < m_Target.countOfRow && m_SelectedColIndex >= 0 && m_SelectedColIndex < m_Target.countOfCol)
+                {
+                    switch(m_HandleGrid)
                     {
-                        Debug.Log($"--{enter}   {ray.origin + ray.direction * enter}");
+                        case 0:     // reachable
+                            m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Reachable);
+                            break;
+                        case 1:     // block
+                            m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Blocked);
+                            break;
+                        case 2:     // invalid
+                            m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Invalid);
+                            break;
                     }
+                    EditorUtility.SetDirty(m_Target);
                 }
             }
         }
