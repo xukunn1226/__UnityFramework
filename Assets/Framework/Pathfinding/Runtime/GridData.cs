@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Framework.Pathfinding
 {    
@@ -25,6 +26,7 @@ namespace Framework.Pathfinding
         //     OnPostprocessData();
         // }
 
+    [Serializable]
     public class GridData : ICellData
     {
         [SerializeField]
@@ -36,10 +38,11 @@ namespace Framework.Pathfinding
         public int                  rowIndex;
         public int                  colIndex;
 
-        public GridData(int rowIndex, int colIndex)
+        public GridData(int rowIndex, int colIndex, CellState state = CellState.Reachable)
         {
             this.rowIndex = rowIndex;
             this.colIndex = colIndex;
+            this.state = state;
         }
 
         public bool Equals(ICellData other)

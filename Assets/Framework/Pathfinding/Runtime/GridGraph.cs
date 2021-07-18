@@ -23,7 +23,11 @@ namespace Framework.Pathfinding
             if(m_AStar == null)
                 throw new ArgumentNullException("m_AStar == null");
 
+#if UNITY_EDITOR
+            UpdateData(countOfRow, countOfCol);         // ensure the graph's length match to countOfRow * countOfCol
+#else
             OnPostprocessData();
+#endif            
         }        
 
         // 序列化之后对数据再处理，例如neighbors
@@ -105,7 +109,7 @@ namespace Framework.Pathfinding
             return rowIndex * countOfCol + colIndex;
         }
 
-        private ICellData GetGridData(int rowIndex, int colIndex)
+        public GridData GetGridData(int rowIndex, int colIndex)
         {
             if(graph.Length != countOfRow * countOfCol)
                 throw new System.Exception($"the data's length not equal to countOfRow*countOfCol({countOfRow}*{countOfCol})");
@@ -118,7 +122,7 @@ namespace Framework.Pathfinding
 
         public void SetGridData(int rowIndex, int colIndex, CellState state)
         {
-            ICellData gridData = GetGridData(rowIndex, colIndex);
+            GridData gridData = GetGridData(rowIndex, colIndex);
             gridData.state = state;
         }
 
