@@ -13,6 +13,9 @@ namespace Framework.Pathfinding.Editor
         private int                 m_HandleGrid;
         private int                 m_SelectedRowIndex;
         private int                 m_SelectedColIndex;
+        private float               m_LineGap = 0.03f;
+        private bool                m_isPainting;
+        private bool                m_wasPainting;
 
         void OnEnable()
         {
@@ -24,20 +27,19 @@ namespace Framework.Pathfinding.Editor
             serializedObject.Update();
 
             EditorGUI.BeginChangeCheck();
-            m_Target.countOfRow = Mathf.Max(1, EditorGUILayout.DelayedIntField("Count of Row", m_Target.countOfRow));
-            m_Target.countOfCol = Mathf.Max(1, EditorGUILayout.DelayedIntField("Count of Col", m_Target.countOfCol));
+            int newCountOfRow = Mathf.Max(1, EditorGUILayout.DelayedIntField("Count of Row", m_Target.countOfRow));
+            int newCountOfCol = Mathf.Max(1, EditorGUILayout.DelayedIntField("Count of Col", m_Target.countOfCol));
             if(EditorGUI.EndChangeCheck())
             {
-                m_Target.UpdateData(m_Target.countOfRow, m_Target.countOfCol);
+                m_Target.UpdateData(newCountOfRow, newCountOfCol);
 
                 EditorUtility.SetDirty(target);
-
-                // if (!Application.isPlaying || EditorApplication.isPaused) SceneView.RepaintAll();
             }
 
             EditorGUI.BeginChangeCheck();
             m_Target.gridSize = Mathf.Max(0.1f, EditorGUILayout.DelayedFloatField("Grid Size", m_Target.gridSize));
             m_Target.heuristic = (Heuristic)EditorGUILayout.EnumPopup("Heuristic", m_Target.heuristic);
+            m_Target.isIgnoreCorner = EditorGUILayout.Toggle("isIgnoreCorner", m_Target.isIgnoreCorner);
             if(EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(target);
@@ -50,22 +52,7 @@ namespace Framework.Pathfinding.Editor
         {
             Handles.Label(m_Target.transform.position, "GridGraph");
 
-            // // draw all horizontal lines that along with z axis in local space
-            // Vector3 vColDir = m_Target.transform.TransformVector(Vector3.forward * m_CountOfColProp.intValue * m_GridSizeProp.floatValue);
-            // for(int row = 0; row < m_CountOfRowProp.intValue + 1; ++row)
-            // {
-            //     Vector3 p = m_Target.transform.TransformPoint(Vector3.right * row * m_GridSizeProp.floatValue);
-            //     Handles.DrawLine(p, p + vColDir, thickness);                
-            // }
-
-            // // draw all vertical lines that along with x axis in local space
-            // Vector3 vRowDir = m_Target.transform.TransformVector(Vector3.right * m_CountOfRowProp.intValue * m_GridSizeProp.floatValue);
-            // for(int col = 0; col < m_CountOfColProp.intValue + 1; ++col)
-            // {
-            //     Vector3 p = m_Target.transform.TransformPoint(Vector3.forward * col * m_GridSizeProp.floatValue);
-            //     Handles.DrawLine(p, p + vRowDir, thickness);
-            // }
-
+            /////////////////// draw menu
             Handles.BeginGUI();
             switch(m_HandleGrid)
             {
@@ -104,28 +91,27 @@ namespace Framework.Pathfinding.Editor
                     break;
             }
             
-            GUI.Label(new Rect(20, 280, 120, 150), "Shift: \n刷新单个格子的状态\n\nShift + Alt：\n连续设置格子状态\n", EditorStyles.helpBox);
+            GUI.Label(new Rect(20, 280, 100, 80), "Shift: \n刷新单个格子的状态\n\nShift + Ctrl：\n连续刷新格子状态\n", EditorStyles.helpBox);
             Handles.EndGUI();
 
-
+            //////////////////// draw grids
             Handles.color = Color.green;
-            float thickness = 0.5f;
-            const float lineGap = 0.03f;
             float gridSize = m_Target.gridSize;
+            float thickness = 0.5f;
             for(int row = 0; row < m_Target.countOfRow; ++row)
             {
                 for(int col = 0; col < m_Target.countOfCol; ++col)
                 {
-                    Vector3 p0 = Vector3.forward * (col * gridSize + lineGap)       + Vector3.right * (row * gridSize + lineGap);
+                    Vector3 p0 = Vector3.forward * (col * gridSize + m_LineGap)       + Vector3.right * (row * gridSize + m_LineGap);
                     p0 = m_Target.transform.TransformPoint(p0);
 
-                    Vector3 p1 = Vector3.forward * ((col + 1) * gridSize - lineGap) + Vector3.right * (row * gridSize + lineGap);
+                    Vector3 p1 = Vector3.forward * ((col + 1) * gridSize - m_LineGap) + Vector3.right * (row * gridSize + m_LineGap);
                     p1 = m_Target.transform.TransformPoint(p1);
 
-                    Vector3 p2 = Vector3.forward * ((col + 1) * gridSize - lineGap) + Vector3.right * ((row + 1) * gridSize - lineGap);
+                    Vector3 p2 = Vector3.forward * ((col + 1) * gridSize - m_LineGap) + Vector3.right * ((row + 1) * gridSize - m_LineGap);
                     p2 = m_Target.transform.TransformPoint(p2);
 
-                    Vector3 p3 = Vector3.forward * (col * gridSize + lineGap)       + Vector3.right * ((row + 1) * gridSize - lineGap);
+                    Vector3 p3 = Vector3.forward * (col * gridSize + m_LineGap)       + Vector3.right * ((row + 1) * gridSize - m_LineGap);
                     p3 = m_Target.transform.TransformPoint(p3);
                     
                     GridData grid = m_Target.GetGridData(row, col);
@@ -135,7 +121,6 @@ namespace Framework.Pathfinding.Editor
                     Handles.color = Color.red;
                     if(row == m_SelectedRowIndex && col == m_SelectedColIndex)
                     {
-                        // Debug.LogWarning($"=======================   {m_SelectedRowIndex}  {m_SelectedColIndex}");
                         Handles.color = Color.red;
                     }
                     else
@@ -160,10 +145,10 @@ namespace Framework.Pathfinding.Editor
                 }
             }
 
-            // Event.current.type == EventType.MouseMove && 
+            // make sure the selected grid
             m_SelectedRowIndex = -1;
             m_SelectedColIndex = -1;
-            if (Event.current.modifiers == EventModifiers.Shift)
+            if (Event.current.shift)
             {
                 Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
                 Plane grid = new Plane(m_Target.transform.TransformVector(Vector3.up), m_Target.transform.position);
@@ -173,26 +158,61 @@ namespace Framework.Pathfinding.Editor
                     Vector3 intersection = ray.origin + ray.direction * enter;
                     m_SelectedRowIndex = (int)((intersection.x - m_Target.transform.position.x) / gridSize);
                     m_SelectedColIndex = (int)((intersection.z - m_Target.transform.position.z) / gridSize);
-                }                
+                }
+                RepaintSceneView();
             }
-            if(Event.current.type == EventType.MouseDown)
+
+            // if has the selected grid, it will set grid state
+            m_wasPainting = m_isPainting;
+            m_isPainting = false;
+            if (m_SelectedRowIndex >= 0 && m_SelectedRowIndex < m_Target.countOfRow && 
+                m_SelectedColIndex >= 0 && m_SelectedColIndex < m_Target.countOfCol)
             {
-                if(m_SelectedRowIndex >= 0 && m_SelectedRowIndex < m_Target.countOfRow && m_SelectedColIndex >= 0 && m_SelectedColIndex < m_Target.countOfCol)
+                if (Event.current.type == EventType.MouseDown)
                 {
-                    switch(m_HandleGrid)
-                    {
-                        case 0:     // reachable
-                            m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Reachable);
-                            break;
-                        case 1:     // block
-                            m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Blocked);
-                            break;
-                        case 2:     // invalid
-                            m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Invalid);
-                            break;
-                    }
+                    PaintSelectedGrid();
                     EditorUtility.SetDirty(m_Target);
                 }
+                
+                if(Event.current.shift && Event.current.control)
+                {
+                    m_isPainting = true;
+                }
+            }
+
+            if(m_isPainting)
+            {
+                PaintSelectedGrid();
+                RepaintSceneView();                
+            }
+
+            if(m_wasPainting && !m_isPainting)
+            {
+                EditorUtility.SetDirty(m_Target);
+            }
+        }
+
+        private void PaintSelectedGrid()
+        {
+            switch (m_HandleGrid)
+            {
+                case 0:     // reachable
+                    m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Reachable);
+                    break;
+                case 1:     // block
+                    m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Blocked);
+                    break;
+                case 2:     // invalid
+                    m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Invalid);
+                    break;
+            }
+        }
+
+        private void RepaintSceneView()
+        {
+            if (!Application.isPlaying || EditorApplication.isPaused)
+            {
+                SceneView.RepaintAll();
             }
         }
     }
