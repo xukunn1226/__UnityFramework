@@ -186,8 +186,6 @@ namespace Framework.Core
 
         public void Clear()
         {
-            if (IsEmpty)
-                throw new Exception("BinaryHeap is empty");
             m_Buffer.Clear();
         }
 

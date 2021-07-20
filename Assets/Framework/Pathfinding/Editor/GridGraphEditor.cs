@@ -10,16 +10,21 @@ namespace Framework.Pathfinding.Editor
     public class GridGraphEditor : UnityEditor.Editor
     {
         private GridGraph           m_Target;
-        private int                 m_HandleGrid;
-        private int                 m_SelectedRowIndex;
-        private int                 m_SelectedColIndex;
+        private int                 m_HandleOp;
+        private GridData            m_SelectedGrid;
+        private GridData            m_SourceGrid;
+        private GridData            m_DestinationGrid;
         private float               m_LineGap = 0.03f;
         private bool                m_isPainting;
         private bool                m_wasPainting;
+        private GridPathReporter    m_Result;
+        private Vector2Int[]        m_PathList = new Vector2Int[32];
+        private string              m_Info;
 
         void OnEnable()
         {
             m_Target = (GridGraph)target;
+            m_Result = null;
         }
 
         public override void OnInspectorGUI()
@@ -29,6 +34,7 @@ namespace Framework.Pathfinding.Editor
             EditorGUI.BeginChangeCheck();
             int newCountOfRow = Mathf.Max(1, EditorGUILayout.DelayedIntField("Count of Row", m_Target.countOfRow));
             int newCountOfCol = Mathf.Max(1, EditorGUILayout.DelayedIntField("Count of Col", m_Target.countOfCol));
+            m_Target.isIgnoreCorner = EditorGUILayout.Toggle("isIgnoreCorner", m_Target.isIgnoreCorner);
             if(EditorGUI.EndChangeCheck())
             {
                 m_Target.UpdateData(newCountOfRow, newCountOfCol);
@@ -39,10 +45,14 @@ namespace Framework.Pathfinding.Editor
             EditorGUI.BeginChangeCheck();
             m_Target.gridSize = Mathf.Max(0.1f, EditorGUILayout.DelayedFloatField("Grid Size", m_Target.gridSize));
             m_Target.heuristic = (Heuristic)EditorGUILayout.EnumPopup("Heuristic", m_Target.heuristic);
-            m_Target.isIgnoreCorner = EditorGUILayout.Toggle("isIgnoreCorner", m_Target.isIgnoreCorner);
             if(EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(target);
+            }
+
+            if(GUILayout.Button("PrintIt"))
+            {
+                m_Target.PrintIt();
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -54,54 +64,158 @@ namespace Framework.Pathfinding.Editor
 
             /////////////////// draw menu
             Handles.BeginGUI();
-            switch(m_HandleGrid)
+            
+            GUI.Label(new Rect(20, 40, 100, 80), "Shift: \n刷新单个格子的状态\n\nShift + Ctrl：\n连续刷新格子状态\n", EditorStyles.helpBox);
+
+            int startRow = 150;
+            int width_small = 100;
+            int width_big = 120;
+            int height_small = 30;
+            int height_big = 40;
+            switch(m_HandleOp)
             {
                 case 0:     // for "Reachable" flag
-                    GUI.Button(new Rect(20, 80, 100, 40), "Reachable");
-                    if(GUI.Button(new Rect(20, 150, 80, 30), "Block"))
+                    GUI.Button(new Rect(20, startRow, width_big, height_big), "Reachable");
+                    if(GUI.Button(new Rect(20, startRow + 70, width_small, height_small), "Block"))
                     {
-                        m_HandleGrid = 1;
+                        m_HandleOp = 1;
                     }
-                    if(GUI.Button(new Rect(20, 220, 80, 30), "Invalid"))
+                    if(GUI.Button(new Rect(20, startRow + 140, width_small, height_small), "Invalid"))
                     {
-                        m_HandleGrid = 2;
+                        m_HandleOp = 2;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 210, width_small, height_small), "Pick source"))
+                    {
+                        m_HandleOp = 3;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 280, width_small, height_small), "Pick destination"))
+                    {
+                        m_HandleOp = 4;
                     }
                     break;
                 case 1:     // for "Block" flag
-                    if(GUI.Button(new Rect(20, 80, 80, 30), "Reachable"))
+                    if(GUI.Button(new Rect(20, startRow, width_small, height_small), "Reachable"))
                     {
-                        m_HandleGrid = 0;
+                        m_HandleOp = 0;
                     }
-                    GUI.Button(new Rect(20, 150, 100, 40), "Block");
-                    if(GUI.Button(new Rect(20, 220, 80, 30), "Invalid"))
+                    GUI.Button(new Rect(20, startRow + 70, width_big, height_big), "Block");
+                    if(GUI.Button(new Rect(20, startRow + 140, width_small, height_small), "Invalid"))
                     {
-                        m_HandleGrid = 2;
+                        m_HandleOp = 2;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 210, width_small, height_small), "Pick source"))
+                    {
+                        m_HandleOp = 3;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 280, width_small, height_small), "Pick destination"))
+                    {
+                        m_HandleOp = 4;
                     }
                     break;
                 case 2:     // for "Invalid" flag
-                    if(GUI.Button(new Rect(20, 80, 80, 30), "Reachable"))
+                    if(GUI.Button(new Rect(20, startRow, width_small, height_small), "Reachable"))
                     {
-                        m_HandleGrid = 0;
+                        m_HandleOp = 0;
                     }
-                    if(GUI.Button(new Rect(20, 150, 80, 30), "Block"))
+                    if(GUI.Button(new Rect(20, startRow + 70, width_small, height_small), "Block"))
                     {
-                        m_HandleGrid = 1;
+                        m_HandleOp = 1;
                     }
-                    GUI.Button(new Rect(20, 220, 100, 40), "Invalid");
+                    GUI.Button(new Rect(20, startRow + 140, width_big, height_big), "Invalid");
+                    if(GUI.Button(new Rect(20, startRow + 210, width_small, height_small), "Pick source"))
+                    {
+                        m_HandleOp = 3;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 280, width_small, height_small), "Pick destination"))
+                    {
+                        m_HandleOp = 4;
+                    }
+                    break;
+                case 3:     // for "Pick source" flag
+                    if(GUI.Button(new Rect(20, startRow, width_small, height_small), "Reachable"))
+                    {
+                        m_HandleOp = 0;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 70, width_small, height_small), "Block"))
+                    {
+                        m_HandleOp = 1;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 140, width_small, height_small), "Invalid"))
+                    {
+                        m_HandleOp = 2;
+                    }
+                    GUI.Button(new Rect(20, startRow + 210, width_big, height_big), "Pick source");
+                    if(GUI.Button(new Rect(20, startRow + 280, width_small, height_small), "Pick destination"))
+                    {
+                        m_HandleOp = 4;
+                    }
+                    break;
+                case 4:     // for "Pick destination" flag
+                    if(GUI.Button(new Rect(20, startRow, width_small, height_small), "Reachable"))
+                    {
+                        m_HandleOp = 0;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 70, width_small, height_small), "Block"))
+                    {
+                        m_HandleOp = 1;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 140, width_small, height_small), "Invalid"))
+                    {
+                        m_HandleOp = 2;
+                    }
+                    if(GUI.Button(new Rect(20, startRow + 210, width_small, height_small), "Pick source"))
+                    {
+                        m_HandleOp = 3;
+                    }
+                    GUI.Button(new Rect(20, startRow + 280, width_big, height_big), "Pick destination");                    
                     break;
             }
+
+            if(GUI.Button(new Rect(20, startRow + 350, width_big, 40), "Calculate Path"))
+            {
+                if(m_SourceGrid != null && m_DestinationGrid != null)
+                {
+                    m_Target.UpdateData(m_Target.countOfRow, m_Target.countOfCol);
+                    m_Result = m_Target.CalculatePath(m_SourceGrid.rowIndex, m_SourceGrid.colIndex, m_DestinationGrid.rowIndex, m_DestinationGrid.colIndex);
+                    m_Result.GetPathsNonAlloc(m_PathList);
+                }
+            }
+
+            if(m_Result == null)
+            {
+                m_Info = null;
+            }
+            else
+            {
+                switch(m_Result.status)
+                {
+                    case PathReporterStatus.Success:
+                        m_Info = "寻路成功";
+                        break;
+                    case PathReporterStatus.Blocked:
+                        m_Info = "寻路不成功，因目标点是阻挡";
+                        break;
+                    case PathReporterStatus.Invalid:
+                        m_Info = "寻路不成功，因目标点为无效";
+                        break;
+                    case PathReporterStatus.UnReachable:
+                        m_Info = "寻路不成功，因目标点是不可到达";
+                        break;
+                }
+            }
+            GUI.Label(new Rect(150, startRow + 350, 200, height_big), m_Info);
             
-            GUI.Label(new Rect(20, 280, 100, 80), "Shift: \n刷新单个格子的状态\n\nShift + Ctrl：\n连续刷新格子状态\n", EditorStyles.helpBox);
             Handles.EndGUI();
 
             //////////////////// draw grids
             Handles.color = Color.green;
-            float gridSize = m_Target.gridSize;
-            float thickness = 0.5f;
+            float gridSize = m_Target.gridSize;            
             for(int row = 0; row < m_Target.countOfRow; ++row)
             {
                 for(int col = 0; col < m_Target.countOfCol; ++col)
                 {
+                    float thickness = 0.5f;
+
                     Vector3 p0 = Vector3.forward * (col * gridSize + m_LineGap)       + Vector3.right * (row * gridSize + m_LineGap);
                     p0 = m_Target.transform.TransformPoint(p0);
 
@@ -118,10 +232,19 @@ namespace Framework.Pathfinding.Editor
                     if(grid == null)
                         continue;
                     
-                    Handles.color = Color.red;
-                    if(row == m_SelectedRowIndex && col == m_SelectedColIndex)
+                    if(m_SelectedGrid != null && m_SelectedGrid.rowIndex == row&& m_SelectedGrid.colIndex == col)
                     {
                         Handles.color = Color.red;
+                    }
+                    else if(m_SourceGrid != null && m_SourceGrid.rowIndex == row && m_SourceGrid.colIndex == col)
+                    {
+                        Handles.color = Color.yellow;
+                        thickness = 2;
+                    }
+                    else if(m_DestinationGrid != null && m_DestinationGrid.rowIndex == row && m_DestinationGrid.colIndex == col)
+                    {
+                        Handles.color = Color.magenta;
+                        thickness = 2;
                     }
                     else
                     {
@@ -146,8 +269,7 @@ namespace Framework.Pathfinding.Editor
             }
 
             // make sure the selected grid
-            m_SelectedRowIndex = -1;
-            m_SelectedColIndex = -1;
+            m_SelectedGrid = null;
             if (Event.current.shift)
             {
                 Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
@@ -156,8 +278,9 @@ namespace Framework.Pathfinding.Editor
                 if (grid.Raycast(ray, out enter))
                 {
                     Vector3 intersection = ray.origin + ray.direction * enter;
-                    m_SelectedRowIndex = (int)((intersection.x - m_Target.transform.position.x) / gridSize);
-                    m_SelectedColIndex = (int)((intersection.z - m_Target.transform.position.z) / gridSize);
+                    int selectedRowIndex = (int)((intersection.x - m_Target.transform.position.x) / gridSize);
+                    int selectedColIndex = (int)((intersection.z - m_Target.transform.position.z) / gridSize);
+                    m_SelectedGrid = m_Target.GetGridData(selectedRowIndex, selectedColIndex);
                 }
                 RepaintSceneView();
             }
@@ -165,12 +288,11 @@ namespace Framework.Pathfinding.Editor
             // if has the selected grid, it will set grid state
             m_wasPainting = m_isPainting;
             m_isPainting = false;
-            if (m_SelectedRowIndex >= 0 && m_SelectedRowIndex < m_Target.countOfRow && 
-                m_SelectedColIndex >= 0 && m_SelectedColIndex < m_Target.countOfCol)
+            if (m_SelectedGrid != null)
             {
                 if (Event.current.type == EventType.MouseDown)
                 {
-                    PaintSelectedGrid();
+                    SetSelectedGrid();
                     EditorUtility.SetDirty(m_Target);
                 }
                 
@@ -182,7 +304,7 @@ namespace Framework.Pathfinding.Editor
 
             if(m_isPainting)
             {
-                PaintSelectedGrid();
+                SetSelectedGrid();
                 RepaintSceneView();                
             }
 
@@ -190,21 +312,45 @@ namespace Framework.Pathfinding.Editor
             {
                 EditorUtility.SetDirty(m_Target);
             }
+
+            // draw path results
+            if(m_Result != null && m_Result.status == PathReporterStatus.Success)
+            {
+
+            }
         }
 
-        private void PaintSelectedGrid()
+        private void SetSelectedGrid()
         {
-            switch (m_HandleGrid)
+            switch (m_HandleOp)
             {
                 case 0:     // reachable
-                    m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Reachable);
+                    m_Target.SetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex, CellState.Reachable);
                     break;
                 case 1:     // block
-                    m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Blocked);
+                    m_Target.SetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex, CellState.Blocked);
                     break;
                 case 2:     // invalid
-                    m_Target.SetGridData(m_SelectedRowIndex, m_SelectedColIndex, CellState.Invalid);
+                    m_Target.SetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex, CellState.Invalid);
                     break;
+                case 3:     // pick source
+                    {
+                        GridData selectedGrid = m_Target.GetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex);
+                        if (selectedGrid.state == CellState.Reachable)
+                        {
+                            m_SourceGrid = selectedGrid;
+                        }
+                        break;
+                    }
+                case 4:     // pick destination
+                    {
+                        GridData selectedGrid = m_Target.GetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex);
+                        if (selectedGrid.state == CellState.Reachable)
+                        {
+                            m_DestinationGrid = selectedGrid;
+                        }
+                        break;
+                    }
             }
         }
 

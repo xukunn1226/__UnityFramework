@@ -279,115 +279,103 @@ MonoBehaviour:
   gridSize: 2
   heuristic: 0
   graph:
-  - m_State: 0
+  - m_State: 3
     rowIndex: 0
     colIndex: 0
-  - m_State: 0
+  - m_State: 3
     rowIndex: 0
     colIndex: 1
-  - m_State: 2
+  - m_State: 3
     rowIndex: 0
     colIndex: 2
-  - m_State: 2
+  - m_State: 3
     rowIndex: 0
     colIndex: 3
   - m_State: 3
     rowIndex: 0
     colIndex: 4
-  - m_State: 2
+  - m_State: 3
     rowIndex: 0
     colIndex: 5
-  - m_State: 2
+  - m_State: 3
     rowIndex: 0
     colIndex: 6
   - m_State: 3
     rowIndex: 0
     colIndex: 7
   - m_State: 3
-    rowIndex: 0
-    colIndex: 7
-  - m_State: 3
     rowIndex: 1
     colIndex: 0
-  - m_State: 2
+  - m_State: 3
     rowIndex: 1
     colIndex: 1
-  - m_State: 2
+  - m_State: 3
     rowIndex: 1
     colIndex: 2
-  - m_State: 0
+  - m_State: 3
     rowIndex: 1
     colIndex: 3
   - m_State: 2
     rowIndex: 1
     colIndex: 4
-  - m_State: 2
+  - m_State: 3
     rowIndex: 1
     colIndex: 5
-  - m_State: 0
-    rowIndex: 1
-    colIndex: 7
   - m_State: 3
     rowIndex: 1
     colIndex: 6
   - m_State: 3
     rowIndex: 1
     colIndex: 7
-  - m_State: 0
+  - m_State: 3
     rowIndex: 2
     colIndex: 0
-  - m_State: 2
+  - m_State: 3
     rowIndex: 2
     colIndex: 1
   - m_State: 2
     rowIndex: 2
     colIndex: 2
-  - m_State: 2
+  - m_State: 3
     rowIndex: 2
     colIndex: 3
-  - m_State: 2
+  - m_State: 3
     rowIndex: 2
     colIndex: 4
-  - m_State: 0
-    rowIndex: 2
-    colIndex: 7
   - m_State: 3
     rowIndex: 2
     colIndex: 5
-  - m_State: 2
+  - m_State: 3
     rowIndex: 2
     colIndex: 6
-  - m_State: 2
+  - m_State: 3
     rowIndex: 2
     colIndex: 7
-  - m_State: 2
+  - m_State: 3
     rowIndex: 3
     colIndex: 0
-  - m_State: 2
+  - m_State: 3
     rowIndex: 3
     colIndex: 1
-  - m_State: 0
-    rowIndex: 3
-    colIndex: 2
   - m_State: 2
     rowIndex: 3
+    colIndex: 2
+  - m_State: 0
+    rowIndex: 3
     colIndex: 3
+  - m_State: 2
+    rowIndex: 3
+    colIndex: 4
+  - m_State: 3
+    rowIndex: 3
+    colIndex: 5
+  - m_State: 3
+    rowIndex: 3
+    colIndex: 6
   - m_State: 3
     rowIndex: 3
     colIndex: 7
-  - m_State: 0
-    rowIndex: 3
-    colIndex: 4
-  - m_State: 2
-    rowIndex: 3
-    colIndex: 5
-  - m_State: 2
-    rowIndex: 3
-    colIndex: 6
-  - m_State: 2
-    rowIndex: 3
-    colIndex: 7
-  - m_State: 2
+  - m_State: 3
     rowIndex: 4
     colIndex: 0
   - m_State: 2
@@ -398,77 +386,89 @@ MonoBehaviour:
     colIndex: 2
   - m_State: 0
     rowIndex: 4
-    colIndex: 7
-  - m_State: 2
-    rowIndex: 4
     colIndex: 3
   - m_State: 2
     rowIndex: 4
     colIndex: 4
-  - m_State: 2
+  - m_State: 3
     rowIndex: 4
     colIndex: 5
-  - m_State: 2
+  - m_State: 3
     rowIndex: 4
     colIndex: 6
-  - m_State: 2
+  - m_State: 3
     rowIndex: 4
     colIndex: 7
-  - m_State: 2
+  - m_State: 3
     rowIndex: 5
     colIndex: 0
-  - m_State: 2
-    rowIndex: 5
-    colIndex: 1
   - m_State: 0
     rowIndex: 5
-    colIndex: 7
+    colIndex: 1
   - m_State: 2
     rowIndex: 5
     colIndex: 2
-  - m_State: 0
+  - m_State: 2
     rowIndex: 5
     colIndex: 3
   - m_State: 2
     rowIndex: 5
     colIndex: 4
-  - m_State: 2
+  - m_State: 3
     rowIndex: 5
     colIndex: 5
-  - m_State: 2
+  - m_State: 3
     rowIndex: 5
     colIndex: 6
-  - m_State: 2
+  - m_State: 3
     rowIndex: 5
     colIndex: 7
-  - m_State: 0
+  - m_State: 3
     rowIndex: 6
     colIndex: 0
   - m_State: 0
     rowIndex: 6
+    colIndex: 1
+  - m_State: 3
+    rowIndex: 6
+    colIndex: 2
+  - m_State: 0
+    rowIndex: 6
+    colIndex: 3
+  - m_State: 3
+    rowIndex: 6
+    colIndex: 4
+  - m_State: 3
+    rowIndex: 6
+    colIndex: 5
+  - m_State: 3
+    rowIndex: 6
+    colIndex: 6
+  - m_State: 3
+    rowIndex: 6
     colIndex: 7
-  - m_State: 2
+  - m_State: 3
     rowIndex: 7
     colIndex: 0
-  - m_State: 2
+  - m_State: 3
     rowIndex: 7
     colIndex: 1
-  - m_State: 2
+  - m_State: 3
     rowIndex: 7
     colIndex: 2
-  - m_State: 2
+  - m_State: 3
     rowIndex: 7
     colIndex: 3
-  - m_State: 2
+  - m_State: 3
     rowIndex: 7
     colIndex: 4
-  - m_State: 2
+  - m_State: 3
     rowIndex: 7
     colIndex: 5
-  - m_State: 2
+  - m_State: 3
     rowIndex: 7
     colIndex: 6
-  - m_State: 0
+  - m_State: 3
     rowIndex: 7
     colIndex: 7
   isIgnoreCorner: 1

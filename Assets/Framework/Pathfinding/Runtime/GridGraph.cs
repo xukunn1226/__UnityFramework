@@ -5,6 +5,7 @@ using System;
 
 namespace Framework.Pathfinding
 {
+    [ExecuteInEditMode]
     [RequireComponent(typeof(AStarPath))]
     public class GridGraph : MonoBehaviour
     {        
@@ -12,8 +13,7 @@ namespace Framework.Pathfinding
         [Range(1, 2000)] public int         countOfCol      = 8;
         [Range(0.1f, 100.0f)] public float  gridSize        = 1;
         public Heuristic                    heuristic       = Heuristic.Manhattan;
-        public GridData[]                   graph           = new GridData[0];
-        [Tooltip("是否忽略拐角")]
+        public GridData[]                   graph           = new GridData[0];        
         public bool                         isIgnoreCorner  = true;
 
         private AStarPath                   m_Algorithm;
@@ -31,9 +31,9 @@ namespace Framework.Pathfinding
 #else
             OnPostprocessData();
 #endif            
-        }        
+        }
 
-        // 序列化之后对数据再处理，例如neighbors
+        // 序列化之后对数据再处理，例如neighbors        
         private void OnPostprocessData()
         {
             for(int i = 0; i < graph.Length; ++i)
@@ -120,7 +120,7 @@ namespace Framework.Pathfinding
             return false;
         }
 
-        public bool CalculatePath(int srcRowIndex, int srcColIndex, int dstRowIndex, int dstColIndex)
+        public GridPathReporter CalculatePath(int srcRowIndex, int srcColIndex, int dstRowIndex, int dstColIndex)
         {
             // clear all grid's details
             foreach(var grid in graph)
@@ -130,7 +130,8 @@ namespace Framework.Pathfinding
 
             GridData srcGrid = graph[srcRowIndex * countOfCol + srcColIndex];
             GridData dstGrid = graph[dstRowIndex * countOfRow + dstColIndex];
-            return m_Algorithm.CalculatePath(srcGrid, dstGrid, OnCalculateGValue, OnCalculateHValue, ref m_Result.pathReporter);
+            m_Algorithm.CalculatePath(srcGrid, dstGrid, OnCalculateGValue, OnCalculateHValue, ref m_Result.pathReporter);
+            return m_Result;
         }
 
         private float OnCalculateGValue(GridData cur, GridData neighbor)
@@ -255,6 +256,18 @@ namespace Framework.Pathfinding
             graph = newData;
 
             OnPostprocessData();
+        }
+
+        public void PrintIt()
+        {
+            foreach(var grid in graph)
+            {
+                Debug.Log($"{grid.rowIndex} {grid.colIndex} {grid.state}");
+                // foreach(var neighbor in grid.neighbors)
+                // {
+
+                // }
+            }
         }
 #endif
     }
