@@ -65,7 +65,10 @@ namespace Framework.Pathfinding.Editor
             /////////////////// draw menu
             Handles.BeginGUI();
             
-            GUI.Label(new Rect(20, 40, 100, 90), $"Shift: \n刷新单个格子的状态\n\nShift + Ctrl：\n连续刷新格子状态\n\n{m_SelectedGrid?.rowIndex??-1}  {m_SelectedGrid?.colIndex??-1}  {m_SelectedGrid?.state??CellState.Invalid}", EditorStyles.helpBox);
+            GUILayout.BeginHorizontal();
+            GUI.Label(new Rect(20, 40, 100, 90), $"Shift: \n刷新单个格子的状态\n\nShift + Ctrl：\n连续刷新格子状态", EditorStyles.helpBox);
+            GUI.Label(new Rect(150, 40, 100, 120), $"{m_SelectedGrid?.rowIndex??-1}  {m_SelectedGrid?.colIndex??-1}  {m_SelectedGrid?.state??CellState.Invalid}\n{m_Target.GetNeighborDebugInfo(m_SelectedGrid?.rowIndex??-1, m_SelectedGrid?.colIndex??-1)}", EditorStyles.helpBox);
+            GUILayout.EndHorizontal();
 
             int startRow = 150;
             int width_small = 100;
@@ -175,6 +178,7 @@ namespace Framework.Pathfinding.Editor
             {
                 if(m_SourceGrid != null && m_DestinationGrid != null)
                 {
+                    // 脚本重新编译可能导致非序列化数据失效，需要重新生成
                     m_Target.UpdateData(m_Target.countOfRow, m_Target.countOfCol);
                     m_Result = m_Target.CalculatePath(m_SourceGrid.rowIndex, m_SourceGrid.colIndex, m_DestinationGrid.rowIndex, m_DestinationGrid.colIndex);
                     m_Result.GetPathsNonAlloc(m_PathList);
@@ -281,6 +285,7 @@ namespace Framework.Pathfinding.Editor
                     int selectedRowIndex = (int)((intersection.x - m_Target.transform.position.x) / gridSize);
                     int selectedColIndex = (int)((intersection.z - m_Target.transform.position.z) / gridSize);
                     m_SelectedGrid = m_Target.GetGridData(selectedRowIndex, selectedColIndex);
+                    m_Target.UpdateData(m_Target.countOfRow, m_Target.countOfCol);
                 }
                 RepaintSceneView();
             }

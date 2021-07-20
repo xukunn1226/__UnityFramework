@@ -263,11 +263,21 @@ namespace Framework.Pathfinding
             foreach(var grid in graph)
             {
                 Debug.Log($"{grid.rowIndex} {grid.colIndex} {grid.state}");
-                // foreach(var neighbor in grid.neighbors)
-                // {
-
-                // }
             }
+        }
+
+        public string GetNeighborDebugInfo(int rowIndex, int colIndex)
+        {
+            GridData grid = GetGridData(rowIndex, colIndex);
+            if(grid == null)
+                return string.Empty;
+
+            string info = string.Empty;
+            foreach(var neighbor in grid.neighbors)
+            {
+                info += $"  {grid.rowIndex} {grid.colIndex} {grid.state}\n";
+            }
+            return info;
         }
 #endif
     }
