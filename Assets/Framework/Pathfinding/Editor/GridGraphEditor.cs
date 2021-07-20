@@ -19,7 +19,7 @@ namespace Framework.Pathfinding.Editor
         private bool                m_wasPainting;
         private GridPathReporter    m_Result;
         private Vector2Int[]        m_PathList = new Vector2Int[32];
-        private string              m_Info;
+        private string              m_ResultInfo;
 
         void OnEnable()
         {
@@ -65,7 +65,7 @@ namespace Framework.Pathfinding.Editor
             /////////////////// draw menu
             Handles.BeginGUI();
             
-            GUI.Label(new Rect(20, 40, 100, 80), "Shift: \n刷新单个格子的状态\n\nShift + Ctrl：\n连续刷新格子状态\n", EditorStyles.helpBox);
+            GUI.Label(new Rect(20, 40, 100, 90), $"Shift: \n刷新单个格子的状态\n\nShift + Ctrl：\n连续刷新格子状态\n\n{m_SelectedGrid?.rowIndex??-1}  {m_SelectedGrid?.colIndex??-1}  {m_SelectedGrid?.state??CellState.Invalid}", EditorStyles.helpBox);
 
             int startRow = 150;
             int width_small = 100;
@@ -183,27 +183,27 @@ namespace Framework.Pathfinding.Editor
 
             if(m_Result == null)
             {
-                m_Info = null;
+                m_ResultInfo = null;
             }
             else
             {
                 switch(m_Result.status)
                 {
                     case PathReporterStatus.Success:
-                        m_Info = "寻路成功";
+                        m_ResultInfo = "寻路成功";
                         break;
                     case PathReporterStatus.Blocked:
-                        m_Info = "寻路不成功，因目标点是阻挡";
+                        m_ResultInfo = "寻路不成功，因目标点是阻挡";
                         break;
                     case PathReporterStatus.Invalid:
-                        m_Info = "寻路不成功，因目标点为无效";
+                        m_ResultInfo = "寻路不成功，因目标点为无效";
                         break;
                     case PathReporterStatus.UnReachable:
-                        m_Info = "寻路不成功，因目标点是不可到达";
+                        m_ResultInfo = "寻路不成功，因目标点是不可到达";
                         break;
                 }
             }
-            GUI.Label(new Rect(150, startRow + 350, 200, height_big), m_Info);
+            GUI.Label(new Rect(150, startRow + 350, 200, height_big), m_ResultInfo);
             
             Handles.EndGUI();
 
