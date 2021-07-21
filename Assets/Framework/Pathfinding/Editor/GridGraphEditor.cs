@@ -19,6 +19,7 @@ namespace Framework.Pathfinding.Editor
         private bool                m_wasPainting;
         private GridPathReporter    m_Result;
         private Vector2Int[]        m_PathList = new Vector2Int[32];
+        private int                 m_PathCount;
         private string              m_ResultInfo;
 
         void OnEnable()
@@ -176,11 +177,11 @@ namespace Framework.Pathfinding.Editor
                     // 脚本重新编译可能导致非序列化数据失效，需要重新生成
                     m_Target.UpdateData(m_Target.countOfRow, m_Target.countOfCol);
                     m_Result = m_Target.CalculatePath(m_SourceGrid.rowIndex, m_SourceGrid.colIndex, m_DestinationGrid.rowIndex, m_DestinationGrid.colIndex);
-                    int count = m_Result.GetPathsNonAlloc(m_PathList);
-                    for(int i = 0; i < count; ++i)
-                    {
-                        Debug.Log($"Result: Row:{m_PathList[i].y}    Col:{m_PathList[i].x}");
-                    }
+                    m_PathCount = m_Result.GetPathsNonAlloc(m_PathList);
+                    // for(int i = 0; i < m_PathCount; ++i)
+                    // {
+                    //     Debug.Log($"Result: Row:{m_PathList[i].y}    Col:{m_PathList[i].x}");
+                    // }
                 }
             }
 
@@ -320,7 +321,18 @@ namespace Framework.Pathfinding.Editor
             // draw path results
             if(m_Result != null && m_Result.status == PathReporterStatus.Success)
             {
+                Vector3[] pathList = new Vector3[(m_PathCount - 1) * 2];
+                int pointIndex = 0;
+                for(int i = 0; i < m_PathCount - 1; ++i)
+                {
+                    Vector2Int vStart = m_PathList[i];
+                    Vector2Int vEnd = m_PathList[i + 1];
 
+                    pathList[pointIndex++] = m_Target.transform.TransformPoint(new Vector3(m_Target.gridSize * (vStart.y + 0.5f), 0, m_Target.gridSize * (vStart.x + 0.5f)));
+                    pathList[pointIndex++] = m_Target.transform.TransformPoint(new Vector3(m_Target.gridSize * (vEnd.y + 0.5f), 0, m_Target.gridSize * (vEnd.x + 0.5f)));
+                }
+                Handles.color = Color.red;
+                Handles.DrawLines(pathList);
             }
         }
 
