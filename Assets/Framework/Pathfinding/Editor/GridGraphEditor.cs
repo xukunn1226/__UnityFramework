@@ -176,7 +176,11 @@ namespace Framework.Pathfinding.Editor
                     // 脚本重新编译可能导致非序列化数据失效，需要重新生成
                     m_Target.UpdateData(m_Target.countOfRow, m_Target.countOfCol);
                     m_Result = m_Target.CalculatePath(m_SourceGrid.rowIndex, m_SourceGrid.colIndex, m_DestinationGrid.rowIndex, m_DestinationGrid.colIndex);
-                    m_Result.GetPathsNonAlloc(m_PathList);
+                    int count = m_Result.GetPathsNonAlloc(m_PathList);
+                    for(int i = 0; i < count; ++i)
+                    {
+                        Debug.Log($"Result: Row:{m_PathList[i].y}    Col:{m_PathList[i].x}");
+                    }
                 }
             }
 
