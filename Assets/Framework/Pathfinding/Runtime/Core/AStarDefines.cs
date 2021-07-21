@@ -37,20 +37,27 @@ namespace Framework.Pathfinding
     /// <summary>
     public class CellDetails
     {
-        public CellDetails(ICellData parent)
+        public CellDetails()
         {
-            this.parent = parent;
+            parent = null;
             f = 0;
             g = 0;
             h = 0;
-            inClosedList = false;
+            state = CellPhase.NotInOpenList;
+        }
+
+        public enum CellPhase
+        {
+            NotInOpenList,          // 尚未加入开启列表
+            AlreadyInOpenList,      // 已在开启列表中
+            InClosedList,           // 关闭列表中
         }
 
         [NonSerialized] public ICellData    parent;
         [NonSerialized] public float        f;
         [NonSerialized] public float        g;
         [NonSerialized] public float        h;        
-        [NonSerialized] public bool         inClosedList;
+        [NonSerialized] internal CellPhase  state;
     }
 
     public enum PathReporterStatus

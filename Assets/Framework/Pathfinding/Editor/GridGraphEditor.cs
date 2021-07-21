@@ -34,7 +34,7 @@ namespace Framework.Pathfinding.Editor
             EditorGUI.BeginChangeCheck();
             int newCountOfRow = Mathf.Max(1, EditorGUILayout.DelayedIntField("Count of Row", m_Target.countOfRow));
             int newCountOfCol = Mathf.Max(1, EditorGUILayout.DelayedIntField("Count of Col", m_Target.countOfCol));
-            m_Target.isIgnoreCorner = EditorGUILayout.Toggle("isIgnoreCorner", m_Target.isIgnoreCorner);
+            m_Target.isSkipCorner = EditorGUILayout.Toggle("isSkipCorner", m_Target.isSkipCorner);
             if(EditorGUI.EndChangeCheck())
             {
                 m_Target.UpdateData(newCountOfRow, newCountOfCol);
@@ -48,11 +48,6 @@ namespace Framework.Pathfinding.Editor
             if(EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(target);
-            }
-
-            if(GUILayout.Button("PrintIt"))
-            {
-                m_Target.PrintIt();
             }
 
             serializedObject.ApplyModifiedProperties();

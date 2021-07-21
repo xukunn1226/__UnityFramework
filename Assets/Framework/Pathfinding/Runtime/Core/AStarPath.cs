@@ -59,7 +59,7 @@ namespace Framework.Pathfinding
             m_OpenList.Clear();
             
             // init the starting path node
-            srcCellData.details = new CellDetails(null);
+            srcCellData.details = new CellDetails();
             m_OpenList.Push(srcCellData);
 
             while(m_OpenList.Count > 0)
@@ -68,7 +68,7 @@ namespace Framework.Pathfinding
                 ICellData curGrid = m_OpenList.Pop();
 
                 // 标记为关闭列表中
-                curGrid.details.inClosedList = true;
+                curGrid.details.state = CellDetails.CellPhase.InClosedList;
 
                 // 遍历所有相邻的点
                 foreach(var neighbor in curGrid.neighbors)
@@ -76,12 +76,12 @@ namespace Framework.Pathfinding
                     // 不可到达或已在关闭列表中，则略过
                     if( neighbor.state == CellState.Invalid ||
                         neighbor.state == CellState.Blocked ||
-                        neighbor?.details?.inClosedList == true)
+                        (neighbor.details != null && neighbor.details.state == CellDetails.CellPhase.InClosedList))
                         continue;
 
                     // neighbor可能不在开启列表，需要初始化details
                     if(neighbor.details == null)
-                        neighbor.details = new CellDetails(curGrid);
+                        neighbor.details = new CellDetails();
 
                     // 找到目标点
                     if(neighbor.Equals(dstCellData))
@@ -95,26 +95,24 @@ namespace Framework.Pathfinding
 
                     // 计算新的g、h、f
                     float gNew = curGrid.details.g + gValueFunc?.Invoke((T)curGrid, (T)neighbor) ?? 0;
-                    float hNew = hValueFunc?.Invoke((T)curGrid, (T)dstCellData) ?? 0;
+                    float hNew = hValueFunc?.Invoke((T)neighbor, (T)dstCellData) ?? 0;
                     float fNew = gNew + hNew;
 
-                    if( neighbor.details.parent == null ||          // 不在开启列表
-                        neighbor.details.f > fNew)                  // 更低的消耗（f）
+                    if( neighbor.details.state == CellDetails.CellPhase.NotInOpenList ||            // 不在开启列表
+                        neighbor.details.f > fNew)                                                  // 更低的消耗（f）
                     {
-                        bool bNew = neighbor.details.parent == null;
-
                         neighbor.details.f = fNew;
                         neighbor.details.g = gNew;
                         neighbor.details.h = hNew;
                         neighbor.details.parent = curGrid;
 
-                        // 更新开启列表，重新排序
-                        if(bNew)
-                        {
+                        if(neighbor.details.state == CellDetails.CellPhase.NotInOpenList)
+                        { // 不在开启列表则加入
+                            neighbor.details.state = CellDetails.CellPhase.AlreadyInOpenList;
                             m_OpenList.Push(neighbor);
                         }
                         else
-                        {
+                        { // 已在开启列表则更新优先级
                             m_OpenList.UpdatePriority(neighbor);
                         }
                     }

@@ -315,11 +315,11 @@ MonoBehaviour:
   - m_State: 3
     rowIndex: 1
     colIndex: 3
-  - m_State: 2
-    rowIndex: 1
-    colIndex: 4
   - m_State: 3
     rowIndex: 1
+    colIndex: 4
+  - m_State: 3
+    rowIndex: 1
     colIndex: 5
   - m_State: 3
     rowIndex: 1
@@ -333,7 +333,7 @@ MonoBehaviour:
   - m_State: 3
     rowIndex: 2
     colIndex: 1
-  - m_State: 2
+  - m_State: 3
     rowIndex: 2
     colIndex: 2
   - m_State: 3
@@ -357,10 +357,10 @@ MonoBehaviour:
   - m_State: 3
     rowIndex: 3
     colIndex: 1
-  - m_State: 2
+  - m_State: 3
     rowIndex: 3
     colIndex: 2
-  - m_State: 0
+  - m_State: 3
     rowIndex: 3
     colIndex: 3
   - m_State: 2
@@ -378,13 +378,13 @@ MonoBehaviour:
   - m_State: 3
     rowIndex: 4
     colIndex: 0
-  - m_State: 2
+  - m_State: 3
     rowIndex: 4
     colIndex: 1
-  - m_State: 2
+  - m_State: 3
     rowIndex: 4
     colIndex: 2
-  - m_State: 0
+  - m_State: 3
     rowIndex: 4
     colIndex: 3
   - m_State: 2
@@ -402,13 +402,13 @@ MonoBehaviour:
   - m_State: 3
     rowIndex: 5
     colIndex: 0
-  - m_State: 0
+  - m_State: 3
     rowIndex: 5
     colIndex: 1
-  - m_State: 2
+  - m_State: 3
     rowIndex: 5
     colIndex: 2
-  - m_State: 2
+  - m_State: 3
     rowIndex: 5
     colIndex: 3
   - m_State: 2
@@ -426,16 +426,16 @@ MonoBehaviour:
   - m_State: 3
     rowIndex: 6
     colIndex: 0
-  - m_State: 0
+  - m_State: 3
     rowIndex: 6
     colIndex: 1
   - m_State: 3
     rowIndex: 6
     colIndex: 2
-  - m_State: 0
+  - m_State: 3
     rowIndex: 6
     colIndex: 3
-  - m_State: 3
+  - m_State: 2
     rowIndex: 6
     colIndex: 4
   - m_State: 3
@@ -471,7 +471,7 @@ MonoBehaviour:
   - m_State: 3
     rowIndex: 7
     colIndex: 7
-  isIgnoreCorner: 1
+  isSkipCorner: 1
 --- !u!1 &1682854001
 GameObject:
   m_ObjectHideFlags: 0

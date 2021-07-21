@@ -14,7 +14,7 @@ namespace Framework.Pathfinding
         [Range(0.1f, 100.0f)] public float  gridSize        = 1;
         public Heuristic                    heuristic       = Heuristic.Manhattan;
         public GridData[]                   graph           = new GridData[0];        
-        public bool                         isIgnoreCorner  = true;
+        public bool                         isSkipCorner    = true;                     // 对角移动时是否跳过拐角，不支持动态改变
 
         private AStarPath                   m_Algorithm;
         private GridPathReporter            m_Result        = new GridPathReporter();
@@ -29,12 +29,12 @@ namespace Framework.Pathfinding
 #if UNITY_EDITOR
             UpdateData(countOfRow, countOfCol);         // ensure the graph's length match to countOfRow * countOfCol
 #else
-            OnPostprocessData();
+            OnPostprocessNeighbors();
 #endif            
         }
 
         // 序列化之后对数据再处理，例如neighbors        
-        private void OnPostprocessData()
+        private void OnPostprocessNeighbors()
         {
             for(int i = 0; i < graph.Length; ++i)
             {
@@ -60,7 +60,7 @@ namespace Framework.Pathfinding
             if(neighborRowIndex >= 0 && neighborRowIndex < countOfRow && neighborColIndex >= 0 && neighborColIndex < countOfCol)
             {
                 GridData neighbor = graph[neighborRowIndex * countOfCol + neighborColIndex];
-                if(!NeedIgnoreNeighbor(curGrid, neighbor))
+                if(!NeedSkipNeighbor(curGrid, neighbor))
                 {
                     curGrid.neighbors.Add(neighbor);
                 }
@@ -69,9 +69,9 @@ namespace Framework.Pathfinding
 
         // 此邻居节点是否需要忽略（不加入neighbors）
         // 当邻居节点与当前节点呈对角关系，且周边节点存在block、invalid状态时忽略
-        private bool NeedIgnoreNeighbor(GridData curGrid, GridData neighbor)
+        private bool NeedSkipNeighbor(GridData curGrid, GridData neighbor)
         {
-            if(!isIgnoreCorner)
+            if(!isSkipCorner)
                 return false;
 
             // diagonal position?
@@ -84,25 +84,25 @@ namespace Framework.Pathfinding
             int maxColIndex = Mathf.Max(curGrid.colIndex, neighbor.colIndex);
 
             // [minRowIndex, minColIndex]
-            if(HasBlockedOrInvalidNeighbor(curGrid, neighbor, minRowIndex, minColIndex))
+            if(Validate(curGrid, neighbor, minRowIndex, minColIndex) && HasBlockedOrInvalidNeighbor(curGrid, neighbor, minRowIndex, minColIndex))
             {
                 return true;
             }
 
             // [minRowIndex, maxColIndex]
-            if(HasBlockedOrInvalidNeighbor(curGrid, neighbor, minRowIndex, maxColIndex))
+            if(Validate(curGrid, neighbor, minRowIndex, maxColIndex) && HasBlockedOrInvalidNeighbor(curGrid, neighbor, minRowIndex, maxColIndex))
             {
                 return true;
             }
 
             // [maxRowIndex, minColIndex]
-            if(HasBlockedOrInvalidNeighbor(curGrid, neighbor, maxRowIndex, minColIndex))
+            if(Validate(curGrid, neighbor, maxRowIndex, minColIndex) && HasBlockedOrInvalidNeighbor(curGrid, neighbor, maxRowIndex, minColIndex))
             {
                 return true;
             }
 
             // [maxRowIndex, maxColIndex]
-            if(HasBlockedOrInvalidNeighbor(curGrid, neighbor, maxRowIndex, maxColIndex))
+            if(Validate(curGrid, neighbor, maxRowIndex, maxColIndex) && HasBlockedOrInvalidNeighbor(curGrid, neighbor, maxRowIndex, maxColIndex))
             {
                 return true;
             }
@@ -120,6 +120,17 @@ namespace Framework.Pathfinding
             return false;
         }
 
+        // 判断[otherNeighborRowIndex, otherNeighborColIndex]的有效性
+        private bool Validate(GridData curGrid, GridData neighbor, int otherNeighborRowIndex, int otherNeighborColIndex)
+        {
+            GridData otherNeighbor = graph[otherNeighborRowIndex * countOfCol + otherNeighborColIndex];
+            if(curGrid.Equals(otherNeighbor) || neighbor.Equals(otherNeighbor))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public GridPathReporter CalculatePath(int srcRowIndex, int srcColIndex, int dstRowIndex, int dstColIndex)
         {
             // clear all grid's details
@@ -129,7 +140,7 @@ namespace Framework.Pathfinding
             }
 
             GridData srcGrid = graph[srcRowIndex * countOfCol + srcColIndex];
-            GridData dstGrid = graph[dstRowIndex * countOfRow + dstColIndex];
+            GridData dstGrid = graph[dstRowIndex * countOfCol + dstColIndex];
             m_Algorithm.CalculatePath(srcGrid, dstGrid, OnCalculateGValue, OnCalculateHValue, ref m_Result.pathReporter);
             return m_Result;
         }
@@ -150,7 +161,7 @@ namespace Framework.Pathfinding
             switch(heuristic)
             {
                 case Heuristic.Manhattan:
-                    return Mathf.Abs(cur.rowIndex - dst.rowIndex) + Mathf.Abs(dst.colIndex - dst.colIndex);
+                    return Mathf.Abs(cur.rowIndex - dst.rowIndex) + Mathf.Abs(cur.colIndex - dst.colIndex);
                 case Heuristic.Euclidean:
                     return Mathf.Sqrt((cur.rowIndex - dst.rowIndex) * (cur.rowIndex - dst.rowIndex) + (cur.colIndex - dst.colIndex) * (cur.colIndex - dst.colIndex));
                 case Heuristic.Diagonal:
@@ -165,11 +176,6 @@ namespace Framework.Pathfinding
             return 0;
         }
 
-        private int GetGridIndex(int rowIndex, int colIndex)
-        {
-            return rowIndex * countOfCol + colIndex;
-        }
-
         public GridData GetGridData(int rowIndex, int colIndex)
         {
             if(graph.Length != countOfRow * countOfCol)
@@ -178,7 +184,7 @@ namespace Framework.Pathfinding
             if(rowIndex < 0 || rowIndex > countOfRow - 1 || colIndex < 0 || colIndex > countOfCol - 1)
                 return null;
 
-            return graph[GetGridIndex(rowIndex, colIndex)];
+            return graph[rowIndex * countOfCol + colIndex];
         }
 
         public void SetGridData(int rowIndex, int colIndex, CellState state)
@@ -189,10 +195,10 @@ namespace Framework.Pathfinding
             UpdateNeighbors(center);
         }
 
-        // 因格子状态发生变化，更新邻居节点的数据
+        // 因格子状态发生变化，可能导致邻居节点（上、下、左、右）数据的变化
         private void UpdateNeighbors(GridData center)
         {
-            if(isIgnoreCorner)
+            if(!isSkipCorner)
                 return;
 
             GridData nNeighbor = GetGridData(center.rowIndex - 1,   center.colIndex);           // North's neighbor
@@ -208,23 +214,23 @@ namespace Framework.Pathfinding
 
         private void UpdateNeighbor(GridData center, GridData n1, GridData n2)
         {
-            if(n1 != null && n2 != null)
-            {
-                if(center.state == CellState.Blocked || center.state == CellState.Invalid)
-                { // 中心节点状态变阻挡或无效时，n1和n2互删
-                    n1.neighbors.Remove(n2);
-                    n2.neighbors.Remove(n1);
+            if(n1 == null || n2 == null)
+                return;
+
+            if (center.state == CellState.Blocked || center.state == CellState.Invalid)
+            { // 中心节点状态变阻挡或无效时，n1和n2互删
+                n1.neighbors.Remove(n2);
+                n2.neighbors.Remove(n1);
+            }
+            else if (center.state == CellState.Reachable)
+            { // 中心节点变可到达时
+                if (!n1.neighbors.Exists((item) => item.Equals(n2)))
+                {
+                    n1.neighbors.Add(n2);
                 }
-                else if(center.state == CellState.Reachable)
-                { // 中心节点变可到达时
-                    if(!n1.neighbors.Exists((item) =>item.Equals(n2)))
-                    {
-                        n1.neighbors.Add(n2);
-                    }
-                    if(!n2.neighbors.Exists((item) =>item.Equals(n1)))
-                    {
-                        n2.neighbors.Add(n1);
-                    }
+                if (!n2.neighbors.Exists((item) => item.Equals(n1)))
+                {
+                    n2.neighbors.Add(n1);
                 }
             }
         }
@@ -255,15 +261,7 @@ namespace Framework.Pathfinding
             countOfCol = newCountOfCol;
             graph = newData;
 
-            OnPostprocessData();
-        }
-
-        public void PrintIt()
-        {
-            foreach(var grid in graph)
-            {
-                Debug.Log($"{grid.rowIndex} {grid.colIndex} {grid.state}");
-            }
+            OnPostprocessNeighbors();
         }
 
         public string GetNeighborDebugInfo(int rowIndex, int colIndex)
@@ -275,7 +273,7 @@ namespace Framework.Pathfinding
             string info = string.Empty;
             foreach(var neighbor in grid.neighbors)
             {
-                info += $"  {grid.rowIndex} {grid.colIndex} {grid.state}\n";
+                info += $"  {((GridData)neighbor).rowIndex} {((GridData)neighbor).colIndex} {((GridData)neighbor).state}\n";
             }
             return info;
         }

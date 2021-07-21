@@ -67,9 +67,9 @@ namespace Framework.Pathfinding
 
     public class GridPathReporter
     {
-        private static GridData[] m_Paths = new GridData[32];
-        internal PathReporter pathReporter = new PathReporter();        
-        public PathReporterStatus status { get { return pathReporter.status; } }
+        private static GridData[]   m_Paths         = new GridData[32];
+        internal PathReporter       pathReporter    = new PathReporter();        
+        public PathReporterStatus   status          { get { return pathReporter.status; } }
 
         public Vector2Int[] paths
         {
