@@ -4,28 +4,7 @@ using UnityEngine;
 using System;
 
 namespace Framework.Pathfinding
-{    
-    // public interface IGridDataSerializer
-    // {
-    //     int         OnSerializeCountOfRow();
-    //     int         OnSerializeCountOfCol();
-    //     float       OnSerializeGridSize();
-    //     Heuristic   OnSerializeHeuristic();        
-    //     GridData[]  OnSerializeData();                      // 二进制数据序列化为GridData
-    // }
-
-        // 使用外部数据序列化对象
-        // public void ImportSerializer(IGridDataSerializer serializer)
-        // {
-        //     countOfRow  = serializer.OnSerializeCountOfRow();
-        //     countOfCol  = serializer.OnSerializeCountOfCol();
-        //     gridSize    = serializer.OnSerializeGridSize();
-        //     heuristic   = serializer.OnSerializeHeuristic();
-        //     data        = serializer.OnSerializeData();
-
-        //     OnPostprocessData();
-        // }
-
+{
     [Serializable]
     public class GridData : ICellData
     {

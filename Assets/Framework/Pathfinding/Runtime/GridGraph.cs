@@ -6,7 +6,6 @@ using System;
 namespace Framework.Pathfinding
 {
     [ExecuteInEditMode]
-    [RequireComponent(typeof(AStarPath))]
     public class GridGraph : MonoBehaviour
     {        
         [Range(1, 2000)] public int         countOfRow      = 8;
@@ -16,16 +15,11 @@ namespace Framework.Pathfinding
         public GridData[]                   graph           = new GridData[0];        
         public bool                         isSkipCorner    = true;                     // 对角移动时是否跳过拐角，不支持动态改变
 
-        private AStarPath                   m_Algorithm;
         private GridPathReporter            m_Result        = new GridPathReporter();
         public GridPathReporter             result          { get { return m_Result; } }
 
         void Awake()
         {
-            m_Algorithm = GetComponent<AStarPath>();
-            if(m_Algorithm == null)
-                throw new ArgumentNullException("m_Algorithm == null");
-
 #if UNITY_EDITOR
             UpdateData(countOfRow, countOfCol);         // ensure the graph's length match to countOfRow * countOfCol
 #else
@@ -34,7 +28,7 @@ namespace Framework.Pathfinding
         }
 
         // 序列化之后对数据再处理，例如neighbors        
-        private void OnPostprocessNeighbors()
+        protected void OnPostprocessNeighbors()
         {
             for(int i = 0; i < graph.Length; ++i)
             {
@@ -139,9 +133,11 @@ namespace Framework.Pathfinding
                 grid.details = null;
             }
 
-            GridData srcGrid = graph[srcRowIndex * countOfCol + srcColIndex];
-            GridData dstGrid = graph[dstRowIndex * countOfCol + dstColIndex];
-            m_Algorithm.CalculatePath(srcGrid, dstGrid, OnCalculateGValue, OnCalculateHValue, ref m_Result.pathReporter);
+            AStarAlgorithm.CalculatePath(graph[srcRowIndex * countOfCol + srcColIndex], 
+                                         graph[dstRowIndex * countOfCol + dstColIndex], 
+                                         OnCalculateGValue, 
+                                         OnCalculateHValue, 
+                                         ref m_Result.pathReporter);
             return m_Result;
         }
 
@@ -176,7 +172,7 @@ namespace Framework.Pathfinding
             return 0;
         }
 
-        public GridData GetGridData(int rowIndex, int colIndex)
+        private GridData GetGridData(int rowIndex, int colIndex)
         {
             if(graph.Length != countOfRow * countOfCol)
                 throw new System.Exception($"the data's length not equal to countOfRow*countOfCol({countOfRow}*{countOfCol})");
@@ -264,9 +260,14 @@ namespace Framework.Pathfinding
             OnPostprocessNeighbors();
         }
 
+        public GridData EditorGetGridData(int rowIndex, int colIndex)
+        {
+            return GetGridData(rowIndex, colIndex);
+        }
+
         public string GetNeighborDebugInfo(int rowIndex, int colIndex)
         {
-            GridData grid = GetGridData(rowIndex, colIndex);
+            GridData grid = EditorGetGridData(rowIndex, colIndex);
             if(grid == null)
                 return string.Empty;
 

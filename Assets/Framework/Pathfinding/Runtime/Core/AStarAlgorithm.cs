@@ -5,20 +5,20 @@ using Framework.Core;
 
 namespace Framework.Pathfinding
 {
-    public class AStarPath : MonoBehaviour
+    public class AStarAlgorithm
     {
         public delegate float OnCalculateValue<T>(T cur, T other) where T : ICellData;
 
-        private SimplePriorityQueue<ICellData>  m_OpenList          = new SimplePriorityQueue<ICellData>(100);       // 小顶堆管理开启列表
+        static private SimplePriorityQueue<ICellData>  m_OpenList       = new SimplePriorityQueue<ICellData>(100);       // 开启列表（小顶堆）
 
         /// <summary>
         /// A star algorithm
         /// <summary>
-        internal bool CalculatePath<T>( T srcCellData, 
-                                        T dstCellData,
-                                        OnCalculateValue<T> gValueFunc,
-                                        OnCalculateValue<T> hValueFunc,
-                                        ref PathReporter result) where T : ICellData
+        static internal bool CalculatePath<T>(  T srcCellData, 
+                                                T dstCellData,
+                                                OnCalculateValue<T> gValueFunc,
+                                                OnCalculateValue<T> hValueFunc,
+                                                ref PathReporter result) where T : ICellData
         {
             // check source path node validity
             if(srcCellData.state == CellState.Invalid)

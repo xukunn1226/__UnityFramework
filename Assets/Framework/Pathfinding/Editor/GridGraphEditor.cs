@@ -232,7 +232,7 @@ namespace Framework.Pathfinding.Editor
                     Vector3 p3 = Vector3.forward * (col * gridSize + m_LineGap)       + Vector3.right * ((row + 1) * gridSize - m_LineGap);
                     p3 = m_Target.transform.TransformPoint(p3);
                     
-                    GridData grid = m_Target.GetGridData(row, col);
+                    GridData grid = m_Target.EditorGetGridData(row, col);
                     if(grid == null)
                         continue;
                     
@@ -284,7 +284,7 @@ namespace Framework.Pathfinding.Editor
                     Vector3 intersection = ray.origin + ray.direction * enter;
                     int selectedRowIndex = (int)((intersection.x - m_Target.transform.position.x) / gridSize);
                     int selectedColIndex = (int)((intersection.z - m_Target.transform.position.z) / gridSize);
-                    m_SelectedGrid = m_Target.GetGridData(selectedRowIndex, selectedColIndex);
+                    m_SelectedGrid = m_Target.EditorGetGridData(selectedRowIndex, selectedColIndex);
                     m_Target.UpdateData(m_Target.countOfRow, m_Target.countOfCol);
                 }
                 RepaintSceneView();
@@ -351,7 +351,7 @@ namespace Framework.Pathfinding.Editor
                     break;
                 case 3:     // pick source
                     {
-                        GridData selectedGrid = m_Target.GetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex);
+                        GridData selectedGrid = m_Target.EditorGetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex);
                         if (selectedGrid.state == CellState.Reachable)
                         {
                             m_SourceGrid = selectedGrid;
@@ -360,7 +360,7 @@ namespace Framework.Pathfinding.Editor
                     }
                 case 4:     // pick destination
                     {
-                        GridData selectedGrid = m_Target.GetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex);
+                        GridData selectedGrid = m_Target.EditorGetGridData(m_SelectedGrid.rowIndex, m_SelectedGrid.colIndex);
                         if (selectedGrid.state == CellState.Reachable)
                         {
                             m_DestinationGrid = selectedGrid;
