@@ -119,6 +119,8 @@
 	https://en.wikipedia.org/wiki/A*_search_algorithm
 	http://theory.stanford.edu/~amitp/GameProgramming/
 	https://www.redblobgames.com/pathfinding/grids/algorithms.html
+	https://paul.pub/a-star-algorithm/  路径规划之 A* 算法
+	https://scm_mos.gitlab.io/motion-planner/a-star/    A Star Algorithm 总结与实现
 
 
 
