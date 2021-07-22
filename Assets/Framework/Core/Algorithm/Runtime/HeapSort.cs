@@ -43,8 +43,8 @@ namespace Framework.Core
             int right = left + 1;
             int largest = nodeIndex;
 
-            // If collection[left] > collection[nodeIndex]
-            if (left <= lastIndex && comparer.Compare(arr[left], arr[nodeIndex]) > 0)
+            // If collection[left] > collection[largest]
+            if (left <= lastIndex && comparer.Compare(arr[left], arr[largest]) > 0)
                 largest = left;
 
             // If collection[right] > collection[largest]

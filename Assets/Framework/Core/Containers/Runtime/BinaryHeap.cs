@@ -46,15 +46,7 @@ namespace Framework.Core
                     throw new IndexOutOfRangeException();
 
                 m_Buffer[index] = value;
-
-                if(index > 0 && m_Comparer.Compare(m_Buffer[index], m_Buffer[(index - 1) / 2]) < 0)
-                { // 小于父节点仅上浮即可
-                    SiftUp(index);
-                }
-                else
-                { // 大于父节点则判断其子树
-                    Heapify(index, Count - 1);
-                }
+                Validate(index);
             }
         }
 
@@ -72,7 +64,7 @@ namespace Framework.Core
         private void SiftUp(int nodeIndex)
         {
             int parent = (nodeIndex - 1) / 2;
-            while (m_Comparer.Compare(m_Buffer[nodeIndex], m_Buffer[parent]) < 0)
+            while (parent >= 0 && m_Comparer.Compare(m_Buffer[nodeIndex], m_Buffer[parent]) < 0)
             {
                 Swap(m_Buffer, parent, nodeIndex);
                 nodeIndex = parent;
@@ -87,8 +79,8 @@ namespace Framework.Core
             int right = left + 1;
             int largest = nodeIndex;
 
-            // If m_Buffer[left] < m_Buffer[nodeIndex]
-            if (left <= lastIndex && m_Comparer.Compare(m_Buffer[left], m_Buffer[nodeIndex]) < 0)
+            // If m_Buffer[left] < m_Buffer[largest]
+            if (left <= lastIndex && m_Comparer.Compare(m_Buffer[left], m_Buffer[largest]) < 0)
                 largest = left;
 
             // If m_Buffer[right] < m_Buffer[largest]
@@ -100,6 +92,18 @@ namespace Framework.Core
             {
                 Swap(m_Buffer, nodeIndex, largest);
                 Heapify(largest, lastIndex);
+            }
+        }
+
+        private void Validate(int index)
+        {
+            if (index > 0 && m_Comparer.Compare(m_Buffer[index], m_Buffer[(index - 1) / 2]) < 0)
+            { // 小于父节点仅上浮即可
+                SiftUp(index);
+            }
+            else
+            { // 大于父节点则判断其子树
+                Heapify(index, Count - 1);
             }
         }
 
@@ -182,8 +186,6 @@ namespace Framework.Core
 
         public void Clear()
         {
-            if (IsEmpty)
-                throw new Exception("Heap is empty");
             m_Buffer.Clear();
         }
 
