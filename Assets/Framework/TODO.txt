@@ -1,10 +1,3 @@
-* 使用各种性能分析工具：GOT、GPM、URP并整合
-* 不同平台代码库公用方案（前后端代码公用）
-* UWorld, ULevel
-* SortedArray
-* QuadTree
-* 二分图、二叉堆
-* 配表方案：https://blog.csdn.net/linshuhe1/article/details/52062969
 * GPU Skinning: 
 	https://zhuanlan.zhihu.com/p/87583171  [Unity3d杂记]骨骼蒙皮动画
 	https://github.com/chengkehan/GPUSkinning   
@@ -22,19 +15,7 @@
 	asset-bundle-analyzer   https://github.com/faelenor/asset-bundle-analyzer   通过py脚本分析Bundles信息，并存储至SQLite
 	DB Browser for SQLite 	https://sqlitebrowser.org/  SQLite查看工具
 * Inspector Field for Scene Asset  https://answers.unity.com/questions/242794/inspector-field-for-scene-asset.html?_ga=2.221217361.81844548.1594053424-350901822.1561524296
-* 监控所有的特效播放，统一特效加载接口
-* 三维中物体的拖拽移动效果  https://www.cnblogs.com/springword/p/6683549.html
-* FX_Root支持特效进入对象池时控制细节更精细，不是deactive GameObject，而是disable animation
-* 设置抓帧调试环境
-	1、Root设备
-	2、安装magisk（再装一个propshide模块）
-	3、改系统调试标记，如图
-* Pool的初始大小可配置化
-* Protobuf3优化
-* 比较SQLite和Protobuf配表方案的异步（读取、缓存、导表）Openpyxl
-* LUA配表优化  https://blog.uwa4d.com/archives/1490.html
-* 高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
-* 提高打包加速问题：https://mp.weixin.qq.com/s/sCgrrRXlYzXOPC1fKCX7UA
+
 * sleep, pause（减少空转）, spin, 各种锁，map reduce
 	线程的几种状态：new, runnable, running, not runnable, dead
 	非可运行状态引申出三个状态：阻塞（blocked）、同步锁（locked）、等待（waiting）
@@ -53,36 +34,17 @@
 		AbortPolicy：默认的拒绝策略，直接丢弃任务，抛出RejectedExecutionException。
 		DiscardPolicy：直接丢弃任务，没有任何异常抛出。
 		DiscardOldestPolicy：丢弃最老的任务，其实就是把最早进入工作队列的任务丢弃，然后把新任务加入到工作队列。
-* 扩展FPS组件，捕获帧率突变
-* Opt
+* Optimization
 	https://secretlab.institute/2019/06/14/power-saving-in-unity-for-non-game-apps/  Power-Saving in Unity
 	https://gamedevelopertips.com/increase-performance-in-unity-games/  How To Optimise And Increase Performance In Unity Games
 	https://blogs.unity3d.com/2019/04/01/higher-fidelity-and-smoother-frame-rates-with-adaptive-performance/  Higher fidelity and smoother frame rates with Adaptive Performance
 	https://www.youtube.com/watch?v=KK2hWczq8ZY  Power Efficient Programing - Unite Europe 2015
 	https://www.youtube.com/watch?v=j4YAY36xjwE  Unite Europe 2016 - Optimizing Mobile Applications
 	https://www.youtube.com/watch?v=_wxitgdx-UI  Unite Europe 2017 - Squeezing Unity: Tips for raising performance
-* JPS
-	https://blog.csdn.net/yjxxtd/article/details/93506231
-	https://blog.csdn.net/u011265162/article/details/91048927?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
-* BackgroundDownload
-	https://github.com/Unity-Technologies/BackgroundDownload
-* 如何优雅地接入外部插件（uwa），可定制什么时候发布
-* 扩展Gesture——双击功能，贴边移动
-* Package目录下shader如何打包？https://answer.uwa4d.com/question/5f3d10b19424416784ef1c82
-* ACT技能编辑器的制作经验分享 https://blog.uwa4d.com/archives/USparkle_ACT.html
-* 利用IJob优化DynamicBones https://mp.weixin.qq.com/s/WPURBQ8lyg9eCx2bITtKiw
-* 配置方案：pb、flatbuffer、zeroformatter
-	内存：随用随取，不用全部进内存
-	加载：
-* 网络库在android&ios上网络切换时的响应：4G & WIFI互相切换、网络彻底断开等
-* OBB管理  https://stackoverflow.com/questions/25832334/i-have-mounted-my-obb-file-but-how-to-get-the-final-path-to-my-assets
-		   https://answers.unity.com/questions/1228809/where-to-put-my-obb-file.html
-* 对象池管理：常驻内存机制与预加载机制
-* OBB管理：判断是分包方式还是整包方式，分包方式才需要下载obb
-* bundle加密   https://www.xuanyusong.com/archives/4607
-* 一种Shader变体收集打包以及编译优化的思路
-	https://answer.uwa4d.com/question/5da86670e84db43d6efbda72
-	https://mp.weixin.qq.com/s/9_Wl-cm-4ZF2lAl4FLnYxg
+	https://mp.weixin.qq.com/s/2VufiCiU7TT8rM9BK-CTZA
+	https://mp.weixin.qq.com/s/LWTDjqEY2YbZHZeksrtBvA
+	https://mp.weixin.qq.com/s/an36v8erNS7HKrh9HRylcQ
+	https://mp.weixin.qq.com/s/CMNMRXJCuYIfolvI9zLB7w
 * RTS中的避障算法
 	VO:
 		https://blog.csdn.net/zhiai315/article/details/113931422  VO避障
@@ -148,13 +110,6 @@
 	Flocking Behaviour
 	Steering Behaviour
 	https://blog.csdn.net/XieNaoban/article/details/53524165?spm=1001.2014.3001.5501  [笔记]A*寻路算法初探
-
-
-	
-* Unity游戏性能优化之内存篇
-	https://mp.weixin.qq.com/s/2VufiCiU7TT8rM9BK-CTZA
-	https://mp.weixin.qq.com/s/LWTDjqEY2YbZHZeksrtBvA
-	https://mp.weixin.qq.com/s/an36v8erNS7HKrh9HRylcQ
 * Unity CommandBuffer或是Camera重定向RenderTarget的ColorBuffer & DepthBuffer
 	https://blog.csdn.net/linjf520/article/details/104964803
 * XLua开发环境的整合
@@ -183,19 +138,17 @@
 	https://www.cnblogs.com/persistentsnail/p/3294842.html
 	https://www.bookstack.cn/read/zinx/dadf967af9c153a4.md
 	http://www.cppblog.com/jaxe/archive/2014/10/17/148998.html
-* JPS
-	https://www.cnblogs.com/KillerAery/p/12242445.html
-	https://blog.csdn.net/u011265162/article/details/91048927
-* Unity内置资源如何打包避免冗余
-	https://mp.weixin.qq.com/s/thEI6NoyCrWnkrqF9Y346g
-* 搭建特效制作环境（InGame、UI）
-* 去除所有FX_Component组件上的duration，统一使用FX_Root duration
-* 对象池管理特效：当特效数量达到一定值，使用LOD机制弱化效果(FX AUTOLOD)
-* 特效优化：
+
+* 特效相关：
     https://forum.unity.com/threads/released-off-screen-particles-render-particles-at-1-2-1-4-or-1-8-screen-resolution.358506/
     https://github.com/slipster216/OffScreenParticleRendering
     https://blogs.unity3d.com/2016/12/20/unitytips-particlesystem-performance-culling/
     https://blogs.unity3d.com/2016/04/20/particle-system-modules-faq/
+	监控所有的特效播放，统一特效加载接口
+	FX_Root支持特效进入对象池时控制细节更精细，不是deactive GameObject，而是disable animation
+	搭建特效制作环境（InGame、UI）
+	去除所有FX_Component组件上的duration，统一使用FX_Root duration
+	对象池管理特效：当特效数量达到一定值，使用LOD机制弱化效果(FX AUTOLOD)	
 * optimization tips:
     culling仅在系统可预测时生效
     打开单个模块不仅会增加开销，更可能因为从过程模式（可预测）切换到非过程模式（不可预测）增加了整个系统的开销
@@ -206,6 +159,41 @@
     减少脚本控制，尽量使用系统内置功能
 * AI插件推荐：https://answer.uwa4d.com/question/60cafcefe58b4719dd3e25ac
 * 基于Unity的帧同步方案：http://clintonbrennan.com/2013/12/lockstep-implementation-in-unity3d
+* 项目管理
+	https://mp.weixin.qq.com/s/sTi5Nh5m6A_53QYI-7mRkw
+* Misc
+	设置抓帧调试环境
+		1、Root设备
+		2、安装magisk（再装一个propshide模块）
+		3、改系统调试标记，如图
+	Pool的初始大小可配置化
+	Protobuf3优化
+	LUA配表优化  https://blog.uwa4d.com/archives/1490.html
+	高效场景管理工作流：https://mp.weixin.qq.com/s/U7T_3qTzFzrvOgPTNUIMFw
+	提高打包加速问题：https://mp.weixin.qq.com/s/sCgrrRXlYzXOPC1fKCX7UA
+	Unity内置资源如何打包避免冗余	https://mp.weixin.qq.com/s/thEI6NoyCrWnkrqF9Y346g
+	扩展Gesture——双击功能，贴边移动
+	Package目录下shader如何打包？https://answer.uwa4d.com/question/5f3d10b19424416784ef1c82
+	ACT技能编辑器的制作经验分享 https://blog.uwa4d.com/archives/USparkle_ACT.html
+	利用IJob优化DynamicBones https://mp.weixin.qq.com/s/WPURBQ8lyg9eCx2bITtKiw
+	网络库在android&ios上网络切换时的响应：4G & WIFI互相切换、网络彻底断开等
+	OBB管理  https://stackoverflow.com/questions/25832334/i-have-mounted-my-obb-file-but-how-to-get-the-final-path-to-my-assets
+		   https://answers.unity.com/questions/1228809/where-to-put-my-obb-file.html
+	对象池管理：常驻内存机制与预加载机制
+	OBB管理：判断是分包方式还是整包方式，分包方式才需要下载obb
+	bundle加密   https://www.xuanyusong.com/archives/4607
+	一种Shader变体收集打包以及编译优化的思路	https://answer.uwa4d.com/question/5da86670e84db43d6efbda72	https://mp.weixin.qq.com/s/9_Wl-cm-4ZF2lAl4FLnYxg	
+	扩展FPS组件，捕获帧率突变
+
+
+
+
+
+
+
+
+
+
 
 
 
