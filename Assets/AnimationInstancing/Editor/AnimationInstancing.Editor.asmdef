@@ -1,0 +1,16 @@
+{
+    "name": "AnimationInstancing.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:39950a158d2703842bf64e8841cbe4f5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
