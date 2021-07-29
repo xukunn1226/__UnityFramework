@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AnimationInstancing.Runtime
+namespace AnimationInstancingModule.Runtime
 {
     public class AnimationInstancing : MonoBehaviour
     {

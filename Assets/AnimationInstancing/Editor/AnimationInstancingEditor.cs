@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using AnimationInstancing.Runtime;
+using AnimationInstancingModule.Runtime;
 
-namespace AnimationInstancing.Editor
+namespace AnimationInstancingModule.Editor
 {
-    [CustomEditor(typeof(AnimationInstancing.Runtime.AnimationInstancing))]
+    [CustomEditor(typeof(AnimationInstancing))]
     [DisallowMultipleComponent]
     public class AnimationInstancingEditor : UnityEditor.Editor
     {
-        private string m_Output = "";
-        private int m_FPS = 15;
+        private AnimationInstancing     m_Target;
+        private string                  m_Output = "";
+        private int                     m_FPS = 15;
+        private bool                    m_ExposeAttachments;
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
