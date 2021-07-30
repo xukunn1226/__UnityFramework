@@ -27,7 +27,6 @@ namespace AnimationInstancingModule.Editor
 
         private AnimationInstancingGenerator    m_Target;
         private string                          m_Output = "";
-        private Transform[]                     m_BoneTransform;
         private List<Matrix4x4>                 m_BindPose          = new List<Matrix4x4>(150);
         private List<AnimationBakeInfo>         m_GeneratedBakeInfo = new List<AnimationBakeInfo>();
         private Vector2                         m_ScrollPosition;
@@ -37,23 +36,34 @@ namespace AnimationInstancingModule.Editor
         private void OnEnable()
         {
             m_Target = (AnimationInstancingGenerator)target;
-            m_Target.m_GenerateAnims.Clear();
         }
 
         public override void OnInspectorGUI()
-        {
+        {            
             EditorGUI.BeginChangeCheck();
+            {
+                // draw "FPS"
+                m_Target.fps = EditorGUILayout.IntSlider("FPS", m_Target.fps, 1, 120);
 
-            // draw "FPS"
-            m_Target.fps = EditorGUILayout.IntSlider("FPS", m_Target.fps, 1, 120);
+                // draw "Attachment"
+                DrawAttachment();
 
-            // draw "Attachment"
-            DrawAttachment();
-
-            // draw "AnimationClip" list
-            DrawAnimationClips();
+                // draw "AnimationClip" list
+                DrawAnimationClips();
+            }
+            if(EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(m_Target);
+            }
             
-            GUILayout.Button("Generate");
+            if(GUILayout.Button("Refresh"))
+            {
+                RefreshAttachment();
+            }
+            if(GUILayout.Button("Generate"))
+            {
+
+            }
         }
 
         private void DrawAttachment()
@@ -62,33 +72,46 @@ namespace AnimationInstancingModule.Editor
             EditorGUI.BeginDisabledGroup(!m_Target.exposeAttachments);
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                EditorGUI.BeginChangeCheck();
+                // EditorGUI.BeginChangeCheck();
 
-                GameObject fbx = EditorGUILayout.ObjectField("FBX refrenced by Prefab:", m_Target.fbx, typeof(GameObject), false) as GameObject;
+                // GameObject fbx = EditorGUILayout.ObjectField("FBX refrenced by Prefab:", m_Target.fbx, typeof(GameObject), false) as GameObject;
 
-                if(EditorGUI.EndChangeCheck())
+                // if(EditorGUI.EndChangeCheck())
+                // {
+                //     if(fbx == null)
+                //     {
+                //         m_Target.m_SelectExtraBone.Clear();
+                //     }
+                //     else if(m_Target.fbx != fbx)
+                //     {
+                //         SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
+                //         Transform[] boneTransform = AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose);
+
+                //         // 筛选出除骨骼节点之外的节点
+                //         var allTrans = m_Target.GetComponentsInChildren<Transform>().ToList();
+                //         allTrans.RemoveAll(q => boneTransform.Contains(q));
+
+                //         m_Target.m_SelectExtraBone.Clear();
+                //         for (int i = 0; i != allTrans.Count; ++i)
+                //         {
+                //             m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
+                //         }
+                //     }
+                //     m_Target.fbx = fbx;                    
+                //     EditorUtility.SetDirty(m_Target);
+                // }
+
+                // find all extra bones
+                if (m_Target.m_SelectExtraBone.Count == 0)
                 {
-                    if(fbx == null)
-                    {
-                        m_Target.m_SelectExtraBone.Clear();
-                    }
-                    else if(m_Target.fbx != fbx)
-                    {
-                        SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
-                        m_BoneTransform = AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose);
+                    var allTrans = m_Target.GetComponentsInChildren<Transform>().ToList();
+                    allTrans.RemoveAll(item => item.GetComponents<Component>().Length > 1);
 
-                        // 筛选出除骨骼节点之外的节点
-                        var allTrans = m_Target.GetComponentsInChildren<Transform>().ToList();
-                        allTrans.RemoveAll(q => m_BoneTransform.Contains(q));
-
-                        m_Target.m_SelectExtraBone.Clear();
-                        for (int i = 0; i != allTrans.Count; ++i)
-                        {
-                            m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
-                        }
+                    m_Target.m_SelectExtraBone.Clear();
+                    for(int i = 0; i != allTrans.Count; ++i)
+                    {
+                        m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
                     }
-                    m_Target.fbx = fbx;                    
-                    EditorUtility.SetDirty(m_Target);
                 }
 
                 if (m_Target.m_SelectExtraBone.Count > 0)
@@ -108,12 +131,12 @@ namespace AnimationInstancingModule.Editor
                 }
             }
             GUILayout.EndVertical();
-            EditorGUI.EndDisabledGroup();
+            EditorGUI.EndDisabledGroup();            
+        }
 
-            if(EditorGUI.EndChangeCheck())
-            {
-                EditorUtility.SetDirty(m_Target);
-            }
+        private void RefreshAttachment()
+        {
+            m_Target.m_SelectExtraBone.Clear();
         }
 
         private void DrawAnimationClips()
@@ -139,11 +162,30 @@ namespace AnimationInstancingModule.Editor
             }
 
             var clips = GetClips(animator);
-            var distinctClips = clips.Select(q => (AnimationClip)q).Distinct().ToList();
+            var distinctClips = clips.Select(q => (AnimationClip)q).Distinct().ToList();        // make unique
+
+            // 增加
             for (int i = 0; i < distinctClips.Count; i++)
             {
-                if (distinctClips[i] && m_Target.m_GenerateAnims.ContainsKey(distinctClips[i].name) == false)
+                if (distinctClips[i] && !m_Target.m_GenerateAnims.ContainsKey(distinctClips[i].name))
+                {
                     m_Target.m_GenerateAnims.Add(distinctClips[i].name, true);
+                }
+            }
+
+            // 删除
+            List<string> tmp = new List<string>();
+            Dictionary<string, bool>.Enumerator e = m_Target.m_GenerateAnims.GetEnumerator();
+            while(e.MoveNext())
+            {
+                if(!distinctClips.Find(item => item.name == e.Current.Key))
+                {
+                    tmp.Add(e.Current.Key);
+                }
+            }
+            foreach(var str in tmp)
+            {
+                m_Target.m_GenerateAnims.Remove(str);
             }
 
             string[] clipNames = m_Target.m_GenerateAnims.Keys.ToArray();

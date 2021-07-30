@@ -7,9 +7,8 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationInstancingGenerator : MonoBehaviour, ISerializationCallbackReceiver
     {
-        public int                          fps;
+        public int                          fps                         = 15;
         public bool                         exposeAttachments;
-        public GameObject                   fbx;
 
         [SerializeField]
         private List<string>                m_ExtraBoneNames            = new List<string>();                   // 所有绑点骨骼名称列表
@@ -20,9 +19,9 @@ namespace AnimationInstancingModule.Runtime
         public ExtraBoneInfo                m_ExtraBoneInfo             = new ExtraBoneInfo();
 
         public Dictionary<string, bool>     m_GenerateAnims             = new Dictionary<string, bool>();       // 所有解析出的动画
-        [NonSerialized]
+        [SerializeField]
         private List<string>                m_GenerateAnimNames         = new List<string>();
-        [NonSerialized]
+        [SerializeField]
         private List<bool>                  m_GenerateAnimSelectables   = new List<bool>();
 
         public void OnBeforeSerialize()
