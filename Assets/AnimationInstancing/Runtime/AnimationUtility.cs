@@ -7,9 +7,10 @@ namespace AnimationInstancingModule.Runtime
     public class AnimationUtility
     {
         // Merge all bones to a single array and merge all bind pose
-        public static Transform[] MergeBone(SkinnedMeshRenderer[] meshRender, List<Matrix4x4> bindPose)
+        public static Transform[] MergeBone(SkinnedMeshRenderer[] meshRender, ref List<Matrix4x4> bindPose)
         {
             UnityEngine.Profiling.Profiler.BeginSample("MergeBone()");
+            bindPose.Clear();
             List<Transform> listTransform = new List<Transform>(150);
             for (int i = 0; i != meshRender.Length; ++i)
             {
@@ -35,7 +36,6 @@ namespace AnimationInstancingModule.Runtime
                         bindPose[index] = checkBindPose[j];
                     }
                 }
-                meshRender[i].enabled = false;
             }
             UnityEngine.Profiling.Profiler.EndSample();
 
