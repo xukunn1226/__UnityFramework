@@ -16,20 +16,9 @@ namespace AnimationInstancingModule.Editor
     [DisallowMultipleComponent]
     public class AnimationInstancingGeneratorEditor : UnityEditor.Editor
     {
-        class AnimationBakeInfo
-        {
-            public SkinnedMeshRenderer[]                            m_Smrs;
-            public Animator                                         m_Animator;
-            public int                                              m_WorkingFrame;
-            public float                                            m_Length;
-            public int                                              m_Layer;
-            public AnimationInstancingModule.Runtime.AnimationInfo  m_AnimationInfo;
-        }
-
         private AnimationInstancingGenerator    m_Target;
         private string                          m_Output = "";
         private List<Matrix4x4>                 m_BindPose          = new List<Matrix4x4>(150);
-        private List<AnimationBakeInfo>         m_GeneratedBakeInfo = new List<AnimationBakeInfo>();
         private Vector2                         m_ScrollPosition;
         private Vector2                         m_ScrollPosition2;
         private Dictionary<string, bool>        m_Temp              = new Dictionary<string, bool>();
@@ -63,8 +52,13 @@ namespace AnimationInstancingModule.Editor
             }
             if(GUILayout.Button("Generate"))
             {
-
+                BakeWithAnimator();
             }
+        }
+
+        private void BakeWithAnimator()
+        {
+
         }
 
         private void DrawAttachment()
@@ -106,7 +100,8 @@ namespace AnimationInstancingModule.Editor
                 if (m_Target.m_SelectExtraBone.Count == 0)
                 {
                     SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
-                    Transform[] boneTransform = AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose);
+                    List<Transform> boneTransform = new List<Transform>();
+                    AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose, ref boneTransform);
 
                     // 筛选出除骨骼节点之外的节点
                     var allTrans = m_Target.GetComponentsInChildren<Transform>().ToList();
@@ -221,36 +216,11 @@ namespace AnimationInstancingModule.Editor
                 frames.Add(framesToBake);
             }
             
-            SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
-            Transform[] boneTransform = AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose);
-            if(m_Target.exposeAttachments)
-            { // 如果有挂点数据，则添加至m_BindPose和boneTransform
-                List<Transform> listExtra = new List<Transform>();
-                Transform[] trans = m_Target.GetComponentsInChildren<Transform>();
-                foreach (var obj in m_Target.m_SelectExtraBone)
-                {
-                    if (!obj.Value)
-                        continue;
+            // List<Transform> boneTransform = new List<Transform>();
+            // m_Target.GetFinalBonePose(ref m_BindPose, ref boneTransform);
 
-                    for (int i = 0; i != trans.Length; ++i)
-                    {
-                        Transform tran = trans[i] as Transform;
-                        if (tran.name == obj.Key)
-                        {
-                            m_BindPose.Add(tran.localToWorldMatrix);
-                            listExtra.Add(trans[i]);
-                        }
-                    }
-                }
-
-                Transform[] totalTransform = new Transform[boneTransform.Length + listExtra.Count];
-                System.Array.Copy(boneTransform, totalTransform, boneTransform.Length);
-                System.Array.Copy(listExtra.ToArray(), 0, totalTransform, boneTransform.Length, listExtra.Count);
-                boneTransform = totalTransform;
-            }
-
-            int textureWidth, textureHeight;
-            CalculateTextureSize(frames, boneTransform, out textureWidth, out textureHeight);
+            // int textureWidth, textureHeight;
+            // CalculateTextureSize(frames, boneTransform, out textureWidth, out textureHeight);
 
             m_ScrollPosition2 = GUILayout.BeginScrollView(m_ScrollPosition2);
             foreach (var clipName in clipNames)
@@ -282,19 +252,17 @@ namespace AnimationInstancingModule.Editor
         // 每根骨骼4个像素（一个像素记录4个值，4个像素一个矩阵）
         private void CalculateTextureSize(List<int> frames, Transform[] bone, out int textureWidth, out int textureHeight)
         {
-            Algorithm.QuickSort(frames.ToList());
+            frames.QuickSort();
+            int totalFrames = frames.Count<int>();
+            int averageFrame = totalFrames / frames.Count;
 
-            textureWidth = 0;
+            textureWidth = totalFrames * 4;
             textureHeight = 0;
 
             int blockWidth = 4;
             int blockHeight = bone.Length;
 
-            int pixels = 0;
-            foreach(var frame in frames)
-            {
-                pixels += bone.Length * frame * 4;
-            }
+            int pixels = bone.Length * totalFrames * 4;
         }
 
         private List<AnimationClip> GetClips(Animator animator)

@@ -10,6 +10,7 @@ namespace AnimationInstancingModule.Runtime
         public int                  nameHash;
         public int                  totalFrame;
         public int                  fps;
+        public int                  animationIndex;
         public WrapMode             wrapMode;
         public List<AnimationEvent> eventList;
     }
