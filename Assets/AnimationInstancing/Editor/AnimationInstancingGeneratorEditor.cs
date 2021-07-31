@@ -5,6 +5,7 @@ using UnityEditor;
 using AnimationInstancingModule.Runtime;
 using System.Linq;
 using UnityEditor.Animations;
+using Framework.Core;
 
 namespace AnimationInstancingModule.Editor
 {
@@ -223,7 +224,7 @@ namespace AnimationInstancingModule.Editor
             SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
             Transform[] boneTransform = AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose);
             if(m_Target.exposeAttachments)
-            { // 把挂点数据添加至m_BindPose和boneTransform
+            { // 如果有挂点数据，则添加至m_BindPose和boneTransform
                 List<Transform> listExtra = new List<Transform>();
                 Transform[] trans = m_Target.GetComponentsInChildren<Transform>();
                 foreach (var obj in m_Target.m_SelectExtraBone)
@@ -249,7 +250,7 @@ namespace AnimationInstancingModule.Editor
             }
 
             int textureWidth, textureHeight;
-            CalculateTextureSize(frames.ToArray(), boneTransform, out textureWidth, out textureHeight);
+            CalculateTextureSize(frames, boneTransform, out textureWidth, out textureHeight);
 
             m_ScrollPosition2 = GUILayout.BeginScrollView(m_ScrollPosition2);
             foreach (var clipName in clipNames)
@@ -277,10 +278,23 @@ namespace AnimationInstancingModule.Editor
             GUILayout.EndScrollView();
         }
 
-        private void CalculateTextureSize(int[] frames, Transform[] bone, out int textureWidth, out int textureHeight)
+        // 计算动画数据占用的贴图大小
+        // 每根骨骼4个像素（一个像素记录4个值，4个像素一个矩阵）
+        private void CalculateTextureSize(List<int> frames, Transform[] bone, out int textureWidth, out int textureHeight)
         {
+            Algorithm.QuickSort(frames.ToList());
+
             textureWidth = 0;
             textureHeight = 0;
+
+            int blockWidth = 4;
+            int blockHeight = bone.Length;
+
+            int pixels = 0;
+            foreach(var frame in frames)
+            {
+                pixels += bone.Length * frame * 4;
+            }
         }
 
         private List<AnimationClip> GetClips(Animator animator)

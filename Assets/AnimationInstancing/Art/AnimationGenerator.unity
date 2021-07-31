@@ -216,7 +216,7 @@ PrefabInstance:
     - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
         type: 3}
       propertyPath: m_GenerateAnimNames.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
         type: 3}
@@ -226,7 +226,7 @@ PrefabInstance:
     - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
         type: 3}
       propertyPath: m_GenerateAnimSelectables.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
         type: 3}
