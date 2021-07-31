@@ -5,6 +5,7 @@ using System;
 
 namespace AnimationInstancingModule.Runtime
 {
+    [DisallowMultipleComponent]
     public class AnimationInstancingGenerator : MonoBehaviour, ISerializationCallbackReceiver
     {
         public int                          fps                         = 15;

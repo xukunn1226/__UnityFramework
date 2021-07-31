@@ -213,86 +213,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: exposeAttachments
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_ExtraBoneNames.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_ExtraBoneNames.Array.data[0]
-      value: ik_hand_gun
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_ExtraBoneNames.Array.data[1]
-      value: ik_hand_l
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_ExtraBoneNames.Array.data[2]
-      value: ik_hand_r
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_GenerateAnimNames.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_ExtraBoneSelectables.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_GenerateAnimNames.Array.data[0]
-      value: attack02
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_GenerateAnimNames.Array.data[1]
-      value: attack03
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_GenerateAnimNames.Array.data[2]
-      value: attack04
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_ExtraBoneSelectables.Array.data[0]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_ExtraBoneSelectables.Array.data[1]
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_GenerateAnimSelectables.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_GenerateAnimSelectables.Array.data[0]
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_GenerateAnimSelectables.Array.data[1]
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -5044923954171021826, guid: f7e96545f76c86b41a0c0c76896b442f,
-        type: 3}
-      propertyPath: m_GenerateAnimSelectables.Array.data[2]
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 438068177848903862, guid: f7e96545f76c86b41a0c0c76896b442f,
         type: 3}
       propertyPath: m_RootOrder
@@ -491,10 +411,20 @@ PrefabInstance:
       propertyPath: m_Values.Array.data[9]
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4177916808610219586, guid: f0fcdf542c93f0f458e4c8cd6800f538,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4d3b9536a95486744a07d709e3c33e0c, type: 2}
     - target: {fileID: 7228573495659398786, guid: f0fcdf542c93f0f458e4c8cd6800f538,
         type: 3}
       propertyPath: m_Name
       value: MirrorF2@skin
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228573495659398786, guid: f0fcdf542c93f0f458e4c8cd6800f538,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8005955272535530552, guid: f0fcdf542c93f0f458e4c8cd6800f538,
         type: 3}

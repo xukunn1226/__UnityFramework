@@ -56,7 +56,7 @@ namespace AnimationInstancingModule.Editor
                 EditorUtility.SetDirty(m_Target);
             }
             
-            if(GUILayout.Button("Refresh"))
+            if(GUILayout.Button("Refresh Extra Bone"))
             {
                 RefreshAttachment();
             }
@@ -104,8 +104,12 @@ namespace AnimationInstancingModule.Editor
                 // find all extra bones
                 if (m_Target.m_SelectExtraBone.Count == 0)
                 {
+                    SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    Transform[] boneTransform = AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose);
+
+                    // 筛选出除骨骼节点之外的节点
                     var allTrans = m_Target.GetComponentsInChildren<Transform>().ToList();
-                    allTrans.RemoveAll(item => item.GetComponents<Component>().Length > 1);
+                    allTrans.RemoveAll(q => boneTransform.Contains(q));
 
                     m_Target.m_SelectExtraBone.Clear();
                     for(int i = 0; i != allTrans.Count; ++i)
@@ -190,6 +194,7 @@ namespace AnimationInstancingModule.Editor
 
             string[] clipNames = m_Target.m_GenerateAnims.Keys.ToArray();
             int totalFrames = 0;
+            List<int> frames = new List<int>();
             foreach (var clipName in clipNames)
             {
                 if (!m_Target.m_GenerateAnims[clipName])
@@ -204,7 +209,39 @@ namespace AnimationInstancingModule.Editor
                 int framesToBake = clip ? (int)(clip.length * m_Target.fps / 1.0f) : 1;
                 framesToBake = Mathf.Clamp(framesToBake, 1, framesToBake);
                 totalFrames += framesToBake;
+                frames.Add(framesToBake);
             }
+            
+            SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
+            Transform[] boneTransform = AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose);
+            if(m_Target.exposeAttachments)
+            { // 把挂点数据添加至m_BindPose和boneTransform
+                List<Transform> listExtra = new List<Transform>();
+                Transform[] trans = m_Target.GetComponentsInChildren<Transform>();
+                foreach (var obj in m_Target.m_SelectExtraBone)
+                {
+                    if (!obj.Value)
+                        continue;
+
+                    for (int i = 0; i != trans.Length; ++i)
+                    {
+                        Transform tran = trans[i] as Transform;
+                        if (tran.name == obj.Key)
+                        {
+                            m_BindPose.Add(tran.localToWorldMatrix);
+                            listExtra.Add(trans[i]);
+                        }
+                    }
+                }
+
+                Transform[] totalTransform = new Transform[boneTransform.Length + listExtra.Count];
+                System.Array.Copy(boneTransform, totalTransform, boneTransform.Length);
+                System.Array.Copy(listExtra.ToArray(), 0, totalTransform, boneTransform.Length, listExtra.Count);
+                boneTransform = totalTransform;
+            }
+
+            int textureWidth, textureHeight;
+            CalculateTextureSize(frames.ToArray(), boneTransform, out textureWidth, out textureHeight);
 
             m_ScrollPosition2 = GUILayout.BeginScrollView(m_ScrollPosition2);
             foreach (var clipName in clipNames)
@@ -230,6 +267,12 @@ namespace AnimationInstancingModule.Editor
                 }
             }
             GUILayout.EndScrollView();
+        }
+
+        private void CalculateTextureSize(int[] frames, Transform[] bone, out int textureWidth, out int textureHeight)
+        {
+            textureWidth = 0;
+            textureHeight = 0;
         }
 
         private List<AnimationClip> GetClips(Animator animator)
