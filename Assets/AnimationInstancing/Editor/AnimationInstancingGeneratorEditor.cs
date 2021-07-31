@@ -169,11 +169,13 @@ namespace AnimationInstancingModule.Editor
             var distinctClips = clips.Select(q => (AnimationClip)q).Distinct().ToList();        // make unique
 
             // 增加
+            bool bModified = false;
             for (int i = 0; i < distinctClips.Count; i++)
             {
                 if (distinctClips[i] && !m_Target.m_GenerateAnims.ContainsKey(distinctClips[i].name))
                 {
                     m_Target.m_GenerateAnims.Add(distinctClips[i].name, true);
+                    bModified = true;
                 }
             }
 
@@ -190,6 +192,12 @@ namespace AnimationInstancingModule.Editor
             foreach(var str in tmp)
             {
                 m_Target.m_GenerateAnims.Remove(str);
+                bModified = true;
+            }
+
+            if(bModified)
+            {
+                EditorUtility.SetDirty(m_Target);
             }
 
             string[] clipNames = m_Target.m_GenerateAnims.Keys.ToArray();

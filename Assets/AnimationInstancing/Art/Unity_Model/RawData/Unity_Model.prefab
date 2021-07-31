@@ -1195,7 +1195,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fps: 15
   exposeAttachments: 1
-  fbx: {fileID: 919132149155446097, guid: 98603b870f827c34487b772d2220d95f, type: 3}
   m_ExtraBoneNames:
   - Unity_Model
   - Model

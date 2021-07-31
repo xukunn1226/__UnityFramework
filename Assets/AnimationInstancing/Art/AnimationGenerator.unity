@@ -213,6 +213,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
+        type: 3}
+      propertyPath: m_GenerateAnimNames.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
+        type: 3}
+      propertyPath: m_GenerateAnimNames.Array.data[2]
+      value: attack04
+      objectReference: {fileID: 0}
+    - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
+        type: 3}
+      propertyPath: m_GenerateAnimSelectables.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
+        type: 3}
+      propertyPath: m_GenerateAnimSelectables.Array.data[2]
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 438068177848903862, guid: f7e96545f76c86b41a0c0c76896b442f,
         type: 3}
       propertyPath: m_RootOrder
