@@ -10,7 +10,7 @@ namespace AnimationInstancingModule.Runtime
         public int                  nameHash;
         public int                  totalFrame;
         public int                  fps;
-        public int                  animationIndex;
+        public int                  animationIndex;         // 在整个AnimationTexture中的起始帧序号
         public WrapMode             wrapMode;
         public List<AnimationEvent> eventList;
     }

@@ -58,7 +58,7 @@ namespace AnimationInstancingModule.Editor
 
         private void BakeWithAnimator()
         {
-
+            m_Target.Bake();
         }
 
         private void DrawAttachment()
