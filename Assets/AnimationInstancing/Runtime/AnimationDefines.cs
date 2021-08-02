@@ -7,7 +7,7 @@ namespace AnimationInstancingModule.Runtime
     public class AnimationInfo
     {
         public string               name;
-        public int                  nameHash;
+        public int                  nameHash;               // 非序列化数据，在烘焙时记录AnimationState.nameHash，运行时记录AnimationInfo.name.GetHashCode
         public int                  totalFrame;
         public int                  fps;
         public int                  animationIndex;         // 在整个AnimationTexture中的起始帧序号

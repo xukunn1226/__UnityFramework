@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using Framework.Core;
 #if UNITY_EDITOR
 using UnityEditor.Animations;
 #endif
@@ -23,15 +24,6 @@ namespace AnimationInstancingModule.Runtime
             public List<Matrix4x4[]>            boneMatrix;             // 记录动画所有帧数据, [frameIndex][boneIndex]
         }
 
-        // class GenerateObjectInfo
-        // {
-        //     public int                          nameCode;
-        //     public float                        animationTime;
-        //     public int                          aniNameHash;
-        //     public int                          frameIndex;
-        //     public Matrix4x4[]                  boneMatrix;
-        // }
-
         public int                              fps                         = 15;                                   // 采样帧率
         public bool                             exposeAttachments;                                                  // 是否导入绑点信息
         public Dictionary<string, bool>         m_SelectExtraBone           = new Dictionary<string, bool>();       // 可额外导入的绑点骨骼列表
@@ -47,27 +39,11 @@ namespace AnimationInstancingModule.Runtime
         private List<Transform>                 m_BoneTransform             = new List<Transform>();
         private List<AnimationBakeInfo>         m_BakeInfo                  = new List<AnimationBakeInfo>();        // 待烘焙动画数据
         private AnimationBakeInfo               m_WorkingBakeInfo;
+        private int                             m_CurWorkingBakeInfoIndex;
         private Dictionary<AnimationClip, UnityEngine.AnimationEvent[]> m_CacheAnimationEvent = new Dictionary<AnimationClip, UnityEngine.AnimationEvent[]>();
-        // static private GenerateObjectInfo[]     m_GenerateObjectInfo;       // 每帧动画数据
-        // private int                             m_CurrentDataIndex;
-        // private Dictionary<int, List<GenerateObjectInfo>>  m_GenerateMatrixDataPool = new Dictionary<int, List<GenerateObjectInfo>>();   // key: aniNameHash; value: List<GenerateObjectInfo> 动画所有帧数据
-        private List<AnimationInfo>             m_AnimationInfo             = new List<AnimationInfo>();        // 待序列化的动画数据
-
-        // static private GenerateObjectInfo[]     generateObjectInfo
-        // {
-        //     get
-        //     {
-        //         if (m_GenerateObjectInfo == null)
-        //         {
-        //             m_GenerateObjectInfo = new GenerateObjectInfo[5000];
-        //             for (int i = 0; i < 5000; ++i)
-        //             {
-        //                 m_GenerateObjectInfo[i] = new GenerateObjectInfo();
-        //             }
-        //         }
-        //         return m_GenerateObjectInfo;
-        //     }
-        // }
+        private List<AnimationInfo>             m_AnimationInfo             = new List<AnimationInfo>();            // 待序列化的动画数据
+        private int                             m_TextureBlockWidth         = 4;                                    // 4个像素表示一个矩阵
+        private int                             m_TextureBlockHeight;
 
         public void OnBeforeSerialize()
         {
@@ -126,48 +102,50 @@ namespace AnimationInstancingModule.Runtime
             }
             
             // collect m_BakeInfo
+            m_CurWorkingBakeInfoIndex = 0;
             m_BakeInfo.Clear();
             m_CacheAnimationEvent.Clear();
+            m_AnimationInfo.Clear();
             AnimatorController controller = GetComponent<Animator>().runtimeAnimatorController as AnimatorController;
             AnalyzeStateMachine(controller.layers[0].stateMachine, GetComponent<Animator>(), GetComponentsInChildren<SkinnedMeshRenderer>(), fps, 0);
-
-            // reset
-            // m_GenerateMatrixDataPool.Clear();
-            // m_CurrentDataIndex = 0;
-            m_AnimationInfo.Clear();
         }
 
         private void Update()
         {
-            if(m_BakeInfo.Count > 0 && m_WorkingBakeInfo == null)
+            // 仍有待烘焙数据，且当前无烘焙任务
+            if(m_BakeInfo.Count > 0 && m_CurWorkingBakeInfoIndex < m_BakeInfo.Count && m_WorkingBakeInfo == null)
             {
-                m_WorkingBakeInfo = m_BakeInfo[0];
-                m_BakeInfo.RemoveAt(0);
+                m_WorkingBakeInfo = m_BakeInfo[m_CurWorkingBakeInfoIndex];
+                // m_BakeInfo.RemoveAt(0);
 
-                m_WorkingBakeInfo.animator.gameObject.SetActive(true);
-                m_WorkingBakeInfo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
                 m_WorkingBakeInfo.boneMatrix = new List<Matrix4x4[]>();
-                // m_WorkingBakeInfo.m_Animator.Update(0);
+                m_WorkingBakeInfo.animator.gameObject.transform.position = Vector3.zero;
+                m_WorkingBakeInfo.animator.gameObject.transform.rotation = Quaternion.identity;
+                m_WorkingBakeInfo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                m_WorkingBakeInfo.animator.gameObject.SetActive(true);
                 m_WorkingBakeInfo.animator.Play(m_WorkingBakeInfo.info.nameHash);
-                m_WorkingBakeInfo.animator.Update(0);
+                m_WorkingBakeInfo.animator.Update(0);       // 第一帧
                 return;
             }
 
             if(m_WorkingBakeInfo == null)
                 return;
 
+            // 计算每帧的蒙皮矩阵
             GenerateBoneMatrix(m_WorkingBakeInfo, m_BoneTransform, m_BindPose);
 
             if(++m_WorkingBakeInfo.workingFrame >= m_WorkingBakeInfo.info.totalFrame)
             {
                 m_AnimationInfo.Add(m_WorkingBakeInfo.info);
 
-                if(m_BakeInfo.Count == 0)
+                m_WorkingBakeInfo = null;
+                ++m_CurWorkingBakeInfoIndex;
+                
+                if(m_BakeInfo.Count == m_CurWorkingBakeInfoIndex)
                 {
                     // save info
                 }
 
-                m_WorkingBakeInfo = null;
                 return;
             }
 
@@ -312,7 +290,7 @@ namespace AnimationInstancingModule.Runtime
             UnityEngine.Profiling.Profiler.EndSample();
         }
 
-        public static Matrix4x4[] CalculateSkinMatrix(List<Transform> bonePose, List<Matrix4x4> bindPose)
+        private Matrix4x4[] CalculateSkinMatrix(List<Transform> bonePose, List<Matrix4x4> bindPose)
         {
             if (bonePose.Count == 0)
                 return null;
@@ -339,7 +317,7 @@ namespace AnimationInstancingModule.Runtime
             return matrix;
         }
 
-        public static Color[] Convert2Color(Matrix4x4[] boneMatrix)
+        private Color[] Convert2Color(Matrix4x4[] boneMatrix)
         {
             Color[] color = new Color[boneMatrix.Length * 4];
             int index = 0;
@@ -351,6 +329,32 @@ namespace AnimationInstancingModule.Runtime
                 color[index++] = obj.GetRow(3);
             }
             return color;
+        }
+        
+        // 计算动画数据占用的贴图大小
+        // 每根骨骼4个像素（一个像素记录4个值，4个像素一个矩阵），一个block记录一帧所有的骨骼数据
+        public void CalculateTextureSize(List<int> frames, List<Transform> boneTransform, out int textureWidth, out int textureHeight)
+        {
+            m_TextureBlockWidth = 4;
+            m_TextureBlockHeight = boneTransform.Count;
+
+            int pixels = boneTransform.Count * frames.Sum() * 4;             // 总像素数
+            int side = Mathf.CeilToInt(Mathf.Sqrt(pixels));
+
+            textureHeight = MathUtility.AroundTo(side / boneTransform.Count * boneTransform.Count, 4);      // 取4的倍数
+            textureWidth = MathUtility.AroundTo((int)(1.0f * pixels / (textureHeight == 0 ? 1 : textureHeight) + 0.5f), 4);
+
+            Debug.Assert(textureWidth * textureHeight >= pixels);
+        }
+
+        private void SetupAnimationTexture()
+        {
+            // m_BakeInfo
+        }
+
+        private void SaveAnimationInfo()
+        {
+
         }
 #endif        
     }

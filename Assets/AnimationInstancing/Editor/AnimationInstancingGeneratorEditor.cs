@@ -5,7 +5,6 @@ using UnityEditor;
 using AnimationInstancingModule.Runtime;
 using System.Linq;
 using UnityEditor.Animations;
-using Framework.Core;
 
 namespace AnimationInstancingModule.Editor
 {
@@ -216,11 +215,12 @@ namespace AnimationInstancingModule.Editor
                 frames.Add(framesToBake);
             }
             
-            // List<Transform> boneTransform = new List<Transform>();
-            // m_Target.GetFinalBonePose(ref m_BindPose, ref boneTransform);
+            List<Transform> boneTransform = new List<Transform>();
+            m_Target.GetFinalBonePose(ref m_BindPose, ref boneTransform);
 
-            // int textureWidth, textureHeight;
-            // CalculateTextureSize(frames, boneTransform, out textureWidth, out textureHeight);
+            int textureWidth, textureHeight;
+            m_Target.CalculateTextureSize(frames, boneTransform, out textureWidth, out textureHeight);
+            EditorGUILayout.LabelField(string.Format($"Animation Texture will be one {textureWidth} X {textureHeight} texture"));
 
             m_ScrollPosition2 = GUILayout.BeginScrollView(m_ScrollPosition2);
             foreach (var clipName in clipNames)
@@ -246,24 +246,7 @@ namespace AnimationInstancingModule.Editor
                 }
             }
             GUILayout.EndScrollView();
-        }
-
-        // 计算动画数据占用的贴图大小
-        // 每根骨骼4个像素（一个像素记录4个值，4个像素一个矩阵）
-        private void CalculateTextureSize(List<int> frames, Transform[] bone, out int textureWidth, out int textureHeight)
-        {
-            frames.QuickSort();
-            int totalFrames = frames.Count<int>();
-            int averageFrame = totalFrames / frames.Count;
-
-            textureWidth = totalFrames * 4;
-            textureHeight = 0;
-
-            int blockWidth = 4;
-            int blockHeight = bone.Length;
-
-            int pixels = bone.Length * totalFrames * 4;
-        }
+        }        
 
         private List<AnimationClip> GetClips(Animator animator)
         {

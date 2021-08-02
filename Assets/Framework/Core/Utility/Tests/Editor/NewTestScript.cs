@@ -44,5 +44,14 @@ namespace Framework.Core.Tests
             // Use yield to skip a frame.
             yield return null;
         }
+
+        [Test]
+        public void TestMathUtility()
+        {
+            Debug.Log(MathUtility.AroundTo(50, 4));
+            Debug.Log(MathUtility.AroundTo(47, 4));
+            Debug.Log(MathUtility.AroundTo(54, 8));
+            Debug.Log(MathUtility.AroundTo(57, 8));
+        }
     }
 }

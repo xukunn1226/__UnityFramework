@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -237,6 +237,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_GenerateAnimSelectables.Array.size
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
+        type: 3}
+      propertyPath: m_GenerateAnimSelectables.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
+        type: 3}
+      propertyPath: m_GenerateAnimSelectables.Array.data[1]
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3953468109031156727, guid: f7e96545f76c86b41a0c0c76896b442f,
         type: 3}
