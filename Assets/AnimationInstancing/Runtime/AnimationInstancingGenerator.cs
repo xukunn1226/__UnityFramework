@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using Framework.Core;
 #if UNITY_EDITOR
+using UnityEditor;
 using UnityEditor.Animations;
 #endif
 
@@ -44,6 +45,7 @@ namespace AnimationInstancingModule.Runtime
         private List<AnimationInfo>             m_AnimationInfo             = new List<AnimationInfo>();            // 待序列化的动画数据
         private int                             m_TextureBlockWidth         = 4;                                    // 4个像素表示一个矩阵
         private int                             m_TextureBlockHeight;
+        private Texture2D                       m_BakedBoneTexture;
 
         public void OnBeforeSerialize()
         {
@@ -144,6 +146,7 @@ namespace AnimationInstancingModule.Runtime
                 if(m_BakeInfo.Count == m_CurWorkingBakeInfoIndex)
                 {
                     // save info
+                    SaveAnimationInfo();
                 }
 
                 return;
@@ -350,11 +353,27 @@ namespace AnimationInstancingModule.Runtime
         private void SetupAnimationTexture()
         {
             // m_BakeInfo
+            List<int> frames = new List<int>();
+            foreach(var info in m_BakeInfo)
+            {
+                frames.Add(info.boneMatrix.Count);
+            }
+
+            int textureWidth, textureHeight;
+            CalculateTextureSize(frames, m_BoneTransform, out textureWidth, out textureHeight);
+            m_BakedBoneTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBAHalf, false);
+            m_BakedBoneTexture.filterMode = FilterMode.Point;
         }
 
         private void SaveAnimationInfo()
         {
+            SetupAnimationTexture();
+        }
 
+        public string GetOutput()
+        {
+            string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject));
+            return path.Substring(0, path.LastIndexOf("/")) + "/../";
         }
 #endif        
     }

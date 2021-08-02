@@ -16,7 +16,6 @@ namespace AnimationInstancingModule.Editor
     public class AnimationInstancingGeneratorEditor : UnityEditor.Editor
     {
         private AnimationInstancingGenerator    m_Target;
-        private string                          m_Output = "";
         private List<Matrix4x4>                 m_BindPose          = new List<Matrix4x4>(150);
         private Vector2                         m_ScrollPosition;
         private Vector2                         m_ScrollPosition2;
