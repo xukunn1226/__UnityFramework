@@ -209,7 +209,7 @@ namespace AnimationInstancingModule.Editor
                         return c.name == clipName;
                     return false;
                 });
-                int framesToBake = clip ? (int)(clip.length * m_Target.fps / 1.0f) : 1;
+                int framesToBake = clip ? m_Target.CalculateTotalFrames(clip.length, m_Target.fps) : 1;
                 framesToBake = Mathf.Clamp(framesToBake, 1, framesToBake);
                 totalFrames += framesToBake;
                 frames.Add(framesToBake);
@@ -277,6 +277,13 @@ namespace AnimationInstancingModule.Editor
                 list.AddRange(GetClipsFromStatemachine(stateMachine.stateMachines[i].stateMachine));
             }            
             return list;
+        }
+
+        [MenuItem("Test/Test")]
+        static private void Test()
+        {
+            PrefabUtility.UnpackPrefabInstance(Selection.activeGameObject, PrefabUnpackMode.Completely, InteractionMode.UserAction);
+            GameObject go = PrefabUtility.SaveAsPrefabAsset(Selection.activeGameObject, "Assets/AnimationInstancing/Art/Unity_Model/Unity_Model.prefab");
         }
     }
 }

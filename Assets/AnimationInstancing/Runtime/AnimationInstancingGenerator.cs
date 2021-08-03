@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO;
 using System.Linq;
 using Framework.Core;
 #if UNITY_EDITOR
@@ -17,12 +18,11 @@ namespace AnimationInstancingModule.Runtime
     {
         class AnimationBakeInfo
         {
-            public SkinnedMeshRenderer[]        smrs;
             public Animator                     animator;
             public int                          workingFrame;
             public float                        length;
             public AnimationInfo                info;
-            public List<Matrix4x4[]>            boneMatrix;             // 记录动画所有帧数据, [frameIndex][boneIndex]
+            public List<Matrix4x4[]>            boneMatrix;                 // 记录动画所有帧数据, [frameIndex][boneIndex]
         }
 
         public int                              fps                         = 15;                                   // 采样帧率
@@ -46,6 +46,9 @@ namespace AnimationInstancingModule.Runtime
         private int                             m_TextureBlockWidth         = 4;                                    // 4个像素表示一个矩阵
         private int                             m_TextureBlockHeight;
         private Texture2D                       m_BakedBoneTexture;
+        private const string                    m_AnimationTextureName      = "AnimationTexture.png";
+        public bool                             isBaking;
+        private bool                            m_ExportAnimationTexture;                                           // 是否导出AnimationTexture，否则在二进制数据中
 
         public void OnBeforeSerialize()
         {
@@ -84,6 +87,22 @@ namespace AnimationInstancingModule.Runtime
         }
 
 #if UNITY_EDITOR
+        private void OnEnable()
+        {
+            if(!Application.isPlaying)
+            {
+                EditorApplication.update += EditorApplication.QueuePlayerLoopUpdate;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if(!Application.isPlaying)
+            {
+                EditorApplication.update -= EditorApplication.QueuePlayerLoopUpdate;
+            }
+        }
+
         public void Bake()
         {
             // 获取最终的骨骼信息和绑定姿态矩阵(算上了绑点)
@@ -108,23 +127,27 @@ namespace AnimationInstancingModule.Runtime
             m_BakeInfo.Clear();
             m_CacheAnimationEvent.Clear();
             m_AnimationInfo.Clear();
+            m_WorkingBakeInfo = null;
             AnimatorController controller = GetComponent<Animator>().runtimeAnimatorController as AnimatorController;
-            AnalyzeStateMachine(controller.layers[0].stateMachine, GetComponent<Animator>(), GetComponentsInChildren<SkinnedMeshRenderer>(), fps, 0);
+            AnalyzeStateMachine(controller.layers[0].stateMachine, GetComponent<Animator>(), fps, 0);
+
+            isBaking = true;
+            m_ExportAnimationTexture = true;        // 默认导出AnimationTexture
         }
 
-        private void Update()
+        public void Update()
         {
             // 仍有待烘焙数据，且当前无烘焙任务
             if(m_BakeInfo.Count > 0 && m_CurWorkingBakeInfoIndex < m_BakeInfo.Count && m_WorkingBakeInfo == null)
             {
                 m_WorkingBakeInfo = m_BakeInfo[m_CurWorkingBakeInfoIndex];
-                // m_BakeInfo.RemoveAt(0);
 
                 m_WorkingBakeInfo.boneMatrix = new List<Matrix4x4[]>();
                 m_WorkingBakeInfo.animator.gameObject.transform.position = Vector3.zero;
                 m_WorkingBakeInfo.animator.gameObject.transform.rotation = Quaternion.identity;
                 m_WorkingBakeInfo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
                 m_WorkingBakeInfo.animator.gameObject.SetActive(true);
+                m_WorkingBakeInfo.animator.Update(0);       // 不然会报warning：Animator does not have an AnimatorController
                 m_WorkingBakeInfo.animator.Play(m_WorkingBakeInfo.info.nameHash);
                 m_WorkingBakeInfo.animator.Update(0);       // 第一帧
                 return;
@@ -137,7 +160,7 @@ namespace AnimationInstancingModule.Runtime
             GenerateBoneMatrix(m_WorkingBakeInfo, m_BoneTransform, m_BindPose);
 
             if(++m_WorkingBakeInfo.workingFrame >= m_WorkingBakeInfo.info.totalFrame)
-            {
+            {                
                 m_AnimationInfo.Add(m_WorkingBakeInfo.info);
 
                 m_WorkingBakeInfo = null;
@@ -147,6 +170,7 @@ namespace AnimationInstancingModule.Runtime
                 {
                     // save info
                     SaveAnimationInfo();
+                    isBaking = false;
                 }
 
                 return;
@@ -198,7 +222,7 @@ namespace AnimationInstancingModule.Runtime
             return listExtra;
         }
 
-        private void AnalyzeStateMachine(AnimatorStateMachine stateMachine, Animator animator, SkinnedMeshRenderer[] meshRender, int bakeFPS, int animationIndex)
+        private void AnalyzeStateMachine(AnimatorStateMachine stateMachine, Animator animator, int bakeFPS, int animationIndex)
         {
             for (int i = 0; i != stateMachine.states.Length; ++i)
             {
@@ -224,13 +248,12 @@ namespace AnimationInstancingModule.Runtime
                 AnimationBakeInfo bake = new AnimationBakeInfo();
                 bake.length = clip.averageDuration;
                 bake.animator = animator;
-                bake.smrs = meshRender;
                 bake.workingFrame = 0;
                 bake.info = new AnimationInfo();
                 bake.info.name = clip.name;
                 bake.info.nameHash = state.state.nameHash;
                 bake.info.animationIndex = animationIndex;
-                bake.info.totalFrame = (int)(bake.length * bakeFPS + 0.5f) + 1;
+                bake.info.totalFrame = CalculateTotalFrames(bake.length, bakeFPS);
                 bake.info.totalFrame = Mathf.Clamp(bake.info.totalFrame, 1, bake.info.totalFrame);
                 bake.info.fps = bakeFPS;
                 bake.info.wrapMode = clip.isLooping? WrapMode.Loop: clip.wrapMode;
@@ -260,7 +283,7 @@ namespace AnimationInstancingModule.Runtime
             }
             for (int i = 0; i != stateMachine.stateMachines.Length; ++i)
             {
-                AnalyzeStateMachine(stateMachine.stateMachines[i].stateMachine, animator, meshRender, bakeFPS, animationIndex);
+                AnalyzeStateMachine(stateMachine.stateMachines[i].stateMachine, animator, bakeFPS, animationIndex);
             }
         }
 
@@ -333,6 +356,11 @@ namespace AnimationInstancingModule.Runtime
             }
             return color;
         }
+
+        public int CalculateTotalFrames(float length, int fps)
+        {
+            return Mathf.CeilToInt(length * fps) + 1;
+        }
         
         // 计算动画数据占用的贴图大小
         // 每根骨骼4个像素（一个像素记录4个值，4个像素一个矩阵），一个block记录一帧所有的骨骼数据
@@ -352,7 +380,6 @@ namespace AnimationInstancingModule.Runtime
 
         private void SetupAnimationTexture()
         {
-            // m_BakeInfo
             List<int> frames = new List<int>();
             foreach(var info in m_BakeInfo)
             {
@@ -363,17 +390,103 @@ namespace AnimationInstancingModule.Runtime
             CalculateTextureSize(frames, m_BoneTransform, out textureWidth, out textureHeight);
             m_BakedBoneTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBAHalf, false);
             m_BakedBoneTexture.filterMode = FilterMode.Point;
+
+            int pixelx = 0;
+            int pixely = 0;
+            for(int i = 0; i < m_BakeInfo.Count; ++i)
+            {
+                m_BakeInfo[i].info.animationIndex = pixelx / m_TextureBlockWidth + pixely / m_TextureBlockHeight * (m_BakedBoneTexture.width / m_TextureBlockWidth);
+                int frameCount = m_BakeInfo[i].boneMatrix.Count;
+                for(int j = 0; j < frameCount; ++j)
+                {
+                    Color[] colors = Convert2Color(m_BakeInfo[i].boneMatrix[j]);        // 一块block数据（boneCount * 4），即一帧
+                    m_BakedBoneTexture.SetPixels(pixelx, pixely, m_TextureBlockWidth, m_TextureBlockHeight, colors);
+
+                    pixelx += m_TextureBlockWidth;
+                    if(pixelx >= m_BakedBoneTexture.width)
+                    {
+                        pixelx = 0;
+                        pixely += m_TextureBlockHeight;
+                    }
+                }
+            }
         }
 
         private void SaveAnimationInfo()
         {
             SetupAnimationTexture();
+
+            string filename = GetOutput() + "/" + gameObject.name + ".bytes";
+            using(FileStream fs = File.Open(filename, FileMode.Create, FileAccess.Write))
+            {
+                BinaryWriter writer = new BinaryWriter(fs);
+                writer.Write(m_BakeInfo.Count);
+                foreach(var bakeInfo in m_BakeInfo)
+                {
+                    AnimationInfo info = bakeInfo.info;
+                    writer.Write(info.name);
+                    writer.Write(info.animationIndex);
+                    writer.Write(info.totalFrame);
+                    writer.Write(info.fps);
+                    writer.Write((int)info.wrapMode);
+
+                    writer.Write(info.eventList.Count);
+                    foreach(var evt in info.eventList)
+                    {
+                        writer.Write(evt.function);
+                        writer.Write(evt.floatParameter);
+                        writer.Write(evt.intParameter);
+                        writer.Write(evt.stringParameter);
+                        writer.Write(evt.time);
+                        writer.Write(evt.objectParameter);
+                    }
+                }
+
+                writer.Write(exposeAttachments);
+                if(exposeAttachments)
+                {
+                    writer.Write(m_ExtraBoneInfo.extraBone.Length);
+                    for (int i = 0; i != m_ExtraBoneInfo.extraBone.Length; ++i)
+                    {
+                        writer.Write(m_ExtraBoneInfo.extraBone[i]);
+                    }
+                    for (int i = 0; i != m_ExtraBoneInfo.extraBindPose.Length; ++i)
+                    {
+                        for (int j = 0; j != 16; ++j)
+                        {
+                            writer.Write(m_ExtraBoneInfo.extraBindPose[i][j]);
+                        }
+                    }
+                }
+
+                // write boneTexture
+                writer.Write(m_TextureBlockWidth);
+                writer.Write(m_TextureBlockHeight);
+                if(!m_ExportAnimationTexture)
+                {
+                    byte[] bytes = m_BakedBoneTexture.GetRawTextureData();
+                    writer.Write(m_BakedBoneTexture.width);
+                    writer.Write(m_BakedBoneTexture.height);
+                    writer.Write(bytes.Length);
+                    writer.Write(bytes);
+                }
+            }
+            
+            if(m_ExportAnimationTexture)
+            {
+                File.WriteAllBytes(string.Format($"{GetOutput()}/{m_AnimationTextureName}"), m_BakedBoneTexture.EncodeToPNG());
+            }
+
+            AssetDatabase.Refresh();
+            TextAsset asset = AssetDatabase.LoadAssetAtPath<TextAsset>(filename);
+            Debug.Log($"save animation texture: {filename}  {asset}", asset);            
         }
 
         public string GetOutput()
         {
             string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject));
-            return path.Substring(0, path.LastIndexOf("/")) + "/../";
+            path = path.Substring(0, path.LastIndexOf("/"));
+            return path.Substring(0, path.LastIndexOf("/"));
         }
 #endif        
     }
