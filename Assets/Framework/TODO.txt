@@ -44,7 +44,9 @@
 	https://mp.weixin.qq.com/s/2VufiCiU7TT8rM9BK-CTZA
 	https://mp.weixin.qq.com/s/LWTDjqEY2YbZHZeksrtBvA
 	https://mp.weixin.qq.com/s/an36v8erNS7HKrh9HRylcQ
-	https://mp.weixin.qq.com/s/CMNMRXJCuYIfolvI9zLB7w
+	https://mp.weixin.qq.com/s/CMNMRXJCuYIfolvI9zLB7w  知乎大V「放牛的星星」，是这么做性能优化的
+	https://mp.weixin.qq.com/s/XNxa0oeW25R_mwCgKWp11w  优化移动游戏性能 | 来自Unity顶级工程师的性能分析、内存与代码架构小贴士
+	https://mp.weixin.qq.com/s/OUdDJRA9YAcQ6CuTyDcahw  从搭建到优化，《永劫无间》如何做游戏动作与运动系统
 * RTS中的避障算法
 	VO:
 		https://blog.csdn.net/zhiai315/article/details/113931422  VO避障
@@ -149,6 +151,9 @@
 	搭建特效制作环境（InGame、UI）
 	去除所有FX_Component组件上的duration，统一使用FX_Root duration
 	对象池管理特效：当特效数量达到一定值，使用LOD机制弱化效果(FX AUTOLOD)	
+	https://github.com/mob-sakai/ParticleEffectForUGUI
+	https://github.com/mob-sakai/UIEffect
+
 * optimization tips:
     culling仅在系统可预测时生效
     打开单个模块不仅会增加开销，更可能因为从过程模式（可预测）切换到非过程模式（不可预测）增加了整个系统的开销
@@ -184,6 +189,7 @@
 	bundle加密   https://www.xuanyusong.com/archives/4607
 	一种Shader变体收集打包以及编译优化的思路	https://answer.uwa4d.com/question/5da86670e84db43d6efbda72	https://mp.weixin.qq.com/s/9_Wl-cm-4ZF2lAl4FLnYxg	
 	扩展FPS组件，捕获帧率突变
+	https://mp.weixin.qq.com/s/sOeYNbYfn-iX7w2CT0E28g  谈谈游戏中常见的后处理技术
 
 
 
