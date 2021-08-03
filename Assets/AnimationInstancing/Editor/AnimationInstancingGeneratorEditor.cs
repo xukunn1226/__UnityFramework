@@ -135,6 +135,7 @@ namespace AnimationInstancingModule.Editor
         private void RefreshAttachment()
         {
             m_Target.m_SelectExtraBone.Clear();
+            EditorUtility.SetDirty(m_Target);
         }
 
         private void DrawAnimationClips()
