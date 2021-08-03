@@ -278,12 +278,5 @@ namespace AnimationInstancingModule.Editor
             }            
             return list;
         }
-
-        [MenuItem("Test/Test")]
-        static private void Test()
-        {
-            PrefabUtility.UnpackPrefabInstance(Selection.activeGameObject, PrefabUnpackMode.Completely, InteractionMode.UserAction);
-            GameObject go = PrefabUtility.SaveAsPrefabAsset(Selection.activeGameObject, "Assets/AnimationInstancing/Art/Unity_Model/Unity_Model.prefab");
-        }
     }
 }

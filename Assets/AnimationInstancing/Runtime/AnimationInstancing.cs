@@ -6,5 +6,6 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationInstancing : MonoBehaviour
     {
+        public List<RendererCache>      rendererCacheList = new List<RendererCache>();
     }
 }

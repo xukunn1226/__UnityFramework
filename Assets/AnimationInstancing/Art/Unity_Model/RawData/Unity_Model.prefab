@@ -1170,7 +1170,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963633994952765964}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 9000000, guid: 98603b870f827c34487b772d2220d95f, type: 3}
   m_Controller: {fileID: 9100000, guid: 3c486891754112943ae256e42ccd12f7, type: 2}
   m_CullingMode: 1
@@ -1208,6 +1208,7 @@ MonoBehaviour:
   - attack02
   - attack03
   m_GenerateAnimSelectables: 0101
+  isBaking: 0
 --- !u!1 &1428893035396545401
 GameObject:
   m_ObjectHideFlags: 0

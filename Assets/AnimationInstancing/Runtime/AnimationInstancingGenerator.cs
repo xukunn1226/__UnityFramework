@@ -170,6 +170,7 @@ namespace AnimationInstancingModule.Runtime
                 {
                     // save info
                     SaveAnimationInfo();
+                    ExportPrefab();
                     isBaking = false;
                 }
 
@@ -480,6 +481,40 @@ namespace AnimationInstancingModule.Runtime
             AssetDatabase.Refresh();
             TextAsset asset = AssetDatabase.LoadAssetAtPath<TextAsset>(filename);
             Debug.Log($"save animation texture: {filename}  {asset}", asset);            
+        }
+
+        private void ExportPrefab()
+        {
+            GameObject asset = Instantiate(gameObject);
+
+            // deal asset
+            SkinnedMeshRenderer[] smrs = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+            int count = asset.transform.childCount;
+            for(int i = count - 1; i >= 0; --i)
+            {
+                DestroyImmediate(asset.transform.GetChild(i).gameObject);
+            }
+
+            Component[] comps = asset.GetComponents<Component>();
+            foreach(var comp in comps)
+            {
+                if(comp is Transform)
+                    continue;
+                DestroyImmediate(comp);
+            }
+
+            AnimationInstancing inst = asset.AddComponent<AnimationInstancing>();
+            foreach(var smr in smrs)
+            {
+                RendererCache cache = new RendererCache();
+                cache.mesh = smr.sharedMesh;
+                cache.materials = smr.sharedMaterials;
+                inst.rendererCacheList.Add(cache);
+            }
+
+            PrefabUtility.SaveAsPrefabAsset(asset, GetOutput() + "/" + gameObject.name + ".prefab");
+            DestroyImmediate(asset);
         }
 
         public string GetOutput()

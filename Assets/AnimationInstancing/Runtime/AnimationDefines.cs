@@ -30,4 +30,11 @@ namespace AnimationInstancingModule.Runtime
         public string[]             extraBone;
         public Matrix4x4[]          extraBindPose;
     }
+
+    [System.Serializable]
+    public class RendererCache
+    {
+        public Mesh         mesh;
+        public Material[]   materials;      // materials.Length == mesh.subMeshCount
+    }
 }
