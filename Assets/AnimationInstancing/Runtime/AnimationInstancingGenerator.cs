@@ -511,9 +511,13 @@ namespace AnimationInstancingModule.Runtime
             DestroyImmediate(animData);
 
             /////////////////////// 保存root/[Custom]/[Custom].prefab
-            // step1. 实例化对象
+            // step1. 实例化对象，提取mesh
             GameObject inst = Instantiate(gameObject);
             SkinnedMeshRenderer[] smrs = GetComponentsInChildren<SkinnedMeshRenderer>();
+            foreach(var smr in smrs)
+            { // extract mesh
+                AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(gameObject.name, smr.sharedMesh));
+            }
 
             // step2. 删除所有子节点和根节点上多余组件
             int count = inst.transform.childCount;
@@ -536,7 +540,7 @@ namespace AnimationInstancingModule.Runtime
             foreach(var smr in smrs)
             {
                 RendererCache cache = new RendererCache();
-                cache.mesh = smr.sharedMesh;
+                cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(gameObject.name, smr.sharedMesh));
                 cache.materials = smr.sharedMaterials;
                 animInst.rendererCacheList.Add(cache);
             }
@@ -544,6 +548,11 @@ namespace AnimationInstancingModule.Runtime
             // step4. 保存新的prefab
             PrefabUtility.SaveAsPrefabAsset(inst, GetAnimationInstancingPrefabFilename());
             DestroyImmediate(inst);
+        }
+
+        private string GetMeshFilename(string name, Mesh mesh)
+        {
+            return string.Format($"{GetExportedPath()}/{name.ToLower()}_{mesh.name.ToLower()}.asset");
         }
 
         // root/[CustomPrefab1]
@@ -573,6 +582,6 @@ namespace AnimationInstancingModule.Runtime
         {
             return s_AnimationDataPath + "/" + gameObject.name.ToLower() + ".prefab";
         }
-#endif        
+#endif
     }
 }
