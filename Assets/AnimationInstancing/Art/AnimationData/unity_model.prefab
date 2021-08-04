@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &711890241963596761
+--- !u!1 &3756527282983763700
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7449962199174102131}
-  - component: {fileID: 549125741317796234}
+  - component: {fileID: 2556121621952248149}
+  - component: {fileID: 4998696023379317005}
   m_Layer: 0
   m_Name: unity_model
   m_TagString: Untagged
@@ -17,37 +17,31 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7449962199174102131
+--- !u!4 &2556121621952248149
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 711890241963596761}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_GameObject: {fileID: 3756527282983763700}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &549125741317796234
+--- !u!114 &4998696023379317005
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 711890241963596761}
+  m_GameObject: {fileID: 3756527282983763700}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 715835d028d77244cb41cc6f091de094, type: 3}
+  m_Script: {fileID: 11500000, guid: 7f8833d11ef19c74488ef8374609d1c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prototype: {fileID: 4998696023379317005, guid: 001065f5f75ce9845aead54cc92b9156,
-    type: 3}
-  rendererCacheList:
-  - mesh: {fileID: -9032557090061056480, guid: 98603b870f827c34487b772d2220d95f, type: 3}
-    materials:
-    - {fileID: 2100000, guid: 756b62d30ee167548a87e96e50afd26a, type: 2}
-    - {fileID: 2100000, guid: 60657eaa437ee5748ab2f20d1a31a893, type: 2}
-    - {fileID: 2100000, guid: b0dfa72246ebbea4a8f619f8cd97d72e, type: 2}
+  manifest: {fileID: 4900000, guid: bb8c2ca507d99304a92095956906e08f, type: 3}
+  animationTexture: {fileID: 2800000, guid: 9751cec24540a184a9e37719b3f65ef1, type: 3}

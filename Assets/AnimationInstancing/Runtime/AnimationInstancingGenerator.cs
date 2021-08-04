@@ -12,6 +12,18 @@ using UnityEditor.Animations;
 
 namespace AnimationInstancingModule.Runtime
 {
+    /// <summary>
+    /// 目录结构：
+    ///     root/AnimationData
+    ///     root/[CustomPrefab1]
+    ///     root/[CustomPrefab1]/RawData
+    ///     root/[CustomPrefab1]/RawData/[CustomPrefab1].prefab
+    ///     root/[CustomPrefab2]
+    ///     root/[CustomPrefab2]/RawData
+    /// AnimationData：存储所有动画数据
+    /// [CustomPrefab]:自定义文件夹
+    /// WARNING: 要求“CustomPrefab1.prefab”全局唯一，不可重名
+    /// <summary>
     [DisallowMultipleComponent]
     [ExecuteInEditMode]
     public class AnimationInstancingGenerator : MonoBehaviour, ISerializationCallbackReceiver
@@ -46,10 +58,10 @@ namespace AnimationInstancingModule.Runtime
         private int                             m_TextureBlockWidth         = 4;                                    // 4个像素表示一个矩阵
         private int                             m_TextureBlockHeight;
         private Texture2D                       m_BakedBoneTexture;
-        static public string                    m_AnimationTextureName      = "animationtexture.png";
-        static public string                    m_ManifestName              = "manifest.bytes";
         public bool                             isBaking;
         private bool                            m_ExportAnimationTexture;                                           // 是否导出AnimationTexture，否则在二进制数据中
+        static public string                    s_AnimationInstancingRoot   = "Assets/AnimationInstancing/Art";
+        static public string                    s_AnimationDataPath         = s_AnimationInstancingRoot + "/AnimationData";
 
         public void OnBeforeSerialize()
         {
@@ -418,7 +430,10 @@ namespace AnimationInstancingModule.Runtime
         {
             SetupAnimationTexture();
 
-            string filename = GetExportedPath() + "/" + m_ManifestName;
+            if(!Directory.Exists(s_AnimationDataPath))
+                Directory.CreateDirectory(s_AnimationDataPath);
+
+            string filename = GetManifestFilename();
             using(FileStream fs = File.Open(filename, FileMode.Create, FileAccess.Write))
             {
                 BinaryWriter writer = new BinaryWriter(fs);
@@ -484,21 +499,30 @@ namespace AnimationInstancingModule.Runtime
             Debug.Log($"save animation texture: {filename}  {asset}", asset);            
         }
 
+        // 输出两个prefab：1、AnimationData；2、AnimationInstancing
         private void ExportPrefab()
         {
-            // step1. 实例化对象
-            GameObject asset = Instantiate(gameObject);
+            /////////////////////// 保存root/AnimationData/[Custom].prefab
+            GameObject animData = new GameObject(gameObject.name);
+            AnimationData data = animData.AddComponent<AnimationData>();
+            data.manifest = AssetDatabase.LoadAssetAtPath<TextAsset>(GetManifestFilename());
+            data.animationTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(GetAnimationTextureFilename());
+            GameObject animDataAsset = PrefabUtility.SaveAsPrefabAsset(animData, GetAnimationDataPrefabFilename());
+            DestroyImmediate(animData);
 
-            // step2. 删除所有子节点和根节点上多余组件
+            /////////////////////// 保存root/[Custom]/[Custom].prefab
+            // step1. 实例化对象
+            GameObject inst = Instantiate(gameObject);
             SkinnedMeshRenderer[] smrs = GetComponentsInChildren<SkinnedMeshRenderer>();
 
-            int count = asset.transform.childCount;
+            // step2. 删除所有子节点和根节点上多余组件
+            int count = inst.transform.childCount;
             for(int i = count - 1; i >= 0; --i)
             {
-                DestroyImmediate(asset.transform.GetChild(i).gameObject);
+                DestroyImmediate(inst.transform.GetChild(i).gameObject);
             }
 
-            Component[] comps = asset.GetComponents<Component>();
+            Component[] comps = inst.GetComponents<Component>();
             foreach(var comp in comps)
             {
                 if(comp is Transform)
@@ -507,22 +531,22 @@ namespace AnimationInstancingModule.Runtime
             }
 
             // step3. 添加AnimationInstancing，记录RendererCache
-            AnimationInstancing inst = asset.AddComponent<AnimationInstancing>();
-            inst.manifest = AssetDatabase.LoadAssetAtPath<TextAsset>(GetManifestFilename());
-            inst.animationTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(GetAnimationTextureFilename());
+            AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
+            animInst.prototype = animDataAsset.GetComponent<AnimationData>();
             foreach(var smr in smrs)
             {
                 RendererCache cache = new RendererCache();
                 cache.mesh = smr.sharedMesh;
                 cache.materials = smr.sharedMaterials;
-                inst.rendererCacheList.Add(cache);
+                animInst.rendererCacheList.Add(cache);
             }
 
             // step4. 保存新的prefab
-            PrefabUtility.SaveAsPrefabAsset(asset, GetPrefabFilename());
-            DestroyImmediate(asset);
+            PrefabUtility.SaveAsPrefabAsset(inst, GetAnimationInstancingPrefabFilename());
+            DestroyImmediate(inst);
         }
 
+        // root/[CustomPrefab1]
         private string GetExportedPath()
         {
             string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject));
@@ -530,19 +554,24 @@ namespace AnimationInstancingModule.Runtime
             return path.Substring(0, path.LastIndexOf("/"));
         }
 
-        private string GetPrefabFilename()
+        private string GetAnimationInstancingPrefabFilename()
         {
-            return GetExportedPath() + "/" + gameObject.name + ".prefab";
+            return GetExportedPath() + "/" + gameObject.name.ToLower() + ".prefab";
         }
 
         private string GetManifestFilename()
         {
-            return GetExportedPath() + "/" + m_ManifestName;
+            return s_AnimationDataPath + "/" + gameObject.name.ToLower() + ".bytes";
         }
 
         private string GetAnimationTextureFilename()
         {
-            return GetExportedPath() + "/" + m_AnimationTextureName;
+            return s_AnimationDataPath + "/" + gameObject.name.ToLower() + ".png";
+        }
+
+        private string GetAnimationDataPrefabFilename()
+        {
+            return s_AnimationDataPath + "/" + gameObject.name.ToLower() + ".prefab";
         }
 #endif        
     }

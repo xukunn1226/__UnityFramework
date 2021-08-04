@@ -12,8 +12,9 @@ namespace AnimationInstancingModule.Editor
         void OnPreprocessTexture()
         {
             TextureImporter ti = assetImporter as TextureImporter;
-            if(string.Compare(Path.GetFileName(ti.assetPath), AnimationInstancingGenerator.m_AnimationTextureName, true) != 0)
-                return;     // 仅处理animationtexture.png
+            string path = ti.assetPath.Substring(0, AnimationInstancingGenerator.s_AnimationDataPath.Length);
+            if(string.Compare(path, AnimationInstancingGenerator.s_AnimationDataPath, true) != 0)
+                return;
             
             // 设置平台无关属性
             TextureImporterSettings importerSettings = new TextureImporterSettings();
