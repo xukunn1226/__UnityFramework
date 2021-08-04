@@ -43,6 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715835d028d77244cb41cc6f091de094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manifest: {fileID: 4900000, guid: d7feddfd5bc3b9d47b64343d6d657c39, type: 3}
+  animationTexture: {fileID: 2800000, guid: 2ec9e90e12046f54281d91273a102eb2, type: 3}
   rendererCacheList:
   - mesh: {fileID: -9032557090061056480, guid: 98603b870f827c34487b772d2220d95f, type: 3}
     materials:

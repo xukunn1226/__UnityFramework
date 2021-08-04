@@ -46,7 +46,8 @@ namespace AnimationInstancingModule.Runtime
         private int                             m_TextureBlockWidth         = 4;                                    // 4个像素表示一个矩阵
         private int                             m_TextureBlockHeight;
         private Texture2D                       m_BakedBoneTexture;
-        private const string                    m_AnimationTextureName      = "AnimationTexture.png";
+        static public string                    m_AnimationTextureName      = "animationtexture.png";
+        static public string                    m_ManifestName              = "manifest.bytes";
         public bool                             isBaking;
         private bool                            m_ExportAnimationTexture;                                           // 是否导出AnimationTexture，否则在二进制数据中
 
@@ -417,7 +418,7 @@ namespace AnimationInstancingModule.Runtime
         {
             SetupAnimationTexture();
 
-            string filename = GetOutput() + "/" + gameObject.name + ".bytes";
+            string filename = GetExportedPath() + "/" + m_ManifestName;
             using(FileStream fs = File.Open(filename, FileMode.Create, FileAccess.Write))
             {
                 BinaryWriter writer = new BinaryWriter(fs);
@@ -475,7 +476,7 @@ namespace AnimationInstancingModule.Runtime
             
             if(m_ExportAnimationTexture)
             {
-                File.WriteAllBytes(string.Format($"{GetOutput()}/{m_AnimationTextureName}"), m_BakedBoneTexture.EncodeToPNG());
+                File.WriteAllBytes(GetAnimationTextureFilename(), m_BakedBoneTexture.EncodeToPNG());
             }
 
             AssetDatabase.Refresh();
@@ -507,6 +508,8 @@ namespace AnimationInstancingModule.Runtime
 
             // step3. 添加AnimationInstancing，记录RendererCache
             AnimationInstancing inst = asset.AddComponent<AnimationInstancing>();
+            inst.manifest = AssetDatabase.LoadAssetAtPath<TextAsset>(GetManifestFilename());
+            inst.animationTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(GetAnimationTextureFilename());
             foreach(var smr in smrs)
             {
                 RendererCache cache = new RendererCache();
@@ -516,15 +519,30 @@ namespace AnimationInstancingModule.Runtime
             }
 
             // step4. 保存新的prefab
-            PrefabUtility.SaveAsPrefabAsset(asset, GetOutput() + "/" + gameObject.name + ".prefab");
+            PrefabUtility.SaveAsPrefabAsset(asset, GetPrefabFilename());
             DestroyImmediate(asset);
         }
 
-        public string GetOutput()
+        private string GetExportedPath()
         {
             string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject));
             path = path.Substring(0, path.LastIndexOf("/"));
             return path.Substring(0, path.LastIndexOf("/"));
+        }
+
+        private string GetPrefabFilename()
+        {
+            return GetExportedPath() + "/" + gameObject.name + ".prefab";
+        }
+
+        private string GetManifestFilename()
+        {
+            return GetExportedPath() + "/" + m_ManifestName;
+        }
+
+        private string GetAnimationTextureFilename()
+        {
+            return GetExportedPath() + "/" + m_AnimationTextureName;
         }
 #endif        
     }
