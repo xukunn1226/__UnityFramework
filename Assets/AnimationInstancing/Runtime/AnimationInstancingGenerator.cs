@@ -485,9 +485,10 @@ namespace AnimationInstancingModule.Runtime
 
         private void ExportPrefab()
         {
+            // step1. 实例化对象
             GameObject asset = Instantiate(gameObject);
 
-            // deal asset
+            // step2. 删除所有子节点和根节点上多余组件
             SkinnedMeshRenderer[] smrs = GetComponentsInChildren<SkinnedMeshRenderer>();
 
             int count = asset.transform.childCount;
@@ -504,6 +505,7 @@ namespace AnimationInstancingModule.Runtime
                 DestroyImmediate(comp);
             }
 
+            // step3. 添加AnimationInstancing，记录RendererCache
             AnimationInstancing inst = asset.AddComponent<AnimationInstancing>();
             foreach(var smr in smrs)
             {
@@ -513,6 +515,7 @@ namespace AnimationInstancingModule.Runtime
                 inst.rendererCacheList.Add(cache);
             }
 
+            // step4. 保存新的prefab
             PrefabUtility.SaveAsPrefabAsset(asset, GetOutput() + "/" + gameObject.name + ".prefab");
             DestroyImmediate(asset);
         }
