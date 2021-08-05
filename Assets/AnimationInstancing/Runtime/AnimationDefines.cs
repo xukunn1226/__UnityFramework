@@ -37,4 +37,12 @@ namespace AnimationInstancingModule.Runtime
         public Mesh         mesh;
         public Material[]   materials;      // materials.Length == mesh.subMeshCount
     }
+
+    public class ComparerHash : IComparer<AnimationInfo>
+    {
+        public int Compare(AnimationInfo x, AnimationInfo y)
+        {
+            return x.nameHash.CompareTo(y.nameHash);
+        }
+    }
 }
