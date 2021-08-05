@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: 1_PlayerBuilderSetting
   m_EditorClassIdentifier: 
   outputPath: Deployment/Latest/Player
-  projectName: MyProject
+  projectName: ZGame
   autoRunPlayer: 0
-  development: 1
+  development: 0
   connectWithProfiler: 0
   allowDebugging: 0
   buildScriptsOnly: 0
