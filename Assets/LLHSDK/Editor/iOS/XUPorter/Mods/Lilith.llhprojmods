@@ -1,0 +1,121 @@
+{
+  "group": "Lilith",
+  "patches": [],
+  "libs": [
+    "libc++.tbd",
+    "libiconv.tbd",
+    "libicucore.tbd",
+    "libresolv.9.tbd",
+    "libsqlite3.tbd",
+    "libstdc++.tbd",
+    "libz.tbd",
+    "libresolv.tbd"
+  ],
+  "frameworks": [
+    "Accelerate.framework",
+    "AdSupport.framework",
+    "AssetsLibrary.framework",
+    "AudioToolbox.framework",
+    "AVFoundation.framework",
+    "CoreData.framework",
+    "CoreGraphics.framework",
+    "CoreTelephony.framework",
+    "CoreText.framework",
+    "Foundation.framework",
+    "GameKit.framework",
+    "iAd.framework:weak",
+    "LocalAuthentication.framework",
+    "MapKit.framework",
+    "MobileCoreServices.framework",
+    "QuartzCore.framework",
+    "QuickLook.framework",
+    "Security.framework",
+    "StoreKit.framework",
+    "SystemConfiguration.framework",
+    "UIKit.framework",
+    "AppTrackingTransparency.framework:weak",
+    "Accelerate.framework",
+    "WebKit.framework",
+    "AdServices.framework:weak"
+  ],
+  "headerpaths": [
+    "../../../../Plugins/iOS/Lilith/Google",
+    "../../../../Plugins/iOS/Lilith/HelpShift",
+    "../../../../Plugins/iOS/Lilith/WeChatSDK",
+    "../../../../Plugins/iOS/Lilith/Diagnose"
+  ],
+  "files": [
+    "../../../../Plugins/iOS/Lilith/Adjust/AdjustSdk.framework",
+    "../../../../Plugins/iOS/Lilith/Daike/Daike_SDK.framework",
+    "../../../../Plugins/iOS/Lilith/lilith.bundle",
+    "../../../../Plugins/iOS/Lilith/LLH.framework",
+    "../../../../Plugins/iOS/Lilith/LilithChatWgame.framework",
+    "../../../../Plugins/iOS/Lilith/LilithForum.framework",
+    "../../../../Plugins/iOS/Lilith/Google/libGoogleConversionTracking.a",
+    "../../../../Plugins/iOS/Lilith/FacebookSDK/FBSDKCoreKit.framework",
+    "../../../../Plugins/iOS/Lilith/FacebookSDK/FBSDKLoginKit.framework",
+    "../../../../Plugins/iOS/Lilith/FacebookSDK/FBSDKGamingServicesKit.framework",
+    "../../../../Plugins/iOS/Lilith/FacebookSDK/FBSDKShareKit.framework",
+    "../../../../Plugins/iOS/Lilith/GDTActionSDK/GDTActionSDK.framework",
+    "../../../../Plugins/iOS/Lilith/QQ/TencentOpenAPI.framework",
+    "../../../../Plugins/iOS/Lilith/QQ/TencentOpenApi_IOS_Bundle.bundle",
+    "../../../../Plugins/iOS/Lilith/WeChatSDK/libWeChatSDK.a",
+    "../../../../Plugins/iOS/Lilith/AliyunLogiOS/LoggerAliSDKSLSIOS.framework",
+    "../../../../Plugins/iOS/Lilith/AliyunLogiOS/AliyunLogProducer.framework",
+    "../../../../Plugins/iOS/Lilith/Unity/DeltaDNA.framework"
+  ],
+  "folders": [
+    "LLHSDK/Plugins/iOS/Lilith/Daike/Resources",
+    "LLHSDK/Plugins/iOS/Lilith/Google",
+    "LLHSDK/Plugins/iOS/Lilith/WeChatSDK",
+    "LLHSDK/Plugins/iOS/Resources",
+    "LLHSDK/Plugins/iOS/Lilith/Diagnose"
+  ],    
+  "excludes": ["^.*\\.meta$", "^.*\\.mdown^", "^.*\\.pdf$"],
+  "compiler_flags": [],
+  "linker_flags": [
+    "$(inherited)",
+    "-all_load",
+    "-fobjc-arc",
+    "-ObjC",
+    "-lz"
+  ],
+  "embed_binaries": [
+    "Daike_SDK.framework",
+    "GDTActionSDK.framework",
+    "LilithChatWgame.framework",
+    "LilithForum.framework",
+    "FBSDKCoreKit.framework",
+    "FBSDKGamingServicesKit.framework",
+    "FBSDKLoginKit.framework",
+    "FBSDKShareKit.framework",
+    "LoggerAliSDKSLSIOS.framework",
+    "AliyunLogProducer.framework",
+    "DeltaDNA.framework"
+  ],
+  "plist": {
+    "LSApplicationQueriesSchemes": [
+      "weixinULAPI",
+      "fbapi",
+      "fb-messenger-api",
+      "fbauth2",
+      "fbshareextension",
+      "weixin",
+      "mqqOpensdkSSoLogin",
+      "mqqopensdkapiV2",
+      "mqqopensdkapiV3",
+      "mqqopensdkapiV4",
+      "wtloginmqq2",
+      "mqzone",
+      "mqq",
+      "mqqapi",
+      "tencentapi.qq.reqContent",
+      "tencentapi.qzone.reqContent"
+    ],
+    "FBPermissionsAllInOne": true
+  },
+  "build_settings": {
+    "ENABLE_BITCODE": "NO",
+    "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES":"YES"
+  }
+}
