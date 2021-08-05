@@ -680,7 +680,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: UNITY_POST_PROCESSING_STACK_V2;ENABLE_LOG;NOT_GEN_WARNING
+    1: UNITY_POST_PROCESSING_STACK_V2
     4: UNITY_POST_PROCESSING_STACK_V2
     7: UNITY_POST_PROCESSING_STACK_V2
     13: UNITY_POST_PROCESSING_STACK_V2
@@ -701,7 +701,7 @@ PlayerSettings:
     Android: 0
     Standalone: 0
   il2cppCompilerConfiguration:
-    Android: 0
+    Android: 1
   managedStrippingLevel:
     Android: 1
     Standalone: 1

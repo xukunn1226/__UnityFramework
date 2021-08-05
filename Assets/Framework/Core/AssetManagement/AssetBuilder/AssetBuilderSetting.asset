@@ -15,10 +15,6 @@ MonoBehaviour:
   ForceDisplayDialogWhenAssetNameNotMet: 0
   WhiteListOfPath:
   - Assets/Res/
-  - Assets/Application/Tests/Runtime/Res
-  - Assets/Framework/Core/AssetManagement/Runtime/Tests/Res/
-  - Assets/Framework/Core/StreamingLevelManager/Tests/Res
-  - Assets/Application/XLua/Lua
   BlackListOfFolder:
   - Resources
   - Temp
