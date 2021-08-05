@@ -145,18 +145,22 @@ namespace AnimationInstancingModule.Editor
             {
                 GUIStyle boldStyle = EditorStyles.boldLabel;
                 boldStyle.alignment = TextAnchor.MiddleLeft;
+                Color backup = boldStyle.normal.textColor;
                 boldStyle.normal.textColor = Color.red;
 
                 EditorGUILayout.LabelField("Error: The prefab should have a Animator Component.", boldStyle);
+                boldStyle.normal.textColor = backup;
                 return;
             }
             if (animator.runtimeAnimatorController == null)
             {
                 GUIStyle boldStyle = EditorStyles.boldLabel;
                 boldStyle.alignment = TextAnchor.MiddleLeft;
+                Color backup = boldStyle.normal.textColor;
                 boldStyle.normal.textColor = Color.red;
 
                 EditorGUILayout.LabelField("Error: The prefab's Animator should have a Animator Controller.", boldStyle);
+                boldStyle.normal.textColor = backup;
                 return;
             }
 
