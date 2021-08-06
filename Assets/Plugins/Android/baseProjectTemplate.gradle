@@ -3,6 +3,13 @@
 allprojects {
     buildscript {
         repositories {**ARTIFACTORYREPOSITORY**
+			maven {
+					url 'http://arti.lilithgame.com:8881/artifactory/remote-repos'
+					credentials {
+							username 'common_reader'
+							password 'xHxfjkCeCbsx7pDA'
+					}
+			}
             google()
             jcenter()
         }
@@ -18,6 +25,13 @@ allprojects {
     }
 
     repositories {**ARTIFACTORYREPOSITORY**
+	maven {
+					url 'http://arti.lilithgame.com:8881/artifactory/remote-repos'
+					credentials {
+							username 'common_reader'
+							password 'xHxfjkCeCbsx7pDA'
+					}
+			}
         google()
         jcenter()
         flatDir {
