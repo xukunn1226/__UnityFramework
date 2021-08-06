@@ -18,7 +18,7 @@ public class MainLoopTest : MonoBehaviour
     }
 
     // error：错误，loginType：登录类型，appUid：用户uid，appToken：用户登录token
-    private void OnLLHLoginResult(LLHSDK.LLHError error, LLHSDK.LLHLoginTypeModel loginType, string appUid, string appToken)
+    static public void OnLLHLoginResult(LLHSDK.LLHError error, LLHSDK.LLHLoginTypeModel loginType, string appUid, string appToken)
     {
         if(error.success == 1)
         {
