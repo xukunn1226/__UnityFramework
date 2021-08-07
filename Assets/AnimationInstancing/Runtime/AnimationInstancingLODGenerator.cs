@@ -535,15 +535,15 @@ namespace AnimationInstancingModule.Runtime
             }
 
             // step3. 添加AnimationInstancing，记录RendererCache
-            AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
-            animInst.prototype = animDataAsset.GetComponent<AnimationData>();
-            foreach(var smr in smrs)
-            {
-                RendererCache cache = new RendererCache();
-                cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(gameObject.name, smr.sharedMesh));
-                cache.materials = smr.sharedMaterials;
-                animInst.rendererCacheList.Add(cache);
-            }
+            // AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
+            // animInst.prototype = animDataAsset.GetComponent<AnimationData>();
+            // foreach(var smr in smrs)
+            // {
+            //     RendererCache cache = new RendererCache();
+            //     cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(gameObject.name, smr.sharedMesh));
+            //     cache.materials = smr.sharedMaterials;
+            //     animInst.rendererCacheList.Add(cache);
+            // }
 
             // step4. 保存新的prefab
             PrefabUtility.SaveAsPrefabAsset(inst, GetAnimationInstancingPrefabFilename());

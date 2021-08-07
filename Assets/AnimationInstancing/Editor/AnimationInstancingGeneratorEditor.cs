@@ -20,14 +20,52 @@ namespace AnimationInstancingModule.Editor
         private Vector2                         m_ScrollPosition;
         private Vector2                         m_ScrollPosition2;
         private Dictionary<string, bool>        m_Temp              = new Dictionary<string, bool>();
+        private List<Transform>                 m_LODs;
 
         private void OnEnable()
         {
             m_Target = (AnimationInstancingGenerator)target;
+            m_LODs = GetLODs();
+        }
+
+        private List<Transform> GetLODs()
+        {
+            if(m_Target == null || m_Target.transform.childCount == 0)
+            {
+                return new List<Transform>();
+            }
+            
+            List<Transform> LODs = new List<Transform>();
+            int index = 0;
+            while(true)
+            {
+                string childName = "LOD" + index;
+                Transform child = m_Target.transform.Find(childName);
+                if(child != null)
+                {
+                    LODs.Add(child);
+                    ++index;
+                }
+                else
+                    break;
+            }
+            return LODs;
         }
 
         public override void OnInspectorGUI()
-        {            
+        {
+            if(m_LODs.Count == 0)
+            {
+                GUIStyle boldStyle = EditorStyles.boldLabel;
+                boldStyle.alignment = TextAnchor.MiddleLeft;
+                Color backup = boldStyle.normal.textColor;
+                boldStyle.normal.textColor = Color.red;
+
+                EditorGUILayout.LabelField(@"Error: The first child must be ""LOD0"".", boldStyle);
+                boldStyle.normal.textColor = backup;
+                return;
+            }
+
             EditorGUI.BeginChangeCheck();
             {
                 // draw "FPS"
@@ -56,7 +94,7 @@ namespace AnimationInstancingModule.Editor
 
         private void BakeWithAnimator()
         {
-            m_Target.Bake();
+            m_Target.Bake(m_LODs);
         }
 
         private void DrawAttachment()
@@ -97,17 +135,19 @@ namespace AnimationInstancingModule.Editor
                 // find all extra bones
                 if (m_Target.m_SelectExtraBone.Count == 0)
                 {
-                    SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    SkinnedMeshRenderer[] meshRender = m_LODs[0].GetComponentsInChildren<SkinnedMeshRenderer>();
                     List<Transform> boneTransform = new List<Transform>();
                     AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose, ref boneTransform);
 
                     // 筛选出除骨骼节点之外的节点
-                    var allTrans = m_Target.GetComponentsInChildren<Transform>().ToList();
+                    var allTrans = m_LODs[0].GetComponentsInChildren<Transform>().ToList();
                     allTrans.RemoveAll(q => boneTransform.Contains(q));
 
                     m_Target.m_SelectExtraBone.Clear();
                     for(int i = 0; i != allTrans.Count; ++i)
                     {
+                        if(m_Target.m_SelectExtraBone.ContainsKey(allTrans[i].name))
+                            continue;
                         m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
                     }
                 }
@@ -220,7 +260,7 @@ namespace AnimationInstancingModule.Editor
             }
             
             List<Transform> boneTransform = new List<Transform>();
-            m_Target.GetFinalBonePose(ref m_BindPose, ref boneTransform);
+            m_Target.GetFinalBonePose(m_LODs[0], ref m_BindPose, ref boneTransform);
 
             int textureWidth, textureHeight;
             m_Target.CalculateTextureSize(frames, boneTransform, out textureWidth, out textureHeight);

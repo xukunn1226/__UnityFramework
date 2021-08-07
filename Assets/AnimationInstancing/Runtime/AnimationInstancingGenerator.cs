@@ -62,6 +62,7 @@ namespace AnimationInstancingModule.Runtime
         private bool                            m_ExportAnimationTexture;                                           // 是否导出AnimationTexture，否则在二进制数据中
         static public string                    s_AnimationInstancingRoot   = "Assets/AnimationInstancing/Art";
         static public string                    s_AnimationDataPath         = s_AnimationInstancingRoot + "/AnimationData";
+        private List<Transform>                 m_BakedLODs;
 
         public void OnBeforeSerialize()
         {
@@ -116,13 +117,18 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
-        public void Bake()
+        public void Bake(List<Transform> LODs)
         {
+            if(LODs == null || LODs.Count == 0)
+                throw new ArgumentException("LODs == null || LODs.Count == 0");
+
+            m_BakedLODs = LODs;
+
             // 获取最终的骨骼信息和绑定姿态矩阵(算上了绑点)
-            GetFinalBonePose(ref m_BindPose, ref m_BoneTransform);
+            GetFinalBonePose(m_BakedLODs[0], ref m_BindPose, ref m_BoneTransform);
 
             // init ExtraBoneInfo base on extra bone transform
-            List<Transform> listExtra = GetExtraBoneTransform();
+            List<Transform> listExtra = GetExtraBoneTransform(m_BakedLODs[0]);
             m_ExtraBoneInfo = new ExtraBoneInfo();
             if(listExtra.Count > 0)
             {
@@ -195,13 +201,13 @@ namespace AnimationInstancingModule.Runtime
         }
 
         // get the bindPose & boneTransform base on attached points
-        public void GetFinalBonePose(ref List<Matrix4x4> bindPose, ref List<Transform> boneTransform)
+        public void GetFinalBonePose(Transform lod, ref List<Matrix4x4> bindPose, ref List<Transform> boneTransform)
         {
-            SkinnedMeshRenderer[] meshRender = GetComponentsInChildren<SkinnedMeshRenderer>();
+            SkinnedMeshRenderer[] meshRender = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
             AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref bindPose, ref boneTransform);
             if(exposeAttachments)
             { // 如果有挂点数据，则添加至bindPose和boneTransform
-                List<Transform> listExtra = GetExtraBoneTransform();
+                List<Transform> listExtra = GetExtraBoneTransform(lod);
                 foreach(var tran in listExtra)
                 {
                     bindPose.Add(tran.localToWorldMatrix);
@@ -215,10 +221,10 @@ namespace AnimationInstancingModule.Runtime
         }
 
         // extra bone transform
-        private List<Transform> GetExtraBoneTransform()
+        private List<Transform> GetExtraBoneTransform(Transform lod)
         {
             List<Transform> listExtra = new List<Transform>();
-            Transform[] trans = GetComponentsInChildren<Transform>();
+            Transform[] trans = lod.GetComponentsInChildren<Transform>();
             foreach (var obj in m_SelectExtraBone)
             {
                 if (!obj.Value)
@@ -512,11 +518,14 @@ namespace AnimationInstancingModule.Runtime
 
             /////////////////////// 保存root/[Custom]/[Custom].prefab
             // step1. 实例化对象，提取mesh
-            GameObject inst = Instantiate(gameObject);
-            SkinnedMeshRenderer[] smrs = GetComponentsInChildren<SkinnedMeshRenderer>();
-            foreach(var smr in smrs)
-            { // extract mesh
-                AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(gameObject.name, smr.sharedMesh));
+            GameObject inst = Instantiate(gameObject);            
+            foreach(var lod in m_BakedLODs)
+            {
+                SkinnedMeshRenderer[] smrs = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
+                foreach (var smr in smrs)
+                { // extract mesh
+                    AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(smr));
+                }
             }
 
             // step2. 删除所有子节点和根节点上多余组件
@@ -537,12 +546,20 @@ namespace AnimationInstancingModule.Runtime
             // step3. 添加AnimationInstancing，记录RendererCache
             AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
             animInst.prototype = animDataAsset.GetComponent<AnimationData>();
-            foreach(var smr in smrs)
+            int lodLevel = 0;
+            foreach(var lod in m_BakedLODs)
             {
-                RendererCache cache = new RendererCache();
-                cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(gameObject.name, smr.sharedMesh));
-                cache.materials = smr.sharedMaterials;
-                animInst.rendererCacheList.Add(cache);
+                LODInfo info = new LODInfo();
+                info.lodLevel = lodLevel++;
+                SkinnedMeshRenderer[] smrs = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
+                foreach(var smr in smrs)
+                {
+                    RendererCache cache = new RendererCache();
+                    cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(smr));
+                    cache.materials = smr.sharedMaterials;
+                    info.rendererCacheList.Add(cache);
+                }
+                animInst.lodInfos.Add(info);
             }
 
             // step4. 保存新的prefab
@@ -550,15 +567,17 @@ namespace AnimationInstancingModule.Runtime
             DestroyImmediate(inst);
         }
 
-        private string GetMeshFilename(string name, Mesh mesh)
+        private string GetMeshFilename(SkinnedMeshRenderer smr)
         {
-            return string.Format($"{GetExportedPath()}/{name.ToLower()}_{mesh.name.ToLower()}.asset");
+            string prefix = string.Format($"{smr.transform.parent.parent.gameObject.name}_{smr.transform.parent.gameObject.name}");
+
+            return string.Format($"{GetExportedPath()}/{prefix.ToLower()}_{smr.sharedMesh.name.ToLower()}.asset");
         }
 
         // root/[CustomPrefab1]
         private string GetExportedPath()
         {
-            string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject));
+            string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(m_BakedLODs[0].gameObject));
             path = path.Substring(0, path.LastIndexOf("/"));
             return path.Substring(0, path.LastIndexOf("/"));
         }

@@ -31,18 +31,25 @@ namespace AnimationInstancingModule.Runtime
         public Matrix4x4[]          extraBindPose;
     }
 
-    [System.Serializable]
-    public class RendererCache
-    {
-        public Mesh         mesh;
-        public Material[]   materials;      // materials.Length == mesh.subMeshCount
-    }
-
     public class ComparerHash : IComparer<AnimationInfo>
     {
         public int Compare(AnimationInfo x, AnimationInfo y)
         {
             return x.nameHash.CompareTo(y.nameHash);
         }
+    }
+
+    [System.Serializable]
+    public class LODInfo
+    {
+        public int                  lodLevel;
+        public List<RendererCache>  rendererCacheList = new List<RendererCache>();
+    }
+
+    [System.Serializable]
+    public class RendererCache
+    {
+        public Mesh         mesh;
+        public Material[]   materials;      // materials.Length == mesh.subMeshCount
     }
 }

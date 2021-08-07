@@ -9,7 +9,7 @@ namespace AnimationInstancingModule.Runtime
     public class AnimationInstancing : MonoBehaviour
     {
         public AnimationData            prototype;
-        public List<RendererCache>      rendererCacheList   = new List<RendererCache>();
+        public List<LODInfo>            lodInfos            = new List<LODInfo>();
 
         public Transform                worldTransform      { get; private set; }
         [SerializeField] private float  m_Speed             = 1;                        // 序列化数据

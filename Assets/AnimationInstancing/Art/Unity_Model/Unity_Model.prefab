@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7449962199174102131}
   - component: {fileID: 549125741317796234}
   m_Layer: 0
-  m_Name: Unity_Model
+  m_Name: unity_model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 711890241963596761}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -43,11 +43,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715835d028d77244cb41cc6f091de094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prototype: {fileID: 4998696023379317005, guid: 001065f5f75ce9845aead54cc92b9156,
+  prototype: {fileID: 5416063993341246469, guid: 001065f5f75ce9845aead54cc92b9156,
     type: 3}
-  rendererCacheList:
-  - mesh: {fileID: 4300000, guid: 5f37a8588857d424ab8bda4373b1989b, type: 2}
-    materials:
-    - {fileID: 2100000, guid: 756b62d30ee167548a87e96e50afd26a, type: 2}
-    - {fileID: 2100000, guid: 60657eaa437ee5748ab2f20d1a31a893, type: 2}
-    - {fileID: 2100000, guid: b0dfa72246ebbea4a8f619f8cd97d72e, type: 2}
+  lodInfos:
+  - lodLevel: 0
+    rendererCacheList:
+    - mesh: {fileID: 4300000, guid: 9f502d7b16f67d845a0a2fdf6c30bc74, type: 2}
+      materials:
+      - {fileID: 2100000, guid: 756b62d30ee167548a87e96e50afd26a, type: 2}
+      - {fileID: 2100000, guid: 60657eaa437ee5748ab2f20d1a31a893, type: 2}
+      - {fileID: 2100000, guid: b0dfa72246ebbea4a8f619f8cd97d72e, type: 2}
+  - lodLevel: 1
+    rendererCacheList:
+    - mesh: {fileID: 4300000, guid: 0450fa0357f6b124993afd3cb646619b, type: 2}
+      materials:
+      - {fileID: 2100000, guid: 4399c2b1c33d95547957f545aa0b6326, type: 2}
+      - {fileID: 2100000, guid: fdf7af62e39e45d4a9052c04bad8f723, type: 2}
+      - {fileID: 2100000, guid: 1f4c9cf45d3f5ad48848056a663505b4, type: 2}
+  m_Speed: 1
+  m_Radius: 1
+  shadowCastingMode: 1
+  receiveShadows: 0

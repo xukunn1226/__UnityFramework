@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7353679588536898768
+--- !u!1 &4340116362740426220
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7536798065232511125}
-  - component: {fileID: 1453051581654429238}
+  - component: {fileID: 6518222384939193210}
+  - component: {fileID: 4077135924133710078}
   m_Layer: 0
   m_Name: mirrorf2@skin
   m_TagString: Untagged
@@ -17,38 +17,52 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7536798065232511125
+--- !u!4 &6518222384939193210
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7353679588536898768}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_GameObject: {fileID: 4340116362740426220}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1453051581654429238
+--- !u!114 &4077135924133710078
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7353679588536898768}
+  m_GameObject: {fileID: 4340116362740426220}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 715835d028d77244cb41cc6f091de094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prototype: {fileID: 931301618394413589, guid: a0d17368d797c2d49b7a141fae50574a,
+  prototype: {fileID: 308636289604567138, guid: a0d17368d797c2d49b7a141fae50574a,
     type: 3}
-  rendererCacheList:
-  - mesh: {fileID: 4300000, guid: 15298bc7e1a6be343957e085c7cfafb8, type: 2}
-    materials:
-    - {fileID: 2100000, guid: f8128c079d0a11a4aa7e89acdf4f3d5e, type: 2}
-  - mesh: {fileID: 4300000, guid: 0212b162f984b41439670ccbbab3b451, type: 2}
-    materials:
-    - {fileID: 2100000, guid: f8128c079d0a11a4aa7e89acdf4f3d5e, type: 2}
+  lodInfos:
+  - lodLevel: 0
+    rendererCacheList:
+    - mesh: {fileID: 4300000, guid: 08da40837e842934eb6adad1b3f49dcf, type: 2}
+      materials:
+      - {fileID: 2100000, guid: f8128c079d0a11a4aa7e89acdf4f3d5e, type: 2}
+    - mesh: {fileID: 4300000, guid: 8050716e6fd36a340a9dc8be7e8eeae4, type: 2}
+      materials:
+      - {fileID: 2100000, guid: f8128c079d0a11a4aa7e89acdf4f3d5e, type: 2}
+  - lodLevel: 1
+    rendererCacheList:
+    - mesh: {fileID: 4300000, guid: 58a117721e0513f4ba003015e972159e, type: 2}
+      materials:
+      - {fileID: 2100000, guid: cbb28470d55e9a9479c3a4b18089cde5, type: 2}
+    - mesh: {fileID: 4300000, guid: 3606ca184c819b5429c5550000027899, type: 2}
+      materials:
+      - {fileID: 2100000, guid: cbb28470d55e9a9479c3a4b18089cde5, type: 2}
+  m_Speed: 1
+  m_Radius: 1
+  shadowCastingMode: 1
+  receiveShadows: 0
