@@ -11,20 +11,26 @@ namespace AnimationInstancingModule.Runtime
         public Texture2D                animationTexture;
         public int                      textureBlockWidth   { get; set; }
         public int                      textureBlockHeight  { get; set; }
-        public bool                     isDone              { get; set; }
+        // public bool                     isDone              { get; set; }
+        public List<AnimationInfo>      aniInfos            { get; private set; }
+        public ExtraBoneInfo            extraBoneInfo       { get; private set; }
+        private AnimationInfo           m_SearchInfo;
+        private ComparerHash            m_Comparer;
 
-        IEnumerator Start()
+        void Awake()
         {
-            isDone = false;
+            m_SearchInfo = new AnimationInfo();
+            m_Comparer = new ComparerHash();
+
+            // 1、数据轻量级；2、且涉及到动画逻辑数据，所以同步加载最佳
+            // isDone = false;
             using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
             {
-                ReadAnimationInfo(reader);
-                yield return null;
-                ReadExtraBoneInfo(reader);
-                yield return null;
+                aniInfos = ReadAnimationInfo(reader);
+                extraBoneInfo = ReadExtraBoneInfo(reader);
                 ReadAnimationTexture(reader);
             }
-            isDone = true;
+            // isDone = true;
         }
 
         private List<AnimationInfo> ReadAnimationInfo(BinaryReader reader)
@@ -36,7 +42,7 @@ namespace AnimationInstancingModule.Runtime
                 AnimationInfo info = new AnimationInfo();
                 info.name = reader.ReadString();
                 info.nameHash = info.name.GetHashCode();
-                info.animationIndex = reader.ReadInt32();
+                info.startFrameIndex = reader.ReadInt32();
                 info.totalFrame = reader.ReadInt32();
                 info.fps = reader.ReadInt32();
                 info.wrapMode = (WrapMode)reader.ReadInt32();
@@ -56,7 +62,7 @@ namespace AnimationInstancingModule.Runtime
                 }
                 listInfo.Add(info);
             }
-            listInfo.Sort(new ComparerHash());
+            listInfo.Sort(m_Comparer);
             return listInfo;
         }
 
@@ -88,6 +94,17 @@ namespace AnimationInstancingModule.Runtime
         {
             textureBlockWidth = reader.ReadInt32();
             textureBlockHeight = reader.ReadInt32();
+        }
+
+        internal int FindAnimationInfo(int hash)
+        {
+            m_SearchInfo.nameHash = hash;
+            return aniInfos.BinarySearch(m_SearchInfo, m_Comparer);
+        }
+
+        internal int GetAnimationCount()
+        {
+            return aniInfos.Count;
         }
     }
 }

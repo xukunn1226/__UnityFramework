@@ -53,14 +53,8 @@ MonoBehaviour:
       - {fileID: 2100000, guid: 756b62d30ee167548a87e96e50afd26a, type: 2}
       - {fileID: 2100000, guid: 60657eaa437ee5748ab2f20d1a31a893, type: 2}
       - {fileID: 2100000, guid: b0dfa72246ebbea4a8f619f8cd97d72e, type: 2}
-  - lodLevel: 1
-    rendererCacheList:
-    - mesh: {fileID: 4300000, guid: 0450fa0357f6b124993afd3cb646619b, type: 2}
-      materials:
-      - {fileID: 2100000, guid: 4399c2b1c33d95547957f545aa0b6326, type: 2}
-      - {fileID: 2100000, guid: fdf7af62e39e45d4a9052c04bad8f723, type: 2}
-      - {fileID: 2100000, guid: 1f4c9cf45d3f5ad48848056a663505b4, type: 2}
   m_Speed: 1
-  m_Radius: 1
+  m_Radius: 2.325673
   shadowCastingMode: 1
   receiveShadows: 0
+  bonePerVertex: 4

@@ -248,7 +248,7 @@ namespace AnimationInstancingModule.Runtime
             return listExtra;
         }
 
-        private void AnalyzeStateMachine(AnimatorStateMachine stateMachine, Animator animator, int bakeFPS, int animationIndex)
+        private void AnalyzeStateMachine(AnimatorStateMachine stateMachine, Animator animator, int bakeFPS, int startFrameIndex)
         {
             for (int i = 0; i != stateMachine.states.Length; ++i)
             {
@@ -278,14 +278,14 @@ namespace AnimationInstancingModule.Runtime
                 bake.info = new AnimationInfo();
                 bake.info.name = clip.name;
                 bake.info.nameHash = state.state.nameHash;
-                bake.info.animationIndex = animationIndex;
+                bake.info.startFrameIndex = startFrameIndex;
                 bake.info.totalFrame = CalculateTotalFrames(bake.length, bakeFPS);
                 bake.info.totalFrame = Mathf.Clamp(bake.info.totalFrame, 1, bake.info.totalFrame);
                 bake.info.fps = bakeFPS;
                 bake.info.wrapMode = clip.isLooping? WrapMode.Loop: clip.wrapMode;
                 
                 m_BakeInfo.Add(bake);
-                animationIndex += bake.info.totalFrame;
+                startFrameIndex += bake.info.totalFrame;        // 下一个动画的起始帧号
 
                 bake.info.eventList = new List<AnimationEvent>();
                 foreach (var evt in clip.events)
@@ -309,7 +309,7 @@ namespace AnimationInstancingModule.Runtime
             }
             for (int i = 0; i != stateMachine.stateMachines.Length; ++i)
             {
-                AnalyzeStateMachine(stateMachine.stateMachines[i].stateMachine, animator, bakeFPS, animationIndex);
+                AnalyzeStateMachine(stateMachine.stateMachines[i].stateMachine, animator, bakeFPS, startFrameIndex);
             }
         }
 
@@ -421,7 +421,7 @@ namespace AnimationInstancingModule.Runtime
             int pixely = 0;
             for(int i = 0; i < m_BakeInfo.Count; ++i)
             {
-                m_BakeInfo[i].info.animationIndex = pixelx / m_TextureBlockWidth + pixely / m_TextureBlockHeight * (m_BakedBoneTexture.width / m_TextureBlockWidth);
+                m_BakeInfo[i].info.startFrameIndex = pixelx / m_TextureBlockWidth + pixely / m_TextureBlockHeight * (m_BakedBoneTexture.width / m_TextureBlockWidth);
                 int frameCount = m_BakeInfo[i].boneMatrix.Count;
                 for(int j = 0; j < frameCount; ++j)
                 {
@@ -454,7 +454,7 @@ namespace AnimationInstancingModule.Runtime
                 {
                     AnimationInfo info = bakeInfo.info;
                     writer.Write(info.name);
-                    writer.Write(info.animationIndex);
+                    writer.Write(info.startFrameIndex);
                     writer.Write(info.totalFrame);
                     writer.Write(info.fps);
                     writer.Write((int)info.wrapMode);
@@ -567,10 +567,25 @@ namespace AnimationInstancingModule.Runtime
                 }
                 animInst.lodInfos.Add(info);
             }
+            animInst.radius = CalcBoundingSphere();
 
             // step4. 保存新的prefab
             PrefabUtility.SaveAsPrefabAsset(inst, GetAnimationInstancingPrefabFilename());
             DestroyImmediate(inst);
+        }
+
+        private float CalcBoundingSphere()
+        {
+            Bounds bound = new Bounds(new Vector3(0, 0, 0), new Vector3(1, 1, 1));
+            Transform lod = m_BakedLODs[0];
+            SkinnedMeshRenderer[] smrs = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
+            foreach(var smr in smrs)
+            {
+                bound.Encapsulate(smr.bounds);
+            }
+            float radius = bound.size.x > bound.size.y ? bound.size.x : bound.size.y;
+            radius = radius > bound.size.z ? radius : bound.size.z;
+            return radius;
         }
 
         private string GetMeshFilename(SkinnedMeshRenderer smr)
