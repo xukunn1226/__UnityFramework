@@ -17,7 +17,8 @@ namespace AnimationInstancingModule.Runtime
     ///     root/AnimationData
     ///     root/[CustomPrefab1]
     ///     root/[CustomPrefab1]/RawData
-    ///     root/[CustomPrefab1]/RawData/[CustomPrefab1].prefab
+    ///     root/[CustomPrefab1]/RawData/LOD0.prefab
+    ///     root/[CustomPrefab1]/RawData/LOD1.prefab
     ///     root/[CustomPrefab2]
     ///     root/[CustomPrefab2]/RawData
     /// AnimationData：存储所有动画数据
@@ -186,8 +187,13 @@ namespace AnimationInstancingModule.Runtime
                 ++m_CurWorkingBakeInfoIndex;
                 
                 if(m_BakeInfo.Count == m_CurWorkingBakeInfoIndex)
-                {
-                    // save info
+                { // 所有动画数据烘焙完毕
+                    foreach (var obj in m_CacheAnimationEvent)
+                    { // 动画数据烘焙之后还原动画事件数据
+                        UnityEditor.AnimationUtility.SetAnimationEvents(obj.Key, obj.Value);
+                    }
+                    m_CacheAnimationEvent.Clear();
+
                     SaveAnimationInfo();
                     ExportPrefab();
                     isBaking = false;
@@ -297,7 +303,7 @@ namespace AnimationInstancingModule.Runtime
                     bake.info.eventList.Add(aniEvent);
                 }
 
-                m_CacheAnimationEvent.Add(clip, clip.events);
+                m_CacheAnimationEvent.Add(clip, clip.events);       // 记录下动画事件，以免animator.Update会清除event
                 UnityEngine.AnimationEvent[] tempEvent = new UnityEngine.AnimationEvent[0];
                 UnityEditor.AnimationUtility.SetAnimationEvents(clip, tempEvent);
             }
