@@ -58,14 +58,7 @@ namespace Framework.AssetManagement.AssetBuilder
             if(AssetBuilderUtil.IsBlockedByExtension(assetPath))
                 return;
 
-            // step 1. skip directory path
-            if(Directory.Exists(assetPath)) // 忽略对文件夹的处理，只有当文件夹内有文件增、删等操作才处理
-            {
-                // ClearBundleNameIfNotMeetSpecification(assetPath);
-                return;
-            }
-
-            // 此时assetPath指向文件
+            // step 1. 不符合规范的文件或文件夹清除bundle name
             if(ClearBundleNameIfNotMeetSpecification(assetPath))
                 return;
 
