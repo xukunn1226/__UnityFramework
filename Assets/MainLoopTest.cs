@@ -13,7 +13,7 @@ public class MainLoopTest : MonoBehaviour
         yield return new WaitForSeconds(1);
         Debug.LogError("11111111111111111111111111");
 #if UNITY_ANDROID
-        Debug.LogError("Android------------");
+        Debug.LogError("SDK Start");
 
         // 注册回调
         LLHSDK.OnLLHLoginCompleted += OnLLHLoginResult;
@@ -21,9 +21,10 @@ public class MainLoopTest : MonoBehaviour
         // 初始化sdk
         LLHSDK.LLHStart();
 
+        Debug.LogError("SDK Login");
+
         LLHSDK.LLHLogin();
 #endif
-        Debug.LogError("---------- Start");
     }
 
 #if UNITY_ANDROID

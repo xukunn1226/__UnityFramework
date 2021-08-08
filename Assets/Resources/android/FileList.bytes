@@ -1,11 +1,11 @@
 {
   "Count": 4,
-  "TotalSize": 205967549,
+  "TotalSize": 147317618,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "ee216c1f90291354798721c8bf46b8c1",
-      "Size": 1457
+      "FileHash": "4581d4a2387015b5788883e8a2d50892",
+      "Size": 1455
     },
     {
       "BundleName": "assets/res/tex.ab",
@@ -14,8 +14,8 @@
     },
     {
       "BundleName": "assets/res/tex1.ab",
-      "FileHash": "955aec9e659df13cc34737adebc22e08",
-      "Size": 77749132
+      "FileHash": "2874e18db3a4bb05f3a139428a086c49",
+      "Size": 19099203
     },
     {
       "BundleName": "assets/res/tex2.ab",
