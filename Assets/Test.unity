@@ -446,7 +446,7 @@ MonoBehaviour:
   Collapse: 0
   ScrollbarSize: 25
   AutoScroll: 0
-  m_isShow: 1
+  m_isShow: 0
 --- !u!114 &1514086432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -517,7 +517,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 2800000, guid: 1c53aa2f4b0598a43a1bb2280e026f67, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0

@@ -11,7 +11,7 @@ public class MainLoopTest : MonoBehaviour
     IEnumerator Start()
     {
         yield return new WaitForSeconds(1);
-        Debug.LogError("11111111111111111111111111");
+        Debug.Log("11111111111111111111111111");
 #if UNITY_ANDROID
         Debug.LogError("SDK Start");
 
