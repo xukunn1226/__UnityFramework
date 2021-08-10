@@ -26,6 +26,7 @@ MonoBehaviour:
   il2CppCompilerConfiguration: 0
   useMTRendering: 0
   useAPKExpansionFiles: 0
+  buildAppBundle: 0
   macroDefines: 
   excludedDefines: 
   bOverrideBuildScenes: 0

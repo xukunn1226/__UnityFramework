@@ -25,6 +25,7 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty              m_useIL2CPPProp;
         SerializedProperty              m_useMTRenderingProp;
         SerializedProperty              m_useAPKExpansionFilesProp;
+        SerializedProperty              m_buildAppBundleProp;
         SerializedProperty              m_macroDefinesProp;
         SerializedProperty              m_excludedDefinesProp;
         SerializedProperty              m_bOverrideBuildScenesProp;
@@ -51,6 +52,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_useIL2CPPProp             = serializedObject.FindProperty("useIL2CPP");
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
             m_useAPKExpansionFilesProp  = serializedObject.FindProperty("useAPKExpansionFiles");
+            m_buildAppBundleProp        = serializedObject.FindProperty("buildAppBundle");
             m_macroDefinesProp          = serializedObject.FindProperty("macroDefines");
             m_excludedDefinesProp       = serializedObject.FindProperty("excludedDefines");
 
@@ -269,7 +271,10 @@ namespace Framework.AssetManagement.GameBuilder
 
                 m_useMTRenderingProp.boolValue = EditorGUILayout.Toggle("UseMTRendering", m_useMTRenderingProp.boolValue);
 
+                m_buildAppBundleProp.boolValue = EditorGUILayout.Toggle("Build App Bundle", m_buildAppBundleProp.boolValue);
+                EditorGUI.BeginDisabledGroup(m_buildAppBundleProp.boolValue);
                 m_useAPKExpansionFilesProp.boolValue = EditorGUILayout.Toggle("UseAPKExpansionFiles", m_useAPKExpansionFilesProp.boolValue);
+                EditorGUI.EndDisabledGroup();
 
                 EditorGUI.BeginChangeCheck();
                 m_macroDefinesProp.stringValue = EditorGUILayout.TextField(new GUIContent("Macro Defines(;)"), m_macroDefinesProp.stringValue);

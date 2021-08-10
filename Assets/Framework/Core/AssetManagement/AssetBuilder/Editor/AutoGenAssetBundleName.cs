@@ -62,6 +62,11 @@ namespace Framework.AssetManagement.AssetBuilder
             if(ClearBundleNameIfNotMeetSpecification(assetPath))
                 return;
 
+            if(Directory.Exists(assetPath)) // 忽略对文件夹的处理，只有当文件夹内有文件增、删等操作才处理
+            {
+                return;
+            }
+
             //////////////////////////////////////// 文件符合规范，设置bundle name
             // step 2. 清除文件的ab name
             AssetImporter ai = AssetImporter.GetAtPath(assetPath);
