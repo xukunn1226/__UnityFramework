@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <bool name="lilith_sdk_is_debug">true</bool>
+   <bool name="lilith_sdk_is_debug">false</bool>
    <bool name="lilith_sdk_is_foreign">true</bool>
    <bool name="lilith_sdk_show_lilith">false</bool>
    <string name="lilith_sdk_app_id">2932663</string>
