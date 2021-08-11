@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <bool name="lilith_sdk_is_debug">false</bool>
+   <bool name="lilith_sdk_is_debug">true</bool>
    <bool name="lilith_sdk_is_foreign">true</bool>
    <bool name="lilith_sdk_show_lilith">false</bool>
    <string name="lilith_sdk_app_id">2932663</string>
@@ -8,13 +8,15 @@
    <string name="lilith_sdk_wechat_app_id"></string>
    <string name="lilith_sdk_qq_app_id"></string>
    <string name="lilith_sdk_payssion_api_key">null</string>
-   <string name="lilith_sdk_facebook_app_id"></string>
+   <string name="lilith_sdk_facebook_app_id">3045519829104935</string>
    <string name="lilith_sdk_facebook_app_invite_url"></string>
    <string name="lilith_sdk_google_server_client_id"></string>
    <string name="lilith_sdk_google_play_game_id"></string>
    <string name="lilith_sdk_adjust_app_token"></string>
    <string name="lilith_sdk_adjust_app_secrets"></string>
    <string name="lilith_sdk_toutiao_app_id"></string>
+   <string name="lilith_sdk_kuaishou_app_id"></string>
+   <string name="lilith_sdk_kuaishou_name"></string>
    <string name="lilith_sdk_apps_flyer_token"></string>
    <string name="lilith_sdk_playphone_secret_key"></string>
    <string name="lilith_sdk_adwords_conversion_id"></string>
