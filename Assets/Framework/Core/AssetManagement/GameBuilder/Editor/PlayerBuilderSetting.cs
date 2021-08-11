@@ -275,7 +275,7 @@ namespace Framework.AssetManagement.GameBuilder
                     extension = ".exe";
                     break;
                 case BuildTarget.Android:
-                    extension = ".apk";
+                    extension = para.buildAppBundle ? ".aab" : ".apk";
                     break;
                 case BuildTarget.iOS:
                     extension = ".ipa";
