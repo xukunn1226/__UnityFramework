@@ -27,6 +27,7 @@ MonoBehaviour:
   useMTRendering: 0
   useAPKExpansionFiles: 0
   buildAppBundle: 1
+  createSymbols: 1
   macroDefines: 
   excludedDefines: 
   bOverrideBuildScenes: 0

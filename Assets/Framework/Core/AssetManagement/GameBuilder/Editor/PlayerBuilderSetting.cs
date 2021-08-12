@@ -59,6 +59,8 @@ namespace Framework.AssetManagement.GameBuilder
 
         public bool                         buildAppBundle;                     // Set to true to build an Android App Bundle (aab file) instead of an apk
 
+        public bool                         createSymbols;
+
         public string                       macroDefines;
 
         public string                       excludedDefines;
@@ -74,6 +76,8 @@ namespace Framework.AssetManagement.GameBuilder
         public bool                         cachedUseAPKExpansionFiles          { get; set; }
 
         public bool                         cachedBuildAppBundle                { get; set; }
+
+        public bool                         cachedCreateSymbols                 { get; set; }
 
         public string                       cachedMacroDefines                  { get; set; }
 
@@ -101,6 +105,7 @@ namespace Framework.AssetManagement.GameBuilder
             sb.Append(string.Format($"useMTRendering: {useMTRendering}  \n"));
             sb.Append(string.Format($"useAPKExpansionFiles: {useAPKExpansionFiles}  \n"));
             sb.Append(string.Format($"buildAppBundle: {buildAppBundle}  \n"));
+            sb.Append(string.Format($"createSymbols: {createSymbols}    \n"));
             sb.Append(string.Format($"macroDefines: {macroDefines}  \n"));
             sb.Append(string.Format($"excludedDefines: {excludedDefines}  \n"));
             return sb.ToString();
@@ -120,6 +125,7 @@ namespace Framework.AssetManagement.GameBuilder
             para.cachedUseMTRendering               = PlayerSettings.GetMobileMTRendering(buildTargetGroup);
             para.cachedUseAPKExpansionFiles         = PlayerSettings.Android.useAPKExpansionFiles;
             para.cachedBuildAppBundle               = EditorUserBuildSettings.buildAppBundle;
+            para.cachedCreateSymbols                = EditorUserBuildSettings.androidCreateSymbolsZip;
             para.cachedMacroDefines                 = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
 
             // setup new settings
@@ -147,6 +153,7 @@ namespace Framework.AssetManagement.GameBuilder
                 {
                     PlayerSettings.Android.useAPKExpansionFiles = para.useAPKExpansionFiles;
                 }
+                EditorUserBuildSettings.androidCreateSymbolsZip = para.createSymbols;
                 PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
             }
             else if(buildTargetGroup == BuildTargetGroup.iOS)
@@ -200,6 +207,7 @@ namespace Framework.AssetManagement.GameBuilder
                 if(buildTargetGroup == BuildTargetGroup.Android)
                 {
                     EditorUserBuildSettings.buildAppBundle = para.cachedBuildAppBundle;
+                    EditorUserBuildSettings.androidCreateSymbolsZip = para.cachedCreateSymbols;
                     PlayerSettings.Android.useAPKExpansionFiles = para.cachedUseAPKExpansionFiles;
                 }
             }
@@ -213,6 +221,7 @@ namespace Framework.AssetManagement.GameBuilder
             opt.locationPathName = para.GetLocalPathName();
             opt.scenes = GetBuildScenes(para);
             opt.target = EditorUserBuildSettings.activeBuildTarget;
+            opt.targetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
             opt.options = para.GenerateBuildOptions();
             return opt;
         }

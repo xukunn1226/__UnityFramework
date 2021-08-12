@@ -26,6 +26,7 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty              m_useMTRenderingProp;
         SerializedProperty              m_useAPKExpansionFilesProp;
         SerializedProperty              m_buildAppBundleProp;
+        SerializedProperty              m_createSymbolsProp;
         SerializedProperty              m_macroDefinesProp;
         SerializedProperty              m_excludedDefinesProp;
         SerializedProperty              m_bOverrideBuildScenesProp;
@@ -53,6 +54,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
             m_useAPKExpansionFilesProp  = serializedObject.FindProperty("useAPKExpansionFiles");
             m_buildAppBundleProp        = serializedObject.FindProperty("buildAppBundle");
+            m_createSymbolsProp         = serializedObject.FindProperty("createSymbols");
             m_macroDefinesProp          = serializedObject.FindProperty("macroDefines");
             m_excludedDefinesProp       = serializedObject.FindProperty("excludedDefines");
 
@@ -275,6 +277,8 @@ namespace Framework.AssetManagement.GameBuilder
                 EditorGUI.BeginDisabledGroup(m_buildAppBundleProp.boolValue);
                 m_useAPKExpansionFilesProp.boolValue = EditorGUILayout.Toggle("UseAPKExpansionFiles", m_useAPKExpansionFilesProp.boolValue);
                 EditorGUI.EndDisabledGroup();
+
+                m_createSymbolsProp.boolValue = EditorGUILayout.Toggle("Create Symbols", m_createSymbolsProp.boolValue);                
 
                 EditorGUI.BeginChangeCheck();
                 m_macroDefinesProp.stringValue = EditorGUILayout.TextField(new GUIContent("Macro Defines(;)"), m_macroDefinesProp.stringValue);
