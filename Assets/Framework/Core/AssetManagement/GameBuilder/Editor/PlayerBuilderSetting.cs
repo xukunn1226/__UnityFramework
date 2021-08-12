@@ -61,6 +61,16 @@ namespace Framework.AssetManagement.GameBuilder
 
         public bool                         createSymbols;
 
+        public bool                         useCustomKeystore;
+
+        public string                       keystoreName;
+
+        public string                       keystorePass;
+
+        public string                       keyaliasName;
+
+        public string                       keyaliasPass;
+
         public string                       macroDefines;
 
         public string                       excludedDefines;
@@ -106,6 +116,11 @@ namespace Framework.AssetManagement.GameBuilder
             sb.Append(string.Format($"useAPKExpansionFiles: {useAPKExpansionFiles}  \n"));
             sb.Append(string.Format($"buildAppBundle: {buildAppBundle}  \n"));
             sb.Append(string.Format($"createSymbols: {createSymbols}    \n"));
+            sb.Append(string.Format($"useCustomKeystore: {useCustomKeystore}    \n"));
+            sb.Append(string.Format($"keystoreName: {keystoreName}    \n"));
+            sb.Append(string.Format($"keystorePass: {keystorePass}    \n"));
+            sb.Append(string.Format($"keyaliasName: {keyaliasName}    \n"));
+            sb.Append(string.Format($"keyaliasPass: {keyaliasPass}    \n"));
             sb.Append(string.Format($"macroDefines: {macroDefines}  \n"));
             sb.Append(string.Format($"excludedDefines: {excludedDefines}  \n"));
             return sb.ToString();
@@ -155,6 +170,12 @@ namespace Framework.AssetManagement.GameBuilder
                 }
                 EditorUserBuildSettings.androidCreateSymbolsZip = para.createSymbols;
                 PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
+
+                PlayerSettings.Android.useCustomKeystore = para.useCustomKeystore;
+                PlayerSettings.Android.keystoreName = para.keystoreName;
+                PlayerSettings.Android.keystorePass = para.keystorePass;
+                PlayerSettings.Android.keyaliasName = para.keyaliasName;
+                PlayerSettings.Android.keyaliasPass = para.keyaliasPass;
             }
             else if(buildTargetGroup == BuildTargetGroup.iOS)
             {
@@ -209,6 +230,12 @@ namespace Framework.AssetManagement.GameBuilder
                     EditorUserBuildSettings.buildAppBundle = para.cachedBuildAppBundle;
                     EditorUserBuildSettings.androidCreateSymbolsZip = para.cachedCreateSymbols;
                     PlayerSettings.Android.useAPKExpansionFiles = para.cachedUseAPKExpansionFiles;
+
+                    PlayerSettings.Android.useCustomKeystore = false;
+                    PlayerSettings.Android.keystoreName = string.Empty;
+                    PlayerSettings.Android.keystorePass = string.Empty;
+                    PlayerSettings.Android.keyaliasName = string.Empty;
+                    PlayerSettings.Android.keyaliasPass = string.Empty;
                 }
             }
 

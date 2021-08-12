@@ -27,6 +27,11 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty              m_useAPKExpansionFilesProp;
         SerializedProperty              m_buildAppBundleProp;
         SerializedProperty              m_createSymbolsProp;
+        SerializedProperty              m_useCustomKeystoreProp;
+        SerializedProperty              m_keystoreNameProp;
+        SerializedProperty              m_keystorePassProp;
+        SerializedProperty              m_keyaliasNameProp;
+        SerializedProperty              m_keyaliasPassProp;
         SerializedProperty              m_macroDefinesProp;
         SerializedProperty              m_excludedDefinesProp;
         SerializedProperty              m_bOverrideBuildScenesProp;
@@ -55,6 +60,12 @@ namespace Framework.AssetManagement.GameBuilder
             m_useAPKExpansionFilesProp  = serializedObject.FindProperty("useAPKExpansionFiles");
             m_buildAppBundleProp        = serializedObject.FindProperty("buildAppBundle");
             m_createSymbolsProp         = serializedObject.FindProperty("createSymbols");
+            m_useCustomKeystoreProp     = serializedObject.FindProperty("useCustomKeystore");
+            m_keystoreNameProp          = serializedObject.FindProperty("keystoreName");
+            m_keystorePassProp          = serializedObject.FindProperty("keystorePass");
+            m_keyaliasNameProp          = serializedObject.FindProperty("keyaliasName");
+            m_keyaliasPassProp          = serializedObject.FindProperty("keyaliasPass");
+
             m_macroDefinesProp          = serializedObject.FindProperty("macroDefines");
             m_excludedDefinesProp       = serializedObject.FindProperty("excludedDefines");
 
@@ -278,7 +289,17 @@ namespace Framework.AssetManagement.GameBuilder
                 m_useAPKExpansionFilesProp.boolValue = EditorGUILayout.Toggle("UseAPKExpansionFiles", m_useAPKExpansionFilesProp.boolValue);
                 EditorGUI.EndDisabledGroup();
 
-                m_createSymbolsProp.boolValue = EditorGUILayout.Toggle("Create Symbols", m_createSymbolsProp.boolValue);                
+                m_createSymbolsProp.boolValue = EditorGUILayout.Toggle("Create Symbols", m_createSymbolsProp.boolValue);
+
+                m_useCustomKeystoreProp.boolValue = EditorGUILayout.Toggle("Use Custom Keystore", m_useCustomKeystoreProp.boolValue);
+                EditorGUI.BeginDisabledGroup(!m_useCustomKeystoreProp.boolValue);
+                {
+                    m_keystoreNameProp.stringValue = EditorGUILayout.TextField("KeystoreName", m_keystoreNameProp.stringValue);
+                    m_keystorePassProp.stringValue = EditorGUILayout.TextField("KeystorePass", m_keystorePassProp.stringValue);
+                    m_keyaliasNameProp.stringValue = EditorGUILayout.TextField("KeyaliasName", m_keyaliasNameProp.stringValue);
+                    m_keyaliasPassProp.stringValue = EditorGUILayout.TextField("KeyaliasPass", m_keyaliasPassProp.stringValue);
+                }
+                EditorGUI.EndDisabledGroup();
 
                 EditorGUI.BeginChangeCheck();
                 m_macroDefinesProp.stringValue = EditorGUILayout.TextField(new GUIContent("Macro Defines(;)"), m_macroDefinesProp.stringValue);
