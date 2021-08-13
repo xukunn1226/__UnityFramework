@@ -123,6 +123,16 @@ namespace AnimationInstancingModule.Runtime
             return m_CurAnimationIndex >= 0;
         }
 
+        public bool IsPause()
+        {
+            return speedScale == 0;
+        }
+
+        public bool IsLoop()
+        {
+            return m_WrapMode == WrapMode.Loop;
+        }
+
         public void Pause()
         {
             if(speedScale != 0)
@@ -157,7 +167,10 @@ namespace AnimationInstancingModule.Runtime
 
         public void UpdateAnimation()
         {
-            
+            if(IsPause())
+            {
+                return;
+            }
         }
     }
 }
