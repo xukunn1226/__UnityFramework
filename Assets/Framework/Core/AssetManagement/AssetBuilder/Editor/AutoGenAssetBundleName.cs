@@ -54,21 +54,15 @@ namespace Framework.AssetManagement.AssetBuilder
         /// <param name="assetPath">文件的完整路径</param>
         static void UpdateAssetBundleName(string assetPath)
         {
-            // step 0. skip those files which are not meet specification
+            // step 1. skip those files which are not meet specification
             if(AssetBuilderUtil.IsBlockedByExtension(assetPath))
                 return;
-
-            // step 1. 不符合规范的文件或文件夹清除bundle name
-            if(ClearBundleNameIfNotMeetSpecification(assetPath))
-            {
-                return;
-            }
 
             //////////////////////////////////////// 文件符合规范，设置bundle name
             // step 2. 清除文件或文件夹的ab name
             AssetImporter ai = AssetImporter.GetAtPath(assetPath);
             if (ai != null)
-                ai.assetBundleName = "";
+                ai.assetBundleName = string.Empty;
 
             // step 3. 找到文件所在的文件夹
             string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/"));
@@ -81,7 +75,7 @@ namespace Framework.AssetManagement.AssetBuilder
             // step 4. generate bundle name according to the directory
             string[] folderNames = directory.Split('/');
             if (folderNames.Length < 2)
-                return;
+                return;     // 资源不可直接放置Assets/下
 
             if (AssetBuilderUtil.IsSpecialFolderName(folderNames[folderNames.Length - 1]))
             { // 处理特殊子文件夹bundle name与父文件夹保持一致的情况
@@ -89,7 +83,7 @@ namespace Framework.AssetManagement.AssetBuilder
                 AssetImporter parentTi = AssetImporter.GetAtPath(parentDirectory);
                 if (parentTi != null)
                 {
-                    ti.assetBundleName = parentTi.assetBundleName;
+                    ti.assetBundleName = IsMatchBundleNameRule(parentDirectory) ? parentTi.assetBundleName : string.Empty;
                 }
             }
             else
@@ -108,30 +102,18 @@ namespace Framework.AssetManagement.AssetBuilder
                 // meta不能算是文件
                 if (count == 0)
                 {
-                    ti.assetBundleName = "";
+                    ti.assetBundleName = string.Empty;
                 }
                 else
                 {
-                    ti.assetBundleName = directory.ToLower() + ".ab";
+                    ti.assetBundleName = IsMatchBundleNameRule(assetPath) ? directory.ToLower() + ".ab" : string.Empty;
                 }
             }
         }
 
-        // 清除不符合规范的文件或文件夹的bundlename
-        // 若assetPath不符合规范则返回true，否则false
-        static private bool ClearBundleNameIfNotMeetSpecification(string assetPath)
+        static private bool IsMatchBundleNameRule(string assetPath)
         {
-            if (!AssetBuilderUtil.IsPassByWhiteList(assetPath) || AssetBuilderUtil.IsBlockedByBlackList(assetPath))
-            {
-                // 清空屏蔽文件的ab name
-                AssetImporter importer = AssetImporter.GetAtPath(assetPath);
-                if (importer != null)
-                {
-                    importer.assetBundleName = "";
-                }
-                return true;
-            }
-            return false;
+            return AssetBuilderUtil.IsPassByWhiteList(assetPath) && !AssetBuilderUtil.IsBlockedByBlackList(assetPath);
         }
     }
 }

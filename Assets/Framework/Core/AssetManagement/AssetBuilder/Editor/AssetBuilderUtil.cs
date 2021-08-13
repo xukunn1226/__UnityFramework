@@ -20,7 +20,7 @@ namespace Framework.AssetManagement.AssetBuilder
             {
                 string whitePath = AssetBuilderSetting.GetDefault().WhiteListOfPath[i];
                 whitePath = whitePath.TrimEnd(new char[] { '/' }) + "/";
-                if(whitePath.StartsWith(directory, true, System.Globalization.CultureInfo.CurrentCulture))
+                if(directory.StartsWith(whitePath, true, System.Globalization.CultureInfo.CurrentCulture))
                     return true;
             }
 
@@ -34,7 +34,8 @@ namespace Framework.AssetManagement.AssetBuilder
         /// <returns>true: 在黑名单内</returns>
         static internal bool IsBlockedByBlackList(string assetPath)
         {
-            string[] folderNames = assetPath.Split('/');
+            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/"));
+            string[] folderNames = directory.Split('/');
             foreach (string path in AssetBuilderSetting.GetDefault().BlackListOfFolder)
             {
                 for (int i = 0; i < folderNames.Length; ++i)
