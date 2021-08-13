@@ -15,14 +15,14 @@ MonoBehaviour:
   outputPath: Deployment/Latest/Player
   projectName: ZGame
   autoRunPlayer: 0
-  development: 1
+  development: 0
   connectWithProfiler: 0
   allowDebugging: 0
   buildScriptsOnly: 0
   compressWithLz4: 0
   compressWithLz4HC: 1
   strictMode: 1
-  useIL2CPP: 0
+  useIL2CPP: 1
   il2CppCompilerConfiguration: 1
   useMTRendering: 0
   useAPKExpansionFiles: 0

@@ -12,8 +12,8 @@
    <string name="lilith_sdk_facebook_app_invite_url"></string>
    <string name="lilith_sdk_google_server_client_id"></string>
    <string name="lilith_sdk_google_play_game_id"></string>
-   <string name="lilith_sdk_adjust_app_token"></string>
-   <string name="lilith_sdk_adjust_app_secrets"></string>
+   <string name="lilith_sdk_adjust_app_token">g7qhdbaxel8g</string>
+   <string name="lilith_sdk_adjust_app_secrets">(1, 1646654188, 1111098719, 713858950, 38753033)</string>
    <string name="lilith_sdk_toutiao_app_id"></string>
    <string name="lilith_sdk_kuaishou_app_id"></string>
    <string name="lilith_sdk_kuaishou_name"></string>
