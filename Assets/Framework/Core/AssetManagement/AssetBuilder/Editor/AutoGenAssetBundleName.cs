@@ -58,28 +58,25 @@ namespace Framework.AssetManagement.AssetBuilder
             if(AssetBuilderUtil.IsBlockedByExtension(assetPath))
                 return;
 
-            // step 1. skip directory path
-            if(Directory.Exists(assetPath)) // 忽略对文件夹的处理，只有当文件夹内有文件增、删等操作才处理
+            // step 1. 不符合规范的文件或文件夹清除bundle name
+            if(ClearBundleNameIfNotMeetSpecification(assetPath))
             {
-                // ClearBundleNameIfNotMeetSpecification(assetPath);
                 return;
             }
 
-            // 此时assetPath指向文件
-            if(ClearBundleNameIfNotMeetSpecification(assetPath))
-                return;
-
             //////////////////////////////////////// 文件符合规范，设置bundle name
-            // step 2. 清除文件的ab name
+            // step 2. 清除文件或文件夹的ab name
             AssetImporter ai = AssetImporter.GetAtPath(assetPath);
             if (ai != null)
                 ai.assetBundleName = "";
 
             // step 3. 找到文件所在的文件夹
-            string directory = assetPath.Substring(0, assetPath.LastIndexOf("/"));
+            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/"));
             AssetImporter ti = AssetImporter.GetAtPath(directory);
             if (ti == null)
+            {
                 return;             // 文件夹可能不存在
+            }
 
             // step 4. generate bundle name according to the directory
             string[] folderNames = directory.Split('/');

@@ -21,7 +21,7 @@ namespace Framework.AssetManagement.AssetBuilder
                         string message = string.Format("{0} 命名不能包含如下特殊字符{1},请修正", assetPath, s_Pattern.Replace("\\", ""));
                         if(AssetBuilderSetting.GetDefault().ForceDisplayDialogWhenAssetNameNotMet)
                             EditorUtility.DisplayDialog("错误", message, "OK");
-                        Debug.LogError(message, AssetDatabase.LoadAssetAtPath<Object>(assetPath));
+                        Debug.LogError(message);
                     }
                 }
             }

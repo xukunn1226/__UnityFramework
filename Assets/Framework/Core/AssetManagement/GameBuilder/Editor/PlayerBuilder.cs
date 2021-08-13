@@ -3,8 +3,9 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
-using UnityEngine.Build.Pipeline;
 using Framework.Core;
+using Google.Android.AppBundle.Editor;
+using Google.Android.AppBundle.Editor.Internal;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -48,7 +49,9 @@ namespace Framework.AssetManagement.GameBuilder
             // setup PlayerSettings
             para.SetupPlayerSettings(version);
 
-            BuildReport report = BuildPipeline.BuildPlayer(para.GenerateBuildPlayerOptions());
+            InternalBuildPlayer(para);
+
+            BuildReport report = OpenLastBuild();
             if(report.summary.result == BuildResult.Succeeded)
             {
                 Debug.Log("Begin Build Player");
@@ -89,6 +92,36 @@ namespace Framework.AssetManagement.GameBuilder
                 System.Diagnostics.Process.Start("explorer", appPath.Replace('/', '\\'));
             }
 
+            return report;
+        }
+
+        static private void InternalBuildPlayer(PlayerBuilderSetting para)
+        {
+            BuildPlayerOptions opt = para.GenerateBuildPlayerOptions();
+            if(EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android && para.buildAppBundle)
+            {
+                AssetPackConfig config = new AssetPackConfig();
+                config.SplitBaseModuleAssets = true;
+                AppBundlePublisher.Build(opt, config, true);
+            }
+            else
+            {
+                BuildPipeline.BuildPlayer(opt);
+            }
+        }
+
+        private static BuildReport OpenLastBuild()
+        {
+            const string buildReportDir = "Assets/BuildReports";
+            if (!Directory.Exists(buildReportDir))
+                Directory.CreateDirectory(buildReportDir);
+
+            var date = File.GetLastWriteTime("Library/LastBuild.buildreport");
+            var assetPath = buildReportDir + "/Build_" + date.ToString("yyyy-dd-MMM-HH-mm-ss") + ".buildreport";
+            File.Copy("Library/LastBuild.buildreport", assetPath, true);
+            AssetDatabase.ImportAsset(assetPath);
+            BuildReport report = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
+            Selection.objects = new UnityEngine.Object[] { report };
             return report;
         }
     }

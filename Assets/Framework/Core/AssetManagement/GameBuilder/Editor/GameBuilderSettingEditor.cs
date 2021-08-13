@@ -177,6 +177,7 @@ namespace Framework.AssetManagement.GameBuilder
             int mainVersion = EditorGUILayout.IntField("MainVersion", m_AppVersion.MainVersion, GUILayout.Width(400));
             int minorVersion = EditorGUILayout.IntField("MinorVersion", m_AppVersion.MinorVersion, GUILayout.Width(400));
             int revision = EditorGUILayout.IntField("Revision", m_AppVersion.Revision, GUILayout.Width(400));
+            EditorGUILayout.IntField("Build Number", m_AppVersion.BuildNumber, GUILayout.Width(400));
             EditorGUI.EndDisabledGroup();
             if(!m_isForceUpdate)
                 m_HotfixNumber = Mathf.Min(1, EditorGUILayout.IntField("HotfixNumber", m_HotfixNumber, GUILayout.Width(400)));

@@ -14,12 +14,13 @@ namespace Framework.AssetManagement.AssetBuilder
         /// <param name="assetPath"></param>
         /// <returns>true：在白名单内</returns>
         static internal bool IsPassByWhiteList(string assetPath)
-        {
+        { // assetPath可能是文件或文件夹的
+            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/"));
             for (int i = 0; i < AssetBuilderSetting.GetDefault().WhiteListOfPath.Length; ++i)
             {
                 string whitePath = AssetBuilderSetting.GetDefault().WhiteListOfPath[i];
                 whitePath = whitePath.TrimEnd(new char[] { '/' }) + "/";
-                if (assetPath.Contains(whitePath))
+                if(whitePath.StartsWith(directory, true, System.Globalization.CultureInfo.CurrentCulture))
                     return true;
             }
 

@@ -26,6 +26,13 @@ MonoBehaviour:
   il2CppCompilerConfiguration: 0
   useMTRendering: 0
   useAPKExpansionFiles: 0
+  buildAppBundle: 1
+  createSymbols: 0
+  useCustomKeystore: 1
+  keystoreName: ./android.keystore
+  keystorePass: lilith
+  keyaliasName: android
+  keyaliasPass: lilith
   macroDefines: 
   excludedDefines: 
   bOverrideBuildScenes: 0
