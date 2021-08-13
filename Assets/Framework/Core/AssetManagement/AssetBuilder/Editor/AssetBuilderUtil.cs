@@ -19,7 +19,7 @@ namespace Framework.AssetManagement.AssetBuilder
             for (int i = 0; i < AssetBuilderSetting.GetDefault().WhiteListOfPath.Length; ++i)
             {
                 string whitePath = AssetBuilderSetting.GetDefault().WhiteListOfPath[i];
-                whitePath = whitePath.TrimEnd(new char[] { '/' }) + "/";
+                whitePath = whitePath.TrimEnd(new char[] { '/' });
                 if(directory.StartsWith(whitePath, true, System.Globalization.CultureInfo.CurrentCulture))
                     return true;
             }
