@@ -46,7 +46,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
@@ -60,22 +60,22 @@ ModelImporter:
       curves: []
       events:
       - time: 0.25651467
-        functionName: 789
+        functionName: f1
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 1
         intParameter: 2
         messageOptions: 0
       - time: 0.47540715
-        functionName: NewEvent
-        data: 33
+        functionName: f2
+        data: 
         objectReferenceParameter: {instanceID: 0}
-        floatParameter: 11
+        floatParameter: 1
         intParameter: 22
         messageOptions: 0
-      - time: 0.6019544
-        functionName: NewEvent
-        data: 33
+      - time: 0.8126369
+        functionName: f3
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 11
         intParameter: 22

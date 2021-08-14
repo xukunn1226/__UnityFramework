@@ -11,7 +11,7 @@ namespace AnimationInstancingModule.Runtime
         public Texture2D                animationTexture;
         public int                      textureBlockWidth   { get; set; }
         public int                      textureBlockHeight  { get; set; }
-        // public bool                     isDone              { get; set; }
+        // public bool                     isReady             { get; set; }
         public List<AnimationInfo>      aniInfos            { get; private set; }
         public ExtraBoneInfo            extraBoneInfo       { get; private set; }
         private AnimationInfo           m_SearchInfo;
@@ -62,7 +62,7 @@ namespace AnimationInstancingModule.Runtime
                 }
                 listInfo.Add(info);
             }
-            listInfo.Sort(m_Comparer);
+            listInfo.Sort(m_Comparer);      // 提高后续二分法查找效率
             return listInfo;
         }
 
@@ -96,10 +96,20 @@ namespace AnimationInstancingModule.Runtime
             textureBlockHeight = reader.ReadInt32();
         }
 
-        internal int FindAnimationInfo(int hash)
+        internal int FindAnimationInfoIndex(int hash)
         {
             m_SearchInfo.nameHash = hash;
             return aniInfos.BinarySearch(m_SearchInfo, m_Comparer);
+        }
+
+        internal AnimationInfo FindAnimationInfo(int hash)
+        {
+            int index = FindAnimationInfoIndex(hash);
+            if(index >= 0)
+            {
+                return aniInfos[index];
+            }
+            return null;
         }
 
         internal int GetAnimationCount()
