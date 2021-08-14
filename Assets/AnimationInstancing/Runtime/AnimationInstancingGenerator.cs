@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Framework.Core;
+using Application.Runtime;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Animations;
@@ -104,7 +105,7 @@ namespace AnimationInstancingModule.Runtime
 #if UNITY_EDITOR
         private void OnEnable()
         {
-            if(!Application.isPlaying)
+            if(!UnityEngine.Application.isPlaying)
             {
                 EditorApplication.update += EditorApplication.QueuePlayerLoopUpdate;
             }
@@ -112,7 +113,7 @@ namespace AnimationInstancingModule.Runtime
 
         private void OnDisable()
         {
-            if(!Application.isPlaying)
+            if(!UnityEngine.Application.isPlaying)
             {
                 EditorApplication.update -= EditorApplication.QueuePlayerLoopUpdate;
             }
@@ -514,15 +515,24 @@ namespace AnimationInstancingModule.Runtime
         // 输出两个prefab：1、AnimationData；2、AnimationInstancing
         private void ExportPrefab()
         {
-            /////////////////////// 保存root/AnimationData/[Custom].prefab
-            GameObject animData = new GameObject(gameObject.name);
-            AnimationData data = animData.AddComponent<AnimationData>();
-            data.manifest = AssetDatabase.LoadAssetAtPath<TextAsset>(GetManifestFilename());
-            data.animationTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(GetAnimationTextureFilename());
-            GameObject animDataAsset = PrefabUtility.SaveAsPrefabAsset(animData, GetAnimationDataPrefabFilename());
-            DestroyImmediate(animData);
+            // 保存root/AnimationData/[Custom].prefab
+            // new Prefab
+            GameObject animDataPrefab = new GameObject(gameObject.name);
 
-            /////////////////////// 保存root/[Custom]/[Custom].prefab
+            // add AnimationData component
+            AnimationData animData = animDataPrefab.AddComponent<AnimationData>();
+            animData.manifest = AssetDatabase.LoadAssetAtPath<TextAsset>(GetManifestFilename());
+            
+            // add SoftObject component
+            SoftObject texSoftObject = animDataPrefab.AddComponent<SoftObject>();
+            texSoftObject.assetPath = GetAnimationTextureFilename();
+            animData.animTexSoftObject = texSoftObject;
+
+            // save Prefab
+            GameObject animDataAsset = PrefabUtility.SaveAsPrefabAsset(animDataPrefab, GetAnimationDataPrefabFilename());
+            DestroyImmediate(animDataPrefab);
+
+            // 保存root/[Custom]/[Custom].prefab
             // step1. 实例化对象，提取mesh
             GameObject inst = Instantiate(gameObject);            
             foreach(var lod in m_BakedLODs)

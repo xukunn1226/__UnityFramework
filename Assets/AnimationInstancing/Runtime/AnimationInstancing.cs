@@ -94,6 +94,8 @@ namespace AnimationInstancingModule.Runtime
 
         private void OnDestroy()
         {
+            AnimationDataManager.Instance.Unload(prototype);
+            
             // unregister
         }
 

@@ -8,22 +8,22 @@ namespace Framework.Core.Editor
     [CustomEditor(typeof(SoftObjectPath), true)]
     public class SoftObjectPathEditor : UnityEditor.Editor
     {
-        private SoftObjectPath m_Target;
-        private SerializedProperty m_GUIDProp;
-        private SerializedProperty m_AssetPathProp;
-        private SerializedProperty m_BundleNameProp;
-        private SerializedProperty m_AssetNameProp;
+        private SoftObjectPath          m_Target;
+        private SerializedProperty      m_GUIDProp;
+        private SerializedProperty      m_AssetPathProp;
+        private SerializedProperty      m_BundleNameProp;
+        private SerializedProperty      m_AssetNameProp;
 
-        private long m_FileID;
+        private long                    m_FileID;
 
         public virtual void OnEnable()
         {
-            m_Target = (SoftObjectPath)serializedObject.targetObject;
-            m_GUIDProp = serializedObject.FindProperty("m_GUID");
-            m_AssetPathProp = serializedObject.FindProperty("m_AssetPath");
-            m_BundleNameProp = serializedObject.FindProperty("m_BundleName");
-            m_AssetNameProp = serializedObject.FindProperty("m_AssetName");
-            m_FileID = RedirectorDB.GetLocalID(m_Target);
+            m_Target            = (SoftObjectPath)serializedObject.targetObject;
+            m_GUIDProp          = serializedObject.FindProperty("m_GUID");
+            m_AssetPathProp     = serializedObject.FindProperty("m_AssetPath");
+            m_BundleNameProp    = serializedObject.FindProperty("m_BundleName");
+            m_AssetNameProp     = serializedObject.FindProperty("m_AssetName");
+            m_FileID            = RedirectorDB.GetLocalID(m_Target);
         }
 
         public override void OnInspectorGUI()
@@ -42,8 +42,8 @@ namespace Framework.Core.Editor
                 // 更新SoftObject
                 if (obj == null)
                 {
-                    m_GUIDProp.stringValue = null;
                     m_Target.assetPath = null;
+                    m_GUIDProp.stringValue = null;
                 }
                 else
                 {

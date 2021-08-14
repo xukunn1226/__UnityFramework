@@ -14,24 +14,24 @@ namespace Application.Runtime
 {
     public sealed class SoftObject : SoftObjectPath
     {
-        private GameObjectLoader m_PrefabLoader;
-        private GameObjectLoaderAsync m_PrefabLoaderAsync;
-        private AssetLoader<Object> m_Loader;
-        private AssetLoaderAsync<Object> m_LoaderAsync;
+        private GameObjectLoader            m_PrefabLoader;
+        private GameObjectLoaderAsync       m_PrefabLoaderAsync;
+        private AssetLoader<Object>         m_Loader;
+        private AssetLoaderAsync<Object>    m_LoaderAsync;
 
-        private MonoPoolBase m_ScriptedPool;         // 脚本创建的对象池
-        private MonoPoolBase m_PrefabedPool;
-        private string m_PoolPath;
-        public string poolPath { get { return m_PoolPath; } }
+        private MonoPoolBase                m_ScriptedPool;         // 脚本创建的对象池
+        private MonoPoolBase                m_PrefabedPool;
+        private string                      m_PoolPath;
+        public string                       poolPath { get { return m_PoolPath; } }
 
 #if UNITY_EDITOR
-        public bool m_UseLRUManage;         // 使用LRU管理
+        public bool                         m_UseLRUManage;         // 使用LRU管理
 #endif
 
         [SerializeField]
         [SoftObject]
-        private SoftObject m_LRUedPoolAsset = null;
-        private LRUPoolBase m_LRUedPool;
+        private SoftObject                  m_LRUedPoolAsset;
+        private LRUPoolBase                 m_LRUedPool;
 
         public GameObject Instantiate()
         {

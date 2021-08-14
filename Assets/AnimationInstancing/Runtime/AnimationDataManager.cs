@@ -7,18 +7,44 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationDataManager : SingletonMono<AnimationDataManager>
     {
-        private Dictionary<AnimationData, AnimationData> m_AnimationDatas = new Dictionary<AnimationData, AnimationData>();
+        class AnimationDataInst
+        {
+            public AnimationData    data;
+            public int              refCount;
+        }
+
+        private Dictionary<AnimationData, AnimationDataInst> m_AnimationDatas = new Dictionary<AnimationData, AnimationDataInst>();
 
         public AnimationData Load(AnimationData prototype)
         {
-            AnimationData inst;
+            AnimationDataInst inst;
             if(!m_AnimationDatas.TryGetValue(prototype, out inst))
             {
-                inst = Instantiate<AnimationData>(prototype);
+                inst = new AnimationDataInst();
+                inst.data = Instantiate<AnimationData>(prototype);
+                inst.data.transform.parent = transform;
+
                 m_AnimationDatas.Add(prototype, inst);
-                inst.transform.parent = transform;
             }
-            return inst;
+            ++inst.refCount;
+            return inst.data;
+        }
+
+        public void Unload(AnimationData prototype)
+        {
+            AnimationDataInst inst;
+            if(!m_AnimationDatas.TryGetValue(prototype, out inst))
+            {
+                Debug.LogError($"AnimationDataManager.Unload: can't find the prototype {prototype}");
+                return;
+            }
+
+            --inst.refCount;
+            if(inst.refCount == 0)
+            {
+                m_AnimationDatas.Remove(prototype);
+                Destroy(inst.data);
+            }
         }
     }
 }

@@ -2,20 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using Application.Runtime;
+using Framework.AssetManagement.Runtime;
 
 namespace AnimationInstancingModule.Runtime
 {
     public class AnimationData : MonoBehaviour
     {
-        public TextAsset                manifest;
-        public Texture2D                animationTexture;
-        public int                      textureBlockWidth   { get; set; }
-        public int                      textureBlockHeight  { get; set; }
-        // public bool                     isReady             { get; set; }
-        public List<AnimationInfo>      aniInfos            { get; private set; }
-        public ExtraBoneInfo            extraBoneInfo       { get; private set; }
-        private AnimationInfo           m_SearchInfo;
-        private ComparerHash            m_Comparer;
+        public TextAsset                    manifest;
+        public int                          textureBlockWidth   { get; set; }
+        public int                          textureBlockHeight  { get; set; }
+        public List<AnimationInfo>          aniInfos            { get; private set; }
+        public ExtraBoneInfo                extraBoneInfo       { get; private set; }
+        private AnimationInfo               m_SearchInfo;
+        private ComparerHash                m_Comparer;
+        [SoftObject] public SoftObject      animTexSoftObject;
+        public Texture2D                    animTex             { get; private set; }           // 异步加载，可能为NULL
 
         void Awake()
         {
@@ -23,14 +25,25 @@ namespace AnimationInstancingModule.Runtime
             m_Comparer = new ComparerHash();
 
             // 1、数据轻量级；2、且涉及到动画逻辑数据，所以同步加载最佳
-            // isDone = false;
             using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
             {
                 aniInfos = ReadAnimationInfo(reader);
                 extraBoneInfo = ReadExtraBoneInfo(reader);
                 ReadAnimationTexture(reader);
             }
-            // isDone = true;
+        }
+
+        IEnumerator Start()
+        {
+            // 动画贴图数据量大，异步加载
+            AssetLoaderAsync<Object> loader = animTexSoftObject.LoadAssetAsync();
+            yield return loader;
+            animTex = (Texture2D)loader.asset;
+        }
+
+        void Destroy()
+        {
+            animTexSoftObject?.UnloadAsset();
         }
 
         private List<AnimationInfo> ReadAnimationInfo(BinaryReader reader)

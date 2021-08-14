@@ -63,6 +63,7 @@ MonoBehaviour:
       materials:
       - {fileID: 2100000, guid: cbb28470d55e9a9479c3a4b18089cde5, type: 2}
   m_Speed: 1
-  m_Radius: 1
+  m_Radius: 2.187933
   shadowCastingMode: 1
   receiveShadows: 0
+  defaultAnim: 

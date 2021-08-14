@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 597486734479691328}
   - component: {fileID: 308636289604567138}
+  - component: {fileID: 6003991439064499090}
   m_Layer: 0
   m_Name: mirrorf2@skin
   m_TagString: Untagged
@@ -44,4 +45,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manifest: {fileID: 4900000, guid: eec2858275afddd4ab7dfe08017c8ce0, type: 3}
-  animationTexture: {fileID: 2800000, guid: 4af8807df30a28543b56c8ceff00105d, type: 3}
+  animTexSoftObject: {fileID: 6003991439064499090}
+--- !u!114 &6003991439064499090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7161337459322401107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_GUID: 4af8807df30a28543b56c8ceff00105d
+  m_AssetPath: assets/animationinstancing/art/animationdata/mirrorf2@skin.png
+  m_BundleName: assets/animationinstancing/art/animationdata.ab
+  m_AssetName: mirrorf2@skin.png
+  m_UseLRUManage: 0
+  m_LRUedPoolAsset: {fileID: 0}
