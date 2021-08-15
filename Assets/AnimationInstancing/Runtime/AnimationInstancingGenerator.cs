@@ -597,20 +597,21 @@ namespace AnimationInstancingModule.Runtime
             radius = radius > bound.size.z ? radius : bound.size.z;
             return radius;
         }
-
-        private string GetMeshFilename(SkinnedMeshRenderer smr)
-        {
-            string prefix = string.Format($"{smr.transform.parent.parent.gameObject.name}_{smr.transform.parent.gameObject.name}");
-
-            return string.Format($"{GetExportedPath()}/{prefix.ToLower()}_{smr.sharedMesh.name.ToLower()}.asset");
-        }
-
+        
         // root/[CustomPrefab1]
         private string GetExportedPath()
         {
             string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(m_BakedLODs[0].gameObject));
             path = path.Substring(0, path.LastIndexOf("/"));
             return path.Substring(0, path.LastIndexOf("/"));
+        }
+        
+        // prefab name + lod level + mesh name
+        private string GetMeshFilename(SkinnedMeshRenderer smr)
+        {
+            string prefix = string.Format($"{smr.transform.parent.parent.gameObject.name}_{smr.transform.parent.gameObject.name}");
+
+            return string.Format($"{GetExportedPath()}/{prefix.ToLower()}_{smr.sharedMesh.name.ToLower()}.asset");
         }
 
         private string GetAnimationInstancingPrefabFilename()

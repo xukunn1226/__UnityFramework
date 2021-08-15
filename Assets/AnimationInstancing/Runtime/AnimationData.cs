@@ -17,7 +17,7 @@ namespace AnimationInstancingModule.Runtime
         private AnimationInfo               m_SearchInfo;
         private ComparerHash                m_Comparer;
         [SoftObject] public SoftObject      animTexSoftObject;
-        public Texture2D                    animTex             { get; private set; }           // 异步加载，可能为NULL
+        public Texture2D                    animTexture         { get; private set; }           // 异步加载，可能为NULL
 
         void Awake()
         {
@@ -38,7 +38,7 @@ namespace AnimationInstancingModule.Runtime
             // 动画贴图数据量大，异步加载
             AssetLoaderAsync<Object> loader = animTexSoftObject.LoadAssetAsync();
             yield return loader;
-            animTex = (Texture2D)loader.asset;
+            animTexture = (Texture2D)loader.asset;
         }
 
         void Destroy()

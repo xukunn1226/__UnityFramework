@@ -18,6 +18,7 @@ namespace AnimationInstancingModule.Runtime
         public AnimationData            prototype;
         public AnimationData            animDataInst        { get; private set; }
         public List<LODInfo>            lodInfos            = new List<LODInfo>();
+        public int                      lodLevel            { get; private set; }       // 当前使用的lod level
 
         public Transform                worldTransform      { get; private set; }
         [SerializeField] private float  m_Speed             = 1;                        // 序列化数据
@@ -197,6 +198,12 @@ namespace AnimationInstancingModule.Runtime
         void Update()
         {
             UpdateAnimation();
+            UpdateLod();
+        }
+
+        public void UpdateLod()
+        {
+            lodLevel = 0;
         }
 
         public void UpdateAnimation()
