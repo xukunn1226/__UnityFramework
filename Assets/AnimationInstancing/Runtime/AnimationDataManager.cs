@@ -43,7 +43,7 @@ namespace AnimationInstancingModule.Runtime
             if(inst.refCount == 0)
             {
                 m_AnimationDatas.Remove(prototype);
-                Destroy(inst.data);
+                Destroy(inst.data.gameObject);
             }
         }
     }
