@@ -63,7 +63,7 @@ namespace AnimationInstancingModule.Runtime
 
     public class VertexCache
     {
-        public int                              nameHash;               // mesh + materials
+        public int                              nameHash;               // mesh name's hash
         public Mesh                             mesh;
         public Dictionary<int, MaterialBlock>   matBlockList            = new Dictionary<int, MaterialBlock>();      // 同一个mesh可能搭配不同材质使用  key: materials' hash code
         public Vector4[]                        weight;                 // weight.Length == mesh.vertexCount
