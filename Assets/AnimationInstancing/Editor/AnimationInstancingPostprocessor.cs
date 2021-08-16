@@ -7,7 +7,7 @@ using AnimationInstancingModule.Runtime;
 
 namespace AnimationInstancingModule.Editor
 {
-    public class AnimationInstancingPostprocessor : AssetPostprocessor
+    public class AnimationTexturePostprocessor : AssetPostprocessor
     {
         void OnPreprocessModel()
         {
