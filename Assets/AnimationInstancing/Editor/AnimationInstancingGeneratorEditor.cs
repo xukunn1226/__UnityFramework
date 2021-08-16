@@ -115,42 +115,11 @@ namespace AnimationInstancingModule.Editor
                 //     }
                 //     else if(m_Target.fbx != fbx)
                 //     {
-                //         SkinnedMeshRenderer[] meshRender = m_Target.GetComponentsInChildren<SkinnedMeshRenderer>();
-                //         Transform[] boneTransform = AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose);
-
-                //         // 筛选出除骨骼节点之外的节点
-                //         var allTrans = m_Target.GetComponentsInChildren<Transform>().ToList();
-                //         allTrans.RemoveAll(q => boneTransform.Contains(q));
-
-                //         m_Target.m_SelectExtraBone.Clear();
-                //         for (int i = 0; i != allTrans.Count; ++i)
-                //         {
-                //             m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
-                //         }
+                //         UpdateSelectExtraBone();
                 //     }
                 //     m_Target.fbx = fbx;                    
                 //     EditorUtility.SetDirty(m_Target);
                 // }
-
-                // find all extra bones
-                if (m_Target.m_SelectExtraBone.Count == 0)
-                {
-                    SkinnedMeshRenderer[] meshRender = m_LODs[0].GetComponentsInChildren<SkinnedMeshRenderer>();
-                    List<Transform> boneTransform = new List<Transform>();
-                    AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose, ref boneTransform);
-
-                    // 筛选出除骨骼节点之外的节点
-                    var allTrans = m_LODs[0].GetComponentsInChildren<Transform>().ToList();
-                    allTrans.RemoveAll(q => boneTransform.Contains(q));
-
-                    m_Target.m_SelectExtraBone.Clear();
-                    for(int i = 0; i != allTrans.Count; ++i)
-                    {
-                        if(m_Target.m_SelectExtraBone.ContainsKey(allTrans[i].name))
-                            continue;
-                        m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
-                    }
-                }
 
                 if (m_Target.m_SelectExtraBone.Count > 0)
                 {
@@ -174,8 +143,28 @@ namespace AnimationInstancingModule.Editor
 
         private void RefreshAttachment()
         {
-            m_Target.m_SelectExtraBone.Clear();
+            UpdateSelectExtraBone();
             EditorUtility.SetDirty(m_Target);
+        }
+
+        // find all extra bones
+        private void UpdateSelectExtraBone()
+        {
+            SkinnedMeshRenderer[] meshRender = m_LODs[0].GetComponentsInChildren<SkinnedMeshRenderer>();
+            List<Transform> boneTransform = new List<Transform>();
+            AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref m_BindPose, ref boneTransform);
+
+            // 筛选出除骨骼节点之外的节点
+            var allTrans = m_LODs[0].GetComponentsInChildren<Transform>().ToList();
+            allTrans.RemoveAll(q => boneTransform.Contains(q));
+
+            m_Target.m_SelectExtraBone.Clear();
+            for (int i = 0; i != allTrans.Count; ++i)
+            {
+                if (m_Target.m_SelectExtraBone.ContainsKey(allTrans[i].name))
+                    continue;
+                m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
+            }
         }
 
         private void DrawAnimationClips()
@@ -276,7 +265,7 @@ namespace AnimationInstancingModule.Editor
                     return false;
                 });
 
-                int framesToBake = clip ? (int)(clip.length * m_Target.fps / 1.0f) : 1;
+                int framesToBake = clip ? m_Target.CalculateTotalFrames(clip.length, m_Target.fps) : 1;
                 framesToBake = Mathf.Clamp(framesToBake, 1, framesToBake);
                 GUILayout.BeginHorizontal();
                 {

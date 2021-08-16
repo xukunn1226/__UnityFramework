@@ -42,7 +42,7 @@ namespace AnimationInstancingModule.Runtime
         private BoundingSphere          m_BoundingSphere;
         [NonSerialized] public int      layer;
         [NonSerialized] public bool     visible             = true;
-        private int                     m_BonePerVertex     = 4;
+        // private int                     m_BonePerVertex     = 4;
         public string                   defaultAnim;
         private bool                    m_CachedPause;
         private int                     m_TriggerEventIndex = -1;                       // 已触发的动画事件
@@ -62,15 +62,15 @@ namespace AnimationInstancingModule.Runtime
             m_BoundingSphere = new BoundingSphere(worldTransform.position, m_Radius);
             layer = gameObject.layer;
 
-            switch(QualitySettings.skinWeights)
-            {
-                case SkinWeights.OneBone:
-                    m_BonePerVertex = 1;
-                    break;
-                case SkinWeights.TwoBones:
-                    m_BonePerVertex = 2;
-                    break;
-            }
+            // switch(QualitySettings.skinWeights)
+            // {
+            //     case SkinWeights.OneBone:
+            //         m_BonePerVertex = 1;
+            //         break;
+            //     case SkinWeights.TwoBones:
+            //         m_BonePerVertex = 2;
+            //         break;
+            // }
 
             m_PreAnimationIndex = -1;
             m_CurAnimationIndex = -1;

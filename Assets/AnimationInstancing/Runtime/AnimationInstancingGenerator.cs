@@ -164,8 +164,8 @@ namespace AnimationInstancingModule.Runtime
                 m_WorkingBakeInfo = m_BakeInfo[m_CurWorkingBakeInfoIndex];
 
                 m_WorkingBakeInfo.boneMatrix = new List<Matrix4x4[]>();
-                m_WorkingBakeInfo.animator.gameObject.transform.position = Vector3.zero;
-                m_WorkingBakeInfo.animator.gameObject.transform.rotation = Quaternion.identity;
+                // m_WorkingBakeInfo.animator.gameObject.transform.position = Vector3.zero;
+                // m_WorkingBakeInfo.animator.gameObject.transform.rotation = Quaternion.identity;
                 m_WorkingBakeInfo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
                 m_WorkingBakeInfo.animator.gameObject.SetActive(true);
                 m_WorkingBakeInfo.animator.Update(0);       // 不然会报warning：Animator does not have an AnimatorController
@@ -397,10 +397,15 @@ namespace AnimationInstancingModule.Runtime
             m_TextureBlockHeight = boneTransform.Count;
 
             int pixels = boneTransform.Count * frames.Sum() * 4;             // 总像素数
-            int side = Mathf.CeilToInt(Mathf.Sqrt(pixels));
+            int side = Mathf.Max(Mathf.CeilToInt(Mathf.Sqrt(pixels)), m_TextureBlockHeight);
 
             textureHeight = MathUtility.AroundTo(side / boneTransform.Count * boneTransform.Count, 4);      // 取4的倍数
-            textureWidth = MathUtility.AroundTo((int)(1.0f * pixels / (textureHeight == 0 ? 1 : textureHeight) + 0.5f), 4);
+            // textureWidth = MathUtility.AroundTo((int)(1.0f * pixels / (textureHeight == 0 ? 1 : textureHeight) + 0.5f), 4);
+
+            // 贴图height不变情况下拓宽width
+            int yBlockNum = textureHeight / boneTransform.Count;
+            int xBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / yBlockNum);
+            textureWidth = MathUtility.AroundTo(xBlockNum * m_TextureBlockWidth, 4);
 
             Debug.Assert(textureWidth * textureHeight >= pixels);
         }
@@ -426,6 +431,7 @@ namespace AnimationInstancingModule.Runtime
                 int frameCount = m_BakeInfo[i].boneMatrix.Count;
                 for(int j = 0; j < frameCount; ++j)
                 {
+                    // Debug.Log($"{j}  {pixelx}  {pixely}");
                     Color[] colors = Convert2Color(m_BakeInfo[i].boneMatrix[j]);        // 一块block数据（boneCount * 4），即一帧
                     m_BakedBoneTexture.SetPixels(pixelx, pixely, m_TextureBlockWidth, m_TextureBlockHeight, colors);
 
@@ -525,7 +531,7 @@ namespace AnimationInstancingModule.Runtime
             
             // add SoftObject component
             SoftObject texSoftObject = animDataPrefab.AddComponent<SoftObject>();
-            texSoftObject.assetPath = GetAnimationTextureFilename();
+            texSoftObject.assetPath = GetAnimationTextureFilename().ToLower();
             animData.animTexSoftObject = texSoftObject;
 
             // save Prefab
@@ -565,16 +571,19 @@ namespace AnimationInstancingModule.Runtime
             int lodLevel = 0;
             foreach(var lod in m_BakedLODs)
             {
-                LODInfo info = new LODInfo();
-                info.lodLevel = lodLevel++;
+                LODInfo info = new LODInfo();                
                 SkinnedMeshRenderer[] smrs = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach(var smr in smrs)
                 {
                     RendererCache cache = new RendererCache();
                     cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(smr));
                     cache.materials = smr.sharedMaterials;
+                    cache.bonePerVertex = lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1);
+                    // cache.weights = GetBoneWeights(cache.mesh, cache.bonePerVertex);
+                    cache.boneIndices = GetBoneIndices(cache.mesh, smr, m_BoneTransform);
                     info.rendererCacheList.Add(cache);
                 }
+                info.lodLevel = lodLevel++;
                 animInst.lodInfos.Add(info);
             }
             animInst.radius = CalcBoundingSphere();
@@ -582,6 +591,73 @@ namespace AnimationInstancingModule.Runtime
             // step4. 保存新的prefab
             PrefabUtility.SaveAsPrefabAsset(inst, GetAnimationInstancingPrefabFilename());
             DestroyImmediate(inst);
+        }
+
+        private Vector4[] GetBoneWeights(Mesh mesh, int bonePerVertex)
+        {
+            Vector4[] weights = new Vector4[mesh.vertexCount];
+            BoneWeight[] boneWeights = mesh.boneWeights;
+            for(int i = 0; i < mesh.vertexCount; ++i)
+            {
+                weights[i].x = boneWeights[i].weight0;
+                weights[i].y = boneWeights[i].weight1;
+                weights[i].z = boneWeights[i].weight2;
+                weights[i].w = boneWeights[i].weight3;
+
+                switch (bonePerVertex)
+                {
+                    case 3:
+                        {
+                            float scale = 1.0f / (weights[i].x + weights[i].y + weights[i].z);
+                            weights[i].x = weights[i].x * scale;
+                            weights[i].y = weights[i].y * scale;
+                            weights[i].z = weights[i].z * scale;
+                            weights[i].w = -0.1f;
+                        }
+                        break;
+                    case 2:
+                        {
+                            float scale = 1.0f / (weights[i].x + weights[i].y);
+                            weights[i].x = weights[i].x * scale;
+                            weights[i].y = weights[i].y * scale;
+                            weights[i].z = -0.1f;
+                            weights[i].w = -0.1f;
+                        }
+                        break;
+                    case 1:
+                        {
+                            weights[i].x = 1.0f;
+                            weights[i].y = -0.1f;
+                            weights[i].z = -0.1f;
+                            weights[i].w = -0.1f;
+                        }
+                        break;
+                }
+            }
+
+            return weights;
+        }
+
+        private Vector4[] GetBoneIndices(Mesh mesh, SkinnedMeshRenderer render, List<Transform> boneTransform)
+        {
+            int[] realBoneIndices = new int[render.bones.Length];       // 记录render.bones中每根骨骼在boneTransform（最终记录在AnimationTexture）中的索引值
+            for(int i = 0; i < render.bones.Length; ++i)
+            {
+                int hashName = render.bones[i].name.GetHashCode();
+                realBoneIndices[i] = boneTransform.FindIndex(item => ( item.name.GetHashCode() == hashName ));
+            }
+
+            Vector4[] boneIndices = new Vector4[mesh.vertexCount];
+            BoneWeight[] boneWeights = mesh.boneWeights;
+            for(int i = 0; i < mesh.vertexCount; ++i)
+            {
+                boneIndices[i].x = realBoneIndices[boneWeights[i].boneIndex0];
+                boneIndices[i].y = realBoneIndices[boneWeights[i].boneIndex1];
+                boneIndices[i].z = realBoneIndices[boneWeights[i].boneIndex2];
+                boneIndices[i].w = realBoneIndices[boneWeights[i].boneIndex3];
+            }
+
+            return boneIndices;
         }
 
         private float CalcBoundingSphere()
@@ -595,7 +671,7 @@ namespace AnimationInstancingModule.Runtime
             }
             float radius = bound.size.x > bound.size.y ? bound.size.x : bound.size.y;
             radius = radius > bound.size.z ? radius : bound.size.z;
-            return radius;
+            return (float)Math.Round(radius, 2);
         }
         
         // root/[CustomPrefab1]

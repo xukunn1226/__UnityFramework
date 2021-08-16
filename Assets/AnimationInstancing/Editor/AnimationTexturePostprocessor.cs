@@ -9,13 +9,29 @@ namespace AnimationInstancingModule.Editor
 {
     public class AnimationTexturePostprocessor : AssetPostprocessor
     {
+        void OnPreprocessModel()
+        {
+            if(UnityEngine.Application.isBatchMode)
+                return;
+            
+            string path = assetPath.Substring(0, AnimationInstancingGenerator.s_AnimationInstancingRoot.Length);
+            if(string.Compare(path, AnimationInstancingGenerator.s_AnimationInstancingRoot, true) != 0)
+                return;
+
+            ModelImporter mi = assetImporter as ModelImporter;
+            mi.isReadable = true;
+        }
+
         void OnPreprocessTexture()
         {
-            TextureImporter ti = assetImporter as TextureImporter;
-            string path = ti.assetPath.Substring(0, AnimationInstancingGenerator.s_AnimationDataPath.Length);
+            if(UnityEngine.Application.isBatchMode)
+                return;
+
+            string path = assetPath.Substring(0, AnimationInstancingGenerator.s_AnimationDataPath.Length);
             if(string.Compare(path, AnimationInstancingGenerator.s_AnimationDataPath, true) != 0)
                 return;
             
+            TextureImporter ti = assetImporter as TextureImporter;
             // 设置平台无关属性
             TextureImporterSettings importerSettings = new TextureImporterSettings();
             ti.ReadTextureSettings(importerSettings);
