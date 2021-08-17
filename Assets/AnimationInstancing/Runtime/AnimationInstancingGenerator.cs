@@ -645,6 +645,7 @@ namespace AnimationInstancingModule.Runtime
             {
                 int hashName = render.bones[i].name.GetHashCode();
                 realBoneIndices[i] = boneTransform.FindIndex(item => ( item.name.GetHashCode() == hashName ));
+                Debug.Assert(realBoneIndices[i] != -1);
             }
 
             Vector4[] boneIndices = new Vector4[mesh.vertexCount];

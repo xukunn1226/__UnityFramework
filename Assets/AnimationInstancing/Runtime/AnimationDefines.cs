@@ -66,14 +66,19 @@ namespace AnimationInstancingModule.Runtime
         public int                              nameHash;               // mesh name's hash
         public Mesh                             mesh;
         public Dictionary<int, MaterialBlock>   matBlockList            = new Dictionary<int, MaterialBlock>();      // 同一个mesh可能搭配不同材质使用  key: materials' hash code
-        public Vector4[]                        weight;                 // weight.Length == mesh.vertexCount
-        public Vector4[]                        boneIndex;              // boneIndex.Length == mesh.vertexCount
-        public Texture2D                        animTexture;            // mesh对应的动画数据
+        public Vector4[]                        weights;                // weight.Length == mesh.vertexCount
+        public Vector4[]                        boneIndices;            // boneIndex.Length == mesh.vertexCount
         public int                              blockWidth;
         public int                              blockHeight;
         public ShadowCastingMode                shadowCastingMode;
         public bool                             receiveShadows;
         public int                              layer;
+        public delegate Texture2D animTextureHandler();
+        public event animTextureHandler onGetAnimTexture;                 // mesh对应的动画数据
+        public Texture2D GetAnimTexture()
+        {
+            return onGetAnimTexture?.Invoke();
+        }
     }
 
     public class MaterialBlock

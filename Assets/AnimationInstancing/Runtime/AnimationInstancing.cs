@@ -78,7 +78,10 @@ namespace AnimationInstancingModule.Runtime
             m_CurFrameIndex = 0;
 
             // register
-            // 把当前lod注册到manager
+            AnimationInstancingManager.Instance.AddInstance(this);
+            
+            // 把当前lod注册到manager，如何获取当前lod level？
+            AnimationInstancingManager.Instance.AddVertexCache(this, GetCurrentLODInfo());
         }
 
         private void Start()
@@ -98,6 +101,7 @@ namespace AnimationInstancingModule.Runtime
             AnimationDataManager.Instance.Unload(prototype);
             
             // unregister
+            AnimationInstancingManager.Instance.RemoveInstance(this);
         }
 
         private void OnEnable()
@@ -193,6 +197,11 @@ namespace AnimationInstancingModule.Runtime
                 return animDataInst.aniInfos[m_PreAnimationIndex];
             }
             return null;
+        }
+
+        public LODInfo GetCurrentLODInfo()
+        {
+            return lodInfos[lodLevel];
         }
 
         void Update()
