@@ -20,12 +20,15 @@ namespace AnimationInstancingModule.Runtime
 
         private void UpdateInstancing()
         {
-            Dictionary<int, AnimationInstancing>.Enumerator e = m_AnimInstancingList.GetEnumerator();
-            while(e.MoveNext())
+            foreach(var obj in m_AnimInstancingList)
             {
-                AnimationInstancing inst = e.Current.Value;
+                AnimationInstancing inst = obj.Value;
 
                 inst.UpdateAnimation();
+
+                if(!inst.visible)
+                    continue;
+
                 inst.UpdateLod();
 
                 LODInfo lodInfo = inst.GetCurrentLODInfo();
@@ -33,13 +36,45 @@ namespace AnimationInstancingModule.Runtime
                 {
                     VertexCache vertexCache = rendererCache.vertexCache;
                     MaterialBlock materialBlock = rendererCache.materialBlock;
+                    ++materialBlock.instancingCount;
+
+                    materialBlock.worldMatrix[materialBlock.instancingCount - 1] = inst.worldTransform.localToWorldMatrix;
+                    materialBlock.frameIndex[materialBlock.instancingCount - 1] = inst.GetGlobalCurFrameIndex();
+                    materialBlock.preFrameIndex[materialBlock.instancingCount - 1] = inst.GetGlobalPreFrameIndex();
+                    materialBlock.transitionProgress[materialBlock.instancingCount - 1] = inst.transitionProgress;
                 }
             }
         }
 
         private void Render()
         {
+            foreach(var obj in m_VertexCachePool)
+            {
+                VertexCache vertexCache = obj.Value;
+                foreach(var obj1 in vertexCache.matBlockList)
+                {
+                    MaterialBlock materialBlock = obj1.Value;
+                    if(materialBlock.instancingCount == 0)
+                        continue;
 
+                    for(int i = 0; i < materialBlock.subMeshCount; ++i)
+                    {
+                        materialBlock.propertyBlocks[i].SetFloatArray("frameIndex", materialBlock.frameIndex);
+                        materialBlock.propertyBlocks[i].SetFloatArray("preFrameIndex", materialBlock.preFrameIndex);
+                        materialBlock.propertyBlocks[i].SetFloatArray("transitionProgress", materialBlock.transitionProgress);
+                        Graphics.DrawMeshInstanced(vertexCache.mesh,
+                                                   i,
+                                                   materialBlock.materials[i],
+                                                   materialBlock.worldMatrix,
+                                                   materialBlock.instancingCount,
+                                                   materialBlock.propertyBlocks[i],
+                                                   vertexCache.shadowCastingMode,
+                                                   vertexCache.receiveShadows,
+                                                   vertexCache.layer);
+                    }
+                    materialBlock.instancingCount = 0;
+                }
+            }
         }
 
         public void AddInstance(AnimationInstancing inst)

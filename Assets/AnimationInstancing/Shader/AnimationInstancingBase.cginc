@@ -28,12 +28,12 @@ UNITY_INSTANCING_BUFFER_END(Props)
 
 half4x4 loadMatFromTexture(uint frameIndex, uint boneIndex)
 {
-	uint blockCount = _boneTextureWidth / _boneTextureBlockWidth;
+	uint blockCount = 1.0 * _boneTextureWidth / _boneTextureBlockWidth;
 	int2 uv;
 	uv.y = frameIndex / blockCount * _boneTextureBlockHeight;
-	uv.x = _boneTextureBlockWidth * (frameIndex - _boneTextureWidth / _boneTextureBlockWidth * uv.y);
+	uv.x = _boneTextureBlockWidth * (frameIndex - 1.0 * _boneTextureWidth / _boneTextureBlockWidth * uv.y);
 
-	int matCount = _boneTextureBlockWidth / 4;
+	int matCount = _boneTextureBlockWidth * 0.25;
 	uv.x = uv.x + (boneIndex % matCount) * 4;
 	uv.y = uv.y + boneIndex / matCount;
 

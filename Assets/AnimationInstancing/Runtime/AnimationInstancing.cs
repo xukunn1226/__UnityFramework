@@ -42,7 +42,6 @@ namespace AnimationInstancingModule.Runtime
         private BoundingSphere          m_BoundingSphere;
         [NonSerialized] public int      layer;
         [NonSerialized] public bool     visible             = true;
-        // private int                     m_BonePerVertex     = 4;
         public string                   defaultAnim;
         private bool                    m_CachedPause;
         private int                     m_TriggerEventIndex = -1;                       // 已触发的动画事件
@@ -61,16 +60,6 @@ namespace AnimationInstancingModule.Runtime
             worldTransform = GetComponent<Transform>();
             m_BoundingSphere = new BoundingSphere(worldTransform.position, m_Radius);
             layer = gameObject.layer;
-
-            // switch(QualitySettings.skinWeights)
-            // {
-            //     case SkinWeights.OneBone:
-            //         m_BonePerVertex = 1;
-            //         break;
-            //     case SkinWeights.TwoBones:
-            //         m_BonePerVertex = 2;
-            //         break;
-            // }
 
             m_PreAnimationIndex = -1;
             m_CurAnimationIndex = -1;
@@ -204,11 +193,25 @@ namespace AnimationInstancingModule.Runtime
             return lodInfos[lodLevel];
         }
 
-        void Update()
+        // 当前动画帧在AnimTexture的帧号
+        public int GetGlobalCurFrameIndex()
         {
-            UpdateAnimation();
-            UpdateLod();
+             AnimationInfo info = GetCurrentAnimationInfo();
+             return info != null ? (info.startFrameIndex + Mathf.RoundToInt(m_CurFrameIndex)) : -1;
         }
+
+        // 上一个动画在AnimTexture的帧号
+        public int GetGlobalPreFrameIndex()
+        {
+            AnimationInfo info = GetPreAnimationInfo();
+            return info != null ? (info.startFrameIndex + Mathf.RoundToInt(m_PreFrameIndex)) : -1;
+        }
+
+        // void Update()
+        // {
+        //     UpdateAnimation();
+        //     UpdateLod();
+        // }
 
         public void UpdateLod()
         {
