@@ -7,75 +7,10 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationInstancingManager : SingletonMono<AnimationInstancingManager>
     {
-        private const int                               kMaxInstanceCount           = 1024;         // 最大允许创建的实例化数量
+        private const int                               kMaxInstanceCount           = 1023;         // 最大允许创建的实例化数量
         static public int                               sMaxRenderingInstanceCount  = 512;          // 一次最多可渲染的实例化数量
         private Dictionary<int, VertexCache>            m_VertexCachePool           = new Dictionary<int, VertexCache>();
         private Dictionary<int, AnimationInstancing>    m_AnimInstancingList        = new Dictionary<int, AnimationInstancing>();
-
-        private void Update()
-        {
-            UpdateInstancing();
-            Render();
-        }
-
-        private void UpdateInstancing()
-        {
-            foreach(var obj in m_AnimInstancingList)
-            {
-                AnimationInstancing inst = obj.Value;
-
-                inst.UpdateAnimation();
-
-                if(!inst.visible)
-                    continue;
-
-                inst.UpdateLod();
-
-                LODInfo lodInfo = inst.GetCurrentLODInfo();
-                foreach(var rendererCache in lodInfo.rendererCacheList)
-                {
-                    VertexCache vertexCache = rendererCache.vertexCache;
-                    MaterialBlock materialBlock = rendererCache.materialBlock;
-                    ++materialBlock.instancingCount;
-
-                    materialBlock.worldMatrix[materialBlock.instancingCount - 1] = inst.worldTransform.localToWorldMatrix;
-                    materialBlock.frameIndex[materialBlock.instancingCount - 1] = inst.GetGlobalCurFrameIndex();
-                    materialBlock.preFrameIndex[materialBlock.instancingCount - 1] = inst.GetGlobalPreFrameIndex();
-                    materialBlock.transitionProgress[materialBlock.instancingCount - 1] = inst.transitionProgress;
-                }
-            }
-        }
-
-        private void Render()
-        {
-            foreach(var obj in m_VertexCachePool)
-            {
-                VertexCache vertexCache = obj.Value;
-                foreach(var obj1 in vertexCache.matBlockList)
-                {
-                    MaterialBlock materialBlock = obj1.Value;
-                    if(materialBlock.instancingCount == 0)
-                        continue;
-
-                    for(int i = 0; i < materialBlock.subMeshCount; ++i)
-                    {
-                        materialBlock.propertyBlocks[i].SetFloatArray("frameIndex", materialBlock.frameIndex);
-                        materialBlock.propertyBlocks[i].SetFloatArray("preFrameIndex", materialBlock.preFrameIndex);
-                        materialBlock.propertyBlocks[i].SetFloatArray("transitionProgress", materialBlock.transitionProgress);
-                        Graphics.DrawMeshInstanced(vertexCache.mesh,
-                                                   i,
-                                                   materialBlock.materials[i],
-                                                   materialBlock.worldMatrix,
-                                                   materialBlock.instancingCount,
-                                                   materialBlock.propertyBlocks[i],
-                                                   vertexCache.shadowCastingMode,
-                                                   vertexCache.receiveShadows,
-                                                   vertexCache.layer);
-                    }
-                    materialBlock.instancingCount = 0;
-                }
-            }
-        }
 
         public void AddInstance(AnimationInstancing inst)
         {
@@ -87,6 +22,7 @@ namespace AnimationInstancingModule.Runtime
 
         public void RemoveInstance(AnimationInstancing inst)
         {
+            RemoveAllVertexCache(inst);
             m_AnimInstancingList.Remove(inst.GetInstanceID());
         }
 
@@ -94,9 +30,53 @@ namespace AnimationInstancingModule.Runtime
         {
             foreach(var rendererCache in lodInfo.rendererCacheList)
             {
+                if(rendererCache.isUsed)
+                    continue;
+
                 VertexCache vertexCache = GetOrCreateVertexCache(inst, rendererCache);
                 rendererCache.vertexCache = vertexCache;
                 rendererCache.materialBlock = GetOrCreateMaterialBlock(vertexCache, rendererCache);
+                rendererCache.isUsed = true;
+            }
+        }
+
+        // 删除注册过的所有VertexCache
+        private void RemoveAllVertexCache(AnimationInstancing inst)
+        {
+            foreach(var lodInfo in inst.lodInfos)
+            {
+                foreach(var rendererCache in lodInfo.rendererCacheList)
+                {
+                    if(!rendererCache.isUsed)
+                        continue;
+
+                    VertexCache vertexCache;
+                    int nameHash = rendererCache.mesh.name.GetHashCode();
+                    m_VertexCachePool.TryGetValue(nameHash, out vertexCache);
+                    Debug.Assert(vertexCache != null);
+                    // remove MaterialBlock
+                    {
+                        int materialsHashCode = GetMaterialsHashCode(rendererCache.mesh, rendererCache.materials);
+                        MaterialBlock materialBlock;
+                        vertexCache.matBlockList.TryGetValue(materialsHashCode, out materialBlock);
+                        Debug.Assert(materialBlock != null);
+                        --materialBlock.refCount;
+                        if(materialBlock.refCount == 0)
+                        {
+                            vertexCache.matBlockList.Remove(materialsHashCode);
+                        }
+                    }
+
+                    // remove VertexCache
+                    {
+                        vertexCache.onGetAnimTexture -= inst.animDataInst.GetAnimTexture;
+                        --vertexCache.refCount;
+                        if(vertexCache.refCount == 0)
+                        {
+                            m_VertexCachePool.Remove(nameHash);
+                        }
+                    }
+                }
             }
         }
 
@@ -112,9 +92,9 @@ namespace AnimationInstancingModule.Runtime
                 vertexCache.mesh = rendererCache.mesh;
                 vertexCache.weights = GetBoneWeights(rendererCache.mesh, rendererCache.bonePerVertex);
                 vertexCache.boneIndices = rendererCache.boneIndices;
-                vertexCache.onGetAnimTexture += inst.prototype.GetAnimTexture;
-                vertexCache.blockWidth = inst.prototype.textureBlockWidth;
-                vertexCache.blockHeight = inst.prototype.textureBlockHeight;
+                vertexCache.onGetAnimTexture += inst.animDataInst.GetAnimTexture;
+                vertexCache.blockWidth = inst.animDataInst.textureBlockWidth;
+                vertexCache.blockHeight = inst.animDataInst.textureBlockHeight;
                 vertexCache.shadowCastingMode = inst.shadowCastingMode;
                 vertexCache.receiveShadows = inst.receiveShadows;
                 vertexCache.layer = inst.layer;
@@ -124,6 +104,7 @@ namespace AnimationInstancingModule.Runtime
                 // todo: 能否把weights，boneIndices等数据序列化至mesh，这样mesh就无需打开read/write enable
                 UploadMeshData(vertexCache);
             }
+            ++vertexCache.refCount;
             return vertexCache;
         }
 
@@ -137,24 +118,37 @@ namespace AnimationInstancingModule.Runtime
                 materialBlock.subMeshCount = rendererCache.mesh.subMeshCount;
                 materialBlock.materials = rendererCache.materials;
                 materialBlock.propertyBlocks = new MaterialPropertyBlock[rendererCache.materials.Length];
+                for(int i = 0; i < rendererCache.materials.Length; ++i)
+                {
+                    materialBlock.propertyBlocks[i] = new MaterialPropertyBlock();
+                }
                 materialBlock.instancingCount = 0;
                 materialBlock.worldMatrix = new Matrix4x4[kMaxInstanceCount];
                 materialBlock.frameIndex = new float[kMaxInstanceCount];
                 materialBlock.preFrameIndex = new float[kMaxInstanceCount];
                 materialBlock.transitionProgress = new float[kMaxInstanceCount];
-                for(int i = 0; i < rendererCache.mesh.subMeshCount; ++i)
-                {
-                    Texture2D tex = vertexCache.GetAnimTexture();
-                    Debug.Assert(tex != null);
-                    materialBlock.materials[i].SetTexture("_boneTexture", tex);
-                    materialBlock.materials[i].SetInt("_boneTextureWidth", tex.width);
-                    materialBlock.materials[i].SetInt("_boneTextureHeight", tex.height);
-                    materialBlock.materials[i].SetInt("_boneTextureBlockWidth", vertexCache.blockWidth);
-                    materialBlock.materials[i].SetInt("_boneTextureBlockHeight", vertexCache.blockHeight);
-                }
                 vertexCache.matBlockList.Add(materialsHashCode, materialBlock);
+                
+                InitMaterialBlock(materialBlock, vertexCache);
             }
+            ++materialBlock.refCount;
             return materialBlock;
+        }
+
+        private void InitMaterialBlock(MaterialBlock block, VertexCache vertexCache)
+        {
+            if(block.isInitMaterial || vertexCache.GetAnimTexture() == null)
+                return;
+
+            block.isInitMaterial = true;
+            for(int i = 0; i < block.subMeshCount; ++i)
+            {
+                block.materials[i].SetTexture("_boneTexture", vertexCache.GetAnimTexture());
+                block.materials[i].SetInt("_boneTextureWidth", vertexCache.GetAnimTexture().width);
+                block.materials[i].SetInt("_boneTextureHeight", vertexCache.GetAnimTexture().height);
+                block.materials[i].SetInt("_boneTextureBlockWidth", vertexCache.blockWidth);
+                block.materials[i].SetInt("_boneTextureBlockHeight", vertexCache.blockHeight);
+            }
         }
         
         private Vector4[] GetBoneWeights(Mesh mesh, int bonePerVertex)
@@ -225,6 +219,84 @@ namespace AnimationInstancingModule.Runtime
                 combinedName += string.Format($"_{materials[i].name}");
             }
             return combinedName.GetHashCode();
+        }
+        
+        private void Update()
+        {
+            UpdateInstancing();
+            Render();
+        }
+
+        private void UpdateInstancing()
+        {
+            foreach(var obj in m_AnimInstancingList)
+            {
+                AnimationInstancing inst = obj.Value;
+
+                inst.UpdateAnimation();
+
+                if(!inst.visible)
+                    continue;
+
+                inst.UpdateLod();
+
+                LODInfo lodInfo = inst.GetCurrentLODInfo();
+                foreach(var rendererCache in lodInfo.rendererCacheList)
+                {
+                    // if(!rendererCache.active)
+                    //     continue;
+
+                    // VertexCache vertexCache = rendererCache.vertexCache;
+                    MaterialBlock materialBlock = rendererCache.materialBlock;
+                    ++materialBlock.instancingCount;
+
+                    materialBlock.worldMatrix[materialBlock.instancingCount - 1] = inst.worldTransform.localToWorldMatrix;
+                    materialBlock.frameIndex[materialBlock.instancingCount - 1] = inst.GetGlobalCurFrameIndex();
+                    materialBlock.preFrameIndex[materialBlock.instancingCount - 1] = inst.GetGlobalPreFrameIndex();
+                    materialBlock.transitionProgress[materialBlock.instancingCount - 1] = inst.transitionProgress;
+                }
+            }
+        }
+
+        private void Render()
+        {
+            foreach(var obj in m_VertexCachePool)
+            {
+                VertexCache vertexCache = obj.Value;
+                foreach(var obj1 in vertexCache.matBlockList)
+                {
+                    MaterialBlock materialBlock = obj1.Value;
+
+                    int instancingCount = materialBlock.instancingCount;
+                    materialBlock.instancingCount = 0;      // 清空计数，UpdateInstancing重新统计
+                    
+                    if(instancingCount == 0)
+                        continue;
+
+                    // 因有资源异步加载，在轮询中检测
+                    InitMaterialBlock(materialBlock, vertexCache);
+                    if(!materialBlock.isInitMaterial)
+                        continue;       // 资源仍未加载
+
+                    for(int i = 0; i < materialBlock.subMeshCount; ++i)
+                    {
+                        materialBlock.propertyBlocks[i].SetFloatArray("frameIndex", materialBlock.frameIndex);
+                        materialBlock.propertyBlocks[i].SetFloatArray("preFrameIndex", materialBlock.preFrameIndex);
+                        materialBlock.propertyBlocks[i].SetFloatArray("transitionProgress", materialBlock.transitionProgress);
+
+                        Graphics.DrawMeshInstanced(vertexCache.mesh,
+                                                   i,
+                                                   materialBlock.materials[i],
+                                                   materialBlock.worldMatrix,
+                                                   instancingCount,
+                                                   materialBlock.propertyBlocks[i],
+                                                   vertexCache.shadowCastingMode,
+                                                   vertexCache.receiveShadows,
+                                                   vertexCache.layer);
+                    }
+                    materialBlock.instancingCount = 0;
+                }
+            }
         }
     }
 }

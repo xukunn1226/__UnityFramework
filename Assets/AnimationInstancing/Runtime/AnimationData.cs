@@ -17,7 +17,7 @@ namespace AnimationInstancingModule.Runtime
         private AnimationInfo               m_SearchInfo;
         private ComparerHash                m_Comparer;
         [SoftObject] public SoftObject      animTexSoftObject;
-        public Texture2D                    m_AnimTexture;      // 注意：异步加载，可能为NULL
+        private Texture2D                   m_AnimTexture;      // 注意：异步加载，可能为NULL
 
         void Awake()
         {

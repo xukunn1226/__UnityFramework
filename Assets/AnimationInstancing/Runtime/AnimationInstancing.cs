@@ -15,16 +15,15 @@ namespace AnimationInstancingModule.Runtime
         public delegate void onAnimationEvent(string aniName, string evtName, AnimationEvent evt);
         public event onAnimationEvent   OnAnimationEvent;
 
-        public AnimationData            prototype;
+        public AnimationData            prototype;                                      // WARNING: 资源，非实例化数据
         public AnimationData            animDataInst        { get; private set; }
         public List<LODInfo>            lodInfos            = new List<LODInfo>();
-        public int                      lodLevel            { get; private set; }       // 当前使用的lod level
 
         public Transform                worldTransform      { get; private set; }
-        [SerializeField] private float  m_Speed             = 1;                        // 序列化数据
+        [SerializeField] private float  m_Speed             = 1;                        // 预设的速度值，序列化数据
         public float                    speedScale          { get; set; } = 1;
         private float                   m_CacheSpeedScale;
-        public float                    playSpeed           { get { return m_Speed * speedScale; } }
+        public float                    playSpeed           { get { return m_Speed * speedScale; } }        // 最终的实际速度值
         private float                   m_speedParameter    = 1.0f;                     // 某些特性时使用的临时变量，例如pingpong
         [SerializeField] private float  m_Radius            = 1.0f;
         public float                    radius              { get { return m_Radius; } set { m_Radius = value; } }
@@ -43,9 +42,9 @@ namespace AnimationInstancingModule.Runtime
         [NonSerialized] public int      layer;
         [NonSerialized] public bool     visible             = true;
         public string                   defaultAnim;
-        private bool                    m_CachedPause;
         private int                     m_TriggerEventIndex = -1;                       // 已触发的动画事件
         private bool                    m_isAlreadyTriggerEndEvent;                     // 是否已触发动画结束回调
+        private bool                    m_CachedPause;
         public bool                     isPause             { get; set; }
         public bool                     isPlaying           { get { return m_CurAnimationIndex >= 0 && !isPause; } }
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
@@ -68,9 +67,8 @@ namespace AnimationInstancingModule.Runtime
 
             // register
             AnimationInstancingManager.Instance.AddInstance(this);
-            
-            // 把当前lod注册到manager，如何获取当前lod level？
-            AnimationInstancingManager.Instance.AddVertexCache(this, GetCurrentLODInfo());
+
+            // lodLevel = 0;
         }
 
         private void Start()
@@ -164,10 +162,10 @@ namespace AnimationInstancingModule.Runtime
 
             // reset variants
             isPause = false;
-            m_isAlreadyTriggerEndEvent = false;            
-            m_WrapMode = animDataInst.aniInfos[animationIndex].wrapMode;
+            m_isAlreadyTriggerEndEvent = false;
             m_speedParameter = 1.0f;
             m_TriggerEventIndex = -1;
+            m_WrapMode = animDataInst.aniInfos[animationIndex].wrapMode;
         }
 
         public AnimationInfo GetCurrentAnimationInfo()
@@ -207,15 +205,25 @@ namespace AnimationInstancingModule.Runtime
             return info != null ? (info.startFrameIndex + Mathf.RoundToInt(m_PreFrameIndex)) : -1;
         }
 
-        // void Update()
-        // {
-        //     UpdateAnimation();
-        //     UpdateLod();
-        // }
+        private int m_LodLevel = -1;
+        public int lodLevel            
+        { 
+            get { return m_LodLevel; }
+            private set
+            {
+                if(m_LodLevel != value)
+                {
+                    m_LodLevel = Mathf.Clamp(value, 0, lodInfos.Count);
+
+                    // 把当前lod注册到manager
+                    AnimationInstancingManager.Instance.AddVertexCache(this, lodInfos[m_LodLevel]);
+                }
+            }
+        }
 
         public void UpdateLod()
         {
-            lodLevel = 0;
+            lodLevel = 0;            
         }
 
         public void UpdateAnimation()

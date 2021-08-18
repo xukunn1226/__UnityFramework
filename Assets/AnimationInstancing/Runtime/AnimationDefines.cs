@@ -55,10 +55,10 @@ namespace AnimationInstancingModule.Runtime
         public Material[]                       materials;              // materials.Length == mesh.subMeshCount        
         public int                              bonePerVertex   = 4;    // 每顶点受多少骨骼影响
         public Vector4[]                        boneIndices;            // 顶点受哪些骨骼影响，length == mesh.vertexCount 【需要用到render.bones，所以必须预计算序列化】
-        [NonSerialized] public Vector4[]        weights;                // 顶点受4根骨骼影响的权重因子，length == mesh.vertexCount 【数据量较大，运行时计算优于序列化】
+        // [NonSerialized] public Vector4[]        weights;                // 顶点受4根骨骼影响的权重因子，length == mesh.vertexCount 【数据量较大，运行时计算优于序列化】
         [NonSerialized] public VertexCache      vertexCache;
         [NonSerialized] public MaterialBlock    materialBlock;
-        [NonSerialized] public bool             disable;
+        [NonSerialized] public bool             isUsed;                 // 是否使用过
     }
 
     public class VertexCache
@@ -73,8 +73,9 @@ namespace AnimationInstancingModule.Runtime
         public ShadowCastingMode                shadowCastingMode;
         public bool                             receiveShadows;
         public int                              layer;
+        public int                              refCount;               // 
         public delegate Texture2D animTextureHandler();
-        public event animTextureHandler onGetAnimTexture;                 // mesh对应的动画数据
+        public event animTextureHandler onGetAnimTexture;               // mesh对应的动画数据
         public Texture2D GetAnimTexture()
         {
             return onGetAnimTexture?.Invoke();
@@ -91,5 +92,7 @@ namespace AnimationInstancingModule.Runtime
         public float[]                          frameIndex;             // 所有实例播放的当前帧
         public float[]                          preFrameIndex;          // 所有实例播放的上一帧
         public float[]                          transitionProgress;     // 所有实例的过渡参数
+        public int                              refCount;               // 
+        public bool                             isInitMaterial;         // 是否
     }
 }

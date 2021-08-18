@@ -481,16 +481,19 @@ namespace AnimationInstancingModule.Runtime
                 writer.Write(exposeAttachments);
                 if(exposeAttachments)
                 {
-                    writer.Write(m_ExtraBoneInfo.extraBone.Length);
-                    for (int i = 0; i != m_ExtraBoneInfo.extraBone.Length; ++i)
+                    writer.Write(m_ExtraBoneInfo.extraBone != null ? m_ExtraBoneInfo.extraBone.Length : 0);
+                    if(m_ExtraBoneInfo.extraBone != null)
                     {
-                        writer.Write(m_ExtraBoneInfo.extraBone[i]);
-                    }
-                    for (int i = 0; i != m_ExtraBoneInfo.extraBindPose.Length; ++i)
-                    {
-                        for (int j = 0; j != 16; ++j)
+                        for (int i = 0; i != m_ExtraBoneInfo.extraBone.Length; ++i)
                         {
-                            writer.Write(m_ExtraBoneInfo.extraBindPose[i][j]);
+                            writer.Write(m_ExtraBoneInfo.extraBone[i]);
+                        }
+                        for (int i = 0; i != m_ExtraBoneInfo.extraBindPose.Length; ++i)
+                        {
+                            for (int j = 0; j != 16; ++j)
+                            {
+                                writer.Write(m_ExtraBoneInfo.extraBindPose[i][j]);
+                            }
                         }
                     }
                 }

@@ -15,6 +15,7 @@ namespace AnimationInstancingModule.Runtime
 
         private Dictionary<AnimationData, AnimationDataInst> m_AnimationDatas = new Dictionary<AnimationData, AnimationDataInst>();
 
+        // Load须与Unload成对调用
         public AnimationData Load(AnimationData prototype)
         {
             AnimationDataInst inst;
