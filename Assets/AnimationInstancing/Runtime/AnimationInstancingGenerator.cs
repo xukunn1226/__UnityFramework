@@ -386,7 +386,8 @@ namespace AnimationInstancingModule.Runtime
 
         public int CalculateTotalFrames(float length, int fps)
         {
-            return Mathf.CeilToInt(length * fps) + 1;
+            // return Mathf.CeilToInt(length * fps) + 1;
+            return (int)(length * fps);
         }
         
         // 计算动画数据占用的贴图大小
