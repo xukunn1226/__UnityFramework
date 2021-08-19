@@ -397,6 +397,13 @@ namespace AnimationInstancingModule.Runtime
             m_TextureBlockWidth = 4;
             m_TextureBlockHeight = boneTransform.Count;
 
+            // todo: for debug
+            textureWidth = 512;
+            textureHeight = 512;
+            return;
+
+            
+
             int pixels = boneTransform.Count * frames.Sum() * 4;             // 总像素数
             int side = Mathf.Max(Mathf.CeilToInt(Mathf.Sqrt(pixels)), m_TextureBlockHeight);
 

@@ -192,17 +192,17 @@ namespace AnimationInstancingModule.Runtime
         }
 
         // 当前动画帧在AnimTexture的帧号
-        public int GetGlobalCurFrameIndex()
+        public float GetGlobalCurFrameIndex()
         {
              AnimationInfo info = GetCurrentAnimationInfo();
-             return info != null ? (info.startFrameIndex + Mathf.RoundToInt(m_CurFrameIndex)) : -1;
+             return info != null ? (info.startFrameIndex + m_CurFrameIndex) : -1;
         }
 
         // 上一个动画在AnimTexture的帧号
-        public int GetGlobalPreFrameIndex()
+        public float GetGlobalPreFrameIndex()
         {
             AnimationInfo info = GetPreAnimationInfo();
-            return info != null ? (info.startFrameIndex + Mathf.RoundToInt(m_PreFrameIndex)) : -1;
+            return info != null ? (info.startFrameIndex + m_PreFrameIndex) : -1;
         }
 
         private int m_LodLevel = -1;
