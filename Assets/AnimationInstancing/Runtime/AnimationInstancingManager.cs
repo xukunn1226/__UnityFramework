@@ -7,8 +7,8 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationInstancingManager : SingletonMono<AnimationInstancingManager>
     {
-        private const int                               kMaxInstanceCount           = 1023;         // 最大允许创建的实例化数量
-        static public int                               sMaxRenderingInstanceCount  = 512;          // 一次最多可渲染的实例化数量
+        private const int                               kMaxInstanceCount           = 256;          // 最大允许创建的实例化数量
+        static public int                               sMaxRenderingInstanceCount  = 128;          // 一次最多可渲染的实例化数量
         private Dictionary<int, VertexCache>            m_VertexCachePool           = new Dictionary<int, VertexCache>();
         private Dictionary<int, AnimationInstancing>    m_AnimInstancingList        = new Dictionary<int, AnimationInstancing>();
 
@@ -63,6 +63,11 @@ namespace AnimationInstancingModule.Runtime
                         --materialBlock.refCount;
                         if(materialBlock.refCount == 0)
                         {
+                            ArrayPool<Matrix4x4>.Release(materialBlock.worldMatrix);
+                            ArrayPool<float>.Release(materialBlock.frameIndex);
+                            ArrayPool<float>.Release(materialBlock.preFrameIndex);
+                            ArrayPool<float>.Release(materialBlock.transitionProgress);
+                            
                             vertexCache.matBlockList.Remove(materialsHashCode);
                         }
                     }
@@ -122,11 +127,11 @@ namespace AnimationInstancingModule.Runtime
                 {
                     materialBlock.propertyBlocks[i] = new MaterialPropertyBlock();
                 }
-                materialBlock.instancingCount = 0;
-                materialBlock.worldMatrix = new Matrix4x4[kMaxInstanceCount];
-                materialBlock.frameIndex = new float[kMaxInstanceCount];
-                materialBlock.preFrameIndex = new float[kMaxInstanceCount];
-                materialBlock.transitionProgress = new float[kMaxInstanceCount];
+                materialBlock.instancingCount       = 0;
+                materialBlock.worldMatrix           = ArrayPool<Matrix4x4>.Get(kMaxInstanceCount);
+                materialBlock.frameIndex            = ArrayPool<float>.Get(kMaxInstanceCount);
+                materialBlock.preFrameIndex         = ArrayPool<float>.Get(kMaxInstanceCount);
+                materialBlock.transitionProgress    = ArrayPool<float>.Get(kMaxInstanceCount);
                 vertexCache.matBlockList.Add(materialsHashCode, materialBlock);
                 
                 InitMaterialBlock(materialBlock, vertexCache);
@@ -235,7 +240,7 @@ namespace AnimationInstancingModule.Runtime
 
                 inst.UpdateAnimation();
 
-                if(!inst.visible)
+                if(!inst.visible || !inst.enabled)
                     continue;
 
                 inst.UpdateLod();

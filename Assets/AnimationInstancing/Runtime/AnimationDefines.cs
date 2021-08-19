@@ -58,7 +58,7 @@ namespace AnimationInstancingModule.Runtime
         // [NonSerialized] public Vector4[]        weights;                // 顶点受4根骨骼影响的权重因子，length == mesh.vertexCount 【数据量较大，运行时计算优于序列化】
         [NonSerialized] public VertexCache      vertexCache;
         [NonSerialized] public MaterialBlock    materialBlock;
-        [NonSerialized] public bool             isUsed;                 // 是否使用过
+        [NonSerialized] public bool             isUsed;
     }
 
     public class VertexCache

@@ -54,8 +54,6 @@ namespace AnimationInstancingModule.Runtime
             if(prototype == null)
                 throw new ArgumentNullException("prototype[AnimationData]");
 
-            animDataInst = AnimationDataManager.Instance.Load(prototype);
-
             worldTransform = GetComponent<Transform>();
             m_BoundingSphere = new BoundingSphere(worldTransform.position, m_Radius);
             layer = gameObject.layer;
@@ -65,10 +63,9 @@ namespace AnimationInstancingModule.Runtime
             m_PreFrameIndex = 0;
             m_CurFrameIndex = 0;
 
-            // register
-            AnimationInstancingManager.Instance.AddInstance(this);
+            animDataInst = AnimationDataManager.Instance.Load(prototype);
 
-            // lodLevel = 0;
+            AnimationInstancingManager.Instance.AddInstance(this);
         }
 
         private void Start()
@@ -87,20 +84,19 @@ namespace AnimationInstancingModule.Runtime
         {
             AnimationDataManager.Instance.Unload(prototype);
             
-            // unregister
             AnimationInstancingManager.Instance.RemoveInstance(this);
         }
 
         private void OnEnable()
         {
-            visible = true;
+            // visible = true;
 
             isPause = m_CachedPause;
         }
 
         private void OnDisable()
         {
-            visible = false;
+            // visible = false;
 
             m_CachedPause = isPause;
             isPause = true;
