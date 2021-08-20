@@ -72,6 +72,11 @@ namespace Framework.Core
             applicationIsQuitting = true;
             // Debug.LogWarning($"OnDestroy: {gameObject.name}");
         }
+
+        static public bool IsDestroy()
+        {
+            return applicationIsQuitting;
+        }
     }
 
 

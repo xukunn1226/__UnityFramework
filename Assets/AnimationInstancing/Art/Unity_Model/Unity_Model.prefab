@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715835d028d77244cb41cc6f091de094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prototype: {fileID: 5416063993341246469, guid: 001065f5f75ce9845aead54cc92b9156,
+  m_Prototype: {fileID: 5416063993341246469, guid: 001065f5f75ce9845aead54cc92b9156,
     type: 3}
   lodInfos:
   - lodLevel: 0

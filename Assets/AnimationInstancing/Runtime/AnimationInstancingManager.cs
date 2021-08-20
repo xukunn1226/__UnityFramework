@@ -10,20 +10,98 @@ namespace AnimationInstancingModule.Runtime
         private const int                               kMaxInstanceCount           = 256;          // 最大允许创建的实例化数量
         static public int                               sMaxRenderingInstanceCount  = 128;          // 一次最多可渲染的实例化数量
         private Dictionary<int, VertexCache>            m_VertexCachePool           = new Dictionary<int, VertexCache>();
-        private Dictionary<int, AnimationInstancing>    m_AnimInstancingList        = new Dictionary<int, AnimationInstancing>();
+        private List<AnimationInstancing>               m_AnimInstancingList        = new List<AnimationInstancing>();
+
+        private BoundingSphere[]                        m_BoundingSphere;
+        private int                                     m_UsedBoundingSphereCount;
+        private CullingGroup                            m_CullingGroup;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            InitCullingGroup();
+        }
+
+        protected override void OnDestroy()
+        {
+            UninitCullingGroup();
+            base.OnDestroy();
+        }
+
+        private void InitCullingGroup()
+        {
+            m_BoundingSphere = new BoundingSphere[5000];
+            m_CullingGroup = new CullingGroup();
+            m_CullingGroup.targetCamera = Camera.main;
+            m_CullingGroup.onStateChanged = CullingStateChanged;
+            m_CullingGroup.SetBoundingSpheres(m_BoundingSphere);
+            m_UsedBoundingSphereCount = 0;
+            m_CullingGroup.SetBoundingSphereCount(m_UsedBoundingSphereCount);
+        }
+
+        private void UninitCullingGroup()
+        {
+            m_CullingGroup.Dispose();
+            m_CullingGroup = null;
+        }
+
+        private void CullingStateChanged(CullingGroupEvent evt)
+        {
+            Debug.Assert(evt.index < m_UsedBoundingSphereCount);
+            if (evt.hasBecomeVisible)
+            {
+                Debug.Assert(evt.index < m_AnimInstancingList.Count);
+                if (m_AnimInstancingList[evt.index].isActiveAndEnabled)
+                {
+                    m_AnimInstancingList[evt.index].visible = true;
+                }
+            }
+            if (evt.hasBecomeInvisible)
+            {
+                Debug.Assert(evt.index < m_AnimInstancingList.Count);
+                m_AnimInstancingList[evt.index].visible = false;
+            }
+        }
+
+        private void AddBoundingSphere(AnimationInstancing inst)
+        {
+            m_BoundingSphere[m_UsedBoundingSphereCount++] = inst.boundingSphere;
+            m_CullingGroup.SetBoundingSphereCount(m_UsedBoundingSphereCount);
+            inst.visible = m_CullingGroup.IsVisible(m_UsedBoundingSphereCount - 1);
+        }
+
+        private void RemoveBoundingSphere()
+        {
+            --m_UsedBoundingSphereCount;
+            m_CullingGroup.SetBoundingSphereCount(m_UsedBoundingSphereCount);
+            Debug.Assert(m_UsedBoundingSphereCount >= 0);
+        }
+
+        private void UpdateBoundingSphere(AnimationInstancing inst, int index)
+        {
+            inst.boundingSphere.position = inst.worldTransform.position;
+            m_BoundingSphere[index] = inst.boundingSphere;
+        }
+
 
         public void AddInstance(AnimationInstancing inst)
         {
-            if(!m_AnimInstancingList.ContainsKey(inst.GetInstanceID()))
-            {
-                m_AnimInstancingList.Add(inst.GetInstanceID(), inst);
-            }
+#if UNITY_EDITOR
+            if(m_AnimInstancingList.Contains(inst))
+                Debug.LogError($"{inst.gameObject.name} has already exist.");
+#endif            
+
+            m_AnimInstancingList.Add(inst);
+            AddBoundingSphere(inst);
         }
 
         public void RemoveInstance(AnimationInstancing inst)
         {
             RemoveAllVertexCache(inst);
-            m_AnimInstancingList.Remove(inst.GetInstanceID());
+            if(m_AnimInstancingList.Remove(inst))
+            {
+                RemoveBoundingSphere();                
+            }
         }
 
         public void AddVertexCache(AnimationInstancing inst, LODInfo lodInfo)
@@ -97,7 +175,6 @@ namespace AnimationInstancingModule.Runtime
                 vertexCache.mesh = rendererCache.mesh;
                 vertexCache.weights = GetBoneWeights(rendererCache.mesh, rendererCache.bonePerVertex);
                 vertexCache.boneIndices = rendererCache.boneIndices;
-                vertexCache.onGetAnimTexture += inst.animDataInst.GetAnimTexture;
                 vertexCache.blockWidth = inst.animDataInst.textureBlockWidth;
                 vertexCache.blockHeight = inst.animDataInst.textureBlockHeight;
                 vertexCache.shadowCastingMode = inst.shadowCastingMode;
@@ -109,6 +186,7 @@ namespace AnimationInstancingModule.Runtime
                 // todo: 能否把weights，boneIndices等数据序列化至mesh，这样mesh就无需打开read/write enable
                 UploadMeshData(vertexCache);
             }
+            vertexCache.onGetAnimTexture += inst.animDataInst.GetAnimTexture;
             ++vertexCache.refCount;
             return vertexCache;
         }
@@ -134,13 +212,13 @@ namespace AnimationInstancingModule.Runtime
                 materialBlock.transitionProgress    = ArrayPool<float>.Get(kMaxInstanceCount);
                 vertexCache.matBlockList.Add(materialsHashCode, materialBlock);
                 
-                InitMaterialBlock(materialBlock, vertexCache);
+                SetupMaterialBlockPropertyIfNeed(materialBlock, vertexCache);
             }
             ++materialBlock.refCount;
             return materialBlock;
         }
 
-        private void InitMaterialBlock(MaterialBlock block, VertexCache vertexCache)
+        private void SetupMaterialBlockPropertyIfNeed(MaterialBlock block, VertexCache vertexCache)
         {
             if(block.isInitMaterial || vertexCache.GetAnimTexture() == null)
                 return;
@@ -234,13 +312,15 @@ namespace AnimationInstancingModule.Runtime
 
         private void UpdateInstancing()
         {
-            foreach(var obj in m_AnimInstancingList)
+            for(int i = 0; i < m_AnimInstancingList.Count; ++i)
             {
-                AnimationInstancing inst = obj.Value;
-
+                AnimationInstancing inst = m_AnimInstancingList[i];
                 inst.UpdateAnimation();
 
-                if(!inst.visible || !inst.enabled)
+                // update boundingSphere
+                UpdateBoundingSphere(inst, i);
+
+                if(!inst.ShouldRender())
                     continue;
 
                 inst.UpdateLod();
@@ -251,9 +331,9 @@ namespace AnimationInstancingModule.Runtime
                     MaterialBlock materialBlock = rendererCache.materialBlock;
                     ++materialBlock.instancingCount;
 
-                    materialBlock.worldMatrix[materialBlock.instancingCount - 1] = inst.worldTransform.localToWorldMatrix;
-                    materialBlock.frameIndex[materialBlock.instancingCount - 1] = inst.GetGlobalCurFrameIndex();
-                    materialBlock.preFrameIndex[materialBlock.instancingCount - 1] = inst.GetGlobalPreFrameIndex();
+                    materialBlock.worldMatrix[materialBlock.instancingCount - 1]        = inst.worldTransform.localToWorldMatrix;
+                    materialBlock.frameIndex[materialBlock.instancingCount - 1]         = inst.GetGlobalCurFrameIndex();
+                    materialBlock.preFrameIndex[materialBlock.instancingCount - 1]      = inst.GetGlobalPreFrameIndex();
                     materialBlock.transitionProgress[materialBlock.instancingCount - 1] = inst.transitionProgress;
                 }
             }
@@ -275,7 +355,7 @@ namespace AnimationInstancingModule.Runtime
                         continue;
 
                     // 因有资源异步加载，在轮询中检测
-                    InitMaterialBlock(materialBlock, vertexCache);
+                    SetupMaterialBlockPropertyIfNeed(materialBlock, vertexCache);
                     if(!materialBlock.isInitMaterial)
                         continue;       // 资源仍未加载
 
@@ -295,7 +375,6 @@ namespace AnimationInstancingModule.Runtime
                                                    vertexCache.receiveShadows,
                                                    vertexCache.layer);
                     }
-                    materialBlock.instancingCount = 0;
                 }
             }
         }

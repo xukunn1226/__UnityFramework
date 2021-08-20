@@ -15,7 +15,9 @@ namespace AnimationInstancingModule.Runtime
         public delegate void onAnimationEvent(string aniName, string evtName, AnimationEvent evt);
         public event onAnimationEvent   OnAnimationEvent;
 
-        public AnimationData            prototype;                                      // WARNING: 资源，非实例化数据
+        [SerializeField]
+        private AnimationData           m_Prototype;                                    // WARNING: 资源，非实例化数据
+        public AnimationData            prototype           { private get { return m_Prototype; } set { m_Prototype = value; } }
         public AnimationData            animDataInst        { get; private set; }
         public List<LODInfo>            lodInfos            = new List<LODInfo>();
 
@@ -38,7 +40,7 @@ namespace AnimationInstancingModule.Runtime
         public float                    transitionProgress  { get; private set; }
         public ShadowCastingMode        shadowCastingMode   = ShadowCastingMode.On;
         public bool                     receiveShadows      = false;
-        private BoundingSphere          m_BoundingSphere;
+        public BoundingSphere           boundingSphere;
         [NonSerialized] public int      layer;
         [NonSerialized] public bool     visible             = true;
         public string                   defaultAnim;
@@ -51,11 +53,11 @@ namespace AnimationInstancingModule.Runtime
 
         private void Awake()
         {
-            if(prototype == null)
+            if(m_Prototype == null)
                 throw new ArgumentNullException("prototype[AnimationData]");
 
             worldTransform = GetComponent<Transform>();
-            m_BoundingSphere = new BoundingSphere(worldTransform.position, m_Radius);
+            boundingSphere = new BoundingSphere(worldTransform.position, m_Radius);
             layer = gameObject.layer;
 
             m_PreAnimationIndex = -1;
@@ -63,7 +65,7 @@ namespace AnimationInstancingModule.Runtime
             m_PreFrameIndex = 0;
             m_CurFrameIndex = 0;
 
-            animDataInst = AnimationDataManager.Instance.Load(prototype);
+            animDataInst = AnimationDataManager.Instance.Load(m_Prototype);
 
             AnimationInstancingManager.Instance.AddInstance(this);
         }
@@ -82,9 +84,15 @@ namespace AnimationInstancingModule.Runtime
 
         private void OnDestroy()
         {
-            AnimationDataManager.Instance.Unload(prototype);
-            
-            AnimationInstancingManager.Instance.RemoveInstance(this);
+            if(!AnimationDataManager.IsDestroy())
+            {
+                AnimationDataManager.Instance.Unload(m_Prototype);
+            }
+
+            if(!AnimationInstancingManager.IsDestroy())
+            {
+                AnimationInstancingManager.Instance.RemoveInstance(this);
+            }
         }
 
         private void OnEnable()
@@ -100,6 +108,11 @@ namespace AnimationInstancingModule.Runtime
 
             m_CachedPause = isPause;
             isPause = true;
+        }
+
+        public bool ShouldRender()
+        {
+            return enabled && visible;
         }
 
         public void PlayAnimation(string name, float transitionDuration = 0)
@@ -224,7 +237,7 @@ namespace AnimationInstancingModule.Runtime
 
         public void UpdateAnimation()
         {
-            if(isPause)
+            if(isPause || !enabled)
             {
                 return;
             }
