@@ -112,7 +112,7 @@ namespace AnimationInstancingModule.Runtime
 
         public bool ShouldRender()
         {
-            return enabled && visible;
+            return isActiveAndEnabled && visible;
         }
 
         public void PlayAnimation(string name, float transitionDuration = 0)

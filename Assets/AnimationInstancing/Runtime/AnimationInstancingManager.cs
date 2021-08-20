@@ -15,11 +15,16 @@ namespace AnimationInstancingModule.Runtime
         private BoundingSphere[]                        m_BoundingSphere;
         private int                                     m_UsedBoundingSphereCount;
         private CullingGroup                            m_CullingGroup;
+        public bool                                     useGPUInstancing            { get; set; } = true;
 
         protected override void Awake()
         {
             base.Awake();
             InitCullingGroup();
+            if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.OpenGLES2)
+            {
+                useGPUInstancing = false;
+            }
         }
 
         protected override void OnDestroy()
@@ -359,21 +364,70 @@ namespace AnimationInstancingModule.Runtime
                     if(!materialBlock.isInitMaterial)
                         continue;       // 资源仍未加载
 
-                    for(int i = 0; i < materialBlock.subMeshCount; ++i)
+                    if(useGPUInstancing)
                     {
-                        materialBlock.propertyBlocks[i].SetFloatArray("frameIndex", materialBlock.frameIndex);
-                        materialBlock.propertyBlocks[i].SetFloatArray("preFrameIndex", materialBlock.preFrameIndex);
-                        materialBlock.propertyBlocks[i].SetFloatArray("transitionProgress", materialBlock.transitionProgress);
-
-                        Graphics.DrawMeshInstanced(vertexCache.mesh,
-                                                   i,
-                                                   materialBlock.materials[i],
-                                                   materialBlock.worldMatrix,
-                                                   instancingCount,
-                                                   materialBlock.propertyBlocks[i],
-                                                   vertexCache.shadowCastingMode,
-                                                   vertexCache.receiveShadows,
-                                                   vertexCache.layer);
+                        for (int i = 0; i < materialBlock.subMeshCount; ++i)
+                        {
+                            materialBlock.propertyBlocks[i].SetFloatArray("frameIndex", materialBlock.frameIndex);
+                            materialBlock.propertyBlocks[i].SetFloatArray("preFrameIndex", materialBlock.preFrameIndex);
+                            materialBlock.propertyBlocks[i].SetFloatArray("transitionProgress", materialBlock.transitionProgress);
+#if UNITY_EDITOR
+                            // 编辑模式下不设置camera，方便所有窗口可见
+                            Graphics.DrawMeshInstanced(vertexCache.mesh,
+                                                       i,
+                                                       materialBlock.materials[i],
+                                                       materialBlock.worldMatrix,
+                                                       instancingCount,
+                                                       materialBlock.propertyBlocks[i],
+                                                       vertexCache.shadowCastingMode,
+                                                       vertexCache.receiveShadows,
+                                                       vertexCache.layer);
+#else                                                       
+                            Graphics.DrawMeshInstanced(vertexCache.mesh,
+                                                       i,
+                                                       materialBlock.materials[i],
+                                                       materialBlock.worldMatrix,
+                                                       instancingCount,
+                                                       materialBlock.propertyBlocks[i],
+                                                       vertexCache.shadowCastingMode,
+                                                       vertexCache.receiveShadows,
+                                                       vertexCache.layer,
+                                                       Camera.main);
+#endif                                                       
+                        }
+                    }
+                    else
+                    {
+                        for(int i = 0; i < instancingCount; ++i)
+                        {
+                            for(int j = 0; j < materialBlock.subMeshCount; ++j)
+                            {
+                                materialBlock.propertyBlocks[j].SetFloat("frameIndex", materialBlock.frameIndex[i]);
+                                materialBlock.propertyBlocks[j].SetFloat("preFrameIndex", materialBlock.preFrameIndex[i]);
+                                materialBlock.propertyBlocks[j].SetFloat("transitionProgress", materialBlock.transitionProgress[i]);
+#if UNITY_EDITOR                                
+                                Graphics.DrawMesh(vertexCache.mesh,
+                                                  materialBlock.worldMatrix[i],
+                                                  materialBlock.materials[j],
+                                                  vertexCache.layer,
+                                                  null,
+                                                  j,
+                                                  materialBlock.propertyBlocks[j],
+                                                  vertexCache.shadowCastingMode,
+                                                  vertexCache.receiveShadows);
+#else
+                                Graphics.DrawMesh(vertexCache.mesh,
+                                                  materialBlock.worldMatrix[i],
+                                                  materialBlock.materials[j],
+                                                  vertexCache.layer,
+                                                  Camera.main,
+                                                  j,
+                                                  materialBlock.propertyBlocks[j],
+                                                  vertexCache.shadowCastingMode,
+                                                  vertexCache.receiveShadows);
+#endif                                                  
+                            }
+                        }
                     }
                 }
             }
