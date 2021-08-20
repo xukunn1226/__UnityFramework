@@ -88,11 +88,17 @@ namespace AnimationInstancingModule.Runtime
         public Material[]                       materials;
         public MaterialPropertyBlock[]          propertyBlocks;         // length == materials.length
         public int                              instancingCount;
-        public Matrix4x4[]                      worldMatrix;            // 所有实例的世界坐标矩阵, length == instancingCount
+        public List<InstancingPackage>          packageList;
+        public int                              refCount;               // 
+        public bool                             isInitMaterial;         // 是否
+    }
+
+    public class InstancingPackage
+    {
+        public int                              count;
+        public Matrix4x4[]                      worldMatrix;            // 所有实例的世界坐标矩阵
         public float[]                          frameIndex;             // 所有实例播放的当前帧
         public float[]                          preFrameIndex;          // 所有实例播放的上一帧
         public float[]                          transitionProgress;     // 所有实例的过渡参数
-        public int                              refCount;               // 
-        public bool                             isInitMaterial;         // 是否
     }
 }
