@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: defaultAnim
       value: attack02
       objectReference: {fileID: 0}
+    - target: {fileID: 549125741317796234, guid: f9a987b497b9ddd4c9237e3165cd0a3e,
+        type: 3}
+      propertyPath: lodDistance.Array.data[1]
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 711890241963596761, guid: f9a987b497b9ddd4c9237e3165cd0a3e,
         type: 3}
       propertyPath: m_Name

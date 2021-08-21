@@ -593,6 +593,9 @@ namespace AnimationInstancingModule.Runtime
             // step3. 添加AnimationInstancing，记录RendererCache
             AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
             animInst.prototype = animDataAsset.GetComponent<AnimationData>();
+            animInst.radius = CalcBoundingSphere();
+            animInst.lodDistance[0] = 50;
+            animInst.lodDistance[1] = 250;
             int lodLevel = 0;
             foreach(var lod in m_BakedLODs)
             {
@@ -611,7 +614,6 @@ namespace AnimationInstancingModule.Runtime
                 info.lodLevel = lodLevel++;
                 animInst.lodInfos.Add(info);
             }
-            animInst.radius = CalcBoundingSphere();
 
             // step4. 保存新的prefab
             PrefabUtility.SaveAsPrefabAsset(inst, GetAnimationInstancingPrefabFilename());

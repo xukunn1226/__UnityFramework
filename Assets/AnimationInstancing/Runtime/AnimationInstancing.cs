@@ -46,6 +46,10 @@ namespace AnimationInstancingModule.Runtime
         public string                   defaultAnim;
         private int                     m_TriggerEventIndex = -1;                       // 已触发的动画事件
         private bool                    m_isAlreadyTriggerEndEvent;                     // 是否已触发动画结束回调
+        public float                    lodFrequency        { private get; set; }       = 0.5f;
+        private float                   m_LodFrequencyCount = float.MaxValue;
+        public float[]                  lodDistance         = new float[2];
+        private int                     m_FixedLodLevel     = -1;
         private bool                    m_CachedPause;
         public bool                     isPause             { get; set; }
         public bool                     isPlaying           { get { return m_CurAnimationIndex >= 0 && !isPause; } }
@@ -230,9 +234,37 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
-        public void UpdateLod()
+        // 强制使用某lod等级，设置lodLevel < 0表示返回常规lod流程
+        public void ForceLOD(int lodLevel)
         {
-            lodLevel = 0;            
+            m_FixedLodLevel = lodLevel;
+            if(lodLevel >= 0)
+                m_FixedLodLevel = Mathf.Min(lodLevel, lodInfos.Count - 1);
+        }
+
+        public void UpdateLod(Vector3 cameraPosition)
+        {
+            if(m_FixedLodLevel > -1)
+            {
+                lodLevel = m_FixedLodLevel;
+                return;
+            }
+
+            m_LodFrequencyCount += Time.deltaTime;
+            if(m_LodFrequencyCount > lodFrequency)
+            {
+                m_LodFrequencyCount = 0;
+
+                int level = 0;
+                float distSqr = (cameraPosition - worldTransform.position).sqrMagnitude;
+                if(distSqr < lodDistance[0])
+                    level = 0;
+                else if(distSqr < lodDistance[1])
+                    level = 1;
+                else
+                    level = 2;
+                lodLevel = Mathf.Clamp(level, 0, lodInfos.Count - 1);
+            }
         }
 
         public void UpdateAnimation()

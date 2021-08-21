@@ -338,7 +338,7 @@ namespace AnimationInstancingModule.Runtime
                 if(!inst.ShouldRender())
                     continue;
 
-                inst.UpdateLod();
+                inst.UpdateLod(Camera.main.transform.position);
 
                 LODInfo lodInfo = inst.GetCurrentLODInfo();
                 foreach(var rendererCache in lodInfo.rendererCacheList)
