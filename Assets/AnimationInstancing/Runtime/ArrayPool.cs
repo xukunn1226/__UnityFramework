@@ -8,10 +8,6 @@ namespace AnimationInstancingModule.Runtime
     internal static class ArrayPool<T>
     {
         static private Dictionary<int, Stack<T[]>> m_ArrayPool = new Dictionary<int, Stack<T[]>>();
-        
-        // public int countAll { get; private set; }
-        // public int countActive { get { return countAll - countInactive; } }
-        // public int countInactive { get { return m_Stack.Count; } }
 
         static public T[] Get(int n)
         {

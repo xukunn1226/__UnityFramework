@@ -7,14 +7,14 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationInstancingManager : SingletonMono<AnimationInstancingManager>
     {
-        static public int                               s_MaxInstanceCountPerRendering  = 2;            // 一次最多可渲染的实例化数量
+        static public int                               s_MaxInstanceCountPerRendering  = 3;            // 一次最多可渲染的实例化数量
         private Dictionary<int, VertexCache>            m_VertexCachePool               = new Dictionary<int, VertexCache>();
         private List<AnimationInstancing>               m_AnimInstancingList            = new List<AnimationInstancing>();
 
         private BoundingSphere[]                        m_BoundingSphere;
         private int                                     m_UsedBoundingSphereCount;
         private CullingGroup                            m_CullingGroup;
-        public bool                                     useGPUInstancing                { get; set; } = false;
+        public bool                                     useGPUInstancing                { get; set; } = true;
 
         protected override void Awake()
         {
@@ -101,11 +101,17 @@ namespace AnimationInstancingModule.Runtime
 
         public void RemoveInstance(AnimationInstancing inst)
         {
-            RemoveAllVertexCache(inst);
             if(m_AnimInstancingList.Remove(inst))
             {
+                RemoveAllVertexCache(inst);
                 RemoveBoundingSphere();                
             }
+#if UNITY_EDITOR            
+            else
+            {
+                Debug.LogError($"{inst.gameObject.name} remove from AnimationInstancingManager fail.");
+            }
+#endif            
         }
 
         public void AddVertexCache(AnimationInstancing inst, LODInfo lodInfo)
@@ -215,8 +221,6 @@ namespace AnimationInstancingModule.Runtime
                 materialBlock.instancingCount       = 0;
                 materialBlock.packageList           = new List<InstancingPackage>();
                 vertexCache.matBlockList.Add(materialsHashCode, materialBlock);
-                
-                SetupMaterialBlockPropertyIfNeed(materialBlock, vertexCache);
             }
             ++materialBlock.refCount;
             return materialBlock;
@@ -235,6 +239,16 @@ namespace AnimationInstancingModule.Runtime
                 block.materials[i].SetInt("_boneTextureHeight", vertexCache.GetAnimTexture().height);
                 block.materials[i].SetInt("_boneTextureBlockWidth", vertexCache.blockWidth);
                 block.materials[i].SetInt("_boneTextureBlockHeight", vertexCache.blockHeight);
+                // if(useGPUInstancing)
+                // {
+                //     block.materials[i].EnableKeyword("INSTANCING_ON");
+                // }
+                // else
+                // {
+                //     block.materials[i].DisableKeyword("INSTANCING_ON");
+                // }
+                // block.materials[i].EnableKeyword("USE_CONSTANT_BUFFER");
+                // block.materials[i].EnableKeyword("USE_COMPUTE_BUFFER");
             }
         }
         
@@ -335,13 +349,18 @@ namespace AnimationInstancingModule.Runtime
                     MaterialBlock materialBlock = rendererCache.materialBlock;
                     Debug.Assert(materialBlock != null);
 
+                    // 因有资源异步加载，在轮询中检测
+                    SetupMaterialBlockPropertyIfNeed(materialBlock, rendererCache.vertexCache);
+                    if(!materialBlock.isInitMaterial)
+                        continue;       // 资源仍未加载
+
                     ++materialBlock.instancingCount;
 
                     int packageIndex = (materialBlock.instancingCount - 1) / s_MaxInstanceCountPerRendering;
                     InstancingPackage package = null;
                     if(materialBlock.packageList.Count < packageIndex + 1)
                     {
-                        package = new InstancingPackage();
+                        package                     = new InstancingPackage();
                         package.count               = 0;
                         package.worldMatrix         = ArrayPool<Matrix4x4>.Get(s_MaxInstanceCountPerRendering);
                         package.frameIndex          = ArrayPool<float>.Get(s_MaxInstanceCountPerRendering);
@@ -376,11 +395,6 @@ namespace AnimationInstancingModule.Runtime
                     
                     if(instancingCount == 0)
                         continue;
-
-                    // 因有资源异步加载，在轮询中检测
-                    SetupMaterialBlockPropertyIfNeed(materialBlock, vertexCache);
-                    if(!materialBlock.isInitMaterial)
-                        continue;       // 资源仍未加载
 
                     if(useGPUInstancing)
                     {
@@ -425,33 +439,36 @@ namespace AnimationInstancingModule.Runtime
                         for(int i = 0; i < materialBlock.packageList.Count; ++i)
                         {
                             InstancingPackage package = materialBlock.packageList[i];
-                            for (int j = 0; j < materialBlock.subMeshCount; ++j)
+                            for(int j = 0; j < package.count; ++j)
                             {
-                                materialBlock.propertyBlocks[j].SetFloat("frameIndex", package.frameIndex[i]);
-                                materialBlock.propertyBlocks[j].SetFloat("preFrameIndex", package.preFrameIndex[i]);
-                                materialBlock.propertyBlocks[j].SetFloat("transitionProgress", package.transitionProgress[i]);
+                                for (int k = 0; k < materialBlock.subMeshCount; ++k)
+                                {
+                                    materialBlock.propertyBlocks[k].SetFloat("frameIndex", package.frameIndex[j]);
+                                    materialBlock.propertyBlocks[k].SetFloat("preFrameIndex", package.preFrameIndex[j]);
+                                    materialBlock.propertyBlocks[k].SetFloat("transitionProgress", package.transitionProgress[j]);
 #if UNITY_EDITOR
-                                // 编辑模式下不设置camera，方便所有窗口可见
-                                Graphics.DrawMesh(vertexCache.mesh,
-                                                  package.worldMatrix[i],
-                                                  materialBlock.materials[j],
-                                                  vertexCache.layer,
-                                                  null,
-                                                  j,
-                                                  materialBlock.propertyBlocks[j],
-                                                  vertexCache.shadowCastingMode,
-                                                  vertexCache.receiveShadows);
+                                    // 编辑模式下不设置camera，方便所有窗口可见
+                                    Graphics.DrawMesh(vertexCache.mesh,
+                                                      package.worldMatrix[j],
+                                                      materialBlock.materials[k],
+                                                      vertexCache.layer,
+                                                      null,
+                                                      k,
+                                                      materialBlock.propertyBlocks[k],
+                                                      vertexCache.shadowCastingMode,
+                                                      vertexCache.receiveShadows);
 #else
-                                Graphics.DrawMesh(vertexCache.mesh,
-                                                  package.worldMatrix[i],
-                                                  materialBlock.materials[j],
-                                                  vertexCache.layer,
-                                                  Camera.main,
-                                                  j,
-                                                  materialBlock.propertyBlocks[j],
-                                                  vertexCache.shadowCastingMode,
-                                                  vertexCache.receiveShadows);
+                                    Graphics.DrawMesh(vertexCache.mesh,
+                                                      package.worldMatrix[j],
+                                                      materialBlock.materials[k],
+                                                      vertexCache.layer,
+                                                      Camera.main,
+                                                      k,
+                                                      materialBlock.propertyBlocks[k],
+                                                      vertexCache.shadowCastingMode,
+                                                      vertexCache.receiveShadows);
 #endif
+                                }
                             }
                             package.count = 0;      // reset
                         }
