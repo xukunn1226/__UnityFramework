@@ -42,7 +42,7 @@ namespace AnimationInstancingModule.Runtime
         public bool                     receiveShadows      = false;
         public BoundingSphere           boundingSphere;
         [NonSerialized] public int      layer;
-        [NonSerialized] public bool     visible             = true;
+        [NonSerialized] public bool     isCulled;                                       // 是否被裁剪
         public string                   defaultAnim;
         private int                     m_TriggerEventIndex = -1;                       // 已触发的动画事件
         private bool                    m_isAlreadyTriggerEndEvent;                     // 是否已触发动画结束回调
@@ -112,7 +112,7 @@ namespace AnimationInstancingModule.Runtime
 
         public bool ShouldRender()
         {
-            return isActiveAndEnabled && visible;
+            return isActiveAndEnabled && !isCulled;
         }
 
         public void PlayAnimation(string name, float transitionDuration = 0)
@@ -237,7 +237,7 @@ namespace AnimationInstancingModule.Runtime
 
         public void UpdateAnimation()
         {
-            if(isPause || !enabled)
+            if(isPause || !isActiveAndEnabled || isCulled)
             {
                 return;
             }

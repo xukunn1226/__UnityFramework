@@ -57,13 +57,13 @@ namespace AnimationInstancingModule.Runtime
                 Debug.Assert(evt.index < m_AnimInstancingList.Count);
                 if (m_AnimInstancingList[evt.index].isActiveAndEnabled)
                 {
-                    m_AnimInstancingList[evt.index].visible = true;
+                    m_AnimInstancingList[evt.index].isCulled = false;
                 }
             }
             if (evt.hasBecomeInvisible)
             {
                 Debug.Assert(evt.index < m_AnimInstancingList.Count);
-                m_AnimInstancingList[evt.index].visible = false;
+                m_AnimInstancingList[evt.index].isCulled = true;
             }
         }
 
@@ -71,7 +71,7 @@ namespace AnimationInstancingModule.Runtime
         {
             m_BoundingSphere[m_UsedBoundingSphereCount++] = inst.boundingSphere;
             m_CullingGroup.SetBoundingSphereCount(m_UsedBoundingSphereCount);
-            inst.visible = m_CullingGroup.IsVisible(m_UsedBoundingSphereCount - 1);
+            inst.isCulled = !m_CullingGroup.IsVisible(m_UsedBoundingSphereCount - 1);
         }
 
         private void RemoveBoundingSphere()
@@ -239,14 +239,11 @@ namespace AnimationInstancingModule.Runtime
                 block.materials[i].SetInt("_boneTextureHeight", vertexCache.GetAnimTexture().height);
                 block.materials[i].SetInt("_boneTextureBlockWidth", vertexCache.blockWidth);
                 block.materials[i].SetInt("_boneTextureBlockHeight", vertexCache.blockHeight);
-                // if(useGPUInstancing)
-                // {
-                //     block.materials[i].EnableKeyword("INSTANCING_ON");
-                // }
-                // else
-                // {
-                //     block.materials[i].DisableKeyword("INSTANCING_ON");
-                // }
+                if(!useGPUInstancing)
+                {
+                    block.materials[i].DisableKeyword("INSTANCING_ON");
+                    block.materials[i].enableInstancing = false;
+                }
                 // block.materials[i].EnableKeyword("USE_CONSTANT_BUFFER");
                 // block.materials[i].EnableKeyword("USE_COMPUTE_BUFFER");
             }
