@@ -25,31 +25,7 @@ namespace AnimationInstancingModule.Editor
         private void OnEnable()
         {
             m_Target = (AnimationInstancingGenerator)target;
-            m_LODs = GetLODs();
-        }
-
-        private List<Transform> GetLODs()
-        {
-            if(m_Target == null || m_Target.transform.childCount == 0)
-            {
-                return new List<Transform>();
-            }
-            
-            List<Transform> LODs = new List<Transform>();
-            int index = 0;
-            while(true)
-            {
-                string childName = "LOD" + index;
-                Transform child = m_Target.transform.Find(childName);
-                if(child != null)
-                {
-                    LODs.Add(child);
-                    ++index;
-                }
-                else
-                    break;
-            }
-            return LODs;
+            m_LODs = m_Target.GetLODs();
         }
 
         public override void OnInspectorGUI()
@@ -67,34 +43,65 @@ namespace AnimationInstancingModule.Editor
             }
 
             EditorGUI.BeginChangeCheck();
+            m_Target.enableReference = EditorGUILayout.Toggle("Enable reference", m_Target.enableReference);
+            if(EditorGUI.EndChangeCheck())
             {
-                // draw "FPS"
-                m_Target.fps = EditorGUILayout.IntSlider("FPS", m_Target.fps, 1, 120);
+                EditorUtility.SetDirty(m_Target);
+            }
 
-                // draw "Attachment"
-                DrawAttachment();
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUI.BeginChangeCheck();
+            {                
+                EditorGUI.BeginDisabledGroup(!m_Target.enableReference);
+                {
+                    m_Target.forceRebuildReference = EditorGUILayout.Toggle("Rebuild reference", m_Target.forceRebuildReference);
+                    m_Target.referenceTo = EditorGUILayout.ObjectField("Reference",
+                                                                       m_Target.referenceTo,
+                                                                       typeof(AnimationInstancingGenerator), 
+                                                                       true) as AnimationInstancingGenerator;
+                }
+                EditorGUI.EndDisabledGroup();
 
-                // draw "AnimationClip" list
-                DrawAnimationClips();
+                EditorGUI.BeginDisabledGroup(m_Target.enableReference);
+                {
+                    // draw "FPS"
+                    m_Target.fps = EditorGUILayout.IntSlider("FPS", m_Target.fps, 1, 120);
+
+                    // draw "Attachment"
+                    DrawAttachment();
+
+                    // draw "AnimationClip" list
+                    DrawAnimationClips();
+                }
+                EditorGUI.EndDisabledGroup();
             }
             if(EditorGUI.EndChangeCheck())
             {
                 EditorUtility.SetDirty(m_Target);
             }
+            GUILayout.EndVertical();
             
             if(GUILayout.Button("Refresh Extra Bone"))
             {
                 RefreshAttachment();
             }
+
+            bool canGen = true;
+            if(m_Target.enableReference && m_Target.referenceTo == null)
+            {
+                canGen = false;
+            }
+            EditorGUI.BeginDisabledGroup(!canGen);
             if(GUILayout.Button("Generate"))
             {
                 BakeWithAnimator();
             }
+            EditorGUI.EndDisabledGroup();
         }
 
         private void BakeWithAnimator()
         {
-            m_Target.Bake(m_LODs);
+            m_Target.Bake();
         }
 
         private void DrawAttachment()
@@ -186,9 +193,11 @@ namespace AnimationInstancingModule.Editor
                 GUIStyle boldStyle = EditorStyles.boldLabel;
                 boldStyle.alignment = TextAnchor.MiddleLeft;
                 Color backup = boldStyle.normal.textColor;
-                boldStyle.normal.textColor = Color.red;
+                boldStyle.normal.textColor = m_Target.enableReference ? Color.white : Color.red;
 
-                EditorGUILayout.LabelField("Error: The prefab's Animator should have a Animator Controller.", boldStyle);
+                string info = m_Target.enableReference ? "Info: you can check included animation clips in reference object" : "Error: The prefab's Animator should have a Animator Controller.";
+
+                EditorGUILayout.LabelField(info, boldStyle);
                 boldStyle.normal.textColor = backup;
                 return;
             }

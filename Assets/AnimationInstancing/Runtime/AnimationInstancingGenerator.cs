@@ -39,6 +39,9 @@ namespace AnimationInstancingModule.Runtime
             public List<Matrix4x4[]>            boneMatrix;                 // 记录动画所有帧数据, [frameIndex][boneIndex]
         }
 
+        public bool                             enableReference;
+        public bool                             forceRebuildReference;
+        public AnimationInstancingGenerator     referenceTo;
         public int                              fps                         = 15;                                   // 采样帧率
         public bool                             exposeAttachments;                                                  // 是否导入绑点信息
         public Dictionary<string, bool>         m_SelectExtraBone           = new Dictionary<string, bool>();       // 可额外导入的绑点骨骼列表
@@ -51,7 +54,7 @@ namespace AnimationInstancingModule.Runtime
 
         private ExtraBoneInfo                   m_ExtraBoneInfo             = new ExtraBoneInfo();
         private List<Matrix4x4>                 m_BindPose                  = new List<Matrix4x4>(150);
-        private List<Transform>                 m_BoneTransform             = new List<Transform>();
+        public List<Transform>                  m_BoneTransform             = new List<Transform>();
         private List<AnimationBakeInfo>         m_BakeInfo                  = new List<AnimationBakeInfo>();        // 待烘焙动画数据
         private AnimationBakeInfo               m_WorkingBakeInfo;
         private int                             m_CurWorkingBakeInfoIndex;
@@ -119,8 +122,33 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
-        public void Bake(List<Transform> LODs)
+        public List<Transform> GetLODs()
         {
+            if(transform.childCount == 0)
+            {
+                return new List<Transform>();
+            }
+            
+            List<Transform> LODs = new List<Transform>();
+            int index = 0;
+            while(true)
+            {
+                string childName = "LOD" + index;
+                Transform child = transform.Find(childName);
+                if(child != null)
+                {
+                    LODs.Add(child);
+                    ++index;
+                }
+                else
+                    break;
+            }
+            return LODs;
+        }
+
+        public void Prepare()
+        {
+            List<Transform> LODs = GetLODs();
             if(LODs == null || LODs.Count == 0)
                 throw new ArgumentException("LODs == null || LODs.Count == 0");
 
@@ -128,83 +156,124 @@ namespace AnimationInstancingModule.Runtime
 
             // 获取最终的骨骼信息和绑定姿态矩阵(算上了绑点)
             GetFinalBonePose(m_BakedLODs[0], ref m_BindPose, ref m_BoneTransform);
+        }
 
-            // init ExtraBoneInfo base on extra bone transform
-            List<Transform> listExtra = GetExtraBoneTransform(m_BakedLODs[0]);
-            m_ExtraBoneInfo = new ExtraBoneInfo();
-            if(listExtra.Count > 0)
-            {
-                m_ExtraBoneInfo.extraBone = new string[listExtra.Count];
-                m_ExtraBoneInfo.extraBindPose = new Matrix4x4[listExtra.Count];
-                for (int i = 0; i != listExtra.Count; ++i)
-                {
-                    m_ExtraBoneInfo.extraBone[i] = listExtra[i].name;
-                    m_ExtraBoneInfo.extraBindPose[i] = m_BindPose[m_BindPose.Count - listExtra.Count + i];
-                }
-            }
-            
-            // collect m_BakeInfo
-            m_CurWorkingBakeInfoIndex = 0;
-            m_BakeInfo.Clear();
-            m_CacheAnimationEvent.Clear();
-            m_AnimationInfo.Clear();
-            m_WorkingBakeInfo = null;
-            AnimatorController controller = GetComponent<Animator>().runtimeAnimatorController as AnimatorController;
-            AnalyzeStateMachine(controller.layers[0].stateMachine, GetComponent<Animator>(), fps, 0);
+        public void Bake()
+        {
+            Prepare();
 
             isBaking = true;
             m_ExportAnimationTexture = true;        // 默认导出AnimationTexture
+
+            if(enableReference)
+            {
+                referenceTo.Prepare();
+                
+                // 烘焙引用动画贴图
+                if(forceRebuildReference)
+                {
+                    referenceTo.Bake();
+                }
+            }
+            else
+            {
+                // init ExtraBoneInfo base on extra bone transform
+                List<Transform> listExtra = GetExtraBoneTransform(m_BakedLODs[0]);
+                m_ExtraBoneInfo = new ExtraBoneInfo();
+                if (listExtra.Count > 0)
+                {
+                    m_ExtraBoneInfo.extraBone = new string[listExtra.Count];
+                    m_ExtraBoneInfo.extraBindPose = new Matrix4x4[listExtra.Count];
+                    for (int i = 0; i != listExtra.Count; ++i)
+                    {
+                        m_ExtraBoneInfo.extraBone[i] = listExtra[i].name;
+                        m_ExtraBoneInfo.extraBindPose[i] = m_BindPose[m_BindPose.Count - listExtra.Count + i];
+                    }
+                }
+
+                // collect m_BakeInfo
+                m_CurWorkingBakeInfoIndex = 0;
+                m_BakeInfo.Clear();
+                m_CacheAnimationEvent.Clear();
+                m_AnimationInfo.Clear();
+                m_WorkingBakeInfo = null;
+                AnimatorController controller = GetComponent<Animator>().runtimeAnimatorController as AnimatorController;
+                AnalyzeStateMachine(controller.layers[0].stateMachine, GetComponent<Animator>(), fps, 0);
+            }
         }
 
         public void Update()
         {
-            // 仍有待烘焙数据，且当前无烘焙任务
-            if(m_BakeInfo.Count > 0 && m_CurWorkingBakeInfoIndex < m_BakeInfo.Count && m_WorkingBakeInfo == null)
+            if(enableReference)
             {
-                m_WorkingBakeInfo = m_BakeInfo[m_CurWorkingBakeInfoIndex];
-
-                m_WorkingBakeInfo.boneMatrix = new List<Matrix4x4[]>();
-                // m_WorkingBakeInfo.animator.gameObject.transform.position = Vector3.zero;
-                // m_WorkingBakeInfo.animator.gameObject.transform.rotation = Quaternion.identity;
-                m_WorkingBakeInfo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-                m_WorkingBakeInfo.animator.gameObject.SetActive(true);
-                m_WorkingBakeInfo.animator.Update(0);       // 不然会报warning：Animator does not have an AnimatorController
-                m_WorkingBakeInfo.animator.Play(m_WorkingBakeInfo.info.nameHash);
-                m_WorkingBakeInfo.animator.Update(0);       // 第一帧
-                return;
-            }
-
-            if(m_WorkingBakeInfo == null)
-                return;
-
-            // 计算每帧的蒙皮矩阵
-            GenerateBoneMatrix(m_WorkingBakeInfo, m_BoneTransform, m_BindPose);
-
-            if(++m_WorkingBakeInfo.workingFrame >= m_WorkingBakeInfo.info.totalFrame)
-            {                
-                m_AnimationInfo.Add(m_WorkingBakeInfo.info);
-
-                m_WorkingBakeInfo = null;
-                ++m_CurWorkingBakeInfoIndex;
-                
-                if(m_BakeInfo.Count == m_CurWorkingBakeInfoIndex)
-                { // 所有动画数据烘焙完毕
-                    foreach (var obj in m_CacheAnimationEvent)
-                    { // 动画数据烘焙之后还原动画事件数据
-                        UnityEditor.AnimationUtility.SetAnimationEvents(obj.Key, obj.Value);
+                if(forceRebuildReference)
+                {
+                    if(!referenceTo.isBaking && isBaking)
+                    { // 引用对象烘焙结束
+                        ExportAnimInstancingPrefab(referenceTo);
+                        isBaking = false;
                     }
-                    m_CacheAnimationEvent.Clear();
+                }
+                else
+                {
+                    if(isBaking)
+                    {
+                        ExportAnimInstancingPrefab(referenceTo);
+                        isBaking = false;
+                    }
+                }
+            }
+            else
+            {
+                // 仍有待烘焙数据，且当前无烘焙任务
+                if (m_BakeInfo.Count > 0 && m_CurWorkingBakeInfoIndex < m_BakeInfo.Count && m_WorkingBakeInfo == null)
+                {
+                    m_WorkingBakeInfo = m_BakeInfo[m_CurWorkingBakeInfoIndex];
 
-                    SaveAnimationInfo();
-                    ExportPrefab();
-                    isBaking = false;
+                    m_WorkingBakeInfo.boneMatrix = new List<Matrix4x4[]>();
+                    // m_WorkingBakeInfo.animator.gameObject.transform.position = Vector3.zero;
+                    // m_WorkingBakeInfo.animator.gameObject.transform.rotation = Quaternion.identity;
+                    m_WorkingBakeInfo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                    m_WorkingBakeInfo.animator.gameObject.SetActive(true);
+                    m_WorkingBakeInfo.animator.Update(0);       // 不然会报warning：Animator does not have an AnimatorController
+                    m_WorkingBakeInfo.animator.Play(m_WorkingBakeInfo.info.nameHash);
+                    m_WorkingBakeInfo.animator.Update(0);       // 第一帧
+                    return;
                 }
 
-                return;
-            }
+                if (m_WorkingBakeInfo == null)
+                    return;
 
-            float deltaTime = m_WorkingBakeInfo.length / (m_WorkingBakeInfo.info.totalFrame - 1);
-            m_WorkingBakeInfo.animator.Update(deltaTime);
+                // 计算每帧的蒙皮矩阵
+                GenerateBoneMatrix(m_WorkingBakeInfo, m_BoneTransform, m_BindPose);
+
+                if (++m_WorkingBakeInfo.workingFrame >= m_WorkingBakeInfo.info.totalFrame)
+                {
+                    m_AnimationInfo.Add(m_WorkingBakeInfo.info);
+
+                    m_WorkingBakeInfo = null;
+                    ++m_CurWorkingBakeInfoIndex;
+
+                    if (m_BakeInfo.Count == m_CurWorkingBakeInfoIndex)
+                    { // 所有动画数据烘焙完毕
+                        foreach (var obj in m_CacheAnimationEvent)
+                        { // 动画数据烘焙之后还原动画事件数据
+                            UnityEditor.AnimationUtility.SetAnimationEvents(obj.Key, obj.Value);
+                        }
+                        m_CacheAnimationEvent.Clear();
+
+                        SaveAnimationInfo();
+                        ExportAnimDataPrefab();
+                        ExportAnimInstancingPrefab(this);
+                        isBaking = false;
+                    }
+
+                    return;
+                }
+
+                float deltaTime = m_WorkingBakeInfo.length / (m_WorkingBakeInfo.info.totalFrame - 1);
+                m_WorkingBakeInfo.animator.Update(deltaTime);
+            }
         }
 
         // get the bindPose & boneTransform base on attached points
@@ -543,8 +612,7 @@ namespace AnimationInstancingModule.Runtime
             Debug.Log($"save animation texture: {filename}  {asset}", asset);            
         }
 
-        // 输出两个prefab：1、AnimationData；2、AnimationInstancing
-        private void ExportPrefab()
+        private void ExportAnimDataPrefab()
         {
             // 保存root/AnimationData/[Custom].prefab
             // new Prefab
@@ -561,8 +629,11 @@ namespace AnimationInstancingModule.Runtime
 
             // save Prefab
             GameObject animDataAsset = PrefabUtility.SaveAsPrefabAsset(animDataPrefab, GetAnimationDataPrefabFilename());
-            DestroyImmediate(animDataPrefab);
+            DestroyImmediate(animDataPrefab); 
+        }
 
+        private void ExportAnimInstancingPrefab(AnimationInstancingGenerator generator)
+        {
             // 保存root/[Custom]/[Custom].prefab
             // step1. 实例化对象，提取mesh
             GameObject inst = Instantiate(gameObject);            
@@ -591,6 +662,8 @@ namespace AnimationInstancingModule.Runtime
             }
 
             // step3. 添加AnimationInstancing，记录RendererCache
+            GameObject animDataAsset = AssetDatabase.LoadAssetAtPath<GameObject>(generator.GetAnimationDataPrefabFilename());
+            Debug.Assert(animDataAsset != null);
             AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
             animInst.prototype = animDataAsset.GetComponent<AnimationData>();
             animInst.radius = CalcBoundingSphere();
@@ -608,7 +681,7 @@ namespace AnimationInstancingModule.Runtime
                     cache.materials = smr.sharedMaterials;
                     cache.bonePerVertex = lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1);
                     // cache.weights = GetBoneWeights(cache.mesh, cache.bonePerVertex);
-                    cache.boneIndices = GetBoneIndices(cache.mesh, smr, m_BoneTransform);
+                    cache.boneIndices = GetBoneIndices(cache.mesh, smr, generator.m_BoneTransform);
                     info.rendererCacheList.Add(cache);
                 }
                 info.lodLevel = lodLevel++;
@@ -618,6 +691,7 @@ namespace AnimationInstancingModule.Runtime
             // step4. 保存新的prefab
             PrefabUtility.SaveAsPrefabAsset(inst, GetAnimationInstancingPrefabFilename());
             DestroyImmediate(inst);
+            AssetDatabase.Refresh();
         }
 
         private Vector4[] GetBoneWeights(Mesh mesh, int bonePerVertex)
@@ -733,7 +807,7 @@ namespace AnimationInstancingModule.Runtime
             return s_AnimationDataPath + "/" + gameObject.name.ToLower() + ".png";
         }
 
-        private string GetAnimationDataPrefabFilename()
+        public string GetAnimationDataPrefabFilename()
         {
             return s_AnimationDataPath + "/" + gameObject.name.ToLower() + ".prefab";
         }
