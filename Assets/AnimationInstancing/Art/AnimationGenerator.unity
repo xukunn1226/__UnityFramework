@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableReference: 1
-  forceRebuildReference: 0
+  forceRebuildReference: 1
   referenceTo: {fileID: 890725701}
   fps: 15
   exposeAttachments: 0
@@ -491,7 +491,7 @@ MonoBehaviour:
   m_GenerateAnimNames:
   - attack02
   - attack03
-  m_GenerateAnimSelectables: 0100
+  m_GenerateAnimSelectables: 0101
   m_BoneTransform:
   - {fileID: 1390903432}
   - {fileID: 1390903431}

@@ -168,7 +168,7 @@ namespace AnimationInstancingModule.Runtime
             if(enableReference)
             {
                 referenceTo.Prepare();
-                
+
                 // 烘焙引用动画贴图
                 if(forceRebuildReference)
                 {
@@ -609,7 +609,7 @@ namespace AnimationInstancingModule.Runtime
 
             AssetDatabase.Refresh();
             TextAsset asset = AssetDatabase.LoadAssetAtPath<TextAsset>(filename);
-            Debug.Log($"save animation texture: {filename}  {asset}", asset);            
+            Debug.Log($"save animation data manifest: {filename}  {asset}", asset);
         }
 
         private void ExportAnimDataPrefab()
@@ -629,7 +629,9 @@ namespace AnimationInstancingModule.Runtime
 
             // save Prefab
             GameObject animDataAsset = PrefabUtility.SaveAsPrefabAsset(animDataPrefab, GetAnimationDataPrefabFilename());
-            DestroyImmediate(animDataPrefab); 
+            DestroyImmediate(animDataPrefab);
+            
+            Debug.Log($"export animation data prefab: {GetAnimationDataPrefabFilename()}");
         }
 
         private void ExportAnimInstancingPrefab(AnimationInstancingGenerator generator)
@@ -692,6 +694,8 @@ namespace AnimationInstancingModule.Runtime
             PrefabUtility.SaveAsPrefabAsset(inst, GetAnimationInstancingPrefabFilename());
             DestroyImmediate(inst);
             AssetDatabase.Refresh();
+
+            Debug.Log($"export animation instancing prefab: {GetAnimationInstancingPrefabFilename()}");
         }
 
         private Vector4[] GetBoneWeights(Mesh mesh, int bonePerVertex)
