@@ -74,9 +74,9 @@ namespace AnimationInstancingModule.Runtime
         public bool                             receiveShadows;
         public int                              layer;
         public int                              refCount;               // 
-        public delegate Texture2D animTextureHandler();
-        public event animTextureHandler onGetAnimTexture;               // mesh对应的动画数据
-        public Texture2D GetAnimTexture()
+        public delegate Texture2D               animTextureHandler();
+        public event animTextureHandler         onGetAnimTexture;       // mesh对应的动画数据
+        public Texture2D                        GetAnimTexture()
         {
             return onGetAnimTexture?.Invoke();
         }
@@ -91,6 +91,12 @@ namespace AnimationInstancingModule.Runtime
         public List<InstancingPackage>          packageList;
         public int                              refCount;               // 
         public bool                             isInitMaterial;         // 是否
+        public delegate void                    propertyBlockHandler(int materialIndex, MaterialPropertyBlock block);
+        public event propertyBlockHandler       onOverridePropertyBlock;
+        public void                             ExecutePropertyBlock(int materialIndex, MaterialPropertyBlock block)
+        {
+            onOverridePropertyBlock?.Invoke(materialIndex, block);
+        }
     }
 
     public class InstancingPackage

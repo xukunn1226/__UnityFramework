@@ -119,6 +119,14 @@ namespace AnimationInstancingModule.Runtime
             return isActiveAndEnabled && !isCulled;
         }
 
+        public delegate void OverridePropertyBlockHandler(int materialIndex, MaterialPropertyBlock block);
+        public event OverridePropertyBlockHandler onOverridePropertyBlock;
+
+        public void ExecutePropertyBlock(int materialIndex, MaterialPropertyBlock block)
+        {
+            onOverridePropertyBlock?.Invoke(materialIndex, block);
+        }
+
         public void PlayAnimation(string name, float transitionDuration = 0)
         {
             int hash = name.GetHashCode();

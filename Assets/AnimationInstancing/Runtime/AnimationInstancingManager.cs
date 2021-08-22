@@ -123,7 +123,7 @@ namespace AnimationInstancingModule.Runtime
 
                 VertexCache vertexCache = GetOrCreateVertexCache(inst, rendererCache);
                 rendererCache.vertexCache = vertexCache;
-                rendererCache.materialBlock = GetOrCreateMaterialBlock(vertexCache, rendererCache);
+                rendererCache.materialBlock = GetOrCreateMaterialBlock(inst, vertexCache, rendererCache);
                 rendererCache.isUsed = true;
             }
         }
@@ -148,6 +148,7 @@ namespace AnimationInstancingModule.Runtime
                         MaterialBlock materialBlock;
                         vertexCache.matBlockList.TryGetValue(materialsHashCode, out materialBlock);
                         Debug.Assert(materialBlock != null);
+                        materialBlock.onOverridePropertyBlock -= inst.ExecutePropertyBlock;
                         --materialBlock.refCount;
                         if(materialBlock.refCount == 0)
                         {
@@ -204,7 +205,7 @@ namespace AnimationInstancingModule.Runtime
             return vertexCache;
         }
 
-        private MaterialBlock GetOrCreateMaterialBlock(VertexCache vertexCache, RendererCache rendererCache)
+        private MaterialBlock GetOrCreateMaterialBlock(AnimationInstancing inst, VertexCache vertexCache, RendererCache rendererCache)
         {
             int materialsHashCode = GetMaterialsHashCode(rendererCache.mesh, rendererCache.materials);
             MaterialBlock materialBlock;
@@ -222,6 +223,7 @@ namespace AnimationInstancingModule.Runtime
                 materialBlock.packageList           = new List<InstancingPackage>();
                 vertexCache.matBlockList.Add(materialsHashCode, materialBlock);
             }
+            materialBlock.onOverridePropertyBlock += inst.ExecutePropertyBlock;
             ++materialBlock.refCount;
             return materialBlock;
         }
@@ -400,9 +402,11 @@ namespace AnimationInstancingModule.Runtime
                             InstancingPackage package = materialBlock.packageList[i];
                             for (int j = 0; j < materialBlock.subMeshCount; ++j)
                             {
+                                materialBlock.propertyBlocks[j].Clear();
                                 materialBlock.propertyBlocks[j].SetFloatArray("frameIndex", package.frameIndex);
                                 materialBlock.propertyBlocks[j].SetFloatArray("preFrameIndex", package.preFrameIndex);
                                 materialBlock.propertyBlocks[j].SetFloatArray("transitionProgress", package.transitionProgress);
+                                materialBlock.ExecutePropertyBlock(j, materialBlock.propertyBlocks[j]);
 #if UNITY_EDITOR
                                 // 编辑模式下不设置camera，方便所有窗口可见
                                 Graphics.DrawMeshInstanced(vertexCache.mesh,

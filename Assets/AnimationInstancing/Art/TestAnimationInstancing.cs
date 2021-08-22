@@ -15,6 +15,7 @@ namespace AnimationInstancingModule.Runtime
             inst.OnAnimationBegin += OnAnimationBegin;
             inst.OnAnimationEnd += OnAnimationEnd;
             inst.OnAnimationEvent += OnAnimationEvent;
+            inst.onOverridePropertyBlock += OnOverridePropertyBlock;
         }
 
         private void OnDestroy()
@@ -22,6 +23,7 @@ namespace AnimationInstancingModule.Runtime
             inst.OnAnimationBegin -= OnAnimationBegin;
             inst.OnAnimationEnd -= OnAnimationEnd;
             inst.OnAnimationEvent -= OnAnimationEvent;
+            inst.onOverridePropertyBlock -= OnOverridePropertyBlock;
         }
 
         // Update is called once per frame
@@ -53,6 +55,11 @@ namespace AnimationInstancingModule.Runtime
         private void OnAnimationEvent(string aniName, string evtName, AnimationEvent evt)
         {
             Debug.Log($"OnAnimationEvent: {aniName}     {evtName}     {evt.stringParameter}");
+        }
+
+        public void OnOverridePropertyBlock(int materialIndex, MaterialPropertyBlock block)
+        {
+            int ii = 0;
         }
     }
 }
