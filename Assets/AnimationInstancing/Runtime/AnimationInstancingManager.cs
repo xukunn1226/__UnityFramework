@@ -250,6 +250,22 @@ namespace AnimationInstancingModule.Runtime
                 // block.materials[i].EnableKeyword("USE_COMPUTE_BUFFER");
             }
         }
+
+        private Vector4[] GetBoneIndices(Mesh mesh)
+        {
+            Vector4[] boneIndices = new Vector4[mesh.vertexCount];
+            BoneWeight[] boneWeights = mesh.boneWeights;
+            for(int i = 0; i < mesh.vertexCount; ++i)
+            {
+                boneIndices[i].x = boneWeights[i].boneIndex0;
+                boneIndices[i].y = boneWeights[i].boneIndex1;
+                boneIndices[i].z = boneWeights[i].boneIndex2;
+                boneIndices[i].w = boneWeights[i].boneIndex3;
+
+                Debug.Log($"index[{i}]   {boneIndices[i].x}  {boneIndices[i].y}  {boneIndices[i].z}  {boneIndices[i].w}");
+            }
+            return boneIndices;
+        }
         
         private Vector4[] GetBoneWeights(Mesh mesh, int bonePerVertex)
         {
@@ -261,6 +277,15 @@ namespace AnimationInstancingModule.Runtime
                 weights[i].y = boneWeights[i].weight1;
                 weights[i].z = boneWeights[i].weight2;
                 weights[i].w = boneWeights[i].weight3;
+
+                // if((boneWeights[i].weight0 != 0 && boneWeights[i].weight0 != 1)
+                // || (boneWeights[i].weight1 != 0 && boneWeights[i].weight1 != 1)
+                // || (boneWeights[i].weight2 != 0 && boneWeights[i].weight2 != 1)
+                // || (boneWeights[i].weight3 != 0 && boneWeights[i].weight3 != 1))
+                // {
+                //     ++count;
+                //     Debug.Log($"index[{i}]  {boneWeights[i].weight0}    {boneWeights[i].weight1}    {boneWeights[i].weight2}    {boneWeights[i].weight3}");
+                // }
 
                 switch (bonePerVertex)
                 {
