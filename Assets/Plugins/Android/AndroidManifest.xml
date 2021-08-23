@@ -11,6 +11,13 @@
             </intent-filter>
             <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
         </activity>
+		
+		<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/lilith_sdk_facebook_app_id"/>
+		<provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:process=":lilith_sdk"
+            android:authorities="com.facebook.app.FacebookContentProvider3045519829104935"
+            android:exported="true"/>
     </application>
     <!--uses-sdk android:minSdkVersion="19" android:targetSdkVersion="29" /> -->
     <!-- Tell the system this app requires OpenGL ES 3.1. -->
