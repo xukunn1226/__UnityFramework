@@ -64,7 +64,7 @@ namespace AnimationInstancingModule.Runtime
         private int                             m_TextureBlockHeight;
         private Texture2D                       m_BakedBoneTexture;
         public bool                             isBaking;
-        private bool                            m_ExportAnimationTexture;                                           // 是否导出AnimationTexture，否则在二进制数据中
+        private bool                            m_ExportAnimationTexture    = false;                                // 是否导出AnimationTexture，否则在二进制数据中
         static public string                    s_AnimationInstancingRoot   = "Assets/AnimationInstancing/Art";
         static public string                    s_AnimationDataPath         = s_AnimationInstancingRoot + "/AnimationData";
         private List<Transform>                 m_BakedLODs;
@@ -163,7 +163,6 @@ namespace AnimationInstancingModule.Runtime
             Prepare();
 
             isBaking = true;
-            m_ExportAnimationTexture = true;        // 默认导出AnimationTexture
 
             if(enableReference)
             {
@@ -469,35 +468,26 @@ namespace AnimationInstancingModule.Runtime
             int pixels = boneTransform.Count * frames.Sum() * m_TextureBlockWidth;             // 总像素数
             int side = Mathf.Max(Mathf.CeilToInt(Mathf.Sqrt(pixels)), m_TextureBlockHeight);
 
-            int width = Mathf.ClosestPowerOfTwo(side);
+            int width = Mathf.NextPowerOfTwo(side);
             int xBlockNum = width / m_TextureBlockWidth;
             int yBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / xBlockNum);
-            int height = MathUtility.AroundTo(yBlockNum * m_TextureBlockHeight, 4);
+            int height = Mathf.NextPowerOfTwo(yBlockNum * m_TextureBlockHeight);
 
             textureWidth = width;
             textureHeight = height;
 
-            int width2 = Mathf.NextPowerOfTwo(side);
+            int width2 = Mathf.ClosestPowerOfTwo(side);
             if(width != width2)
             {
                 xBlockNum = width2 / m_TextureBlockWidth;
                 yBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / xBlockNum);
-                int height2 = MathUtility.AroundTo(yBlockNum * m_TextureBlockHeight, 4);
+                int height2 = Mathf.NextPowerOfTwo(yBlockNum * m_TextureBlockHeight);
                 if(width2 * height2 < width * height)
                 {
                     textureWidth = width2;
                     textureHeight = height2;
                 }
             }
-
-            // textureHeight = MathUtility.AroundTo(side / boneTransform.Count * boneTransform.Count, 4);      // 取4的倍数
-            // // textureWidth = MathUtility.AroundTo((int)(1.0f * pixels / (textureHeight == 0 ? 1 : textureHeight) + 0.5f), 4);
-
-            // // 贴图height不变情况下拓宽width
-            // int yBlockNum = textureHeight / boneTransform.Count;
-            // int xBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / yBlockNum);
-            // textureWidth = MathUtility.AroundTo(xBlockNum * m_TextureBlockWidth, 4);
-
             Debug.Assert(textureWidth * textureHeight >= pixels);
         }
 
@@ -592,14 +582,17 @@ namespace AnimationInstancingModule.Runtime
                 // write boneTexture
                 writer.Write(m_TextureBlockWidth);
                 writer.Write(m_TextureBlockHeight);
-                if(!m_ExportAnimationTexture)
-                {
-                    byte[] bytes = m_BakedBoneTexture.GetRawTextureData();
-                    writer.Write(m_BakedBoneTexture.width);
-                    writer.Write(m_BakedBoneTexture.height);
-                    writer.Write(bytes.Length);
-                    writer.Write(bytes);
-                }
+            }
+
+            string animTextureRawDataFilename = GetAnimationTextureRawDataFilename();
+            using(FileStream fs = File.Open(animTextureRawDataFilename, FileMode.Create, FileAccess.Write))
+            {
+                BinaryWriter writer = new BinaryWriter(fs);
+                byte[] bytes = m_BakedBoneTexture.GetRawTextureData();
+                writer.Write(m_BakedBoneTexture.width);
+                writer.Write(m_BakedBoneTexture.height);
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
             }
             
             if(m_ExportAnimationTexture)
@@ -624,7 +617,7 @@ namespace AnimationInstancingModule.Runtime
             
             // add SoftObject component
             SoftObject texSoftObject = animDataPrefab.AddComponent<SoftObject>();
-            texSoftObject.assetPath = GetAnimationTextureFilename().ToLower();
+            texSoftObject.assetPath = GetAnimationTextureRawDataFilename().ToLower();
             animData.animTexSoftObject = texSoftObject;
 
             // save Prefab
@@ -804,6 +797,11 @@ namespace AnimationInstancingModule.Runtime
         private string GetManifestFilename()
         {
             return s_AnimationDataPath + "/" + gameObject.name.ToLower() + ".bytes";
+        }
+
+        private string GetAnimationTextureRawDataFilename()
+        {
+            return s_AnimationDataPath + "/" + gameObject.name.ToLower() + "_animtexture" + ".bytes";
         }
 
         private string GetAnimationTextureFilename()

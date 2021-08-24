@@ -23,7 +23,7 @@ namespace AnimationInstancingModule.Runtime
         {
             m_SearchInfo = new AnimationInfo();
             m_Comparer = new ComparerHash();
-
+            
             // 1、数据轻量级；2、且涉及到动画逻辑数据，所以同步加载最佳
             using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
             {
@@ -38,11 +38,25 @@ namespace AnimationInstancingModule.Runtime
             // 动画贴图数据量大，异步加载
             AssetLoaderAsync<Object> loader = animTexSoftObject.LoadAssetAsync();
             yield return loader;
-            m_AnimTexture = (Texture2D)loader.asset;
+            TextAsset asset = (TextAsset)loader.asset;
+
+            using(BinaryReader reader = new BinaryReader(new MemoryStream(asset.bytes)))
+            {
+                int textureWidth = reader.ReadInt32();
+                int textureHeight = reader.ReadInt32();
+                int byteSize = reader.ReadInt32();
+                byte[] bytes = new byte[byteSize];
+                bytes = reader.ReadBytes(byteSize);
+                m_AnimTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBAHalf, false, true);
+                m_AnimTexture.filterMode = FilterMode.Point;
+                m_AnimTexture.LoadRawTextureData(bytes);
+                m_AnimTexture.Apply();
+            }
         }
 
         void Destroy()
         {
+            m_AnimTexture = null;
             animTexSoftObject?.UnloadAsset();
         }
 
@@ -111,7 +125,7 @@ namespace AnimationInstancingModule.Runtime
         private void ReadAnimationTexture(BinaryReader reader)
         {
             textureBlockWidth = reader.ReadInt32();
-            textureBlockHeight = reader.ReadInt32();
+            textureBlockHeight = reader.ReadInt32();            
         }
 
         internal int FindAnimationInfoIndex(int hash)

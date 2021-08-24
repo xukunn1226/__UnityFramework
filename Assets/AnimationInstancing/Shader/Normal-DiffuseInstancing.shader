@@ -20,11 +20,7 @@ Shader "AnimationInstancing/DiffuseInstancing"
 			#pragma fragment frag
 			#pragma multi_compile_instancing
 
-			#include "UnityCG.cginc"		
-
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			fixed4 _Color;
+			#include "UnityCG.cginc"
 
 			struct appdata
 			{
@@ -32,10 +28,9 @@ Shader "AnimationInstancing/DiffuseInstancing"
 	    		float4 tangent 		: TANGENT;
     			float3 normal 		: NORMAL;
     			float2 texcoord 	: TEXCOORD0;
-    			float4 texcoord1 	: TEXCOORD1;	//第二纹理坐标
-	    		float4 texcoord2 	: TEXCOORD2;	//第三纹理坐标
-    			float4 texcoord3 	: TEXCOORD3;	//第四纹理坐标
-    			fixed4 color 		: COLOR;		//顶点颜色
+    			float4 texcoord1 	: TEXCOORD1;	// 第二纹理坐标
+	    		float4 texcoord2 	: TEXCOORD2;	// 第三纹理坐标
+    			fixed4 color 		: COLOR;		// 顶点颜色
     			UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -45,20 +40,24 @@ Shader "AnimationInstancing/DiffuseInstancing"
 				float2 uv 			: TEXCOORD0;
 				float4 tangent 		: TANGENT;
 				float3 normal 		: NORMAL;
-				UNITY_VERTEX_INPUT_INSTANCE_ID // necessary only if you want to access instanced properties in fragment Shader
+				UNITY_VERTEX_INPUT_INSTANCE_ID 		// necessary only if you want to access instanced properties in fragment Shader
 			};
 
 			#include "AnimationInstancingBase.cginc"
+
+			sampler2D _MainTex;
+			float4 _MainTex_ST;
+			fixed4 _Color;
 
 			v2f vert(appdata v)
 			{
 				v2f o;
 
 				UNITY_SETUP_INSTANCE_ID(v);
-				UNITY_TRANSFER_INSTANCE_ID(v, o); // necessary only if you want to access instanced properties in the fragment Shader.
+				UNITY_TRANSFER_INSTANCE_ID(v, o); 	// necessary only if you want to access instanced properties in the fragment Shader.
 
 				o.vertex = UnityObjectToClipPos(skinning(v));
-				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);				
 				o.tangent = v.tangent;
 				o.normal = v.normal;
 
@@ -67,8 +66,7 @@ Shader "AnimationInstancing/DiffuseInstancing"
 
 			fixed4 frag(v2f i) : SV_Target
 			{
-				UNITY_SETUP_INSTANCE_ID(i);
-			
+				UNITY_SETUP_INSTANCE_ID(i);			
 				fixed4 c = tex2D(_MainTex, i.uv) * _Color;
 				return c;
 			}
