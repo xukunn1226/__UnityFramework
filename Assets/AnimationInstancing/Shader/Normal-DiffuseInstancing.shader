@@ -1,6 +1,6 @@
 // Unity built-in shader source. Copyright (c) 2016 Unity Technologies. MIT license (see license.txt)
 
-Shader "AnimationInstancing/DiffuseInstancing"
+Shader "ZGame/AnimationInstancing/DiffuseInstancing"
 {
 	Properties
 	{
@@ -57,7 +57,7 @@ Shader "AnimationInstancing/DiffuseInstancing"
 				UNITY_TRANSFER_INSTANCE_ID(v, o); 	// necessary only if you want to access instanced properties in the fragment Shader.
 
 				o.vertex = UnityObjectToClipPos(skinning(v));
-				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);				
+				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.tangent = v.tangent;
 				o.normal = v.normal;
 
