@@ -436,6 +436,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: mannequin
       objectReference: {fileID: 0}
+    - target: {fileID: 3610315136554385502, guid: 5a14b7b4431ea3f4a9ae5653de79f83c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a14b7b4431ea3f4a9ae5653de79f83c, type: 3}
 --- !u!1 &890725700
@@ -3791,7 +3796,7 @@ PrefabInstance:
     - target: {fileID: 711890241963596761, guid: f9a987b497b9ddd4c9237e3165cd0a3e,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7449962199174102131, guid: f9a987b497b9ddd4c9237e3165cd0a3e,
         type: 3}

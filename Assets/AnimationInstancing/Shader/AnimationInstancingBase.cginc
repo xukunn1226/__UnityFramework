@@ -60,7 +60,8 @@ half4x4 loadMatFromTexture(uint frameIndex, uint boneIndex)
 	return m;
 }
 
-half4 skinning(inout appdata_full v)
+
+half4 skinning(inout appdata v)
 {
 	fixed4 w = v.color;
 	half4 bone = half4(v.texcoord2.x, v.texcoord2.y, v.texcoord2.z, v.texcoord2.w);
@@ -104,7 +105,7 @@ half4 skinning(inout appdata_full v)
 	return localPos;
 }
 
-half4 skinningShadow(inout appdata_full v)
+half4 skinningShadow(inout appdata v)
 {
 	half4 bone = half4(v.texcoord2.x, v.texcoord2.y, v.texcoord2.z, v.texcoord2.w);
 #if (SHADER_TARGET < 30 || SHADER_API_GLES)
@@ -130,14 +131,14 @@ half4 skinningShadow(inout appdata_full v)
 	return localPos;
 }
 
-void vert(inout appdata_full v)
-{
-#ifdef UNITY_PASS_SHADOWCASTER
-	v.vertex = skinningShadow(v);
-#else
-	v.vertex = skinning(v);
-#endif
-}
+// void vert(inout appdata_full v)
+// {
+// #ifdef UNITY_PASS_SHADOWCASTER
+// 	v.vertex = skinningShadow(v);
+// #else
+// 	v.vertex = skinning(v);
+// #endif
+// }
 
 //#define DECLARE_VERTEX_SKINNING \
 //	#pragma vertex vert 
