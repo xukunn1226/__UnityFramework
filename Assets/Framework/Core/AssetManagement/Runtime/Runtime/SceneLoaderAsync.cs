@@ -26,6 +26,10 @@ namespace Framework.AssetManagement.Runtime
 
         public AsyncOperation       unloadAsyncOp           { get; private set; }
 
+#if UNITY_EDITOR
+        private bool                m_LoadFromEditor;
+#endif
+
         public SceneLoaderAsync()
         { }
 
@@ -91,7 +95,8 @@ namespace Framework.AssetManagement.Runtime
                 case LoaderType.FromEditor:
                     string assetPath;
                     AssetManager.ParseBundleAndAssetName(bundlePath, sceneName, out assetPath);
-                    UnityEngine.SceneManagement.SceneManager.LoadScene(assetPath + ".unity", mode);
+                    SceneManager.LoadScene(assetPath + ".unity", mode);
+                    m_LoadFromEditor = true;
                     break;
                 case LoaderType.FromStreamingAssets:
                 case LoaderType.FromPersistent:
@@ -122,6 +127,7 @@ namespace Framework.AssetManagement.Runtime
             {
                 case LoaderType.FromEditor:
                     SceneManager.LoadScene(sceneName + ".unity", mode);
+                    m_LoadFromEditor = true;
                     break;
                 case LoaderType.FromStreamingAssets:
                 case LoaderType.FromPersistent:
@@ -148,6 +154,9 @@ namespace Framework.AssetManagement.Runtime
             }
 
             unloadAsyncOp = SceneManager.UnloadSceneAsync(sceneName);
+#if UNITY_EDITOR
+            m_LoadFromEditor = false;
+#endif
         }
 
         private bool IsDone()
@@ -167,7 +176,11 @@ namespace Framework.AssetManagement.Runtime
 
         bool IEnumerator.MoveNext()
         {
+#if UNITY_EDITOR
+            return !m_LoadFromEditor && !IsDone();
+#else
             return !IsDone();
+#endif
         }
 
         void IEnumerator.Reset()

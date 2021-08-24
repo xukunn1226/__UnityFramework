@@ -20,6 +20,7 @@ namespace Framework.AssetManagement.Runtime
 
 #if UNITY_EDITOR
         public string                   assetPath;
+        private bool                    m_LoadFromEditor;
 #endif
 
         public GameObjectLoaderAsync()
@@ -73,6 +74,7 @@ namespace Framework.AssetManagement.Runtime
                     if(prefabAsset != null)
                     {
                         asset = Object.Instantiate(prefabAsset);
+                        m_LoadFromEditor = true;
                     }
                     this.assetPath = assetPath;
                     break;
@@ -98,6 +100,7 @@ namespace Framework.AssetManagement.Runtime
                     if (prefabAsset != null)
                     {
                         asset = Object.Instantiate(prefabAsset);
+                        m_LoadFromEditor = true;
                     }
                     break;
                 case LoaderType.FromStreamingAssets:
@@ -145,6 +148,9 @@ namespace Framework.AssetManagement.Runtime
                 abLoader = null;
             }
             m_Request = null;
+#if UNITY_EDITOR
+            m_LoadFromEditor = false;
+#endif
         }
 
         private bool IsDone()
@@ -185,7 +191,11 @@ namespace Framework.AssetManagement.Runtime
 
         bool IEnumerator.MoveNext()
         {
+#if UNITY_EDITOR
+            return !m_LoadFromEditor && !IsDone();
+#else
             return !IsDone();
+#endif            
         }
 
         void IEnumerator.Reset()

@@ -5,6 +5,7 @@ using System;
 using Framework.Core;
 #if UNITY_EDITOR
 using UnityEditor;
+using Framework.Core.Editor;
 #endif
 
 namespace Application.Runtime
@@ -39,7 +40,7 @@ public class SoftObjectDrawer : PropertyDrawer
             }
 
             // 提示SoftObjectPath指向的对象名称
-            string displayName = string.Format($"{property.displayName}     [{objName}]");
+            string displayName = string.Format($"{property.displayName} [{objName}] [{RedirectorDB.GetLocalID(property.objectReferenceValue)}]");
             property.objectReferenceValue = (SoftObjectPath)EditorGUI.ObjectField(position, new GUIContent(displayName, objName/*, fileID.ToString()*/), property.objectReferenceValue, fieldInfo.FieldType, true);
         }
         else

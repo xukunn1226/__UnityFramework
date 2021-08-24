@@ -62,6 +62,12 @@ namespace Framework.Core
             return false;
         }
 
+        // 把num向上取整到大于它的最小整数（b为2^n）倍数
+        static public int AroundTo(int num, int b)
+        {
+            return (num + (b - 1)) & ~(b-1);
+        }
+
         public static float GridSnap(float location, float grid)
         {
             if (grid == 0)

@@ -21,6 +21,7 @@ namespace Framework.AssetManagement.Runtime
 
 #if UNITY_EDITOR
         public string                   assetPath;
+        private bool                    m_LoadFromEditor;
 #endif
 
         public AssetLoaderAsync()
@@ -72,6 +73,7 @@ namespace Framework.AssetManagement.Runtime
                 case LoaderType.FromEditor:
                     asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
                     this.assetPath = assetPath;
+                    m_LoadFromEditor = true;
                     break;
                 case LoaderType.FromStreamingAssets:
                 case LoaderType.FromPersistent:
@@ -93,6 +95,7 @@ namespace Framework.AssetManagement.Runtime
                 case LoaderType.FromEditor:
                     {
                         asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                        m_LoadFromEditor = true;
                     }
                     break;
                 case LoaderType.FromStreamingAssets:
@@ -137,6 +140,9 @@ namespace Framework.AssetManagement.Runtime
             }
             m_Request = null;
             asset = null;
+#if UNITY_EDITOR
+            m_LoadFromEditor = false;
+#endif           
         }
 
         private bool IsDone()
@@ -166,7 +172,11 @@ namespace Framework.AssetManagement.Runtime
 
         bool IEnumerator.MoveNext()
         {
+#if UNITY_EDITOR
+            return !m_LoadFromEditor && !IsDone();
+#else
             return !IsDone();
+#endif
         }
 
         void IEnumerator.Reset()

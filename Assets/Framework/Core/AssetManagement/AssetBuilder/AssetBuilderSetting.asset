@@ -19,6 +19,7 @@ MonoBehaviour:
   - Assets/Framework/Core/AssetManagement/Runtime/Tests/Res/
   - Assets/Framework/Core/StreamingLevelManager/Tests/Res
   - Assets/Application/XLua/Lua
+  - Assets/AnimationInstancing/Art
   BlackListOfFolder:
   - Resources
   - Temp
