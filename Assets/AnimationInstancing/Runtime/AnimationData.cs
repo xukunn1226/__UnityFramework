@@ -31,6 +31,7 @@ namespace AnimationInstancingModule.Runtime
                 extraBoneInfo = ReadExtraBoneInfo(reader);
                 ReadAnimationTexture(reader);
             }
+            manifest = null;        // 已无用，可以立即回收
         }
 
         IEnumerator Start()
@@ -52,12 +53,8 @@ namespace AnimationInstancingModule.Runtime
                 m_AnimTexture.LoadRawTextureData(bytes);
                 m_AnimTexture.Apply();
             }
-        }
 
-        void Destroy()
-        {
-            m_AnimTexture = null;
-            animTexSoftObject?.UnloadAsset();
+            animTexSoftObject?.UnloadAsset();       // 已无用，可以立即回收
         }
 
         public Texture2D GetAnimTexture()

@@ -7,7 +7,7 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationInstancingManager : SingletonMono<AnimationInstancingManager>
     {
-        static public int                               s_MaxInstanceCountPerRendering  = 3;            // 一次最多可渲染的实例化数量
+        static public int                               s_MaxInstanceCountPerRendering  = 512;            // 一次最多可渲染的实例化数量
         private Dictionary<int, VertexCache>            m_VertexCachePool               = new Dictionary<int, VertexCache>();
         private List<AnimationInstancing>               m_AnimInstancingList            = new List<AnimationInstancing>();
 
