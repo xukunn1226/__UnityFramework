@@ -460,6 +460,37 @@ namespace AnimationInstancingModule.Runtime
         
         // 计算动画数据占用的贴图大小
         // 每根骨骼4个像素（一个像素记录4个值，4个像素一个矩阵），一个block记录一帧所有的骨骼数据
+        // public void CalculateTextureSize(List<int> frames, List<Transform> boneTransform, out int textureWidth, out int textureHeight)
+        // {
+        //     m_TextureBlockWidth = 4;
+        //     m_TextureBlockHeight = boneTransform.Count;
+
+        //     int pixels = boneTransform.Count * frames.Sum() * m_TextureBlockWidth;             // 总像素数
+        //     int side = Mathf.Max(Mathf.CeilToInt(Mathf.Sqrt(pixels)), m_TextureBlockHeight);
+
+        //     int width = Mathf.NextPowerOfTwo(side);
+        //     int xBlockNum = width / m_TextureBlockWidth;
+        //     int yBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / xBlockNum);
+        //     int height = Mathf.NextPowerOfTwo(yBlockNum * m_TextureBlockHeight);
+
+        //     textureWidth = width;
+        //     textureHeight = height;
+
+        //     int width2 = Mathf.ClosestPowerOfTwo(side);
+        //     if(width != width2)
+        //     {
+        //         xBlockNum = width2 / m_TextureBlockWidth;
+        //         yBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / xBlockNum);
+        //         int height2 = Mathf.NextPowerOfTwo(yBlockNum * m_TextureBlockHeight);
+        //         if(width2 * height2 < width * height)
+        //         {
+        //             textureWidth = width2;
+        //             textureHeight = height2;
+        //         }
+        //     }
+        //     Debug.Assert(textureWidth * textureHeight >= pixels);
+        // }
+
         public void CalculateTextureSize(List<int> frames, List<Transform> boneTransform, out int textureWidth, out int textureHeight)
         {
             m_TextureBlockWidth = 4;
@@ -468,26 +499,35 @@ namespace AnimationInstancingModule.Runtime
             int pixels = boneTransform.Count * frames.Sum() * m_TextureBlockWidth;             // 总像素数
             int side = Mathf.Max(Mathf.CeilToInt(Mathf.Sqrt(pixels)), m_TextureBlockHeight);
 
-            int width = Mathf.NextPowerOfTwo(side);
+            int width = Mathf.ClosestPowerOfTwo(side);
             int xBlockNum = width / m_TextureBlockWidth;
             int yBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / xBlockNum);
-            int height = Mathf.NextPowerOfTwo(yBlockNum * m_TextureBlockHeight);
+            int height = MathUtility.AroundTo(yBlockNum * m_TextureBlockHeight, 4);
 
             textureWidth = width;
             textureHeight = height;
 
-            int width2 = Mathf.ClosestPowerOfTwo(side);
+            int width2 = Mathf.NextPowerOfTwo(side);
             if(width != width2)
             {
                 xBlockNum = width2 / m_TextureBlockWidth;
                 yBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / xBlockNum);
-                int height2 = Mathf.NextPowerOfTwo(yBlockNum * m_TextureBlockHeight);
+                int height2 = MathUtility.AroundTo(yBlockNum * m_TextureBlockHeight, 4);
                 if(width2 * height2 < width * height)
                 {
                     textureWidth = width2;
                     textureHeight = height2;
                 }
             }
+
+            // textureHeight = MathUtility.AroundTo(side / boneTransform.Count * boneTransform.Count, 4);      // 取4的倍数
+            // // textureWidth = MathUtility.AroundTo((int)(1.0f * pixels / (textureHeight == 0 ? 1 : textureHeight) + 0.5f), 4);
+
+            // // 贴图height不变情况下拓宽width
+            // int yBlockNum = textureHeight / boneTransform.Count;
+            // int xBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / yBlockNum);
+            // textureWidth = MathUtility.AroundTo(xBlockNum * m_TextureBlockWidth, 4);
+
             Debug.Assert(textureWidth * textureHeight >= pixels);
         }
 

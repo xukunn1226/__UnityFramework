@@ -31,18 +31,18 @@ half4x4 loadMatFromTexture(uint frameIndex, uint boneIndex)
 	uint blockCount = 1.0 * _boneTextureWidth / _boneTextureBlockWidth;
 	int2 uv;
 	uv.y = frameIndex / blockCount * _boneTextureBlockHeight;
-	uv.x = _boneTextureBlockWidth * (frameIndex - 1.0 * _boneTextureWidth / _boneTextureBlockWidth * uv.y);
+	uv.x = _boneTextureBlockWidth * (frameIndex % blockCount);
 
 	int matCount = _boneTextureBlockWidth * 0.25;
-	uv.x = uv.x + (boneIndex % matCount) * 4;
-	uv.y = uv.y + boneIndex / matCount;
+	uv.x = uv.x;
+	uv.y = uv.y + boneIndex;
 
 	float2 uvFrame;
-	uvFrame.x = uv.x / (float)_boneTextureWidth;
-	uvFrame.y = uv.y / (float)_boneTextureHeight;
+	uvFrame.x = ((float)uv.x + 0.5) / (float) (_boneTextureWidth);
+    uvFrame.y = ((float)uv.y + 0.5) / (float) (_boneTextureHeight);
 	half4 uvf = half4(uvFrame, 0, 0);
 
-	float offset = 1.0f / (float)_boneTextureWidth;
+	half offset = 1.0f / (half) _boneTextureWidth;
 	half4 c1 = tex2Dlod(_boneTexture, uvf);
 	uvf.x = uvf.x + offset;
 	half4 c2 = tex2Dlod(_boneTexture, uvf);
@@ -63,7 +63,7 @@ half4x4 loadMatFromTexture(uint frameIndex, uint boneIndex)
 
 half4 skinning(inout appdata v)
 {
-	fixed4 w = v.color;
+	float4 w = v.color;
 	half4 bone = half4(v.texcoord2.x, v.texcoord2.y, v.texcoord2.z, v.texcoord2.w);
 #if (SHADER_TARGET < 30 || SHADER_API_GLES)
 	float curFrame = frameIndex;

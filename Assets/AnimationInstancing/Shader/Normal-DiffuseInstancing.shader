@@ -1,5 +1,3 @@
-// Unity built-in shader source. Copyright (c) 2016 Unity Technologies. MIT license (see license.txt)
-
 Shader "ZGame/AnimationInstancing/DiffuseInstancing"
 {
 	Properties
@@ -10,17 +8,24 @@ Shader "ZGame/AnimationInstancing/DiffuseInstancing"
 	
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" }
+		Tags { "RenderType"="Opaque" "RenderPipeline" = "UniversalPipeline" }
 		LOD 200
 
 		Pass
 		{
-			CGPROGRAM
+			NAME "FORWARD"
+			Tags
+			{
+				"LightMode"="UniversalForward"
+			}
+
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
 			#pragma multi_compile_instancing
 
-			#include "UnityCG.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
 			struct appdata
 			{
@@ -30,7 +35,7 @@ Shader "ZGame/AnimationInstancing/DiffuseInstancing"
     			float2 texcoord 	: TEXCOORD0;
     			float4 texcoord1 	: TEXCOORD1;	// 第二纹理坐标
 	    		float4 texcoord2 	: TEXCOORD2;	// 第三纹理坐标
-    			fixed4 color 		: COLOR;		// 顶点颜色
+    			float4 color 		: COLOR;		// 顶点颜色
     			UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -47,7 +52,7 @@ Shader "ZGame/AnimationInstancing/DiffuseInstancing"
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			fixed4 _Color;
+			float4 _Color;
 
 			v2f vert(appdata v)
 			{
@@ -56,7 +61,10 @@ Shader "ZGame/AnimationInstancing/DiffuseInstancing"
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_TRANSFER_INSTANCE_ID(v, o); 	// necessary only if you want to access instanced properties in the fragment Shader.
 
-				o.vertex = UnityObjectToClipPos(skinning(v));
+				// o.vertex = UnityObjectToClipPos(skinning(v));
+				VertexPositionInputs vertexInput = GetVertexPositionInputs(skinning(v).xyz);
+				o.vertex = vertexInput.positionCS;
+
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.tangent = v.tangent;
 				o.normal = v.normal;
@@ -64,13 +72,13 @@ Shader "ZGame/AnimationInstancing/DiffuseInstancing"
 				return o;
 			}
 
-			fixed4 frag(v2f i) : SV_Target
+			float4 frag(v2f i) : SV_Target
 			{
 				UNITY_SETUP_INSTANCE_ID(i);			
-				fixed4 c = tex2D(_MainTex, i.uv) * _Color;
+				float4 c = tex2D(_MainTex, i.uv) * _Color;
 				return c;
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

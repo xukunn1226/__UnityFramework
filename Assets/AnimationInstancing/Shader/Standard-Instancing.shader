@@ -90,7 +90,7 @@ Shader "ZGame/AnimationInstancing/Standard-Instancing"
 
             #pragma vertex vertBase
             #pragma fragment fragBase
-            #include "UnityStandardCoreForward.cginc"
+            #include "CustomUnityStandardCoreForward.cginc"
 
             ENDCG
         }
@@ -126,7 +126,7 @@ Shader "ZGame/AnimationInstancing/Standard-Instancing"
 
             #pragma vertex vertAdd
             #pragma fragment fragAdd
-            #include "UnityStandardCoreForward.cginc"
+            #include "CustomUnityStandardCoreForward.cginc"
 
             ENDCG
         }
@@ -191,7 +191,7 @@ Shader "ZGame/AnimationInstancing/Standard-Instancing"
             #pragma vertex vertDeferred
             #pragma fragment fragDeferred
 
-            #include "UnityStandardCore.cginc"
+            #include "CustomUnityStandardCore.cginc"
 
             ENDCG
         }
@@ -256,7 +256,7 @@ Shader "ZGame/AnimationInstancing/Standard-Instancing"
 
             #pragma vertex vertBase
             #pragma fragment fragBase
-            #include "UnityStandardCoreForward.cginc"
+            #include "CustomUnityStandardCoreForward.cginc"
 
             ENDCG
         }
@@ -288,7 +288,7 @@ Shader "ZGame/AnimationInstancing/Standard-Instancing"
 
             #pragma vertex vertAdd
             #pragma fragment fragAdd
-            #include "UnityStandardCoreForward.cginc"
+            #include "CustomUnityStandardCoreForward.cginc"
 
             ENDCG
         }
