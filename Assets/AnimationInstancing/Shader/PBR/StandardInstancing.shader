@@ -416,7 +416,7 @@ Shader "ZGame/URP/Standard-Instancing"
             #pragma fragment LitPassFragment
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitForwardPass.hlsl"
+            #include "CustomLitForwardPass.hlsl"        // LitForwardPass.hlsl replaced by CustomLitForwardPass.hlsl
             ENDHLSL
         }
 
@@ -447,7 +447,7 @@ Shader "ZGame/URP/Standard-Instancing"
             #pragma fragment ShadowPassFragment
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
+            #include "CustomShadowCasterPass.hlsl"      // ShadowCasterPass.hlsl replaced by CustomShadowCasterPass.hlsl
             ENDHLSL
         }
 
