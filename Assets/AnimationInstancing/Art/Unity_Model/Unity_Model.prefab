@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4787760265826063190
+--- !u!1 &2430351190666339653
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 194697114793096688}
-  - component: {fileID: 4639354007909753050}
+  - component: {fileID: 1585335530265253176}
+  - component: {fileID: 1743202909579538625}
   m_Layer: 0
   m_Name: unity_model
   m_TagString: Untagged
@@ -17,13 +17,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &194697114793096688
+--- !u!4 &1585335530265253176
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4787760265826063190}
+  m_GameObject: {fileID: 2430351190666339653}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,13 +31,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4639354007909753050
+--- !u!114 &1743202909579538625
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4787760265826063190}
+  m_GameObject: {fileID: 2430351190666339653}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 715835d028d77244cb41cc6f091de094, type: 3}
@@ -50,9 +50,9 @@ MonoBehaviour:
     rendererCacheList:
     - mesh: {fileID: 4300000, guid: 9f502d7b16f67d845a0a2fdf6c30bc74, type: 2}
       materials:
-      - {fileID: 2100000, guid: 1140fa85be358d54d8fd89b5439f8153, type: 2}
-      - {fileID: 2100000, guid: b35164a97f263cc4a98acd1257f252ad, type: 2}
-      - {fileID: 2100000, guid: c535a808a178bd54daee2d1a4128bee6, type: 2}
+      - {fileID: 2100000, guid: a838fdf3534b5a04292644916147f89e, type: 2}
+      - {fileID: 2100000, guid: 14186d09ed7ae4342b331c32d0985a42, type: 2}
+      - {fileID: 2100000, guid: a21d5e5a285cb584f839f1e272e85402, type: 2}
       bonePerVertex: 4
       boneIndices:
       - {x: 7, y: 0, z: 0, w: 0}
@@ -34205,9 +34205,9 @@ MonoBehaviour:
     rendererCacheList:
     - mesh: {fileID: 4300000, guid: 522f90c9ccce9c8479347326583808ce, type: 2}
       materials:
-      - {fileID: 2100000, guid: 7d5008927f41518429e6f59ff88294e3, type: 2}
-      - {fileID: 2100000, guid: f5ac6f3e1aea53d40b3271437dae6c44, type: 2}
-      - {fileID: 2100000, guid: a5b1e999e3ac3f14cbd5252ebad976b8, type: 2}
+      - {fileID: 2100000, guid: 40f300f538f637d4b9ba2cd14a2d95b7, type: 2}
+      - {fileID: 2100000, guid: 0a7515758b6fa8f47be07218d1ccdc94, type: 2}
+      - {fileID: 2100000, guid: e8b28ea0a9309234eb0f96d4e38d497c, type: 2}
       bonePerVertex: 2
       boneIndices:
       - {x: 7, y: 0, z: 0, w: 0}
@@ -68360,7 +68360,7 @@ MonoBehaviour:
   m_Radius: 2.33
   shadowCastingMode: 1
   receiveShadows: 0
-  defaultAnim: 
+  defaultAnim: attack02
   lodDistance:
   - 50
   - 250

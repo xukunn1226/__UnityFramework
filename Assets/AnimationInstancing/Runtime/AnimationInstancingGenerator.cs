@@ -683,7 +683,6 @@ namespace AnimationInstancingModule.Runtime
                     ExtractInternalAssets(generator.gameObject, smr);
                 }
             }
-            return;
 
             // step2. 删除所有子节点和根节点上多余组件
             int count = inst.transform.childCount;
@@ -719,7 +718,17 @@ namespace AnimationInstancingModule.Runtime
                 {
                     RendererCache cache = new RendererCache();
                     cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(generator.gameObject, smr));
-                    cache.materials = smr.sharedMaterials;
+                    cache.materials = new Material[smr.sharedMaterials.Length];
+                    for(int i = 0; i < smr.sharedMaterials.Length; ++i)
+                    {
+                        Material mat = smr.sharedMaterials[i];
+                        if( mat == null)
+                            continue;
+
+                        string newMatFilename = GetMaterialFilename(mat.name).ToLower();
+                        cache.materials[i] = AssetDatabase.LoadAssetAtPath<Material>(newMatFilename);
+                    }
+
                     cache.bonePerVertex = lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1);
                     // cache.weights = GetBoneWeights(cache.mesh, cache.bonePerVertex);
                     cache.boneIndices = GetBoneIndices(cache.mesh, smr, generator.m_BoneTransform);
@@ -734,21 +743,27 @@ namespace AnimationInstancingModule.Runtime
             DestroyImmediate(inst);
             AssetDatabase.Refresh();
 
+            PrefabUtility.RevertPrefabInstance(generator.gameObject, InteractionMode.AutomatedAction);
+
             Debug.Log($"export animation instancing prefab: {GetAnimationInstancingPrefabFilename()}");
         }
 
         private void ExtractInternalAssets(GameObject root, SkinnedMeshRenderer smr)
         {
             // extract mesh
-            // AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(root, smr));
+            AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(root, smr));
 
             // extract material and texture
             foreach(var mat in smr.sharedMaterials)
             {
+                if(mat == null)
+                    continue;
+
                 // create new material
                 string newMatFilename = GetMaterialFilename(mat.name).ToLower();
-                AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(mat), newMatFilename);
-                Material newMat = AssetDatabase.LoadAssetAtPath<Material>(newMatFilename);
+                Material newMat = UnityEngine.Object.Instantiate(mat) as Material;
+                newMat.shader = Shader.Find("ZGame/URP/Standard-Instancing");
+                newMat.enableInstancing = true;
 
                 string[] names = mat.GetTexturePropertyNames();
                 for(int i = 0; i < names.Length; ++i)
@@ -758,11 +773,12 @@ namespace AnimationInstancingModule.Runtime
                         continue;
 
                     string newTexFilename = GetTextureFilename(tex).ToLower();
-                    Texture newTex = UnityEngine.Object.Instantiate(tex);
-                    AssetDatabase.CreateAsset(newTex, newTexFilename);
+                    System.IO.File.Copy(AssetDatabase.GetAssetPath(tex), newTexFilename, true);
+                    AssetDatabase.ImportAsset(newTexFilename);
+                    
                     newMat.SetTexture(names[i], AssetDatabase.LoadAssetAtPath<Texture>(newTexFilename));
                 }
-                EditorUtility.SetDirty(newMat);
+                AssetDatabase.CreateAsset(newMat, newMatFilename);
             }
         }
 
