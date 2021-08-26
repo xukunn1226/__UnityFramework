@@ -56,7 +56,7 @@ struct Varyings
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
-#include "Standard-InstancingBase.hlsl"
+#include "InstancingLitForwardPass.hlsl"
 
 void InitializeInputData(Varyings input, half3 normalTS, out InputData inputData)
 {

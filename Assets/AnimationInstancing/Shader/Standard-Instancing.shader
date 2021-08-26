@@ -169,7 +169,7 @@ Shader "ZGame/URP/Animation-Instancing"
             #pragma fragment ShadowPassFragment
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
+            #include "CustomShadowCasterPass.hlsl"
             ENDHLSL
         }
 
