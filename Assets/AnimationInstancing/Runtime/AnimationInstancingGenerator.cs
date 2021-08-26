@@ -671,15 +671,19 @@ namespace AnimationInstancingModule.Runtime
         {
             // 保存root/[Custom]/[Custom].prefab
             // step1. 实例化对象，提取mesh
-            GameObject inst = Instantiate(gameObject);            
+            GameObject inst = Instantiate(gameObject);
+            inst.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+            // 导出资源：mesh, material, texture
             foreach(var lod in m_BakedLODs)
             {
                 SkinnedMeshRenderer[] smrs = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (var smr in smrs)
-                { // extract mesh
-                    AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(smr));
+                {
+                    ExtractInternalAssets(generator.gameObject, smr);
                 }
             }
+            return;
 
             // step2. 删除所有子节点和根节点上多余组件
             int count = inst.transform.childCount;
@@ -697,9 +701,11 @@ namespace AnimationInstancingModule.Runtime
             }
 
             // step3. 添加AnimationInstancing，记录RendererCache
+            AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
+
+            // setup
             GameObject animDataAsset = AssetDatabase.LoadAssetAtPath<GameObject>(generator.GetAnimationDataPrefabFilename());
             Debug.Assert(animDataAsset != null);
-            AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
             animInst.prototype = animDataAsset.GetComponent<AnimationData>();
             animInst.radius = CalcBoundingSphere();
             animInst.lodDistance[0] = 50;
@@ -712,7 +718,7 @@ namespace AnimationInstancingModule.Runtime
                 foreach(var smr in smrs)
                 {
                     RendererCache cache = new RendererCache();
-                    cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(smr));
+                    cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(generator.gameObject, smr));
                     cache.materials = smr.sharedMaterials;
                     cache.bonePerVertex = lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1);
                     // cache.weights = GetBoneWeights(cache.mesh, cache.bonePerVertex);
@@ -729,6 +735,35 @@ namespace AnimationInstancingModule.Runtime
             AssetDatabase.Refresh();
 
             Debug.Log($"export animation instancing prefab: {GetAnimationInstancingPrefabFilename()}");
+        }
+
+        private void ExtractInternalAssets(GameObject root, SkinnedMeshRenderer smr)
+        {
+            // extract mesh
+            // AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(root, smr));
+
+            // extract material and texture
+            foreach(var mat in smr.sharedMaterials)
+            {
+                // create new material
+                string newMatFilename = GetMaterialFilename(mat.name).ToLower();
+                AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(mat), newMatFilename);
+                Material newMat = AssetDatabase.LoadAssetAtPath<Material>(newMatFilename);
+
+                string[] names = mat.GetTexturePropertyNames();
+                for(int i = 0; i < names.Length; ++i)
+                {
+                    Texture tex = mat.GetTexture(names[i]);
+                    if(tex == null)
+                        continue;
+
+                    string newTexFilename = GetTextureFilename(tex).ToLower();
+                    Texture newTex = UnityEngine.Object.Instantiate(tex);
+                    AssetDatabase.CreateAsset(newTex, newTexFilename);
+                    newMat.SetTexture(names[i], AssetDatabase.LoadAssetAtPath<Texture>(newTexFilename));
+                }
+                EditorUtility.SetDirty(newMat);
+            }
         }
 
         private Vector4[] GetBoneWeights(Mesh mesh, int bonePerVertex)
@@ -816,17 +851,29 @@ namespace AnimationInstancingModule.Runtime
         // root/[CustomPrefab1]
         private string GetExportedPath()
         {
-            string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(m_BakedLODs[0].gameObject));
+            string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject));
             path = path.Substring(0, path.LastIndexOf("/"));
             return path.Substring(0, path.LastIndexOf("/"));
         }
         
         // prefab name + lod level + mesh name
-        private string GetMeshFilename(SkinnedMeshRenderer smr)
+        private string GetMeshFilename(GameObject root, SkinnedMeshRenderer smr)
         {
-            string prefix = string.Format($"{smr.transform.parent.parent.gameObject.name}_{smr.transform.parent.gameObject.name}");
+            string prefix = string.Format($"{root.name}_{smr.transform.parent.gameObject.name}");
 
             return string.Format($"{GetExportedPath()}/{prefix.ToLower()}_{smr.sharedMesh.name.ToLower()}.asset");
+        }
+
+        private string GetMaterialFilename(string matName)
+        {
+            return string.Format($"{GetExportedPath()}/{matName}.mat");
+        }
+
+        private string GetTextureFilename(Texture tex)
+        {
+            string assetPath = AssetDatabase.GetAssetPath(tex);
+            string filename = Path.GetFileName(assetPath);
+            return string.Format($"{GetExportedPath()}/{filename}");
         }
 
         private string GetAnimationInstancingPrefabFilename()

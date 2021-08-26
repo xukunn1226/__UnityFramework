@@ -21,6 +21,7 @@ namespace AnimationInstancingModule.Editor
         private Vector2                         m_ScrollPosition2;
         private Dictionary<string, bool>        m_Temp              = new Dictionary<string, bool>();
         private List<Transform>                 m_LODs;
+        private bool                            m_InitExtraBone;
 
         private void OnEnable()
         {
@@ -110,23 +111,11 @@ namespace AnimationInstancingModule.Editor
             EditorGUI.BeginDisabledGroup(!m_Target.exposeAttachments);
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                // EditorGUI.BeginChangeCheck();
-
-                // GameObject fbx = EditorGUILayout.ObjectField("FBX refrenced by Prefab:", m_Target.fbx, typeof(GameObject), false) as GameObject;
-
-                // if(EditorGUI.EndChangeCheck())
-                // {
-                //     if(fbx == null)
-                //     {
-                //         m_Target.m_SelectExtraBone.Clear();
-                //     }
-                //     else if(m_Target.fbx != fbx)
-                //     {
-                //         UpdateSelectExtraBone();
-                //     }
-                //     m_Target.fbx = fbx;                    
-                //     EditorUtility.SetDirty(m_Target);
-                // }
+                if(!m_InitExtraBone)
+                {
+                    m_InitExtraBone = true;
+                    UpdateSelectExtraBone();
+                }
 
                 if (m_Target.m_SelectExtraBone.Count > 0)
                 {
@@ -165,12 +154,19 @@ namespace AnimationInstancingModule.Editor
             var allTrans = m_LODs[0].GetComponentsInChildren<Transform>().ToList();
             allTrans.RemoveAll(q => boneTransform.Contains(q));
 
+            Dictionary<string, bool> selectExtraBone = new Dictionary<string, bool>(m_Target.m_SelectExtraBone);
+
             m_Target.m_SelectExtraBone.Clear();
             for (int i = 0; i != allTrans.Count; ++i)
             {
-                if (m_Target.m_SelectExtraBone.ContainsKey(allTrans[i].name))
-                    continue;
-                m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
+                if (selectExtraBone.ContainsKey(allTrans[i].name))
+                {
+                    m_Target.m_SelectExtraBone.Add(allTrans[i].name, selectExtraBone[allTrans[i].name]);
+                }
+                else
+                {
+                    m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
+                }
             }
         }
 
