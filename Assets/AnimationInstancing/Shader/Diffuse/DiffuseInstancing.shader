@@ -1,4 +1,4 @@
-Shader "ZGame/AnimationInstancing/DiffuseInstancing"
+Shader "ZGame/AnimationInstancing/Diffuse-Instancing"
 {
 	Properties
 	{

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028335, g: 0.22571331, b: 0.30692235, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028381, g: 0.22571406, b: 0.30692294, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -516,6 +516,11 @@ PrefabInstance:
         type: 3}
       propertyPath: defaultAnim
       value: attack02
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536082260004208754, guid: f9a987b497b9ddd4c9237e3165cd0a3e,
+        type: 3}
+      propertyPath: shadowCastingMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8169866558080198427, guid: f9a987b497b9ddd4c9237e3165cd0a3e,
         type: 3}
@@ -6174,6 +6179,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: unity_model (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169866558080198427, guid: f9a987b497b9ddd4c9237e3165cd0a3e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9148824443151742884, guid: f9a987b497b9ddd4c9237e3165cd0a3e,
         type: 3}

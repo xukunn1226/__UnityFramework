@@ -1,3 +1,6 @@
+#ifndef INSTANCING_LIT_FORWARD_PASS_INCLUDED
+#define INSTANCING_LIT_FORWARD_PASS_INCLUDED
+
 #include "InstancingCore.hlsl"
 
 half4 skinning(inout Attributes v)
@@ -43,3 +46,5 @@ half4 skinning(inout Attributes v)
 	localPos = lerp(localPos, localPosPreAni, (1.0f - progress) * (preAniFrame > 0.0f));
 	return localPos;
 }
+
+#endif

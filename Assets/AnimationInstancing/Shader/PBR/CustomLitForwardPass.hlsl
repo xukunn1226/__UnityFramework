@@ -1,5 +1,5 @@
-#ifndef UNIVERSAL_FORWARD_LIT_PASS_INCLUDED
-#define UNIVERSAL_FORWARD_LIT_PASS_INCLUDED
+#ifndef CUSTOM_FORWARD_LIT_PASS_INCLUDED
+#define CUSTOM_FORWARD_LIT_PASS_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
@@ -22,8 +22,8 @@ struct Attributes
     float4 tangentOS    : TANGENT;
     float2 texcoord     : TEXCOORD0;
     float2 lightmapUV   : TEXCOORD1;
-    float4 color        : COLOR;
-    float4 texcoord2    : TEXCOORD2;
+    float4 color        : COLOR;            // added by xukun for instancing data
+    float4 texcoord2    : TEXCOORD2;        // added by xukun for instancing data
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 

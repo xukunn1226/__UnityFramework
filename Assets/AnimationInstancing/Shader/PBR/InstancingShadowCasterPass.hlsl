@@ -1,3 +1,6 @@
+#ifndef INSTANCING_SHADOW_CASTER_PASS_INCLUDED
+#define INSTANCING_SHADOW_CASTER_PASS_INCLUDED
+
 #include "InstancingCore.hlsl"
 
 half4 skinningShadow(inout Attributes v)
@@ -19,8 +22,12 @@ half4 skinningShadow(inout Attributes v)
 	half4 localPosPre = mul(v.positionOS, localToWorldMatrixPre);
 	half4 localPosNext = mul(v.positionOS, localToWorldMatrixNext);
 	half4 localPos = lerp(localPosPre, localPosNext, curFrame - preFrame);
-	half4x4 localToWorldMatrixPreAni = loadMatFromTexture(preAniFrame, bone.x);
-	half4 localPosPreAni = mul(v.positionOS, localToWorldMatrixPreAni);
-	localPos = lerp(localPos, localPosPreAni, (1.0f - progress) * (preAniFrame > 0.0f));
+
+	// opt: skip calculation of pre animation frame
+	// half4x4 localToWorldMatrixPreAni = loadMatFromTexture(preAniFrame, bone.x);
+	// half4 localPosPreAni = mul(v.positionOS, localToWorldMatrixPreAni);
+	// localPos = lerp(localPos, localPosPreAni, (1.0f - progress) * (preAniFrame > 0.0f));
 	return localPos;
 }
+
+#endif

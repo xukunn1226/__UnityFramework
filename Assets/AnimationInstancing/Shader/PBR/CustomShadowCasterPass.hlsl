@@ -1,5 +1,5 @@
-#ifndef UNIVERSAL_SHADOW_CASTER_PASS_INCLUDED
-#define UNIVERSAL_SHADOW_CASTER_PASS_INCLUDED
+#ifndef CUSTOM_SHADOW_CASTER_PASS_INCLUDED
+#define CUSTOM_SHADOW_CASTER_PASS_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
@@ -11,7 +11,7 @@ struct Attributes
     float4 positionOS   : POSITION;
     float3 normalOS     : NORMAL;
     float2 texcoord     : TEXCOORD0;
-    float4 texcoord2    : TEXCOORD2;
+    float4 texcoord2    : TEXCOORD2;            // added by xukun for instancing data
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 

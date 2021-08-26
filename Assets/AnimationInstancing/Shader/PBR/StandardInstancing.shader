@@ -1,4 +1,4 @@
-Shader "ZGame/URP/Animation-Instancing"
+Shader "ZGame/URP/Standard-Instancing"
 {
     Properties
     {
@@ -137,7 +137,7 @@ Shader "ZGame/URP/Animation-Instancing"
             #pragma fragment LitPassFragment
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "CustomLitForwardPass.hlsl"
+            #include "CustomLitForwardPass.hlsl"        // LitForwardPass.hlsl replaced by CustomLitForwardPass.hlsl
             ENDHLSL
         }
 
@@ -169,7 +169,7 @@ Shader "ZGame/URP/Animation-Instancing"
             #pragma fragment ShadowPassFragment
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "CustomShadowCasterPass.hlsl"
+            #include "CustomShadowCasterPass.hlsl"      // ShadowCasterPass.hlsl replaced by CustomShadowCasterPass.hlsl
             ENDHLSL
         }
 
