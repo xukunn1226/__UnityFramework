@@ -37,7 +37,7 @@ namespace AnimationInstancingModule.Runtime
 
                 yield return new WaitForSeconds(interval);
             }
-            Debug.Log("Done.............");
+            Debug.Log($"Done............. {instancingCount}");
         }
     }
 }

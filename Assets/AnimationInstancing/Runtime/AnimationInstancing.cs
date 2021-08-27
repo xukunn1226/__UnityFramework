@@ -265,9 +265,9 @@ namespace AnimationInstancingModule.Runtime
 
                 int level = 0;
                 float distSqr = (cameraPosition - worldTransform.position).sqrMagnitude;
-                if(distSqr < lodDistance[0])
+                if(distSqr < lodDistance[0] * lodDistance[0])
                     level = 0;
-                else if(distSqr < lodDistance[1])
+                else if(distSqr < lodDistance[1] * lodDistance[1])
                     level = 1;
                 else
                     level = 2;
