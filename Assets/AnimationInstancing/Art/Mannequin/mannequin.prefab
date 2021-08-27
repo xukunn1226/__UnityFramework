@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7614768158992191039
+--- !u!1 &8117218429704716010
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5705840112696098454}
-  - component: {fileID: 574954830584733225}
+  - component: {fileID: 6052261475572505962}
+  - component: {fileID: 3069555240717287789}
   m_Layer: 0
   m_Name: mannequin
   m_TagString: Untagged
@@ -17,13 +17,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5705840112696098454
+--- !u!4 &6052261475572505962
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7614768158992191039}
+  m_GameObject: {fileID: 8117218429704716010}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,13 +31,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &574954830584733225
+--- !u!114 &3069555240717287789
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7614768158992191039}
+  m_GameObject: {fileID: 8117218429704716010}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 715835d028d77244cb41cc6f091de094, type: 3}
@@ -50,8 +50,8 @@ MonoBehaviour:
     rendererCacheList:
     - mesh: {fileID: 4300000, guid: dd1387a60b325ce4c897c844d46db299, type: 2}
       materials:
-      - {fileID: 2100000, guid: c2ec1fb9a1ead4542ac2528e5f096cd5, type: 2}
-      - {fileID: 2100000, guid: 24a8f81fe4435c9459ef103c7b059a7d, type: 2}
+      - {fileID: 2100000, guid: b474199e7852a76439eca62605322320, type: 2}
+      - {fileID: 2100000, guid: 697362ba5e759b3429dfe141e5b7e679, type: 2}
       bonePerVertex: 4
       boneIndices:
       - {x: 46, y: 0, z: 0, w: 0}
@@ -23364,7 +23364,7 @@ MonoBehaviour:
       - {x: 4, y: 3, z: 26, w: 0}
       - {x: 4, y: 3, z: 26, w: 0}
   m_Speed: 1
-  m_Radius: 2.33
+  m_Radius: 3.48
   shadowCastingMode: 1
   receiveShadows: 0
   defaultAnim: 

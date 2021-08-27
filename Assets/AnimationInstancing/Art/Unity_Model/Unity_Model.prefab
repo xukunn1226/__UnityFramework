@@ -68360,7 +68360,7 @@ MonoBehaviour:
   m_Radius: 2.33
   shadowCastingMode: 1
   receiveShadows: 0
-  defaultAnim: attack02
+  defaultAnim: 
   lodDistance:
   - 50
   - 250
