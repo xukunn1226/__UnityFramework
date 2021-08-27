@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/AnimationInstancing/Editor/AnimationGenerator.unity
+    guid: 7318c7d239330fd408e32ddb1deac269
+  - enabled: 1
     path: Assets/Resources/launcher.unity
     guid: f51811a79c3869e4bbdb719e6ef5fc32
   - enabled: 1
