@@ -59,7 +59,7 @@ namespace AnimationInstancingModule.Runtime
 
         public void OnOverridePropertyBlock(int materialIndex, MaterialPropertyBlock block)
         {
-            int ii = 0;
+            // int ii = 0;
         }
     }
 }
