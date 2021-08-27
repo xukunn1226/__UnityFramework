@@ -1,16 +1,16 @@
 {
-  "Count": 46,
-  "TotalSize": 54297566,
+  "Count": 48,
+  "TotalSize": 75634700,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "a148da4eb018b3beffbc313cd50f287c",
-      "Size": 3349
+      "FileHash": "eb3c9cf8ed6254f75a3f409fa5056428",
+      "Size": 3436
     },
     {
       "BundleName": "assets/animationinstancing/art.ab",
-      "FileHash": "55ea6086378cdfdec58acd3a08ea9fe7",
-      "Size": 441
+      "FileHash": "e77bd5bafcd34c4ba4f5b79eca04da7c",
+      "Size": 518
     },
     {
       "BundleName": "assets/animationinstancing/art/animationdata.ab",
@@ -28,9 +28,19 @@
       "Size": 2580165
     },
     {
+      "BundleName": "assets/animationinstancing/art/twinsword.ab",
+      "FileHash": "8ea79349fc5b47794dbd0d7fa34010a6",
+      "Size": 413339
+    },
+    {
       "BundleName": "assets/animationinstancing/art/unity_model.ab",
-      "FileHash": "79d5e3eec8409bd61b6220ba06de4bb1",
-      "Size": 10644834
+      "FileHash": "ad5f9910a9864a5c2266fb780547e9bb",
+      "Size": 10645269
+    },
+    {
+      "BundleName": "assets/animationinstancing/art/wgame.ab",
+      "FileHash": "638604d5b90d374b1ddff77cdafb7811",
+      "Size": 20923188
     },
     {
       "BundleName": "assets/animationinstancing/art/zombie.ab",
@@ -114,8 +124,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/ui/atlases/misc.ab",
-      "FileHash": "a72128a4256914671a0041f000b8e31f",
-      "Size": 3216673
+      "FileHash": "6fbf41e7c74cb04020fb37b98b8dde9b",
+      "Size": 3216677
     },
     {
       "BundleName": "assets/application/xlua/lua.ab",
@@ -219,8 +229,8 @@
     },
     {
       "BundleName": "assets/res/core.ab",
-      "FileHash": "4e4828c4c6cbeff85625d5e1786ab5ce",
-      "Size": 5076
+      "FileHash": "997e07852b3b65e8ec681464bdb0cff2",
+      "Size": 5080
     },
     {
       "BundleName": "assets/res/globalconfig.ab",
