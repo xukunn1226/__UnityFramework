@@ -101,15 +101,11 @@ namespace AnimationInstancingModule.Runtime
 
         private void OnEnable()
         {
-            // visible = true;
-
             isPause = m_CachedPause;
         }
 
         private void OnDisable()
         {
-            // visible = false;
-
             m_CachedPause = isPause;
             isPause = true;
         }
@@ -127,18 +123,24 @@ namespace AnimationInstancingModule.Runtime
             onOverridePropertyBlock?.Invoke(materialIndex, block);
         }
 
-        public void PlayAnimation(string name, float transitionDuration = 0)
+        public int NameToID(string name)
         {
-            int hash = name.GetHashCode();
-            PlayAnimation(animDataInst.FindAnimationInfoIndex(hash), transitionDuration);
+            return animDataInst.FindAnimationInfoIndex(name.GetHashCode());
         }
 
-        public void PlayAnimation(int animationIndex, float transitionDuration = 0)
+        public void PlayAnimation(string name, float transitionDuration = 0)
         {
-            if(animationIndex < 0 || animDataInst.aniInfos == null || animationIndex >= animDataInst.aniInfos.Count)
-                throw new ArgumentException($"animationIndex({animationIndex}) out of range");
+            int id = NameToID(name);
+            Debug.Assert(id != -1);
+            PlayAnimation(id, transitionDuration);
+        }
 
-            if(animationIndex == m_CurAnimationIndex && isPlaying)
+        public void PlayAnimation(int id, float transitionDuration = 0)
+        {
+            if(id < 0 || animDataInst.aniInfos == null || id >= animDataInst.aniInfos.Count)
+                throw new ArgumentException($"animationIndex({id}) out of range");
+
+            if(id == m_CurAnimationIndex && isPlaying)
                 return;
 
             // 触发当前动画的结束回调
@@ -161,7 +163,7 @@ namespace AnimationInstancingModule.Runtime
                 
                 m_PreAnimationIndex = m_CurAnimationIndex;
                 m_PreFrameIndex = Mathf.Round(m_CurFrameIndex);
-                m_CurAnimationIndex = animationIndex;
+                m_CurAnimationIndex = id;
                 m_CurFrameIndex = 0;
             }
             else
@@ -171,7 +173,7 @@ namespace AnimationInstancingModule.Runtime
 
                 m_PreAnimationIndex = -1;
                 m_PreFrameIndex = -1;
-                m_CurAnimationIndex = animationIndex;
+                m_CurAnimationIndex = id;
                 m_CurFrameIndex = 0;
             }
 
@@ -186,7 +188,7 @@ namespace AnimationInstancingModule.Runtime
             m_isAlreadyTriggerEndEvent = false;
             m_speedParameter = 1.0f;
             m_TriggerEventIndex = -1;
-            m_WrapMode = animDataInst.aniInfos[animationIndex].wrapMode;
+            m_WrapMode = animDataInst.aniInfos[id].wrapMode;
         }
 
         public AnimationInfo GetCurrentAnimationInfo()
@@ -348,6 +350,7 @@ namespace AnimationInstancingModule.Runtime
             m_CurFrameIndex = Mathf.Clamp(m_CurFrameIndex, 0, totalFrame - 1);
 
             UpdateAnimationEvent();
+            UpdateAttachment();
         }
 
         private void UpdateAnimationEvent()
@@ -379,6 +382,34 @@ namespace AnimationInstancingModule.Runtime
                 OnAnimationEvent?.Invoke(info.name, info.eventList[i].function, info.eventList[i]);
             }
             m_TriggerEventIndex = lastEventIndex;
+        }
+        
+        private Matrix4x4[] m_ExtraBoneMatrix;
+        private Transform m_Attachment;
+        public void Attach(string extraBoneName, Transform attachment)
+        {
+            AnimationInfo info = GetCurrentAnimationInfo();
+            if(info == null)
+                return;
+
+            Matrix4x4[] matrixs;
+            if(!info.extraBoneMatrix.TryGetValue(extraBoneName, out matrixs))
+                return;
+
+            m_ExtraBoneMatrix = matrixs;
+            m_Attachment = attachment;
+        }
+
+        private void UpdateAttachment()
+        {
+            if(m_ExtraBoneMatrix == null)
+                return;
+
+            Matrix4x4 matrix = m_ExtraBoneMatrix[(int)m_CurFrameIndex];
+            Matrix4x4 worldMatrix = transform.localToWorldMatrix * matrix;
+            m_Attachment.parent = transform;
+            m_Attachment.position = worldMatrix.MultiplyPoint(Vector3.zero);
+            m_Attachment.rotation = worldMatrix.rotation;
         }
     }
 }

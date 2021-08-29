@@ -7,6 +7,7 @@ namespace AnimationInstancingModule.Runtime
     public class TestAnimationInstancing : MonoBehaviour
     {
         private AnimationInstancing inst;
+        public GameObject attachment;
 
         // Start is called before the first frame update
         void Awake()
@@ -39,6 +40,12 @@ namespace AnimationInstancingModule.Runtime
             {
                 Debug.Log("F2");
                 inst.PlayAnimation("attack03");
+            }
+
+            if(Input.GetKeyDown(KeyCode.A))
+            {
+                GameObject sword = Instantiate<GameObject>(attachment);
+                inst.Attach("ik_hand_r", sword.transform);
             }
         }
 

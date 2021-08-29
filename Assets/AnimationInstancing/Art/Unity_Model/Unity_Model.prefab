@@ -68357,7 +68357,7 @@ MonoBehaviour:
       - {x: 28, y: 0, z: 0, w: 0}
       - {x: 28, y: 0, z: 0, w: 0}
   m_Speed: 1
-  m_Radius: 2.33
+  m_Radius: 3.67
   shadowCastingMode: 1
   receiveShadows: 0
   defaultAnim: 

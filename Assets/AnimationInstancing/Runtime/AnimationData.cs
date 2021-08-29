@@ -13,7 +13,6 @@ namespace AnimationInstancingModule.Runtime
         public int                          textureBlockWidth   { get; set; }
         public int                          textureBlockHeight  { get; set; }
         public List<AnimationInfo>          aniInfos            { get; private set; }
-        public ExtraBoneInfo                extraBoneInfo       { get; private set; }
         private AnimationInfo               m_SearchInfo;
         private ComparerHash                m_Comparer;
         [SoftObject] public SoftObject      animTexSoftObject;
@@ -28,7 +27,6 @@ namespace AnimationInstancingModule.Runtime
             using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
             {
                 aniInfos = ReadAnimationInfo(reader);
-                extraBoneInfo = ReadExtraBoneInfo(reader);
                 ReadAnimationTexture(reader);
             }
             manifest = null;        // 已无用，可以立即回收
@@ -68,6 +66,7 @@ namespace AnimationInstancingModule.Runtime
             List<AnimationInfo>  listInfo = new List<AnimationInfo>();
             for (int i = 0; i != count; ++i)
             {
+                // base
                 AnimationInfo info = new AnimationInfo();
                 info.name = reader.ReadString();
                 info.nameHash = info.name.GetHashCode();
@@ -76,6 +75,7 @@ namespace AnimationInstancingModule.Runtime
                 info.fps = reader.ReadInt32();
                 info.wrapMode = (WrapMode)reader.ReadInt32();
                 
+                // event
                 int evtCount = reader.ReadInt32();
                 info.eventList = new List<AnimationEvent>();
                 for (int j = 0; j != evtCount; ++j)
@@ -89,34 +89,41 @@ namespace AnimationInstancingModule.Runtime
                     evt.objectParameter = reader.ReadString();
                     info.eventList.Add(evt);
                 }
+
+                // extra bones
+                int extraCount = reader.ReadInt32();
+                info.extraBoneMatrix = new Dictionary<string, Matrix4x4[]>(extraCount);
+                for(int j = 0; j < extraCount; ++j)
+                {
+                    string boneName = reader.ReadString();
+                    int matrixCount = reader.ReadInt32();
+                    Matrix4x4[] matrixs = new Matrix4x4[matrixCount];
+                    for(int k = 0; k < matrixCount; ++k)
+                    {
+                        matrixs[k][0, 0] = reader.ReadSingle();
+                        matrixs[k][0, 1] = reader.ReadSingle();
+                        matrixs[k][0, 2] = reader.ReadSingle();
+                        matrixs[k][0, 3] = reader.ReadSingle();
+                        matrixs[k][1, 0] = reader.ReadSingle();
+                        matrixs[k][1, 1] = reader.ReadSingle();
+                        matrixs[k][1, 2] = reader.ReadSingle();
+                        matrixs[k][1, 3] = reader.ReadSingle();
+                        matrixs[k][2, 0] = reader.ReadSingle();
+                        matrixs[k][2, 1] = reader.ReadSingle();
+                        matrixs[k][2, 2] = reader.ReadSingle();
+                        matrixs[k][2, 3] = reader.ReadSingle();
+                        matrixs[k][3, 0] = reader.ReadSingle();
+                        matrixs[k][3, 1] = reader.ReadSingle();
+                        matrixs[k][3, 2] = reader.ReadSingle();
+                        matrixs[k][3, 3] = reader.ReadSingle();
+                    }
+                    info.extraBoneMatrix.Add(boneName, matrixs);
+                }
+
                 listInfo.Add(info);
             }
             listInfo.Sort(m_Comparer);      // 提高后续二分法查找效率
             return listInfo;
-        }
-
-        private ExtraBoneInfo ReadExtraBoneInfo(BinaryReader reader)
-        {
-            ExtraBoneInfo info = null;
-            if (reader.ReadBoolean())
-            {
-                info = new ExtraBoneInfo();
-                int count = reader.ReadInt32();
-                info.extraBone = new string[count];
-                info.extraBindPose = new Matrix4x4[count];
-                for (int i = 0; i != info.extraBone.Length; ++i)
-                {
-                    info.extraBone[i] = reader.ReadString();
-                }
-                for (int i = 0; i != info.extraBindPose.Length; ++i)
-                {
-                    for (int j = 0; j != 16; ++j)
-                    {
-                        info.extraBindPose[i][j] = reader.ReadSingle();
-                    }
-                }
-            }
-            return info;
         }
 
         private void ReadAnimationTexture(BinaryReader reader)

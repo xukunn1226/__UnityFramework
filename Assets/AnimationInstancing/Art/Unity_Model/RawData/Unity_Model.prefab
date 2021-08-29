@@ -69,7 +69,6 @@ MonoBehaviour:
   forceRebuildReference: 0
   referenceTo: {fileID: 0}
   fps: 15
-  exposeAttachments: 1
   m_ExtraBoneNames:
   - LOD0
   - Model
@@ -78,7 +77,7 @@ MonoBehaviour:
   - ik_hand_gun
   - ik_hand_l
   - ik_hand_r
-  m_ExtraBoneSelectables: 00000000010101
+  m_ExtraBoneSelectables: 00000000000101
   m_GenerateAnimNames:
   - attack02
   - attack03

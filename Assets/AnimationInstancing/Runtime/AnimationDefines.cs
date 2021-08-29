@@ -15,6 +15,7 @@ namespace AnimationInstancingModule.Runtime
         public int                  startFrameIndex;        // 在整个AnimationTexture中的起始帧序号
         public WrapMode             wrapMode;
         public List<AnimationEvent> eventList;
+        public Dictionary<string, Matrix4x4[]>    extraBoneMatrix;        // length = count of extra bone; Matrix4x4's length == totalFrame
     }
 
     public class AnimationEvent
@@ -25,12 +26,6 @@ namespace AnimationInstancingModule.Runtime
         public string               stringParameter;
         public string               objectParameter;
         public float                time;
-    }
-
-    public class ExtraBoneInfo
-    {
-        public string[]             extraBone;
-        public Matrix4x4[]          extraBindPose;
     }
 
     public class ComparerHash : IComparer<AnimationInfo>

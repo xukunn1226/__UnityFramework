@@ -107,8 +107,7 @@ namespace AnimationInstancingModule.Editor
 
         private void DrawAttachment()
         {
-            m_Target.exposeAttachments = EditorGUILayout.Toggle("Enable Attachments", m_Target.exposeAttachments);            
-            EditorGUI.BeginDisabledGroup(!m_Target.exposeAttachments);
+            EditorGUILayout.PrefixLabel("Extra bones");
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 if(!m_InitExtraBone)
@@ -134,7 +133,6 @@ namespace AnimationInstancingModule.Editor
                 }
             }
             GUILayout.EndVertical();
-            EditorGUI.EndDisabledGroup();            
         }
 
         private void RefreshAttachment()
@@ -254,7 +252,7 @@ namespace AnimationInstancingModule.Editor
             }
             
             List<Transform> boneTransform = new List<Transform>();
-            m_Target.GetFinalBonePose(m_LODs[0], ref m_BindPose, ref boneTransform);
+            m_Target.GetSkinnedBoneInfo(m_LODs[0], ref m_BindPose, ref boneTransform);
 
             int textureWidth, textureHeight;
             m_Target.CalculateTextureSize(frames, boneTransform, out textureWidth, out textureHeight);
