@@ -54,6 +54,7 @@ namespace AnimationInstancingModule.Runtime
         public bool                     isPause             { get; set; }
         public bool                     isPlaying           { get { return m_CurAnimationIndex >= 0 && !isPause; } }
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
+        private Dictionary<string, AttachmentInfo> m_AttachmentInfo = new Dictionary<string, AttachmentInfo>();
 
         private void Awake()
         {
@@ -279,7 +280,7 @@ namespace AnimationInstancingModule.Runtime
 
         public void UpdateAnimation()
         {
-            if(isPause || !isActiveAndEnabled || isCulled)
+            if(!isPlaying || !isActiveAndEnabled || isCulled)
             {
                 return;
             }
@@ -355,6 +356,7 @@ namespace AnimationInstancingModule.Runtime
 
         private void UpdateAnimationEvent()
         {
+            UnityEngine.Profiling.Profiler.BeginSample("UpdateAnimationEvent()");
             AnimationInfo info = GetCurrentAnimationInfo();
             if(info == null || info.eventList.Count == 0)
                 return;
@@ -382,34 +384,118 @@ namespace AnimationInstancingModule.Runtime
                 OnAnimationEvent?.Invoke(info.name, info.eventList[i].function, info.eventList[i]);
             }
             m_TriggerEventIndex = lastEventIndex;
+            UnityEngine.Profiling.Profiler.EndSample();
+        }        
+
+        public void Attach(string boneName, Transform attachment)
+        {
+            AttachmentInfo info;
+            if(!m_AttachmentInfo.TryGetValue(boneName, out info))
+            {
+                info = new AttachmentInfo();
+                info.boneName = boneName;
+                info.extraBoneInfo = animDataInst.GetExtraBoneInfo(boneName);
+
+                m_AttachmentInfo.Add(boneName, info);
+            }
+            attachment.parent = transform;
+            info.AddAttachment(attachment);
+            UpdateAttachment();                 // update immediately
         }
-        
-        private Matrix4x4[] m_ExtraBoneMatrix;
-        private Transform m_Attachment;
-        public void Attach(string extraBoneName, Transform attachment)
+
+        public void Detach(string boneName, Transform attachment)
+        {
+            AttachmentInfo info;
+            if(!m_AttachmentInfo.TryGetValue(boneName, out info))
+            {
+                Debug.LogWarning($"{boneName} does not have any attachments");
+                return;
+            }
+            info.RemoveAttachment(attachment);
+            if(info.count == 0)
+            {
+                m_AttachmentInfo.Remove(boneName);
+            }
+        }
+
+        public void Detach(string boneName, int index)
+        {
+            AttachmentInfo info;
+            if(!m_AttachmentInfo.TryGetValue(boneName, out info))
+            {
+                Debug.LogWarning($"{boneName} does not have any attachments");
+                return;
+            }
+            info.RemoveAttachment(index);
+            if(info.count == 0)
+            {
+                m_AttachmentInfo.Remove(boneName);
+            }
+        }
+
+        public Vector3 GetExtraBonePosition(string boneName)
         {
             AnimationInfo info = GetCurrentAnimationInfo();
             if(info == null)
-                return;
+            {
+                return Vector3.negativeInfinity;
+            }
 
             Matrix4x4[] matrixs;
-            if(!info.extraBoneMatrix.TryGetValue(extraBoneName, out matrixs))
-                return;
+            if(!info.extraBoneMatrix.TryGetValue(boneName, out matrixs))
+            {
+                return Vector3.negativeInfinity;
+            }
 
-            m_ExtraBoneMatrix = matrixs;
-            m_Attachment = attachment;
+            return GetLerpPosition(matrixs, m_CurFrameIndex);
         }
 
         private void UpdateAttachment()
         {
-            if(m_ExtraBoneMatrix == null)
-                return;
+            UnityEngine.Profiling.Profiler.BeginSample("UpdateAttachment()");
+            foreach(var item in m_AttachmentInfo)
+            {
+                string boneName = item.Key;
+                AttachmentInfo info = item.Value;
+                for(int i = 0; i < AttachmentInfo.s_MaxCountAttachment; ++i)
+                {
+                    if(info.attachments[i] == null)
+                        continue;
 
-            Matrix4x4 matrix = m_ExtraBoneMatrix[(int)m_CurFrameIndex];
-            Matrix4x4 worldMatrix = transform.localToWorldMatrix * matrix;
-            m_Attachment.parent = transform;
-            m_Attachment.position = worldMatrix.MultiplyPoint(Vector3.zero);
-            m_Attachment.rotation = worldMatrix.rotation;
+                    Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetLerpMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
+                                                                                         m_CurFrameIndex);
+                    info.attachments[i].position = worldMatrix.MultiplyPoint3x4(Vector3.zero);
+                    info.attachments[i].rotation = worldMatrix.rotation;
+                }
+            }
+            UnityEngine.Profiling.Profiler.EndSample();
+        }
+
+        private Matrix4x4 GetLerpMatrix(Matrix4x4[] matrixs, float frameIndex)
+        {
+            Quaternion rot = GetLerpRotation(matrixs, frameIndex);
+            Vector3 pos = GetLerpPosition(matrixs, frameIndex);
+            return Matrix4x4.TRS(pos, rot, Vector3.one);
+        }
+
+        private Vector3 GetLerpPosition(Matrix4x4[] matrixs, float frameIndex)
+        {
+            int curFrame = (int)frameIndex;
+            int nextFrame = Mathf.Clamp(curFrame + 1, 0, matrixs.Length);
+
+            Vector3 curPos = matrixs[curFrame].GetColumn(3);
+            Vector3 nextPos = matrixs[nextFrame].GetColumn(3);
+            return Vector3.Lerp(curPos, nextPos, frameIndex - curFrame);
+        }
+
+        private Quaternion GetLerpRotation(Matrix4x4[] matrixs, float frameIndex)
+        {
+            int curFrame = (int)frameIndex;
+            int nextFrame = Mathf.Clamp(curFrame + 1, 0, matrixs.Length);
+            
+            Quaternion curRot = matrixs[curFrame].rotation;
+            Quaternion nextRot = matrixs[nextFrame].rotation;
+            return Quaternion.Slerp(curRot, nextRot, frameIndex - curFrame);
         }
     }
 }

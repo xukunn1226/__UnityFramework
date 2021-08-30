@@ -9,13 +9,20 @@ namespace AnimationInstancingModule.Runtime
     public class AnimationInfo
     {
         public string               name;
-        public int                  nameHash;               // 非序列化数据，在烘焙时记录AnimationState.nameHash，运行时记录AnimationInfo.name.GetHashCode
+        public int                  nameHash;                           // 非序列化数据，在烘焙时记录AnimationState.nameHash，运行时记录AnimationInfo.name.GetHashCode
         public int                  totalFrame;
         public int                  fps;
-        public int                  startFrameIndex;        // 在整个AnimationTexture中的起始帧序号
+        public int                  startFrameIndex;                    // 在整个AnimationTexture中的起始帧序号
         public WrapMode             wrapMode;
         public List<AnimationEvent> eventList;
-        public Dictionary<string, Matrix4x4[]>    extraBoneMatrix;        // length = count of extra bone; Matrix4x4's length == totalFrame
+        public Dictionary<string, Matrix4x4[]>    extraBoneMatrix;      // length = count of extra bone; Matrix4x4's length == totalFrame
+    }
+
+    // 记录挂点骨骼在所有动画序列中的矩阵数据
+    public class ExtraBoneInfo
+    {
+        public string               boneName;
+        public List<Matrix4x4[]>    boneMatrix;                         // [animationInfo index][animation frame index]
     }
 
     public class AnimationEvent
@@ -26,6 +33,77 @@ namespace AnimationInstancingModule.Runtime
         public string               stringParameter;
         public string               objectParameter;
         public float                time;
+    }
+
+    public class AttachmentInfo
+    {
+        static public int           s_MaxCountAttachment    = 5;                                        // 性能考虑，一个挂点最多挂载一定数量的对象
+        public string               boneName;
+        public Transform[]          attachments             = new Transform[s_MaxCountAttachment];
+        public int                  count                   { get; private set; }                       // 有效挂载对象的数量
+        public ExtraBoneInfo        extraBoneInfo;
+        
+        private int FindValidIndex(Transform attachment)
+        {
+#if UNITY_EDITOR
+            for(int i = 0; i < attachments.Length; ++i)
+            {
+                if(attachments[i] != null && attachments[i] == attachment)
+                {
+                    Debug.LogError($"duplicated attachment: {attachment.name}");
+                    return -1;
+                }
+            }
+#endif
+            for(int i = 0; i < s_MaxCountAttachment; ++i)
+            {
+                if(attachments[i] == null)
+                    return i;
+            }
+            Debug.LogError($"too much more attachments, more than {s_MaxCountAttachment}");
+            return -1;
+        }
+
+        private int FindIndex(Transform attachment)
+        {
+            for(int i = 0; i < s_MaxCountAttachment; ++i)
+            {
+                if(attachments[i] != null && attachments[i] == attachment)
+                    return i;
+            }
+            return -1;
+        }
+
+        public int AddAttachment(Transform attachment)
+        {
+            int index = FindValidIndex(attachment);
+            Debug.Assert(index != -1);
+            if(index != -1)
+            {
+                attachments[index] = attachment;
+                ++count;
+                return index;
+            }
+            return -1;
+        }
+
+        public void RemoveAttachment(Transform attachment)
+        {
+            int index = FindIndex(attachment);
+            if(index == -1)
+            {
+                Debug.LogError($"failed to remove attachment, because can't find {attachment.name}");
+                return;
+            }
+            RemoveAttachment(index);
+        }
+
+        public void RemoveAttachment(int index)
+        {
+            Debug.Assert(index >= 0 && index < s_MaxCountAttachment);
+            attachments[index] = null;
+            --count;
+        }
     }
 
     public class ComparerHash : IComparer<AnimationInfo>

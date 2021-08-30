@@ -9,14 +9,15 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationData : MonoBehaviour
     {
-        public TextAsset                    manifest;
-        public int                          textureBlockWidth   { get; set; }
-        public int                          textureBlockHeight  { get; set; }
-        public List<AnimationInfo>          aniInfos            { get; private set; }
-        private AnimationInfo               m_SearchInfo;
-        private ComparerHash                m_Comparer;
-        [SoftObject] public SoftObject      animTexSoftObject;
-        private Texture2D                   m_AnimTexture;      // 注意：异步加载，可能为NULL
+        public TextAsset                            manifest;
+        public int                                  textureBlockWidth   { get; set; }
+        public int                                  textureBlockHeight  { get; set; }
+        public List<AnimationInfo>                  aniInfos            { get; private set; }
+        public Dictionary<string, ExtraBoneInfo>    extraBoneInfos      { get; private set; }
+        private AnimationInfo                       m_SearchInfo;
+        private ComparerHash                        m_Comparer;
+        [SoftObject] public SoftObject              animTexSoftObject;
+        private Texture2D                           m_AnimTexture;      // 注意：异步加载，可能为NULL
 
         void Awake()
         {
@@ -27,6 +28,7 @@ namespace AnimationInstancingModule.Runtime
             using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
             {
                 aniInfos = ReadAnimationInfo(reader);
+                PostprocessExtraBoneInfos();
                 ReadAnimationTexture(reader);
             }
             manifest = null;        // 已无用，可以立即回收
@@ -126,6 +128,28 @@ namespace AnimationInstancingModule.Runtime
             return listInfo;
         }
 
+        private void PostprocessExtraBoneInfos()
+        {
+            extraBoneInfos = new Dictionary<string, ExtraBoneInfo>();
+
+            for(int i = 0; i < aniInfos.Count; ++i)
+            {
+                AnimationInfo info = aniInfos[i];
+                foreach(var item in info.extraBoneMatrix)
+                {
+                    ExtraBoneInfo extraBoneInfo;
+                    if (!extraBoneInfos.TryGetValue(item.Key, out extraBoneInfo))
+                    {
+                        extraBoneInfo = new ExtraBoneInfo();
+                        extraBoneInfo.boneName = item.Key;
+                        extraBoneInfo.boneMatrix = new List<Matrix4x4[]>();
+                        extraBoneInfos.Add(item.Key, extraBoneInfo);
+                    }
+                    extraBoneInfo.boneMatrix.Add(item.Value);
+                }                
+            }
+        }
+
         private void ReadAnimationTexture(BinaryReader reader)
         {
             textureBlockWidth = reader.ReadInt32();
@@ -151,6 +175,13 @@ namespace AnimationInstancingModule.Runtime
         internal int GetAnimationCount()
         {
             return aniInfos.Count;
+        }
+
+        internal ExtraBoneInfo GetExtraBoneInfo(string extraBoneName)
+        {
+            ExtraBoneInfo boneInfo;
+            extraBoneInfos.TryGetValue(extraBoneName, out boneInfo);
+            return boneInfo;
         }
     }
 }

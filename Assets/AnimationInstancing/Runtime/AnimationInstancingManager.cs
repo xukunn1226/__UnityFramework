@@ -15,6 +15,22 @@ namespace AnimationInstancingModule.Runtime
         private int                                     m_UsedBoundingSphereCount;
         private CullingGroup                            m_CullingGroup;
         public bool                                     useGPUInstancing                { get; set; } = true;
+        private Camera                                  m_TargetCamera;
+        public Camera                                   targetCamera
+        {
+            get { return m_TargetCamera; }
+            set
+            {
+                if(value != null)
+                {
+                    m_TargetCamera = value;
+                    if(m_CullingGroup != null)
+                    {
+                        m_CullingGroup.targetCamera = value;
+                    }
+                }
+            }
+        }
 
         protected override void Awake()
         {
@@ -24,6 +40,7 @@ namespace AnimationInstancingModule.Runtime
             {
                 useGPUInstancing = false;
             }
+            targetCamera = Camera.main;
         }
 
         protected override void OnDestroy()
@@ -36,7 +53,7 @@ namespace AnimationInstancingModule.Runtime
         {
             m_BoundingSphere = new BoundingSphere[5000];
             m_CullingGroup = new CullingGroup();
-            m_CullingGroup.targetCamera = Camera.main;
+            m_CullingGroup.targetCamera = targetCamera;
             m_CullingGroup.onStateChanged = CullingStateChanged;
             m_CullingGroup.SetBoundingSpheres(m_BoundingSphere);
             m_UsedBoundingSphereCount = 0;
@@ -354,6 +371,7 @@ namespace AnimationInstancingModule.Runtime
 
         private void UpdateInstancing()
         {
+            UnityEngine.Profiling.Profiler.BeginSample("AnimationInstancingManager::UpdateInstancing()");
             for(int i = 0; i < m_AnimInstancingList.Count; ++i)
             {
                 AnimationInstancing inst = m_AnimInstancingList[i];
@@ -365,7 +383,7 @@ namespace AnimationInstancingModule.Runtime
                 if(!inst.ShouldRender())
                     continue;
 
-                inst.UpdateLod(Camera.main.transform.position);
+                inst.UpdateLod(targetCamera.transform.position);
 
                 LODInfo lodInfo = inst.GetCurrentLODInfo();
                 foreach(var rendererCache in lodInfo.rendererCacheList)
@@ -403,10 +421,12 @@ namespace AnimationInstancingModule.Runtime
                     package.transitionProgress[package.count - 1]   = inst.transitionProgress;
                 }
             }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
 
         private void Render()
         {
+            UnityEngine.Profiling.Profiler.BeginSample("AnimationInstancingManager::Render()");
             foreach(var obj in m_VertexCachePool)
             {
                 VertexCache vertexCache = obj.Value;
@@ -454,7 +474,7 @@ namespace AnimationInstancingModule.Runtime
                                                            vertexCache.shadowCastingMode,
                                                            vertexCache.receiveShadows,
                                                            vertexCache.layer,
-                                                           Camera.main);
+                                                           targetCamera);
 #endif
                             }
                             package.count = 0;      // reset
@@ -488,7 +508,7 @@ namespace AnimationInstancingModule.Runtime
                                                       package.worldMatrix[j],
                                                       materialBlock.materials[k],
                                                       vertexCache.layer,
-                                                      Camera.main,
+                                                      targetCamera,
                                                       k,
                                                       materialBlock.propertyBlocks[k],
                                                       vertexCache.shadowCastingMode,
@@ -501,6 +521,7 @@ namespace AnimationInstancingModule.Runtime
                     }
                 }
             }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
     }
 }

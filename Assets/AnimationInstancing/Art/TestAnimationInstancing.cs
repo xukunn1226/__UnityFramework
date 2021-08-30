@@ -8,6 +8,7 @@ namespace AnimationInstancingModule.Runtime
     {
         private AnimationInstancing inst;
         public GameObject attachment;
+        private GameObject attachmentInst;
 
         // Start is called before the first frame update
         void Awake()
@@ -39,13 +40,19 @@ namespace AnimationInstancingModule.Runtime
             if(Input.GetKeyDown(KeyCode.F2))
             {
                 Debug.Log("F2");
-                inst.PlayAnimation("attack03");
+                inst.PlayAnimation("attack03", 0.5f);
             }
 
             if(Input.GetKeyDown(KeyCode.A))
             {
-                GameObject sword = Instantiate<GameObject>(attachment);
-                inst.Attach("ik_hand_r", sword.transform);
+                attachmentInst = Instantiate<GameObject>(attachment);
+                inst.Attach("ik_hand_r", attachmentInst.transform);
+            }
+
+            if(Input.GetKeyDown(KeyCode.Q))
+            {
+                inst.Detach("ik_hand_r", attachmentInst.transform);
+                Destroy(attachmentInst.gameObject);
             }
         }
 
