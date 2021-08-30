@@ -35,6 +35,15 @@ namespace AnimationInstancingModule.Runtime
         public float                time;
     }
 
+    public interface IAttachmentToInstancing
+    {
+        AnimationInstancing  owner { get; set; }
+        string extraBoneName { get; set; }
+        void SetParent(Transform parent);
+        void Detach();
+        void Attach(AnimationInstancing owner, string extraBoneName);
+    }
+
     public class AttachmentInfo
     {
         static public int           s_MaxCountAttachment    = 5;                                        // 性能考虑，一个挂点最多挂载一定数量的对象
