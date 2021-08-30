@@ -387,7 +387,8 @@ namespace AnimationInstancingModule.Runtime
             UnityEngine.Profiling.Profiler.EndSample();
         }        
 
-        public void Attach(string boneName, Transform attachment)
+        // 返回index，可用于detach，对性能更友好
+        public int Attach(string boneName, Transform attachment)
         {
             AttachmentInfo info;
             if(!m_AttachmentInfo.TryGetValue(boneName, out info))
@@ -398,9 +399,14 @@ namespace AnimationInstancingModule.Runtime
 
                 m_AttachmentInfo.Add(boneName, info);
             }
-            attachment.parent = transform;
-            info.AddAttachment(attachment);
-            UpdateAttachment();                 // update immediately
+            
+            int index = info.AddAttachment(attachment);
+            if(index != -1)
+            {
+                attachment.parent = transform;
+                UpdateAttachment();                 // update immediately
+            }
+            return index;
         }
 
         public void Detach(string boneName, Transform attachment)
@@ -438,16 +444,56 @@ namespace AnimationInstancingModule.Runtime
             AnimationInfo info = GetCurrentAnimationInfo();
             if(info == null)
             {
+                Debug.LogWarning($"GetExtraBonePosition() failed, because of not playing    ({boneName})");
                 return Vector3.negativeInfinity;
             }
 
             Matrix4x4[] matrixs;
             if(!info.extraBoneMatrix.TryGetValue(boneName, out matrixs))
             {
+                Debug.LogWarning($"GetExtraBonePosition() failed, ({boneName}) does not export as extra bone, plz check it");
                 return Vector3.negativeInfinity;
             }
 
-            return GetLerpPosition(matrixs, m_CurFrameIndex);
+            return GetFramePosition(matrixs, m_CurFrameIndex);
+        }
+
+        public Quaternion GetExtraBoneRotation(string boneName)
+        {
+            AnimationInfo info = GetCurrentAnimationInfo();
+            if(info == null)
+            {
+                Debug.LogWarning($"GetExtraBoneRotation() failed, because of not playing    ({boneName})");
+                return Quaternion.identity;
+            }
+
+            Matrix4x4[] matrixs;
+            if(!info.extraBoneMatrix.TryGetValue(boneName, out matrixs))
+            {
+                Debug.LogWarning($"GetExtraBoneRotation() failed, ({boneName}) does not export as extra bone, plz check it");
+                return Quaternion.identity;
+            }
+            return GetFrameRotation(matrixs, m_CurFrameIndex);
+        }
+
+        public void GetExtraBonePositionAndRotation(string boneName, ref Vector3 position, ref Quaternion rotation)
+        {
+            AnimationInfo info = GetCurrentAnimationInfo();
+            if(info == null)
+            {
+                Debug.LogWarning($"GetExtraBoneRotation() failed, because of not playing    ({boneName})");
+                return;
+            }
+
+            Matrix4x4[] matrixs;
+            if(!info.extraBoneMatrix.TryGetValue(boneName, out matrixs))
+            {
+                Debug.LogWarning($"GetExtraBoneRotation() failed, ({boneName}) does not export as extra bone, plz check it");
+                return;
+            }
+
+            position = GetFramePosition(matrixs, m_CurFrameIndex);
+            rotation = GetFrameRotation(matrixs, m_CurFrameIndex);
         }
 
         private void UpdateAttachment()
@@ -462,7 +508,7 @@ namespace AnimationInstancingModule.Runtime
                     if(info.attachments[i] == null)
                         continue;
 
-                    Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetLerpMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
+                    Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
                                                                                          m_CurFrameIndex);
                     info.attachments[i].position = worldMatrix.MultiplyPoint3x4(Vector3.zero);
                     info.attachments[i].rotation = worldMatrix.rotation;
@@ -471,14 +517,14 @@ namespace AnimationInstancingModule.Runtime
             UnityEngine.Profiling.Profiler.EndSample();
         }
 
-        private Matrix4x4 GetLerpMatrix(Matrix4x4[] matrixs, float frameIndex)
+        private Matrix4x4 GetFrameMatrix(Matrix4x4[] matrixs, float frameIndex)
         {
-            Quaternion rot = GetLerpRotation(matrixs, frameIndex);
-            Vector3 pos = GetLerpPosition(matrixs, frameIndex);
+            Quaternion rot = GetFrameRotation(matrixs, frameIndex);
+            Vector3 pos = GetFramePosition(matrixs, frameIndex);
             return Matrix4x4.TRS(pos, rot, Vector3.one);
         }
 
-        private Vector3 GetLerpPosition(Matrix4x4[] matrixs, float frameIndex)
+        private Vector3 GetFramePosition(Matrix4x4[] matrixs, float frameIndex)
         {
             int curFrame = (int)frameIndex;
             int nextFrame = Mathf.Clamp(curFrame + 1, 0, matrixs.Length);
@@ -488,7 +534,7 @@ namespace AnimationInstancingModule.Runtime
             return Vector3.Lerp(curPos, nextPos, frameIndex - curFrame);
         }
 
-        private Quaternion GetLerpRotation(Matrix4x4[] matrixs, float frameIndex)
+        private Quaternion GetFrameRotation(Matrix4x4[] matrixs, float frameIndex)
         {
             int curFrame = (int)frameIndex;
             int nextFrame = Mathf.Clamp(curFrame + 1, 0, matrixs.Length);
