@@ -32,7 +32,7 @@ namespace AnimationInstancingModule.Runtime
             public List<Matrix4x4[]>            boneMatrix;                 // 记录动画所有帧数据, [frameIndex][boneIndex]
         }
 
-        public bool                             enableReference;
+        public bool                             enableReference;                                                    // 与其他模型公用一套动画时使用
         public bool                             forceRebuildReference;
         public AnimationInstancingGenerator     referenceTo;
         public int                              fps                         = 15;                                   // 采样帧率

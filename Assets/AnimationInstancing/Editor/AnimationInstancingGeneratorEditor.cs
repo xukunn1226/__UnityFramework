@@ -5,6 +5,7 @@ using UnityEditor;
 using AnimationInstancingModule.Runtime;
 using System.Linq;
 using UnityEditor.Animations;
+using Unity.EditorCoroutines.Editor;
 
 namespace AnimationInstancingModule.Editor
 {
@@ -313,6 +314,54 @@ namespace AnimationInstancingModule.Editor
                 list.AddRange(GetClipsFromStatemachine(stateMachine.stateMachines[i].stateMachine));
             }            
             return list;
+        }
+
+        static private EditorCoroutine             m_Coroutine;
+
+        [MenuItem("Tools/Generate All Animation Instancing")]
+        static private void GenerateAll()
+        {
+            string sceneName = "AnimationGenerator";
+            if(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().name != sceneName)
+            {
+                Debug.LogError($"plz open scene {sceneName}.unity for animation instancing generation");
+                return;
+            }
+
+            AnimationInstancingGenerator[] generators = GameObject.FindObjectsOfType<AnimationInstancingGenerator>();
+            m_Coroutine = EditorCoroutineUtility.StartCoroutineOwnerless(Generate(generators));
+        }
+
+        static IEnumerator Generate(AnimationInstancingGenerator[] generators)
+        {
+            if(generators.Length == 0)
+            {
+                StopGeneratingCoroutine();
+                yield break;
+            }
+
+            int count = 0;
+            while(count < generators.Length)
+            {
+                bool isCancel = EditorUtility.DisplayCancelableProgressBar("烘焙中", "Generating", 1.0f * (count + 1) / generators.Length);
+
+                generators[count].Bake();
+                while(generators[count].isBaking)
+                    yield return null;
+                ++count;
+            }
+            StopGeneratingCoroutine();
+            EditorUtility.ClearProgressBar();
+            Debug.Log($"Generate done.... total animation instancing is {generators.Length}");
+        }
+
+        static private void StopGeneratingCoroutine()
+        {
+            if(m_Coroutine != null)
+            {
+                EditorCoroutineUtility.StopCoroutine(m_Coroutine);
+                m_Coroutine = null;
+            }
         }
     }
 }
