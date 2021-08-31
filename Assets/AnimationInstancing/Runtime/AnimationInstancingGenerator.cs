@@ -672,22 +672,21 @@ namespace AnimationInstancingModule.Runtime
 
         private void ExportAnimInstancingPrefab(AnimationInstancingGenerator generator)
         {
-            // 保存root/[Custom]/[Custom].prefab
-            // step1. 实例化对象，提取mesh
-            GameObject inst = Instantiate(gameObject);
-            inst.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-
             // 导出资源：mesh, material, texture
+            int lodLevel = 0;
             foreach(var lod in m_BakedLODs)
             {
                 SkinnedMeshRenderer[] smrs = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (var smr in smrs)
                 {
-                    ExtractInternalAssets(generator.gameObject, smr);
+                    ExtractInternalAssets(generator, lod, smr, lodLevel);
                 }
+                ++lodLevel;
             }
-
-            // step2. 删除所有子节点和根节点上多余组件
+            
+            // 实例化对象，删除所有子节点和根节点上多余组件
+            GameObject inst = Instantiate(gameObject);
+            inst.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
             int count = inst.transform.childCount;
             for(int i = count - 1; i >= 0; --i)
             {
@@ -702,7 +701,7 @@ namespace AnimationInstancingModule.Runtime
                 DestroyImmediate(comp);
             }
 
-            // step3. 添加AnimationInstancing，记录RendererCache
+            // 添加AnimationInstancing，记录RendererCache
             AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
 
             // setup
@@ -712,7 +711,7 @@ namespace AnimationInstancingModule.Runtime
             animInst.radius = CalcBoundingSphere();
             animInst.lodDistance[0] = 50;
             animInst.lodDistance[1] = 250;
-            int lodLevel = 0;
+            lodLevel = 0;
             foreach(var lod in m_BakedLODs)
             {
                 LODInfo info = new LODInfo();                
@@ -733,8 +732,6 @@ namespace AnimationInstancingModule.Runtime
                     }
 
                     cache.bonePerVertex = lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1);
-                    // cache.weights = GetBoneWeights(cache.mesh, cache.bonePerVertex);
-                    cache.boneIndices = GetBoneIndices(cache.mesh, smr, generator.m_BoneTransform);
                     info.rendererCacheList.Add(cache);
                 }
                 info.lodLevel = lodLevel++;
@@ -751,10 +748,14 @@ namespace AnimationInstancingModule.Runtime
             Debug.Log($"export animation instancing prefab: {GetAnimationInstancingPrefabFilename()}");
         }
 
-        private void ExtractInternalAssets(GameObject root, SkinnedMeshRenderer smr)
+        private void ExtractInternalAssets(AnimationInstancingGenerator generator, Transform lod, SkinnedMeshRenderer smr, int lodLevel)
         {
-            // extract mesh
-            AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(root, smr));
+            // method 1. extract mesh
+            Mesh meshInst = UnityEngine.Object.Instantiate(smr.sharedMesh);
+            meshInst.colors = GetBoneWeights(meshInst, lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1));
+            meshInst.SetUVs(2, GetBoneIndices(meshInst, smr, generator.m_BoneTransform));
+            meshInst.UploadMeshData(true);      // isReadable = false
+            AssetDatabase.CreateAsset(meshInst, GetMeshFilename(generator.gameObject, smr));
 
             // extract material and texture
             foreach(var mat in smr.sharedMaterials)
@@ -785,43 +786,43 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
-        private Vector4[] GetBoneWeights(Mesh mesh, int bonePerVertex)
+        private Color[] GetBoneWeights(Mesh mesh, int bonePerVertex)
         {
-            Vector4[] weights = new Vector4[mesh.vertexCount];
+            Color[] weights = new Color[mesh.vertexCount];
             BoneWeight[] boneWeights = mesh.boneWeights;
             for(int i = 0; i < mesh.vertexCount; ++i)
             {
-                weights[i].x = boneWeights[i].weight0;
-                weights[i].y = boneWeights[i].weight1;
-                weights[i].z = boneWeights[i].weight2;
-                weights[i].w = boneWeights[i].weight3;
+                weights[i].r = boneWeights[i].weight0;
+                weights[i].g = boneWeights[i].weight1;
+                weights[i].b = boneWeights[i].weight2;
+                weights[i].a = boneWeights[i].weight3;
 
                 switch (bonePerVertex)
                 {
                     case 3:
                         {
-                            float scale = 1.0f / (weights[i].x + weights[i].y + weights[i].z);
-                            weights[i].x = weights[i].x * scale;
-                            weights[i].y = weights[i].y * scale;
-                            weights[i].z = weights[i].z * scale;
-                            weights[i].w = -0.1f;
+                            float scale = 1.0f / (weights[i].r + weights[i].g + weights[i].b);
+                            weights[i].r = weights[i].r * scale;
+                            weights[i].g = weights[i].g * scale;
+                            weights[i].b = weights[i].b * scale;
+                            weights[i].a = -0.1f;
                         }
                         break;
                     case 2:
                         {
-                            float scale = 1.0f / (weights[i].x + weights[i].y);
-                            weights[i].x = weights[i].x * scale;
-                            weights[i].y = weights[i].y * scale;
-                            weights[i].z = -0.1f;
-                            weights[i].w = -0.1f;
+                            float scale = 1.0f / (weights[i].r + weights[i].g);
+                            weights[i].r = weights[i].r * scale;
+                            weights[i].g = weights[i].g * scale;
+                            weights[i].b = -0.1f;
+                            weights[i].a = -0.1f;
                         }
                         break;
                     case 1:
                         {
-                            weights[i].x = 1.0f;
-                            weights[i].y = -0.1f;
-                            weights[i].z = -0.1f;
-                            weights[i].w = -0.1f;
+                            weights[i].r = 1.0f;
+                            weights[i].g = -0.1f;
+                            weights[i].b = -0.1f;
+                            weights[i].a = -0.1f;
                         }
                         break;
                 }

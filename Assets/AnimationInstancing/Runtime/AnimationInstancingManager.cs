@@ -7,7 +7,8 @@ namespace AnimationInstancingModule.Runtime
 {
     public class AnimationInstancingManager : SingletonMono<AnimationInstancingManager>
     {
-        static public int                               s_MaxInstanceCountPerRendering  = 512;            // 一次最多可渲染的实例化数量
+        static private int                              s_MaxInstanceCountPerRendering  = 512;            // 一次最多可渲染的实例化数量
+        static private int                              s_MaxCullingCount               = 5000;
         private Dictionary<int, VertexCache>            m_VertexCachePool               = new Dictionary<int, VertexCache>();
         private List<AnimationInstancing>               m_AnimInstancingList            = new List<AnimationInstancing>();
 
@@ -32,6 +33,18 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
+        static public int                               maxInstanceCountPerRendering
+        {
+            get { return s_MaxInstanceCountPerRendering; }
+            set
+            {
+                if(s_MaxInstanceCountPerRendering != value)
+                {
+                    s_MaxInstanceCountPerRendering = Mathf.ClosestPowerOfTwo(Mathf.Clamp(s_MaxInstanceCountPerRendering, 1, 1024)) - 1;
+                }
+            }
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -51,7 +64,7 @@ namespace AnimationInstancingModule.Runtime
 
         private void InitCullingGroup()
         {
-            m_BoundingSphere = new BoundingSphere[5000];
+            m_BoundingSphere = new BoundingSphere[s_MaxCullingCount];
             m_CullingGroup = new CullingGroup();
             m_CullingGroup.targetCamera = targetCamera;
             m_CullingGroup.onStateChanged = CullingStateChanged;
@@ -104,7 +117,6 @@ namespace AnimationInstancingModule.Runtime
             m_BoundingSphere[index] = inst.boundingSphere;
         }
 
-
         public void AddInstance(AnimationInstancing inst)
         {
 #if UNITY_EDITOR
@@ -133,6 +145,7 @@ namespace AnimationInstancingModule.Runtime
 
         public void AddVertexCache(AnimationInstancing inst, LODInfo lodInfo)
         {
+            UnityEngine.Profiling.Profiler.BeginSample("AnimationInstancingManager::AddVertexCache");
             foreach(var rendererCache in lodInfo.rendererCacheList)
             {
                 if(rendererCache.isUsed)
@@ -143,6 +156,7 @@ namespace AnimationInstancingModule.Runtime
                 rendererCache.materialBlock = GetOrCreateMaterialBlock(inst, vertexCache, rendererCache);
                 rendererCache.isUsed = true;
             }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
 
         // 删除注册过的所有VertexCache
@@ -196,16 +210,16 @@ namespace AnimationInstancingModule.Runtime
 
         private VertexCache GetOrCreateVertexCache(AnimationInstancing inst, RendererCache rendererCache)
         {
+            UnityEngine.Profiling.Profiler.BeginSample("AnimationInstancingManager::GetOrCreateVertexCache");
             int nameHash = rendererCache.mesh.name.GetHashCode();
             VertexCache vertexCache;
             if(!m_VertexCachePool.TryGetValue(nameHash, out vertexCache))
             {
+                UnityEngine.Profiling.Profiler.BeginSample("AnimationInstancingManager::Internal_GetOrCreateVertexCache");
                 // construct VertexCache
                 vertexCache = new VertexCache();
                 vertexCache.nameHash = nameHash;
                 vertexCache.mesh = rendererCache.mesh;
-                vertexCache.weights = GetBoneWeights(rendererCache.mesh, rendererCache.bonePerVertex);
-                vertexCache.boneIndices = rendererCache.boneIndices;
                 vertexCache.blockWidth = inst.animDataInst.textureBlockWidth;
                 vertexCache.blockHeight = inst.animDataInst.textureBlockHeight;
                 vertexCache.shadowCastingMode = inst.shadowCastingMode;
@@ -213,17 +227,17 @@ namespace AnimationInstancingModule.Runtime
                 vertexCache.layer = inst.layer;
                 m_VertexCachePool.Add(nameHash, vertexCache);
 
-                // upload mesh data to gpu
-                // todo: 能否把weights，boneIndices等数据序列化至mesh，这样mesh就无需打开read/write enable
-                UploadMeshData(vertexCache);
+                UnityEngine.Profiling.Profiler.EndSample();
             }
             vertexCache.onGetAnimTexture += inst.animDataInst.GetAnimTexture;
             ++vertexCache.refCount;
+            UnityEngine.Profiling.Profiler.EndSample();
             return vertexCache;
         }
 
         private MaterialBlock GetOrCreateMaterialBlock(AnimationInstancing inst, VertexCache vertexCache, RendererCache rendererCache)
         {
+            UnityEngine.Profiling.Profiler.BeginSample("AnimationInstancingManager::GetOrCreateMaterialBlock");
             int materialsHashCode = GetMaterialsHashCode(rendererCache.mesh, rendererCache.materials);
             MaterialBlock materialBlock;
             if(!vertexCache.matBlockList.TryGetValue(materialsHashCode, out materialBlock))
@@ -242,6 +256,7 @@ namespace AnimationInstancingModule.Runtime
             }
             materialBlock.onOverridePropertyBlock += inst.ExecutePropertyBlock;
             ++materialBlock.refCount;
+            UnityEngine.Profiling.Profiler.EndSample();
             return materialBlock;
         }
 
@@ -336,21 +351,6 @@ namespace AnimationInstancingModule.Runtime
             }
 
             return weights;
-        }
-
-        private void UploadMeshData(VertexCache vertexCache)
-        {
-            Color[] colors = new Color[vertexCache.weights.Length];            
-            for (int i = 0; i != colors.Length; ++i)
-            {
-                colors[i].r = vertexCache.weights[i].x;
-                colors[i].g = vertexCache.weights[i].y;
-                colors[i].b = vertexCache.weights[i].z;
-                colors[i].a = vertexCache.weights[i].w;
-            }
-            vertexCache.mesh.colors = colors;
-            vertexCache.mesh.SetUVs(2, vertexCache.boneIndices);
-            vertexCache.mesh.UploadMeshData(false);
         }
 
         private int GetMaterialsHashCode(Mesh mesh, Material[] materials)

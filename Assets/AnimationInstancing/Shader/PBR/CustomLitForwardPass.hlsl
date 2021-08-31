@@ -22,8 +22,8 @@ struct Attributes
     float4 tangentOS    : TANGENT;
     float2 texcoord     : TEXCOORD0;
     float2 lightmapUV   : TEXCOORD1;
-    float4 color        : COLOR;            // added by xukun for instancing data
-    float4 texcoord2    : TEXCOORD2;        // added by xukun for instancing data
+    float4 color        : COLOR;            // added by xukun for boneWeights
+    float4 texcoord2    : TEXCOORD2;        // added by xukun for boneIndices
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 

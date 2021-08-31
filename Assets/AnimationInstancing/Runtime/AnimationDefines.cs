@@ -140,8 +140,6 @@ namespace AnimationInstancingModule.Runtime
         public Mesh                             mesh;
         public Material[]                       materials;              // materials.Length == mesh.subMeshCount        
         public int                              bonePerVertex   = 4;    // 每顶点受多少骨骼影响
-        public Vector4[]                        boneIndices;            // 顶点受哪些骨骼影响，length == mesh.vertexCount 【需要用到render.bones，所以必须预计算序列化】
-        // [NonSerialized] public Vector4[]        weights;                // 顶点受4根骨骼影响的权重因子，length == mesh.vertexCount 【数据量较大，运行时计算优于序列化】
         [NonSerialized] public VertexCache      vertexCache;
         [NonSerialized] public MaterialBlock    materialBlock;
         [NonSerialized] public bool             isUsed;
