@@ -35,24 +35,28 @@ namespace AnimationInstancingModule.Runtime
         public float                time;
     }
 
+    // 能被挂载到AnimationInstancing对象上的物体，需要继承此接口
     public interface IAttachmentToInstancing
     {
-        AnimationInstancing  owner { get; set; }
-        string extraBoneName { get; set; }
+        string                  name            { get; set; }
+        AnimationInstancing     owner           { get; set; }
+        string                  extraBoneName   { get; set; }
         void SetParent(Transform parent);
+        void SetPosition(Vector3 pos);
+        void SetRotation(Quaternion rot);
         void Detach();
         void Attach(AnimationInstancing owner, string extraBoneName);
     }
 
     public class AttachmentInfo
     {
-        static public int           s_MaxCountAttachment    = 5;                                        // 性能考虑，一个挂点最多挂载一定数量的对象
-        public string               boneName;
-        public Transform[]          attachments             = new Transform[s_MaxCountAttachment];
-        public int                  count                   { get; private set; }                       // 有效挂载对象的数量
-        public ExtraBoneInfo        extraBoneInfo;
+        static public int                   s_MaxCountAttachment    = 3;                                        // 性能考虑，一个挂点最多挂载一定数量的对象
+        public string                       boneName;
+        public IAttachmentToInstancing[]    attachments             = new IAttachmentToInstancing[s_MaxCountAttachment];
+        public int                          count                   { get; private set; }                       // 有效挂载对象的数量
+        public ExtraBoneInfo                extraBoneInfo;
         
-        private int FindValidIndex(Transform attachment)
+        private int FindValidIndex(IAttachmentToInstancing attachment)
         {
 #if UNITY_EDITOR
             for(int i = 0; i < attachments.Length; ++i)
@@ -73,7 +77,7 @@ namespace AnimationInstancingModule.Runtime
             return -1;
         }
 
-        private int FindIndex(Transform attachment)
+        private int FindIndex(IAttachmentToInstancing attachment)
         {
             for(int i = 0; i < s_MaxCountAttachment; ++i)
             {
@@ -83,7 +87,7 @@ namespace AnimationInstancingModule.Runtime
             return -1;
         }
 
-        public int AddAttachment(Transform attachment)
+        public int AddAttachment(IAttachmentToInstancing attachment)
         {
             int index = FindValidIndex(attachment);
             Debug.Assert(index != -1);
@@ -96,7 +100,7 @@ namespace AnimationInstancingModule.Runtime
             return -1;
         }
 
-        public void RemoveAttachment(Transform attachment)
+        public void RemoveAttachment(IAttachmentToInstancing attachment)
         {
             int index = FindIndex(attachment);
             if(index == -1)
@@ -109,7 +113,7 @@ namespace AnimationInstancingModule.Runtime
 
         public void RemoveAttachment(int index)
         {
-            Debug.Assert(index >= 0 && index < s_MaxCountAttachment);
+            Debug.Assert(index >= 0 && index < s_MaxCountAttachment && attachments[index] != null);
             attachments[index] = null;
             --count;
         }

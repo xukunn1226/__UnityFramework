@@ -388,7 +388,7 @@ namespace AnimationInstancingModule.Runtime
         }        
 
         // 返回index，可用于detach，对性能更友好
-        public int Attach(string boneName, Transform attachment)
+        public int Attach(string boneName, IAttachmentToInstancing attachment)
         {
             AttachmentInfo info;
             if(!m_AttachmentInfo.TryGetValue(boneName, out info))
@@ -396,6 +396,7 @@ namespace AnimationInstancingModule.Runtime
                 info = new AttachmentInfo();
                 info.boneName = boneName;
                 info.extraBoneInfo = animDataInst.GetExtraBoneInfo(boneName);
+                Debug.Assert(info.extraBoneInfo != null);
 
                 m_AttachmentInfo.Add(boneName, info);
             }
@@ -403,13 +404,13 @@ namespace AnimationInstancingModule.Runtime
             int index = info.AddAttachment(attachment);
             if(index != -1)
             {
-                attachment.parent = transform;
+                attachment.SetParent(transform);
                 UpdateAttachment();                 // update immediately
             }
             return index;
         }
 
-        public void Detach(string boneName, Transform attachment)
+        public void Detach(string boneName, IAttachmentToInstancing attachment)
         {
             AttachmentInfo info;
             if(!m_AttachmentInfo.TryGetValue(boneName, out info))
@@ -510,8 +511,8 @@ namespace AnimationInstancingModule.Runtime
 
                     Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
                                                                                          m_CurFrameIndex);
-                    info.attachments[i].position = worldMatrix.MultiplyPoint3x4(Vector3.zero);
-                    info.attachments[i].rotation = worldMatrix.rotation;
+                    info.attachments[i].SetPosition(worldMatrix.MultiplyPoint3x4(Vector3.zero));
+                    info.attachments[i].SetRotation(worldMatrix.rotation);
                 }
             }
             UnityEngine.Profiling.Profiler.EndSample();
