@@ -28,6 +28,7 @@ namespace AnimationInstancingModule.Runtime
             using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
             {
                 aniInfos = ReadAnimationInfo(reader);
+                aniInfos.Sort(m_Comparer);      // 提高后续二分法查找效率
                 PostprocessExtraBoneInfos();
                 ReadAnimationTexture(reader);
             }
@@ -61,6 +62,24 @@ namespace AnimationInstancingModule.Runtime
         {
             return m_AnimTexture;
         }
+
+#if UNITY_EDITOR
+        public List<string> EditorLoadAnimationInfo()
+        {
+            List<AnimationInfo> list;
+            using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
+            {
+                list = ReadAnimationInfo(reader);
+            }
+
+            List<string> names = new List<string>();
+            foreach(var item in list)
+            {
+                names.Add(item.name);
+            }
+            return names;
+        }
+#endif        
 
         private List<AnimationInfo> ReadAnimationInfo(BinaryReader reader)
         {
@@ -123,8 +142,7 @@ namespace AnimationInstancingModule.Runtime
                 }
 
                 listInfo.Add(info);
-            }
-            listInfo.Sort(m_Comparer);      // 提高后续二分法查找效率
+            }            
             return listInfo;
         }
 

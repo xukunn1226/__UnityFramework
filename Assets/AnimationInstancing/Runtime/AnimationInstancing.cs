@@ -17,7 +17,7 @@ namespace AnimationInstancingModule.Runtime
 
         [SerializeField]
         private AnimationData           m_Prototype;                                    // WARNING: 资源，非实例化数据
-        public AnimationData            prototype           { private get { return m_Prototype; } set { m_Prototype = value; } }
+        public AnimationData            prototype           { get { return m_Prototype; } set { m_Prototype = value; } }
         public AnimationData            animDataInst        { get; private set; }
         public List<LODInfo>            lodInfos            = new List<LODInfo>();
 
