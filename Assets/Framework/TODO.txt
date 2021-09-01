@@ -346,7 +346,10 @@ RectTransform:
 * https://zhuanlan.zhihu.com/p/269855011
 *************************************** 基于高度图的地形渲染 End ***************************************
 
-
+* Animation Instancing
+	重构CullingGroup，使之模块化，其他功能模块也能友好使用
+	增强AnimationInstancingManager的DebugInfo
+	Opt：Animation Texture占用两份内存，怎么优化？
 
 
 

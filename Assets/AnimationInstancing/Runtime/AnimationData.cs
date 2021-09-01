@@ -58,7 +58,7 @@ namespace AnimationInstancingModule.Runtime
                 m_AnimTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBAHalf, false, true);
                 m_AnimTexture.filterMode = FilterMode.Point;
                 m_AnimTexture.LoadRawTextureData(bytes);
-                m_AnimTexture.Apply();
+                m_AnimTexture.Apply(false, true);       // the texture is marked as no longer readable and memory is freed after uploading to GPU
             }
 
             animTexSoftObject?.UnloadAsset();       // 已无用，可以立即释放
