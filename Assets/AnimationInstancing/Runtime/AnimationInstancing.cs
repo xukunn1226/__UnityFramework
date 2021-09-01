@@ -6,6 +6,16 @@ using UnityEngine.Rendering;
 
 namespace AnimationInstancingModule.Runtime
 {
+    /// <summary>
+    /// controller of animation instancing
+    /// feature:
+    ///     culling
+    ///     lod
+    ///     event
+    ///     cross fade
+    ///     play animation
+    ///     attachment
+    /// <summary>
     public class AnimationInstancing : MonoBehaviour
     {
         public delegate void onAnimationHandler(string aniName);
@@ -46,7 +56,7 @@ namespace AnimationInstancingModule.Runtime
         public string                   defaultAnim;
         private int                     m_TriggerEventIndex = -1;                       // 已触发的动画事件
         private bool                    m_isAlreadyTriggerEndEvent;                     // 是否已触发动画结束回调
-        public float                    lodFrequency        { private get; set; }       = 0.5f;
+        public float                    lodFrequency        { private get; set; }       = 1.0f;
         private float                   m_LodFrequencyCount = float.MaxValue;
         public float[]                  lodDistance         = new float[2];
         private int                     m_FixedLodLevel     = -1;
@@ -111,7 +121,7 @@ namespace AnimationInstancingModule.Runtime
             isPause = true;
         }
 
-        public bool ShouldRender()
+        internal bool ShouldRender()
         {
             return isActiveAndEnabled && !isCulled;
         }
@@ -119,7 +129,7 @@ namespace AnimationInstancingModule.Runtime
         public delegate void OverridePropertyBlockHandler(int materialIndex, MaterialPropertyBlock block);
         public event OverridePropertyBlockHandler onOverridePropertyBlock;
 
-        public void ExecutePropertyBlock(int materialIndex, MaterialPropertyBlock block)
+        internal void ExecutePropertyBlock(int materialIndex, MaterialPropertyBlock block)
         {
             onOverridePropertyBlock?.Invoke(materialIndex, block);
         }
@@ -192,7 +202,7 @@ namespace AnimationInstancingModule.Runtime
             m_WrapMode = animDataInst.aniInfos[id].wrapMode;
         }
 
-        public AnimationInfo GetCurrentAnimationInfo()
+        internal AnimationInfo GetCurrentAnimationInfo()
         {
             if(animDataInst.aniInfos != null && m_CurAnimationIndex >= 0 && m_CurAnimationIndex < animDataInst.aniInfos.Count)
             {
@@ -201,7 +211,7 @@ namespace AnimationInstancingModule.Runtime
             return null;
         }
 
-        public AnimationInfo GetPreAnimationInfo()
+        internal AnimationInfo GetPreAnimationInfo()
         {
             if(animDataInst.aniInfos != null && m_PreAnimationIndex >= 0 && m_PreAnimationIndex < animDataInst.aniInfos.Count)
             {
@@ -210,27 +220,27 @@ namespace AnimationInstancingModule.Runtime
             return null;
         }
 
-        public LODInfo GetCurrentLODInfo()
+        internal LODInfo GetCurrentLODInfo()
         {
             return lodInfos[lodLevel];
         }
 
         // 当前动画帧在AnimTexture的帧号
-        public float GetGlobalCurFrameIndex()
+        internal float GetGlobalCurFrameIndex()
         {
              AnimationInfo info = GetCurrentAnimationInfo();
              return info != null ? (info.startFrameIndex + m_CurFrameIndex) : -1;
         }
 
         // 上一个动画在AnimTexture的帧号
-        public float GetGlobalPreFrameIndex()
+        internal float GetGlobalPreFrameIndex()
         {
             AnimationInfo info = GetPreAnimationInfo();
             return info != null ? (info.startFrameIndex + m_PreFrameIndex) : -1;
         }
 
         private int m_LodLevel = -1;
-        public int lodLevel            
+        public int lodLevel
         { 
             get { return m_LodLevel; }
             private set
@@ -253,7 +263,7 @@ namespace AnimationInstancingModule.Runtime
                 m_FixedLodLevel = Mathf.Min(lodLevel, lodInfos.Count - 1);
         }
 
-        public void UpdateLod(Vector3 cameraPosition)
+        internal void UpdateLod(Vector3 cameraPosition)
         {
             if(m_FixedLodLevel > -1)
             {
@@ -278,7 +288,7 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
-        public void UpdateAnimation()
+        internal void UpdateAnimation()
         {
             if(!isPlaying || !isActiveAndEnabled || isCulled)
             {

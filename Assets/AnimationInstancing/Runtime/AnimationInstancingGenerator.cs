@@ -146,7 +146,7 @@ namespace AnimationInstancingModule.Runtime
 
             m_BakedLODs = LODs;
 
-            // 获取最终的骨骼信息和绑定姿态矩阵
+            // 获取蒙皮骨骼信息和绑点矩阵
             GetSkinnedBoneInfo(m_BakedLODs[0], ref m_BindPose, ref m_BoneTransform);
             GetExtraBoneInfo(m_BakedLODs[0], ref m_ExtraTransform);
         }
@@ -154,7 +154,7 @@ namespace AnimationInstancingModule.Runtime
         public void Bake()
         {
             // 还原至bindpose态，好获取bindpose矩阵数据
-            PrefabUtility.RevertPrefabInstance(gameObject, InteractionMode.AutomatedAction);
+            // PrefabUtility.RevertPrefabInstance(gameObject, InteractionMode.AutomatedAction);
 
             Prepare();
 
@@ -162,12 +162,14 @@ namespace AnimationInstancingModule.Runtime
 
             if(enableReference)
             {
-                referenceTo.Prepare();
-
                 // 烘焙引用动画贴图
                 if(forceRebuildReference)
                 {
                     referenceTo.Bake();
+                }
+                else
+                {
+                    referenceTo.Prepare();
                 }
             }
             else
@@ -197,7 +199,7 @@ namespace AnimationInstancingModule.Runtime
                 if(forceRebuildReference)
                 {
                     if(!referenceTo.isBaking && isBaking)
-                    { // 引用对象烘焙结束
+                    { // 引用对象烘焙结束，仅引用引用对象的AnimationData，自身不生成AnimationData
                         ExportAnimInstancingPrefab(referenceTo);
                         isBaking = false;
                     }
@@ -257,7 +259,7 @@ namespace AnimationInstancingModule.Runtime
 
                         SaveAnimationInfo();
                         ExportAnimDataPrefab();
-                        ExportAnimInstancingPrefab(this);
+                        ExportAnimInstancingPrefab(null);
                         isBaking = false;
                     }
 
@@ -670,7 +672,7 @@ namespace AnimationInstancingModule.Runtime
             Debug.Log($"export animation data prefab: {GetAnimationDataPrefabFilename()}");
         }
 
-        private void ExportAnimInstancingPrefab(AnimationInstancingGenerator generator)
+        private void ExportAnimInstancingPrefab(AnimationInstancingGenerator reference)
         {
             // 导出资源：mesh, material, texture
             int lodLevel = 0;
@@ -679,7 +681,7 @@ namespace AnimationInstancingModule.Runtime
                 SkinnedMeshRenderer[] smrs = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (var smr in smrs)
                 {
-                    ExtractInternalAssets(generator, lod, smr, lodLevel);
+                    ExtractInternalAssets(lod, smr, lodLevel);
                 }
                 ++lodLevel;
             }
@@ -705,7 +707,7 @@ namespace AnimationInstancingModule.Runtime
             AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
 
             // setup
-            GameObject animDataAsset = AssetDatabase.LoadAssetAtPath<GameObject>(generator.GetAnimationDataPrefabFilename());
+            GameObject animDataAsset = AssetDatabase.LoadAssetAtPath<GameObject>(reference?.GetAnimationDataPrefabFilename() ?? GetAnimationDataPrefabFilename());
             Debug.Assert(animDataAsset != null);
             animInst.prototype = animDataAsset.GetComponent<AnimationData>();
             animInst.radius = CalcBoundingSphere();
@@ -719,7 +721,7 @@ namespace AnimationInstancingModule.Runtime
                 foreach(var smr in smrs)
                 {
                     RendererCache cache = new RendererCache();
-                    cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(generator.gameObject, smr));
+                    cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(gameObject, smr));
                     cache.materials = new Material[smr.sharedMaterials.Length];
                     for(int i = 0; i < smr.sharedMaterials.Length; ++i)
                     {
@@ -743,19 +745,21 @@ namespace AnimationInstancingModule.Runtime
             DestroyImmediate(inst);
             AssetDatabase.Refresh();
 
-            PrefabUtility.RevertPrefabInstance(generator.gameObject, InteractionMode.AutomatedAction);
+            // 把实例还原至original prefab
+            // PrefabUtility.RevertPrefabInstance(gameObject, InteractionMode.AutomatedAction);
+
 
             Debug.Log($"export animation instancing prefab: {GetAnimationInstancingPrefabFilename()}");
         }
 
-        private void ExtractInternalAssets(AnimationInstancingGenerator generator, Transform lod, SkinnedMeshRenderer smr, int lodLevel)
+        private void ExtractInternalAssets(Transform lod, SkinnedMeshRenderer smr, int lodLevel)
         {
             // method 1. extract mesh
             Mesh meshInst = UnityEngine.Object.Instantiate(smr.sharedMesh);
             meshInst.colors = GetBoneWeights(meshInst, lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1));
-            meshInst.SetUVs(2, GetBoneIndices(meshInst, smr, generator.m_BoneTransform));
+            meshInst.SetUVs(2, GetBoneIndices(meshInst, smr, m_BoneTransform));
             meshInst.UploadMeshData(true);      // isReadable = false
-            AssetDatabase.CreateAsset(meshInst, GetMeshFilename(generator.gameObject, smr));
+            AssetDatabase.CreateAsset(meshInst, GetMeshFilename(gameObject, smr));
 
             // extract material and texture
             foreach(var mat in smr.sharedMaterials)

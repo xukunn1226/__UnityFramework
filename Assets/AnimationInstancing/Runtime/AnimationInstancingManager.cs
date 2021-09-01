@@ -5,6 +5,9 @@ using Framework.Core;
 
 namespace AnimationInstancingModule.Runtime
 {
+    /// <summary>
+    /// manager of all animation instancing
+    /// <summary>
     public class AnimationInstancingManager : SingletonMono<AnimationInstancingManager>
     {
         static private int                              s_MaxInstanceCountPerRendering  = 512;            // 一次最多可渲染的实例化数量
@@ -117,7 +120,7 @@ namespace AnimationInstancingModule.Runtime
             m_BoundingSphere[index] = inst.boundingSphere;
         }
 
-        public void AddInstance(AnimationInstancing inst)
+        internal void AddInstance(AnimationInstancing inst)
         {
 #if UNITY_EDITOR
             if(m_AnimInstancingList.Contains(inst))
@@ -128,7 +131,7 @@ namespace AnimationInstancingModule.Runtime
             AddBoundingSphere(inst);
         }
 
-        public void RemoveInstance(AnimationInstancing inst)
+        internal void RemoveInstance(AnimationInstancing inst)
         {
             if(m_AnimInstancingList.Remove(inst))
             {
@@ -143,7 +146,7 @@ namespace AnimationInstancingModule.Runtime
 #endif            
         }
 
-        public void AddVertexCache(AnimationInstancing inst, LODInfo lodInfo)
+        internal void AddVertexCache(AnimationInstancing inst, LODInfo lodInfo)
         {
             UnityEngine.Profiling.Profiler.BeginSample("AnimationInstancingManager::AddVertexCache");
             foreach(var rendererCache in lodInfo.rendererCacheList)
@@ -383,6 +386,7 @@ namespace AnimationInstancingModule.Runtime
                 if(!inst.ShouldRender())
                     continue;
 
+                // 不需渲染时可以不用更新lod
                 inst.UpdateLod(targetCamera.transform.position);
 
                 LODInfo lodInfo = inst.GetCurrentLODInfo();
@@ -452,30 +456,22 @@ namespace AnimationInstancingModule.Runtime
                                 materialBlock.propertyBlocks[j].SetFloatArray("preFrameIndex", package.preFrameIndex);
                                 materialBlock.propertyBlocks[j].SetFloatArray("transitionProgress", package.transitionProgress);
                                 materialBlock.ExecutePropertyBlock(j, materialBlock.propertyBlocks[j]);
+
+                                Graphics.DrawMeshInstanced(vertexCache.mesh,
+                                                           j,
+                                                           materialBlock.materials[j],
+                                                           package.worldMatrix,
+                                                           package.count,
+                                                           materialBlock.propertyBlocks[j],
+                                                           vertexCache.shadowCastingMode,
+                                                           vertexCache.receiveShadows,
+                                                           vertexCache.layer,
 #if UNITY_EDITOR
-                                // 编辑模式下不设置camera，方便所有窗口可见
-                                Graphics.DrawMeshInstanced(vertexCache.mesh,
-                                                           j,
-                                                           materialBlock.materials[j],
-                                                           package.worldMatrix,
-                                                           package.count,
-                                                           materialBlock.propertyBlocks[j],
-                                                           vertexCache.shadowCastingMode,
-                                                           vertexCache.receiveShadows,
-                                                           vertexCache.layer,
-                                                           null);
+                                                           null             // 编辑模式下不设置camera，方便所有窗口可见
 #else
-                                Graphics.DrawMeshInstanced(vertexCache.mesh,
-                                                           j,
-                                                           materialBlock.materials[j],
-                                                           package.worldMatrix,
-                                                           package.count,
-                                                           materialBlock.propertyBlocks[j],
-                                                           vertexCache.shadowCastingMode,
-                                                           vertexCache.receiveShadows,
-                                                           vertexCache.layer,
-                                                           targetCamera);
+                                                           targetCamera
 #endif
+                                                           );
                             }
                             package.count = 0;      // reset
                         }
@@ -492,28 +488,20 @@ namespace AnimationInstancingModule.Runtime
                                     materialBlock.propertyBlocks[k].SetFloat("frameIndex", package.frameIndex[j]);
                                     materialBlock.propertyBlocks[k].SetFloat("preFrameIndex", package.preFrameIndex[j]);
                                     materialBlock.propertyBlocks[k].SetFloat("transitionProgress", package.transitionProgress[j]);
-#if UNITY_EDITOR
-                                    // 编辑模式下不设置camera，方便所有窗口可见
+
                                     Graphics.DrawMesh(vertexCache.mesh,
                                                       package.worldMatrix[j],
                                                       materialBlock.materials[k],
                                                       vertexCache.layer,
-                                                      null,
-                                                      k,
-                                                      materialBlock.propertyBlocks[k],
-                                                      vertexCache.shadowCastingMode,
-                                                      vertexCache.receiveShadows);
+#if UNITY_EDITOR                                                      
+                                                      null,             // 编辑模式下不设置camera，方便所有窗口可见
 #else
-                                    Graphics.DrawMesh(vertexCache.mesh,
-                                                      package.worldMatrix[j],
-                                                      materialBlock.materials[k],
-                                                      vertexCache.layer,
                                                       targetCamera,
+#endif                                                      
                                                       k,
                                                       materialBlock.propertyBlocks[k],
                                                       vertexCache.shadowCastingMode,
                                                       vertexCache.receiveShadows);
-#endif
                                 }
                             }
                             package.count = 0;      // reset

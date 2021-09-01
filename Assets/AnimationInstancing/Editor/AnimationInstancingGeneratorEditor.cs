@@ -332,38 +332,42 @@ namespace AnimationInstancingModule.Editor
 
             m_sw = new Stopwatch();
             m_sw.Start();
-
+            
             AnimationInstancingGenerator[] generators = GameObject.FindObjectsOfType<AnimationInstancingGenerator>();
-            m_Coroutine = EditorCoroutineUtility.StartCoroutineOwnerless(Generate(generators));
+            m_Coroutine = EditorCoroutineUtility.StartCoroutineOwnerless(InternalGenerate(generators));
+            UnityEngine.Debug.Log($"Start Animation Instancing Generation...{generators.Length}");
         }
 
-        static IEnumerator Generate(AnimationInstancingGenerator[] generators)
+        static IEnumerator InternalGenerate(AnimationInstancingGenerator[] generators)
         {
             if(generators.Length == 0)
             {
-                StopGeneratingCoroutine();
+                StopGenerationCoroutine();
                 yield break;
             }
 
             int count = 0;
             while(count < generators.Length)
             {
-                bool isCancel = EditorUtility.DisplayCancelableProgressBar("烘焙中", "Generating", 1.0f * (count + 1) / generators.Length);
+                UnityEngine.Debug.Log($"    [{count}] {generators[count].gameObject.name} is generating...");
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
 
                 Selection.activeObject = generators[count];
                 generators[count].Bake();
                 while(generators[count].isBaking)
                     yield return null;
+
+                UnityEngine.Debug.Log($"    done...... elapsed time is {sw.ElapsedMilliseconds * 0.001f}s");
                 ++count;
             }
             m_sw.Stop();
 
-            StopGeneratingCoroutine();
-            EditorUtility.ClearProgressBar();
+            StopGenerationCoroutine();
             UnityEngine.Debug.Log($"Generate done.... total count is {generators.Length} and elasped time is {m_sw.ElapsedMilliseconds * 0.001f}s ");
         }
 
-        static private void StopGeneratingCoroutine()
+        static private void StopGenerationCoroutine()
         {
             if(m_Coroutine != null)
             {

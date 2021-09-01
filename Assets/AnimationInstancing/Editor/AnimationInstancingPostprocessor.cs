@@ -20,7 +20,7 @@ namespace AnimationInstancingModule.Editor
                 return;
 
             ModelImporter mi = assetImporter as ModelImporter;
-            mi.isReadable = true;
+            mi.isReadable = true;       // isReadable强制打开，需要填充数据（color，uv2）
         }
 
         void OnPreprocessTexture()

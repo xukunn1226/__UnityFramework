@@ -150,8 +150,6 @@ namespace AnimationInstancingModule.Runtime
         public int                              nameHash;               // mesh name's hash
         public Mesh                             mesh;
         public Dictionary<int, MaterialBlock>   matBlockList            = new Dictionary<int, MaterialBlock>();      // 同一个mesh可能搭配不同材质使用  key: materials' hash code
-        public Vector4[]                        weights;                // weight.Length == mesh.vertexCount
-        public Vector4[]                        boneIndices;            // boneIndex.Length == mesh.vertexCount
         public int                              blockWidth;
         public int                              blockHeight;
         public ShadowCastingMode                shadowCastingMode;
@@ -171,7 +169,7 @@ namespace AnimationInstancingModule.Runtime
         public int                              subMeshCount;
         public Material[]                       materials;
         public MaterialPropertyBlock[]          propertyBlocks;         // length == materials.length
-        public int                              instancingCount;
+        public int                              instancingCount;        // 总的实例化数量值
         public List<InstancingPackage>          packageList;
         public int                              refCount;               // 
         public bool                             isInitMaterial;         // 是否

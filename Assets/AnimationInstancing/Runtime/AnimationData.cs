@@ -7,17 +7,23 @@ using Framework.AssetManagement.Runtime;
 
 namespace AnimationInstancingModule.Runtime
 {
+    /// <summary>
+    /// 动画数据集合
+    /// manifest: 所有动画逻辑数据（名称、起始帧、总帧数、事件、绑点骨骼矩阵等）、textureBlockWidth、textureBlockHeight
+    /// animTexSoftObject: 动画矩阵数据
+    /// NOTE: 共用动画的角色应使用同一套AnimationData
+    /// <summary>
     public class AnimationData : MonoBehaviour
     {
         public TextAsset                            manifest;
-        public int                                  textureBlockWidth   { get; set; }
-        public int                                  textureBlockHeight  { get; set; }
-        public List<AnimationInfo>                  aniInfos            { get; private set; }
-        public Dictionary<string, ExtraBoneInfo>    extraBoneInfos      { get; private set; }
+        public int                                  textureBlockWidth   { get; private set; }       // read from manifest.bytes
+        public int                                  textureBlockHeight  { get; private set; }       // read from manifest.bytes
+        public List<AnimationInfo>                  aniInfos            { get; private set; }       // read from manifest.bytes
+        private Dictionary<string, ExtraBoneInfo>   m_ExtraBoneInfos;                               // 绑点骨骼的所有动画矩阵
+        [SoftObject] public SoftObject              animTexSoftObject;
+        private Texture2D                           m_AnimTexture;                                  // 注意：异步加载，可能为NULL
         private AnimationInfo                       m_SearchInfo;
         private ComparerHash                        m_Comparer;
-        [SoftObject] public SoftObject              animTexSoftObject;
-        private Texture2D                           m_AnimTexture;      // 注意：异步加载，可能为NULL
 
         void Awake()
         {
@@ -32,7 +38,7 @@ namespace AnimationInstancingModule.Runtime
                 PostprocessExtraBoneInfos();
                 ReadAnimationTexture(reader);
             }
-            manifest = null;        // 已无用，可以立即回收
+            manifest = null;        // 已无用，可以立即释放
         }
 
         IEnumerator Start()
@@ -55,10 +61,10 @@ namespace AnimationInstancingModule.Runtime
                 m_AnimTexture.Apply();
             }
 
-            animTexSoftObject?.UnloadAsset();       // 已无用，可以立即回收
+            animTexSoftObject?.UnloadAsset();       // 已无用，可以立即释放
         }
 
-        public Texture2D GetAnimTexture()
+        internal Texture2D GetAnimTexture()
         {
             return m_AnimTexture;
         }
@@ -66,6 +72,9 @@ namespace AnimationInstancingModule.Runtime
 #if UNITY_EDITOR
         public List<string> EditorLoadAnimationInfo()
         {
+            if(manifest == null || manifest.bytes == null)
+                return new List<string>();
+                
             List<AnimationInfo> list;
             using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
             {
@@ -146,9 +155,10 @@ namespace AnimationInstancingModule.Runtime
             return listInfo;
         }
 
+        // 后处理绑点骨骼的动画矩阵
         private void PostprocessExtraBoneInfos()
         {
-            extraBoneInfos = new Dictionary<string, ExtraBoneInfo>();
+            m_ExtraBoneInfos = new Dictionary<string, ExtraBoneInfo>();
 
             for(int i = 0; i < aniInfos.Count; ++i)
             {
@@ -156,12 +166,12 @@ namespace AnimationInstancingModule.Runtime
                 foreach(var item in info.extraBoneMatrix)
                 {
                     ExtraBoneInfo extraBoneInfo;
-                    if (!extraBoneInfos.TryGetValue(item.Key, out extraBoneInfo))
+                    if (!m_ExtraBoneInfos.TryGetValue(item.Key, out extraBoneInfo))
                     {
                         extraBoneInfo = new ExtraBoneInfo();
                         extraBoneInfo.boneName = item.Key;
                         extraBoneInfo.boneMatrix = new List<Matrix4x4[]>();
-                        extraBoneInfos.Add(item.Key, extraBoneInfo);
+                        m_ExtraBoneInfos.Add(item.Key, extraBoneInfo);
                     }
                     extraBoneInfo.boneMatrix.Add(item.Value);
                 }                
@@ -198,7 +208,7 @@ namespace AnimationInstancingModule.Runtime
         internal ExtraBoneInfo GetExtraBoneInfo(string extraBoneName)
         {
             ExtraBoneInfo boneInfo;
-            extraBoneInfos.TryGetValue(extraBoneName, out boneInfo);
+            m_ExtraBoneInfos.TryGetValue(extraBoneName, out boneInfo);
             return boneInfo;
         }
     }

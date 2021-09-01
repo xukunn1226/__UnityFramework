@@ -1,26 +1,26 @@
 {
-  "Count": 48,
-  "TotalSize": 75612420,
+  "Count": 49,
+  "TotalSize": 76495304,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "a92b40c948a4cf30fe1f4df77ae1fbda",
-      "Size": 3419
+      "FileHash": "022634af902c10820ea33a2d3682124e",
+      "Size": 3457
     },
     {
       "BundleName": "assets/animationinstancing/art/animationdata.ab",
-      "FileHash": "448608f55a97bef098f7c464f206eebd",
-      "Size": 485551
+      "FileHash": "f14db517cacf22005722f565815b1de7",
+      "Size": 485552
     },
     {
       "BundleName": "assets/animationinstancing/art/mannequin.ab",
-      "FileHash": "f109a269495d38c27f56413f2b5c5a58",
-      "Size": 2339726
+      "FileHash": "d3aa07ebd5b83469397d6d5bfc903e46",
+      "Size": 2279015
     },
     {
       "BundleName": "assets/animationinstancing/art/mirrorf2.ab",
-      "FileHash": "25568e2d6b41d7c5c42a2a24dd860566",
-      "Size": 2147482
+      "FileHash": "27bc27ac19083f61114c74156fbba19d",
+      "Size": 2164821
     },
     {
       "BundleName": "assets/animationinstancing/art/twinsword.ab",
@@ -29,8 +29,8 @@
     },
     {
       "BundleName": "assets/animationinstancing/art/unity_model.ab",
-      "FileHash": "b2ec613f59c7f7c7afd2e983502829d1",
-      "Size": 10975846
+      "FileHash": "d51b2ded06155b257e3bc08bcb6e3e62",
+      "Size": 10896710
     },
     {
       "BundleName": "assets/animationinstancing/art/wgame.ab",
@@ -39,13 +39,18 @@
     },
     {
       "BundleName": "assets/animationinstancing/art/zombie_01.ab",
-      "FileHash": "e55f1e3467023aefe360ce4ea13dd344",
-      "Size": 1001508
+      "FileHash": "c9885fd9dec0b10ec6da488f612dad98",
+      "Size": 1001465
+    },
+    {
+      "BundleName": "assets/animationinstancing/art/zombie_01_ref.ab",
+      "FileHash": "890605a87cb4386e2906072b4d77356c",
+      "Size": 1005411
     },
     {
       "BundleName": "assets/animationinstancing/art/zombie_02.ab",
-      "FileHash": "60cd482de7a3bc49bad82b7354a63c01",
-      "Size": 1704160
+      "FileHash": "5f8a18b1890339db9f6206c18e108b22",
+      "Size": 1704145
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
