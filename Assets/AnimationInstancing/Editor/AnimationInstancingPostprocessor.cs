@@ -28,7 +28,7 @@ namespace AnimationInstancingModule.Editor
             if(UnityEngine.Application.isBatchMode)
                 return;
 
-            string path = assetPath.Substring(0, AnimationInstancingGenerator.s_AnimationInstancingRoot.Length);
+            string path = assetPath.Substring(0, Mathf.Min(AnimationInstancingGenerator.s_AnimationInstancingRoot.Length, assetPath.Length));
             if(string.Compare(path, AnimationInstancingGenerator.s_AnimationInstancingRoot, true) != 0)
                 return;
             
