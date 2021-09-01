@@ -15,13 +15,6 @@ namespace AnimationInstancingModule.Runtime
 {
     /// <summary>
     /// 目录结构：
-    ///     root/AnimationData
-    ///     root/[CustomPrefab1]
-    ///     root/[CustomPrefab1]/RawData
-    ///     root/[CustomPrefab1]/RawData/LOD0.prefab
-    ///     root/[CustomPrefab1]/RawData/LOD1.prefab
-    ///     root/[CustomPrefab2]
-    ///     root/[CustomPrefab2]/RawData
     /// AnimationData：存储所有动画数据
     /// [CustomPrefab]:自定义文件夹
     /// WARNING: 要求“CustomPrefab1.prefab”全局唯一，不可重名
@@ -39,11 +32,10 @@ namespace AnimationInstancingModule.Runtime
             public List<Matrix4x4[]>            boneMatrix;                 // 记录动画所有帧数据, [frameIndex][boneIndex]
         }
 
-        public bool                             enableReference;
+        public bool                             enableReference;                                                    // 与其他模型公用一套动画时使用
         public bool                             forceRebuildReference;
         public AnimationInstancingGenerator     referenceTo;
         public int                              fps                         = 15;                                   // 采样帧率
-        public bool                             exposeAttachments;                                                  // 是否导入绑点信息
         public Dictionary<string, bool>         m_SelectExtraBone           = new Dictionary<string, bool>();       // 可额外导入的绑点骨骼列表
         [SerializeField] private List<string>   m_ExtraBoneNames            = new List<string>();                   // 所有绑点骨骼名称列表
         [SerializeField] private List<bool>     m_ExtraBoneSelectables      = new List<bool>();                     // 绑点骨骼的选中状态
@@ -51,10 +43,10 @@ namespace AnimationInstancingModule.Runtime
         [SerializeField] private List<string>   m_GenerateAnimNames         = new List<string>();        
         [SerializeField] private List<bool>     m_GenerateAnimSelectables   = new List<bool>();
 
-
-        private ExtraBoneInfo                   m_ExtraBoneInfo             = new ExtraBoneInfo();
+        private List<string>                    m_ExtraBone                 = new List<string>();
         private List<Matrix4x4>                 m_BindPose                  = new List<Matrix4x4>(150);
         public List<Transform>                  m_BoneTransform             = new List<Transform>();
+        private List<Transform>                 m_ExtraTransform            = new List<Transform>();
         private List<AnimationBakeInfo>         m_BakeInfo                  = new List<AnimationBakeInfo>();        // 待烘焙动画数据
         private AnimationBakeInfo               m_WorkingBakeInfo;
         private int                             m_CurWorkingBakeInfoIndex;
@@ -64,7 +56,7 @@ namespace AnimationInstancingModule.Runtime
         private int                             m_TextureBlockHeight;
         private Texture2D                       m_BakedBoneTexture;
         public bool                             isBaking;
-        private bool                            m_ExportAnimationTexture;                                           // 是否导出AnimationTexture，否则在二进制数据中
+        private bool                            m_ExportAnimationTexture    = false;                                // 是否导出AnimationTexture，否则在二进制数据中
         static public string                    s_AnimationInstancingRoot   = "Assets/AnimationInstancing/Art";
         static public string                    s_AnimationDataPath         = s_AnimationInstancingRoot + "/AnimationData";
         private List<Transform>                 m_BakedLODs;
@@ -154,43 +146,34 @@ namespace AnimationInstancingModule.Runtime
 
             m_BakedLODs = LODs;
 
-            // 获取最终的骨骼信息和绑定姿态矩阵(算上了绑点)
-            GetFinalBonePose(m_BakedLODs[0], ref m_BindPose, ref m_BoneTransform);
+            // 获取蒙皮骨骼信息和绑点矩阵
+            GetSkinnedBoneInfo(m_BakedLODs[0], ref m_BindPose, ref m_BoneTransform);
+            GetExtraBoneInfo(m_BakedLODs[0], ref m_ExtraTransform);
         }
 
         public void Bake()
         {
+            // 还原至bindpose态，好获取bindpose矩阵数据
+            // PrefabUtility.RevertPrefabInstance(gameObject, InteractionMode.AutomatedAction);
+
             Prepare();
 
             isBaking = true;
-            m_ExportAnimationTexture = true;        // 默认导出AnimationTexture
 
             if(enableReference)
             {
-                referenceTo.Prepare();
-
                 // 烘焙引用动画贴图
                 if(forceRebuildReference)
                 {
                     referenceTo.Bake();
                 }
+                else
+                {
+                    referenceTo.Prepare();
+                }
             }
             else
             {
-                // init ExtraBoneInfo base on extra bone transform
-                List<Transform> listExtra = GetExtraBoneTransform(m_BakedLODs[0]);
-                m_ExtraBoneInfo = new ExtraBoneInfo();
-                if (listExtra.Count > 0)
-                {
-                    m_ExtraBoneInfo.extraBone = new string[listExtra.Count];
-                    m_ExtraBoneInfo.extraBindPose = new Matrix4x4[listExtra.Count];
-                    for (int i = 0; i != listExtra.Count; ++i)
-                    {
-                        m_ExtraBoneInfo.extraBone[i] = listExtra[i].name;
-                        m_ExtraBoneInfo.extraBindPose[i] = m_BindPose[m_BindPose.Count - listExtra.Count + i];
-                    }
-                }
-
                 // collect m_BakeInfo
                 m_CurWorkingBakeInfoIndex = 0;
                 m_BakeInfo.Clear();
@@ -199,6 +182,13 @@ namespace AnimationInstancingModule.Runtime
                 m_WorkingBakeInfo = null;
                 AnimatorController controller = GetComponent<Animator>().runtimeAnimatorController as AnimatorController;
                 AnalyzeStateMachine(controller.layers[0].stateMachine, GetComponent<Animator>(), fps, 0);
+
+                // init ExtraBoneInfo base on extra bone transform
+                m_ExtraBone.Clear();
+                foreach(var bone in m_ExtraTransform)
+                {
+                    m_ExtraBone.Add(bone.name);
+                }
             }
         }
 
@@ -209,7 +199,7 @@ namespace AnimationInstancingModule.Runtime
                 if(forceRebuildReference)
                 {
                     if(!referenceTo.isBaking && isBaking)
-                    { // 引用对象烘焙结束
+                    { // 引用对象烘焙结束，仅引用引用对象的AnimationData，自身不生成AnimationData
                         ExportAnimInstancingPrefab(referenceTo);
                         isBaking = false;
                     }
@@ -231,8 +221,12 @@ namespace AnimationInstancingModule.Runtime
                     m_WorkingBakeInfo = m_BakeInfo[m_CurWorkingBakeInfoIndex];
 
                     m_WorkingBakeInfo.boneMatrix = new List<Matrix4x4[]>();
-                    // m_WorkingBakeInfo.animator.gameObject.transform.position = Vector3.zero;
-                    // m_WorkingBakeInfo.animator.gameObject.transform.rotation = Quaternion.identity;
+                    m_WorkingBakeInfo.info.extraBoneMatrix = new Dictionary<string, Matrix4x4[]>();
+                    foreach(var boneName in m_ExtraBone)
+                    {
+                        m_WorkingBakeInfo.info.extraBoneMatrix.Add(boneName, new Matrix4x4[m_WorkingBakeInfo.info.totalFrame]);                        
+                    }
+
                     m_WorkingBakeInfo.animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
                     m_WorkingBakeInfo.animator.gameObject.SetActive(true);
                     m_WorkingBakeInfo.animator.Update(0);       // 不然会报warning：Animator does not have an AnimatorController
@@ -244,8 +238,9 @@ namespace AnimationInstancingModule.Runtime
                 if (m_WorkingBakeInfo == null)
                     return;
 
-                // 计算每帧的蒙皮矩阵
-                GenerateBoneMatrix(m_WorkingBakeInfo, m_BoneTransform, m_BindPose);
+                // 计算每帧的蒙皮矩阵和绑点矩阵
+                GenerateSkinnedBoneMatrix(m_WorkingBakeInfo, m_BoneTransform, m_BindPose);
+                GenerateExtraBoneMatrix(m_WorkingBakeInfo, m_ExtraTransform);
 
                 if (++m_WorkingBakeInfo.workingFrame >= m_WorkingBakeInfo.info.totalFrame)
                 {
@@ -264,7 +259,7 @@ namespace AnimationInstancingModule.Runtime
 
                         SaveAnimationInfo();
                         ExportAnimDataPrefab();
-                        ExportAnimInstancingPrefab(this);
+                        ExportAnimInstancingPrefab(null);
                         isBaking = false;
                     }
 
@@ -277,29 +272,32 @@ namespace AnimationInstancingModule.Runtime
         }
 
         // get the bindPose & boneTransform base on attached points
-        public void GetFinalBonePose(Transform lod, ref List<Matrix4x4> bindPose, ref List<Transform> boneTransform)
+        public void GetSkinnedBoneInfo(Transform lod, ref List<Matrix4x4> bindPose, ref List<Transform> boneTransform)
         {
             SkinnedMeshRenderer[] meshRender = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
             AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(meshRender, ref bindPose, ref boneTransform);
-            if(exposeAttachments)
-            { // 如果有挂点数据，则添加至bindPose和boneTransform
-                List<Transform> listExtra = GetExtraBoneTransform(lod);
-                foreach(var tran in listExtra)
-                {
-                    bindPose.Add(tran.localToWorldMatrix);
-                }
 
-                Transform[] totalTransform = new Transform[boneTransform.Count + listExtra.Count];
-                System.Array.Copy(boneTransform.ToArray(), totalTransform, boneTransform.Count);
-                System.Array.Copy(listExtra.ToArray(), 0, totalTransform, boneTransform.Count, listExtra.Count);
-                boneTransform = totalTransform.ToList();
-            }
+            // 绑点信息不存储至animation texture，暂注释
+            // if(exposeAttachments)
+            // { // 如果有挂点数据，则添加至bindPose和boneTransform
+            //     List<Transform> listExtra = GetExtraBoneTransform(lod);
+            //     foreach(var tran in listExtra)
+            //     {
+            //         bindPose.Add(tran.localToWorldMatrix);
+            //     }
+
+            //     Transform[] totalTransform = new Transform[boneTransform.Count + listExtra.Count];
+            //     System.Array.Copy(boneTransform.ToArray(), totalTransform, boneTransform.Count);
+            //     System.Array.Copy(listExtra.ToArray(), 0, totalTransform, boneTransform.Count, listExtra.Count);
+            //     boneTransform = totalTransform.ToList();
+            // }
         }
 
         // extra bone transform
-        private List<Transform> GetExtraBoneTransform(Transform lod)
+        private void GetExtraBoneInfo(Transform lod, ref List<Transform> boneTransform)
         {
-            List<Transform> listExtra = new List<Transform>();
+            boneTransform.Clear();
+
             Transform[] trans = lod.GetComponentsInChildren<Transform>();
             foreach (var obj in m_SelectExtraBone)
             {
@@ -311,11 +309,10 @@ namespace AnimationInstancingModule.Runtime
                     Transform tran = trans[i] as Transform;
                     if (tran.name == obj.Key)
                     {
-                        listExtra.Add(trans[i]);
+                        boneTransform.Add(trans[i]);
                     }
                 }
             }
-            return listExtra;
         }
 
         private void AnalyzeStateMachine(AnimatorStateMachine stateMachine, Animator animator, int bakeFPS, int startFrameIndex)
@@ -384,46 +381,19 @@ namespace AnimationInstancingModule.Runtime
         }
 
         // 计算动画当前时间的蒙皮矩阵数据
-        private void GenerateBoneMatrix(AnimationBakeInfo bakeInfo, List<Transform> boneTransform, List<Matrix4x4> bindPose)
+        private void GenerateSkinnedBoneMatrix(AnimationBakeInfo bakeInfo, List<Transform> boneTransform, List<Matrix4x4> bindPose)
         {
-            UnityEngine.Profiling.Profiler.BeginSample("CalculateSkinMatrix()");
-            {
-                // GenerateObjectInfo matrixData = generateObjectInfo[m_CurrentDataIndex++];
-                // // matrixData.nameCode = nameCode;
-                // matrixData.aniNameHash = aniNameHash;
-                // matrixData.animationTime = animationTime;
-                // matrixData.frameIndex = -1;
-
-                // UnityEngine.Profiling.Profiler.BeginSample("AddBoneMatrix:update the matrix");
-                // {
-                //     if (!m_GenerateMatrixDataPool.ContainsKey(aniNameHash))
-                //     {
-                //         m_GenerateMatrixDataPool[aniNameHash] = new List<GenerateObjectInfo>();
-                //     }
-                //     matrixData.boneMatrix = CalculateSkinMatrix(boneTransform, bindPose);
-                //     // GenerateObjectInfo data = new GenerateObjectInfo();
-                //     // CopyMatrixData(data, matrixData);
-                //     m_GenerateMatrixDataPool[aniNameHash].Add(matrixData);
-                // }
-                // UnityEngine.Profiling.Profiler.EndSample();
-
-                bakeInfo.boneMatrix.Add(CalculateSkinMatrix(boneTransform, bindPose));
-            }
-            UnityEngine.Profiling.Profiler.EndSample();
-        }
-
-        private Matrix4x4[] CalculateSkinMatrix(List<Transform> bonePose, List<Matrix4x4> bindPose)
-        {
-            if (bonePose.Count == 0)
-                return null;
-
-            Transform root = bonePose[0];
+            Transform root = boneTransform[0];
             while (root.parent != null)
             {
                 root = root.parent;
             }
-            Matrix4x4 rootMat = root.worldToLocalMatrix;
 
+            bakeInfo.boneMatrix.Add(CalculateSkinMatrix(root, boneTransform, bindPose));
+        }
+
+        private Matrix4x4[] CalculateSkinMatrix(Transform root, List<Transform> boneTransform, List<Matrix4x4> bindPose)
+        {
             // bindPose：模型空间到骨骼空间，The bind pose is the inverse of the transformation matrix of the bone, when the bone is in the bind pose
             // bindPoses[1] * Vmesh= bones[1].worldToLocalMatrix * transform.localToWorldMatrix * Vmesh;
             //      bones[1].worldToLocalMatrix: 世界坐标空间到骨骼的局部坐标空间
@@ -431,12 +401,37 @@ namespace AnimationInstancingModule.Runtime
             //      Vmesh：模型空间顶点
             //      见https://docs.unity3d.com/ScriptReference/Mesh-bindposes.html
             // bonePose.localToWorldMatrix：骨骼空间到模型空间
-            Matrix4x4[] matrix = new Matrix4x4[bonePose.Count];
-            for (int i = 0; i != bonePose.Count; ++i)
+            Matrix4x4[] matrix = new Matrix4x4[boneTransform.Count];
+            for (int i = 0; i != boneTransform.Count; ++i)
             {
-                matrix[i] = rootMat * bonePose[i].localToWorldMatrix * bindPose[i];
+                matrix[i] = root.worldToLocalMatrix * boneTransform[i].localToWorldMatrix * bindPose[i];
             }
             return matrix;
+        }
+
+        private void GenerateExtraBoneMatrix(AnimationBakeInfo bakeInfo, List<Transform> boneTransform)
+        {
+            if(m_ExtraBone.Count == 0)
+                return;
+
+            Transform root = boneTransform[0];
+            while (root.parent != null)
+            {
+                root = root.parent;
+            }
+
+            foreach(var boneName in m_ExtraBone)
+            {
+                int index = boneTransform.FindIndex(item => item.name == boneName);
+                Debug.Assert(index != -1);
+
+                bakeInfo.info.extraBoneMatrix[boneName][bakeInfo.workingFrame] = CalculateExtraMatrix(root, boneTransform[index]);
+            }
+        }
+
+        private Matrix4x4 CalculateExtraMatrix(Transform root, Transform boneTransform)
+        {
+            return root.worldToLocalMatrix * boneTransform.localToWorldMatrix;
         }
 
         private Color[] Convert2Color(Matrix4x4[] boneMatrix)
@@ -461,6 +456,37 @@ namespace AnimationInstancingModule.Runtime
         
         // 计算动画数据占用的贴图大小
         // 每根骨骼4个像素（一个像素记录4个值，4个像素一个矩阵），一个block记录一帧所有的骨骼数据
+        // public void CalculateTextureSize(List<int> frames, List<Transform> boneTransform, out int textureWidth, out int textureHeight)
+        // {
+        //     m_TextureBlockWidth = 4;
+        //     m_TextureBlockHeight = boneTransform.Count;
+
+        //     int pixels = boneTransform.Count * frames.Sum() * m_TextureBlockWidth;             // 总像素数
+        //     int side = Mathf.Max(Mathf.CeilToInt(Mathf.Sqrt(pixels)), m_TextureBlockHeight);
+
+        //     int width = Mathf.NextPowerOfTwo(side);
+        //     int xBlockNum = width / m_TextureBlockWidth;
+        //     int yBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / xBlockNum);
+        //     int height = Mathf.NextPowerOfTwo(yBlockNum * m_TextureBlockHeight);
+
+        //     textureWidth = width;
+        //     textureHeight = height;
+
+        //     int width2 = Mathf.ClosestPowerOfTwo(side);
+        //     if(width != width2)
+        //     {
+        //         xBlockNum = width2 / m_TextureBlockWidth;
+        //         yBlockNum = Mathf.CeilToInt(1.0f * frames.Sum() / xBlockNum);
+        //         int height2 = Mathf.NextPowerOfTwo(yBlockNum * m_TextureBlockHeight);
+        //         if(width2 * height2 < width * height)
+        //         {
+        //             textureWidth = width2;
+        //             textureHeight = height2;
+        //         }
+        //     }
+        //     Debug.Assert(textureWidth * textureHeight >= pixels);
+        // }
+
         public void CalculateTextureSize(List<int> frames, List<Transform> boneTransform, out int textureWidth, out int textureHeight)
         {
             m_TextureBlockWidth = 4;
@@ -567,39 +593,51 @@ namespace AnimationInstancingModule.Runtime
                         writer.Write(evt.time);
                         writer.Write(evt.objectParameter);
                     }
-                }
 
-                writer.Write(exposeAttachments);
-                if(exposeAttachments)
-                {
-                    writer.Write(m_ExtraBoneInfo.extraBone != null ? m_ExtraBoneInfo.extraBone.Length : 0);
-                    if(m_ExtraBoneInfo.extraBone != null)
+                    writer.Write(info.extraBoneMatrix.Count);
+                    foreach(var extra in info.extraBoneMatrix)
                     {
-                        for (int i = 0; i != m_ExtraBoneInfo.extraBone.Length; ++i)
+                        writer.Write(extra.Key);
+                        writer.Write(extra.Value.Length);                       // 矩阵数量
+
+                        Matrix4x4[] matrixs = extra.Value;
+                        Debug.Assert(matrixs.Length == info.totalFrame);        // 矩阵数量应等于此动画的帧数                        
+                        foreach(var matrix in matrixs)
                         {
-                            writer.Write(m_ExtraBoneInfo.extraBone[i]);
-                        }
-                        for (int i = 0; i != m_ExtraBoneInfo.extraBindPose.Length; ++i)
-                        {
-                            for (int j = 0; j != 16; ++j)
-                            {
-                                writer.Write(m_ExtraBoneInfo.extraBindPose[i][j]);
-                            }
-                        }
+                            writer.Write(matrix[0, 0]);
+                            writer.Write(matrix[0, 1]);
+                            writer.Write(matrix[0, 2]);
+                            writer.Write(matrix[0, 3]);
+                            writer.Write(matrix[1, 0]);
+                            writer.Write(matrix[1, 1]);
+                            writer.Write(matrix[1, 2]);
+                            writer.Write(matrix[1, 3]);
+                            writer.Write(matrix[2, 0]);
+                            writer.Write(matrix[2, 1]);
+                            writer.Write(matrix[2, 2]);
+                            writer.Write(matrix[2, 3]);
+                            writer.Write(matrix[3, 0]);
+                            writer.Write(matrix[3, 1]);
+                            writer.Write(matrix[3, 2]);
+                            writer.Write(matrix[3, 3]);                          
+                        }                        
                     }
                 }
 
                 // write boneTexture
                 writer.Write(m_TextureBlockWidth);
                 writer.Write(m_TextureBlockHeight);
-                if(!m_ExportAnimationTexture)
-                {
-                    byte[] bytes = m_BakedBoneTexture.GetRawTextureData();
-                    writer.Write(m_BakedBoneTexture.width);
-                    writer.Write(m_BakedBoneTexture.height);
-                    writer.Write(bytes.Length);
-                    writer.Write(bytes);
-                }
+            }
+
+            string animTextureRawDataFilename = GetAnimationTextureRawDataFilename();
+            using(FileStream fs = File.Open(animTextureRawDataFilename, FileMode.Create, FileAccess.Write))
+            {
+                BinaryWriter writer = new BinaryWriter(fs);
+                byte[] bytes = m_BakedBoneTexture.GetRawTextureData();
+                writer.Write(m_BakedBoneTexture.width);
+                writer.Write(m_BakedBoneTexture.height);
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
             }
             
             if(m_ExportAnimationTexture)
@@ -624,7 +662,7 @@ namespace AnimationInstancingModule.Runtime
             
             // add SoftObject component
             SoftObject texSoftObject = animDataPrefab.AddComponent<SoftObject>();
-            texSoftObject.assetPath = GetAnimationTextureFilename().ToLower();
+            texSoftObject.assetPath = GetAnimationTextureRawDataFilename().ToLower();
             animData.animTexSoftObject = texSoftObject;
 
             // save Prefab
@@ -634,21 +672,23 @@ namespace AnimationInstancingModule.Runtime
             Debug.Log($"export animation data prefab: {GetAnimationDataPrefabFilename()}");
         }
 
-        private void ExportAnimInstancingPrefab(AnimationInstancingGenerator generator)
+        private void ExportAnimInstancingPrefab(AnimationInstancingGenerator reference)
         {
-            // 保存root/[Custom]/[Custom].prefab
-            // step1. 实例化对象，提取mesh
-            GameObject inst = Instantiate(gameObject);            
+            // 导出资源：mesh, material, texture
+            int lodLevel = 0;
             foreach(var lod in m_BakedLODs)
             {
                 SkinnedMeshRenderer[] smrs = lod.GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (var smr in smrs)
-                { // extract mesh
-                    AssetDatabase.CreateAsset(UnityEngine.Object.Instantiate(smr.sharedMesh), GetMeshFilename(smr));
+                {
+                    ExtractInternalAssets(lod, smr, lodLevel);
                 }
+                ++lodLevel;
             }
-
-            // step2. 删除所有子节点和根节点上多余组件
+            
+            // 实例化对象，删除所有子节点和根节点上多余组件
+            GameObject inst = Instantiate(gameObject);
+            inst.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
             int count = inst.transform.childCount;
             for(int i = count - 1; i >= 0; --i)
             {
@@ -663,15 +703,17 @@ namespace AnimationInstancingModule.Runtime
                 DestroyImmediate(comp);
             }
 
-            // step3. 添加AnimationInstancing，记录RendererCache
-            GameObject animDataAsset = AssetDatabase.LoadAssetAtPath<GameObject>(generator.GetAnimationDataPrefabFilename());
-            Debug.Assert(animDataAsset != null);
+            // 添加AnimationInstancing，记录RendererCache
             AnimationInstancing animInst = inst.AddComponent<AnimationInstancing>();
+
+            // setup
+            GameObject animDataAsset = AssetDatabase.LoadAssetAtPath<GameObject>(reference?.GetAnimationDataPrefabFilename() ?? GetAnimationDataPrefabFilename());
+            Debug.Assert(animDataAsset != null);
             animInst.prototype = animDataAsset.GetComponent<AnimationData>();
             animInst.radius = CalcBoundingSphere();
             animInst.lodDistance[0] = 50;
             animInst.lodDistance[1] = 250;
-            int lodLevel = 0;
+            lodLevel = 0;
             foreach(var lod in m_BakedLODs)
             {
                 LODInfo info = new LODInfo();                
@@ -679,11 +721,19 @@ namespace AnimationInstancingModule.Runtime
                 foreach(var smr in smrs)
                 {
                     RendererCache cache = new RendererCache();
-                    cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(smr));
-                    cache.materials = smr.sharedMaterials;
+                    cache.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(GetMeshFilename(gameObject, smr));
+                    cache.materials = new Material[smr.sharedMaterials.Length];
+                    for(int i = 0; i < smr.sharedMaterials.Length; ++i)
+                    {
+                        Material mat = smr.sharedMaterials[i];
+                        if( mat == null)
+                            continue;
+
+                        string newMatFilename = GetMaterialFilename(mat.name).ToLower();
+                        cache.materials[i] = AssetDatabase.LoadAssetAtPath<Material>(newMatFilename);
+                    }
+
                     cache.bonePerVertex = lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1);
-                    // cache.weights = GetBoneWeights(cache.mesh, cache.bonePerVertex);
-                    cache.boneIndices = GetBoneIndices(cache.mesh, smr, generator.m_BoneTransform);
                     info.rendererCacheList.Add(cache);
                 }
                 info.lodLevel = lodLevel++;
@@ -695,46 +745,88 @@ namespace AnimationInstancingModule.Runtime
             DestroyImmediate(inst);
             AssetDatabase.Refresh();
 
+            // 把实例还原至original prefab
+            // PrefabUtility.RevertPrefabInstance(gameObject, InteractionMode.AutomatedAction);
+
+
             Debug.Log($"export animation instancing prefab: {GetAnimationInstancingPrefabFilename()}");
         }
 
-        private Vector4[] GetBoneWeights(Mesh mesh, int bonePerVertex)
+        private void ExtractInternalAssets(Transform lod, SkinnedMeshRenderer smr, int lodLevel)
         {
-            Vector4[] weights = new Vector4[mesh.vertexCount];
+            // method 1. extract mesh
+            Mesh meshInst = UnityEngine.Object.Instantiate(smr.sharedMesh);
+            meshInst.colors = GetBoneWeights(meshInst, lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1));
+            meshInst.SetUVs(2, GetBoneIndices(meshInst, smr, m_BoneTransform));
+            meshInst.UploadMeshData(true);      // isReadable = false
+            AssetDatabase.CreateAsset(meshInst, GetMeshFilename(gameObject, smr));
+
+            // extract material and texture
+            foreach(var mat in smr.sharedMaterials)
+            {
+                if(mat == null)
+                    continue;
+
+                // create new material
+                string newMatFilename = GetMaterialFilename(mat.name).ToLower();
+                Material newMat = UnityEngine.Object.Instantiate(mat) as Material;
+                newMat.shader = Shader.Find("ZGame/URP/Standard-Instancing");
+                newMat.enableInstancing = true;
+
+                string[] names = mat.GetTexturePropertyNames();
+                for(int i = 0; i < names.Length; ++i)
+                {
+                    Texture tex = mat.GetTexture(names[i]);
+                    if(tex == null)
+                        continue;
+
+                    string newTexFilename = GetTextureFilename(tex).ToLower();
+                    System.IO.File.Copy(AssetDatabase.GetAssetPath(tex), newTexFilename, true);
+                    AssetDatabase.ImportAsset(newTexFilename);
+                    
+                    newMat.SetTexture(names[i], AssetDatabase.LoadAssetAtPath<Texture>(newTexFilename));
+                }
+                AssetDatabase.CreateAsset(newMat, newMatFilename);
+            }
+        }
+
+        private Color[] GetBoneWeights(Mesh mesh, int bonePerVertex)
+        {
+            Color[] weights = new Color[mesh.vertexCount];
             BoneWeight[] boneWeights = mesh.boneWeights;
             for(int i = 0; i < mesh.vertexCount; ++i)
             {
-                weights[i].x = boneWeights[i].weight0;
-                weights[i].y = boneWeights[i].weight1;
-                weights[i].z = boneWeights[i].weight2;
-                weights[i].w = boneWeights[i].weight3;
+                weights[i].r = boneWeights[i].weight0;
+                weights[i].g = boneWeights[i].weight1;
+                weights[i].b = boneWeights[i].weight2;
+                weights[i].a = boneWeights[i].weight3;
 
                 switch (bonePerVertex)
                 {
                     case 3:
                         {
-                            float scale = 1.0f / (weights[i].x + weights[i].y + weights[i].z);
-                            weights[i].x = weights[i].x * scale;
-                            weights[i].y = weights[i].y * scale;
-                            weights[i].z = weights[i].z * scale;
-                            weights[i].w = -0.1f;
+                            float scale = 1.0f / (weights[i].r + weights[i].g + weights[i].b);
+                            weights[i].r = weights[i].r * scale;
+                            weights[i].g = weights[i].g * scale;
+                            weights[i].b = weights[i].b * scale;
+                            weights[i].a = -0.1f;
                         }
                         break;
                     case 2:
                         {
-                            float scale = 1.0f / (weights[i].x + weights[i].y);
-                            weights[i].x = weights[i].x * scale;
-                            weights[i].y = weights[i].y * scale;
-                            weights[i].z = -0.1f;
-                            weights[i].w = -0.1f;
+                            float scale = 1.0f / (weights[i].r + weights[i].g);
+                            weights[i].r = weights[i].r * scale;
+                            weights[i].g = weights[i].g * scale;
+                            weights[i].b = -0.1f;
+                            weights[i].a = -0.1f;
                         }
                         break;
                     case 1:
                         {
-                            weights[i].x = 1.0f;
-                            weights[i].y = -0.1f;
-                            weights[i].z = -0.1f;
-                            weights[i].w = -0.1f;
+                            weights[i].r = 1.0f;
+                            weights[i].g = -0.1f;
+                            weights[i].b = -0.1f;
+                            weights[i].a = -0.1f;
                         }
                         break;
                 }
@@ -783,17 +875,29 @@ namespace AnimationInstancingModule.Runtime
         // root/[CustomPrefab1]
         private string GetExportedPath()
         {
-            string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(m_BakedLODs[0].gameObject));
+            string path = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromOriginalSource(gameObject));
             path = path.Substring(0, path.LastIndexOf("/"));
             return path.Substring(0, path.LastIndexOf("/"));
         }
         
         // prefab name + lod level + mesh name
-        private string GetMeshFilename(SkinnedMeshRenderer smr)
+        private string GetMeshFilename(GameObject root, SkinnedMeshRenderer smr)
         {
-            string prefix = string.Format($"{smr.transform.parent.parent.gameObject.name}_{smr.transform.parent.gameObject.name}");
+            string prefix = string.Format($"{root.name}_{smr.transform.parent.gameObject.name}");
 
             return string.Format($"{GetExportedPath()}/{prefix.ToLower()}_{smr.sharedMesh.name.ToLower()}.asset");
+        }
+
+        private string GetMaterialFilename(string matName)
+        {
+            return string.Format($"{GetExportedPath()}/{matName}.mat");
+        }
+
+        private string GetTextureFilename(Texture tex)
+        {
+            string assetPath = AssetDatabase.GetAssetPath(tex);
+            string filename = Path.GetFileName(assetPath);
+            return string.Format($"{GetExportedPath()}/{filename}");
         }
 
         private string GetAnimationInstancingPrefabFilename()
@@ -804,6 +908,11 @@ namespace AnimationInstancingModule.Runtime
         private string GetManifestFilename()
         {
             return s_AnimationDataPath + "/" + gameObject.name.ToLower() + ".bytes";
+        }
+
+        private string GetAnimationTextureRawDataFilename()
+        {
+            return s_AnimationDataPath + "/" + gameObject.name.ToLower() + "_animtexture" + ".bytes";
         }
 
         private string GetAnimationTextureFilename()

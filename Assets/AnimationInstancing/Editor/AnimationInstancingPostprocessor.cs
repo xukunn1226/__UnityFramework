@@ -9,6 +9,7 @@ namespace AnimationInstancingModule.Editor
 {
     public class AnimationTexturePostprocessor : AssetPostprocessor
     {
+        // 模型强制打开isReadable
         void OnPreprocessModel()
         {
             if(UnityEngine.Application.isBatchMode)
@@ -19,7 +20,7 @@ namespace AnimationInstancingModule.Editor
                 return;
 
             ModelImporter mi = assetImporter as ModelImporter;
-            mi.isReadable = true;
+            mi.isReadable = true;       // isReadable强制打开，需要填充数据（color，uv2）
         }
 
         void OnPreprocessTexture()
@@ -27,24 +28,27 @@ namespace AnimationInstancingModule.Editor
             if(UnityEngine.Application.isBatchMode)
                 return;
 
-            string path = assetPath.Substring(0, AnimationInstancingGenerator.s_AnimationDataPath.Length);
-            if(string.Compare(path, AnimationInstancingGenerator.s_AnimationDataPath, true) != 0)
+            string path = assetPath.Substring(0, AnimationInstancingGenerator.s_AnimationInstancingRoot.Length);
+            if(string.Compare(path, AnimationInstancingGenerator.s_AnimationInstancingRoot, true) != 0)
                 return;
             
             TextureImporter ti = assetImporter as TextureImporter;
+            bool hasAlpha = ti.DoesSourceTextureHaveAlpha();
+            bool isNormalmap = Path.GetFileNameWithoutExtension(assetPath).EndsWith("_n", true, System.Globalization.CultureInfo.CurrentCulture);            
+
             // 设置平台无关属性
             TextureImporterSettings importerSettings = new TextureImporterSettings();
             ti.ReadTextureSettings(importerSettings);
             {
-                importerSettings.textureType = TextureImporterType.Default;
+                importerSettings.textureType = isNormalmap ? TextureImporterType.NormalMap : TextureImporterType.Default;
                 importerSettings.textureShape = TextureImporterShape.Texture2D;
                 importerSettings.alphaSource = TextureImporterAlphaSource.FromInput;
-                importerSettings.sRGBTexture = false;
+                importerSettings.sRGBTexture = !isNormalmap;
                 importerSettings.npotScale = TextureImporterNPOTScale.None;
-                importerSettings.readable = true;
+                importerSettings.readable = false;
                 importerSettings.streamingMipmaps = false;
                 importerSettings.mipmapEnabled = false;
-                importerSettings.filterMode = FilterMode.Point;
+                importerSettings.filterMode = FilterMode.Bilinear;
             }
             ti.SetTextureSettings(importerSettings);
 
@@ -54,7 +58,14 @@ namespace AnimationInstancingModule.Editor
                 standalone_platformSetting.overridden = true;
                 standalone_platformSetting.allowsAlphaSplitting = false;
                 standalone_platformSetting.compressionQuality = 50;
-                standalone_platformSetting.format = TextureImporterFormat.RGBAHalf;
+                if(isNormalmap)
+                {
+                    standalone_platformSetting.format = TextureImporterFormat.DXT5;
+                }
+                else
+                {
+                    standalone_platformSetting.format = hasAlpha ? TextureImporterFormat.DXT5 : TextureImporterFormat.DXT1;
+                }
             }
             ti.SetPlatformTextureSettings(standalone_platformSetting);
 
@@ -64,7 +75,7 @@ namespace AnimationInstancingModule.Editor
                 android_platformSetting.overridden = true;
                 android_platformSetting.allowsAlphaSplitting = false;
                 android_platformSetting.compressionQuality = 50;
-                android_platformSetting.format = TextureImporterFormat.RGBAHalf;
+                android_platformSetting.format = isNormalmap ? TextureImporterFormat.ASTC_6x6 : TextureImporterFormat.ASTC_8x8;
             }
             ti.SetPlatformTextureSettings(android_platformSetting);
 
@@ -74,7 +85,7 @@ namespace AnimationInstancingModule.Editor
                 ios_platformSetting.overridden = true;
                 ios_platformSetting.allowsAlphaSplitting = false;
                 ios_platformSetting.compressionQuality = 50;
-                ios_platformSetting.format = TextureImporterFormat.RGBAHalf;
+                ios_platformSetting.format = isNormalmap ? TextureImporterFormat.ASTC_6x6 : TextureImporterFormat.ASTC_8x8;
             }
             ti.SetPlatformTextureSettings(ios_platformSetting);
         }

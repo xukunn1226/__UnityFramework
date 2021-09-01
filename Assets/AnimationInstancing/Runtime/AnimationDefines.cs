@@ -9,12 +9,20 @@ namespace AnimationInstancingModule.Runtime
     public class AnimationInfo
     {
         public string               name;
-        public int                  nameHash;               // 非序列化数据，在烘焙时记录AnimationState.nameHash，运行时记录AnimationInfo.name.GetHashCode
+        public int                  nameHash;                           // 非序列化数据，在烘焙时记录AnimationState.nameHash，运行时记录AnimationInfo.name.GetHashCode
         public int                  totalFrame;
         public int                  fps;
-        public int                  startFrameIndex;        // 在整个AnimationTexture中的起始帧序号
+        public int                  startFrameIndex;                    // 在整个AnimationTexture中的起始帧序号
         public WrapMode             wrapMode;
         public List<AnimationEvent> eventList;
+        public Dictionary<string, Matrix4x4[]>    extraBoneMatrix;      // length = count of extra bone; Matrix4x4's length == totalFrame
+    }
+
+    // 记录挂点骨骼在所有动画序列中的矩阵数据
+    public class ExtraBoneInfo
+    {
+        public string               boneName;
+        public List<Matrix4x4[]>    boneMatrix;                         // [animationInfo index][animation frame index]
     }
 
     public class AnimationEvent
@@ -27,10 +35,88 @@ namespace AnimationInstancingModule.Runtime
         public float                time;
     }
 
-    public class ExtraBoneInfo
+    // 能被挂载到AnimationInstancing对象上的物体，需要继承此接口
+    public interface IAttachmentToInstancing
     {
-        public string[]             extraBone;
-        public Matrix4x4[]          extraBindPose;
+        string                  name            { get; set; }
+        AnimationInstancing     owner           { get; set; }
+        string                  extraBoneName   { get; set; }
+        void SetParent(Transform parent);
+        void SetPosition(Vector3 pos);
+        void SetRotation(Quaternion rot);
+        void Detach();
+        void Attach(AnimationInstancing owner, string extraBoneName);
+    }
+
+    public class AttachmentInfo
+    {
+        static public int                   s_MaxCountAttachment    = 3;                                        // 性能考虑，一个挂点最多挂载一定数量的对象
+        public string                       boneName;
+        public IAttachmentToInstancing[]    attachments             = new IAttachmentToInstancing[s_MaxCountAttachment];
+        public int                          count                   { get; private set; }                       // 有效挂载对象的数量
+        public ExtraBoneInfo                extraBoneInfo;
+        
+        private int FindValidIndex(IAttachmentToInstancing attachment)
+        {
+#if UNITY_EDITOR
+            for(int i = 0; i < attachments.Length; ++i)
+            {
+                if(attachments[i] != null && attachments[i] == attachment)
+                {
+                    Debug.LogError($"duplicated attachment: {attachment.name}");
+                    return -1;
+                }
+            }
+#endif
+            for(int i = 0; i < s_MaxCountAttachment; ++i)
+            {
+                if(attachments[i] == null)
+                    return i;
+            }
+            Debug.LogError($"too much more attachments, more than {s_MaxCountAttachment}");
+            return -1;
+        }
+
+        private int FindIndex(IAttachmentToInstancing attachment)
+        {
+            for(int i = 0; i < s_MaxCountAttachment; ++i)
+            {
+                if(attachments[i] != null && attachments[i] == attachment)
+                    return i;
+            }
+            return -1;
+        }
+
+        public int AddAttachment(IAttachmentToInstancing attachment)
+        {
+            int index = FindValidIndex(attachment);
+            Debug.Assert(index != -1);
+            if(index != -1)
+            {
+                attachments[index] = attachment;
+                ++count;
+                return index;
+            }
+            return -1;
+        }
+
+        public void RemoveAttachment(IAttachmentToInstancing attachment)
+        {
+            int index = FindIndex(attachment);
+            if(index == -1)
+            {
+                Debug.LogError($"failed to remove attachment, because can't find {attachment.name}");
+                return;
+            }
+            RemoveAttachment(index);
+        }
+
+        public void RemoveAttachment(int index)
+        {
+            Debug.Assert(index >= 0 && index < s_MaxCountAttachment && attachments[index] != null);
+            attachments[index] = null;
+            --count;
+        }
     }
 
     public class ComparerHash : IComparer<AnimationInfo>
@@ -54,8 +140,6 @@ namespace AnimationInstancingModule.Runtime
         public Mesh                             mesh;
         public Material[]                       materials;              // materials.Length == mesh.subMeshCount        
         public int                              bonePerVertex   = 4;    // 每顶点受多少骨骼影响
-        public Vector4[]                        boneIndices;            // 顶点受哪些骨骼影响，length == mesh.vertexCount 【需要用到render.bones，所以必须预计算序列化】
-        // [NonSerialized] public Vector4[]        weights;                // 顶点受4根骨骼影响的权重因子，length == mesh.vertexCount 【数据量较大，运行时计算优于序列化】
         [NonSerialized] public VertexCache      vertexCache;
         [NonSerialized] public MaterialBlock    materialBlock;
         [NonSerialized] public bool             isUsed;
@@ -66,8 +150,6 @@ namespace AnimationInstancingModule.Runtime
         public int                              nameHash;               // mesh name's hash
         public Mesh                             mesh;
         public Dictionary<int, MaterialBlock>   matBlockList            = new Dictionary<int, MaterialBlock>();      // 同一个mesh可能搭配不同材质使用  key: materials' hash code
-        public Vector4[]                        weights;                // weight.Length == mesh.vertexCount
-        public Vector4[]                        boneIndices;            // boneIndex.Length == mesh.vertexCount
         public int                              blockWidth;
         public int                              blockHeight;
         public ShadowCastingMode                shadowCastingMode;
@@ -87,7 +169,7 @@ namespace AnimationInstancingModule.Runtime
         public int                              subMeshCount;
         public Material[]                       materials;
         public MaterialPropertyBlock[]          propertyBlocks;         // length == materials.length
-        public int                              instancingCount;
+        public int                              instancingCount;        // 总的实例化数量值
         public List<InstancingPackage>          packageList;
         public int                              refCount;               // 
         public bool                             isInitMaterial;         // 是否

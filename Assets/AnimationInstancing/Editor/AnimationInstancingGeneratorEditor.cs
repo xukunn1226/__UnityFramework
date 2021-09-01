@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using AnimationInstancingModule.Runtime;
 using System.Linq;
+using System.Diagnostics;
 using UnityEditor.Animations;
+using Unity.EditorCoroutines.Editor;
 
 namespace AnimationInstancingModule.Editor
 {
@@ -21,6 +23,7 @@ namespace AnimationInstancingModule.Editor
         private Vector2                         m_ScrollPosition2;
         private Dictionary<string, bool>        m_Temp              = new Dictionary<string, bool>();
         private List<Transform>                 m_LODs;
+        private bool                            m_InitExtraBone;
 
         private void OnEnable()
         {
@@ -106,27 +109,14 @@ namespace AnimationInstancingModule.Editor
 
         private void DrawAttachment()
         {
-            m_Target.exposeAttachments = EditorGUILayout.Toggle("Enable Attachments", m_Target.exposeAttachments);            
-            EditorGUI.BeginDisabledGroup(!m_Target.exposeAttachments);
+            EditorGUILayout.PrefixLabel("Extra bones");
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                // EditorGUI.BeginChangeCheck();
-
-                // GameObject fbx = EditorGUILayout.ObjectField("FBX refrenced by Prefab:", m_Target.fbx, typeof(GameObject), false) as GameObject;
-
-                // if(EditorGUI.EndChangeCheck())
-                // {
-                //     if(fbx == null)
-                //     {
-                //         m_Target.m_SelectExtraBone.Clear();
-                //     }
-                //     else if(m_Target.fbx != fbx)
-                //     {
-                //         UpdateSelectExtraBone();
-                //     }
-                //     m_Target.fbx = fbx;                    
-                //     EditorUtility.SetDirty(m_Target);
-                // }
+                if(!m_InitExtraBone)
+                {
+                    m_InitExtraBone = true;
+                    UpdateSelectExtraBone();
+                }
 
                 if (m_Target.m_SelectExtraBone.Count > 0)
                 {
@@ -145,7 +135,6 @@ namespace AnimationInstancingModule.Editor
                 }
             }
             GUILayout.EndVertical();
-            EditorGUI.EndDisabledGroup();            
         }
 
         private void RefreshAttachment()
@@ -165,12 +154,19 @@ namespace AnimationInstancingModule.Editor
             var allTrans = m_LODs[0].GetComponentsInChildren<Transform>().ToList();
             allTrans.RemoveAll(q => boneTransform.Contains(q));
 
+            Dictionary<string, bool> selectExtraBone = new Dictionary<string, bool>(m_Target.m_SelectExtraBone);
+
             m_Target.m_SelectExtraBone.Clear();
             for (int i = 0; i != allTrans.Count; ++i)
             {
-                if (m_Target.m_SelectExtraBone.ContainsKey(allTrans[i].name))
-                    continue;
-                m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
+                if (selectExtraBone.ContainsKey(allTrans[i].name))
+                {
+                    m_Target.m_SelectExtraBone.Add(allTrans[i].name, selectExtraBone[allTrans[i].name]);
+                }
+                else
+                {
+                    m_Target.m_SelectExtraBone.Add(allTrans[i].name, false);
+                }
             }
         }
 
@@ -258,7 +254,7 @@ namespace AnimationInstancingModule.Editor
             }
             
             List<Transform> boneTransform = new List<Transform>();
-            m_Target.GetFinalBonePose(m_LODs[0], ref m_BindPose, ref boneTransform);
+            m_Target.GetSkinnedBoneInfo(m_LODs[0], ref m_BindPose, ref boneTransform);
 
             int textureWidth, textureHeight;
             m_Target.CalculateTextureSize(frames, boneTransform, out textureWidth, out textureHeight);
@@ -319,6 +315,65 @@ namespace AnimationInstancingModule.Editor
                 list.AddRange(GetClipsFromStatemachine(stateMachine.stateMachines[i].stateMachine));
             }            
             return list;
+        }
+
+        static private EditorCoroutine             m_Coroutine;
+        static private Stopwatch                    m_sw;
+
+        [MenuItem("Tools/Generate All Animation Instancing")]
+        static private void GenerateAll()
+        {
+            string sceneName = "AnimationGenerator";
+            if(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().name != sceneName)
+            {
+                UnityEngine.Debug.LogError($"plz open scene {sceneName}.unity for animation instancing generation");
+                return;
+            }
+
+            m_sw = new Stopwatch();
+            m_sw.Start();
+            
+            AnimationInstancingGenerator[] generators = GameObject.FindObjectsOfType<AnimationInstancingGenerator>();
+            m_Coroutine = EditorCoroutineUtility.StartCoroutineOwnerless(InternalGenerate(generators));
+            UnityEngine.Debug.Log($"Start Animation Instancing Generation...{generators.Length}");
+        }
+
+        static IEnumerator InternalGenerate(AnimationInstancingGenerator[] generators)
+        {
+            if(generators.Length == 0)
+            {
+                StopGenerationCoroutine();
+                yield break;
+            }
+
+            int count = 0;
+            while(count < generators.Length)
+            {
+                UnityEngine.Debug.Log($"    [{count}] {generators[count].gameObject.name} is generating...");
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                Selection.activeObject = generators[count];
+                generators[count].Bake();
+                while(generators[count].isBaking)
+                    yield return null;
+
+                UnityEngine.Debug.Log($"    done...... elapsed time is {sw.ElapsedMilliseconds * 0.001f}s");
+                ++count;
+            }
+            m_sw.Stop();
+
+            StopGenerationCoroutine();
+            UnityEngine.Debug.Log($"Generate done.... total count is {generators.Length} and elasped time is {m_sw.ElapsedMilliseconds * 0.001f}s ");
+        }
+
+        static private void StopGenerationCoroutine()
+        {
+            if(m_Coroutine != null)
+            {
+                EditorCoroutineUtility.StopCoroutine(m_Coroutine);
+                m_Coroutine = null;
+            }
         }
     }
 }

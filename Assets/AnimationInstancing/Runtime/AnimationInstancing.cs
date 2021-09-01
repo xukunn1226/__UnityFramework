@@ -6,6 +6,16 @@ using UnityEngine.Rendering;
 
 namespace AnimationInstancingModule.Runtime
 {
+    /// <summary>
+    /// controller of animation instancing
+    /// feature:
+    ///     culling
+    ///     lod
+    ///     event
+    ///     cross fade
+    ///     play animation
+    ///     attachment
+    /// <summary>
     public class AnimationInstancing : MonoBehaviour
     {
         public delegate void onAnimationHandler(string aniName);
@@ -17,7 +27,7 @@ namespace AnimationInstancingModule.Runtime
 
         [SerializeField]
         private AnimationData           m_Prototype;                                    // WARNING: 资源，非实例化数据
-        public AnimationData            prototype           { private get { return m_Prototype; } set { m_Prototype = value; } }
+        public AnimationData            prototype           { get { return m_Prototype; } set { m_Prototype = value; } }
         public AnimationData            animDataInst        { get; private set; }
         public List<LODInfo>            lodInfos            = new List<LODInfo>();
 
@@ -46,7 +56,7 @@ namespace AnimationInstancingModule.Runtime
         public string                   defaultAnim;
         private int                     m_TriggerEventIndex = -1;                       // 已触发的动画事件
         private bool                    m_isAlreadyTriggerEndEvent;                     // 是否已触发动画结束回调
-        public float                    lodFrequency        { private get; set; }       = 0.5f;
+        public float                    lodFrequency        { private get; set; }       = 1.0f;
         private float                   m_LodFrequencyCount = float.MaxValue;
         public float[]                  lodDistance         = new float[2];
         private int                     m_FixedLodLevel     = -1;
@@ -54,6 +64,7 @@ namespace AnimationInstancingModule.Runtime
         public bool                     isPause             { get; set; }
         public bool                     isPlaying           { get { return m_CurAnimationIndex >= 0 && !isPause; } }
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
+        private Dictionary<string, AttachmentInfo> m_AttachmentInfo = new Dictionary<string, AttachmentInfo>();
 
         private void Awake()
         {
@@ -101,20 +112,16 @@ namespace AnimationInstancingModule.Runtime
 
         private void OnEnable()
         {
-            // visible = true;
-
             isPause = m_CachedPause;
         }
 
         private void OnDisable()
         {
-            // visible = false;
-
             m_CachedPause = isPause;
             isPause = true;
         }
 
-        public bool ShouldRender()
+        internal bool ShouldRender()
         {
             return isActiveAndEnabled && !isCulled;
         }
@@ -122,23 +129,29 @@ namespace AnimationInstancingModule.Runtime
         public delegate void OverridePropertyBlockHandler(int materialIndex, MaterialPropertyBlock block);
         public event OverridePropertyBlockHandler onOverridePropertyBlock;
 
-        public void ExecutePropertyBlock(int materialIndex, MaterialPropertyBlock block)
+        internal void ExecutePropertyBlock(int materialIndex, MaterialPropertyBlock block)
         {
             onOverridePropertyBlock?.Invoke(materialIndex, block);
         }
 
-        public void PlayAnimation(string name, float transitionDuration = 0)
+        public int NameToID(string name)
         {
-            int hash = name.GetHashCode();
-            PlayAnimation(animDataInst.FindAnimationInfoIndex(hash), transitionDuration);
+            return animDataInst.FindAnimationInfoIndex(name.GetHashCode());
         }
 
-        public void PlayAnimation(int animationIndex, float transitionDuration = 0)
+        public void PlayAnimation(string name, float transitionDuration = 0)
         {
-            if(animationIndex < 0 || animDataInst.aniInfos == null || animationIndex >= animDataInst.aniInfos.Count)
-                throw new ArgumentException($"animationIndex({animationIndex}) out of range");
+            int id = NameToID(name);
+            Debug.Assert(id != -1);
+            PlayAnimation(id, transitionDuration);
+        }
 
-            if(animationIndex == m_CurAnimationIndex && isPlaying)
+        public void PlayAnimation(int id, float transitionDuration = 0)
+        {
+            if(id < 0 || animDataInst.aniInfos == null || id >= animDataInst.aniInfos.Count)
+                throw new ArgumentException($"animationIndex({id}) out of range");
+
+            if(id == m_CurAnimationIndex && isPlaying)
                 return;
 
             // 触发当前动画的结束回调
@@ -161,7 +174,7 @@ namespace AnimationInstancingModule.Runtime
                 
                 m_PreAnimationIndex = m_CurAnimationIndex;
                 m_PreFrameIndex = Mathf.Round(m_CurFrameIndex);
-                m_CurAnimationIndex = animationIndex;
+                m_CurAnimationIndex = id;
                 m_CurFrameIndex = 0;
             }
             else
@@ -171,7 +184,7 @@ namespace AnimationInstancingModule.Runtime
 
                 m_PreAnimationIndex = -1;
                 m_PreFrameIndex = -1;
-                m_CurAnimationIndex = animationIndex;
+                m_CurAnimationIndex = id;
                 m_CurFrameIndex = 0;
             }
 
@@ -186,10 +199,10 @@ namespace AnimationInstancingModule.Runtime
             m_isAlreadyTriggerEndEvent = false;
             m_speedParameter = 1.0f;
             m_TriggerEventIndex = -1;
-            m_WrapMode = animDataInst.aniInfos[animationIndex].wrapMode;
+            m_WrapMode = animDataInst.aniInfos[id].wrapMode;
         }
 
-        public AnimationInfo GetCurrentAnimationInfo()
+        internal AnimationInfo GetCurrentAnimationInfo()
         {
             if(animDataInst.aniInfos != null && m_CurAnimationIndex >= 0 && m_CurAnimationIndex < animDataInst.aniInfos.Count)
             {
@@ -198,7 +211,7 @@ namespace AnimationInstancingModule.Runtime
             return null;
         }
 
-        public AnimationInfo GetPreAnimationInfo()
+        internal AnimationInfo GetPreAnimationInfo()
         {
             if(animDataInst.aniInfos != null && m_PreAnimationIndex >= 0 && m_PreAnimationIndex < animDataInst.aniInfos.Count)
             {
@@ -207,27 +220,27 @@ namespace AnimationInstancingModule.Runtime
             return null;
         }
 
-        public LODInfo GetCurrentLODInfo()
+        internal LODInfo GetCurrentLODInfo()
         {
             return lodInfos[lodLevel];
         }
 
         // 当前动画帧在AnimTexture的帧号
-        public float GetGlobalCurFrameIndex()
+        internal float GetGlobalCurFrameIndex()
         {
              AnimationInfo info = GetCurrentAnimationInfo();
              return info != null ? (info.startFrameIndex + m_CurFrameIndex) : -1;
         }
 
         // 上一个动画在AnimTexture的帧号
-        public float GetGlobalPreFrameIndex()
+        internal float GetGlobalPreFrameIndex()
         {
             AnimationInfo info = GetPreAnimationInfo();
             return info != null ? (info.startFrameIndex + m_PreFrameIndex) : -1;
         }
 
         private int m_LodLevel = -1;
-        public int lodLevel            
+        public int lodLevel
         { 
             get { return m_LodLevel; }
             private set
@@ -250,7 +263,7 @@ namespace AnimationInstancingModule.Runtime
                 m_FixedLodLevel = Mathf.Min(lodLevel, lodInfos.Count - 1);
         }
 
-        public void UpdateLod(Vector3 cameraPosition)
+        internal void UpdateLod(Vector3 cameraPosition)
         {
             if(m_FixedLodLevel > -1)
             {
@@ -265,9 +278,9 @@ namespace AnimationInstancingModule.Runtime
 
                 int level = 0;
                 float distSqr = (cameraPosition - worldTransform.position).sqrMagnitude;
-                if(distSqr < lodDistance[0])
+                if(distSqr < lodDistance[0] * lodDistance[0])
                     level = 0;
-                else if(distSqr < lodDistance[1])
+                else if(distSqr < lodDistance[1] * lodDistance[1])
                     level = 1;
                 else
                     level = 2;
@@ -275,9 +288,9 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
-        public void UpdateAnimation()
+        internal void UpdateAnimation()
         {
-            if(isPause || !isActiveAndEnabled || isCulled)
+            if(!isPlaying || !isActiveAndEnabled || isCulled)
             {
                 return;
             }
@@ -348,10 +361,12 @@ namespace AnimationInstancingModule.Runtime
             m_CurFrameIndex = Mathf.Clamp(m_CurFrameIndex, 0, totalFrame - 1);
 
             UpdateAnimationEvent();
+            UpdateAttachment();
         }
 
         private void UpdateAnimationEvent()
         {
+            UnityEngine.Profiling.Profiler.BeginSample("UpdateAnimationEvent()");
             AnimationInfo info = GetCurrentAnimationInfo();
             if(info == null || info.eventList.Count == 0)
                 return;
@@ -379,6 +394,165 @@ namespace AnimationInstancingModule.Runtime
                 OnAnimationEvent?.Invoke(info.name, info.eventList[i].function, info.eventList[i]);
             }
             m_TriggerEventIndex = lastEventIndex;
+            UnityEngine.Profiling.Profiler.EndSample();
+        }        
+
+        // 返回index，可用于detach，对性能更友好
+        public int Attach(string boneName, IAttachmentToInstancing attachment)
+        {
+            AttachmentInfo info;
+            if(!m_AttachmentInfo.TryGetValue(boneName, out info))
+            {
+                info = new AttachmentInfo();
+                info.boneName = boneName;
+                info.extraBoneInfo = animDataInst.GetExtraBoneInfo(boneName);
+                Debug.Assert(info.extraBoneInfo != null);
+
+                m_AttachmentInfo.Add(boneName, info);
+            }
+            
+            int index = info.AddAttachment(attachment);
+            if(index != -1)
+            {
+                attachment.SetParent(transform);
+                UpdateAttachment();                 // update immediately
+            }
+            return index;
+        }
+
+        public void Detach(string boneName, IAttachmentToInstancing attachment)
+        {
+            AttachmentInfo info;
+            if(!m_AttachmentInfo.TryGetValue(boneName, out info))
+            {
+                Debug.LogWarning($"{boneName} does not have any attachments");
+                return;
+            }
+            info.RemoveAttachment(attachment);
+            if(info.count == 0)
+            {
+                m_AttachmentInfo.Remove(boneName);
+            }
+        }
+
+        public void Detach(string boneName, int index)
+        {
+            AttachmentInfo info;
+            if(!m_AttachmentInfo.TryGetValue(boneName, out info))
+            {
+                Debug.LogWarning($"{boneName} does not have any attachments");
+                return;
+            }
+            info.RemoveAttachment(index);
+            if(info.count == 0)
+            {
+                m_AttachmentInfo.Remove(boneName);
+            }
+        }
+
+        public Vector3 GetExtraBonePosition(string boneName)
+        {
+            AnimationInfo info = GetCurrentAnimationInfo();
+            if(info == null)
+            {
+                Debug.LogWarning($"GetExtraBonePosition() failed, because of not playing    ({boneName})");
+                return Vector3.negativeInfinity;
+            }
+
+            Matrix4x4[] matrixs;
+            if(!info.extraBoneMatrix.TryGetValue(boneName, out matrixs))
+            {
+                Debug.LogWarning($"GetExtraBonePosition() failed, ({boneName}) does not export as extra bone, plz check it");
+                return Vector3.negativeInfinity;
+            }
+
+            return GetFramePosition(matrixs, m_CurFrameIndex);
+        }
+
+        public Quaternion GetExtraBoneRotation(string boneName)
+        {
+            AnimationInfo info = GetCurrentAnimationInfo();
+            if(info == null)
+            {
+                Debug.LogWarning($"GetExtraBoneRotation() failed, because of not playing    ({boneName})");
+                return Quaternion.identity;
+            }
+
+            Matrix4x4[] matrixs;
+            if(!info.extraBoneMatrix.TryGetValue(boneName, out matrixs))
+            {
+                Debug.LogWarning($"GetExtraBoneRotation() failed, ({boneName}) does not export as extra bone, plz check it");
+                return Quaternion.identity;
+            }
+            return GetFrameRotation(matrixs, m_CurFrameIndex);
+        }
+
+        public void GetExtraBonePositionAndRotation(string boneName, ref Vector3 position, ref Quaternion rotation)
+        {
+            AnimationInfo info = GetCurrentAnimationInfo();
+            if(info == null)
+            {
+                Debug.LogWarning($"GetExtraBoneRotation() failed, because of not playing    ({boneName})");
+                return;
+            }
+
+            Matrix4x4[] matrixs;
+            if(!info.extraBoneMatrix.TryGetValue(boneName, out matrixs))
+            {
+                Debug.LogWarning($"GetExtraBoneRotation() failed, ({boneName}) does not export as extra bone, plz check it");
+                return;
+            }
+
+            position = GetFramePosition(matrixs, m_CurFrameIndex);
+            rotation = GetFrameRotation(matrixs, m_CurFrameIndex);
+        }
+
+        private void UpdateAttachment()
+        {
+            UnityEngine.Profiling.Profiler.BeginSample("UpdateAttachment()");
+            foreach(var item in m_AttachmentInfo)
+            {
+                string boneName = item.Key;
+                AttachmentInfo info = item.Value;
+                for(int i = 0; i < AttachmentInfo.s_MaxCountAttachment; ++i)
+                {
+                    if(info.attachments[i] == null)
+                        continue;
+
+                    Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
+                                                                                         m_CurFrameIndex);
+                    info.attachments[i].SetPosition(worldMatrix.MultiplyPoint3x4(Vector3.zero));
+                    info.attachments[i].SetRotation(worldMatrix.rotation);
+                }
+            }
+            UnityEngine.Profiling.Profiler.EndSample();
+        }
+
+        private Matrix4x4 GetFrameMatrix(Matrix4x4[] matrixs, float frameIndex)
+        {
+            Quaternion rot = GetFrameRotation(matrixs, frameIndex);
+            Vector3 pos = GetFramePosition(matrixs, frameIndex);
+            return Matrix4x4.TRS(pos, rot, Vector3.one);
+        }
+
+        private Vector3 GetFramePosition(Matrix4x4[] matrixs, float frameIndex)
+        {
+            int curFrame = (int)frameIndex;
+            int nextFrame = Mathf.Clamp(curFrame + 1, 0, matrixs.Length);
+
+            Vector3 curPos = matrixs[curFrame].GetColumn(3);
+            Vector3 nextPos = matrixs[nextFrame].GetColumn(3);
+            return Vector3.Lerp(curPos, nextPos, frameIndex - curFrame);
+        }
+
+        private Quaternion GetFrameRotation(Matrix4x4[] matrixs, float frameIndex)
+        {
+            int curFrame = (int)frameIndex;
+            int nextFrame = Mathf.Clamp(curFrame + 1, 0, matrixs.Length);
+            
+            Quaternion curRot = matrixs[curFrame].rotation;
+            Quaternion nextRot = matrixs[nextFrame].rotation;
+            return Quaternion.Slerp(curRot, nextRot, frameIndex - curFrame);
         }
     }
 }

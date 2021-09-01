@@ -5,7 +5,10 @@ using Framework.Core;
 
 namespace AnimationInstancingModule.Runtime
 {
-    public class AnimationDataManager : SingletonMono<AnimationDataManager>
+    /// <summary>
+    /// AnimationData管理器
+    /// <summary>
+    internal class AnimationDataManager : SingletonMono<AnimationDataManager>
     {
         class AnimationDataInst
         {
@@ -16,7 +19,7 @@ namespace AnimationInstancingModule.Runtime
         private Dictionary<AnimationData, AnimationDataInst> m_AnimationDatas = new Dictionary<AnimationData, AnimationDataInst>();
 
         // Load须与Unload成对调用
-        public AnimationData Load(AnimationData prototype)
+        internal AnimationData Load(AnimationData prototype)
         {
             AnimationDataInst inst;
             if(!m_AnimationDatas.TryGetValue(prototype, out inst))
@@ -31,7 +34,7 @@ namespace AnimationInstancingModule.Runtime
             return inst.data;
         }
 
-        public void Unload(AnimationData prototype)
+        internal void Unload(AnimationData prototype)
         {
             AnimationDataInst inst;
             if(!m_AnimationDatas.TryGetValue(prototype, out inst))

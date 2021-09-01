@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/AnimationInstancing/Editor/TestMassiveInstancing.unity
+    guid: d758c8e9cad0da34b91f937a02a1f943
+  - enabled: 1
     path: Assets/Resources/launcher.unity
     guid: f51811a79c3869e4bbdb719e6ef5fc32
   - enabled: 1
