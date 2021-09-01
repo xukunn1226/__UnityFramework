@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using AnimationInstancingModule.Runtime;
 using System.Linq;
+using System.Diagnostics;
 using UnityEditor.Animations;
 using Unity.EditorCoroutines.Editor;
 
@@ -317,6 +318,7 @@ namespace AnimationInstancingModule.Editor
         }
 
         static private EditorCoroutine             m_Coroutine;
+        static private Stopwatch                    m_sw;
 
         [MenuItem("Tools/Generate All Animation Instancing")]
         static private void GenerateAll()
@@ -324,9 +326,12 @@ namespace AnimationInstancingModule.Editor
             string sceneName = "AnimationGenerator";
             if(UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().name != sceneName)
             {
-                Debug.LogError($"plz open scene {sceneName}.unity for animation instancing generation");
+                UnityEngine.Debug.LogError($"plz open scene {sceneName}.unity for animation instancing generation");
                 return;
             }
+
+            m_sw = new Stopwatch();
+            m_sw.Start();
 
             AnimationInstancingGenerator[] generators = GameObject.FindObjectsOfType<AnimationInstancingGenerator>();
             m_Coroutine = EditorCoroutineUtility.StartCoroutineOwnerless(Generate(generators));
@@ -345,14 +350,17 @@ namespace AnimationInstancingModule.Editor
             {
                 bool isCancel = EditorUtility.DisplayCancelableProgressBar("烘焙中", "Generating", 1.0f * (count + 1) / generators.Length);
 
+                Selection.activeObject = generators[count];
                 generators[count].Bake();
                 while(generators[count].isBaking)
                     yield return null;
                 ++count;
             }
+            m_sw.Stop();
+
             StopGeneratingCoroutine();
             EditorUtility.ClearProgressBar();
-            Debug.Log($"Generate done.... total animation instancing is {generators.Length}");
+            UnityEngine.Debug.Log($"Generate done.... total count is {generators.Length} and elasped time is {m_sw.ElapsedMilliseconds * 0.001f}s ");
         }
 
         static private void StopGeneratingCoroutine()

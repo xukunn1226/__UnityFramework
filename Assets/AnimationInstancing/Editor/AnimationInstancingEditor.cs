@@ -18,38 +18,34 @@ namespace AnimationInstancingModule.Editor
         {
             m_Target = (AnimationInstancing)target;
             m_isPersistent = EditorUtility.IsPersistent(m_Target);
+            m_SelectedIndex = -1;
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+
             EditorGUI.BeginDisabledGroup(m_isPersistent || !UnityEngine.Application.isPlaying);
-
-            EditorGUILayout.LabelField("Preview");
-            GUILayout.BeginVertical(EditorStyles.helpBox);
-            EditorGUILayout.BeginHorizontal();
-            
-            string[] names = GetAnimationNames();
-            int[] option = new int[names.Length];
-            for(int i = 0; i < option.Length; ++i)
             {
-                option[i] = i;
+                EditorGUILayout.LabelField("Preview");
+                GUILayout.BeginVertical(EditorStyles.helpBox);
+                {
+                    string[] names = m_Target.prototype.EditorLoadAnimationInfo().ToArray();
+                    int[] option = new int[names.Length];
+                    for (int i = 0; i < option.Length; ++i)
+                    {
+                        option[i] = i;
+                    }
+                    int index = EditorGUILayout.IntPopup(m_SelectedIndex, names, option);
+                    if (index != m_SelectedIndex)
+                    {
+                        m_SelectedIndex = index;
+                        m_Target.PlayAnimation(names[m_SelectedIndex]);
+                    }
+                }
+                GUILayout.EndVertical();
             }
-            m_SelectedIndex = EditorGUILayout.IntPopup(m_SelectedIndex, names, option);
-            
-            if(GUILayout.Button("Play"))
-            {
-                m_Target.PlayAnimation(names[m_SelectedIndex]);
-            }
-            EditorGUILayout.EndHorizontal();
-            GUILayout.EndVertical();
-
             EditorGUI.EndDisabledGroup();
-        }
-
-        private string[] GetAnimationNames()
-        {
-            return m_Target.prototype.EditorLoadAnimationInfo().ToArray();
         }
     }
 }
