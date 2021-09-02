@@ -350,6 +350,7 @@ RectTransform:
 	重构CullingGroup，使之模块化，其他功能模块也能友好使用
 	增强AnimationInstancingManager的DebugInfo
 	Opt：Animation Texture占用两份内存，怎么优化？
+	性能测试
 
 
 

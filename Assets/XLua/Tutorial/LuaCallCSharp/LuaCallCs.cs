@@ -182,6 +182,7 @@ namespace Tutorial
 public class LuaCallCs : MonoBehaviour
 {
 	LuaEnv luaenv = null;
+#pragma warning disable CS0414
 	string script = @"
         function demo()
             --new C#对象
@@ -291,6 +292,7 @@ public class LuaCallCs : MonoBehaviour
        end)
        assert(coroutine.resume(co))
     ";
+#pragma warning restore CS0414
 
 	// Use this for initialization
 	void Start()

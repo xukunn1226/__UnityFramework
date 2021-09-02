@@ -46,55 +46,58 @@ namespace Application.Runtime
 
         private IEnumerator PreparePatchAndRestart(int version)
         {
-            Debug.Log("Step 1......");
-            //1. clear files if exist
-            string runtimePatchPath = string.Format(RUNTIME_PATCH_PATH_FORMAT, version);
-            if (Directory.Exists(runtimePatchPath)) { Directory.Delete(runtimePatchPath, true); }
-            Directory.CreateDirectory(runtimePatchPath);
+            ///// 暂时注释
+            yield break;
 
-            //2. extract files from zip
-            string zipPatchFile = string.Format(ZIP_PATCH_FORMAT, version);
-            WWW zipPatchFileReader = new WWW(zipPatchFile);
-            while (!zipPatchFileReader.isDone) { yield return null; }
-            if (zipPatchFileReader.error != null)
-            {
-                Debug.LogError($"failed to get zip patch file: {zipPatchFile}");
-                yield break;
-            }
-            byte[] zipContent = zipPatchFileReader.bytes;
-            ZipHelper.UnZipBytes(zipContent, runtimePatchPath, "", true);
-            // ZipHelper.UnZip(ANDROID_PROJECT_PATH + "/Patch1.zip", ANDROID_PROJECT_PATH, "", true);
-            Debug.Log("UnZipBytes...patch");
-            yield return new WaitForSeconds(1);
+            // Debug.Log("Step 1......");
+            // //1. clear files if exist
+            // string runtimePatchPath = string.Format(RUNTIME_PATCH_PATH_FORMAT, version);
+            // if (Directory.Exists(runtimePatchPath)) { Directory.Delete(runtimePatchPath, true); }
+            // Directory.CreateDirectory(runtimePatchPath);
 
-            //3. prepare libil2cpp, unzip with name: libil2cpp.so.new
-            string zipLibil2cppPath = runtimePatchPath + "/lib_" + Bootstrap.get_arch_abi() + "_libil2cpp.so.zip";
-            if (!File.Exists(zipLibil2cppPath))
-            {
-                Debug.LogError($"file not found: {zipLibil2cppPath}");
-                yield break;
-            }
-            ZipHelper.UnZip(zipLibil2cppPath, runtimePatchPath, "", true);
-            Debug.Log("UnZip...so");
-            yield return new WaitForSeconds(1);
+            // //2. extract files from zip
+            // string zipPatchFile = string.Format(ZIP_PATCH_FORMAT, version);
+            // WWW zipPatchFileReader = new WWW(zipPatchFile);
+            // while (!zipPatchFileReader.isDone) { yield return null; }
+            // if (zipPatchFileReader.error != null)
+            // {
+            //     Debug.LogError($"failed to get zip patch file: {zipPatchFile}");
+            //     yield break;
+            // }
+            // byte[] zipContent = zipPatchFileReader.bytes;
+            // ZipHelper.UnZipBytes(zipContent, runtimePatchPath, "", true);
+            // // ZipHelper.UnZip(ANDROID_PROJECT_PATH + "/Patch1.zip", ANDROID_PROJECT_PATH, "", true);
+            // Debug.Log("UnZipBytes...patch");
+            // yield return new WaitForSeconds(1);
 
-            //4. tell libboostrap.so to use the right patch after reboot
-            string apkPath = "";
-            string error = Bootstrap.use_data_dir(runtimePatchPath, apkPath);
-            if (!string.IsNullOrEmpty(error))
-            {
-                Debug.LogError($"use failed. path: {zipLibil2cppPath}   {error}");
-                yield break;
-            }
+            // //3. prepare libil2cpp, unzip with name: libil2cpp.so.new
+            // string zipLibil2cppPath = runtimePatchPath + "/lib_" + Bootstrap.get_arch_abi() + "_libil2cpp.so.zip";
+            // if (!File.Exists(zipLibil2cppPath))
+            // {
+            //     Debug.LogError($"file not found: {zipLibil2cppPath}");
+            //     yield break;
+            // }
+            // ZipHelper.UnZip(zipLibil2cppPath, runtimePatchPath, "", true);
+            // Debug.Log("UnZip...so");
+            // yield return new WaitForSeconds(1);
 
-            //5. clear unity cache
-            if(!ClearCache())
-                yield break;
+            // //4. tell libboostrap.so to use the right patch after reboot
+            // string apkPath = "";
+            // string error = Bootstrap.use_data_dir(runtimePatchPath, apkPath);
+            // if (!string.IsNullOrEmpty(error))
+            // {
+            //     Debug.LogError($"use failed. path: {zipLibil2cppPath}   {error}");
+            //     yield break;
+            // }
 
-            yield return new WaitForSeconds(2);
+            // //5. clear unity cache
+            // if(!ClearCache())
+            //     yield break;
 
-            //6. reboot app
-            yield return StartCoroutine(Restart());
+            // yield return new WaitForSeconds(2);
+
+            // //6. reboot app
+            // yield return StartCoroutine(Restart());
         }
 
         private bool ClearCache()
