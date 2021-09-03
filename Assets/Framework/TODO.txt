@@ -234,6 +234,8 @@
 	https://blog.csdn.net/akak2010110/article/details/80953370  		UGUI drawcall合并原理，解释了什么是BottomUI
 	https://www.jianshu.com/p/061e67308e5f  							Unity GUI(uGUI)使用心得与性能总结	
 	https://gameinstitute.qq.com/community/detail/112235  				UGUI优化：批次合并源码分析及工具
+	https://mp.weixin.qq.com/s/tYuEDNDYKlrUn933BWheHw                   Unity性能优化 — UI模块
+	
 
 	一切的优化围绕三个点进行：batch build、mesh build、raycast
 	* batch build: 根据depth排序，检测overlap，material id，worker thread执行
