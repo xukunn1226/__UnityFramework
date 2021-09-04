@@ -26,6 +26,7 @@ namespace Framework.Core
 
         [NonSerialized]
         private int HotfixNumber;       // W——补丁包序列号
+                                        // 非序列化数据，获取backdoor后更新最新数据
 
         static public AppVersion Load()
         {

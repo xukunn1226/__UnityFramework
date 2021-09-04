@@ -28,10 +28,11 @@ namespace Framework.Core
 
         private float                       m_BeginTime;
         private IExtractListener            m_Listener;
-        
-        private void OnDisable()
+
+        // 母包版本号
+        public AppVersion GetBaseVersion()
         {
-            Uninit();
+            return m_BaseVersion;
         }
 
         public void StartWork(int workerCount, IExtractListener listener = null)
@@ -39,7 +40,19 @@ namespace Framework.Core
             m_Listener = listener;
             m_WorkerCount = workerCount;
 
-            StartCoroutine(Run());
+            // init
+            Uninit();
+            if(!Init())
+            {
+                Uninit();
+                return;
+            }
+
+            // should extract asset from streamingAsset to persistent data path?
+            if (!ShouldExtract())
+                return;
+
+            StartCoroutine(Extracting());
         }
 
         /// <summary>
@@ -47,24 +60,12 @@ namespace Framework.Core
         /// </summary>
         public void Restart()
         {
-            Uninit();
             StartWork(m_WorkerCount, m_Listener);
         }
 
-        private IEnumerator Run()
-        {
-            if(!Init())
-            {
-                Uninit();
-                yield break;
-            }
-
-            if (!ShouldExtract())
-                yield break;
-
-            yield return StartCoroutine(Extracting());
-        }
-
+        /// <summary>
+        /// load the appVersion and FileList for bundle extracting
+        /// <summary>
         private bool Init()
         {
             bool bInit = true;
@@ -117,6 +118,9 @@ namespace Framework.Core
             }
         }
 
+        /// <summary>
+        /// 判断是否已提取过本地资源(from streaming assets to persistent data path)
+        /// <summary>
         private bool ShouldExtract()
         {
             string versionStr = PlayerPrefs.GetString(BASE_APPVERSION);
@@ -244,6 +248,7 @@ namespace Framework.Core
             //Debug.Log("Begin to extract bundle file list");
             Prepare();
             m_BeginTime = Time.time;
+            m_Error = null;
 
             m_Listener?.OnBegin(m_PendingExtractedFileList.Count);
         }
@@ -253,7 +258,7 @@ namespace Framework.Core
             // 提取完成后打上标签
             if (string.IsNullOrEmpty(error))
             {
-                PlayerPrefs.SetString(BASE_APPVERSION, m_BaseVersion.ToString());
+                PlayerPrefs.SetString(BASE_APPVERSION, m_BaseVersion.ToString());       // 记录母包版本号（三位）
                 PlayerPrefs.Save();
                 Debug.Log($"BundleExtracter: asset extracted finished, mark the version {m_BaseVersion.ToString()}");
             }
