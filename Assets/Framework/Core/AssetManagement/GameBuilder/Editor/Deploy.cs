@@ -14,7 +14,6 @@ namespace Framework.AssetManagement.GameBuilder
         static public string s_LatestBundlesPath    = "latest/assetbundles";            // 当前编译版本的bundles
         static public string s_BackupDirectoryPath  = "backup";                         // 备份各平台下发布的资源（app & bundles）
         static public string s_Cdn_DataPath         = "cdn/data";                       // 最新版本的资源数据
-        static public string s_Cdn_ObbPath          = "cdn/obb";                        // 所有版本的obb
         static public string s_Cdn_PatchPath        = "cdn/patch";                      // 所有平台的补丁数据
         static public string s_BackdoorPath         = "cdn/backdoor.json";
 
@@ -25,7 +24,7 @@ namespace Framework.AssetManagement.GameBuilder
             string rootPath = s_DefaultRootPath;
             CommandLineReader.GetCommand("RootPath", ref rootPath);
 
-            // determine backup folder
+            // backup folder
             string appDirectory = AppVersion.EditorLoad().ToString();
             CommandLineReader.GetCommand("AppDirectory", ref appDirectory);
 
@@ -44,7 +43,7 @@ namespace Framework.AssetManagement.GameBuilder
             success = Backup(srcRootPath, appDirectory);
 
             if(success)
-                success = PublishDataAndObb(srcRootPath, appDirectory);
+                success = PublishDataToCDN(srcRootPath, appDirectory);
 
             if(success)
                 success = BuildPatch(srcRootPath, appDirectory);
@@ -119,7 +118,7 @@ namespace Framework.AssetManagement.GameBuilder
         /// <param name="rootPath"></param>
         /// <param name="appDirectory"></param>
         /// <returns></returns>
-        static private bool PublishDataAndObb(string rootPath, string appDirectory)
+        static private bool PublishDataToCDN(string rootPath, string appDirectory)
         {
             string appSrcPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
             string appDstPath = string.Format($"{rootPath}/{s_Cdn_DataPath}/{Utility.GetPlatformName()}");

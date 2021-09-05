@@ -1,11 +1,11 @@
 {
   "Count": 49,
-  "TotalSize": 76494849,
+  "TotalSize": 76494839,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "77de1dd154c2874285cb1e7e861db9bc",
-      "Size": 3481
+      "FileHash": "c3b8fc6c4d692d821681ccc98d9387e2",
+      "Size": 3484
     },
     {
       "BundleName": "assets/animationinstancing/art/animationdata.ab",
@@ -74,8 +74,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/qk.ab",
-      "FileHash": "f2f56d2af708e04df75c957359339961",
-      "Size": 170715
+      "FileHash": "5b10b5444dbc39eb96ec9f81cab1264e",
+      "Size": 170702
     },
     {
       "BundleName": "assets/application/tests/runtime/res/scenes.ab",
