@@ -1,11 +1,16 @@
 {
-  "Count": 49,
-  "TotalSize": 76494839,
+  "Count": 50,
+  "TotalSize": 76495307,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "c3b8fc6c4d692d821681ccc98d9387e2",
-      "Size": 3484
+      "FileHash": "24c34d0d65a297dc9e408ef0cbd85fd7",
+      "Size": 3523
+    },
+    {
+      "BundleName": "assets/animationinstancing/art.ab",
+      "FileHash": "84ba620f1fc213d1841672181c2255d4",
+      "Size": 429
     },
     {
       "BundleName": "assets/animationinstancing/art/animationdata.ab",
