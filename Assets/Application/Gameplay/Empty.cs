@@ -9,7 +9,7 @@ namespace Application.Runtime
     /// <summary>
     public class Empty : MonoBehaviour
     {
-        void Start()
+        IEnumerator Start()
         {
             if (Core.Instance == null)
                 throw new System.Exception("Empty: Core.Instance == null");
@@ -19,6 +19,8 @@ namespace Application.Runtime
 
             // 删除核心组件
             Destroy(Core.Instance.gameObject);
+
+            yield return null;      // 等待core.OnDestroy()的调用
 
             Resources.UnloadUnusedAssets();
 
