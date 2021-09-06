@@ -27,7 +27,6 @@ namespace Application.Runtime
     ///     3.1、完整包（安卓和ios）—— 资源提取、补丁下载
     ///     3.2、分包（仅安卓）—— obb下载、资源提取、补丁下载
     /// MACROS:
-    ///     USE_APK_EXPANSIONFILES: 是否处理obb流程，根据打包时的标记useAPKExpansionFiles自动设置
     ///     LOAD_FROM_PERSISTENT:从persistent data path下加载资源（意味着执行版控流程）
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
@@ -140,13 +139,6 @@ namespace Application.Runtime
             m_theFirstStart = false;
             StartWork();
         }
-
-#if USE_APK_EXPANSIONFILES
-        private void StartObbDownload()
-        {
-
-        }
-#endif
 
         private void StartBundleExtracted()
         {            

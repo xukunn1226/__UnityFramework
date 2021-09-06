@@ -194,14 +194,14 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             // 分包发布时加上特定macro以控制obb流程
-            if(para.useAPKExpansionFiles && buildTargetGroup == BuildTargetGroup.Android)
-            {
-                macroSet.Add("USE_APK_EXPANSIONFILES");
-            }
-            else
-            {
-                macroSet.Remove("USE_APK_EXPANSIONFILES");
-            }
+            // if(para.useAPKExpansionFiles && buildTargetGroup == BuildTargetGroup.Android)
+            // {
+            //     macroSet.Add("USE_APK_EXPANSIONFILES");
+            // }
+            // else
+            // {
+            //     macroSet.Remove("USE_APK_EXPANSIONFILES");
+            // }
 
             string finalMacroDefines = string.Join(";", macroSet.ToArray());
             PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, finalMacroDefines.Trim(new char[] {';'}));

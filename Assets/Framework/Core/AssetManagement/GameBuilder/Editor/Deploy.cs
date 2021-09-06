@@ -210,6 +210,16 @@ namespace Framework.AssetManagement.GameBuilder
             string dcFilename = string.Format($"{targetDirectory}/{Patcher.DIFFCOLLECTION_FILENAME}");
             DiffCollection.Serialize(dcFilename, dc);
 
+            bd.CurVersion = appDirectory;
+            FileStream dc_fs = new FileStream(dcFilename, FileMode.Open);
+            if(!bd.VersionHistory.ContainsKey(dc.BaseVersion))
+            {
+                bd.VersionHistory.Add(dc.BaseVersion, EasyMD5.Hash(dc_fs));
+            }
+            dc_fs.Dispose();
+            dc_fs.Close();
+            Backdoor.Serialize(path, bd);
+
             return true;
         }
 
