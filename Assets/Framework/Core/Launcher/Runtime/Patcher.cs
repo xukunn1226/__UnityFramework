@@ -19,6 +19,8 @@ namespace Framework.Core
     public class Patcher : MonoBehaviour
     {
         static public readonly string       CUR_APPVERSION              = "CurAppVersion_fe2679cf89a145ccb45b715568e6bc07";
+        static public readonly string       DIFFCOLLECTION_FILENAME     = "diffcollection.json";
+        static public readonly string       DIFF_FILENAME               = "diff.json";
 
         private int                         m_WorkerCount;
         private List<DownloadTask>          m_TaskWorkerList;
@@ -79,7 +81,7 @@ namespace Framework.Core
                 yield break;
             }
 
-            // step4. download the diff.json between local version and latest version
+            // step4. download the diff.json for upgrade from local version to latest version
             yield return StartCoroutine(DownloadDiff());
             if (!string.IsNullOrEmpty(m_Error))
             {
@@ -164,16 +166,16 @@ namespace Framework.Core
             string hash = m_Backdoor.GetDiffCollectionFileHash(m_Backdoor.CurVersion);
             if (string.IsNullOrEmpty(hash))
             {
-                m_Error = string.Format($"can't find the hash of diffcollection.json, plz check backdoor's version history");
+                m_Error = string.Format($"can't find the hash of diffcollection.json, plz check backdoor's version history.  CurVersion is [{m_Backdoor.CurVersion}]");
                 yield break;
             }
 
-            string localDiffCollectionURL = string.Format($"{Application.persistentDataPath}/diffcollection.json");
+            string localDiffCollectionURL = string.Format($"{Application.persistentDataPath}/{DIFFCOLLECTION_FILENAME}");
             if (File.Exists(localDiffCollectionURL))
                 File.Delete(localDiffCollectionURL);
 
             DownloadTaskInfo info = new DownloadTaskInfo();
-            info.srcUri = new Uri(string.Format($"{m_CdnURL}/patch/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/diffcollection.json"));
+            info.srcUri = new Uri(string.Format($"{m_CdnURL}/patch/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/{DIFFCOLLECTION_FILENAME}"));
             info.dstURL = localDiffCollectionURL;
             info.verifiedHash = hash;
             info.retryCount = 3;
@@ -199,12 +201,12 @@ namespace Framework.Core
                 yield break;
             }
 
-            string localDiffURL = string.Format($"{Application.persistentDataPath}/diff.json");
+            string localDiffURL = string.Format($"{Application.persistentDataPath}/{DIFF_FILENAME}");
             if (File.Exists(localDiffURL))
                 File.Delete(localDiffURL);
 
             DownloadTaskInfo info = new DownloadTaskInfo();
-            string diffURL = Path.Combine(m_CdnURL, "patch", Utility.GetPlatformName(), m_Backdoor.CurVersion, GetLocalCurVersion(), "diff.json");
+            string diffURL = Path.Combine(m_CdnURL, "patch", Utility.GetPlatformName(), m_Backdoor.CurVersion, GetLocalCurVersion(), DIFF_FILENAME);
             info.srcUri = new Uri(diffURL);
             info.dstURL = localDiffURL;
             info.verifiedHash = hash;
@@ -291,7 +293,8 @@ namespace Framework.Core
                 PlayerPrefs.SetString(CUR_APPVERSION, m_Backdoor.CurVersion);
                 PlayerPrefs.Save();
 
-                //Debug.Log($"patch completed...{m_CurVersion}  ->  {m_Backdoor.CurVersion}");
+                Debug.Log($"patch completed...{m_CurVersion}  ->  {m_Backdoor.CurVersion}");
+                m_CurVersion = m_Backdoor.CurVersion;
             }
             else
             {

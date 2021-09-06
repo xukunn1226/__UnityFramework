@@ -198,7 +198,7 @@ namespace Framework.AssetManagement.GameBuilder
                 if (historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0)
                 {
                     string subDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{appDirectory}/{item.Key}");
-                    string diffFilename = string.Format($"{subDirectory}/diff.json");
+                    string diffFilename = string.Format($"{subDirectory}/{Patcher.DIFF_FILENAME}");
 
                     using (FileStream fs = new FileStream(diffFilename, FileMode.Open))
                     {
@@ -207,7 +207,7 @@ namespace Framework.AssetManagement.GameBuilder
                     }
                 }
             }
-            string dcFilename = string.Format($"{targetDirectory}/diffcollection.json");
+            string dcFilename = string.Format($"{targetDirectory}/{Patcher.DIFFCOLLECTION_FILENAME}");
             DiffCollection.Serialize(dcFilename, dc);
 
             return true;
@@ -294,7 +294,7 @@ namespace Framework.AssetManagement.GameBuilder
             // 序列化diff.json
             string targetDirectory = string.Format($"{rootPath}/{s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{curApp}/{prevApp}");
             Directory.CreateDirectory(targetDirectory);
-            Framework.Core.Diff.Serialize(string.Format($"{targetDirectory}/diff.json"), data);
+            Framework.Core.Diff.Serialize(string.Format($"{targetDirectory}/{Patcher.DIFF_FILENAME}"), data);
 
             // 根据diff结果填充历史版本升级到当前版本需要的数据
             foreach (var dfi in data.AddedFileList)

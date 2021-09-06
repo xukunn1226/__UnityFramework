@@ -7,7 +7,7 @@ namespace Framework.Core
 {
     public class Backdoor
     {
-        public string                       MinVersion;             // 强更版本号，只能是三位
+        public string                       MinVersion;             // 强更版本号，且不能向下兼容，只能是三位
         public string                       CurVersion;             // 当前版本号，可能是三位或四位
         public Dictionary<string, string>   VersionHistory;         // [version, diffcollection json's hash]
 
