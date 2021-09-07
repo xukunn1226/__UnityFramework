@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Gesture.Runtime;
+using Framework.Core;
 
 namespace Application.Runtime
 {
-    public class GamePlayerCamera : MonoBehaviour
+    public class GamePlayerCamera : SingletonMono<GamePlayerCamera>
     {
-        static public GamePlayerCamera Instance { get; private set; }
-
         static public Camera cam { get { return Instance?.mainCamera; } }
 
         public Camera                   mainCamera;
@@ -40,22 +39,17 @@ namespace Application.Runtime
         private ScreenPinchEventData    m_PinchEventData;
         public Vector2                  HeightRange;
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             if (mainCamera == null)
                 throw new System.Exception("mainCamera == null");
 
-            if (FindObjectsOfType<GamePlayerCamera>().Length > 1)
-            {
-                DestroyImmediate(this);
-                throw new System.Exception("PlayerCamera has already exist.");
-            }
-
-            Instance = this;
             m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
         }
 
-        void Start()
+        void OnEnable()
         {
             if(PlayerInput.Instance == null)
                 throw new System.Exception("PlayerInput == null");
@@ -73,11 +67,6 @@ namespace Application.Runtime
                 PlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
                 PlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
             }
-        }
-
-        void OnDestroy()
-        {
-            Instance = null;
         }
 
         void LateUpdate()
