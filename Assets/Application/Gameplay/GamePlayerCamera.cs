@@ -12,7 +12,7 @@ namespace Application.Runtime
 
         public Camera                   mainCamera;
         public LayerMask                TerrainLayer;
-        private Plane                   m_Ground;
+        private Plane                   m_Ground;               // 虚拟水平面
         public float                    GroundZ;
         public float                    DragSmoothTime;
         public float                    SlideSmoothTime;
@@ -157,6 +157,8 @@ namespace Application.Runtime
         public void OnGesture(ScreenPointerDownEventData eventData)
         {
             // Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
+
+            // stop the dragging if possible
             m_IsDraggingCommand = false;
             m_Velocity = Vector3.zero;
         }
@@ -242,7 +244,7 @@ namespace Application.Runtime
         public Vector3 GetGroundHitPoint(Vector2 screenPosition)
         {
             ///// method 1
-            Ray mousePos = cam.ScreenPointToRay(screenPosition);
+            Ray mousePos = mainCamera.ScreenPointToRay(screenPosition);
             float distance;
             m_Ground.Raycast(mousePos, out distance);
             return mousePos.GetPoint(distance);
