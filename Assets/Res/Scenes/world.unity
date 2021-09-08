@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17628428, g: 0.22063318, b: 0.30295599, a: 1}
+  m_IndirectSpecularColor: {r: 0.17628382, g: 0.2206324, b: 0.30295503, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7671,6 +7671,8 @@ MonoBehaviour:
     width: 1000
     height: 2000
   HeightRange: {x: 15, y: 200}
+  HeightOfRiseCamera: 50
+  TargetCameraEulerX: 70
 --- !u!4 &1498751259
 Transform:
   m_ObjectHideFlags: 0

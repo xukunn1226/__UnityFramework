@@ -42,6 +42,9 @@ namespace Application.Runtime
         private bool                    m_WasPinching;
         private ScreenPinchEventData    m_PinchEventData;
         public Vector2                  HeightRange;
+        public float                    HeightOfRiseCamera;         // 此高度之下镜头略微抬起
+        public float                    TargetCameraEulerX;         // 
+        private Vector3                 m_OriginalEulerAngles;      // 相机初始角度
 
         protected override void Awake()
         {
@@ -50,6 +53,7 @@ namespace Application.Runtime
             if (mainCamera == null)
                 throw new System.Exception("mainCamera == null");
 
+            m_OriginalEulerAngles = mainCamera.transform.eulerAngles;
             m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
 #if UNITY_EDITOR
             PinchSensitivity *= 10;     // 编辑模式与真机模式灵敏度不一致
@@ -130,6 +134,16 @@ namespace Application.Runtime
                     }
                 }
                 mainCamera.transform.position = camPos;
+            }
+
+            if(mainCamera.transform.position.y < HeightOfRiseCamera)
+            {
+                float alpha = (HeightOfRiseCamera - mainCamera.transform.position.y) / (HeightOfRiseCamera - HeightRange.x);
+                mainCamera.transform.eulerAngles = new Vector3(m_OriginalEulerAngles.x * (1 - alpha) + TargetCameraEulerX * alpha, m_OriginalEulerAngles.y, m_OriginalEulerAngles.z);
+            }
+            else
+            {
+                mainCamera.transform.eulerAngles = m_OriginalEulerAngles;
             }
 
             if (ApplyBound)
