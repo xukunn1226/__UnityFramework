@@ -13,9 +13,12 @@ namespace Application.Runtime
         public Camera                   mainCamera;
         public LayerMask                TerrainLayer;
         private Plane                   m_Ground;               // 虚拟水平面
-        public float                    GroundZ;
-        public float                    DragSmoothTime;
-        public float                    SlideSmoothTime;
+        [Tooltip("水平面高度")]
+        public float                    GroundZ;                // 水平面高度
+        [Min(0.01f)]
+        public float                    DragSmoothTime;         // 拖拽时屏幕的跟随时间
+        [Min(0.01f)]
+        public float                    SlideSmoothTime;        // 拖拽结束时屏幕的跟随时间
         private float                   m_SmoothTime;
         private bool                    m_IsDragging;
         private bool                    m_WasDragging;
@@ -24,12 +27,13 @@ namespace Application.Runtime
         private Vector3                 m_Velocity;
 
         [Min(1000)]
-        [Tooltip("每一屏距离匹配的速度值")]
-        public float                    SpeedValueMatchOneScreen = 1000;
+        public float                    DampingWhenDraggingFinished = 1000;
         [Min(0.2f)]
         [Tooltip("最大划屏数")]
         public float                    MaxCountScreen;
-        private Vector2                 m_PendingScreenPos = Vector2.zero;
+        [Range(0.01f, 2)]
+        public float                    PinchSensitivity            = 0.2f;
+        private Vector2                 m_PendingScreenPos          = Vector2.zero;
         private bool                    m_IsDraggingCommand;
         private float                   m_LengthOfOneScreen;        // 一屏(横屏)对应的世界距离
         public bool                     ApplyBound;
@@ -47,9 +51,12 @@ namespace Application.Runtime
                 throw new System.Exception("mainCamera == null");
 
             m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
+#if UNITY_EDITOR
+            PinchSensitivity *= 10;     // 编辑模式与真机模式灵敏度不一致
+#endif            
         }
 
-        void OnEnable()
+        void Start()
         {
             if(PlayerInput.Instance == null)
                 throw new System.Exception("PlayerInput == null");
@@ -59,7 +66,7 @@ namespace Application.Runtime
             PlayerInput.Instance.OnScreenPointerDownHandler += OnGesture;
         }
 
-        void OnDisable()
+        protected override void OnDestroy()
         {
             if(PlayerInput.Instance != null)
             {
@@ -67,6 +74,7 @@ namespace Application.Runtime
                 PlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
                 PlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
             }
+            base.OnDestroy();
         }
 
         void LateUpdate()
@@ -86,7 +94,7 @@ namespace Application.Runtime
                 // 移动结束判断
                 if (m_WasDragging && !m_IsDragging)
                 {
-                    if ((m_EndPoint - m_StartPoint).sqrMagnitude < 1 || m_Velocity.sqrMagnitude < 1)
+                    if (/*(m_EndPoint - m_StartPoint).sqrMagnitude < 1 ||*/ m_Velocity.sqrMagnitude < 1)
                     {
                         m_IsDraggingCommand = false;
                     }
@@ -104,19 +112,20 @@ namespace Application.Runtime
                 // camera to focus point movement
                 Vector3 camPos = mainCamera.transform.position;
                 Vector3 dir = (curPos - camPos).normalized;
-                if (m_PinchEventData.DeltaMove > 0)      // 向前推进
+                float deltaMove = m_PinchEventData.DeltaMove * PinchSensitivity;
+                if (deltaMove > 0)      // 向前推进
                 {
-                    if (camPos.y > HeightRange.x + 1)
+                    if (camPos.y > GroundZ + HeightRange.x + 1)
                     {
-                        camPos += dir * m_PinchEventData.DeltaMove;
+                        camPos += dir * deltaMove;
                         camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
                     }
                 }
-                else if (m_PinchEventData.DeltaMove < 0)
+                else if (deltaMove < 0)
                 {
-                    if (camPos.y < HeightRange.y - 1)
+                    if (camPos.y < GroundZ + HeightRange.y - 1)
                     {
-                        camPos += dir * m_PinchEventData.DeltaMove;
+                        camPos += dir * deltaMove;
                         camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
                     }
                 }
@@ -231,16 +240,21 @@ namespace Application.Runtime
 
         private void EndScreenDrag(ScreenDragEventData eventData)
         {
-            float dist = Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / SpeedValueMatchOneScreen) * CalcLengthOfOneScreen();
+            float dist = Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / DampingWhenDraggingFinished) * CalcLengthOfOneScreen();
             Vector3 endPos = GetGroundHitPoint(eventData.Position);
             Vector3 dir = (endPos - m_StartPoint).normalized;
             Vector3 pendingScreenPos = mainCamera.WorldToScreenPoint(endPos + dir * dist);
             SetViewTarget(pendingScreenPos, SlideSmoothTime);
-            // Debug.Log($"{Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / SpeedValueMatchOneScreen)}   {eventData.Speed.magnitude}     width: {GetScreenLandscape()}");
+            
+#if UNITY_EDITOR
+            Debug.DrawLine(endPos + Vector3.up, endPos - Vector3.up, Color.red, 1);
+#endif            
+            // Debug.Log($"{Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / DampingWhenDraggingFinished)}   {eventData.Speed.magnitude}     width: {GetScreenLandscape()}");
             // Debug.DrawLine(pos, pos + dir * dist, Color.red, 10);
             // Debug.DrawLine(m_StartPoint, pos, Color.green, 10);
         }
 
+        // 水平面交点坐标
         public Vector3 GetGroundHitPoint(Vector2 screenPosition)
         {
             ///// method 1
@@ -254,6 +268,7 @@ namespace Application.Runtime
             // return m_HitInfo.point;
         }
 
+        // 计算一屏的水平距离
         private float CalcLengthOfOneScreen()
         {
             Vector3 l = GetGroundHitPoint(new Vector2(0, GetScreenPortrait() * 0.5f));

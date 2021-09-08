@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17628382, g: 0.2206324, b: 0.30295503, a: 1}
+  m_IndirectSpecularColor: {r: 0.17628428, g: 0.22063318, b: 0.30295599, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6200,7 +6200,7 @@ Transform:
   m_GameObject: {fileID: 1279451569}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 300, y: 1, z: 300}
+  m_LocalScale: {x: 100, y: 1, z: 100}
   m_Children: []
   m_Father: {fileID: 1708479641}
   m_RootOrder: 1
@@ -7660,8 +7660,9 @@ MonoBehaviour:
   GroundZ: 0
   DragSmoothTime: 0.075
   SlideSmoothTime: 0.3
-  SpeedValueMatchOneScreen: 10000
+  DampingWhenDraggingFinished: 50000
   MaxCountScreen: 1
+  PinchSensitivity: 0.1
   ApplyBound: 0
   Bound:
     serializedVersion: 2
@@ -7669,7 +7670,7 @@ MonoBehaviour:
     y: -1035
     width: 1000
     height: 2000
-  HeightRange: {x: 300, y: 1000}
+  HeightRange: {x: 15, y: 200}
 --- !u!4 &1498751259
 Transform:
   m_ObjectHideFlags: 0

@@ -27,13 +27,14 @@ namespace Application.Runtime
             PlayerInput.Instance.OnScreenPointerUpHandler += OnGesture;
         }
 
-        void OnDisable()
+        protected override void OnDestroy()
         {
             if(PlayerInput.Instance != null)
             {
                 PlayerInput.Instance.OnLongPressHandler -= OnGesture;
                 PlayerInput.Instance.OnScreenPointerUpHandler -= OnGesture;
             }
+            base.OnDestroy();
         }
 
         private void PickGameObject(Vector2 screenPosition)

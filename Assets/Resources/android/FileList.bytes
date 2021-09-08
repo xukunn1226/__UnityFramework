@@ -1,11 +1,11 @@
 {
   "Count": 49,
-  "TotalSize": 76518797,
+  "TotalSize": 76507729,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "ace9ed960dadd62e4fd4e5ed144fbdbe",
-      "Size": 3454
+      "FileHash": "e6a7cb01c73c8274f092addfbed631c2",
+      "Size": 3459
     },
     {
       "BundleName": "assets/animationinstancing/art/animationdata.ab",
@@ -29,7 +29,7 @@
     },
     {
       "BundleName": "assets/animationinstancing/art/unity_model.ab",
-      "FileHash": "960c10576accd654f1ec00a0c7fecaa0",
+      "FileHash": "0af8c16fec63a1eff5df2da2588405fb",
       "Size": 10896711
     },
     {
@@ -79,8 +79,8 @@
     },
     {
       "BundleName": "assets/application/tests/runtime/res/scenes.ab",
-      "FileHash": "e63d49c554947242e0fa829ea35aad03",
-      "Size": 1563379
+      "FileHash": "b7aaaaec2dd4a6bb7bda41dd7105a7f7",
+      "Size": 1563378
     },
     {
       "BundleName": "assets/application/tests/runtime/res/testspawnerring.ab",
@@ -234,8 +234,8 @@
     },
     {
       "BundleName": "assets/res/core.ab",
-      "FileHash": "997e07852b3b65e8ec681464bdb0cff2",
-      "Size": 5080
+      "FileHash": "f328d4d5653091a90611a546e969cf6f",
+      "Size": 5083
     },
     {
       "BundleName": "assets/res/globalconfig.ab",
@@ -244,8 +244,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "fffb8364550cd6d7b5da74fc9b39acbe",
-      "Size": 99644
+      "FileHash": "755e09546016a1a2d6fc4f5546d66d74",
+      "Size": 88569
     }
   ]
 }
