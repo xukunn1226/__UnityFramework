@@ -62,21 +62,21 @@ namespace Application.Runtime
 
         void Start()
         {
-            if(PlayerInput.Instance == null)
-                throw new System.Exception("PlayerInput == null");
+            if(GamePlayerInput.Instance == null)
+                throw new System.Exception("GamePlayerInput == null");
 
-            PlayerInput.Instance.OnScreenDragHandler += OnGesture;
-            PlayerInput.Instance.OnScreenPinchHandler += OnGesture;
-            PlayerInput.Instance.OnScreenPointerDownHandler += OnGesture;
+            GamePlayerInput.Instance.OnScreenDragHandler += OnGesture;
+            GamePlayerInput.Instance.OnScreenPinchHandler += OnGesture;
+            GamePlayerInput.Instance.OnScreenPointerDownHandler += OnGesture;
         }
 
         protected override void OnDestroy()
         {
-            if(PlayerInput.Instance != null)
+            if(GamePlayerInput.Instance != null)
             {
-                PlayerInput.Instance.OnScreenDragHandler -= OnGesture;
-                PlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
-                PlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
+                GamePlayerInput.Instance.OnScreenDragHandler -= OnGesture;
+                GamePlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
+                GamePlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
             }
             base.OnDestroy();
         }

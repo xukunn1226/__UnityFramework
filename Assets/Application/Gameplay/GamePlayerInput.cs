@@ -2,63 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Gesture.Runtime;
-using Framework.Core;
 
 namespace Application.Runtime
 {
-    [RequireComponent(typeof(PlayerInput))]
-    public class GamePlayerInput :  SingletonMono<GamePlayerInput>
+    public class GamePlayerInput :  PlayerInput
     {
-        private PlayerInput             m_PlayerInput;
-        private PlayerInput             playerInput { get { if (m_PlayerInput == null) m_PlayerInput = GetComponent<PlayerInput>(); return m_PlayerInput; } }
-
-        // private RaycastHit              m_HitInfo       = new RaycastHit();
-        // private ref RaycastHit          m_HitInfoRef    => ref m_HitInfo;
+        static public GamePlayerInput   Instance { get; private set; }
 
         public LayerMask                BaseLayer;
         public LayerMask                TerrainLayer;
 
-        void Start()
+        void Awake()
         {
-            if(PlayerInput.Instance == null)
-                throw new System.Exception("PlayerInput == null");
-
-            PlayerInput.Instance.OnLongPressHandler += OnGesture;
-            PlayerInput.Instance.OnScreenPointerUpHandler += OnGesture;
+            Instance = this;
         }
 
-        protected override void OnDestroy()
+        void OnDestroy()
         {
-            if(PlayerInput.Instance != null)
-            {
-                PlayerInput.Instance.OnLongPressHandler -= OnGesture;
-                PlayerInput.Instance.OnScreenPointerUpHandler -= OnGesture;
-            }
-            base.OnDestroy();
+            Instance = null;
         }
-
+        
         private void PickGameObject(Vector2 screenPosition)
         {
             ref readonly RaycastHit hitInfo = ref GamePlayerCamera.Raycast(screenPosition, TerrainLayer | BaseLayer);
             if (hitInfo.transform != null)
             {
-                playerInput.hitEventData.hitInfo = hitInfo;
-                playerInput.SetSelectedGameObject(hitInfo.transform.gameObject, playerInput.hitEventData);
+                hitEventData.hitInfo = hitInfo;
+                SetSelectedGameObject(hitInfo.transform.gameObject, hitEventData);
             }
         }
 
-        public void OnGesture(ScreenLongPressEventData eventData)
+        public override void OnGesture(ScreenLongPressEventData eventData)
         {
             // Debug.Log($"LongPress..........{eventData.State}   {eventData.screenPosition}    {Time.frameCount}");
+            base.OnGesture(eventData);
+
             PickGameObject(eventData.screenPosition);
         }
 
-        public void OnGesture(ScreenPointerUpEventData eventData)
+        public override void OnGesture(ScreenPointerUpEventData eventData)
         {
             // Debug.Log($"ScreenPointerUpEventData:       {Screen.width}  {Screen.height}");
+            base.OnGesture(eventData);
+
             PickGameObject(eventData.screenPosition);
         }
-
-        public GameObject currentSelectedGameObject { get { return playerInput?.currentSelectedGameObject; } }
     }
 }

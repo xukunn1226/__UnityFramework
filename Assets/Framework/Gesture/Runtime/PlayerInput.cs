@@ -18,8 +18,6 @@ namespace Framework.Gesture.Runtime
                                 IScreenDragHandler,
                                 IScreenPinchHandler
     {
-        static public PlayerInput   Instance { get; private set; }
-
         public delegate void onScreenPointerDownHandler(ScreenPointerDownEventData eventData);
         public delegate void onScreenPointerUpHandler(ScreenPointerUpEventData eventData);
         public delegate void onLongPressHandler(ScreenLongPressEventData eventData);
@@ -62,16 +60,6 @@ namespace Framework.Gesture.Runtime
         }
 
         private bool m_SelectionGuard;
-
-        void Awake()
-        {
-            Instance = this;
-        }
-
-        void OnDestroy()
-        {
-            Instance = null;
-        }
         
         public void SetSelectedGameObject(GameObject selected, HitEventData eventData)
         {
@@ -100,31 +88,31 @@ namespace Framework.Gesture.Runtime
             SetSelectedGameObject(selected, hitEventData);
         }
 
-        public void OnGesture(ScreenPointerDownEventData eventData)
+        public virtual void OnGesture(ScreenPointerDownEventData eventData)
         {
             // Debug.Log($"PlayerInput.ScreenPointerDown:       {Time.frameCount}");
             OnScreenPointerDownHandler?.Invoke(eventData);
         }
 
-        public void OnGesture(ScreenPointerUpEventData eventData)
+        public virtual void OnGesture(ScreenPointerUpEventData eventData)
         {
             // Debug.Log($"PlayerInput.ScreenPointerUp:       {Time.frameCount}");
             OnScreenPointerUpHandler?.Invoke(eventData);
         }
 
-        public void OnGesture(ScreenLongPressEventData eventData)
+        public virtual void OnGesture(ScreenLongPressEventData eventData)
         {
             // Debug.Log($"PlayerInput.LongPress  {eventData.State}   {eventData.screenPosition}    {Time.frameCount}");
             OnLongPressHandler?.Invoke(eventData);
         }
 
-        public void OnGesture(ScreenDragEventData eventData)
+        public virtual void OnGesture(ScreenDragEventData eventData)
         {
             // Debug.Log($"PlayerInput.Drag    {eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
             OnScreenDragHandler?.Invoke(eventData);
         }
 
-        public void OnGesture(ScreenPinchEventData eventData)
+        public virtual void OnGesture(ScreenPinchEventData eventData)
         {
             // Debug.Log($"PlayerInput.Pinch   {eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
             OnScreenPinchHandler?.Invoke(eventData);
