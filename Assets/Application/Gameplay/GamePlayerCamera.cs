@@ -55,8 +55,8 @@ namespace Application.Runtime
 
             m_OriginalEulerAngles = mainCamera.transform.eulerAngles;
             m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
-#if UNITY_EDITOR
-            PinchSensitivity *= 10;     // 编辑模式与真机模式灵敏度不一致
+#if UNITY_EDITOR || UNITY_STANDALONE
+            PinchSensitivity *= 10;     // PC与真机模式灵敏度不一致
 #endif            
         }
 
@@ -218,8 +218,6 @@ namespace Application.Runtime
 
         public void OnGesture(ScreenDragEventData eventData)
         {
-            // Debug.Log($"Drag.........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}   {Time.frameCount}");
-
             switch (eventData.State)
             {
                 case RecognitionState.Started:

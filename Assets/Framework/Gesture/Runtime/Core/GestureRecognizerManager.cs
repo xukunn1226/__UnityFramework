@@ -36,5 +36,13 @@ namespace Framework.Gesture.Runtime
                 recognizer.InternalUpdate();
             }
         }
+
+        internal static void Release()
+        {
+            foreach(var recognizer in s_Recognizers)
+            {
+                recognizer.ProcessWhenLostFocus();
+            }
+        }
     }
 }

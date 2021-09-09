@@ -25,7 +25,7 @@ namespace Framework.Gesture.Runtime
             {
                 if(data.Value.usedBy != UsedBy.None)
                     return RecognitionState.Failed;         // 触发了其他手势，则返回失败
-                    
+
                 if(Vector2.Distance(data.Value.pointerEventData.pressPosition, data.Value.pointerEventData.position) > MoveTolerance)
                     continue;
 

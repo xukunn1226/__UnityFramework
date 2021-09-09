@@ -22,6 +22,6 @@ namespace Framework.Gesture.Runtime
                     // Debug.Log($"DiscreteGestureRecognizer:     ---- Failed       {typeof(T).Name} -- {typeof(K).Name}");
                     break;
             }
-        }        
+        }
     }
 }

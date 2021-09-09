@@ -23,7 +23,12 @@ namespace Framework.Gesture.Runtime
             base.Process();
 
             if (!eventSystem.isFocused && ShouldIgnoreEventsOnNoFocus())
+            {
+                // release gesture event
+                GestureRecognizerManager.Release();
+                ClearScreenPointerData();
                 return;
+            }
 
             // 收集、更新ScreenPointerData
             if(!ProcessScreenTouchEventData() && Input.mousePresent)
@@ -48,7 +53,7 @@ namespace Framework.Gesture.Runtime
 #endif
                     return true;
                 default:
-                    return false;
+                    return true;
             }
         }
 

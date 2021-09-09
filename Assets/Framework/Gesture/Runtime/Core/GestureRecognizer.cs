@@ -27,6 +27,7 @@ namespace Framework.Gesture.Runtime
             GestureRecognizerManager.RemoveRecognizer(this);
         }
         internal abstract void InternalUpdate();
+        internal abstract void ProcessWhenLostFocus();
 
         protected virtual GameObject eventTarget { get { return gameObject; } }
     }
@@ -110,7 +111,16 @@ namespace Framework.Gesture.Runtime
                     m_EventData.State = RecognitionState.Ready;
                     break;
             }
-        }   
+        }
+
+        internal override void ProcessWhenLostFocus()
+        {
+            // 强制处于运行态的recognizer结束
+            if(m_EventData.State == RecognitionState.InProgress)
+            {
+                m_EventData.State = RecognitionState.Ended;
+            }            
+        }
     }
 
 
