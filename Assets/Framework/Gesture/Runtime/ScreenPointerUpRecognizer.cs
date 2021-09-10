@@ -19,8 +19,8 @@ namespace Framework.Gesture.Runtime
 
             foreach(var data in InputModule.screenPointerData)
             {
-                // if(data.Value.usedBy != UsedBy.None)
-                //     return RecognitionState.Failed;             // 触发了其他手势，则返回失败
+                if(data.Value.usedBy != UsedBy.None)
+                    return RecognitionState.Failed;             // 触发了其他手势，则返回失败
 
                 if(data.Value.bReleasedThisFrame)
                 {

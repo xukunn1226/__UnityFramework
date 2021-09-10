@@ -10,45 +10,46 @@ namespace Application.Runtime
     /// <summary>
     /// 负责大世界的镜头表现
     /// <summary>
+    [RequireComponent(typeof(CinemachineVirtualCamera))]
     public class WorldCamera : MonoBehaviour
     {
-        public WorldPlayerController    playerController;
-        public CinemachineVirtualCamera virtualCamera;
+        public WorldPlayerController        playerController;
+        private CinemachineVirtualCamera    virtualCamera;
         [Min(0.01f)]
-        public float                    DragSmoothTime;         // 拖拽时屏幕的跟随时间
+        public float                        DragSmoothTime;             // 拖拽时屏幕的跟随时间
         [Min(0.01f)]
-        public float                    SlideSmoothTime;        // 拖拽结束时屏幕的跟随时间
-        private float                   m_SmoothTime;
-        private bool                    m_IsDragging;
-        private bool                    m_WasDragging;
-        private Vector3                 m_StartPoint;
-        private Vector3                 m_EndPoint;
-        private Vector3                 m_Velocity;
+        public float                        SlideSmoothTime;            // 拖拽结束时屏幕的跟随时间
+        private float                       m_SmoothTime;
+        private bool                        m_IsDragging;
+        private bool                        m_WasDragging;
+        private Vector3                     m_StartPoint;
+        private Vector3                     m_EndPoint;
+        private Vector3                     m_Velocity;
 
         [Min(1000)]
-        public float                    DampingWhenDraggingFinished = 1000;
+        public float                        DampingWhenDraggingFinished = 1000;
         [Min(0.2f)]
         [Tooltip("最大划屏数")]
-        public float                    MaxCountScreen;
+        public float                        MaxLengthOfScreen;
         [Range(0.01f, 2)]
-        public float                    PinchSensitivity            = 0.2f;
-        private Vector2                 m_PendingScreenPos          = Vector2.zero;
-        private bool                    m_IsDraggingCommand;
-        public bool                     ApplyBound;
-        public Rect                     Bound;
-        private bool                    m_IsPinching;
-        private bool                    m_WasPinching;
-        private ScreenPinchEventData    m_PinchEventData;
-        public float                    HeightOfRiseCamera;         // 此高度之下镜头略微抬起
-        public float                    TargetCameraEulerX;         // 
-        private Vector3                 m_OriginalEulerAngles;      // 相机初始角度
+        public float                        PinchSensitivity            = 0.2f;
+        private Vector2                     m_PendingScreenPos          = Vector2.zero;
+        private bool                        m_IsDraggingCommand;
+        private bool                        m_ApplyBound;
+        private Rect                        m_Bound;
+        private bool                        m_IsPinching;
+        private bool                        m_WasPinching;
+        private ScreenPinchEventData        m_PinchEventData;
+        public float                        HeightOfRiseCamera;         // 此高度之下镜头略微抬起
+        public float                        TargetCameraEulerX;         // 
+        private Vector3                     m_OriginalEulerAngles;      // 相机初始角度
 
         void Awake()
         {
             if (playerController == null)
                 throw new System.ArgumentNullException("playerController");
-            if(virtualCamera == null)
-                throw new System.ArgumentNullException("virtualCamera");
+
+            virtualCamera = GetComponent<CinemachineVirtualCamera>();
 
             m_OriginalEulerAngles = virtualCamera.transform.eulerAngles;
 #if UNITY_EDITOR || UNITY_STANDALONE
@@ -86,9 +87,9 @@ namespace Application.Runtime
 
                 // 移动相机逼近目标多
                 virtualCamera.transform.position = Vector3.SmoothDamp(virtualCamera.transform.position,
-                                                                    virtualCamera.transform.position - (m_EndPoint - m_StartPoint),
-                                                                    ref m_Velocity,
-                                                                    m_SmoothTime);
+                                                                      virtualCamera.transform.position - (m_EndPoint - m_StartPoint),
+                                                                      ref m_Velocity,
+                                                                      m_SmoothTime);
 
                 // 移动结束判断
                 if (m_WasDragging && !m_IsDragging)
@@ -142,11 +143,11 @@ namespace Application.Runtime
                 virtualCamera.transform.eulerAngles = m_OriginalEulerAngles;
             }
 
-            if (ApplyBound)
+            if (m_ApplyBound)
             {
                 Vector3 pos = virtualCamera.transform.position;
-                pos.x = Mathf.Clamp(pos.x, Bound.xMin, Bound.xMax);
-                pos.z = Mathf.Clamp(pos.z, Bound.yMin, Bound.yMax);
+                pos.x = Mathf.Clamp(pos.x, m_Bound.xMin, m_Bound.xMax);
+                pos.z = Mathf.Clamp(pos.z, m_Bound.yMin, m_Bound.yMax);
                 virtualCamera.transform.position = pos;
             }
 
@@ -164,16 +165,16 @@ namespace Application.Runtime
 
         public void ApplyLimitedBound(Rect bound)
         {
-            ApplyBound = true;
-            Bound = bound;
+            m_ApplyBound = true;
+            m_Bound = bound;
         }
 
         public void UnapplyLimitedBound()
         {
-            ApplyBound = false;
+            m_ApplyBound = false;
         }
 
-        public void OnGesture(ScreenPointerDownEventData eventData)
+        private void OnGesture(ScreenPointerDownEventData eventData)
         {
             // Debug.Log($"ScreenPointerDownEventData:       {Time.frameCount}");
 
@@ -181,15 +182,8 @@ namespace Application.Runtime
             m_IsDraggingCommand = false;
             m_Velocity = Vector3.zero;
         }
-
-        private void SetViewTarget(Vector2 screenPosition, float smoothTime)
-        {
-            m_IsDraggingCommand = true;
-            m_PendingScreenPos = screenPosition;
-            m_SmoothTime = smoothTime;
-        }
-
-        public void OnGesture(ScreenPinchEventData eventData)
+        
+        private void OnGesture(ScreenPinchEventData eventData)
         {
             // Debug.Log($"Pinch..........{eventData.State}   {eventData.Position}    {eventData.DeltaMove}    {Time.frameCount}");
 
@@ -212,7 +206,7 @@ namespace Application.Runtime
             }
         }
 
-        public void OnGesture(ScreenDragEventData eventData)
+        private void OnGesture(ScreenDragEventData eventData)
         {
             switch (eventData.State)
             {
@@ -234,6 +228,13 @@ namespace Application.Runtime
                     break;
             }
         }
+        
+        private void SetViewTarget(Vector2 screenPosition, float smoothTime)
+        {
+            m_IsDraggingCommand = true;
+            m_PendingScreenPos = screenPosition;
+            m_SmoothTime = smoothTime;
+        }
 
         private void BeginScreenDrag(ScreenDragEventData eventData)
         {
@@ -248,18 +249,11 @@ namespace Application.Runtime
 
         private void EndScreenDrag(ScreenDragEventData eventData)
         {
-            float dist = Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / DampingWhenDraggingFinished) * playerController.CalcLengthOfOneScreen();
+            float dist = Mathf.Min(MaxLengthOfScreen, eventData.Speed.magnitude / DampingWhenDraggingFinished) * playerController.CalcLengthOfOneScreen();
             Vector3 endPos = playerController.GetGroundHitPoint(eventData.Position);
             Vector3 dir = (endPos - m_StartPoint).normalized;
             Vector3 pendingScreenPos = playerController.WorldToScreenPoint(endPos + dir * dist);
             SetViewTarget(pendingScreenPos, SlideSmoothTime);
-            
-#if UNITY_EDITOR
-            Debug.DrawLine(endPos + Vector3.up, endPos - Vector3.up, Color.red, 1);
-#endif            
-            // Debug.Log($"{Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / DampingWhenDraggingFinished)}   {eventData.Speed.magnitude}     width: {GetScreenLandscape()}");
-            // Debug.DrawLine(pos, pos + dir * dist, Color.red, 10);
-            // Debug.DrawLine(m_StartPoint, pos, Color.green, 10);
         }  
     }
 }

@@ -31,7 +31,7 @@ namespace Application.Runtime.Tests
             switch (eventData.State)
             {
                 case RecognitionState.Started:
-                    // m_Delta = transform.position - WorldPlayerController.Instance.GetGroundHitPoint(eventData.Position);
+                    m_Delta = transform.position - WorldPlayerController.Instance.GetGroundHitPoint(eventData.Position);
                     break;
                 case RecognitionState.InProgress:
                     SetDraggedPosition(eventData.Position);
@@ -45,8 +45,8 @@ namespace Application.Runtime.Tests
 
         private void SetDraggedPosition(Vector2 screenPosition)
         {
-            // Vector3 newPos = WorldCamera.Instance.GetGroundHitPoint(screenPosition);
-            // transform.position = newPos + m_Delta;
+            Vector3 newPos = WorldPlayerController.Instance.GetGroundHitPoint(screenPosition);
+            transform.position = newPos + m_Delta;
         }
     }
 }

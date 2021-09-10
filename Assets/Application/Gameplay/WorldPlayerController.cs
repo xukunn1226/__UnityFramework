@@ -2,30 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Gesture.Runtime;
+using Framework.Core;
 
 namespace Application.Runtime
-{
-    public class WorldPlayerController : MonoBehaviour
+{    
+    public class WorldPlayerController : SingletonMono<WorldPlayerController>
     {
-        static public WorldPlayerController Instance;
         public Camera                   mainCamera;
         public WorldCamera              worldCamera;
         private Plane                   m_Ground;               // 虚拟水平面
         [Tooltip("水平面高度")]
         public float                    GroundZ;                // 水平面高度
         public Vector2                  HeightRange;            // 相对水平面的高度区间
+        public bool                     ApplyBound;
+        public Rect                     Bound;
         public LayerMask                BaseLayer;
         public LayerMask                TerrainLayer;
 
-        void Awake()
+        protected override void Awake()
         {
-            Instance = this;
-            m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
-        }
+            base.Awake();
 
-        void OnDestroy()
-        {
-            Instance = null;
+            if(mainCamera == null)
+                throw new System.ArgumentNullException("mainCamera");
+            if(worldCamera == null)
+                throw new System.ArgumentNullException("worldCamera");
+
+            m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
+
+            if(ApplyBound)
+                ApplyLimitedBound(Bound);
+            else
+                UnapplyLimitedBound();
         }
 
         void OnEnable()
@@ -35,15 +43,22 @@ namespace Application.Runtime
 
             PlayerInput.Instance.OnLongPressHandler += OnGesture;
             PlayerInput.Instance.OnScreenPointerUpHandler += OnGesture;
+            
+            worldCamera.enabled = true;
         }
 
         void OnDisable()
         {
-            if(PlayerInput.Instance == null)
-                return;
+            if(PlayerInput.Instance != null)
+            {
+                PlayerInput.Instance.OnLongPressHandler -= OnGesture;
+                PlayerInput.Instance.OnScreenPointerUpHandler -= OnGesture;
+            }
 
-            PlayerInput.Instance.OnLongPressHandler -= OnGesture;
-            PlayerInput.Instance.OnScreenPointerUpHandler -= OnGesture;
+            if (worldCamera != null)
+            {
+                worldCamera.enabled = false;
+            }
         }
 
         private void PickGameObject(Vector2 screenPosition)
@@ -64,6 +79,19 @@ namespace Application.Runtime
         private void OnGesture(ScreenPointerUpEventData eventData)
         {
             PickGameObject(eventData.screenPosition);
+        }
+
+        public void ApplyLimitedBound(Rect bound)
+        {
+            ApplyBound = true;
+            Bound = bound;
+            worldCamera.ApplyLimitedBound(bound);
+        }
+
+        public void UnapplyLimitedBound()
+        {
+            ApplyBound = false;
+            worldCamera.UnapplyLimitedBound();
         }
 
         public Vector2 GetAbsoluteHeightRange()
