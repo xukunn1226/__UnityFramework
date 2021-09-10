@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Gesture.Runtime;
 using Framework.Core;
+using Cinemachine;
 
 namespace Application.Runtime
 {
-    public class GamePlayerCamera : SingletonMono<GamePlayerCamera>
+    /// <summary>
+    /// 负责大世界的镜头表现
+    /// <summary>
+    public class WorldCamera : SingletonMono<WorldCamera>
     {
         static public Camera cam { get { return Instance?.mainCamera; } }
 
         public Camera                   mainCamera;
+        public CinemachineVirtualCamera virtualCamera;
         public LayerMask                TerrainLayer;
         private Plane                   m_Ground;               // 虚拟水平面
         [Tooltip("水平面高度")]
@@ -51,16 +56,18 @@ namespace Application.Runtime
             base.Awake();
 
             if (mainCamera == null)
-                throw new System.Exception("mainCamera == null");
+                throw new System.ArgumentNullException("mainCamera");
+            if(virtualCamera == null)
+                throw new System.ArgumentNullException("virtualCamera");
 
-            m_OriginalEulerAngles = mainCamera.transform.eulerAngles;
+            m_OriginalEulerAngles = virtualCamera.transform.eulerAngles;
             m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
 #if UNITY_EDITOR || UNITY_STANDALONE
             PinchSensitivity *= 10;     // PC与真机模式灵敏度不一致
 #endif            
         }
 
-        void Start()
+        void OnEnable()
         {
             if(GamePlayerInput.Instance == null)
                 throw new System.Exception("GamePlayerInput == null");
@@ -70,15 +77,14 @@ namespace Application.Runtime
             GamePlayerInput.Instance.OnScreenPointerDownHandler += OnGesture;
         }
 
-        protected override void OnDestroy()
+        void OnDisable()
         {
-            if(GamePlayerInput.Instance != null)
-            {
-                GamePlayerInput.Instance.OnScreenDragHandler -= OnGesture;
-                GamePlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
-                GamePlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
-            }
-            base.OnDestroy();
+            if(GamePlayerInput.Instance == null)
+                return;
+
+            GamePlayerInput.Instance.OnScreenDragHandler -= OnGesture;
+            GamePlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
+            GamePlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
         }
 
         void LateUpdate()
@@ -90,8 +96,8 @@ namespace Application.Runtime
                 m_EndPoint = GetGroundHitPoint(m_PendingScreenPos);
 
                 // 移动相机逼近目标多
-                mainCamera.transform.position = Vector3.SmoothDamp(mainCamera.transform.position,
-                                                                    mainCamera.transform.position - (m_EndPoint - m_StartPoint),
+                virtualCamera.transform.position = Vector3.SmoothDamp(virtualCamera.transform.position,
+                                                                    virtualCamera.transform.position - (m_EndPoint - m_StartPoint),
                                                                     ref m_Velocity,
                                                                     m_SmoothTime);
 
@@ -111,10 +117,10 @@ namespace Application.Runtime
                 // XZ plane movement
                 Vector3 curPos = GetGroundHitPoint(m_PinchEventData.Position);
                 Vector3 delta = curPos - GetGroundHitPoint(m_PinchEventData.PrevPosition);
-                mainCamera.transform.position -= delta;
+                virtualCamera.transform.position -= delta;
 
                 // camera to focus point movement
-                Vector3 camPos = mainCamera.transform.position;
+                Vector3 camPos = virtualCamera.transform.position;
                 Vector3 dir = (curPos - camPos).normalized;
                 float deltaMove = m_PinchEventData.DeltaMove * PinchSensitivity;
                 if (deltaMove > 0)      // 向前推进
@@ -133,25 +139,25 @@ namespace Application.Runtime
                         camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
                     }
                 }
-                mainCamera.transform.position = camPos;
+                virtualCamera.transform.position = camPos;
             }
 
-            if(mainCamera.transform.position.y < HeightOfRiseCamera)
+            if(virtualCamera.transform.position.y < HeightOfRiseCamera)
             {
-                float alpha = (HeightOfRiseCamera - mainCamera.transform.position.y) / (HeightOfRiseCamera - HeightRange.x);
-                mainCamera.transform.eulerAngles = new Vector3(m_OriginalEulerAngles.x * (1 - alpha) + TargetCameraEulerX * alpha, m_OriginalEulerAngles.y, m_OriginalEulerAngles.z);
+                float alpha = (HeightOfRiseCamera - virtualCamera.transform.position.y) / (HeightOfRiseCamera - HeightRange.x);
+                virtualCamera.transform.eulerAngles = new Vector3(m_OriginalEulerAngles.x * (1 - alpha) + TargetCameraEulerX * alpha, m_OriginalEulerAngles.y, m_OriginalEulerAngles.z);
             }
             else
             {
-                mainCamera.transform.eulerAngles = m_OriginalEulerAngles;
+                virtualCamera.transform.eulerAngles = m_OriginalEulerAngles;
             }
 
             if (ApplyBound)
             {
-                Vector3 pos = mainCamera.transform.position;
+                Vector3 pos = virtualCamera.transform.position;
                 pos.x = Mathf.Clamp(pos.x, Bound.xMin, Bound.xMax);
                 pos.z = Mathf.Clamp(pos.z, Bound.yMin, Bound.yMax);
-                mainCamera.transform.position = pos;
+                virtualCamera.transform.position = pos;
             }
 
             // Vector3 mousePos = Input.mousePosition;

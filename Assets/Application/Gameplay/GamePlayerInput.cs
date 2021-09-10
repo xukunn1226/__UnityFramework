@@ -24,7 +24,7 @@ namespace Application.Runtime
         
         private void PickGameObject(Vector2 screenPosition)
         {
-            ref readonly RaycastHit hitInfo = ref GamePlayerCamera.Raycast(screenPosition, TerrainLayer | BaseLayer);
+            ref readonly RaycastHit hitInfo = ref WorldCamera.Raycast(screenPosition, TerrainLayer | BaseLayer);
             if (hitInfo.transform != null)
             {
                 hitEventData.hitInfo = hitInfo;
