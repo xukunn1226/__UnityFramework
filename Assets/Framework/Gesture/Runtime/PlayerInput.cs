@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Framework.Core;
 
 namespace Framework.Gesture.Runtime
 {
@@ -11,7 +12,7 @@ namespace Framework.Gesture.Runtime
     [RequireComponent(typeof(ObjectDragRecognizer))]
     [RequireComponent(typeof(ScreenDragRecognizer))]
     [RequireComponent(typeof(ScreenPinchRecognizer))]
-    public class PlayerInput :  MonoBehaviour,
+    public class PlayerInput :  SingletonMono<PlayerInput>,
                                 IScreenPointerDownHandler,
                                 IScreenPointerUpHandler,
                                 ILongPressHandler,

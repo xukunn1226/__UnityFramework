@@ -1,0 +1,95 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Framework.Gesture.Runtime;
+
+namespace Application.Runtime
+{
+    public class WorldPlayerController : MonoBehaviour
+    {
+        static public WorldPlayerController Instance;
+        public WorldCamera              worldCamera;
+        private Plane                   m_Ground;               // 虚拟水平面
+        [Tooltip("水平面高度")]
+        public float                    GroundZ;                // 水平面高度
+        public LayerMask                BaseLayer;
+        public LayerMask                TerrainLayer;
+
+        void Awake()
+        {
+            Instance = this;
+            m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
+        }
+
+        void OnDestroy()
+        {
+            Instance = null;
+        }
+
+        void OnEnable()
+        {
+            if(PlayerInput.Instance == null)
+                throw new System.Exception("PlayerInput == null");
+
+            PlayerInput.Instance.OnLongPressHandler += OnGesture;
+            PlayerInput.Instance.OnScreenPointerUpHandler += OnGesture;
+        }
+
+        void OnDisable()
+        {
+            if(PlayerInput.Instance == null)
+                return;
+
+            PlayerInput.Instance.OnLongPressHandler -= OnGesture;
+            PlayerInput.Instance.OnScreenPointerUpHandler -= OnGesture;
+        }
+
+        private void PickGameObject(Vector2 screenPosition)
+        {
+            ref readonly RaycastHit hitInfo = ref Raycast(screenPosition, TerrainLayer | BaseLayer);
+            if (hitInfo.transform != null)
+            {
+                PlayerInput.Instance.hitEventData.hitInfo = hitInfo;
+                PlayerInput.Instance.SetSelectedGameObject(hitInfo.transform.gameObject, PlayerInput.Instance.hitEventData);
+            }
+        }
+
+        private void OnGesture(ScreenLongPressEventData eventData)
+        {
+            PickGameObject(eventData.screenPosition);
+        }
+
+        private void OnGesture(ScreenPointerUpEventData eventData)
+        {
+            PickGameObject(eventData.screenPosition);
+        }
+
+        // 水平面交点坐标
+        public Vector3 GetGroundHitPoint(Vector2 screenPosition)
+        {
+            ///// method 1
+            Ray mousePos = worldCamera.mainCamera.ScreenPointToRay(screenPosition);
+            float distance;
+            m_Ground.Raycast(mousePos, out distance);
+            return mousePos.GetPoint(distance);
+
+            ///// method 2
+            // Raycast(screenPosition, TerrainLayer, ref m_HitInfo);
+            // return m_HitInfo.point;
+        }
+
+        public bool Raycast(Vector2 screenPosition, int layerMask, ref RaycastHit hitInfo)
+        {
+            Ray ray = worldCamera.mainCamera.ScreenPointToRay(screenPosition);
+
+            return PhysUtility.Raycast(ray, 1000, layerMask, ref hitInfo);
+        }
+
+        public ref readonly RaycastHit Raycast(Vector2 screenPosition, int layerMask)
+        {
+            Ray ray = worldCamera.mainCamera.ScreenPointToRay(screenPosition);
+
+            return ref PhysUtility.Raycast(ray, 1000, layerMask);
+        }
+    }
+}

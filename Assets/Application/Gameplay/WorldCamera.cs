@@ -10,10 +10,8 @@ namespace Application.Runtime
     /// <summary>
     /// 负责大世界的镜头表现
     /// <summary>
-    public class WorldCamera : SingletonMono<WorldCamera>
+    public class WorldCamera : MonoBehaviour
     {
-        static public Camera cam { get { return Instance?.mainCamera; } }
-
         public Camera                   mainCamera;
         public CinemachineVirtualCamera virtualCamera;
         public LayerMask                TerrainLayer;
@@ -51,10 +49,8 @@ namespace Application.Runtime
         public float                    TargetCameraEulerX;         // 
         private Vector3                 m_OriginalEulerAngles;      // 相机初始角度
 
-        protected override void Awake()
+        void Awake()
         {
-            base.Awake();
-
             if (mainCamera == null)
                 throw new System.ArgumentNullException("mainCamera");
             if(virtualCamera == null)
@@ -69,22 +65,22 @@ namespace Application.Runtime
 
         void OnEnable()
         {
-            if(GamePlayerInput.Instance == null)
-                throw new System.Exception("GamePlayerInput == null");
+            if(PlayerInput.Instance == null)
+                throw new System.Exception("PlayerInput == null");
 
-            GamePlayerInput.Instance.OnScreenDragHandler += OnGesture;
-            GamePlayerInput.Instance.OnScreenPinchHandler += OnGesture;
-            GamePlayerInput.Instance.OnScreenPointerDownHandler += OnGesture;
+            PlayerInput.Instance.OnScreenDragHandler += OnGesture;
+            PlayerInput.Instance.OnScreenPinchHandler += OnGesture;
+            PlayerInput.Instance.OnScreenPointerDownHandler += OnGesture;
         }
 
         void OnDisable()
         {
-            if(GamePlayerInput.Instance == null)
+            if(PlayerInput.Instance == null)
                 return;
 
-            GamePlayerInput.Instance.OnScreenDragHandler -= OnGesture;
-            GamePlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
-            GamePlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
+            PlayerInput.Instance.OnScreenDragHandler -= OnGesture;
+            PlayerInput.Instance.OnScreenPinchHandler -= OnGesture;
+            PlayerInput.Instance.OnScreenPointerDownHandler -= OnGesture;
         }
 
         void LateUpdate()
@@ -165,10 +161,10 @@ namespace Application.Runtime
             // Vector3 pos1 = Camera.main.ScreenToViewportPoint (mousePos);
             // Debug.Log($"------- VP: {pos1.z}      mousePosition: {Input.mousePosition.z}");
 
-            // if(GamePlayerInput.Instance.currentSelectedGameObject != null)
+            // if(PlayerInput.Instance.currentSelectedGameObject != null)
             // {
-            //     Vector3 pos = mainCamera.WorldToViewportPoint(GamePlayerInput.Instance.currentSelectedGameObject.transform.position);
-            //     Debug.Log($"{pos}   {GamePlayerInput.Instance.currentSelectedGameObject.name}");
+            //     Vector3 pos = mainCamera.WorldToViewportPoint(PlayerInput.Instance.currentSelectedGameObject.transform.position);
+            //     Debug.Log($"{pos}   {PlayerInput.Instance.currentSelectedGameObject.name}");
             // }
         }
 
@@ -303,20 +299,6 @@ namespace Application.Runtime
         private float GetScreenPortrait()
         {
             return Screen.height;
-        }
-
-        static public bool Raycast(Vector2 screenPosition, int layerMask, ref RaycastHit hitInfo)
-        {
-            Ray ray = cam.ScreenPointToRay(screenPosition);
-
-            return PhysUtility.Raycast(ray, 1000, layerMask, ref hitInfo);
-        }
-
-        static public ref readonly RaycastHit Raycast(Vector2 screenPosition, int layerMask)
-        {
-            Ray ray = cam.ScreenPointToRay(screenPosition);
-
-            return ref PhysUtility.Raycast(ray, 1000, layerMask);
         }
     }
 }
