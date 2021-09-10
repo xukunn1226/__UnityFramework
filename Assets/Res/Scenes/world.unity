@@ -7824,12 +7824,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2ec28d3f02e8294f88c2994c1ea1196, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 149533203}
+  playerController: {fileID: 1905699275}
   virtualCamera: {fileID: 1302797097}
-  TerrainLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  GroundZ: 0
   DragSmoothTime: 0.075
   SlideSmoothTime: 0.3
   DampingWhenDraggingFinished: 50000
@@ -7842,7 +7838,6 @@ MonoBehaviour:
     y: -1035
     width: 1000
     height: 2000
-  HeightRange: {x: 15, y: 200}
   HeightOfRiseCamera: 50
   TargetCameraEulerX: 70
 --- !u!4 &1498751259
@@ -10987,7 +10982,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6aa4d586dfb481941b2005d3e0d28eae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 149533203}
   worldCamera: {fileID: 1498751258}
+  GroundZ: 0
+  HeightRange: {x: 15, y: 200}
   BaseLayer:
     serializedVersion: 2
     m_Bits: 512

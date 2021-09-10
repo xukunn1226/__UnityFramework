@@ -12,12 +12,8 @@ namespace Application.Runtime
     /// <summary>
     public class WorldCamera : MonoBehaviour
     {
-        public Camera                   mainCamera;
+        public WorldPlayerController    playerController;
         public CinemachineVirtualCamera virtualCamera;
-        public LayerMask                TerrainLayer;
-        private Plane                   m_Ground;               // 虚拟水平面
-        [Tooltip("水平面高度")]
-        public float                    GroundZ;                // 水平面高度
         [Min(0.01f)]
         public float                    DragSmoothTime;         // 拖拽时屏幕的跟随时间
         [Min(0.01f)]
@@ -38,26 +34,23 @@ namespace Application.Runtime
         public float                    PinchSensitivity            = 0.2f;
         private Vector2                 m_PendingScreenPos          = Vector2.zero;
         private bool                    m_IsDraggingCommand;
-        private float                   m_LengthOfOneScreen;        // 一屏(横屏)对应的世界距离
         public bool                     ApplyBound;
         public Rect                     Bound;
         private bool                    m_IsPinching;
         private bool                    m_WasPinching;
         private ScreenPinchEventData    m_PinchEventData;
-        public Vector2                  HeightRange;
         public float                    HeightOfRiseCamera;         // 此高度之下镜头略微抬起
         public float                    TargetCameraEulerX;         // 
         private Vector3                 m_OriginalEulerAngles;      // 相机初始角度
 
         void Awake()
         {
-            if (mainCamera == null)
-                throw new System.ArgumentNullException("mainCamera");
+            if (playerController == null)
+                throw new System.ArgumentNullException("playerController");
             if(virtualCamera == null)
                 throw new System.ArgumentNullException("virtualCamera");
 
             m_OriginalEulerAngles = virtualCamera.transform.eulerAngles;
-            m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
 #if UNITY_EDITOR || UNITY_STANDALONE
             PinchSensitivity *= 10;     // PC与真机模式灵敏度不一致
 #endif            
@@ -89,7 +82,7 @@ namespace Application.Runtime
             if (m_IsDraggingCommand)
             {
                 // 确认目标点
-                m_EndPoint = GetGroundHitPoint(m_PendingScreenPos);
+                m_EndPoint = playerController.GetGroundHitPoint(m_PendingScreenPos);
 
                 // 移动相机逼近目标多
                 virtualCamera.transform.position = Vector3.SmoothDamp(virtualCamera.transform.position,
@@ -111,28 +104,29 @@ namespace Application.Runtime
             if (m_IsPinching)
             {
                 // XZ plane movement
-                Vector3 curPos = GetGroundHitPoint(m_PinchEventData.Position);
-                Vector3 delta = curPos - GetGroundHitPoint(m_PinchEventData.PrevPosition);
+                Vector3 curPos = playerController.GetGroundHitPoint(m_PinchEventData.Position);
+                Vector3 delta = curPos - playerController.GetGroundHitPoint(m_PinchEventData.PrevPosition);
                 virtualCamera.transform.position -= delta;
 
                 // camera to focus point movement
                 Vector3 camPos = virtualCamera.transform.position;
                 Vector3 dir = (curPos - camPos).normalized;
                 float deltaMove = m_PinchEventData.DeltaMove * PinchSensitivity;
+                Vector2 absoluteHeightRange = playerController.GetAbsoluteHeightRange();
                 if (deltaMove > 0)      // 向前推进
                 {
-                    if (camPos.y > GroundZ + HeightRange.x + 1)
+                    if (camPos.y > absoluteHeightRange.x + 1)
                     {
                         camPos += dir * deltaMove;
-                        camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
+                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x, absoluteHeightRange.y);
                     }
                 }
                 else if (deltaMove < 0)
                 {
-                    if (camPos.y < GroundZ + HeightRange.y - 1)
+                    if (camPos.y < absoluteHeightRange.y - 1)
                     {
                         camPos += dir * deltaMove;
-                        camPos.y = Mathf.Clamp(camPos.y, GroundZ + HeightRange.x, GroundZ + HeightRange.y);
+                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x, absoluteHeightRange.y);
                     }
                 }
                 virtualCamera.transform.position = camPos;
@@ -140,7 +134,7 @@ namespace Application.Runtime
 
             if(virtualCamera.transform.position.y < HeightOfRiseCamera)
             {
-                float alpha = (HeightOfRiseCamera - virtualCamera.transform.position.y) / (HeightOfRiseCamera - HeightRange.x);
+                float alpha = (HeightOfRiseCamera - virtualCamera.transform.position.y) / (HeightOfRiseCamera - playerController.HeightRange.x);
                 virtualCamera.transform.eulerAngles = new Vector3(m_OriginalEulerAngles.x * (1 - alpha) + TargetCameraEulerX * alpha, m_OriginalEulerAngles.y, m_OriginalEulerAngles.z);
             }
             else
@@ -243,7 +237,7 @@ namespace Application.Runtime
 
         private void BeginScreenDrag(ScreenDragEventData eventData)
         {
-            m_StartPoint = GetGroundHitPoint(eventData.Position);
+            m_StartPoint = playerController.GetGroundHitPoint(eventData.Position);
             SetViewTarget(eventData.Position, DragSmoothTime);
         }
 
@@ -254,10 +248,10 @@ namespace Application.Runtime
 
         private void EndScreenDrag(ScreenDragEventData eventData)
         {
-            float dist = Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / DampingWhenDraggingFinished) * CalcLengthOfOneScreen();
-            Vector3 endPos = GetGroundHitPoint(eventData.Position);
+            float dist = Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / DampingWhenDraggingFinished) * playerController.CalcLengthOfOneScreen();
+            Vector3 endPos = playerController.GetGroundHitPoint(eventData.Position);
             Vector3 dir = (endPos - m_StartPoint).normalized;
-            Vector3 pendingScreenPos = mainCamera.WorldToScreenPoint(endPos + dir * dist);
+            Vector3 pendingScreenPos = playerController.WorldToScreenPoint(endPos + dir * dist);
             SetViewTarget(pendingScreenPos, SlideSmoothTime);
             
 #if UNITY_EDITOR
@@ -266,39 +260,6 @@ namespace Application.Runtime
             // Debug.Log($"{Mathf.Min(MaxCountScreen, eventData.Speed.magnitude / DampingWhenDraggingFinished)}   {eventData.Speed.magnitude}     width: {GetScreenLandscape()}");
             // Debug.DrawLine(pos, pos + dir * dist, Color.red, 10);
             // Debug.DrawLine(m_StartPoint, pos, Color.green, 10);
-        }
-
-        // 水平面交点坐标
-        public Vector3 GetGroundHitPoint(Vector2 screenPosition)
-        {
-            ///// method 1
-            Ray mousePos = mainCamera.ScreenPointToRay(screenPosition);
-            float distance;
-            m_Ground.Raycast(mousePos, out distance);
-            return mousePos.GetPoint(distance);
-
-            ///// method 2
-            // Raycast(screenPosition, TerrainLayer, ref m_HitInfo);
-            // return m_HitInfo.point;
-        }
-
-        // 计算一屏的水平距离
-        private float CalcLengthOfOneScreen()
-        {
-            Vector3 l = GetGroundHitPoint(new Vector2(0, GetScreenPortrait() * 0.5f));
-            Vector3 r = GetGroundHitPoint(new Vector2(GetScreenLandscape(), GetScreenPortrait() * 0.5f));
-            return (r - l).magnitude;
-        }
-
-        // 适配横竖屏，预留接口
-        private float GetScreenLandscape()
-        {
-            return Screen.width;
-        }
-
-        private float GetScreenPortrait()
-        {
-            return Screen.height;
-        }
+        }  
     }
 }
