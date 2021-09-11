@@ -41,7 +41,13 @@ namespace Application.Runtime
 
             Launcher.Instance.Disable();        // 结束Launcher流程
 
-            LuaMainLoop.Init();
+            LuaMainLoop.Init();            
+        }
+
+        IEnumerator Start()
+        {
+            yield return null;      // 等待组件的start执行完毕，例如GameStateBehaviour.Start
+            GameInfoManager.Instance.SwitchTo(GameState.World);
         }
 
         void OnDestroy()

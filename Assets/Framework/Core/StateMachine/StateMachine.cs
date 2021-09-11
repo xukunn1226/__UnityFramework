@@ -33,8 +33,7 @@ namespace Framework.Core
 
         public void Update(float deltaTime)
         {
-            if (m_CurState != null)
-                m_CurState.OnUpdate(deltaTime);
+            m_CurState?.OnUpdate(deltaTime);
         }
 
         public IState<T> GetState(T id)

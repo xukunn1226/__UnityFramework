@@ -6,10 +6,9 @@ using Framework.Core;
 
 namespace Application.Runtime
 {    
-    public class WorldPlayerController : SingletonMono<WorldPlayerController>
+    public class WorldPlayerController : PlayerController
     {
-        public Camera                   mainCamera;
-        public WorldCamera              worldCamera;
+        public WorldCamera              virtualCamera;
         private Plane                   m_Ground;               // 虚拟水平面
         [Tooltip("水平面高度")]
         public float                    GroundZ;                // 水平面高度
@@ -19,13 +18,9 @@ namespace Application.Runtime
         public LayerMask                BaseLayer;
         public LayerMask                TerrainLayer;
 
-        protected override void Awake()
+        void Awake()
         {
-            base.Awake();
-
-            if(mainCamera == null)
-                throw new System.ArgumentNullException("mainCamera");
-            if(worldCamera == null)
+            if(virtualCamera == null)
                 throw new System.ArgumentNullException("worldCamera");
 
             m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
@@ -44,7 +39,7 @@ namespace Application.Runtime
             PlayerInput.Instance.OnLongPressHandler += OnGesture;
             PlayerInput.Instance.OnScreenPointerUpHandler += OnGesture;
             
-            worldCamera.enabled = true;
+            virtualCamera.enabled = true;
         }
 
         void OnDisable()
@@ -55,9 +50,9 @@ namespace Application.Runtime
                 PlayerInput.Instance.OnScreenPointerUpHandler -= OnGesture;
             }
 
-            if (worldCamera != null)
+            if (virtualCamera != null)
             {
-                worldCamera.enabled = false;
+                virtualCamera.enabled = false;
             }
         }
 
@@ -85,13 +80,13 @@ namespace Application.Runtime
         {
             ApplyBound = true;
             Bound = bound;
-            worldCamera.ApplyLimitedBound(bound);
+            virtualCamera.ApplyLimitedBound(bound);
         }
 
         public void UnapplyLimitedBound()
         {
             ApplyBound = false;
-            worldCamera.UnapplyLimitedBound();
+            virtualCamera.UnapplyLimitedBound();
         }
 
         public Vector2 GetAbsoluteHeightRange()
@@ -103,7 +98,7 @@ namespace Application.Runtime
         public Vector3 GetGroundHitPoint(Vector2 screenPosition)
         {
             ///// method 1
-            Ray mousePos = mainCamera.ScreenPointToRay(screenPosition);
+            Ray mousePos = ScreenPointToRay(screenPosition);
             float distance;
             m_Ground.Raycast(mousePos, out distance);
             return mousePos.GetPoint(distance);
@@ -119,30 +114,6 @@ namespace Application.Runtime
             Vector3 l = GetGroundHitPoint(new Vector2(0, Screen.height * 0.5f));
             Vector3 r = GetGroundHitPoint(new Vector2(Screen.width, Screen.height * 0.5f));
             return (r - l).magnitude;
-        }
-
-        public Ray ScreenPointToRay(Vector3 screenPosition)
-        {
-            return mainCamera.ScreenPointToRay(screenPosition);
-        }
-
-        public Vector3 WorldToScreenPoint(Vector3 worldPosition)
-        {
-            return mainCamera.WorldToScreenPoint(worldPosition);
-        }
-
-        public bool Raycast(Vector2 screenPosition, int layerMask, ref RaycastHit hitInfo)
-        {
-            Ray ray = mainCamera.ScreenPointToRay(screenPosition);
-
-            return PhysUtility.Raycast(ray, 1000, layerMask, ref hitInfo);
-        }
-
-        public ref readonly RaycastHit Raycast(Vector2 screenPosition, int layerMask)
-        {
-            Ray ray = mainCamera.ScreenPointToRay(screenPosition);
-
-            return ref PhysUtility.Raycast(ray, 1000, layerMask);
         }
     }
 }
