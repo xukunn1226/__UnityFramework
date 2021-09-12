@@ -23,6 +23,7 @@ namespace Application.Runtime
             yield return null;      // 等待core.OnDestroy()的调用
 
             Resources.UnloadUnusedAssets();
+            System.GC.Collect();
 
             // 重启launcher流程
             Launcher.Instance.Restart();

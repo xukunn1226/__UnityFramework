@@ -13,6 +13,11 @@ namespace Application.Runtime
             if(mainCamera == null)
                 throw new System.ArgumentNullException("mainCamera");
         }
+
+        public void SetCullingMask(int mask)
+        {
+            mainCamera.cullingMask = mask;
+        }
         
         public Ray ScreenPointToRay(Vector3 screenPosition)
         {
