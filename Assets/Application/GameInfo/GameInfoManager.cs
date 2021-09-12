@@ -46,7 +46,7 @@ namespace Application.Runtime
         Invalid = -1,
         World,
         Dungeon,
-    }    
+    }
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(GameInfoManager))]

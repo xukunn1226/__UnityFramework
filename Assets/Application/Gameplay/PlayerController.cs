@@ -43,4 +43,9 @@ namespace Application.Runtime
             return ref PhysUtility.Raycast(ray, 1000, layerMask);
         }
     }
+
+    public enum TransitionType
+    {
+        
+    }
 }

@@ -188,42 +188,42 @@ namespace Framework.Core
 
         ///////////////////////////////// easing function
         /// reference: http://gizma.com/easing/   https://easings.net/
-        public static float InterpEaseIn(float a, float b, float alpha, float exp)
+        public static float EaseInExpo(float a, float b, float alpha, float exp)
         {
             float modifiedAlpha = Mathf.Pow(alpha, exp);
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpEaseOut(float a, float b, float alpha, float exp)
+        public static float EaseOutExpo(float a, float b, float alpha, float exp)
         {
             float modifiedAlpha = 1.0f - Mathf.Pow(1.0f - alpha, exp);
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpEaseInOut(float a, float b, float alpha, float exp)
+        public static float EaseInOutExpo(float a, float b, float alpha, float exp)
         {
             return Mathf.Lerp(a, b, (alpha < 0.5f) ? 
-                                    InterpEaseIn(0, 1, alpha * 2, exp) * 0.5f : 
-                                    InterpEaseOut(0, 1, alpha * 2 - 1, exp) * 0.5f + 0.5f);
+                                    EaseInExpo(0, 1, alpha * 2, exp) * 0.5f : 
+                                    EaseOutExpo(0, 1, alpha * 2 - 1, exp) * 0.5f + 0.5f);
         }
 
-        public static float InterpSinIn(float a, float b, float alpha)
+        public static float EaseInSine(float a, float b, float alpha)
         {
             float modifiedAlpha = -1.0f * Mathf.Cos(alpha * Mathf.PI * 0.5f) + 1.0f;
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpSinOut(float a, float b, float alpha)
+        public static float EaseOutSine(float a, float b, float alpha)
         {
             float modifiedAlpha = Mathf.Sin(alpha * Mathf.PI * 0.5f);
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpSinInOut(float a, float b, float alpha)
+        public static float EaseInOutSine(float a, float b, float alpha)
         {
             return Mathf.Lerp(a, b, (alpha < 0.5f) ?
-                                    InterpSinIn(0, 1, alpha * 2) * 0.5f :
-                                    InterpSinOut(0, 1, alpha * 2 - 1) * 0.5f + 0.5f);
+                                    EaseInSine(0, 1, alpha * 2) * 0.5f :
+                                    EaseOutSine(0, 1, alpha * 2 - 1) * 0.5f + 0.5f);
         }
 
         public static float InterpExpoIn(float a, float b, float alpha)
