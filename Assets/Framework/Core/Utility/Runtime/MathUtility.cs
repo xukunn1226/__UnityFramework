@@ -188,28 +188,49 @@ namespace Framework.Core
 
         ///////////////////////////////// easing function
         /// reference: http://gizma.com/easing/   https://easings.net/
-        public static float EaseInExpo(float a, float b, float alpha, float exp)
+
+        // Linear
+        // easeInQuad
+        // easeInCubic
+        // easeInQuart
+        // easeInQuint
+        // easeInSine
+        // easeInExpo
+        // easeInCirc
+        // easeInBack
+        // easeInElastic
+        // easeInBounce
+
+        
+
+        public static float Linear(float a, float b, float alpha)
+        {
+            return Mathf.Lerp(a, b, alpha);
+        }
+
+        // exp == 2, 3, 4, 5分别对应Quad, Cubic, Quart, Quint
+        public static float EaseInPow(float a, float b, float alpha, float exp)
         {
             float modifiedAlpha = Mathf.Pow(alpha, exp);
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float EaseOutExpo(float a, float b, float alpha, float exp)
+        public static float EaseOutPow(float a, float b, float alpha, float exp)
         {
             float modifiedAlpha = 1.0f - Mathf.Pow(1.0f - alpha, exp);
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float EaseInOutExpo(float a, float b, float alpha, float exp)
+        public static float EaseInOutPow(float a, float b, float alpha, float exp)
         {
             return Mathf.Lerp(a, b, (alpha < 0.5f) ? 
-                                    EaseInExpo(0, 1, alpha * 2, exp) * 0.5f : 
-                                    EaseOutExpo(0, 1, alpha * 2 - 1, exp) * 0.5f + 0.5f);
+                                    EaseInPow(0, 1, alpha * 2, exp) * 0.5f : 
+                                    EaseOutPow(0, 1, alpha * 2 - 1, exp) * 0.5f + 0.5f);
         }
 
         public static float EaseInSine(float a, float b, float alpha)
         {
-            float modifiedAlpha = -1.0f * Mathf.Cos(alpha * Mathf.PI * 0.5f) + 1.0f;
+            float modifiedAlpha = 1.0f - Mathf.Cos(alpha * Mathf.PI * 0.5f);
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
@@ -221,48 +242,163 @@ namespace Framework.Core
 
         public static float EaseInOutSine(float a, float b, float alpha)
         {
-            return Mathf.Lerp(a, b, (alpha < 0.5f) ?
-                                    EaseInSine(0, 1, alpha * 2) * 0.5f :
-                                    EaseOutSine(0, 1, alpha * 2 - 1) * 0.5f + 0.5f);
+            // return Mathf.Lerp(a, b, (alpha < 0.5f) ?
+            //                         EaseInSine(0, 1, alpha * 2) * 0.5f :
+            //                         EaseOutSine(0, 1, alpha * 2 - 1) * 0.5f + 0.5f);
+            float modifiedAlpha = -(Mathf.Cos(Mathf.PI * alpha) - 1) * 0.5f;
+            return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpExpoIn(float a, float b, float alpha)
+        public static float EaseInExpo(float a, float b, float alpha)
         {
             float modifiedAlpha = (alpha == 0) ? 0 : Mathf.Pow(2, 10.0f * (alpha - 1.0f));
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpExpoOut(float a, float b, float alpha)
+        public static float EaseOutExpo(float a, float b, float alpha)
         {
-            float modifiedAlpha = (alpha == 1) ? 1 : -1.0f * Mathf.Pow(2, -10.0f * alpha) + 1;
+            float modifiedAlpha = (alpha == 1) ? 1 : 1.0f - Mathf.Pow(2, -10.0f * alpha);
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpExpoInOut(float a, float b, float alpha)
+        public static float EaseInOutExpo(float a, float b, float alpha)
         {
-            return Mathf.Lerp(a, b, (alpha < 0.5f) ?
-                                    InterpExpoIn(0, 1, alpha * 2) * 0.5f :
-                                    InterpExpoOut(0, 1, alpha * 2 - 1) * 0.5f + 0.5f);
-        }
-
-        public static float InterpCircularIn(float a, float b, float alpha)
-        {
-            float modifiedAlpha = -1.0f * (Mathf.Sqrt(1.0f - alpha * alpha) - 1.0f);
+            // return Mathf.Lerp(a, b, (alpha < 0.5f) ?
+            //                         EaseInExpo(0, 1, alpha * 2) * 0.5f :
+            //                         EaseOutExpo(0, 1, alpha * 2 - 1) * 0.5f + 0.5f);
+            float modifiedAlpha = alpha == 0
+                                    ? 0
+                                    : alpha == 1
+                                    ? 1
+                                    : alpha < 0.5f
+                                    ? Mathf.Pow(2, 20 * alpha - 10) * 0.5f
+                                    : (2 - Mathf.Pow(2, -20 * alpha + 10)) * 0.5f;
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpCircularOut(float a, float b, float alpha)
+        public static float EaseInCircular(float a, float b, float alpha)
         {
-            alpha -= 1.0f;
-            float modifiedAlpha = Mathf.Sqrt(1.0f - alpha * alpha);
+            float modifiedAlpha = 1.0f - Mathf.Sqrt(1.0f - alpha * alpha);
             return Mathf.Lerp(a, b, modifiedAlpha);
         }
 
-        public static float InterpCircularInOut(float a, float b, float alpha)
+        public static float EaseOutCircular(float a, float b, float alpha)
         {
-            return Mathf.Lerp(a, b, (alpha < 0.5f) ?
-                                    InterpCircularIn(0, 1, alpha * 2) * 0.5f :
-                                    InterpCircularInOut(0, 1, alpha * 2 - 1) * 0.5f + 0.5f);
+            float modifiedAlpha = Mathf.Sqrt(1.0f - (alpha - 1.0f) * (alpha - 1.0f));
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseInOutCircular(float a, float b, float alpha)
+        {
+            // return Mathf.Lerp(a, b, (alpha < 0.5f) ?
+            //                         EaseInCircular(0, 1, alpha * 2) * 0.5f :
+            //                         EaseInOutCircular(0, 1, alpha * 2 - 1) * 0.5f + 0.5f);
+            float modifiedAlpha = alpha < 0.5f
+                                    ? (1 - Mathf.Sqrt(1 - Mathf.Pow(2 * alpha, 2))) * 0.5f
+                                    : (Mathf.Sqrt(1 - Mathf.Pow(-2 * alpha + 2, 2)) + 1) * 0.5f;
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseInBack(float a, float b, float alpha)
+        {
+            const float c1 = 1.70158f;
+            const float c2 = c1 + 1;
+            float modifiedAlpha = c2 * Mathf.Pow(alpha, 3) - c1 * Mathf.Pow(alpha, 2);
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseOutBack(float a, float b, float alpha)
+        {
+            const float c1 = 1.70158f;
+            const float c2 = c1 + 1;
+            float modifiedAlpha = 1 + c2 * Mathf.Pow(alpha - 1, 3) + c1 * Mathf.Pow(alpha - 1, 2);
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseInOutBack(float a, float b, float alpha)
+        {
+            const float c1 = 1.70158f;
+            const float c2 = c1 * 1.525f;
+            float modifiedAlpha = alpha < 0.5f 
+                                    ? (Mathf.Pow(2 * alpha, 2) * ((c2 + 1) * 2 * alpha - c2)) * 0.5f 
+                                    : (Mathf.Pow(2 * alpha - 2, 2) * ((c2 + 1) * (alpha * 2 - 2) + c2) + 2) * 0.5f;
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseInElastic(float a, float b, float alpha)
+        {
+            const float c = (Mathf.PI * 2) / 3;
+            float modifiedAlpha = alpha == 0 
+                                    ? 0 
+                                    : alpha == 1 
+                                    ? 1 
+                                    : -Mathf.Pow(2, 10 * alpha - 10) * Mathf.Sin((alpha * 10 - 10.75f) * c);
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseOutElastic(float a, float b, float alpha)
+        {
+            const float c = (Mathf.PI * 2) / 3;
+            float modifiedAlpha = alpha == 0 
+                                    ? 0 
+                                    : alpha == 1 
+                                    ? 1 
+                                    : Mathf.Pow(2, -10 * alpha) * Mathf.Sin((alpha * 10 - 10.75f) * c) + 1;
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseInOutElastic(float a, float b, float alpha)
+        {
+            const float c = (Mathf.PI * 2) / 4.5f;
+            float modifiedAlpha = alpha == 0
+                                    ? 0
+                                    : alpha == 1
+                                    ? 1
+                                    : alpha < 0.5f
+                                    ? -(Mathf.Pow(2, 20 * alpha - 10) * Mathf.Sin((20 * alpha - 11.125f) * c)) * 0.5f
+                                    : (Mathf.Pow(2, -20 * alpha + 10) * Mathf.Sin((20 * alpha - 11.125f) * c)) * 0.5f + 1;
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseInBounce(float a, float b, float alpha)
+        {
+            float modifiedAlpha = 1 - InternalEaseOutBounce(1 - alpha);
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        public static float EaseOutBounce(float a, float b, float alpha)
+        {
+            return Mathf.Lerp(a, b, InternalEaseOutBounce(alpha));
+        }
+
+        public static float EaseInOutBounce(float a, float b, float alpha)
+        {
+            float modifiedAlpha = alpha < 0.5f ? (1 - InternalEaseOutBounce(1 - 2 * alpha)) * 0.5f : (1 + InternalEaseOutBounce(2 * alpha - 1)) * 0.5f;
+            return Mathf.Lerp(a, b, modifiedAlpha);
+        }
+
+        private static float InternalEaseOutBounce(float alpha)
+        {
+            const float n = 7.5625f;
+            const float d = 2.75f;
+            float modifiedAlpha = 0;
+            if(alpha < 1 / d)
+            {
+                modifiedAlpha = n * alpha * alpha;
+            }
+            else if(alpha < 2 / d)
+            {
+                modifiedAlpha = n * ((alpha - 1.5f) / d) * alpha + 0.75f;
+            }
+            else if(alpha < 2.5f / d)
+            {
+                modifiedAlpha = n * ((alpha - 2.25f) / d) * alpha + 0.9375f;
+            }
+            else
+            {
+                modifiedAlpha = n * ((alpha - 2.625f) / d) * alpha + 0.984375f;
+            }
+            return modifiedAlpha;
         }
     }
 }

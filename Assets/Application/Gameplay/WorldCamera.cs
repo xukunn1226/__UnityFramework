@@ -44,11 +44,7 @@ namespace Application.Runtime
         public float                        TargetCameraEulerX;         // 
         private Vector3                     m_OriginalEulerAngles;      // 相机初始角度
 
-        public class LocomotionEvent
-        {
-            public Vector3  targetPosition;
-            public float    time;
-        }
+        private LinkedList<PositionEasingEvent> m_EasingEvent = new LinkedList<PositionEasingEvent>();
 
         void Awake()
         {
@@ -85,6 +81,11 @@ namespace Application.Runtime
 
         void LateUpdate()
         {
+            if(ProcessEasingEvents())
+            {
+                return;
+            }
+
             // process screen dragging
             if (m_IsDraggingCommand)
             {
@@ -156,6 +157,30 @@ namespace Application.Runtime
                 pos.z = Mathf.Clamp(pos.z, m_Bound.yMin, m_Bound.yMax);
                 virtualCamera.transform.position = pos;
             }
+        }
+
+        /// <summary>
+        /// 处理镜头的缓动
+        /// true: 仍有需求在处理中；false：没有或处理完毕
+        /// <summary>
+        private bool ProcessEasingEvents()
+        {
+            while(m_EasingEvent.Count > 0)
+            {
+                PositionEasingEvent evt = m_EasingEvent.First.Value;
+                Vector3 pos;
+                bool isFinished = evt.Poll(Time.deltaTime, out pos);
+                virtualCamera.transform.position = pos;
+                if(isFinished)
+                {
+                    m_EasingEvent.RemoveFirst();
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return m_EasingEvent.Count > 0;
         }
 
         public void ApplyLimitedBound(Rect bound)
