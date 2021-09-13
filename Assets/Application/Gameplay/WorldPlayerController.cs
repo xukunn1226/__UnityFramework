@@ -26,9 +26,9 @@ namespace Application.Runtime
             m_Ground = new Plane(Vector3.up, new Vector3(0, GroundZ, 0));
 
             if(ApplyBound)
-                ApplyLimitedBound(Bound);
+                SetLimitedBound(Bound);
             else
-                UnapplyLimitedBound();
+                SetUnlimitedBound();
         }
 
         void OnEnable()
@@ -76,17 +76,17 @@ namespace Application.Runtime
             PickGameObject(eventData.screenPosition);
         }
 
-        public void ApplyLimitedBound(Rect bound)
+        public void SetLimitedBound(Rect bound)
         {
             ApplyBound = true;
             Bound = bound;
-            virtualCamera.ApplyLimitedBound(bound);
+            virtualCamera.SetLimitedBound(bound);
         }
 
-        public void UnapplyLimitedBound()
+        public void SetUnlimitedBound()
         {
             ApplyBound = false;
-            virtualCamera.UnapplyLimitedBound();
+            virtualCamera.SetUnlimitedBound();
         }
 
         public Vector2 GetAbsoluteHeightRange()
@@ -115,5 +115,37 @@ namespace Application.Runtime
             Vector3 r = GetGroundHitPoint(new Vector2(Screen.width, Screen.height * 0.5f));
             return (r - l).magnitude;
         }
+
+        public float time;
+        public EasingFunction function;
+
+        public void FocusToBase()
+        {
+            Vector3 targetPos = Vector3.zero;
+            targetPos.y = cameraPos.y;
+
+            virtualCamera.AddEasingEvent(new PositionEasingEvent(cameraPos, targetPos, time, function, null));
+        }
+
+        public float            timeOfPan;
+        public EasingFunction   easingFunctionOfPan;
+
+        public void Pan(Vector3 targetPos)
+        {
+            Vector3 center = GetGroundHitPoint(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+            if(Mathf.Approximately(center.y, targetPos.y))
+            {
+                virtualCamera.AddEasingEvent(new PositionEasingEvent(cameraPos, cameraPos + (targetPos - center), timeOfPan, easingFunctionOfPan, null));
+            }
+            else
+            {
+
+            }
+        }
     }
 }
+
+// Ray mousePos = ScreenPointToRay(screenPosition);
+//             float distance;
+//             m_Ground.Raycast(mousePos, out distance);
+//             return mousePos.GetPoint(distance);

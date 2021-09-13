@@ -32,7 +32,7 @@ namespace Application.Runtime
         {
             if(Input.GetKeyDown(KeyCode.F1))
             {
-                
+                ((WorldPlayerController)playerController).FocusToBase();
             }
         }
     }

@@ -81,11 +81,42 @@ namespace Application.Runtime
 
         void LateUpdate()
         {
-            if(ProcessEasingEvents())
-            {
-                return;
+            if(!ProcessEasingEvents())
+            { // 缓动事件处理完毕，才处理input
+                ProcessInput();
             }
 
+            ApplyLimitedBound();
+        }
+
+        /// <summary>
+        /// 处理镜头的缓动
+        /// true: 仍有需求在处理中；false：没有或处理完毕
+        /// <summary>
+        private bool ProcessEasingEvents()
+        {
+            while(m_EasingEvent.Count > 0)
+            {
+                StopInput();
+                
+                PositionEasingEvent evt = m_EasingEvent.First.Value;
+                Vector3 pos;
+                bool isDone = evt.Poll(Time.deltaTime, out pos);
+                virtualCamera.transform.position = pos;
+                if(isDone)
+                {
+                    m_EasingEvent.RemoveFirst();
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return m_EasingEvent.Count > 0;
+        }
+
+        private void ProcessInput()
+        {
             // process screen dragging
             if (m_IsDraggingCommand)
             {
@@ -114,10 +145,9 @@ namespace Application.Runtime
                 // XZ plane movement
                 Vector3 curPos = playerController.GetGroundHitPoint(m_PinchEventData.Position);
                 Vector3 delta = curPos - playerController.GetGroundHitPoint(m_PinchEventData.PrevPosition);
-                virtualCamera.transform.position -= delta;
 
                 // camera to focus point movement
-                Vector3 camPos = virtualCamera.transform.position;
+                Vector3 camPos = virtualCamera.transform.position - delta;
                 Vector3 dir = (curPos - camPos).normalized;
                 float deltaMove = m_PinchEventData.DeltaMove * PinchSensitivity;
                 Vector2 absoluteHeightRange = playerController.GetAbsoluteHeightRange();
@@ -149,7 +179,16 @@ namespace Application.Runtime
             {
                 virtualCamera.transform.eulerAngles = m_OriginalEulerAngles;
             }
+        }
 
+        private void StopInput()
+        {
+            m_IsDraggingCommand = false;
+            m_IsPinching = false;
+        }
+
+        private void ApplyLimitedBound()
+        {
             if (m_ApplyBound)
             {
                 Vector3 pos = virtualCamera.transform.position;
@@ -159,37 +198,13 @@ namespace Application.Runtime
             }
         }
 
-        /// <summary>
-        /// 处理镜头的缓动
-        /// true: 仍有需求在处理中；false：没有或处理完毕
-        /// <summary>
-        private bool ProcessEasingEvents()
-        {
-            while(m_EasingEvent.Count > 0)
-            {
-                PositionEasingEvent evt = m_EasingEvent.First.Value;
-                Vector3 pos;
-                bool isFinished = evt.Poll(Time.deltaTime, out pos);
-                virtualCamera.transform.position = pos;
-                if(isFinished)
-                {
-                    m_EasingEvent.RemoveFirst();
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return m_EasingEvent.Count > 0;
-        }
-
-        public void ApplyLimitedBound(Rect bound)
+        public void SetLimitedBound(Rect bound)
         {
             m_ApplyBound = true;
             m_Bound = bound;
         }
 
-        public void UnapplyLimitedBound()
+        public void SetUnlimitedBound()
         {
             m_ApplyBound = false;
         }
@@ -274,6 +289,11 @@ namespace Application.Runtime
             Vector3 dir = (endPos - m_StartPoint).normalized;
             Vector3 pendingScreenPos = playerController.WorldToScreenPoint(endPos + dir * dist);
             SetViewTarget(pendingScreenPos, SlideSmoothTime);
-        }  
+        }
+
+        public void AddEasingEvent(PositionEasingEvent evt)
+        {
+            m_EasingEvent.AddLast(evt);
+        }
     }
 }

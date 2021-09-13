@@ -10950,6 +10950,8 @@ MonoBehaviour:
   TerrainLayer:
     serializedVersion: 2
     m_Bits: 256
+  time: 0.3
+  function: 17
 --- !u!4 &1905699276
 Transform:
   m_ObjectHideFlags: 0

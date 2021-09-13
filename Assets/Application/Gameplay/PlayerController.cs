@@ -8,6 +8,22 @@ namespace Application.Runtime
     {
         public Camera       mainCamera;
 
+        public Vector3      cameraPos
+        {
+            get
+            {
+                return mainCamera.transform.position;
+            }
+        }
+
+        public Vector3      cameraForward
+        {
+            get
+            {
+                return mainCamera.transform.forward;
+            }
+        }
+
         void Awake()
         {
             if(mainCamera == null)
@@ -42,10 +58,5 @@ namespace Application.Runtime
 
             return ref PhysUtility.Raycast(ray, 1000, layerMask);
         }
-    }
-
-    public enum TransitionType
-    {
-        
     }
 }

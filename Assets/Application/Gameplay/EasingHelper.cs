@@ -45,6 +45,7 @@ namespace Application.Runtime
         static public float GetEasingAlpha(EasingFunction function, float alpha)
         {
             float t = 0;
+            alpha = Mathf.Clamp01(alpha);
             switch(function)
             {
                 case EasingFunction.Linear:
@@ -148,26 +149,33 @@ namespace Application.Runtime
     [System.Serializable]
     public class PositionEasingEvent
     {
-        public Vector3          curPosition;
-        public Vector3          targetPosition;
-        public float            time;
-        public EasingFunction   function;
-        private float           m_Time;
+        private Vector3             m_CurPosition;
+        private Vector3             m_TargetPosition;
+        private float               m_TransitionTime;
+        private EasingFunction      m_Function;
+        private float               m_Time;
+        private System.Action       m_Callback;
 
-        public PositionEasingEvent(Vector3 curPos, Vector3 targetPos, float time, EasingFunction function)
+        public PositionEasingEvent(Vector3 curPos, Vector3 targetPos, float time, EasingFunction function, System.Action callback)
         {
-            this.curPosition    = curPos;
-            this.targetPosition = targetPos;
-            this.time           = Mathf.Max(0.01f, time);
-            this.function       = function;
+            m_CurPosition       = curPos;
+            m_TargetPosition    = targetPos;
+            m_TransitionTime    = Mathf.Max(0.01f, time);
+            m_Function          = function;
+            m_Callback          = callback;
         }
 
         public bool Poll(float deltaTime, out Vector3 pos)
         {
             m_Time += deltaTime;
-            pos = Vector3.Lerp(curPosition, targetPosition, EasingHelper.GetEasingAlpha(function, m_Time / time));
+            pos = Vector3.Lerp(m_CurPosition, m_TargetPosition, EasingHelper.GetEasingAlpha(m_Function, m_Time / m_TransitionTime));
 
-            return m_Time >= time;
+            if(m_Time >= m_TransitionTime)
+            {
+                m_Callback?.Invoke();
+            }
+
+            return m_Time >= m_TransitionTime;
         }
     }
 }
