@@ -32,7 +32,12 @@ namespace Application.Runtime
         {
             if(Input.GetKeyDown(KeyCode.F1))
             {
-                ((WorldPlayerController)playerController).FocusToBase();
+                ((WorldPlayerController)playerController).PanCamera(Vector3.zero);
+            }
+
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                UnityEngine.Debug.Log($"print center hit point: {((WorldPlayerController)playerController).GetCenterHitPoint()}");
             }
         }
     }

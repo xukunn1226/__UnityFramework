@@ -24,6 +24,14 @@ namespace Application.Runtime
             }
         }
 
+        public Vector3      cameraEulerAngles
+        {
+            get
+            {
+                return mainCamera.transform.eulerAngles;
+            }
+        }
+
         void Awake()
         {
             if(mainCamera == null)

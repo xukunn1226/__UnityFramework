@@ -14,16 +14,18 @@ namespace Application.Runtime.Tests
         {
             transform.localScale *= 2;
 
-            // PlayerInput.HitEventData data = eventData as PlayerInput.HitEventData;
-            // if(data != null)
-            // {
-            //     Debug.Log($"HitInfo: {data.hitInfo.point}");
-            // }
+            PlayerInput.HitEventData hitEventData = (PlayerInput.HitEventData)eventData;
+            ((WorldPlayerController)GameInfoManager.playerController).PanCamera(hitEventData.hitInfo.point, OnPanEnd);
         }
 
         public void OnDeselect(BaseEventData eventData)
         {
             transform.localScale *= 0.5f;
+        }
+
+        private void OnPanEnd()
+        {
+            ((WorldPlayerController)GameInfoManager.playerController).DiveCameraToBase();
         }
 
         public void OnGesture(ObjectDragEventData eventData)
