@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 namespace Application.Runtime
 {
@@ -8,17 +9,13 @@ namespace Application.Runtime
     public class CameraEffectInfo : ScriptableObject
     {
         [Tooltip("震屏时间")]
-        public float                        m_Duration        = 1;
-
-        [Tooltip("优先级，值越大优先级越高")]
-        public int                          m_Priority;
-
-        public CameraEffectShakePosition    m_ShakePosition   = new CameraEffectShakePosition();
-        public CameraEffectShakeRotation    m_ShakeRotation   = new CameraEffectShakeRotation();
-        public CameraEffectFOV              m_ShakeFOV        = new CameraEffectFOV();
-
+        public float                        m_Duration          = 1;
+        public CameraEffectShakePosition    m_ShakePosition     = new CameraEffectShakePosition();
+        public CameraEffectShakeRotation    m_ShakeRotation     = new CameraEffectShakeRotation();
+        public CameraEffectFOV              m_ShakeFOV          = new CameraEffectFOV();
         private float                       m_StartTime;
         private System.Action               onFinished;
+        private CinemachineVirtualCamera    m_Camera;
 
         private enum CameraEffectState
         {
@@ -27,7 +24,7 @@ namespace Application.Runtime
             Sample,
             End,
         }
-        private CameraEffectState           m_EffectState = CameraEffectState.None;
+        private CameraEffectState           m_EffectState       = CameraEffectState.None;
 
         private void Begin()
         {
@@ -36,15 +33,15 @@ namespace Application.Runtime
 
             if( m_ShakePosition.m_Active )
             {
-                m_ShakePosition.OnBegin(m_Duration);
+                m_ShakePosition.OnBegin(m_Camera, m_Duration);
             }
             if( m_ShakeRotation.m_Active )
             {
-                m_ShakeRotation.OnBegin(m_Duration);
+                m_ShakeRotation.OnBegin(m_Camera, m_Duration);
             }
             if( m_ShakeFOV.m_Active )
             {
-                m_ShakeFOV.OnBegin(m_Duration);
+                m_ShakeFOV.OnBegin(m_Camera, m_Duration);
             }
         }
 
@@ -109,13 +106,9 @@ namespace Application.Runtime
                 case CameraEffectState.End:
                     {
                         End();
+                        onFinished?.Invoke();
+                        onFinished = null;
                         m_EffectState = CameraEffectState.None;
-
-                        if (onFinished != null)
-                        {
-                            onFinished();
-                            onFinished = null;
-                        }
                     }
                     break;
             }
@@ -124,9 +117,10 @@ namespace Application.Runtime
         /// <summary>
         /// 播放相机效果
         /// </summary>
-        public void Play(System.Action onFinished = null)
+        public void Play(CinemachineVirtualCamera camera, System.Action onFinished = null)
         {
             m_EffectState = CameraEffectState.Begin;
+            m_Camera = camera;
             this.onFinished = onFinished;
         }
 

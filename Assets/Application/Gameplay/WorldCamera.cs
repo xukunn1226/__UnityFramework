@@ -86,6 +86,8 @@ namespace Application.Runtime
                 ProcessInput();
             }
 
+            UpdateCameraEffect();
+
             ApplyLimitedBound();
         }
 
@@ -294,6 +296,21 @@ namespace Application.Runtime
         public void AddEasingEvent(PositionEasingEvent evt)
         {
             m_EasingEvent.AddLast(evt);
+        }
+
+        public void PlayCameraEffect(CameraEffectInfo info, System.Action onFinished = null)
+        {
+            CameraEffectHelper.Play(info, virtualCamera, onFinished);
+        }
+
+        public void StopCameraEffect()
+        {
+            CameraEffectHelper.StopCameraEffect();
+        }
+
+        private void UpdateCameraEffect()
+        {
+            CameraEffectHelper.UpdateCameraEffect();
         }
     }
 }
