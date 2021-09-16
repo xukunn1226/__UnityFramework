@@ -47,6 +47,8 @@
 	https://mp.weixin.qq.com/s/CMNMRXJCuYIfolvI9zLB7w  知乎大V「放牛的星星」，是这么做性能优化的
 	https://mp.weixin.qq.com/s/XNxa0oeW25R_mwCgKWp11w  优化移动游戏性能 | 来自Unity顶级工程师的性能分析、内存与代码架构小贴士
 	https://mp.weixin.qq.com/s/OUdDJRA9YAcQ6CuTyDcahw  从搭建到优化，《永劫无间》如何做游戏动作与运动系统
+	https://mp.weixin.qq.com/s/ISwHGpzEyLL4IOLXrHPt6A  《黑暗之潮》中次时代技术的应用经验及技术
+	https://mp.weixin.qq.com/s/WkXT-umcp57XpjFymSWoTA  着色器运行效率和图形质量兼得！技术大佬的 Shader Graph 功能试验
 * RTS中的避障算法
 	VO:
 		https://blog.csdn.net/zhiai315/article/details/113931422  VO避障
