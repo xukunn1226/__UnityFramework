@@ -250,6 +250,12 @@ namespace Framework.AssetManagement.GameBuilder
             opt.target = EditorUserBuildSettings.activeBuildTarget;
             opt.targetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
             opt.options = para.GenerateBuildOptions();
+
+            if(opt.target == BuildTarget.Android)
+            { // 出aab包时不能带这两个option
+                opt.options &= ~BuildOptions.CompressWithLz4;
+                opt.options &= ~BuildOptions.CompressWithLz4HC;
+            }
             return opt;
         }
 
