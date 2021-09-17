@@ -174,7 +174,7 @@ namespace Application.Runtime
 
             if(virtualCamera.transform.position.y < HeightOfRiseCamera)
             {
-                float alpha = (HeightOfRiseCamera - virtualCamera.transform.position.y) / (HeightOfRiseCamera - playerController.HeightRange.x);
+                float alpha = (HeightOfRiseCamera - virtualCamera.transform.position.y) / (HeightOfRiseCamera - playerController.lowestView);
                 virtualCamera.transform.eulerAngles = new Vector3(m_OriginalEulerAngles.x * (1 - alpha) + TargetCameraEulerX * alpha, m_OriginalEulerAngles.y, m_OriginalEulerAngles.z);
             }
             else

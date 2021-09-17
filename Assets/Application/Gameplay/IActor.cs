@@ -6,5 +6,8 @@ namespace Application.Runtime
 {
     public interface IActor
     {
+        ViewLayer minViewLayer { get; set; }
+        ViewLayer maxViewLayer { get; set; }
+        void OnUpdate();
     }
 }

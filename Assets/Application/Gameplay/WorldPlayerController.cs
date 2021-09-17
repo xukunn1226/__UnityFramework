@@ -12,16 +12,18 @@ namespace Application.Runtime
         private Plane                   m_Ground;               // 虚拟水平面
         [Tooltip("水平面高度")]
         public float                    GroundZ;                // 水平面高度
-        public Vector2                  HeightRange;            // 相对水平面的高度区间
         public float                    HeightOfDive;           // 俯冲到的高度（relative to GroundZ）
-        public float                    timeOfPan;
-        public EasingFunction           easingFunctionOfPan;
-        public float                    timeOfDive;
-        public EasingFunction           easingFunctionOfDive;
+        public float                    timeOfPan;              // 镜头平移时的缓动时间
+        public EasingFunction           easingFunctionOfPan;    // 镜头平移的缓动模式
+        public float                    timeOfDive;             // 镜头俯冲时的缓动时间
+        public EasingFunction           easingFunctionOfDive;   // 镜头俯冲时的缓动模式
         public bool                     ApplyBound;
         public Rect                     Bound;
         public LayerMask                BaseLayer;
         public LayerMask                TerrainLayer;
+        public float[]                  ViewHeights             = new float[(int)ViewLayer.ViewLayer_Max];
+        public float                    highestView             { get { return ViewHeights[ViewHeights.Length - 1]; } }
+        public float                    lowestView              { get { return ViewHeights[0]; } }
 
         void Awake()
         {
@@ -103,7 +105,7 @@ namespace Application.Runtime
 
         public Vector2 GetAbsoluteHeightRange()
         {
-            return new Vector2(GroundZ + HeightRange.x, GroundZ + HeightRange.y);
+            return new Vector2(GroundZ + lowestView, GroundZ + highestView);
         }
 
         // 水平面交点坐标
@@ -178,6 +180,16 @@ namespace Application.Runtime
         {
             virtualCamera.AddEasingEvent(new PositionEasingEvent(start, end, time, easingFunction, callback));
         }
+    }
+
+    // 视野层级
+    public enum ViewLayer
+    {
+        ViewLayer_0,
+        ViewLayer_1,
+        ViewLayer_2,
+        ViewLayer_3,
+        ViewLayer_Max,
     }
 }
 
