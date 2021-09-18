@@ -21,9 +21,12 @@ namespace Application.Runtime
         public Rect                     Bound;
         public LayerMask                BaseLayer;
         public LayerMask                TerrainLayer;
-        public float[]                  ViewHeights             = new float[(int)ViewLayer.ViewLayer_Max];
-        public float                    highestView             { get { return ViewHeights[ViewHeights.Length - 1]; } }
-        public float                    lowestView              { get { return ViewHeights[0]; } }
+        public float[]                  m_ViewPoints            = new float[(int)ViewLayer.ViewLayer_Max + 1];              // 每个高度点的高度值
+        public Vector2[]                ViewHeights             { get; private set; }                                       // 每个区间的高度范围
+        public float                    highestView             { get { return m_ViewPoints[m_ViewPoints.Length - 1]; } }
+        public float                    lowestView              { get { return m_ViewPoints[0]; } }
+        public ViewLayer                cameraViewLayer         { get; private set; } = ViewLayer.ViewLayer_Invalid;        // 相机所处的层级
+        public float                    cameraViewLayerAlaph    { get; private set; }                                       // 相机所处层级区间的alpha值，0表示所处区间的最低处，1表示最高处
 
         void Awake()
         {
@@ -36,6 +39,12 @@ namespace Application.Runtime
                 SetLimitedBound(Bound);
             else
                 SetUnlimitedBound();
+
+            ViewHeights = new Vector2[m_ViewPoints.Length - 1];
+            for(int i = 0; i < ViewHeights.Length; ++i)
+            {
+                ViewHeights[i] = new Vector2(m_ViewPoints[i], m_ViewPoints[i+1]);
+            }
         }
 
         void OnEnable()
@@ -180,11 +189,37 @@ namespace Application.Runtime
         {
             virtualCamera.AddEasingEvent(new PositionEasingEvent(start, end, time, easingFunction, callback));
         }
+
+        private void UpdateViewLayer()
+        {
+            float height = virtualCamera.transform.position.y;
+            int layer = -1;
+            for(int i = 0; i < ViewHeights.Length; ++i)
+            {
+                if(height > ViewHeights[i].y)
+                {
+                    layer = i;
+                }
+                else
+                    break;
+            }
+            Debug.Assert(layer != -1);
+            cameraViewLayer = (ViewLayer)layer;
+            cameraViewLayerAlaph = height / (GroundZ + ViewHeights[layer].y - ViewHeights[layer].x);
+        }
+
+        private void Update()
+        {
+            UpdateViewLayer();
+
+            ViewActorManager.Update(cameraViewLayer, cameraViewLayerAlaph);
+        }
     }
 
     // 视野层级
     public enum ViewLayer
     {
+        ViewLayer_Invalid = -1,
         ViewLayer_0,
         ViewLayer_1,
         ViewLayer_2,

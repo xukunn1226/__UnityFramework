@@ -10936,7 +10936,6 @@ MonoBehaviour:
   mainCamera: {fileID: 149533203}
   virtualCamera: {fileID: 1302797098}
   GroundZ: 0
-  HeightRange: {x: 15, y: 200}
   HeightOfDive: 50
   timeOfPan: 0.5
   easingFunctionOfPan: 15
@@ -10955,11 +10954,12 @@ MonoBehaviour:
   TerrainLayer:
     serializedVersion: 2
     m_Bits: 256
-  ViewHeights:
+  m_ViewPoints:
   - 15
   - 60
   - 120
   - 200
+  - 300
 --- !u!4 &1905699276
 Transform:
   m_ObjectHideFlags: 0

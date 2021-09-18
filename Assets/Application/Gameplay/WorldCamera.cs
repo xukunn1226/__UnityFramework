@@ -155,18 +155,18 @@ namespace Application.Runtime
                 Vector2 absoluteHeightRange = playerController.GetAbsoluteHeightRange();
                 if (deltaMove > 0)      // 向前推进
                 {
-                    if (camPos.y > absoluteHeightRange.x + 1)
+                    if (camPos.y > absoluteHeightRange.x + 0.001f)
                     {
                         camPos += dir * deltaMove;
-                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x, absoluteHeightRange.y);
+                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x + 0.001f, absoluteHeightRange.y);        // 0.001f确保相机高度始终处于临界值
                     }
                 }
                 else if (deltaMove < 0)
                 {
-                    if (camPos.y < absoluteHeightRange.y - 1)
+                    if (camPos.y < absoluteHeightRange.y - 0.001f)
                     {
                         camPos += dir * deltaMove;
-                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x, absoluteHeightRange.y);
+                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x, absoluteHeightRange.y - 0.001f);
                     }
                 }
                 virtualCamera.transform.position = camPos;
