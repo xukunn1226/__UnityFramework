@@ -196,7 +196,7 @@ namespace Application.Runtime
             int layer = -1;
             for(int i = 0; i < ViewHeights.Length; ++i)
             {
-                if(height > ViewHeights[i].y)
+                if(height > ViewHeights[i].x)
                 {
                     layer = i;
                 }
@@ -205,7 +205,7 @@ namespace Application.Runtime
             }
             Debug.Assert(layer != -1);
             cameraViewLayer = (ViewLayer)layer;
-            cameraViewLayerAlaph = height / (GroundZ + ViewHeights[layer].y - ViewHeights[layer].x);
+            cameraViewLayerAlaph = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);
         }
 
         private void Update()
