@@ -212,19 +212,8 @@ namespace Application.Runtime
         {
             UpdateViewLayer();
 
-            ViewActorManager.Update(cameraViewLayer, cameraViewLayerAlaph);
+            ViewLayerManager.Update(cameraViewLayer, cameraViewLayerAlaph);
         }
-    }
-
-    // 视野层级
-    public enum ViewLayer
-    {
-        ViewLayer_Invalid = -1,
-        ViewLayer_0,
-        ViewLayer_1,
-        ViewLayer_2,
-        ViewLayer_3,
-        ViewLayer_Max,
     }
 }
 

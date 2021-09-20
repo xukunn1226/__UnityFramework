@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Application.Runtime
 {
-    public class ViewActorManager
+    public class ViewLayerManager
     {
         static private int                              s_Id            = 0;
-        static private Dictionary<int, IViewActor>[]    s_ViewActorList;                                // [ViewLayer][]
+        static private Dictionary<int, IViewLayer>[]    s_ViewActorList;                                // [ViewLayer][]
         static private ViewLayer                        s_PrevLayer     = ViewLayer.ViewLayer_Invalid;
         static private ViewLayer                        s_CurLayer      = ViewLayer.ViewLayer_Invalid;
 
@@ -16,15 +16,15 @@ namespace Application.Runtime
             if(s_ViewActorList == null)
             {
                 int countOfLayer = (int)ViewLayer.ViewLayer_Max;
-                s_ViewActorList = new Dictionary<int, IViewActor>[countOfLayer];
+                s_ViewActorList = new Dictionary<int, IViewLayer>[countOfLayer];
                 for(int i = 0; i < countOfLayer; ++i)
                 {
-                    s_ViewActorList[i] = new Dictionary<int, IViewActor>();
+                    s_ViewActorList[i] = new Dictionary<int, IViewLayer>();
                 }
             }
         }
 
-        static public void AddInstance(IViewActor actor)
+        static public void AddInstance(IViewLayer actor)
         {
             Init();
 
@@ -43,8 +43,12 @@ namespace Application.Runtime
             actor.OnEnter(s_PrevLayer, s_CurLayer);                         // s_PrevLayer可能为Invalid，因为可能没有切换至其他区间
         }
 
-        static public void RemoveInstance(IViewActor actor)
+        static public void RemoveInstance(IViewLayer actor)
         {
+#if UNITY_EDITOR
+            if(s_ViewActorList == null)
+                throw new System.ArgumentException("RemoveInstance: s_ViewActorList == null");
+#endif            
             for(int layer = (int)actor.minViewLayer; layer <= (int)actor.maxViewLayer; ++layer)
             {
 #if UNITY_EDITOR
@@ -63,7 +67,7 @@ namespace Application.Runtime
                 return;
             }
 
-            Dictionary<int, IViewActor> dict;
+            Dictionary<int, IViewLayer> dict;
             if(s_CurLayer != layer)
             {
                 // fire OnLeave event
