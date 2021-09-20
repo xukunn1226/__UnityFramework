@@ -84,10 +84,10 @@ namespace Application.Runtime
         }
 
         //////////////////////////////////// Instantiate & ReleaseInst
-        // static public GameObjectLoader Instantiate(string assetPath)
-        // {
-        //     return AssetManager.Instantiate(assetPath);
-        // }
+        static public GameObjectLoader Instantiate(string assetPath)
+        {
+            return AssetManager.Instantiate(assetPath);
+        }
         static public GameObjectLoader Instantiate(string bundleName, string assetName)
         {
             return AssetManager.Instantiate(bundleName, assetName);
@@ -99,10 +99,10 @@ namespace Application.Runtime
 
 
         //////////////////////////////////// InstantiateAsync & ReleaseInst
-        // static public GameObjectLoaderAsync InstantiateAsync(string assetPath)
-        // {
-        //     return AssetManager.InstantiateAsync(assetPath);
-        // }
+        static public GameObjectLoaderAsync InstantiateAsync(string assetPath)
+        {
+            return AssetManager.InstantiateAsync(assetPath);
+        }
         static public GameObjectLoaderAsync InstantiateAsync(string bundleName, string assetName)
         {
             return AssetManager.InstantiateAsync(bundleName, assetName);
