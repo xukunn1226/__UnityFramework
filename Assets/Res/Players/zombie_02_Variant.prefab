@@ -10,7 +10,12 @@ PrefabInstance:
     - target: {fileID: 2856100868749336272, guid: 2c0c09147588ac04b8d592c9495556b4,
         type: 3}
       propertyPath: m_Name
-      value: zombie_02
+      value: zombie_02_Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7622768772020341688, guid: 2c0c09147588ac04b8d592c9495556b4,
+        type: 3}
+      propertyPath: lodDistance.Array.data[0]
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8493010298463018583, guid: 2c0c09147588ac04b8d592c9495556b4,
         type: 3}

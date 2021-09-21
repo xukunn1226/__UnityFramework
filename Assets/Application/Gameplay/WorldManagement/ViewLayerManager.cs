@@ -39,7 +39,6 @@ namespace Application.Runtime
             }
             ++s_Id;
             
-            Debug.Assert(s_CurLayer != ViewLayer.ViewLayer_Invalid);        // 如果Update执行，则s_CurLayer必定处于有效区间
             actor.OnEnter(s_PrevLayer, s_CurLayer);                         // s_PrevLayer可能为Invalid，因为可能没有切换至其他区间
         }
 

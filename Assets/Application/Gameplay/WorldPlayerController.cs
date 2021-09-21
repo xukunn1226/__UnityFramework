@@ -90,13 +90,14 @@ namespace Application.Runtime
 
         private void OnGesture(ScreenPointerUpEventData eventData)
         {
-            PickGameObject(eventData.screenPosition);
-
-            // ref readonly RaycastHit hitInfo = ref Raycast(eventData.screenPosition, TerrainLayer | BaseLayer);
-            // if (hitInfo.transform != null)
-            // {
-            //     ((WorldPlayerController)GameInfoManager.playerController).Pan(hitInfo.point);
-            // }
+            if(cameraViewLayer > ViewLayer.ViewLayer_1)
+            { // 一层以上时，迅速推进镜头
+                PanCamera(GetGroundHitPoint(eventData.screenPosition), () => { DiveCameraToBase(); });
+            }
+            else
+            {
+                PickGameObject(eventData.screenPosition);
+            }
         }
 
         public void SetLimitedBound(Rect bound)
@@ -153,7 +154,8 @@ namespace Application.Runtime
             Vector3 r = GetGroundHitPoint(new Vector2(Screen.width, Screen.height * 0.5f));
             return (r - l).magnitude;
         }
-        
+
+        // 平移
         public void PanCamera(Vector3 targetPos, System.Action callback = null)
         {
             Vector3 center = GetGroundHitPoint(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
@@ -172,20 +174,23 @@ namespace Application.Runtime
             }
             delta.y = 0;
             
-            DoCameraRush(cameraPos, cameraPos + delta, timeOfPan, easingFunctionOfPan, callback);
+            InternalCameraRush(cameraPos, cameraPos + delta, timeOfPan, easingFunctionOfPan, callback);
         }
 
+        // 俯冲至预设高度
         public void DiveCameraToBase(System.Action callback = null)
         {
             DiveCamera(GetDistanceToGround(cameraPos) - GetDistanceToGround(new Vector3(0, GroundZ + HeightOfDive, 0)), callback);
         }
 
+        // 俯冲
         public void DiveCamera(float delta, System.Action callback = null)
         {
-            DoCameraRush(cameraPos, cameraPos + cameraForward * delta, timeOfDive, easingFunctionOfDive, callback);
+            InternalCameraRush(cameraPos, cameraPos + cameraForward * delta, timeOfDive, easingFunctionOfDive, callback);
         }
 
-        private void DoCameraRush(Vector3 start, Vector3 end, float time, EasingFunction easingFunction, System.Action callback = null)
+        // 镜头缓动
+        private void InternalCameraRush(Vector3 start, Vector3 end, float time, EasingFunction easingFunction, System.Action callback = null)
         {
             virtualCamera.AddEasingEvent(new PositionEasingEvent(start, end, time, easingFunction, callback));
         }
@@ -206,13 +211,13 @@ namespace Application.Runtime
             Debug.Assert(layer != -1);
             cameraViewLayer = (ViewLayer)layer;
             cameraViewLayerAlaph = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);
+
+            ViewLayerManager.Update(cameraViewLayer, cameraViewLayerAlaph);
         }
 
         private void Update()
         {
             UpdateViewLayer();
-
-            ViewLayerManager.Update(cameraViewLayer, cameraViewLayerAlaph);
         }
     }
 }

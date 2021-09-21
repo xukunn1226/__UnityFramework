@@ -65,7 +65,12 @@ PrefabInstance:
     - target: {fileID: 6818280979342620575, guid: 243d52f847097ea4abf150fa7489bed0,
         type: 3}
       propertyPath: m_Name
-      value: zombie_01
+      value: zombie_01_Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166895287542400692, guid: 243d52f847097ea4abf150fa7489bed0,
+        type: 3}
+      propertyPath: lodDistance.Array.data[0]
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 243d52f847097ea4abf150fa7489bed0, type: 3}

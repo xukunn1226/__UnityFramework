@@ -27,6 +27,15 @@ namespace Application.Runtime
             InputForDebug();
         }
 
+        private void OnGUI()
+        {
+            if(GUI.Button(new Rect(Screen.width-200, Screen.height/2, 200, 100), "Create Actors"))
+            {
+                for(int i = 0; i < 20; ++i)
+                    TestActorManager.CreateActor();
+            }
+        }
+
         [Conditional("UNITY_EDITOR")]
         private void InputForDebug()
         {
@@ -38,7 +47,7 @@ namespace Application.Runtime
             if(Input.GetKeyDown(KeyCode.Space))
             {
                 UnityEngine.Debug.Log($"print center hit point: {((WorldPlayerController)playerController).GetCenterHitPoint()}");
-            }
+            }            
         }
     }
 }

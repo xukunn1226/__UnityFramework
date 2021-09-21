@@ -147,7 +147,7 @@ namespace Application.Runtime
                 // XZ plane movement
                 Vector3 curPos = playerController.GetGroundHitPoint(m_PinchEventData.Position);
                 Vector3 delta = curPos - playerController.GetGroundHitPoint(m_PinchEventData.PrevPosition);
-
+                
                 // camera to focus point movement
                 Vector3 camPos = virtualCamera.transform.position - delta;
                 Vector3 dir = (curPos - camPos).normalized;
@@ -155,10 +155,10 @@ namespace Application.Runtime
                 Vector2 absoluteHeightRange = playerController.GetAbsoluteHeightRange();
                 if (deltaMove > 0)      // 向前推进
                 {
-                    if (camPos.y > absoluteHeightRange.x + 0.001f)
+                    if (camPos.y > absoluteHeightRange.x + 0.001f)      // 0.001f确保相机始终处于最低值之上
                     {
                         camPos += dir * deltaMove;
-                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x + 0.001f, absoluteHeightRange.y);        // 0.001f确保相机高度始终处于临界值
+                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x + 0.0001f, absoluteHeightRange.y);        // 0.0001f确保相机高度略低于0.001f，而在最低处停止更新
                     }
                 }
                 else if (deltaMove < 0)
@@ -166,7 +166,7 @@ namespace Application.Runtime
                     if (camPos.y < absoluteHeightRange.y - 0.001f)
                     {
                         camPos += dir * deltaMove;
-                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x, absoluteHeightRange.y - 0.001f);
+                        camPos.y = Mathf.Clamp(camPos.y, absoluteHeightRange.x, absoluteHeightRange.y - 0.0001f);
                     }
                 }
                 virtualCamera.transform.position = camPos;
