@@ -49,6 +49,7 @@
 	https://mp.weixin.qq.com/s/OUdDJRA9YAcQ6CuTyDcahw  从搭建到优化，《永劫无间》如何做游戏动作与运动系统
 	https://mp.weixin.qq.com/s/ISwHGpzEyLL4IOLXrHPt6A  《黑暗之潮》中次时代技术的应用经验及技术
 	https://mp.weixin.qq.com/s/WkXT-umcp57XpjFymSWoTA  着色器运行效率和图形质量兼得！技术大佬的 Shader Graph 功能试验
+	https://mp.weixin.qq.com/s/egAWR4HH0D05M9pBqNXQJQ  来自Unity顶级工程师的物理、UI和音频设置小贴士
 * RTS中的避障算法
 	VO:
 		https://blog.csdn.net/zhiai315/article/details/113931422  VO避障

@@ -18,7 +18,7 @@ namespace Application.Runtime
             actor.minViewLayer = ViewLayer.ViewLayer_0;
             actor.maxViewLayer = ViewLayer.ViewLayer_2;
             actor.visible = true;
-            actor.assetPath = s_AssetPathList[Random.Range(0, 2)];
+            actor.decorateAssetPath = s_AssetPathList[Random.Range(0, 2)];
             actor.symbolAssetPath = "assets/res/players/symbol.prefab";
             actor.Init();
             s_Actors.Add(actor.id, actor);

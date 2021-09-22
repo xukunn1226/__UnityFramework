@@ -83,10 +83,7 @@ namespace AnimationInstancingModule.Runtime
             animDataInst = AnimationDataManager.Instance.Load(m_Prototype);
 
             AnimationInstancingManager.Instance.AddInstance(this);
-        }
 
-        private void Start()
-        {
             if(!string.IsNullOrEmpty(defaultAnim))
             {
                 PlayAnimation(defaultAnim);
