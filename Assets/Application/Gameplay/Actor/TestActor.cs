@@ -12,7 +12,7 @@ namespace Application.Runtime
     /// ViewLayer_1: AnimationInstancing.LOD1
     /// ViewLayer_2: Sphere
     /// <summary>
-    public class TestActor : IEntity, IViewLayer, ILoader
+    public class TestActor : IEntity, IViewLayer
     {
         public string                   name                { get; set; }
         public int                      id                  { get; set; }
@@ -26,11 +26,14 @@ namespace Application.Runtime
         private RendererBase            m_DecorateRenderer;
         private RendererBase            m_SymbolRenderer;
         private RendererBase            m_CurRenderer;
-        public int                      loaderId            { get; set; }
 
         public void Init()
         {
+#if UNITY_EDITOR            
             display = new GameObject(name);
+#else
+            display = new GameObject();
+#endif            
             display.transform.position = new Vector3(Random.Range(-1.0f, 1.0f) * 50, 0, Random.Range(-1.0f, 1.0f) * 50);
             display.transform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
         }
