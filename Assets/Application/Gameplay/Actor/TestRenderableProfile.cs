@@ -21,9 +21,9 @@ namespace Application.Runtime
 
         public TestRenderableProfile(ZActor actor) : base(actor) {}
 
-        public override void Init()
+        public override void Start()
         {
-            base.Init();
+            base.Start();
 
 #if UNITY_EDITOR            
             root = new GameObject(name);
@@ -50,7 +50,7 @@ namespace Application.Runtime
             }
         }
 
-        public override void Uninit()
+        public override void Destroy()
         {
             ViewLayerComp viewLayer = actor.GetComponent<ViewLayerComp>();
             if(viewLayer == null)
@@ -62,7 +62,7 @@ namespace Application.Runtime
                 viewLayer.onEnter -= OnEnter;
                 viewLayer.onViewUpdate -= OnViewUpdate;
             }
-            base.Uninit();
+            base.Destroy();
         }
 
         public void OnViewUpdate(ViewLayer layer, float alpha) { }

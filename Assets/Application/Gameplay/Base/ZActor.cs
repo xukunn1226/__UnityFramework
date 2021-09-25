@@ -17,15 +17,33 @@ namespace Application.Runtime
             this.name = name;
         }
 
-        public override void Uninit()
+        static public T CreateActor<T>() where T : ZActor, new()
+        {
+            T actor = new T();
+            actor.InitData();
+            actor.Start();
+            return actor;
+        }
+
+        public override void InitData()
+        {
+            base.InitData();
+            foreach(var comp in m_CompsList)
+            {
+                if(comp == null) continue;
+                comp.InitData();
+            }
+        }
+
+        public override void Destroy()
         {
             // 添加组件的反序来执行
             for(int i = m_CompsList.Count - 1; i >= 0; --i)
             {
-                m_CompsList[i].Uninit();
+                m_CompsList[i].Destroy();
             }
             m_CompsList.Clear();
-            base.Uninit();
+            base.Destroy();
         }
 
         public ZComp AddComponent(Type compType)
@@ -34,7 +52,7 @@ namespace Application.Runtime
             if(comp == null)
                 throw new ArgumentException($"the type of {compType} is not ZComp");
             m_CompsList.Add(comp);
-            comp.Init();
+            comp.InitData();
             return comp;
         }
 
@@ -42,7 +60,7 @@ namespace Application.Runtime
         {
             T comp = (T)Activator.CreateInstance(typeof(T), new object[] { this });
             m_CompsList.Add(comp);
-            comp.Init();
+            comp.InitData();
             return comp;
         }
 
@@ -50,7 +68,7 @@ namespace Application.Runtime
         {
             int index = m_CompsList.BinarySearch(comp);
             Debug.Assert(index != -1);
-            m_CompsList[index].Uninit();
+            m_CompsList[index].Destroy();
             m_CompsList.RemoveAt(index);
         }
 

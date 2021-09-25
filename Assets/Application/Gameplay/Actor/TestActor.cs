@@ -18,13 +18,18 @@ namespace Application.Runtime
         private ViewLayerComp           m_ViewLayer;
         private TestRenderableProfile   m_RenderableProxy;
 
-        public override void Init()
+        public override void InitData()
         {
-            base.Init();
-
+            base.InitData();
+            
             // 注意add component的顺序
             m_ViewLayer = AddComponent<ViewLayerComp>();
             m_RenderableProxy = AddComponent<TestRenderableProfile>();
+        }
+
+        public override void Start()
+        {
+            base.Start();
         }
     }
 }

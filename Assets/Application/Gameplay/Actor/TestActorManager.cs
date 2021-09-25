@@ -15,7 +15,7 @@ namespace Application.Runtime
             TestActor actor = new TestActor();
             actor.id = s_Actors.Count;
             actor.name = "Actor_" + actor.id;
-            actor.Init();
+            actor.Start();
             s_Actors.Add(actor.id, actor);
         }
 
@@ -26,7 +26,7 @@ namespace Application.Runtime
             {
                 throw new System.ArgumentException($"DestroyActor: can't find the actor [{id}]");
             }
-            actor.Uninit();
+            actor.Destroy();
             s_Actors.Remove(id);
         }
     }
