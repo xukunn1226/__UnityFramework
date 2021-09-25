@@ -12,6 +12,7 @@ namespace Application.Runtime
     public class ZEntity
     {
         public string name { get; set; }
+        public virtual void Serialize() {}
         public virtual void Init() {}
         public virtual void Uninit() {}
     }

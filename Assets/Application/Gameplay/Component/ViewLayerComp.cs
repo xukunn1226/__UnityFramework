@@ -18,7 +18,7 @@ namespace Application.Runtime
         public ViewLayer   maxViewLayer     { get; set; }
         public int         id               { get; private set; }
 
-        protected ViewLayerComp(ZActor actor) : base(actor) {}
+        public ViewLayerComp(ZActor actor) : base(actor) {}
 
         public override void Init()
         {

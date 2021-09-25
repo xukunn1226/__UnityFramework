@@ -25,7 +25,7 @@ namespace Application.Runtime
         private string              m_AssetPath;
         private GameObjectLoader    m_Loader;
 
-        protected Renderable(ZActor actor) : base(actor) {}
+        public Renderable(ZActor actor) : base(actor) {}
         
         public virtual void Load(string assetPath)
         {

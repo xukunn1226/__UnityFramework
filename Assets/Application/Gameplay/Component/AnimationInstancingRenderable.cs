@@ -9,7 +9,7 @@ namespace Application.Runtime
     {
         private AnimationInstancing m_Inst;
         
-        protected AnimationInstancingRenderable(ZActor actor) : base(actor) {}
+        public AnimationInstancingRenderable(ZActor actor) : base(actor) {}
 
         public override void Load(string assetPath)
         {

@@ -15,11 +15,6 @@ namespace Application.Runtime
             TestActor actor = new TestActor();
             actor.id = s_Actors.Count;
             actor.name = "Actor_" + actor.id;
-            // actor.minViewLayer = ViewLayer.ViewLayer_0;
-            // actor.maxViewLayer = ViewLayer.ViewLayer_2;
-            // actor.visible = true;
-            // actor.decorateAssetPath = s_AssetPathList[Random.Range(0, 2)];
-            // actor.symbolAssetPath = "assets/res/players/symbol.prefab";
             actor.Init();
             s_Actors.Add(actor.id, actor);
         }

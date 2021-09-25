@@ -15,6 +15,18 @@ namespace Application.Runtime
         // IEnumerator LoadAsync(Action onLoadFinished);
     }
     
+
+        // public IEnumerator LoadActorPrefabAsync()
+        // {
+        //     m_LoaderAsync = ResourceManager.InstantiateAsync(decorateAssetPath);
+        //     yield return m_LoaderAsync;
+        // }
+
+        // private void OnActorPrefabLoadFinished()
+        // {
+
+        // }
+        
     public class AssetLoadingAsyncManager : SingletonMono<AssetLoadingAsyncManager>
     {
         static private int      s_Id = 0;

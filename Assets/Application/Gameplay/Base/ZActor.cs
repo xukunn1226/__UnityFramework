@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 namespace Application.Runtime
-{    
+{
     public class ZActor : ZEntity
     {
         private List<ZComp> m_CompsList = new List<ZComp>();
@@ -19,9 +19,10 @@ namespace Application.Runtime
 
         public override void Uninit()
         {
-            foreach(var comp in m_CompsList)
+            // 添加组件的反序来执行
+            for(int i = m_CompsList.Count - 1; i >= 0; --i)
             {
-                comp.Uninit();
+                m_CompsList[i].Uninit();
             }
             m_CompsList.Clear();
             base.Uninit();

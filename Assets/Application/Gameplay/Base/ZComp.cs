@@ -5,13 +5,14 @@ using UnityEngine;
 namespace Application.Runtime
 {
     /// <summary>
-    /// ZComp挂载至ZActor，派生类不建议生成无参数构造函数
+    /// 组件基类
+    /// ZComp必须依附于ZActor，强烈建议不直接生成，而使用ZActor.AddComponent
     /// <summary>
     public class ZComp : ZEntity
     {
         public ZActor actor { get; }
 
-        protected ZComp(ZActor actor)
+        public ZComp(ZActor actor)
         {
             Debug.Assert(actor != null);
             this.actor = actor;
