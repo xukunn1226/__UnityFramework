@@ -15,15 +15,13 @@ namespace Application.Runtime
             TestActor actor = new TestActor();
             actor.id = s_Actors.Count;
             actor.name = "Actor_" + actor.id;
-            actor.minViewLayer = ViewLayer.ViewLayer_0;
-            actor.maxViewLayer = ViewLayer.ViewLayer_2;
-            actor.visible = true;
-            actor.decorateAssetPath = s_AssetPathList[Random.Range(0, 2)];
-            actor.symbolAssetPath = "assets/res/players/symbol.prefab";
+            // actor.minViewLayer = ViewLayer.ViewLayer_0;
+            // actor.maxViewLayer = ViewLayer.ViewLayer_2;
+            // actor.visible = true;
+            // actor.decorateAssetPath = s_AssetPathList[Random.Range(0, 2)];
+            // actor.symbolAssetPath = "assets/res/players/symbol.prefab";
             actor.Init();
             s_Actors.Add(actor.id, actor);
-            ViewLayerManager.AddInstance(actor);
-            // AssetLoadingAsyncManager.AddInstance(actor);
         }
 
         static public void DestroyActor(int id)
@@ -35,8 +33,6 @@ namespace Application.Runtime
             }
             actor.Uninit();
             s_Actors.Remove(id);
-            ViewLayerManager.RemoveInstance(actor);
-            // AssetLoadingAsyncManager.RemoveInstance(actor);
         }
     }
 }

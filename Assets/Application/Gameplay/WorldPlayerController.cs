@@ -26,7 +26,7 @@ namespace Application.Runtime
         public float                    highestView             { get { return m_ViewPoints[m_ViewPoints.Length - 1]; } }
         public float                    lowestView              { get { return m_ViewPoints[0]; } }
         public ViewLayer                cameraViewLayer         { get; private set; } = ViewLayer.ViewLayer_Invalid;        // 相机所处的层级
-        public float                    cameraViewLayerAlaph    { get; private set; }                                       // 相机所处层级区间的alpha值，0表示所处区间的最低处，1表示最高处
+        public float                    cameraViewLayerAlpha    { get; private set; }                                       // 相机所处层级区间的alpha值，0表示所处区间的最低处，1表示最高处
 
         void Awake()
         {
@@ -210,9 +210,9 @@ namespace Application.Runtime
             }
             Debug.Assert(layer != -1);
             cameraViewLayer = (ViewLayer)layer;
-            cameraViewLayerAlaph = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);
+            cameraViewLayerAlpha = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);
 
-            ViewLayerManager.Update(cameraViewLayer, cameraViewLayerAlaph);
+            ViewLayerManager.Update(cameraViewLayer, cameraViewLayerAlpha);
         }
 
         private void Update()
