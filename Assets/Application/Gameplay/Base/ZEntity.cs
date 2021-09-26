@@ -12,8 +12,11 @@ namespace Application.Runtime
     public class ZEntity
     {
         public string name { get; set; }
-        public virtual void InitData() {}
-        public virtual void Start() {}
+        public virtual void Prepare(IData data) {}      // prepare data
+        public virtual void Start() {}                  // start work
         public virtual void Destroy() {}
     }
+
+    public interface IData
+    {}
 }

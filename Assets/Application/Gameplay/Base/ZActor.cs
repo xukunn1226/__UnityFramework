@@ -17,24 +17,6 @@ namespace Application.Runtime
             this.name = name;
         }
 
-        static public T CreateActor<T>() where T : ZActor, new()
-        {
-            T actor = new T();
-            actor.InitData();
-            actor.Start();
-            return actor;
-        }
-
-        public override void InitData()
-        {
-            base.InitData();
-            foreach(var comp in m_CompsList)
-            {
-                if(comp == null) continue;
-                comp.InitData();
-            }
-        }
-
         public override void Destroy()
         {
             // 添加组件的反序来执行
@@ -46,21 +28,21 @@ namespace Application.Runtime
             base.Destroy();
         }
 
-        public ZComp AddComponent(Type compType)
+        public ZComp AddComponent(Type compType, IData data = null)
         {
             ZComp comp = (ZComp)Activator.CreateInstance(compType, new object[] { this });
             if(comp == null)
                 throw new ArgumentException($"the type of {compType} is not ZComp");
             m_CompsList.Add(comp);
-            comp.InitData();
+            comp.Prepare(data);
             return comp;
         }
 
-        public T AddComponent<T>() where T : ZComp
+        public T AddComponent<T>(IData data = null) where T : ZComp
         {
             T comp = (T)Activator.CreateInstance(typeof(T), new object[] { this });
             m_CompsList.Add(comp);
-            comp.InitData();
+            comp.Prepare(data);
             return comp;
         }
 

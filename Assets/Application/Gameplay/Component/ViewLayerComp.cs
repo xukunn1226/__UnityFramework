@@ -20,13 +20,6 @@ namespace Application.Runtime
 
         public ViewLayerComp(ZActor actor) : base(actor) {}
 
-        public override void InitData()
-        {
-            base.InitData();
-            minViewLayer = ViewLayer.ViewLayer_0;
-            maxViewLayer = ViewLayer.ViewLayer_2;
-        }
-
         public override void Start()
         {
             base.Start();

@@ -18,18 +18,23 @@ namespace Application.Runtime
         private ViewLayerComp           m_ViewLayer;
         private TestRenderableProfile   m_RenderableProxy;
 
-        public override void InitData()
+        public override void Prepare(IData data = null)
         {
-            base.InitData();
+            base.Prepare(data);
             
-            // 注意add component的顺序
-            m_ViewLayer = AddComponent<ViewLayerComp>();
-            m_RenderableProxy = AddComponent<TestRenderableProfile>();
+            // 注意组件初始化的顺序（部分组件之间有依赖关系）
+            m_ViewLayer = AddComponent<ViewLayerComp>(data);            
+            m_ViewLayer.minViewLayer = ViewLayer.ViewLayer_0;
+            m_ViewLayer.maxViewLayer = ViewLayer.ViewLayer_2;
+            m_RenderableProxy = AddComponent<TestRenderableProfile>(data);
         }
 
         public override void Start()
         {
             base.Start();
+
+            m_ViewLayer.Start();
+            m_RenderableProxy.Start();
         }
     }
 }

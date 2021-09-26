@@ -15,6 +15,7 @@ namespace Application.Runtime
             TestActor actor = new TestActor();
             actor.id = s_Actors.Count;
             actor.name = "Actor_" + actor.id;
+            actor.Prepare();
             actor.Start();
             s_Actors.Add(actor.id, actor);
         }

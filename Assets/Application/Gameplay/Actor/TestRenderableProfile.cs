@@ -21,10 +21,9 @@ namespace Application.Runtime
 
         public TestRenderableProfile(ZActor actor) : base(actor) {}
 
-        public override void Start()
+        public override void Prepare(IData data)
         {
-            base.Start();
-
+            base.Prepare(data);
 #if UNITY_EDITOR            
             root = new GameObject(name);
 #else
