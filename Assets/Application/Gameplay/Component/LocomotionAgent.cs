@@ -1,13 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Application.Runtime
 {
     public class LocomotionAgent : ZComp
     {
-        public int id { get; private set; }
-        private LinkedList<Vector3> m_PathNodeList = new LinkedList<Vector3>();
+        public delegate void onEnterViewHandler(Vector3 startPoint);
+        public event onEnterViewHandler     onEnterView;
+        public event Action                 onLeaveView;
+        public event Action                 onStopped;
+
+        public int      id                  { get; private set; }
+        public Vector3  startPoint          { get; set; }
+        public Vector3  position            { get; private set; }
+        public Vector3  destination         { get; private set; }
+        public float    speed               { get; set; }
+        public float    angularSpeed        { get; set; }               // deg/s
+        public bool     updateRotation      { get; set; }
+        public float    remainingDistance   { get; private set; }
+        public float    stoppingDistance    { get; set; }
+        private bool    m_isReached;
 
         public LocomotionAgent(ZActor actor) : base(actor) {}
 
@@ -20,7 +34,7 @@ namespace Application.Runtime
         {
             base.Start();
             id = LocomotionManager.AddInstance(this);
-            EnterView(Vector3.zero);
+            EnterView(startPoint);
         }
 
         public override void Destroy()
@@ -30,15 +44,27 @@ namespace Application.Runtime
             base.Destroy();
         }
 
-        public void EnterView(Vector3 pos)
-        {}
+        public void SetDestination(Vector3 targetPos)
+        {
+            destination = targetPos;
+            m_isReached = false;
+        }
+
+        public void EnterView(Vector3 startPoint)
+        {
+            position = startPoint;
+            onEnterView?.Invoke(startPoint);
+        }
 
         public void LeaveView()
-        {}
-
-        public void AddPathNode(Vector3 pos)
         {
-            m_PathNodeList.AddLast(pos);
+            onLeaveView?.Invoke();
+        }
+
+        public void OnUpdate()
+        {
+            if(m_isReached)
+                return;
         }
     }
 }
