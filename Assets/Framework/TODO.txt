@@ -50,6 +50,7 @@
 	https://mp.weixin.qq.com/s/ISwHGpzEyLL4IOLXrHPt6A  《黑暗之潮》中次时代技术的应用经验及技术
 	https://mp.weixin.qq.com/s/WkXT-umcp57XpjFymSWoTA  着色器运行效率和图形质量兼得！技术大佬的 Shader Graph 功能试验
 	https://mp.weixin.qq.com/s/egAWR4HH0D05M9pBqNXQJQ  来自Unity顶级工程师的物理、UI和音频设置小贴士
+	http://www.dreamfairy.cn/blog/2020/03/13/made-by-unity-jobsystem-dynamicbone/  Unity 基于JobSystem一步一步优化骨骼DynamicBone组件
 * RTS中的避障算法
 	VO:
 		https://blog.csdn.net/zhiai315/article/details/113931422  VO避障

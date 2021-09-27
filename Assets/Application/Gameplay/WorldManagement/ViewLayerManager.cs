@@ -11,7 +11,7 @@ namespace Application.Runtime
         static private ViewLayer                        s_PrevLayer     = ViewLayer.ViewLayer_Invalid;
         static private ViewLayer                        s_CurLayer      = ViewLayer.ViewLayer_Invalid;
 
-        static private void Init()
+        static ViewLayerManager()
         {
             if(s_ViewActorList == null)
             {
@@ -22,12 +22,10 @@ namespace Application.Runtime
                     s_ViewActorList[i] = new Dictionary<int, ViewLayerComp>();
                 }
             }
-        }
+        }        
 
         static public int AddInstance(ViewLayerComp actor)
         {
-            Init();
-
             int id = s_Id++;
             for(int layer = (int)actor.minViewLayer; layer <= (int)actor.maxViewLayer; ++layer)
             {
@@ -48,13 +46,13 @@ namespace Application.Runtime
             if(s_ViewActorList == null)
                 throw new System.ArgumentException("RemoveInstance: s_ViewActorList == null");
 #endif
+            actor.OnLeave(s_CurLayer, ViewLayer.ViewLayer_Invalid);
             for(int layer = (int)actor.minViewLayer; layer <= (int)actor.maxViewLayer; ++layer)
             {
 #if UNITY_EDITOR
                 if(!s_ViewActorList[layer].ContainsKey(actor.id))
                     throw new System.ArgumentException($"Failed to RemoveInstance: ID {actor.id} has not exist");
-#endif
-                actor.OnLeave(s_CurLayer, ViewLayer.ViewLayer_Invalid);
+#endif                
                 s_ViewActorList[layer].Remove(actor.id);
             }
         }

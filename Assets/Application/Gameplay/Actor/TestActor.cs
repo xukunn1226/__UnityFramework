@@ -17,6 +17,7 @@ namespace Application.Runtime
         public int                      id                  { get; set; }
         private ViewLayerComp           m_ViewLayer;
         private TestRenderableProfile   m_RenderableProxy;
+        private LocomotionAgent         m_LocomotionAgent;
 
         public override void Prepare(IData data = null)
         {
@@ -26,6 +27,11 @@ namespace Application.Runtime
             m_ViewLayer = AddComponent<ViewLayerComp>(data);            
             m_ViewLayer.minViewLayer = ViewLayer.ViewLayer_0;
             m_ViewLayer.maxViewLayer = ViewLayer.ViewLayer_2;
+
+            // 移动
+            m_LocomotionAgent = AddComponent<LocomotionAgent>(data);
+
+            // 显示组件一般最后挂载
             m_RenderableProxy = AddComponent<TestRenderableProfile>(data);
         }
 
@@ -34,6 +40,7 @@ namespace Application.Runtime
             base.Start();
 
             m_ViewLayer.Start();
+            m_LocomotionAgent.Start();
             m_RenderableProxy.Start();
         }
     }
