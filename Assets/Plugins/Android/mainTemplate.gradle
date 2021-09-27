@@ -6,9 +6,6 @@ apply plugin: 'com.android.library'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 	implementation("com.lilith.sdk:lilith_sdk_sp_uiless_daike-default:1.18.4")
-	{
-		exclude group: 'com.google.android.play', module: 'core'
-	}
 **DEPS**}
 
 android {

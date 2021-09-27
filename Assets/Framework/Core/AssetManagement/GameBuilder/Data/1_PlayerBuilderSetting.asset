@@ -19,8 +19,8 @@ MonoBehaviour:
   connectWithProfiler: 0
   allowDebugging: 0
   buildScriptsOnly: 0
-  compressWithLz4: 0
-  compressWithLz4HC: 1
+  compressWithLz4: 1
+  compressWithLz4HC: 0
   strictMode: 1
   useIL2CPP: 1
   il2CppCompilerConfiguration: 1
