@@ -104,6 +104,8 @@ UserSettings/
 TestNative/Release
 TestNative/Debug
 TestNative/x64
+*.androidpack
+*.androidpack.meta
 
 
 

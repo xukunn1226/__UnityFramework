@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using Framework.Core;
-using Google.Android.AppBundle.Editor;
-using Google.Android.AppBundle.Editor.Internal;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -49,7 +47,12 @@ namespace Framework.AssetManagement.GameBuilder
             // setup PlayerSettings
             para.SetupPlayerSettings(version);
 
-            InternalBuildPlayer(para);
+            if(para.buildAppBundle)
+            {
+                PrepareForAppBundle();
+            }
+
+            BuildPipeline.BuildPlayer(para.GenerateBuildPlayerOptions());
 
             BuildReport report = OpenLastBuild();
             if(report.summary.result == BuildResult.Succeeded)
@@ -95,21 +98,6 @@ namespace Framework.AssetManagement.GameBuilder
             return report;
         }
 
-        static private void InternalBuildPlayer(PlayerBuilderSetting para)
-        {
-            BuildPlayerOptions opt = para.GenerateBuildPlayerOptions();
-            if(EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android && para.buildAppBundle)
-            {
-                AssetPackConfig config = new AssetPackConfig();
-                config.SplitBaseModuleAssets = true;
-                AppBundlePublisher.Build(opt, config, true);
-            }
-            else
-            {
-                BuildPipeline.BuildPlayer(opt);
-            }
-        }
-
         private static BuildReport OpenLastBuild()
         {
             const string buildReportDir = "Assets/BuildReports";
@@ -123,6 +111,35 @@ namespace Framework.AssetManagement.GameBuilder
             BuildReport report = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
             Selection.objects = new UnityEngine.Object[] { report };
             return report;
+        }
+
+        private static void PrepareForAppBundle()
+        {
+            string targetPath = @"Assets/CustomAssetPacks.androidpack";
+            string streamingAssetPath = @"Assets/StreamingAssets";
+
+            // step1. 重新创建CustomAssetPacks.androidpack
+            if (System.IO.Directory.Exists(targetPath))
+            {
+                System.IO.Directory.Delete(targetPath, true);
+            }
+            System.IO.Directory.CreateDirectory(targetPath);
+
+            // step2. 重新创建build.gradle
+            string text = @"apply plugin: 'com.android.asset-pack'
+assetPack {
+    packName = ""CustomAssetPacks""
+    dynamicDelivery {
+        deliveryType = ""install-time""
+    }
+}";
+            System.IO.File.WriteAllText($"{targetPath}/build.gradle", text);
+
+            // step3. 把StreamingAssets移至CustomAssetPacks.androidpack
+            Framework.Core.Editor.EditorUtility.CopyDirectory(streamingAssetPath, targetPath);
+            System.IO.Directory.Delete(streamingAssetPath, true);
+
+            AssetDatabase.Refresh();
         }
     }
 }

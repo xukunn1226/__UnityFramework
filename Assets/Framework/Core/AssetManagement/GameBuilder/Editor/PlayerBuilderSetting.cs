@@ -55,8 +55,6 @@ namespace Framework.AssetManagement.GameBuilder
 
         public bool                         useMTRendering;                     // whether to use multithreaded rendering option for mobile platform
 
-        public bool                         useAPKExpansionFiles;               // When enabled the player executable and data will be split up
-
         public bool                         buildAppBundle;                     // Set to true to build an Android App Bundle (aab file) instead of an apk
 
         public bool                         createSymbols;
@@ -82,8 +80,6 @@ namespace Framework.AssetManagement.GameBuilder
         public Il2CppCompilerConfiguration  cachedIl2CppCompilerConfigureation  { get; set; }
 
         public bool                         cachedUseMTRendering                { get; set; }
-
-        public bool                         cachedUseAPKExpansionFiles          { get; set; }
 
         public bool                         cachedBuildAppBundle                { get; set; }
 
@@ -113,7 +109,6 @@ namespace Framework.AssetManagement.GameBuilder
             sb.Append(string.Format($"useIL2CPP: {useIL2CPP}  \n"));
             sb.Append(string.Format($"il2CppCompilerConfiguration: {il2CppCompilerConfiguration}  \n"));
             sb.Append(string.Format($"useMTRendering: {useMTRendering}  \n"));
-            sb.Append(string.Format($"useAPKExpansionFiles: {useAPKExpansionFiles}  \n"));
             sb.Append(string.Format($"buildAppBundle: {buildAppBundle}  \n"));
             sb.Append(string.Format($"createSymbols: {createSymbols}    \n"));
             sb.Append(string.Format($"useCustomKeystore: {useCustomKeystore}    \n"));
@@ -138,7 +133,6 @@ namespace Framework.AssetManagement.GameBuilder
             para.cachedUseIL2CPP                    = PlayerSettings.GetScriptingBackend(buildTargetGroup) == ScriptingImplementation.IL2CPP;
             para.cachedIl2CppCompilerConfigureation = PlayerSettings.GetIl2CppCompilerConfiguration(buildTargetGroup);
             para.cachedUseMTRendering               = PlayerSettings.GetMobileMTRendering(buildTargetGroup);
-            para.cachedUseAPKExpansionFiles         = PlayerSettings.Android.useAPKExpansionFiles;
             para.cachedBuildAppBundle               = EditorUserBuildSettings.buildAppBundle;
             para.cachedCreateSymbols                = EditorUserBuildSettings.androidCreateSymbolsZip;
             para.cachedMacroDefines                 = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
@@ -160,14 +154,7 @@ namespace Framework.AssetManagement.GameBuilder
             if(buildTargetGroup == BuildTargetGroup.Android)
             {
                 PlayerSettings.Android.targetArchitectures = para.useIL2CPP ? AndroidArchitecture.All : AndroidArchitecture.ARMv7;
-                if(para.buildAppBundle)
-                {
-                    EditorUserBuildSettings.buildAppBundle = true;                    
-                }
-                else
-                {
-                    PlayerSettings.Android.useAPKExpansionFiles = para.useAPKExpansionFiles;
-                }
+                EditorUserBuildSettings.buildAppBundle = para.buildAppBundle;
                 EditorUserBuildSettings.androidCreateSymbolsZip = para.createSymbols;
                 PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
 
@@ -229,7 +216,6 @@ namespace Framework.AssetManagement.GameBuilder
                 {
                     EditorUserBuildSettings.buildAppBundle = para.cachedBuildAppBundle;
                     EditorUserBuildSettings.androidCreateSymbolsZip = para.cachedCreateSymbols;
-                    PlayerSettings.Android.useAPKExpansionFiles = para.cachedUseAPKExpansionFiles;
 
                     PlayerSettings.Android.useCustomKeystore = false;
                     PlayerSettings.Android.keystoreName = string.Empty;

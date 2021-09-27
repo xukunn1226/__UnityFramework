@@ -72,7 +72,7 @@ echo Optional command: %OPTIONAL_COMMAND%
 
 
 echo "D:\Program Files\2020.2.0b5\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND%
-"D:\Program Files\2020.2.0b5\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND% -UseAPKExpansionFiles
+"D:\Program Files\2020.2.0b5\Editor\Unity.exe" %FIXED_COMMAND% %OPTIONAL_COMMAND%
 
 
 ::"D:\program files\2019.3.3f1\Editor\Unity.exe" %BATCH% %QUIT% %PROJECT% %PROJECT_PATH% -buildTarget Win64 -executeMethod Framework.GameBuilder.GameBuilder.cmdBuildGame -BuilderProfile win64 -bundlesOutput ./Deployment/AssetBundles -logFile "G:\MyGitHub\PoolManager\Deployment\build_win64_log.txt" -UseAPKExpansionFiles

@@ -23,6 +23,8 @@ namespace Framework.Core.Editor
             for (int i = 0; i < importedAssets.Length; ++i)
             {
                 // Debug.Log($"importedAsset: {importedAssets[i]}");
+                if(importedAssets[i].ToLower().Contains("customassetpacks.androidpack"))
+                    continue;
                 RedirectorDB.ImportAsset(importedAssets[i]);
             }
 
@@ -30,12 +32,16 @@ namespace Framework.Core.Editor
             for (int i = 0; i < deletedAssets.Length; ++i)
             {
                 // Debug.Log($"deletedAssets: {deletedAssets[i]}");
+                if(deletedAssets[i].ToLower().Contains("customassetpacks.androidpack"))
+                    continue;
                 bDirty |= RedirectorDB.DeleteAsset(deletedAssets[i]);
             }
 
             for (int i = 0; i < movedAssets.Length; ++i)
             {
                 // Debug.Log($"movedAssets: {movedAssets[i]}       movedFromAssetPaths: {movedFromAssetPaths[i]}");
+                if(movedAssets[i].ToLower().Contains("customassetpacks.androidpack"))
+                    continue;
                 bDirty |= RedirectorDB.MoveAsset(movedAssets[i]);
             }
 
