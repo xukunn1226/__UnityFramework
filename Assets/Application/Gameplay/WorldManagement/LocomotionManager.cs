@@ -29,5 +29,13 @@ namespace Application.Runtime
 
             s_AgentList.Remove(agent.id);
         }
+
+        static public void Update(float deltaTime)
+        {
+            foreach(var item in s_AgentList)
+            {
+                item.Value.OnUpdate(deltaTime);
+            }
+        }
     }
 }

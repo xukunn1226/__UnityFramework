@@ -212,12 +212,14 @@ namespace Application.Runtime
             cameraViewLayer = (ViewLayer)layer;
             cameraViewLayerAlpha = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);
 
-            ViewLayerManager.Update(cameraViewLayer, cameraViewLayerAlpha);
+            ViewLayerManager.Update(cameraViewLayer, cameraViewLayerAlpha);            
         }
 
         private void Update()
         {
             UpdateViewLayer();
+
+            LocomotionManager.Update(Time.deltaTime);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Application.Runtime
             m_Inst?.PlayAnimation(name, transitionDuration);
         }
 
-        public void SetRendererSpeed(float speed, float scale)
+        public void SetAnimationSpeed(float speed, float scale = 1)
         {
             if(m_Inst != null)
             {

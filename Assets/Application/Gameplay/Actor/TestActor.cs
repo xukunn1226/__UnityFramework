@@ -15,6 +15,8 @@ namespace Application.Runtime
     public class TestActor : ZActor
     {
         public int                      id                  { get; set; }
+        public Vector3                  startPosition;
+        public Vector3                  startRotation;
         private ViewLayerComp           m_ViewLayer;
         private TestRenderableProfile   m_RenderableProxy;
         private LocomotionAgent         m_LocomotionAgent;
@@ -30,6 +32,8 @@ namespace Application.Runtime
 
             // 移动
             m_LocomotionAgent = AddComponent<LocomotionAgent>(data);
+            m_LocomotionAgent.startPosition = startPosition;
+            m_LocomotionAgent.startRotation = startRotation;
 
             // 显示组件一般最后挂载
             m_RenderableProxy = AddComponent<TestRenderableProfile>(data);

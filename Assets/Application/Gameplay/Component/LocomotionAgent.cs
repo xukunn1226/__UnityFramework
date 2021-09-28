@@ -7,18 +7,21 @@ namespace Application.Runtime
 {
     public class LocomotionAgent : ZComp
     {
-        public delegate void onEnterViewHandler(Vector3 startPoint);
+        public delegate void onEnterViewHandler(Vector3 startPosition, Vector3 startRotation);
         public event onEnterViewHandler     onEnterView;
         public event Action                 onLeaveView;
         public event Action                 onStopped;
 
         public int      id                  { get; private set; }
-        public Vector3  startPoint          { get; set; }
+        public Vector3  startPosition       { get; set; }
+        public Vector3  startRotation       { get; set; }
+        public Vector3  direction           { get; private set; }
         public Vector3  position            { get; private set; }
+        public Vector3  rotation            { get; private set; }       // euler angles
         public Vector3  destination         { get; private set; }
         public float    speed               { get; set; }
         public float    angularSpeed        { get; set; }               // deg/s
-        public bool     updateRotation      { get; set; }
+        public bool     updateRotation      { get; set; }               = true;
         public float    remainingDistance   { get; private set; }
         public float    stoppingDistance    { get; set; }
         private bool    m_isReached;
@@ -34,7 +37,7 @@ namespace Application.Runtime
         {
             base.Start();
             id = LocomotionManager.AddInstance(this);
-            EnterView(startPoint);
+            EnterView(startPosition, startRotation);
         }
 
         public override void Destroy()
@@ -50,10 +53,11 @@ namespace Application.Runtime
             m_isReached = false;
         }
 
-        public void EnterView(Vector3 startPoint)
+        public void EnterView(Vector3 startPosition, Vector3 startRotation)
         {
-            position = startPoint;
-            onEnterView?.Invoke(startPoint);
+            position = startPosition;
+            rotation = startRotation;
+            onEnterView?.Invoke(startPosition, startRotation);
         }
 
         public void LeaveView()
@@ -61,10 +65,33 @@ namespace Application.Runtime
             onLeaveView?.Invoke();
         }
 
-        public void OnUpdate()
+        private void Stop()
+        {
+            onStopped?.Invoke();
+        }
+
+        public void OnUpdate(float deltaTime)
         {
             if(m_isReached)
                 return;
+            
+            direction = (destination - position).normalized;
+            remainingDistance = Vector3.Distance(destination, position);
+            if(remainingDistance < stoppingDistance)
+            {
+                Stop();
+                m_isReached = true;
+            }
+            else
+            {
+                float delta = Mathf.Min(remainingDistance, speed * deltaTime);
+                position += direction * delta;
+
+                if(updateRotation)
+                {
+                    rotation = Vector3.RotateTowards(rotation, direction, angularSpeed * Mathf.Deg2Rad * deltaTime, 0);                    
+                }
+            }
         }
     }
 }
