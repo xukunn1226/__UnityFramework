@@ -145,7 +145,7 @@ namespace Application.Runtime
         private void OnEnterView(Vector3 startPosition, Vector3 startRotation)
         {
 #if UNITY_EDITOR            
-            root = new GameObject(name);
+            root = new GameObject(actor.name);
 #else
             root = new GameObject();
 #endif

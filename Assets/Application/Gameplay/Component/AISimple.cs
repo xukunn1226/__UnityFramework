@@ -104,30 +104,30 @@ namespace Application.Runtime
                     m_Time = Random.Range(4.0f, 7.0f);
                     m_ElapsedTime = 0;
                     m_Renderer.PlayAnimation("idle");
-                    Debug.Log($"state: {state}  time: {m_Time}");
+                    // Debug.Log($"state: {state}  time: {m_Time}");
                     break;
                 case State.walk:
                     state = st;
-                    m_Agent.SetDestination(new Vector3(Random.Range(-1.0f, 1.0f) * 10, 0, Random.Range(-1.0f, 1.0f) * 10));
+                    m_Agent.SetDestination(new Vector3(Random.Range(-1.0f, 1.0f) * 30, 0, Random.Range(-1.0f, 1.0f) * 30));
                     m_Agent.speed = 1;
                     m_Agent.angularSpeed = 300;
                     m_Renderer.PlayAnimation("walk");
-                    Debug.Log($"state: {state}  destination: {m_Agent.destination}");
+                    // Debug.Log($"state: {state}  destination: {m_Agent.destination}");
                     break;
                 case State.run:
                     state = st;
-                    m_Agent.SetDestination(new Vector3(Random.Range(-1.0f, 1.0f) * 25, 0, Random.Range(-1.0f, 1.0f) * 25));
+                    m_Agent.SetDestination(new Vector3(Random.Range(-1.0f, 1.0f) * 50, 0, Random.Range(-1.0f, 1.0f) * 50));
                     m_Agent.speed = 6.5f;
                     m_Agent.angularSpeed = 450;
                     m_Renderer.PlayAnimation("run");
-                    Debug.Log($"state: {state}  destination: {m_Agent.destination}");
+                    // Debug.Log($"state: {state}  destination: {m_Agent.destination}");
                     break;
                 case State.attack:
                     state = st;
                     m_Time = Random.Range(6.0f, 9.0f);
                     m_ElapsedTime = 0;
                     m_Renderer.PlayAnimation("attack");
-                    Debug.Log($"state: {state}  time: {m_Time}");
+                    // Debug.Log($"state: {state}  time: {m_Time}");
                     break;
             }
         }
