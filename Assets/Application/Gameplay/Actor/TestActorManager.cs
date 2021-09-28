@@ -32,5 +32,14 @@ namespace Application.Runtime
             actor.Destroy();
             s_Actors.Remove(id);
         }
+
+        static public void DestroyAll()
+        {
+            foreach(var item in s_Actors)
+            {
+                item.Value.Destroy();
+            }
+            s_Actors.Clear();
+        }
     }
 }

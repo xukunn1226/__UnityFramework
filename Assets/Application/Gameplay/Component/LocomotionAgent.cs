@@ -19,8 +19,8 @@ namespace Application.Runtime
         public Vector3  position            { get; private set; }
         public Vector3  rotation            { get; private set; }       // euler angles
         public Vector3  destination         { get; private set; }
-        public float    speed               { get; set; }
-        public float    angularSpeed        { get; set; }               // deg/s
+        public float    speed               { get; set; }   = 1;
+        public float    angularSpeed        { get; set; }   = 300;      // deg/s
         public bool     updateRotation      { get; set; }               = true;
         public float    remainingDistance   { get; private set; }
         public float    stoppingDistance    { get; set; }
@@ -57,6 +57,7 @@ namespace Application.Runtime
         {
             position = startPosition;
             rotation = startRotation;
+            destination = startPosition;
             onEnterView?.Invoke(startPosition, startRotation);
         }
 
@@ -77,10 +78,10 @@ namespace Application.Runtime
             
             direction = (destination - position).normalized;
             remainingDistance = Vector3.Distance(destination, position);
-            if(remainingDistance < stoppingDistance)
-            {
-                Stop();
+            if(remainingDistance < stoppingDistance + 0.001f)
+            {                
                 m_isReached = true;
+                Stop();
             }
             else
             {
@@ -89,7 +90,12 @@ namespace Application.Runtime
 
                 if(updateRotation)
                 {
-                    rotation = Vector3.RotateTowards(rotation, direction, angularSpeed * Mathf.Deg2Rad * deltaTime, 0);                    
+                    Quaternion from = Quaternion.Euler(rotation);
+                    Quaternion to = Quaternion.LookRotation(direction);
+                    Quaternion cur = Quaternion.RotateTowards(from, to, angularSpeed * deltaTime);
+                    rotation = cur.eulerAngles;
+
+                    // rotation = Vector3.RotateTowards(rotation, direction, angularSpeed * Mathf.Deg2Rad * deltaTime, 0);                    
                 }
             }
         }

@@ -25,7 +25,7 @@ namespace Application.Runtime
         public override void Prepare(IData data)
         {
             base.Prepare(data);
-            m_DecorateAssetPath = s_AssetPathList[Random.Range(0, 2)];
+            m_DecorateAssetPath = s_AssetPathList[Random.Range(0, s_AssetPathList.Length)];
             m_SymbolAssetPath = "assets/res/players/symbol.prefab";
 
             // prepare LocomotionAgent
@@ -47,9 +47,11 @@ namespace Application.Runtime
             }
             else
             {
-                viewLayer.onEnter += OnEnterLayer;
-                viewLayer.onViewUpdate += OnLayerUpdate;
+                viewLayer.onViewUpdate += OnViewLayerUpdate;
             }
+
+            m_DecorateRenderer = actor.AddComponent<AnimationInstancingRenderable>();
+            m_SymbolRenderer = actor.AddComponent<Renderable>();
         }
 
         public override void Destroy()
@@ -61,17 +63,19 @@ namespace Application.Runtime
             }
             else
             {
-                viewLayer.onEnter -= OnEnterLayer;
-                viewLayer.onViewUpdate -= OnLayerUpdate;
+                viewLayer.onViewUpdate -= OnViewLayerUpdate;
             }
 
             if(m_Agent != null)
                 m_Agent.onEnterView -= OnEnterView;
 
+            if(root != null)
+                Object.Destroy(root);
+
             base.Destroy();
         }
 
-        public void OnLayerUpdate(ViewLayer curLayer, float alpha)
+        public void OnViewLayerUpdate(ViewLayer curLayer, float alpha)
         {
             if (curLayer == ViewLayer.ViewLayer_0 || curLayer == ViewLayer.ViewLayer_1)
             { // 0与1层使用资源decorate
@@ -85,13 +89,8 @@ namespace Application.Runtime
             {
                 curRenderer = null;
             }
-        }
 
-        public void OnEnterLayer(ViewLayer prevLayer, ViewLayer curLayer)
-        {
-            if(prevLayer == ViewLayer.ViewLayer_Invalid && curLayer == ViewLayer.ViewLayer_Invalid)
-                return;     // ViewLayerManager尚未Update时可能出现
-
+            // 因资源异步加载，此处从OnEnterLayer移至Update处理
             if(curLayer == ViewLayer.ViewLayer_0 || curLayer == ViewLayer.ViewLayer_1)
             {
                 SetRendererVisible(true, false);
@@ -108,9 +107,8 @@ namespace Application.Runtime
         
         private Renderable GetOrCreateDecorateRenderer(Transform parent)
         {
-            if(parent != null && m_DecorateRenderer == null && !string.IsNullOrEmpty(m_DecorateAssetPath))
+            if(parent != null && m_DecorateRenderer.renderer == null && !string.IsNullOrEmpty(m_DecorateAssetPath))
             {
-                m_DecorateRenderer = actor.AddComponent<AnimationInstancingRenderable>();
                 m_DecorateRenderer.Load(m_DecorateAssetPath);
                 m_DecorateRenderer.renderer.transform.SetParent(parent, false);
             }
@@ -119,9 +117,8 @@ namespace Application.Runtime
 
         private Renderable GetOrCreateSymbolRenderer(Transform parent)
         {
-            if(parent != null && m_SymbolRenderer == null && !string.IsNullOrEmpty(m_SymbolAssetPath))
+            if(parent != null && m_SymbolRenderer.renderer == null && !string.IsNullOrEmpty(m_SymbolAssetPath))
             {
-                m_SymbolRenderer = actor.AddComponent<Renderable>();
                 m_SymbolRenderer.Load(m_SymbolAssetPath);
                 m_SymbolRenderer.renderer.transform.SetParent(parent, false);
             }
@@ -130,24 +127,19 @@ namespace Application.Runtime
 
         private void SetRendererVisible(bool decorateRendererVisible, bool symbolRendererVisible)
         {
-            if(m_DecorateRenderer != null)
+            if(m_DecorateRenderer != null && m_DecorateRenderer.enable != decorateRendererVisible)
             {
                 m_DecorateRenderer.enable = decorateRendererVisible;
             }
-            if(m_SymbolRenderer != null)
+            if(m_SymbolRenderer != null && m_SymbolRenderer.enable != symbolRendererVisible)
             {
                 m_SymbolRenderer.enable = symbolRendererVisible;
             }
         }
 
-        public void PlayAnimation(string name, float transitionDuration = 0)
+        public void PlayAnimation(string name, float transitionDuration = 0.2f, float playSpeed = 1)
         {
-            m_DecorateRenderer?.PlayAnimation(name, transitionDuration);            
-        }
-
-        public void SetAnimationSpeed(float speed, float scale = 1)
-        {
-            m_DecorateRenderer?.SetAnimationSpeed(speed, scale);
+            m_DecorateRenderer.PlayAnimation(name, transitionDuration, playSpeed);
         }
 
         private void OnEnterView(Vector3 startPosition, Vector3 startRotation)

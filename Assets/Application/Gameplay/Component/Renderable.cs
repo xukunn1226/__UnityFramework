@@ -26,6 +26,12 @@ namespace Application.Runtime
         private GameObjectLoader    m_Loader;
 
         public Renderable(ZActor actor) : base(actor) {}
+
+        public override void Destroy()
+        {
+            Unload();
+            base.Destroy();
+        }
         
         public virtual void Load(string assetPath)
         {

@@ -32,10 +32,7 @@ namespace AnimationInstancingModule.Runtime
         public List<LODInfo>            lodInfos            = new List<LODInfo>();
 
         public Transform                worldTransform      { get; private set; }
-        [SerializeField] private float  m_Speed             = 1;                        // 预设的速度值，序列化数据
-        public float                    speed               { get { return m_Speed; } set { m_Speed = value; } }
-        public float                    speedScale          { get; set; } = 1;
-        public float                    playSpeed           { get { return m_Speed * speedScale; } }        // 最终的实际速度值
+        public float                    playSpeed           { get; set; } = 1;          // 最终的实际速度值
         private float                   m_speedParameter    = 1.0f;                     // 某些特性时使用的临时变量，例如pingpong
         [SerializeField] private float  m_Radius            = 1.0f;
         public float                    radius              { get { return m_Radius; } set { m_Radius = value; } }

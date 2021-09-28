@@ -31,8 +31,13 @@ namespace Application.Runtime
         {
             if(GUI.Button(new Rect(Screen.width-200, Screen.height/2, 200, 100), "Create Actors"))
             {
-                for(int i = 0; i < 5; ++i)
+                for(int i = 0; i < 1; ++i)
                     TestActorManager.CreateActor();
+            }
+
+            if(GUI.Button(new Rect(Screen.width-200, Screen.height/2 - 120, 200, 100), "Destroy Actors"))
+            {
+                TestActorManager.DestroyAll();                
             }
         }
 

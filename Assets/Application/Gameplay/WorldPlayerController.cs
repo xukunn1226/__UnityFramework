@@ -220,6 +220,7 @@ namespace Application.Runtime
             UpdateViewLayer();
 
             LocomotionManager.Update(Time.deltaTime);
+            AISimpleManager.Update(Time.deltaTime);
         }
     }
 }

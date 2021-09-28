@@ -20,6 +20,7 @@ namespace Application.Runtime
         private ViewLayerComp           m_ViewLayer;
         private TestRenderableProfile   m_RenderableProxy;
         private LocomotionAgent         m_LocomotionAgent;
+        private AISimple                m_AI;
 
         public override void Prepare(IData data = null)
         {
@@ -35,8 +36,10 @@ namespace Application.Runtime
             m_LocomotionAgent.startPosition = startPosition;
             m_LocomotionAgent.startRotation = startRotation;
 
-            // 显示组件一般最后挂载
+            // 显示组件靠后挂载
             m_RenderableProxy = AddComponent<TestRenderableProfile>(data);
+
+            m_AI = AddComponent<AISimple>(data);
         }
 
         public override void Start()
@@ -46,6 +49,7 @@ namespace Application.Runtime
             m_ViewLayer.Start();
             m_LocomotionAgent.Start();
             m_RenderableProxy.Start();
+            m_AI.Start();
         }
     }
 }
