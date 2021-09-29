@@ -1,26 +1,26 @@
 {
   "Count": 50,
-  "TotalSize": 76502284,
+  "TotalSize": 76502309,
   "FileList": [
     {
       "BundleName": "manifest",
-      "FileHash": "87674cea8a6a7e15b55e0d47b5931e0d",
-      "Size": 3503
+      "FileHash": "310c38daa0c556ac531bb850a2a702e4",
+      "Size": 3505
     },
     {
       "BundleName": "assets/animationinstancing/art/animationdata.ab",
-      "FileHash": "8dc5940239bd2f1b762855527b70a3b5",
-      "Size": 485556
+      "FileHash": "41d031d1a34ce281ce89f33f3cc01b79",
+      "Size": 485553
     },
     {
       "BundleName": "assets/animationinstancing/art/mannequin.ab",
-      "FileHash": "50a406fb5b65d78afa3320e74851a9f0",
-      "Size": 2278938
+      "FileHash": "d144ed459245476c58ec6c869e793b37",
+      "Size": 2278955
     },
     {
       "BundleName": "assets/animationinstancing/art/mirrorf2.ab",
-      "FileHash": "ff441d4494475cf078ca79d98637fbce",
-      "Size": 2164596
+      "FileHash": "ce328894d4f5b5cc0a5ece58d10bbcbb",
+      "Size": 2164593
     },
     {
       "BundleName": "assets/animationinstancing/art/twinsword.ab",
@@ -29,8 +29,8 @@
     },
     {
       "BundleName": "assets/animationinstancing/art/unity_model.ab",
-      "FileHash": "3fdf878e6bea4e9b9164c94dde388764",
-      "Size": 10896807
+      "FileHash": "d6febec02260a1b61dd49f314e334e55",
+      "Size": 10896805
     },
     {
       "BundleName": "assets/animationinstancing/art/wgame.ab",
@@ -39,18 +39,18 @@
     },
     {
       "BundleName": "assets/animationinstancing/art/zombie_01.ab",
-      "FileHash": "1eeb5f71891b0b5d612b6c8dba1df674",
-      "Size": 1001423
+      "FileHash": "3bd40708c25f88ab56a5f5cab86f5eb8",
+      "Size": 1001437
     },
     {
       "BundleName": "assets/animationinstancing/art/zombie_01_ref.ab",
-      "FileHash": "5d9404ca1567a4ec86bfe2a2b10a7fd5",
-      "Size": 1005394
+      "FileHash": "d4450d534ab71e8519b8cd6c8aa6299c",
+      "Size": 1005390
     },
     {
       "BundleName": "assets/animationinstancing/art/zombie_02.ab",
-      "FileHash": "66f70f15c48315e1298b46d57784aeea",
-      "Size": 1703871
+      "FileHash": "b659dcaaf80b9215ee35c169f01c0c77",
+      "Size": 1703870
     },
     {
       "BundleName": "assets/application/tests/runtime/res/atlas.ab",
@@ -244,12 +244,12 @@
     },
     {
       "BundleName": "assets/res/players.ab",
-      "FileHash": "8a65e30d0f508763fc837206d8adc060",
-      "Size": 37826
+      "FileHash": "08904ec65a42410e94c94d3674ba9f94",
+      "Size": 37831
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "c33f2856c3a7ce86ba62b48334fe6203",
+      "FileHash": "0fc848358292449740186d208b212066",
       "Size": 89319
     }
   ]

@@ -15,7 +15,7 @@ namespace Application.Runtime
             TestActor actor = new TestActor();
             actor.id = s_Actors.Count;
             actor.name = "Actor_" + actor.id;
-            actor.startPosition = new Vector3(Random.Range(-1.0f, 1.0f) * 10, 0, Random.Range(-1.0f, 1.0f) * 10);
+            actor.startPosition = new Vector3(Random.Range(-1.0f, 1.0f) * 30, 0, Random.Range(-1.0f, 1.0f) * 30);
             actor.startRotation = new Vector3(0, Random.Range(0, 360), 0);
             actor.Prepare();
             actor.Start();

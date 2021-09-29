@@ -31,7 +31,7 @@ namespace Application.Runtime
         {
             if(GUI.Button(new Rect(Screen.width-200, Screen.height/2, 200, 100), "Create Actors"))
             {
-                for(int i = 0; i < 10; ++i)
+                for(int i = 0; i < 20; ++i)
                     TestActorManager.CreateActor();
             }
 
