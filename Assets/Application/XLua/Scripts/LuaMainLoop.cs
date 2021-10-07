@@ -28,7 +28,7 @@ namespace Application.Runtime
         {
             foreach(var loader in m_LuaScriptLoaders)
             {
-                ResourceManager.UnloadAsset(loader.Value);
+                AssetManager.UnloadAsset(loader.Value);
             }
             m_LuaScriptLoaders.Clear();
 
@@ -91,7 +91,7 @@ namespace Application.Runtime
                 return null;
             }
 
-            AssetLoader<LuaAsset> loader = ResourceManager.LoadAsset<LuaAsset>(string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}"));
+            AssetLoader<LuaAsset> loader = AssetManager.LoadAsset<LuaAsset>(string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}"));
             if (loader == null || loader.asset == null)
             {
                 Debug.LogError($"failed to load TextAsset from {m_CustomLuaPath}/{filepath}");

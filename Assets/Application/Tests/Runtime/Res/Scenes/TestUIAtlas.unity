@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +118,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -233,6 +235,7 @@ MonoBehaviour:
   m_StopNaN: 0
   m_Dithering: 0
   m_ClearDepth: 1
+  m_AllowXRRendering: 1
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
@@ -296,6 +299,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GUID: 750918e92375f2e48826e1d9c701f548
   m_AssetPath: assets/application/tests/runtime/res/ui/prefabs/canvas.prefab
+  m_BundleName: 
+  m_AssetName: 
   m_UseLRUManage: 0
   m_LRUedPoolAsset: {fileID: 0}
 --- !u!1 &950372090
@@ -309,7 +314,7 @@ GameObject:
   - component: {fileID: 950372092}
   - component: {fileID: 950372091}
   m_Layer: 0
-  m_Name: ResourceManager
+  m_Name: AssetManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -324,12 +329,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 950372090}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed9bb3b2a7d5e7f4d9bd1b4a9dde7735, type: 3}
+  m_Script: {fileID: 11500000, guid: e7c81adfb2c145e47b669ed473079ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LoaderType: 1
-  m_RootPath: Deployment/AssetBundles
-  m_UIAtlasPath: assets/application/tests/runtime/res/ui/atlases
+  isPersistent: 1
+  m_LoaderType: 0
 --- !u!4 &950372092
 Transform:
   m_ObjectHideFlags: 0
@@ -420,6 +424,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &1166408963

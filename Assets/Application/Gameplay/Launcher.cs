@@ -133,8 +133,8 @@ namespace Application.Runtime
         public void Restart()
         {
             // 因可能有补丁下载，需要删除资源管理器，待补丁下载完毕再创建
-            if(ResourceManager.Instance != null)
-                DestroyImmediate(ResourceManager.Instance.gameObject);
+            if(AssetManager.Instance != null)
+                DestroyImmediate(AssetManager.Instance.gameObject);
 
             m_theFirstStart = false;
             StartWork();
@@ -263,7 +263,7 @@ namespace Application.Runtime
         private void VersionControlFinished()
         {
             // 管理器的初始化需要manifest，待manifest更新完再初始化管理器
-            ResourceManager.Init(GetLauncherMode());
+            AssetManager.Init(GetLauncherMode());
 
             if (string.IsNullOrEmpty(m_Error))
             {

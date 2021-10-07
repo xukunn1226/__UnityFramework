@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Framework.Core;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Runtime
 {
@@ -19,7 +20,7 @@ namespace Application.Runtime
 
         IEnumerator Start()
         {
-            GlobalConfigManager.Init(ResourceManager.Instance.loaderType == Framework.AssetManagement.Runtime.LoaderType.FromEditor);
+            GlobalConfigManager.Init(AssetManager.Instance.loaderType == Framework.AssetManagement.Runtime.LoaderType.FromEditor);
 
             yield return null;
 

@@ -47,13 +47,13 @@ namespace Application.Runtime
 
         public GameObject Load(string assetPath)
         {
-            m_Loader = ResourceManager.LoadAsset<GameObject>(assetPath);
+            m_Loader = AssetManager.LoadAsset<GameObject>(assetPath);
             return m_Loader?.asset;
         }
 
         public void Unload()
         {
-            ResourceManager.UnloadAsset(m_Loader);
+            AssetManager.UnloadAsset(m_Loader);
         }
     }
 }

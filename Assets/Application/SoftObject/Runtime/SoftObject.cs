@@ -43,7 +43,7 @@ namespace Application.Runtime
             if (m_PrefabLoader != null)
                 throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-            m_PrefabLoader = ResourceManager.Instantiate(bundleName, assetName);
+            m_PrefabLoader = AssetManager.Instantiate(bundleName, assetName);
             return m_PrefabLoader?.asset;
         }
 
@@ -57,7 +57,7 @@ namespace Application.Runtime
             if (m_PrefabLoader != null)
                 throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-            m_PrefabLoaderAsync = ResourceManager.InstantiateAsync(bundleName, assetName);
+            m_PrefabLoaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
             return m_PrefabLoaderAsync;
         }
 
@@ -65,13 +65,13 @@ namespace Application.Runtime
         {
             if (m_PrefabLoader != null)
             {
-                ResourceManager.ReleaseInst(m_PrefabLoader);
+                AssetManager.ReleaseInst(m_PrefabLoader);
                 m_PrefabLoader = null;
             }
 
             if (m_PrefabLoaderAsync != null)
             {
-                ResourceManager.ReleaseInst(m_PrefabLoaderAsync);
+                AssetManager.ReleaseInst(m_PrefabLoaderAsync);
                 m_PrefabLoaderAsync = null;
             }
         }
@@ -86,7 +86,7 @@ namespace Application.Runtime
             if (m_LoaderAsync != null)
                 throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded async");
 
-            m_Loader = ResourceManager.LoadAsset<Object>(bundleName, assetName);
+            m_Loader = AssetManager.LoadAsset<Object>(bundleName, assetName);
             return m_Loader.asset;
         }
 
@@ -100,7 +100,7 @@ namespace Application.Runtime
             if (m_Loader != null)
                 throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-            m_LoaderAsync = ResourceManager.LoadAssetAsync<Object>(bundleName, assetName);
+            m_LoaderAsync = AssetManager.LoadAssetAsync<Object>(bundleName, assetName);
             return m_LoaderAsync;
         }
 
@@ -112,13 +112,13 @@ namespace Application.Runtime
 
             if (m_Loader != null)
             {
-                ResourceManager.UnloadAsset(m_Loader);
+                AssetManager.UnloadAsset(m_Loader);
                 m_Loader = null;
             }
 
             if (m_LoaderAsync != null)
             {
-                ResourceManager.UnloadAsset(m_LoaderAsync);
+                AssetManager.UnloadAsset(m_LoaderAsync);
                 m_LoaderAsync = null;
             }
         }
@@ -134,7 +134,7 @@ namespace Application.Runtime
         {
             if (m_ScriptedPool == null)
             {
-                ResourceManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
+                AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
                 m_ScriptedPool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(m_PoolPath);
                 m_ScriptedPool.Warmup();
             }
@@ -161,7 +161,7 @@ namespace Application.Runtime
         {
             if (m_PrefabedPool == null)
             {
-                ResourceManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
+                AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
                 m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoader>(m_PoolPath);
             }
             return m_PrefabedPool.Get();
@@ -185,7 +185,7 @@ namespace Application.Runtime
                 if (!IsValid(m_LRUedPoolAsset))
                     throw new System.ArgumentNullException("m_LRUedPoolAsset");
 
-                ResourceManager.ParseBundleAndAssetName(m_LRUedPoolAsset.bundleName, m_LRUedPoolAsset.assetName, out m_PoolPath);
+                AssetManager.ParseBundleAndAssetName(m_LRUedPoolAsset.bundleName, m_LRUedPoolAsset.assetName, out m_PoolPath);
                 m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoader>(m_PoolPath);
                 // m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_LRUedPoolAsset.assetPath);
             }

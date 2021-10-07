@@ -44,7 +44,7 @@ public class LRUPool_FX : LRUPoolBase
         if(s_LoaderPool.TryGetValue(assetPath, out loader))
         {
             s_LoaderPool.Remove(assetPath);
-            ResourceManager.ReleaseInst(loader);
+            AssetManager.ReleaseInst(loader);
         }
     }
 
@@ -77,7 +77,7 @@ public class LRUPool_FX : LRUPoolBase
         FX_Root fx = s_FXPool.Exist(assetName);
         if(fx == null)
         {
-            GameObjectLoader loader = ResourceManager.Instantiate(bundleName, assetName);
+            GameObjectLoader loader = AssetManager.Instantiate(bundleName, assetName);
             if(loader.asset == null)
             {
                 return null;

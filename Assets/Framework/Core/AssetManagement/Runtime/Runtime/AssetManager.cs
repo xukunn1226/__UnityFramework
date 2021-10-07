@@ -39,7 +39,7 @@ namespace Framework.AssetManagement.Runtime
         static private bool             bOverrideLoaderType;
         static private LoaderType       overrideLoaderType;
 
-        internal LoaderType             loaderType
+        public LoaderType               loaderType
         {
             get
             {

@@ -42,7 +42,7 @@ namespace Application.Runtime
             if(m_Loader == null && string.IsNullOrEmpty(m_AssetPath))
             {
                 m_AssetPath = assetPath;
-                m_Loader = ResourceManager.Instantiate(m_AssetPath);
+                m_Loader = AssetManager.Instantiate(m_AssetPath);
                 renderer = m_Loader.asset;
             }
             else
@@ -55,7 +55,7 @@ namespace Application.Runtime
         {
             if(m_Loader != null)
             {
-                ResourceManager.ReleaseInst(m_Loader);
+                AssetManager.ReleaseInst(m_Loader);
                 m_Loader = null;
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections;
 using Framework.Cache;
 using System.Collections.Generic;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Runtime.Tests
 {
@@ -31,7 +32,7 @@ namespace Application.Runtime.Tests
 
             for (int i = 0; i < PoolPathList.Count; ++i)
             {
-                GameObject go = ResourceManager.Instantiate(PoolPathList[i], AssetNameList[i]).asset;
+                GameObject go = AssetManager.Instantiate(PoolPathList[i], AssetNameList[i]).asset;
                 PrefabObjectPool pool = go.GetComponent<PrefabObjectPool>();
                 if (pool != null)
                 {

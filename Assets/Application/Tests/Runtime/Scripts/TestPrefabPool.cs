@@ -25,7 +25,7 @@ namespace Application.Runtime.Tests
             if (GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
             {
                 // step 1. 创建对象池
-                loader = ResourceManager.Instantiate(bundleName, assetName);
+                loader = AssetManager.Instantiate(bundleName, assetName);
                 PoolInst = loader.asset;
             }
 
@@ -41,7 +41,7 @@ namespace Application.Runtime.Tests
                 // if (PoolInst != null)
                 //     Destroy(PoolInst);
                 if (loader != null)
-                    ResourceManager.ReleaseInst(loader);
+                    AssetManager.ReleaseInst(loader);
             }
         }
 
