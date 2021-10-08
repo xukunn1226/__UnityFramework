@@ -33,7 +33,7 @@ EditorBuildSettings:
     path: Assets/Application/Tests/Runtime/Res/Scenes/GestureSample.unity
     guid: ec0be40600f8b7a42aa3bb0eaf6fb16d
   - enabled: 0
-    path: Assets/Framework/Core/AssetManagement/Runtime/Tests/Res/Scenes/LoadPrefab.unity
+    path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/LoadPrefab.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 0
     path: Assets/Application/Tests/Runtime/Res/Scenes/TestUIAtlas.unity
@@ -42,7 +42,7 @@ EditorBuildSettings:
     path: Assets/Application/Tests/Runtime/Res/Scenes/TestSpriteAtlasManager.unity
     guid: 1a5492a7f5e6f48499f980ab58830bbe
   - enabled: 0
-    path: Assets/Framework/Core/AssetManagement/Runtime/Tests/Res/Scenes/TestLoadScene.unity
+    path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestLoadScene.unity
     guid: f2b5e6eeef4517b4f99c9096a6896933
   m_configObjects:
     com.myproject.AssetBuilderSetting: {fileID: 11400000, guid: 97bdc094262e65746b5990a4103c113e,

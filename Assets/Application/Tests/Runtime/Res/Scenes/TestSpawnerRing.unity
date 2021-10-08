@@ -594,7 +594,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPersistent: 1
-  m_LoaderType: 1
+  m_LoaderType: 0
 --- !u!4 &1671749595
 Transform:
   m_ObjectHideFlags: 0
