@@ -5,6 +5,7 @@ using System;
 namespace Framework.Cache
 {
     /// <summary>
+    /// 设计初衷是为了跟踪GameObjectLoader, AssetLoader, SceneLoader的使用情况，ObjectPool仅记录了数据的未使用情况而不符合需求
     /// 对象池（非Mono对象），记录使用中和未使用的数据状况（对比ObjectPool仅记录未使用的数据），方便跟踪记录
     /// 未使用的数据由ObjectPool管理，使用中的数据由First管理
     /// WARNING: 对象不能同时使用ObjectPool和LinkedObjectPool管理
