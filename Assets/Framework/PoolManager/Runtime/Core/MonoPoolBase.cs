@@ -14,7 +14,7 @@ namespace Framework.Cache
         /// 缓存对象原型(proto type)
         /// 注意：PrefabAsset是从AB加载出来的asset，尚未实例化
         /// </summary>
-        public MonoPooledObject         PrefabAsset;
+        public MonoPooledObject             PrefabAsset;
 
         [HideInInspector]
         public bool                         ScriptDynamicAdded = false;     // PrefabAsset是否是运行时添加的

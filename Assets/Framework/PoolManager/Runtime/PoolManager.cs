@@ -11,20 +11,6 @@ namespace Framework.Cache
     /// </summary>
     public sealed class PoolManager : SingletonMono<PoolManager>
     {
-        // private static PoolManager                      m_kInstance;
-        // static public PoolManager                       Instance
-        // {
-        //     get
-        //     {
-        //         if(m_kInstance == null)
-        //         {
-        //             GameObject go = new GameObject();
-        //             m_kInstance = go.AddComponent<PoolManager>();
-        //         }
-        //         return m_kInstance;
-        //     }
-        // }
-
         private static Dictionary<long, MonoPoolBase>           m_MonoPools         = new Dictionary<long, MonoPoolBase>();         // key: instanceId | poolType.hashcode << 32
                                                                                                                                     // 同一个PrefabAsset支持由多个不同类型Pool
 

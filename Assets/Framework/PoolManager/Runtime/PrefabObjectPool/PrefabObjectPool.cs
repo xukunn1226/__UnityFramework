@@ -25,9 +25,9 @@ namespace Framework.Cache
         [Range(1, 100)]
         public int                                          TrimAbove           = 10;               // 自动清理开启时至少保持unused的数量
 
-        protected BetterLinkedList<MonoPooledObject>    m_UsedObjects       = new BetterLinkedList<MonoPooledObject>();
+        protected BetterLinkedList<MonoPooledObject>        m_UsedObjects       = new BetterLinkedList<MonoPooledObject>();
 
-        protected Stack<MonoPooledObject>               m_UnusedObjects     = new Stack<MonoPooledObject>();
+        protected Stack<MonoPooledObject>                   m_UnusedObjects     = new Stack<MonoPooledObject>();
 
         public override int                                 countAll            { get { return countOfUsed + countOfUnused; } }
 
