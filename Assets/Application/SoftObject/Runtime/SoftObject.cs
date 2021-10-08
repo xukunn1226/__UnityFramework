@@ -130,7 +130,7 @@ namespace Application.Runtime
         /// <typeparam name="TPooledObject"></typeparam>
         /// <typeparam name="TPool"></typeparam>
         /// <returns></returns>
-        public IPooledObject SpawnFromPool<TPooledObject, TPool>() where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase
+        public IPooledObject SpawnFromPool<TPooledObject, TPool>() where TPooledObject : MonoPooledObject where TPool : MonoPoolBase
         {
             if (m_ScriptedPool == null)
             {

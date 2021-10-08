@@ -4,7 +4,7 @@ using Framework.Cache;
 namespace Application.Runtime.Tests
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Stuff : MonoPooledObjectBase
+    public class Stuff : MonoPooledObject
     {
         public Rigidbody Body { get; private set; }
 

@@ -16,7 +16,7 @@ namespace Application.Runtime
         /// <typeparam name="TPool"></typeparam>
         /// <param name="assetPath">待缓存对象资源地址</param>
         /// <returns></returns>
-        static public TPool GetOrCreatePool<TPooledObject, TPool>(string assetPath) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase
+        static public TPool GetOrCreatePool<TPooledObject, TPool>(string assetPath) where TPooledObject : MonoPooledObject where TPool : MonoPoolBase
         {
             return PoolManager.GetOrCreatePool<TPooledObject, TPool, AssetLoader>(assetPath);
         }
@@ -27,7 +27,7 @@ namespace Application.Runtime
         /// <typeparam name="TPooledObject"></typeparam>
         /// <param name="assetPath"></param>
         /// <returns></returns>
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(string assetPath) where TPooledObject : MonoPooledObjectBase
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(string assetPath) where TPooledObject : MonoPooledObject
         {
             return PoolManager.GetOrCreatePool<TPooledObject, AssetLoader>(assetPath);
         }

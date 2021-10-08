@@ -7,7 +7,7 @@ namespace Framework.Cache
     /// <summary>
     /// 基于Mono的可缓存对象基类
     /// </summary>
-    public abstract class MonoPooledObjectBase : MonoBehaviour, IPooledObject
+    public class MonoPooledObject : MonoBehaviour, IPooledObject
     {
         /// <summary>
         /// 不提供默认对象池

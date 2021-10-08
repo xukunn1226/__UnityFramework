@@ -10,12 +10,12 @@ namespace Cache.Tests
 {
     public static class PoolManagerExtension
     {
-        static public TPool GetOrCreatePool<TPooledObject, TPool>(string assetPath) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase
+        static public TPool GetOrCreatePool<TPooledObject, TPool>(string assetPath) where TPooledObject : MonoPooledObject where TPool : MonoPoolBase
         {
             return PoolManager.GetOrCreatePool<TPooledObject, TPool, AssetLoader>(assetPath);
         }
 
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(string assetPath) where TPooledObject : MonoPooledObjectBase
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(string assetPath) where TPooledObject : MonoPooledObject
         {
             return PoolManager.GetOrCreatePool<TPooledObject, AssetLoader>(assetPath);
         }

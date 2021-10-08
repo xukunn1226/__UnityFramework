@@ -50,8 +50,8 @@ namespace Framework.Cache
             if (element == null)
                 throw new System.ArgumentNullException("element");
 
-            m_UnusedObjects.Push((T)element);
             element.OnRelease();
+            m_UnusedObjects.Push((T)element);
         }
 
         public void Clear()

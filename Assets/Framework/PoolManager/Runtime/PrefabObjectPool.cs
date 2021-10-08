@@ -25,9 +25,9 @@ namespace Framework.Cache
         [Range(1, 100)]
         public int                                          TrimAbove           = 10;               // 自动清理开启时至少保持unused的数量
 
-        protected BetterLinkedList<MonoPooledObjectBase>    m_UsedObjects       = new BetterLinkedList<MonoPooledObjectBase>();
+        protected BetterLinkedList<MonoPooledObject>    m_UsedObjects       = new BetterLinkedList<MonoPooledObject>();
 
-        protected Stack<MonoPooledObjectBase>               m_UnusedObjects     = new Stack<MonoPooledObjectBase>();
+        protected Stack<MonoPooledObject>               m_UnusedObjects     = new Stack<MonoPooledObject>();
 
         public override int                                 countAll            { get { return countOfUsed + countOfUnused; } }
 
@@ -125,7 +125,7 @@ namespace Framework.Cache
         /// <returns></returns>
         private IPooledObject InternalGet(bool forceCreateNew = false)
         {
-            MonoPooledObjectBase obj = null;
+            MonoPooledObject obj = null;
             if(forceCreateNew || m_UnusedObjects.Count == 0)
             {
                 obj = CreateNew();
@@ -149,12 +149,12 @@ namespace Framework.Cache
         /// Instantiate PrefabAsset
         /// </summary>
         /// <returns></returns>
-        private MonoPooledObjectBase CreateNew()
+        private MonoPooledObject CreateNew()
         {
-            MonoPooledObjectBase obj = null;
+            MonoPooledObject obj = null;
             if (PrefabAsset != null && (!LimitInstance || countAll < LimitAmount))
             {
-                obj = (MonoPooledObjectBase)PoolManager.Instantiate(PrefabAsset);
+                obj = (MonoPooledObject)PoolManager.Instantiate(PrefabAsset);
                 obj.Pool = this;
             }
             return obj;
@@ -167,9 +167,9 @@ namespace Framework.Cache
         /// <param name="pos"></param>
         /// <param name="rot"></param>
         /// <returns></returns>
-        public MonoPooledObjectBase Get(Transform parent, Vector3 pos = default(Vector3), Quaternion rot = default(Quaternion))
+        public MonoPooledObject Get(Transform parent, Vector3 pos = default(Vector3), Quaternion rot = default(Quaternion))
         {
-            MonoPooledObjectBase inst = Get() as MonoPooledObjectBase;
+            MonoPooledObject inst = Get() as MonoPooledObject;
             if (inst != null)
             {
                 inst.transform.position = pos;
@@ -184,7 +184,7 @@ namespace Framework.Cache
             if (item == null)
                 return;
 
-            MonoPooledObjectBase monoObj = (MonoPooledObjectBase)item;
+            MonoPooledObject monoObj = (MonoPooledObject)item;
             m_UnusedObjects.Push(monoObj);
             m_UsedObjects.Remove(monoObj);
             monoObj.transform.parent = Group;           // 回收时放置Group下
@@ -205,7 +205,7 @@ namespace Framework.Cache
         {
             while(m_UnusedObjects.Count > TrimAbove)
             {
-                MonoPooledObjectBase inst = m_UnusedObjects.Pop();
+                MonoPooledObject inst = m_UnusedObjects.Pop();
                 if (inst != null)
                 {
                     PoolManager.Destroy(inst.gameObject);
@@ -215,7 +215,7 @@ namespace Framework.Cache
 
         public override void Clear()
         {
-            Stack<MonoPooledObjectBase>.Enumerator deactiveObjEnum = m_UnusedObjects.GetEnumerator();
+            Stack<MonoPooledObject>.Enumerator deactiveObjEnum = m_UnusedObjects.GetEnumerator();
             while(deactiveObjEnum.MoveNext())
             {
                 if(deactiveObjEnum.Current != null)
@@ -226,7 +226,7 @@ namespace Framework.Cache
             deactiveObjEnum.Dispose();
             m_UnusedObjects.Clear();
 
-            BetterLinkedList<MonoPooledObjectBase>.Enumerator activeObjEnum = m_UsedObjects.GetEnumerator();
+            BetterLinkedList<MonoPooledObject>.Enumerator activeObjEnum = m_UsedObjects.GetEnumerator();
             while(activeObjEnum.MoveNext())
             {
                 if(activeObjEnum.Current != null)

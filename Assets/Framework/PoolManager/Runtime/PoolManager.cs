@@ -287,7 +287,7 @@ namespace Framework.Cache
         /// <typeparam name="TLoaderType"></typeparam>
         /// <param name="assetPath"></param>
         /// <returns></returns>
-        static public TPool GetOrCreatePool<TPooledObject, TPool, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase where TLoaderType : IAssetLoader
+        static public TPool GetOrCreatePool<TPooledObject, TPool, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObject where TPool : MonoPoolBase where TLoaderType : IAssetLoader
         {
             IAssetLoader loader;
             if (!m_ScriptedPoolDict.TryGetValue(assetPath, out loader))
@@ -305,7 +305,7 @@ namespace Framework.Cache
             return GetOrCreatePool<TPooledObject, TPool>(loader.asset);
         }
 
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObjectBase where TLoaderType : IAssetLoader
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject, TLoaderType>(string assetPath) where TPooledObject : MonoPooledObject where TLoaderType : IAssetLoader
         {
             return GetOrCreatePool<TPooledObject, PrefabObjectPool, TLoaderType>(assetPath);
         }
@@ -345,7 +345,7 @@ namespace Framework.Cache
                 if (item.Value.asset == null)
                     continue;
 
-                MonoPooledObjectBase comp = (item.Value.asset).GetComponent<MonoPooledObjectBase>();
+                MonoPooledObject comp = (item.Value.asset).GetComponent<MonoPooledObject>();
                 MonoPoolBase[] pools = GetMonoPools(comp);      // 获取管理此对象的所有对象池
                 foreach (var pool in pools)
                 {
@@ -365,7 +365,7 @@ namespace Framework.Cache
         /// <typeparam name="TPool">缓存池类型</typeparam>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public TPool GetOrCreatePool<TPooledObject, TPool>(GameObject prefabAsset) where TPooledObject : MonoPooledObjectBase where TPool : MonoPoolBase
+        static public TPool GetOrCreatePool<TPooledObject, TPool>(GameObject prefabAsset) where TPooledObject : MonoPooledObject where TPool : MonoPoolBase
         {
             bool scriptNewAdded = false;
             TPooledObject comp = prefabAsset.GetComponent<TPooledObject>();
@@ -383,7 +383,7 @@ namespace Framework.Cache
         /// <typeparam name="TPooledObject">缓存对象脚本</typeparam>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(GameObject prefabAsset) where TPooledObject : MonoPooledObjectBase
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(GameObject prefabAsset) where TPooledObject : MonoPooledObject
         {
             return GetOrCreatePool<TPooledObject, PrefabObjectPool>(prefabAsset);
         }
@@ -394,7 +394,7 @@ namespace Framework.Cache
         /// <typeparam name="TPool">缓存池类型</typeparam>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public TPool GetOrCreatePool<TPool>(MonoPooledObjectBase prefabAsset) where TPool : MonoPoolBase
+        static public TPool GetOrCreatePool<TPool>(MonoPooledObject prefabAsset) where TPool : MonoPoolBase
         {
             return (TPool)InternalGetOrCreatePool(prefabAsset, typeof(TPool), false);
         }
@@ -404,7 +404,7 @@ namespace Framework.Cache
         /// </summary>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public PrefabObjectPool GetOrCreatePool(MonoPooledObjectBase prefabAsset)
+        static public PrefabObjectPool GetOrCreatePool(MonoPooledObject prefabAsset)
         {
             return (PrefabObjectPool)InternalGetOrCreatePool(prefabAsset, typeof(PrefabObjectPool), false);
         }
@@ -416,7 +416,7 @@ namespace Framework.Cache
         /// <param name="poolType"></param>
         /// <param name="scriptDynamicAdded"></param>
         /// <returns></returns>
-        static private MonoPoolBase InternalGetOrCreatePool(MonoPooledObjectBase prefabAsset, Type poolType, bool scriptDynamicAdded)
+        static private MonoPoolBase InternalGetOrCreatePool(MonoPooledObject prefabAsset, Type poolType, bool scriptDynamicAdded)
         {
             if (prefabAsset == null || poolType == null)
                 throw new ArgumentNullException("asset == null || poolType == null");
@@ -482,7 +482,7 @@ namespace Framework.Cache
                 return;
             }
 
-            MonoPooledObjectBase comp = prefabAsset.GetComponent<MonoPooledObjectBase>();
+            MonoPooledObject comp = prefabAsset.GetComponent<MonoPooledObject>();
             if (comp == null)
             {
                 Debug.LogError("Can't find any script derived from MonoPooledObjectBase");
@@ -512,7 +512,7 @@ namespace Framework.Cache
         /// </summary>
         /// <typeparam name="TPool">对象池类型</typeparam>
         /// <param name="prefabAsset">缓存对象</param>
-        static public void RemoveMonoPool<TPool>(MonoPooledObjectBase prefabAsset) where TPool : MonoPoolBase
+        static public void RemoveMonoPool<TPool>(MonoPooledObject prefabAsset) where TPool : MonoPoolBase
         {
             if (prefabAsset == null)
             {
@@ -528,7 +528,7 @@ namespace Framework.Cache
         /// </summary>
         /// <param name="prefabAsset">缓存对象</param>
         /// <param name="poolType">对象池类型</param>
-        static private void InternalRemoveMonoPool(MonoPooledObjectBase prefabAsset, Type poolType)
+        static private void InternalRemoveMonoPool(MonoPooledObject prefabAsset, Type poolType)
         {
             if (prefabAsset == null || poolType == null)
                 throw new System.ArgumentNullException("InternalRemoveMonoPool: prefabAsset == null || poolType == null");
@@ -565,7 +565,7 @@ namespace Framework.Cache
         /// </summary>
         /// <param name="prefabAsset"></param>
         /// <returns></returns>
-        static public MonoPoolBase[] GetMonoPools(MonoPooledObjectBase prefabAsset)
+        static public MonoPoolBase[] GetMonoPools(MonoPooledObject prefabAsset)
         {
             if (prefabAsset == null)
                 return null;
@@ -601,7 +601,7 @@ namespace Framework.Cache
             return pools;
         }
 
-        static private MonoPoolBase GetMonoPool(MonoPooledObjectBase asset, Type poolType)
+        static private MonoPoolBase GetMonoPool(MonoPooledObject asset, Type poolType)
         {
             if (asset == null || poolType == null)
                 throw new System.ArgumentNullException("GetMonoPool: asset == null || poolType == null");
@@ -617,7 +617,7 @@ namespace Framework.Cache
         /// <param name="prefabAsset">缓存对象</param>
         /// <param name="poolType">缓存池类型</param>
         /// <returns></returns>
-        static private long GetMonoPoolHashCode(MonoPooledObjectBase prefabAsset, Type poolType)
+        static private long GetMonoPoolHashCode(MonoPooledObject prefabAsset, Type poolType)
         {
             if (prefabAsset == null || poolType == null)
                 throw new System.ArgumentNullException("GenerateKey: asset == null || poolType == null");

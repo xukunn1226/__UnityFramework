@@ -6,7 +6,7 @@ using Framework.Cache;
 namespace MeshParticleSystem
 {
     [ExecuteInEditMode]
-    public class FX_Root : MonoPooledObjectBase, IFX_Root
+    public class FX_Root : MonoPooledObject, IFX_Root
     {
         [SerializeField][HideInInspector]
         private float m_Speed = 1;

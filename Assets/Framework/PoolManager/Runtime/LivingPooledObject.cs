@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.Cache
 {
-    public class LivingPooledObject : MonoPooledObjectBase, ILifeTime
+    public class LivingPooledObject : MonoPooledObject, ILifeTime
     {
         public float            m_LifeTime;                                     // serialized field, if less than zero, mean that it has unlimit life cycle, would never return to pool
         public float            LifeTime        { get; set; }                   // remaindered life cycle

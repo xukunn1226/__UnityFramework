@@ -5,7 +5,7 @@ using System;
 namespace Framework.Cache
 {
     /// <summary>
-    /// 对象池（非Mono对象），记录使用中和未使用的数据状况，方便跟踪记录
+    /// 对象池（非Mono对象），记录使用中和未使用的数据状况（对比ObjectPool仅记录未使用的数据），方便跟踪记录
     /// 未使用的数据由ObjectPool管理，使用中的数据由First管理
     /// WARNING: 对象不能同时使用ObjectPool和LinkedObjectPool管理
     /// </summary>

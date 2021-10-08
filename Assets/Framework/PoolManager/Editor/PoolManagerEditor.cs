@@ -149,7 +149,7 @@ namespace Framework.Cache.Editor
 
                     EditorGUILayout.BeginHorizontal();
                     {
-                        MonoPooledObjectBase comp = ((GameObject)e.Current.Value.asset).GetComponent<MonoPooledObjectBase>();
+                        MonoPooledObject comp = ((GameObject)e.Current.Value.asset).GetComponent<MonoPooledObject>();
                         EditorGUILayout.LabelField(string.Format("[{0}]{1}", comp.name, e.Current.Key));
 
                         // TODO: 把所有管理此对象的对象池显示出来

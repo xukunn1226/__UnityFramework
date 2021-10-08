@@ -3,7 +3,7 @@ using Framework.Cache;
 
 namespace Cache.Tests
 {
-    public class RectanglePooledObject : MonoPooledObjectBase
+    public class RectanglePooledObject : MonoPooledObject
     {
         public float m_LifeTime = 15;
 
