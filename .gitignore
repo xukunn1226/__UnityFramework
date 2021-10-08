@@ -78,9 +78,8 @@ Deployment/
 UserSettings/
 [Aa]ssets/**/[Tt]emp/
 [Aa]ssets/**/[Tt]emp.meta
-[Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData
-[Aa]ssets/Application/MeshParticleSystem/ParticleProfiler/ProfilerData.meta
-!Assets/Framework/AssetManagement/Deployment/
+[Aa]ssets/Framework/MeshParticleSystem/ParticleProfiler/ProfilerData
+[Aa]ssets/Framework/MeshParticleSystem/ParticleProfiler/ProfilerData.meta
 [Aa]ssets/RedirectorCache
 [Aa]ssets/RedirectorCache.meta
 [Aa]ssets/Application/XLua/Gen
