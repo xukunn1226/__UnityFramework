@@ -118,7 +118,6 @@ namespace Framework.AssetManagement.Runtime
             CustomizedParser_BundleAndAssetToAssetPath += parser2;
         }
 
-
         /// <summary>
         /// 加载prefab资源接口（同步、异步共4个）
         /// </summary>

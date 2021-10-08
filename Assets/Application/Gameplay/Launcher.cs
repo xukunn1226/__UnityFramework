@@ -262,7 +262,7 @@ namespace Application.Runtime
 
         private void VersionControlFinished()
         {
-            // 管理器的初始化需要manifest，待manifest更新完再初始化管理器
+            // 补丁下载完毕再初始化资源管理器
             AssetManager.Init(GetLauncherMode());
 
             if (string.IsNullOrEmpty(m_Error))

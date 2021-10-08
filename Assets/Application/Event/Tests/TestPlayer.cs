@@ -9,7 +9,7 @@ namespace Application.Runtime.Tests
         // Start is called before the first frame update
         public void Start()
         {            
-            EventManager.AddEventListener(HPEvent.HPChange, OnFoo1, false, true);
+            EventManager.AddEventListener(HPEvent.HPChange, OnFoo1);
             EventManager.AddEventListener(HPEvent.HPChange, OnFoo2);
         }
 

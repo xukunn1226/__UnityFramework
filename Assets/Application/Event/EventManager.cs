@@ -13,108 +13,51 @@ namespace Application.Runtime
     ///     3、Dispatcher: EventManager.Allocate<EventArgs_HP>().Set(HPEvent.HPChange, 2).Dispatch();
     /// Lack: 
     ///     the gc brings by enum as a key
-    /// Note:
-    ///     AddEventListener(Enum type, Action<EventArgs> listener, bool useWeakReference = false, bool isOnce = false)
-    ///     监听Monobehaviour对象不推荐使用weakReference，因为其有生命周期函数（OnDestroy），引擎底层有对其进行管理
-    ///     监听非Monobehaviour对象可以使用weakReference，一旦使用可以不用RemoveEventListener，在其被GC后系统自动删除
     /// <summary>
     static public class EventManager
-    {
-        static private Dictionary<Type, EventArgs>              m_EventPool = new Dictionary<Type, EventArgs>();
-        static private Dictionary<Enum, List<EventReference>>   m_Listeners = new Dictionary<Enum, List<EventReference>>();
-        static private List<EventReference>                     m_GCList    = new List<EventReference>();
+    {        
+        static private Dictionary<Enum, Action<EventArgs>>  m_Listeners = new Dictionary<Enum, Action<EventArgs>>();
+        static private Dictionary<Type, EventArgs>          m_EventPool = new Dictionary<Type, EventArgs>();
 
-        public class EventReference
+        static public void AddEventListener(Enum type, Action<EventArgs> action)
         {
-            private WeakReference       m_WeakRef;
-            private Action<EventArgs>   m_Listener;
-            private bool                m_isOnce;
+            if(action == null)
+                throw new ArgumentNullException("AddEventListener.action");
 
-            public bool                 isOnce { get { return m_isOnce; } }
-            public Action<EventArgs>    listener
+            Action<EventArgs> actions = GetEventList(type);
+            Delegate[] delegates = actions?.GetInvocationList();
+            if(delegates != null)
             {
-                get
+                if(Array.Exists(delegates, item => item == (Delegate)action))
                 {
-                    if(m_Listener != null)
-                    {
-                        return m_Listener;
-                    }
-                    else if(m_WeakRef != null)
-                    {
-                        return m_WeakRef.Target as Action<EventArgs>;
-                    }
-                    return null;
-                }
-            }
-
-            public EventReference(Action<EventArgs> listener, bool useWeakReference = false, bool isOnce = false)
-            {
-                if(useWeakReference)
-                {
-                    m_WeakRef = new WeakReference(listener);
+                    Debug.LogWarning($"duplicated event listener: {type}.{action}");
                 }
                 else
                 {
-                    m_Listener = listener;
+                    actions += action;
                 }
-                m_isOnce = isOnce;
             }
-        }
-        
-        static private List<EventReference> GetEventList(Enum type)
-        {
-            List<EventReference> listener;
-            if(m_Listeners.TryGetValue(type, out listener))
+            else
             {
-                return listener;
+                actions = action;
             }
-            return null;
+            m_Listeners[type] = actions;
         }
 
-        static public void AddEventListener(Enum type, Action<EventArgs> listener, bool useWeakReference = false, bool isOnce = false)
+        static public void RemoveEventListener(Enum type, Action<EventArgs> action)
         {
-            if(listener == null)
-                throw new ArgumentNullException("AddEventListener.listener");
+            if(action == null)
+                throw new ArgumentNullException("RemoveEventListener.action");
 
-            List<EventReference> events = GetEventList(type);
-            if(events == null)
+            Action<EventArgs> actions = GetEventList(type);
+            if(actions != null)
             {
-                events = new List<EventReference>();
-                m_Listeners.Add(type, events);
+                actions -= action;
+                m_Listeners[type] = actions;
             }
-
-            if(events.Exists(item => item.listener == listener))
-            {
-                Debug.LogWarning($"duplicated event listener: {type}@{listener}");
-                return;
-            }
-
-            events.Add(new EventReference(listener, useWeakReference, isOnce));
-        }
-
-        static public void RemoveEventListener(Enum type, Action<EventArgs> listener)
-        {
-            if(listener == null)
-                throw new ArgumentNullException("RemoveEventListener.listener");
-
-            List<EventReference> events = GetEventList(type);
-            if(events == null)
+            else
             {
                 Debug.LogWarning($"there is no {type} event list");
-                return;
-            }
-
-            int index = events.FindIndex(item => item.listener == listener);
-            if(index == -1)
-            {
-                Debug.LogWarning($"there is no listener: {listener}");
-                return;
-            }
-            events.RemoveAt(index);
-
-            if(events.Count == 0)
-            {
-                m_Listeners.Remove(type);
             }
         }
 
@@ -132,32 +75,14 @@ namespace Application.Runtime
 
         static public void Dispatch(EventArgs args)
         {
-            List<EventReference> events = GetEventList(args.eventType);
-            if(events != null)
+            Action<EventArgs> actions = GetEventList(args.eventType);
+            if(actions == null)
             {
-                events.ForEach(item =>
-                {
-                    if(item.listener != null)
-                    {
-                        try
-                        {
-                            item.listener.Invoke(args);
-                        }
-                        catch(Exception e)
-                        {
-                            Debug.LogError($"Dispatch: {e.Message}");
-                        }
-                    }
-
-                    // collect the pending removed EventReference    
-                    if(item.listener == null || item.isOnce)
-                    {
-                        m_GCList.Add(item);
-                    }
-                });
-
-                m_GCList.ForEach(item => events.Remove(item));
-                m_GCList.Clear();
+                Debug.LogWarning($"Dispatch failed, because there is no {args.eventType} event listener");
+            }
+            else
+            {
+                actions?.Invoke(args);
             }
             ReturnToPool(args);     // EventArgs使用完毕立即回收
         }
@@ -186,13 +111,23 @@ namespace Application.Runtime
                 m_EventPool.Add(type, args);
             }
         }
-    }
 
-    static public class EventManagerExtension
-    {
-        static public void Dispatch(this EventArgs args)
+        static private Action<EventArgs> GetEventList(Enum type)
         {
-            EventManager.Dispatch(args);
+            Action<EventArgs> listener;
+            if(m_Listeners.TryGetValue(type, out listener))
+            {
+                return listener;
+            }
+            return null;
+        }
+    }    
+
+    static public class EventManagerExtensionEx
+    {
+        static public void DispatchEx(this EventArgs args)
+        {
+            EventManagerEx.Dispatch(args);
         }
     }
 }
