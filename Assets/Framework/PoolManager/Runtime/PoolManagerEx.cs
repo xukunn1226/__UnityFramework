@@ -83,9 +83,9 @@ namespace Framework.Cache
 
 
         #region ////////////////////// 管理Mono对象接口—— GetOrCreate, RemoveMonoPool
-        static public PrefabObjectPool GetOrCreatePool(GameObject prefabAsset)
+        static public PrefabObjectPoolEx GetOrCreatePool(GameObject prefabAsset)
         {
-            return GetOrCreatePool<MonoPooledObject, PrefabObjectPool>(prefabAsset);
+            return GetOrCreatePool<MonoPooledObject, PrefabObjectPoolEx>(prefabAsset);
         }
 
         /// <summary>
@@ -94,9 +94,9 @@ namespace Framework.Cache
         /// <typeparam name="TPooledObject">缓存对象脚本</typeparam>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(GameObject prefabAsset) where TPooledObject : MonoPooledObject
+        static public PrefabObjectPoolEx GetOrCreatePool<TPooledObject>(GameObject prefabAsset) where TPooledObject : MonoPooledObject
         {
-            return GetOrCreatePool<TPooledObject, PrefabObjectPool>(prefabAsset);
+            return GetOrCreatePool<TPooledObject, PrefabObjectPoolEx>(prefabAsset);
         }
         
         /// <summary>
@@ -134,9 +134,9 @@ namespace Framework.Cache
         /// </summary>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public PrefabObjectPool GetOrCreatePool(MonoPooledObject prefabAsset)
+        static public PrefabObjectPoolEx GetOrCreatePool(MonoPooledObject prefabAsset)
         {
-            return (PrefabObjectPool)InternalGetOrCreatePool(prefabAsset, typeof(PrefabObjectPool), false);
+            return (PrefabObjectPoolEx)InternalGetOrCreatePool(prefabAsset, typeof(PrefabObjectPoolEx), false);
         }
 
         /// <summary>
@@ -181,9 +181,9 @@ namespace Framework.Cache
             return (TPool)InternalGetOrCreateEmptyPool(typeof(TPool));
         }
 
-        static public PrefabObjectPool GetOrCreateEmptyPool()
+        static public PrefabObjectPoolEx GetOrCreateEmptyPool()
         {
-            return (PrefabObjectPool)InternalGetOrCreateEmptyPool(typeof(PrefabObjectPool));
+            return (PrefabObjectPoolEx)InternalGetOrCreateEmptyPool(typeof(PrefabObjectPoolEx));
         }
 
         static private MonoPoolBase InternalGetOrCreateEmptyPool(Type poolType)
@@ -234,9 +234,9 @@ namespace Framework.Cache
             m_MonoPools.Add(GetMonoPoolHashCode(newPool.PrefabAsset, newPool.GetType()), newPool);
 
             // 对象池统一挂载到PoolManager
-            if (PoolManager.Instance.gameObject != newPool.transform.root.gameObject)
+            if (PoolManagerEx.Instance.gameObject != newPool.transform.root.gameObject)
             {
-                newPool.transform.parent = PoolManager.Instance.transform;
+                newPool.transform.parent = PoolManagerEx.Instance.transform;
             }
         }
 
@@ -246,7 +246,7 @@ namespace Framework.Cache
         /// <param name="prefabAsset"></param>
         static public void RemoveMonoPool(GameObject prefabAsset)
         {
-            RemoveMonoPool<PrefabObjectPool>(prefabAsset);
+            RemoveMonoPool<PrefabObjectPoolEx>(prefabAsset);
         }
 
         /// <summary>

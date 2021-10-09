@@ -11,7 +11,7 @@ namespace Cache.Tests
     public class CreatePoolExample : MonoBehaviour
     {
         public GameObject PrefabAsset;
-        private PrefabObjectPool Pool;
+        private PrefabObjectPoolEx Pool;
 
         private void OnGUI()
         {
@@ -25,9 +25,9 @@ namespace Cache.Tests
                 //Pool.Init();
 
                 // method 2.
-                Pool = PoolManager.GetOrCreatePool<RectanglePooledObject>(PrefabAsset);
-                Pool.PreAllocateAmount = 3;
-                Pool.Init();
+                Pool = PoolManagerEx.GetOrCreatePool<RectanglePooledObject>(PrefabAsset);
+                // Pool.PreAllocateAmount = 3;
+                // Pool.Init();
             }
 
             if (GUI.Button(new Rect(100, 200, 150, 80), "Run"))
@@ -43,7 +43,7 @@ namespace Cache.Tests
 
                 // method 1.
                 if (Pool != null)
-                    PoolManager.RemoveMonoPool(Pool);
+                    PoolManagerEx.RemoveMonoPool(Pool);
 
                 // method 2.
                 //if (Pool != null)
