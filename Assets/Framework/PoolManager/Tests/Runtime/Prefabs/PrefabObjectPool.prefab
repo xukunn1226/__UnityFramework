@@ -45,9 +45,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PrefabAsset: {fileID: -3301828075794242841, guid: 1cd422cc17f805842a4ef026727d18de,
     type: 3}
-  ScriptNewAdded: 0
+  ScriptDynamicAdded: 0
   PreAllocateAmount: 1
   LimitInstance: 0
   LimitAmount: 20
-  TrimDeactived: 0
+  TrimUnused: 0
   TrimAbove: 10

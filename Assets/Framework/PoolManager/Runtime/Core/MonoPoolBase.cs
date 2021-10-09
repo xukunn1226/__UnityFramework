@@ -17,7 +17,7 @@ namespace Framework.Cache
         public MonoPooledObject             PrefabAsset;
 
         [HideInInspector]
-        public bool                         ScriptDynamicAdded = false;     // PrefabAsset是否是运行时添加的
+        internal bool                       ScriptDynamicAdded = false;     // MonoPooledObject是否是运行时添加的
 
         private Transform                   m_Group;
 
@@ -38,6 +38,7 @@ namespace Framework.Cache
         }
 
         public bool manualUnregisterPool { get; set; }                      // 是否手动从PoolManager释放，否则OnDestroy时自动释放
+        public virtual void Init() {}
 
         public abstract int countAll { get; }
 
@@ -56,6 +57,6 @@ namespace Framework.Cache
         /// <summary>
         /// prefab对象比较“重”，不建议warmup，但对于可预测的缓存对象可提前实例化
         /// </summary>
-        public virtual void Warmup() { }
+        // public virtual void Warmup() { }
     }
 }

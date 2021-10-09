@@ -136,7 +136,7 @@ namespace Application.Runtime
             {
                 AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
                 m_ScriptedPool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(m_PoolPath);
-                m_ScriptedPool.Warmup();
+                // m_ScriptedPool.Warmup();
             }
             return m_ScriptedPool.Get();
         }

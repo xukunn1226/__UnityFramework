@@ -1,27 +1,28 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
 
 namespace Framework.Cache
 {
-    public class PrefabObjectPool : MonoPoolBase
+    // 以资源方式实例化的对象池不由PoolManager管理
+    public class PrefabObjectPoolEx : MonoPoolBase
     {
         [Tooltip("预实例化数量")]
         [Range(0, 100)]
-        public int                                          PreAllocateAmount   = 1;                // 预实例化数量
+        public int                                          PreAllocateAmount   = 1;                // 预实例化数量，实例化后存储于m_UnusedObjects
 
         [Tooltip("是否设定实例化上限值")]
         public bool                                         LimitInstance;                          // 是否设定实例化上限值
 
-        [Tooltip("最大实例化数量（激活与未激活）")]
+        [Tooltip("最大实例化数量，需要开启LimitInstance")]
         [Range(1, 1000)]
-        public int                                          LimitAmount         = 20;               // 最大实例化数量（激活与未激活）
+        public int                                          LimitAmount         = 20;               // 最大实例化数量（需要开启LimitInstance）
 
         [Tooltip("是否开启清理未激活实例功能")]
         public bool                                         TrimUnused;                             // 是否开启清理未激活实例功能
 
-        [Tooltip("至少保持deactive的数量，当自动清理开启有效")]
+        [Tooltip("至少保持deactive的数量，需要开启TrimUnused")]
         [Range(1, 100)]
         public int                                          TrimAbove           = 10;               // 自动清理开启时至少保持unused的数量
 
@@ -41,36 +42,28 @@ namespace Framework.Cache
             transform.rotation = Quaternion.identity;
             transform.localScale = Vector3.one;
 
-            // 静态创建对象池时，此时注册PoolManager
-            // 动态创建对象池时，PrefabAsset一定为空，skip
-            if (PrefabAsset != null)
-                PoolManager.AddMonoPool(this);
-
-            Init();
-        }
-
-        private void Start()
-        {
-            // 
-            if (PoolManager.Instance.gameObject != transform.root.gameObject)
+            // 当动态创建对象池时PrefabAsset可能尚未赋值
+            if(PrefabAsset != null)
             {
-                transform.parent = PoolManager.Instance.transform;
+                Init();
             }
         }
 
-        /// <summary>
-        /// 初始化
-        /// 动态创建对象池时需要主动调用
-        /// </summary>
-        new public void Init()
-        {
+        // 动态创建对象池时，通过此接口主动设置缓存对象
+        public override void Init()
+        {            
+            if(PrefabAsset == null)
+                throw new System.ArgumentNullException("PrefabObjectPool.PrefabAsset");
+
             Warmup();
         }
 
         private void OnDestroy()
         {
-            if(!manualUnregisterPool)
-                PoolManager.RemoveMonoPool(this);
+            // 不推荐删除对象池，因为其他地方可能在使用，由PoolManager统一删除
+            // // ???
+            // if(!manualUnregisterPool)
+            //     PoolManager.RemoveMonoPool(this);
         }
 
 #if UNITY_EDITOR
@@ -83,11 +76,8 @@ namespace Framework.Cache
         /// <summary>
         /// 预实例化对象
         /// </summary>
-        public void Warmup()
+        private void Warmup()
         {
-            if (PrefabAsset == null)        // 动态创建Pool时PrefabAsset参数仍未设置
-                return;
-
             if(TrimUnused)
             {
                 PreAllocateAmount = Mathf.Min(PreAllocateAmount, TrimAbove);
@@ -154,7 +144,7 @@ namespace Framework.Cache
             MonoPooledObject obj = null;
             if (PrefabAsset != null && (!LimitInstance || countAll < LimitAmount))
             {
-                obj = (MonoPooledObject)PoolManager.Instantiate(PrefabAsset);
+                obj = (MonoPooledObject)PoolManagerEx.Instantiate(PrefabAsset);
                 obj.Pool = this;
             }
             return obj;
@@ -191,28 +181,30 @@ namespace Framework.Cache
 
             monoObj.OnRelease();
 
-            if(TrimUnused && m_UnusedObjects.Count > TrimAbove)
-            {
-                TrimExcess();
-            }
+            // 基于性能考虑，仅回收时触发Trim
+            TrimExcess();
         }
 
         /// <summary>
         /// 裁减未激活对象
         /// 注意：不是清空，不同于Clear
         /// </summary>
-        public void TrimExcess()
+        private void TrimExcess()
         {
-            while(m_UnusedObjects.Count > TrimAbove)
+            if(TrimUnused && m_UnusedObjects.Count > TrimAbove)
             {
-                MonoPooledObject inst = m_UnusedObjects.Pop();
-                if (inst != null)
+                while (m_UnusedObjects.Count > TrimAbove)
                 {
-                    PoolManager.Destroy(inst.gameObject);
+                    MonoPooledObject inst = m_UnusedObjects.Pop();
+                    if (inst != null)
+                    {
+                        PoolManagerEx.Destroy(inst.gameObject);
+                    }
                 }
             }
         }
 
+        // 危：会清空当前使用和未使用中的所有对象
         public override void Clear()
         {
             Stack<MonoPooledObject>.Enumerator deactiveObjEnum = m_UnusedObjects.GetEnumerator();
@@ -220,7 +212,7 @@ namespace Framework.Cache
             {
                 if(deactiveObjEnum.Current != null)
                 {
-                    PoolManager.Destroy(deactiveObjEnum.Current.gameObject);
+                    PoolManagerEx.Destroy(deactiveObjEnum.Current.gameObject);
                 }
             }
             deactiveObjEnum.Dispose();
@@ -231,7 +223,7 @@ namespace Framework.Cache
             {
                 if(activeObjEnum.Current != null)
                 {
-                    PoolManager.Destroy(activeObjEnum.Current.gameObject);
+                    PoolManagerEx.Destroy(activeObjEnum.Current.gameObject);
                 }
             }
             activeObjEnum.Dispose();
@@ -247,7 +239,7 @@ namespace Framework.Cache
 
         public override void Trim()
         {
-            m_UnusedObjects.TrimExcess();
+            TrimExcess();
         }
 
 #if UNITY_EDITOR

@@ -444,6 +444,12 @@ namespace Framework.Cache
                 //return;
             }
             m_MonoPools.Add(GetMonoPoolHashCode(newPool.PrefabAsset, newPool.GetType()), newPool);
+
+            // 对象池统一挂载到PoolManager
+            if (PoolManager.Instance.gameObject != newPool.transform.root.gameObject)
+            {
+                newPool.transform.parent = PoolManager.Instance.transform;
+            }
         }
 
         /// <summary>
