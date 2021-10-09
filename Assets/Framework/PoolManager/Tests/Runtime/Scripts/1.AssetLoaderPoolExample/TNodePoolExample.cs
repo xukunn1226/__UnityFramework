@@ -29,7 +29,7 @@ namespace Cache.Tests
         {
             if (GUI.Button(new Rect(100, 100, 150, 80), "Clear"))
             {
-                PoolManager.RemoveObjectPool(typeof(TNode));
+                PoolManagerEx.RemoveObjectPool(typeof(TNode));
             }
         }
     }
