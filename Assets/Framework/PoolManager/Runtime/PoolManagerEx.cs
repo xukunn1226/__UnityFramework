@@ -108,14 +108,12 @@ namespace Framework.Cache
         /// <returns></returns>
         static public TPool GetOrCreatePool<TPooledObject, TPool>(GameObject prefabAsset) where TPooledObject : MonoPooledObject where TPool : MonoPoolBase
         {
-            bool scriptNewAdded = false;
             TPooledObject comp = prefabAsset.GetComponent<TPooledObject>();
             if (comp == null)
             {
-                scriptNewAdded = true;
                 comp = prefabAsset.AddComponent<TPooledObject>();
             }
-            return (TPool)InternalGetOrCreatePool(comp, typeof(TPool), scriptNewAdded);
+            return (TPool)InternalGetOrCreatePool(comp, typeof(TPool));
         }
 
         /// <summary>
@@ -126,7 +124,7 @@ namespace Framework.Cache
         /// <returns></returns>
         static public TPool GetOrCreatePool<TPool>(MonoPooledObject prefabAsset) where TPool : MonoPoolBase
         {
-            return (TPool)InternalGetOrCreatePool(prefabAsset, typeof(TPool), false);
+            return (TPool)InternalGetOrCreatePool(prefabAsset, typeof(TPool));
         }
 
         /// <summary>
@@ -136,7 +134,7 @@ namespace Framework.Cache
         /// <returns></returns>
         static public PrefabObjectPoolEx GetOrCreatePool(MonoPooledObject prefabAsset)
         {
-            return (PrefabObjectPoolEx)InternalGetOrCreatePool(prefabAsset, typeof(PrefabObjectPoolEx), false);
+            return (PrefabObjectPoolEx)InternalGetOrCreatePool(prefabAsset, typeof(PrefabObjectPoolEx));
         }
 
         /// <summary>
@@ -144,9 +142,8 @@ namespace Framework.Cache
         /// </summary>
         /// <param name="prefabAsset"></param>
         /// <param name="poolType"></param>
-        /// <param name="scriptDynamicAdded"></param>
         /// <returns></returns>
-        static private MonoPoolBase InternalGetOrCreatePool(MonoPooledObject prefabAsset, Type poolType, bool scriptDynamicAdded)
+        static private MonoPoolBase InternalGetOrCreatePool(MonoPooledObject prefabAsset, Type poolType)
         {
             if (prefabAsset == null || poolType == null)
                 throw new ArgumentNullException("asset == null || poolType == null");
@@ -164,7 +161,6 @@ namespace Framework.Cache
 #endif
             MonoPoolBase newPool = go.AddComponent(poolType) as MonoPoolBase;
             newPool.PrefabAsset = prefabAsset;
-            newPool.ScriptDynamicAdded = scriptDynamicAdded;
             newPool.Group = go.transform;
             newPool.Init();
             AddMonoPool(newPool);
@@ -200,9 +196,12 @@ namespace Framework.Cache
             return newPool;
         }
 
-        static public MonoPoolBase RegisterMonoPool(MonoPooledObject prefabAsset, MonoPoolBase newPool)
+        static public MonoPoolBase RegisterMonoPool(MonoPoolBase newPool)
         {
-            MonoPoolBase pool = GetMonoPool(prefabAsset, newPool.GetType());
+            if(newPool == null || newPool.PrefabAsset == null)
+                throw new System.ArgumentNullException("RegisterMonoPool:newPool == null || newPool.PrefabAsset == null");
+
+            MonoPoolBase pool = GetMonoPool(newPool.PrefabAsset, newPool.GetType());
             if(pool != null)
             {
                 Debug.LogWarning($"RegisterMonoPool: {newPool} has already exist in mono pools");
@@ -210,7 +209,7 @@ namespace Framework.Cache
             }
             newPool.Init();
 #if UNITY_EDITOR
-            newPool.gameObject.name = string.Format($"[Pool] {prefabAsset.gameObject.name}_{newPool.name}");
+            newPool.gameObject.name = string.Format($"[Pool] {newPool.PrefabAsset.gameObject.name}_{newPool.name}");
 #endif            
             AddMonoPool(newPool);
             return newPool;

@@ -231,7 +231,6 @@ namespace Framework.Cache
 
 #if UNITY_EDITOR
             if(UnityEditor.EditorUtility.IsPersistent(PrefabAsset) && PrefabAsset != null)
-            // if(ScriptDynamicAdded && PrefabAsset != null)
             { // 编辑器下可能会运行时添加脚本，为了保持资源的一致性需要还原之前状态
                 Object.DestroyImmediate(PrefabAsset, true);
             }

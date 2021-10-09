@@ -19,15 +19,17 @@ namespace Cache.Tests
             {
                 // step 1. 创建对象池
 
-                // method 1.
-                //Pool = PoolManager.GetOrCreatePool<RectanglePooledObject, PrefabObjectPool>(PrefabAsset);
-                //Pool.PreAllocateAmount = 3;
-                //Pool.Init();
+                // method 1. 创建空对象池，此时对象池还不能工作。再修改其配置，最后register mono pool
+                Pool = PoolManagerEx.GetOrCreateEmptyPool();
+                Pool.PreAllocateAmount = 3;
+                Pool.PrefabAsset = PrefabAsset.AddComponent<RectanglePooledObject>();
+                PoolManagerEx.RegisterMonoPool(Pool);
 
                 // method 2.
-                Pool = PoolManagerEx.GetOrCreatePool<RectanglePooledObject>(PrefabAsset);
-                // Pool.PreAllocateAmount = 3;
-                // Pool.Init();
+                // Pool = PoolManagerEx.GetOrCreatePool<RectanglePooledObject>(PrefabAsset);
+
+                // method 3.
+                // Pool = PoolManagerEx.GetOrCreatePool(PrefabAsset);
             }
 
             if (GUI.Button(new Rect(100, 200, 150, 80), "Run"))
