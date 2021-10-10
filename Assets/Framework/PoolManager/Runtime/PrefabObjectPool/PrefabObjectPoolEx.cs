@@ -245,7 +245,7 @@ namespace Framework.Cache
 #if UNITY_EDITOR
         private void DisplayDebugInfo()
         {
-            gameObject.name = string.Format("[Pool]{0} ({1}/{2})", PrefabAsset?.gameObject.name, countOfUsed, countAll);
+            gameObject.name = string.Format("[Pool] {0}_{3} ({1}/{2})", PrefabAsset?.gameObject.name, countOfUsed, countAll, typeof(PrefabObjectPoolEx).Name);
         }
 #endif
     }

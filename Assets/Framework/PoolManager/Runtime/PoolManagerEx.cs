@@ -148,7 +148,7 @@ namespace Framework.Cache
             if (prefabAsset == null || poolType == null)
                 throw new ArgumentNullException("asset == null || poolType == null");
 
-            MonoPoolBase pool = GetMonoPool(prefabAsset, poolType);
+            MonoPoolBase pool = FindMonoPool(prefabAsset, poolType);
             if(pool != null)
             {
                 return pool;
@@ -172,17 +172,17 @@ namespace Framework.Cache
 
 
 
-        static public TPool GetOrCreateEmptyPool<TPool>() where TPool : MonoPoolBase
+        static public TPool BeginCreateEmptyPool<TPool>() where TPool : MonoPoolBase
         {
-            return (TPool)InternalGetOrCreateEmptyPool(typeof(TPool));
+            return (TPool)InternalBeginCreateEmptyPool(typeof(TPool));
         }
 
-        static public PrefabObjectPoolEx GetOrCreateEmptyPool()
+        static public PrefabObjectPoolEx BeginCreateEmptyPool()
         {
-            return (PrefabObjectPoolEx)InternalGetOrCreateEmptyPool(typeof(PrefabObjectPoolEx));
+            return (PrefabObjectPoolEx)InternalBeginCreateEmptyPool(typeof(PrefabObjectPoolEx));
         }
 
-        static private MonoPoolBase InternalGetOrCreateEmptyPool(Type poolType)
+        static private MonoPoolBase InternalBeginCreateEmptyPool(Type poolType)
         {
             if(poolType == null)
                 throw new ArgumentNullException("poolType == null");
@@ -190,18 +190,18 @@ namespace Framework.Cache
             GameObject go = new GameObject();
             go.transform.parent = Instance?.transform;
 #if UNITY_EDITOR
-            go.name = string.Format($"[Pool] [Empty]_{poolType.Name}");
+            go.name = GetMonoPoolName(poolType);
 #endif
             MonoPoolBase newPool = go.AddComponent(poolType) as MonoPoolBase;
             return newPool;
         }
 
-        static public MonoPoolBase RegisterMonoPool(MonoPoolBase newPool)
+        static public MonoPoolBase EndCreateEmptyPool(MonoPoolBase newPool)
         {
             if(newPool == null || newPool.PrefabAsset == null)
                 throw new System.ArgumentNullException("RegisterMonoPool:newPool == null || newPool.PrefabAsset == null");
 
-            MonoPoolBase pool = GetMonoPool(newPool.PrefabAsset, newPool.GetType());
+            MonoPoolBase pool = FindMonoPool(newPool.PrefabAsset, newPool.GetType());
             if(pool != null)
             {
                 Debug.LogWarning($"RegisterMonoPool: {newPool} has already exist in mono pools");
@@ -209,10 +209,22 @@ namespace Framework.Cache
             }
             newPool.Init();
 #if UNITY_EDITOR
-            newPool.gameObject.name = string.Format($"[Pool] {newPool.PrefabAsset.gameObject.name}_{newPool.name}");
+            newPool.gameObject.name = GetMonoPoolName(newPool);
 #endif            
             AddMonoPool(newPool);
             return newPool;
+        }
+
+        static public string GetMonoPoolName(MonoPoolBase pool)
+        {
+            string prefabAssetName = pool.PrefabAsset != null ? pool.PrefabAsset.gameObject.name : "Empty";
+            string poolTypeName = pool.name;
+            return string.Format($"[Pool] {prefabAssetName}_{poolTypeName}");
+        }
+
+        static public string GetMonoPoolName(Type poolType)
+        {
+            return string.Format($"[Pool] \"Empty\"_{poolType.Name}");
         }
 
         /// <summary>
@@ -220,12 +232,12 @@ namespace Framework.Cache
         /// NOTE: 为了兼容把对象池制作为Prefab，故开放此接口，见PrefabObjectPool
         /// </summary>
         /// <param name="newPool"></param>
-        static public void AddMonoPool(MonoPoolBase newPool)
+        static private void AddMonoPool(MonoPoolBase newPool)
         {
             if (newPool == null || newPool.PrefabAsset == null)
                 throw new System.ArgumentNullException("newPool == null || newPool.PrefabAsset == null");
 
-            if (GetMonoPool(newPool.PrefabAsset, newPool.GetType()) != null)
+            if (FindMonoPool(newPool.PrefabAsset, newPool.GetType()) != null)
             {
                 Debug.LogError($"AddMonoPool: {newPool} has already exist in mono pools");
                 return;
@@ -343,7 +355,7 @@ namespace Framework.Cache
         /// </summary>
         /// <param name="prefabAsset"></param>
         /// <returns></returns>
-        static public MonoPoolBase[] GetMonoPools(MonoPooledObject prefabAsset)
+        static public MonoPoolBase[] FindMonoPools(MonoPooledObject prefabAsset)
         {
             if (prefabAsset == null)
                 throw new ArgumentNullException("GetMonoPools::prefabAsset == null");
@@ -380,7 +392,7 @@ namespace Framework.Cache
         }
 
         // 根据缓存的资源对象及对象池类型获取对象池实例
-        static private MonoPoolBase GetMonoPool(MonoPooledObject prefabAsset, Type poolType)
+        static public MonoPoolBase FindMonoPool(MonoPooledObject prefabAsset, Type poolType)
         {
             if (prefabAsset == null || poolType == null)
                 throw new System.ArgumentNullException("GetMonoPool: asset == null || poolType == null");
