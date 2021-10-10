@@ -199,7 +199,7 @@ namespace Framework.Cache
         static public MonoPoolBase EndCreateEmptyPool(MonoPoolBase newPool)
         {
             if(newPool == null || newPool.PrefabAsset == null)
-                throw new System.ArgumentNullException("RegisterMonoPool:newPool == null || newPool.PrefabAsset == null");
+                throw new System.ArgumentNullException("EndCreateEmptyPool:newPool == null || newPool.PrefabAsset == null");
 
             MonoPoolBase pool = FindMonoPool(newPool.PrefabAsset, newPool.GetType());
             if(pool != null)

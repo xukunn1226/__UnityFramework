@@ -7,7 +7,7 @@ namespace Framework.Cache
     /// <summary>
     /// 具有生命周期Prefab的缓存池
     /// </summary>
-    public class LivingPrefabObjectPool : PrefabObjectPool
+    public class LivingPrefabObjectPool : PrefabObjectPoolEx
     {
         public int      NormalSpeedLimitAmount = 20;
 
