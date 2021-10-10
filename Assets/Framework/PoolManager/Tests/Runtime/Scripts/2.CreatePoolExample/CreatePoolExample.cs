@@ -19,14 +19,13 @@ namespace Cache.Tests
             {
                 // step 1. 创建对象池
 
-                // method 1. 创建空对象池，此时对象池还不能工作。再修改其配置，最后register mono pool
+                // method 1. 创建空对象池，此时对象池还不能工作。初始化其配置，最后EndCreateEmptyPool
                 Pool = PoolManagerEx.BeginCreateEmptyPool();
                 Pool.PreAllocateAmount = 3;
-                Pool.PrefabAsset = PrefabAsset.AddComponent<RectanglePooledObject>();
-                PoolManagerEx.EndCreateEmptyPool(Pool);
+                PoolManagerEx.EndCreateEmptyPool<RectanglePooledObject>(Pool, PrefabAsset);
 
                 // method 2.
-                // Pool = PoolManagerEx.GetOrCreatePool<RectanglePooledObject>(PrefabAsset);
+                Pool = PoolManagerEx.GetOrCreatePool<RectanglePooledObject>(PrefabAsset);
 
                 // method 3.
                 // Pool = PoolManagerEx.GetOrCreatePool(PrefabAsset);

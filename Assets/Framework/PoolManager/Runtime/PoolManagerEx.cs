@@ -17,10 +17,14 @@ namespace Framework.Cache
 #if UNITY_EDITOR
         static public Dictionary<Type, IPool>                   Pools               { get { return m_Pools; } }
         static public Dictionary<long, MonoPoolBase>            MonoPools           { get { return m_MonoPools; } }
+        static private HashSet<MonoPooledObject>                m_DynamicAddedScripts = new HashSet<MonoPooledObject>();
 #endif
 
         protected override void OnDestroy()
         {
+#if UNITY_EDITOR
+            ProcessDynamicAddedScript();      // 动态加载的脚本退出play mode时需要删除
+#endif                
             Destroy();
             base.OnDestroy();
         }
@@ -32,8 +36,20 @@ namespace Framework.Cache
             // RemoveAllLRUPools();
 
             // // 基础数据最后清除
-            // RemoveAllMonoPools();
+            RemoveAllMonoPools();
             RemoveAllObjectPools();
+        }
+
+        static public void Trim()
+        {
+            foreach(var pool in m_Pools)
+            {
+                pool.Value.Trim();
+            }
+            foreach(var pool in m_MonoPools)
+            {
+                pool.Value.Trim();
+            }
         }
 
         #region //////////////////////管理非Mono对象接口
@@ -78,7 +94,20 @@ namespace Framework.Cache
         #endregion
 
 
+#if UNITY_EDITOR
+        static private void TrackDynamicAddedScript(MonoPooledObject comp)
+        {
+            m_DynamicAddedScripts.Add(comp);
+        }
 
+        static private void ProcessDynamicAddedScript()
+        {
+            foreach(var obj in m_DynamicAddedScripts)
+            {
+                UnityEngine.Object.DestroyImmediate(obj, true);
+            }
+        }
+#endif
 
 
 
@@ -112,6 +141,9 @@ namespace Framework.Cache
             if (comp == null)
             {
                 comp = prefabAsset.AddComponent<TPooledObject>();
+#if UNITY_EDITOR
+                TrackDynamicAddedScript(comp);      // 记录动态加载的脚本，退出play mode时需要删除
+#endif                
             }
             return (TPool)InternalGetOrCreatePool(comp, typeof(TPool));
         }
@@ -122,20 +154,20 @@ namespace Framework.Cache
         /// <typeparam name="TPool">缓存池类型</typeparam>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public TPool GetOrCreatePool<TPool>(MonoPooledObject prefabAsset) where TPool : MonoPoolBase
-        {
-            return (TPool)InternalGetOrCreatePool(prefabAsset, typeof(TPool));
-        }
+        // static public TPool GetOrCreatePool<TPool>(MonoPooledObject prefabAsset) where TPool : MonoPoolBase
+        // {
+        //     return (TPool)InternalGetOrCreatePool(prefabAsset, typeof(TPool));
+        // }
 
         /// <summary>
         /// 创建对象池，默认以PrefabObjectPool管理
         /// </summary>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public PrefabObjectPoolEx GetOrCreatePool(MonoPooledObject prefabAsset)
-        {
-            return (PrefabObjectPoolEx)InternalGetOrCreatePool(prefabAsset, typeof(PrefabObjectPoolEx));
-        }
+        // static public PrefabObjectPoolEx GetOrCreatePool(MonoPooledObject prefabAsset)
+        // {
+        //     return (PrefabObjectPoolEx)InternalGetOrCreatePool(prefabAsset, typeof(PrefabObjectPoolEx));
+        // }
 
         /// <summary>
         /// 获取或创建对象池
@@ -161,7 +193,6 @@ namespace Framework.Cache
 #endif
             MonoPoolBase newPool = go.AddComponent(poolType) as MonoPoolBase;
             newPool.PrefabAsset = prefabAsset;
-            newPool.Group = go.transform;
             newPool.Init();
             AddMonoPool(newPool);
 
@@ -196,7 +227,36 @@ namespace Framework.Cache
             return newPool;
         }
 
-        static public MonoPoolBase EndCreateEmptyPool(MonoPoolBase newPool)
+        static public MonoPoolBase EndCreateEmptyPool(MonoPoolBase newPool, GameObject prefabAsset)
+        {
+            return EndCreateEmptyPool<MonoPooledObject>(newPool, prefabAsset);
+        }
+
+        static public MonoPoolBase EndCreateEmptyPool<TPooledObject>(MonoPoolBase newPool, GameObject prefabAsset) where TPooledObject : MonoPooledObject
+        {
+            TPooledObject comp = prefabAsset.GetComponent<TPooledObject>();
+            if(comp == null)
+            {
+                comp = prefabAsset.gameObject.AddComponent<TPooledObject>();
+#if UNITY_EDITOR
+                TrackDynamicAddedScript(comp);      // 记录动态加载的脚本，退出play mode时需要删除
+#endif                                
+            }
+
+            // 调用EndCreateEmptyPool之前不可赋值PrefabAsset
+            if(newPool.PrefabAsset != null)
+                throw new System.ArgumentException("EndCreateEmptyPool: newPool.PrefabAsset != null");
+            newPool.PrefabAsset = comp;
+            return InternalEndCreateEmptyPool(newPool);
+        }
+
+        static public MonoPoolBase EndCreateEmptyPool(MonoPoolBase newPool, MonoPooledObject prefabAsset)
+        {
+            newPool.PrefabAsset = prefabAsset;
+            return InternalEndCreateEmptyPool(newPool);
+        }
+
+        static public MonoPoolBase InternalEndCreateEmptyPool(MonoPoolBase newPool)
         {
             if(newPool == null || newPool.PrefabAsset == null)
                 throw new System.ArgumentNullException("EndCreateEmptyPool:newPool == null || newPool.PrefabAsset == null");
@@ -207,6 +267,7 @@ namespace Framework.Cache
                 Debug.LogWarning($"RegisterMonoPool: {newPool} has already exist in mono pools");
                 return pool;
             }
+
             newPool.Init();
 #if UNITY_EDITOR
             newPool.gameObject.name = GetMonoPoolName(newPool);

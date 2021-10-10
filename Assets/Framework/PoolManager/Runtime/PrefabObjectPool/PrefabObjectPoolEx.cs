@@ -58,14 +58,6 @@ namespace Framework.Cache
             Warmup();
         }
 
-        private void OnDestroy()
-        {
-            // 不推荐删除对象池，因为其他地方可能在使用，由PoolManager统一删除
-            // // ???
-            // if(!manualUnregisterPool)
-            //     PoolManager.RemoveMonoPool(this);
-        }
-
 #if UNITY_EDITOR
         private void Update()
         {
@@ -228,13 +220,6 @@ namespace Framework.Cache
             }
             activeObjEnum.Dispose();
             m_UsedObjects.Clear();
-
-#if UNITY_EDITOR
-            if(UnityEditor.EditorUtility.IsPersistent(PrefabAsset) && PrefabAsset != null)
-            { // 编辑器下可能会运行时添加脚本，为了保持资源的一致性需要还原之前状态
-                Object.DestroyImmediate(PrefabAsset, true);
-            }
-#endif
         }
 
         public override void Trim()

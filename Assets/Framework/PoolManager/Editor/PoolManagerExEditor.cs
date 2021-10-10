@@ -70,17 +70,17 @@ namespace Framework.Cache.Editor
             {
                 if (GUILayout.Button("Trim"))
                 {
-                    PoolManager.TrimAllObjectPools();
+                    PoolManagerEx.Trim();
                 }
 
-                if(GUILayout.Button("Clear"))
-                {
-                    PoolManager.Clear();
-                }
+                // if(GUILayout.Button("Clear"))
+                // {
+                //     PoolManagerEx.Destroy();
+                // }
 
                 if (GUILayout.Button("Destroy"))
                 {
-                    PoolManager.Destroy();
+                    PoolManagerEx.Destroy();
                 }
             }
             EditorGUILayout.EndHorizontal();
