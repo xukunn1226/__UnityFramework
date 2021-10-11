@@ -499,9 +499,11 @@ namespace Framework.Cache
         /// </summary>
         /// <param name="original"></param>
         /// <returns></returns>
-        new static public Object Instantiate(Object original)
+        static public MonoPooledObject Instantiate(MonoPooledObject original, MonoPoolBase pool)
         {
-            return Object.Instantiate(original);
+            MonoPooledObject obj = Object.Instantiate(original);
+            obj.Pool = pool;
+            return obj;
         }
 
         /// <summary>

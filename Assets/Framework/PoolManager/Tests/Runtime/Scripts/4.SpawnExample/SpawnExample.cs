@@ -11,7 +11,6 @@ namespace Cache.Tests
     public class SpawnExample : MonoBehaviour
     {
         public Stuff[] Prefabs;
-        public bool UseMethod1;
 
         IEnumerator Start()
         {
@@ -24,10 +23,7 @@ namespace Cache.Tests
         {
             yield return new WaitForSeconds(1);
 
-            if (UseMethod1)
-                SpawnStuff();
-            else
-                SpawnStuff2();
+            SpawnStuff();
 
             StartCoroutine(Spawn());
         }
@@ -37,19 +33,7 @@ namespace Cache.Tests
         {
             Stuff prefabAsset = Prefabs[Random.Range(0, Prefabs.Length)];
 
-            Stuff inst = (Stuff)PoolManager.GetOrCreatePool(prefabAsset).Get();
-
-            inst.transform.localPosition = Random.insideUnitSphere * 5;
-            inst.transform.localRotation = Random.rotation;
-            inst.Body.useGravity = true;
-        }
-
-        // Method 2: 不显式的创建Pool，而是由PooledObject脚本中默认创建，见Stuff(public override IPool Pool)，但会带来使用上的隐患，见MonoPooledObjectBase.Pool
-        void SpawnStuff2()
-        {
-            Stuff prefabAsset = Prefabs[Random.Range(0, Prefabs.Length)];
-
-            Stuff inst = (Stuff)prefabAsset.Pool.Get();
+            Stuff inst = (Stuff)PoolManagerEx.GetOrCreatePool(prefabAsset.gameObject).Get();
 
             inst.transform.localPosition = Random.insideUnitSphere * 5;
             inst.transform.localRotation = Random.rotation;
@@ -58,11 +42,16 @@ namespace Cache.Tests
 
         private void OnGUI()
         {
-            if (GUI.Button(new Rect(100, 100, 150, 80), "Clear Pool"))
+            if (GUI.Button(new Rect(100, 100, 150, 80), "Run"))
+            {
+                StartCoroutine(Spawn());
+            }
+
+            if(GUI.Button(new Rect(100, 300, 150, 80), "Clear Pool"))
             {
                 foreach (var prefabAsset in Prefabs)
                 {
-                    PoolManager.RemoveMonoPool((MonoPoolBase)prefabAsset.Pool);
+                    PoolManagerEx.RemoveMonoPool<PrefabObjectPoolEx>(prefabAsset);
                 }
             }
         }

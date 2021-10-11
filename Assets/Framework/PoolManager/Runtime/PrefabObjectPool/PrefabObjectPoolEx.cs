@@ -136,8 +136,7 @@ namespace Framework.Cache
             MonoPooledObject obj = null;
             if (PrefabAsset != null && (!LimitInstance || countAll < LimitAmount))
             {
-                obj = (MonoPooledObject)PoolManagerEx.Instantiate(PrefabAsset);
-                obj.Pool = this;
+                obj = PoolManagerEx.Instantiate(PrefabAsset, this);
             }
             return obj;
         }
