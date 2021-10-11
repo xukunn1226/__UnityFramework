@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Framework.Cache;
 
 namespace Cache.Tests
 {
@@ -37,7 +38,7 @@ namespace Cache.Tests
         void SpawnStuff()
         {
             Stuff prefabAsset = stuffPrefabs[Random.Range(0, stuffPrefabs.Length)];
-            Stuff spawn = (Stuff)prefabAsset.Pool.Get();
+            Stuff spawn = (Stuff)PoolManagerEx.GetOrCreatePool(prefabAsset.gameObject).Get();
 
             spawn.transform.localPosition = transform.position;
             spawn.transform.localScale = Vector3.one * scale.RandomInRange;
