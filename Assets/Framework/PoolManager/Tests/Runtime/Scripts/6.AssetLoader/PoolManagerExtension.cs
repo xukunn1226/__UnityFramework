@@ -8,35 +8,35 @@ using UnityEditor;
 
 namespace Cache.Tests
 {
-    public static class PoolManagerExtension
-    {
-        static public TPool GetOrCreatePool<TPooledObject, TPool>(string assetPath) where TPooledObject : MonoPooledObject where TPool : MonoPoolBase
-        {
-            return PoolManager.GetOrCreatePool<TPooledObject, TPool, AssetLoader>(assetPath);
-        }
+//     public static class PoolManagerExtension
+//     {
+//         static public TPool GetOrCreatePool<TPooledObject, TPool>(string assetPath) where TPooledObject : MonoPooledObject where TPool : MonoPoolBase
+//         {
+//             return PoolManager.GetOrCreatePool<TPooledObject, TPool, AssetLoader>(assetPath);
+//         }
 
-        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(string assetPath) where TPooledObject : MonoPooledObject
-        {
-            return PoolManager.GetOrCreatePool<TPooledObject, AssetLoader>(assetPath);
-        }
-    }
+//         static public PrefabObjectPool GetOrCreatePool<TPooledObject>(string assetPath) where TPooledObject : MonoPooledObject
+//         {
+//             return PoolManager.GetOrCreatePool<TPooledObject, AssetLoader>(assetPath);
+//         }
+//     }
 
-    public class AssetLoader : IAssetLoader
-    {
-        private UnityEngine.GameObject m_Asset = null;
+//     public class AssetLoader : IAssetLoader
+//     {
+//         private UnityEngine.GameObject m_Asset = null;
 
-        public UnityEngine.GameObject asset { get { return m_Asset; } }
+//         public UnityEngine.GameObject asset { get { return m_Asset; } }
 
-        public UnityEngine.GameObject Load(string assetPath)
-        {
-#if UNITY_EDITOR
-            m_Asset = AssetDatabase.LoadAssetAtPath<UnityEngine.GameObject>(assetPath);
-#endif
-            return m_Asset;
-        }
+//         public UnityEngine.GameObject Load(string assetPath)
+//         {
+// #if UNITY_EDITOR
+//             m_Asset = AssetDatabase.LoadAssetAtPath<UnityEngine.GameObject>(assetPath);
+// #endif
+//             return m_Asset;
+//         }
 
-        public void Unload()
-        {
-        }
-    }
+//         public void Unload()
+//         {
+//         }
+//     }
 }

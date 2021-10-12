@@ -15,15 +15,15 @@ namespace Framework.Cache.Editor
 
         // private Dictionary<string, IAssetLoader>                    ScriptedPools;
 
-        // private Dictionary<string, PoolManager.PrefabedPoolInfo>    PrefabedPools;
+        private Dictionary<string, PoolManagerEx.PrefabedPoolInfo>  PrefabedPools;
 
         // private Dictionary<string, PoolManager.LRUPoolInfo>         LRUPools;
 
         private void OnEnable()
         {
             Pools = PoolManagerEx.Pools;
-
-            MonoPools = PoolManager.MonoPools;
+            MonoPools = PoolManagerEx.MonoPools;
+            PrefabedPools = PoolManagerEx.PrefabedPools;
 
             EditorApplication.hierarchyChanged += ForceUpdate;
         }
@@ -58,7 +58,7 @@ namespace Framework.Cache.Editor
 
             EditorGUILayout.Space();
 
-            // DrawPrefabedPools();
+            DrawPrefabedPools();
 
             EditorGUILayout.Space();
 
@@ -160,28 +160,28 @@ namespace Framework.Cache.Editor
         //     EditorGUILayout.EndVertical();
         // }
 
-        // private void DrawPrefabedPools()
-        // {
-        //     EditorGUILayout.LabelField(string.Format("PrefabedPools[{0}]", PrefabedPools.Count), EditorStyles.largeLabel);
-        //     EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        //     {
-        //         Dictionary<string, PoolManager.PrefabedPoolInfo>.Enumerator e = PrefabedPools.GetEnumerator();
-        //         while (e.MoveNext())
-        //         {
-        //             EditorGUILayout.BeginHorizontal();
-        //             {
-        //                 string displayName = e.Current.Key;
-        //                 displayName = displayName.Substring(displayName.LastIndexOf("/") + 1);
-        //                 EditorGUILayout.LabelField(new GUIContent(string.Format("{0}   [refCount:{1}]", displayName, e.Current.Value.m_RefCount), e.Current.Key));
+        private void DrawPrefabedPools()
+        {
+            EditorGUILayout.LabelField(string.Format("PrefabedPools[{0}]", PrefabedPools.Count), EditorStyles.largeLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                Dictionary<string, PoolManagerEx.PrefabedPoolInfo>.Enumerator e = PrefabedPools.GetEnumerator();
+                while (e.MoveNext())
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        string displayName = e.Current.Key;
+                        displayName = displayName.Substring(displayName.LastIndexOf("/") + 1);
+                        EditorGUILayout.LabelField(new GUIContent(string.Format("{0}   [refCount:{1}]", displayName, e.Current.Value.m_RefCount), e.Current.Key));
 
-        //                 string info = string.Format("({0}/{1})", e.Current.Value.m_Pool.countOfUsed, e.Current.Value.m_Pool.countAll);
-        //                 EditorGUILayout.LabelField(info);
-        //             }
-        //             EditorGUILayout.EndHorizontal();
-        //         }
-        //     }
-        //     EditorGUILayout.EndVertical();
-        // }
+                        string info = string.Format("({0}/{1})", e.Current.Value.m_Pool.countOfUsed, e.Current.Value.m_Pool.countAll);
+                        EditorGUILayout.LabelField(info);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+            }
+            EditorGUILayout.EndVertical();
+        }
 
         // private void DrawLRUPools()
         // {
