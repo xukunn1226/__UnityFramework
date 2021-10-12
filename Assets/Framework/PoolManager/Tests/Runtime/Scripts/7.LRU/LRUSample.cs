@@ -6,20 +6,20 @@ namespace Tests
 {
     public class LRUSample : MonoBehaviour
     {
-        private UIView m_UI1;
-        private UIView m_UI2;
-        private UIView m_UI3;
-        private UIView m_UI4;
+        private TestUIView m_UI1;
+        private TestUIView m_UI2;
+        private TestUIView m_UI3;
+        private TestUIView m_UI4;
 
         // Start is called before the first frame update
         void Start()
         {
-            UIManager.Init();
+            TestUIManager.Init();
         }
 
         private void OnDestroy()
         {
-            UIManager.Uninit();
+            TestUIManager.Uninit();
         }
 
         private void OnGUI()
@@ -32,7 +32,7 @@ namespace Tests
             if (GUI.Button(new Rect(320, 100, 200, 80), "Unload 11"))
             {
                 if (m_UI1 != null)
-                    Unload("11", m_UI1);
+                    Unload("11");
             }
 
             if (GUI.Button(new Rect(100, 200, 200, 80), "Load 22"))
@@ -43,7 +43,7 @@ namespace Tests
             if (GUI.Button(new Rect(320, 200, 200, 80), "Unload 22"))
             {
                 if (m_UI2 != null)
-                    Unload("22", m_UI2);
+                    Unload("22");
             }
 
             if (GUI.Button(new Rect(100, 300, 200, 80), "Load 33"))
@@ -54,7 +54,7 @@ namespace Tests
             if (GUI.Button(new Rect(320, 300, 200, 80), "Unload 33"))
             {
                 if (m_UI3 != null)
-                    Unload("33", m_UI3);
+                    Unload("33");
             }
 
             if (GUI.Button(new Rect(100, 400, 200, 80), "Load 44"))
@@ -65,18 +65,18 @@ namespace Tests
             if (GUI.Button(new Rect(320, 400, 200, 80), "Unload 44"))
             {
                 if (m_UI4 != null)
-                    Unload("44", m_UI4);
+                    Unload("44");
             }
         }
 
-        private UIView Load(string assetPath)
+        private TestUIView Load(string assetPath)
         {
-            return UIManager.LoadUI(assetPath);
+            return TestUIManager.LoadUI(assetPath);
         }
 
-        private void Unload(string assetPath, UIView ui)
+        private void Unload(string assetPath)
         {
-            UIManager.UnloadUI(assetPath, ui);
+            TestUIManager.UnloadUI(assetPath);
         }
     }
 }

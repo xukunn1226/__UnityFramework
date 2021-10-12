@@ -39,26 +39,6 @@ namespace Framework.Cache
 
         public int countOfUsed      { get { return Count; } }
 
-        // int IPool.countOfUnused     { get; }
-
-        /// <summary>
-        /// 获取缓存对象
-        /// </summary>
-        /// <returns></returns>
-        // IPooledObject IPool.Get()
-        // {
-        //     throw new System.NotImplementedException();
-        // }
-
-        /// <summary>
-        /// 返回缓存对象
-        /// </summary>
-        /// <param name="item"></param>
-        // void IPool.Return(IPooledObject item)
-        // {
-        //     throw new System.NotImplementedException();
-        // }
-
         public void Clear()
         {
             foreach (var item in m_Buffer)
@@ -70,14 +50,6 @@ namespace Framework.Cache
             m_Buffer.Clear();
             m_Dic.Clear();
         }
-
-        /// <summary>
-        /// trim excess data
-        /// </summary>
-        // void IPool.Trim()
-        // {
-        //     throw new System.NotImplementedException();
-        // }
 
         public LRUKQueue(int capacity, int k = 2)
         {
