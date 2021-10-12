@@ -7,7 +7,7 @@ namespace Framework.Cache
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class LRUKQueue<K, V> : IPool// where V : IPooledObject
+    public class LRUKQueue<K, V> where V : class
     {
         public delegate void DiscardCallback(K key, V value);
         public event DiscardCallback OnDiscard;
@@ -39,25 +39,25 @@ namespace Framework.Cache
 
         public int countOfUsed      { get { return Count; } }
 
-        int IPool.countOfUnused     { get; }
+        // int IPool.countOfUnused     { get; }
 
         /// <summary>
         /// 获取缓存对象
         /// </summary>
         /// <returns></returns>
-        IPooledObject IPool.Get()
-        {
-            throw new System.NotImplementedException();
-        }
+        // IPooledObject IPool.Get()
+        // {
+        //     throw new System.NotImplementedException();
+        // }
 
         /// <summary>
         /// 返回缓存对象
         /// </summary>
         /// <param name="item"></param>
-        void IPool.Return(IPooledObject item)
-        {
-            throw new System.NotImplementedException();
-        }
+        // void IPool.Return(IPooledObject item)
+        // {
+        //     throw new System.NotImplementedException();
+        // }
 
         public void Clear()
         {
@@ -74,10 +74,10 @@ namespace Framework.Cache
         /// <summary>
         /// trim excess data
         /// </summary>
-        void IPool.Trim()
-        {
-            throw new System.NotImplementedException();
-        }
+        // void IPool.Trim()
+        // {
+        //     throw new System.NotImplementedException();
+        // }
 
         public LRUKQueue(int capacity, int k = 2)
         {
@@ -87,8 +87,6 @@ namespace Framework.Cache
             m_Hit = System.Math.Max(1, k);
 
             Capacity = capacity;
-
-            PoolManagerEx.AddObjectPool(typeof(V), this);
         }
 
         public void Cache(K key, V value)

@@ -7,7 +7,7 @@ namespace Framework.Cache
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class LRUQueue<K, V> : IPool// where V : IPooledObject
+    public class LRUQueue<K, V> where V : class
     {
         public delegate void DiscardCallback(K key, V value);
         public event DiscardCallback OnDiscard;
@@ -35,25 +35,25 @@ namespace Framework.Cache
 
         public int countOfUsed  { get { return m_Buffer.Count; } }
 
-        int IPool.countOfUnused { get; }
+        // int IPool.countOfUnused { get; }
 
         /// <summary>
         /// 获取缓存对象
         /// </summary>
         /// <returns></returns>
-        IPooledObject IPool.Get()
-        {
-            throw new System.NotImplementedException();
-        }
+        // IPooledObject IPool.Get()
+        // {
+        //     throw new System.NotImplementedException();
+        // }
 
         /// <summary>
         /// 返回缓存对象
         /// </summary>
         /// <param name="item"></param>
-        void IPool.Return(IPooledObject item)
-        {
-            throw new System.NotImplementedException();
-        }
+        // void IPool.Return(IPooledObject item)
+        // {
+        //     throw new System.NotImplementedException();
+        // }
 
         /// <summary>
         /// 清空缓存池对象
@@ -71,10 +71,10 @@ namespace Framework.Cache
         /// <summary>
         /// trim excess data
         /// </summary>
-        void IPool.Trim()
-        {
-            //throw new System.NotImplementedException();
-        }
+        // void IPool.Trim()
+        // {
+        //     //throw new System.NotImplementedException();
+        // }
 
         public LRUQueue(int capacity)
         {
@@ -82,8 +82,6 @@ namespace Framework.Cache
             m_Dic = new Dictionary<K, LinkedListNode<TNode<K, V>>>(capacity);
 
             Capacity = capacity;
-
-            PoolManagerEx.AddObjectPool(typeof(V), this);
         }
 
         public V Exist(K key)
