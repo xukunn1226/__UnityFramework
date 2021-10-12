@@ -7,7 +7,7 @@ namespace Framework.Cache
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class LRUQueue<K, V> : IPool where V : IPooledObject
+    public class LRUQueue<K, V> : IPool// where V : IPooledObject
     {
         public delegate void DiscardCallback(K key, V value);
         public event DiscardCallback OnDiscard;
@@ -27,13 +27,13 @@ namespace Framework.Cache
         private LinkedList<TNode<K, V>>                             m_Buffer;           // 记录缓存的实例，最近使用的记录在First
         private Dictionary<K, LinkedListNode<TNode<K, V>>>          m_Dic;              // 记录m_Buffer中所有的LinkedListNode
 
-        public int Capacity { get; private set; }
+        public int Capacity     { get; private set; }
 
-        public int Count { get { return m_Buffer.Count; } }
+        public int Count        { get { return m_Buffer.Count; } }                      // 当前实际容量
 
-        public int countAll { get { return Capacity; } }
+        public int countAll     { get { return Capacity; } }                            // 缓存池最大容量
 
-        public int countOfUsed { get { return Count; } }
+        public int countOfUsed  { get { return m_Buffer.Count; } }
 
         int IPool.countOfUnused { get; }
 
@@ -83,7 +83,7 @@ namespace Framework.Cache
 
             Capacity = capacity;
 
-            PoolManager.AddObjectPool(typeof(V), this);
+            PoolManagerEx.AddObjectPool(typeof(V), this);
         }
 
         public V Exist(K key)

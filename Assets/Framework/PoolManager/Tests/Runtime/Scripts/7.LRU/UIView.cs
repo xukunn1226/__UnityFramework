@@ -5,7 +5,7 @@ using Framework.Cache;
 
 namespace Tests
 {
-    public class UIPooledObject : MonoBehaviour, IPooledObject
+    public class UIView : MonoBehaviour, IPooledObject
     {
         /// <summary>
         /// 创建时的回调

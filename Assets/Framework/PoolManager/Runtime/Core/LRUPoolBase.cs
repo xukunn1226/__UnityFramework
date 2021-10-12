@@ -6,7 +6,7 @@ namespace Framework.Cache
 {
     public abstract class LRUPoolBase : MonoBehaviour, IPool
     {
-        [Range(1, 100)]
+        [Min(1)]
         public int          Capacity = 1;
 
         public bool         GroupByPoolManager = true;

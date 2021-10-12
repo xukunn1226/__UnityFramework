@@ -7,7 +7,7 @@ namespace Tests
 {
     public class UIManager
     {
-        static private LRUQueue<string, UIPooledObject> m_UIPrefabs = new LRUQueue<string, UIPooledObject>(3);
+        static private LRUQueue<string, UIView> m_UIPrefabs = new LRUQueue<string, UIView>(3);
 
         static public void Init()
         {
@@ -20,9 +20,9 @@ namespace Tests
             m_UIPrefabs.Clear();
         }
 
-        static public UIPooledObject LoadUI(string assetPath)
+        static public UIView LoadUI(string assetPath)
         {
-            UIPooledObject ui = m_UIPrefabs.Exist(assetPath);
+            UIView ui = m_UIPrefabs.Exist(assetPath);
             if (ui == null)
             {
                 ui = InternalLoadUI(assetPath);
@@ -35,24 +35,24 @@ namespace Tests
             return ui;
         }
 
-        static public void UnloadUI(string assetPath, UIPooledObject ui)
+        static public void UnloadUI(string assetPath, UIView ui)
         {
             ui.OnRelease();
         }
 
-        static private void OnDiscard(string assetPath, UIPooledObject ui)
+        static private void OnDiscard(string assetPath, UIView ui)
         {
             InternalUnloadUI(assetPath, ui);
         }
 
-        static private UIPooledObject InternalLoadUI(string assetPath)
+        static private UIView InternalLoadUI(string assetPath)
         {
             GameObject go = new GameObject();
             go.name = assetPath;
-            return go.AddComponent<UIPooledObject>();
+            return go.AddComponent<UIView>();
         }
 
-        static private void InternalUnloadUI(string assetPath, UIPooledObject ui)
+        static private void InternalUnloadUI(string assetPath, UIView ui)
         {
             Object.Destroy(ui.gameObject);
         }

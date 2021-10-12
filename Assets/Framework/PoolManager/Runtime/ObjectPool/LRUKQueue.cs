@@ -7,7 +7,7 @@ namespace Framework.Cache
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class LRUKQueue<K, V> : IPool where V : IPooledObject
+    public class LRUKQueue<K, V> : IPool// where V : IPooledObject
     {
         public delegate void DiscardCallback(K key, V value);
         public event DiscardCallback OnDiscard;
@@ -31,15 +31,15 @@ namespace Framework.Cache
         private Dictionary<K, LinkedListNode<TNode<K, V>>>          m_Dic;
         private int                                                 m_Hit;
 
-        public int Capacity { get; private set; }
+        public int Capacity         { get; private set; }
 
-        public int Count { get { return m_Buffer.Count; } }
+        public int Count            { get { return m_Buffer.Count; } }
 
-        public int countAll { get { return Capacity; } }
+        public int countAll         { get { return Capacity; } }
 
-        public int countOfUsed { get { return Count; } }
+        public int countOfUsed      { get { return Count; } }
 
-        int IPool.countOfUnused { get; }
+        int IPool.countOfUnused     { get; }
 
         /// <summary>
         /// 获取缓存对象
@@ -88,7 +88,7 @@ namespace Framework.Cache
 
             Capacity = capacity;
 
-            PoolManager.AddObjectPool(typeof(V), this);
+            PoolManagerEx.AddObjectPool(typeof(V), this);
         }
 
         public void Cache(K key, V value)

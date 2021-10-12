@@ -6,10 +6,10 @@ namespace Tests
 {
     public class LRUSample : MonoBehaviour
     {
-        private UIPooledObject m_UI1;
-        private UIPooledObject m_UI2;
-        private UIPooledObject m_UI3;
-        private UIPooledObject m_UI4;
+        private UIView m_UI1;
+        private UIView m_UI2;
+        private UIView m_UI3;
+        private UIView m_UI4;
 
         // Start is called before the first frame update
         void Start()
@@ -69,12 +69,12 @@ namespace Tests
             }
         }
 
-        private UIPooledObject Load(string assetPath)
+        private UIView Load(string assetPath)
         {
             return UIManager.LoadUI(assetPath);
         }
 
-        private void Unload(string assetPath, UIPooledObject ui)
+        private void Unload(string assetPath, UIView ui)
         {
             UIManager.UnloadUI(assetPath, ui);
         }
