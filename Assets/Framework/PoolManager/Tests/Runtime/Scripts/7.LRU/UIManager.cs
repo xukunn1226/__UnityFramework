@@ -12,7 +12,7 @@ namespace Tests
         static public void Init()
         {
             m_UIPrefabs.OnDiscard += OnDiscard;
-        } 
+        }
 
         static public void Uninit()
         {
