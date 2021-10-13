@@ -17,9 +17,9 @@ namespace Framework.Cache
 
         public class PrefabedPoolInfo
         {
-            public MonoPoolBase     m_Pool;
-            public int              m_RefCount;
-            public IAssetLoader     m_Loader;
+            public MonoPoolBase         m_Pool;
+            public int                  m_RefCount;
+            internal BuiltinAssetLoader m_Loader;
         }
         static private Dictionary<string, PrefabedPoolInfo>     m_PrefabedPoolDict  = new Dictionary<string, PrefabedPoolInfo>();   // Prefab对象池集合
                                                                                                                                     // <key, value> : <对象池Prefab资源路径, PrefabedPoolInfo>
@@ -448,7 +448,7 @@ namespace Framework.Cache
 
 
         #region ////////////////////// Prefabed Pool管理接口
-        class BuiltinAssetLoader : IAssetLoader
+        internal class BuiltinAssetLoader
         {
             private AssetLoader<GameObject> m_Loader;
 
