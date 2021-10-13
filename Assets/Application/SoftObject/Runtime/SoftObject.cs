@@ -135,7 +135,7 @@ namespace Application.Runtime
             if (m_ScriptedPool == null)
             {
                 AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
-                m_ScriptedPool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(m_PoolPath);
+                // m_ScriptedPool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(m_PoolPath);
                 // m_ScriptedPool.Warmup();
             }
             return m_ScriptedPool.Get();
@@ -150,7 +150,7 @@ namespace Application.Runtime
             if (m_ScriptedPool == null)
                 throw new System.ArgumentNullException("Pool", "Scripted Pool not initialize");
 
-            PoolManager.RemoveMonoPool<TPool>(m_PoolPath);
+            // PoolManager.RemoveMonoPool<TPool>(m_PoolPath);
         }
 
         /// <summary>
@@ -159,11 +159,11 @@ namespace Application.Runtime
         /// <returns></returns>
         public IPooledObject SpawnFromPrefabedPool()
         {
-            if (m_PrefabedPool == null)
-            {
-                AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
-                m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoader>(m_PoolPath);
-            }
+            // if (m_PrefabedPool == null)
+            // {
+            //     AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
+            //     m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoader>(m_PoolPath);
+            // }
             return m_PrefabedPool.Get();
         }
 
@@ -175,21 +175,21 @@ namespace Application.Runtime
             if (m_PrefabedPool == null)
                 throw new System.ArgumentNullException("Pool", "Prefabed Pool not initialize");
 
-            PoolManager.RemoveMonoPrefabedPool(m_PoolPath);
+            // PoolManager.RemoveMonoPrefabedPool(m_PoolPath);
         }
 
         public IPooledObject SpawnFromLRUPool()
         {
-            if (m_LRUedPool == null)
-            {
-                if (!IsValid(m_LRUedPoolAsset))
-                    throw new System.ArgumentNullException("m_LRUedPoolAsset");
+            // if (m_LRUedPool == null)
+            // {
+            //     if (!IsValid(m_LRUedPoolAsset))
+            //         throw new System.ArgumentNullException("m_LRUedPoolAsset");
 
-                AssetManager.ParseBundleAndAssetName(m_LRUedPoolAsset.bundleName, m_LRUedPoolAsset.assetName, out m_PoolPath);
-                m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoader>(m_PoolPath);
-                // m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_LRUedPoolAsset.assetPath);
-            }
-            // return m_LRUedPool.Get(assetPath);
+            //     AssetManager.ParseBundleAndAssetName(m_LRUedPoolAsset.bundleName, m_LRUedPoolAsset.assetName, out m_PoolPath);
+            //     m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoader>(m_PoolPath);
+            //     // m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_LRUedPoolAsset.assetPath);
+            // }
+            // // return m_LRUedPool.Get(assetPath);
             return m_LRUedPool.Get(bundleName, assetName);
         }
 
@@ -202,7 +202,7 @@ namespace Application.Runtime
                 throw new System.ArgumentNullException("m_LRUedPoolAsset", "m_LRUedPoolAsset is not valid");
 
             // PoolManager.RemoveLRUPool(m_LRUedPoolAsset.assetPath);
-            PoolManager.RemoveLRUPool(m_PoolPath);
+            // PoolManager.RemoveLRUPool(m_PoolPath);
         }
     }
 

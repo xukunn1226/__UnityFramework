@@ -22,7 +22,7 @@ namespace Framework.Cache
         
         public ObjectPool(int capacity = 0)
         {
-            PoolManager.AddObjectPool(typeof(T), this);
+            PoolManagerEx.AddObjectPool(typeof(T), this);
 
             m_UnusedObjects = new Stack<T>(Mathf.Max(0, capacity));
         }

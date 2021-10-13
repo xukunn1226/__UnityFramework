@@ -72,7 +72,7 @@ namespace Tests
             }
             finally
             {
-                PoolManager.RemoveObjectPool(typeof(Foo));
+                PoolManagerEx.RemoveObjectPool(typeof(Foo));
             }
         }
 
@@ -128,7 +128,7 @@ namespace Tests
             }
             finally
             {
-                PoolManager.RemoveObjectPool(typeof(Foo));
+                PoolManagerEx.RemoveObjectPool(typeof(Foo));
             }
         }
 

@@ -33,7 +33,7 @@ public class LRUPool_FX : LRUPoolBase
             throw new System.ArgumentNullException("k_FXPool");
 
         s_FXPool.OnDiscard -= OnDiscard;
-        PoolManager.RemoveObjectPool(typeof(FX_Root));
+        PoolManagerEx.RemoveObjectPool(typeof(FX_Root));
     }
 
     private void OnDiscard(string assetPath, FX_Root fx)

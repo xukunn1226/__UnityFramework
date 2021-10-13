@@ -66,7 +66,7 @@ namespace Application.Runtime.Tests
             if (m_PooledObject == null || string.IsNullOrEmpty(m_PooledObject.assetName))
                 return;
 
-            TestPooledObject obj = (TestPooledObject)m_PooledObject.SpawnFromPool<TestPooledObject, PrefabObjectPool>();
+            TestPooledObject obj = (TestPooledObject)m_PooledObject.SpawnFromPool<TestPooledObject, PrefabObjectPoolEx>();
             obj.transform.position = Random.insideUnitSphere * 3;
 
             m_Stack.Push(obj);
@@ -88,7 +88,7 @@ namespace Application.Runtime.Tests
         {
             if (m_PooledObject != null)
             {
-                m_PooledObject.DestroyPool<PrefabObjectPool>();
+                m_PooledObject.DestroyPool<PrefabObjectPoolEx>();
             }
             info = null;
         }

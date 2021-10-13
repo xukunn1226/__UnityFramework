@@ -66,7 +66,7 @@ namespace Framework.Core.Tests
             }
             finally
             {
-                PoolManager.RemoveAllObjectPools();
+                PoolManagerEx.RemoveAllObjectPools();
             }
         }
 
