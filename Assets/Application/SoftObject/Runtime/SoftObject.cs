@@ -177,34 +177,6 @@ namespace Application.Runtime
 
             // PoolManager.RemoveMonoPrefabedPool(m_PoolPath);
         }
-
-        public IPooledObject SpawnFromLRUPool()
-        {
-            // if (m_LRUedPool == null)
-            // {
-            //     if (!IsValid(m_LRUedPoolAsset))
-            //         throw new System.ArgumentNullException("m_LRUedPoolAsset");
-
-            //     AssetManager.ParseBundleAndAssetName(m_LRUedPoolAsset.bundleName, m_LRUedPoolAsset.assetName, out m_PoolPath);
-            //     m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoader>(m_PoolPath);
-            //     // m_LRUedPool = PoolManager.GetOrCreateLRUPool<AssetLoaderEx>(m_LRUedPoolAsset.assetPath);
-            // }
-            // // return m_LRUedPool.Get(assetPath);
-            // return m_LRUedPool.Get(bundleName, assetName);
-            return null;
-        }
-
-        public void DestroyLRUedPool()
-        {
-            // if (m_LRUedPool == null)
-            //     throw new System.ArgumentNullException("LRUedPool", "LRUed Pool not initialize");
-
-            // if (!IsValid(m_LRUedPoolAsset))
-            //     throw new System.ArgumentNullException("m_LRUedPoolAsset", "m_LRUedPoolAsset is not valid");
-
-            // PoolManager.RemoveLRUPool(m_LRUedPoolAsset.assetPath);
-            // PoolManager.RemoveLRUPool(m_PoolPath);
-        }
     }
 
 // #if UNITY_EDITOR
