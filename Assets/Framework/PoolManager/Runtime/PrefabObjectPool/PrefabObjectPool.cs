@@ -6,7 +6,7 @@ using Framework.Core;
 namespace Framework.Cache
 {
     // 以资源方式实例化的对象池不由PoolManager管理
-    public class PrefabObjectPoolEx : MonoPoolBase
+    public class PrefabObjectPool : MonoPoolBase
     {
         [Tooltip("预实例化数量")]
         [Range(0, 100)]
@@ -136,7 +136,7 @@ namespace Framework.Cache
             MonoPooledObject obj = null;
             if (PrefabAsset != null && (!LimitInstance || countAll < LimitAmount))
             {
-                obj = PoolManagerEx.Instantiate(PrefabAsset, this);
+                obj = PoolManager.Instantiate(PrefabAsset, this);
             }
             return obj;
         }
@@ -189,7 +189,7 @@ namespace Framework.Cache
                     MonoPooledObject inst = m_UnusedObjects.Pop();
                     if (inst != null)
                     {
-                        PoolManagerEx.Destroy(inst.gameObject);
+                        PoolManager.Destroy(inst.gameObject);
                     }
                 }
             }
@@ -203,7 +203,7 @@ namespace Framework.Cache
             {
                 if(deactiveObjEnum.Current != null)
                 {
-                    PoolManagerEx.Destroy(deactiveObjEnum.Current.gameObject);
+                    PoolManager.Destroy(deactiveObjEnum.Current.gameObject);
                 }
             }
             deactiveObjEnum.Dispose();
@@ -214,7 +214,7 @@ namespace Framework.Cache
             {
                 if(activeObjEnum.Current != null)
                 {
-                    PoolManagerEx.Destroy(activeObjEnum.Current.gameObject);
+                    PoolManager.Destroy(activeObjEnum.Current.gameObject);
                 }
             }
             activeObjEnum.Dispose();
@@ -229,7 +229,7 @@ namespace Framework.Cache
 #if UNITY_EDITOR
         private void DisplayDebugInfo()
         {
-            gameObject.name = string.Format("[Pool] {0}_{3} ({1}/{2})", PrefabAsset?.gameObject.name, countOfUsed, countAll, typeof(PrefabObjectPoolEx).Name);
+            gameObject.name = string.Format("[Pool] {0}_{3} ({1}/{2})", PrefabAsset?.gameObject.name, countOfUsed, countAll, typeof(PrefabObjectPool).Name);
         }
 #endif
     }

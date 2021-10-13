@@ -22,11 +22,11 @@ namespace Cache.Tests
                 // Pool = (LivingPrefabObjectPool)PoolManagerEx.GetOrCreatePool<Decal, LivingPrefabObjectPool>(assetPath);
 
                 // method 2.
-                Pool = PoolManagerEx.BeginCreateEmptyPool<LivingPrefabObjectPool>();
+                Pool = PoolManager.BeginCreateEmptyPool<LivingPrefabObjectPool>();
                 Pool.NormalSpeedLimitAmount = 5;
                 Pool.AmplifiedSpeed = 3;
                 Pool.PreAllocateAmount = 3;
-                Pool = (LivingPrefabObjectPool)PoolManagerEx.EndCreateEmptyPool<Decal>(Pool, assetPath);
+                Pool = (LivingPrefabObjectPool)PoolManager.EndCreateEmptyPool<Decal>(Pool, assetPath);
             }
 
             if (GUI.Button(new Rect(100, 200, 150, 80), "Run"))
@@ -38,7 +38,7 @@ namespace Cache.Tests
             if (GUI.Button(new Rect(100, 300, 150, 80), "Stop"))
             {
                 // step 3. remove pool
-                PoolManagerEx.RemoveMonoPool(assetPath);
+                PoolManager.RemoveMonoPool(assetPath);
             }
         }
 

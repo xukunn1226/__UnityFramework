@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace Framework.Cache
 {
-    public sealed class PoolManagerEx : SingletonMono<PoolManagerEx>
+    public sealed class PoolManager : SingletonMono<PoolManager>
     {
         private static Dictionary<Type, IPool>                  m_Pools             = new Dictionary<Type, IPool>();                // 非Mono对象池
 
@@ -123,9 +123,9 @@ namespace Framework.Cache
 
 
         #region ////////////////////// 管理Mono对象接口—— GetOrCreate, RemoveMonoPool
-        static public PrefabObjectPoolEx GetOrCreatePool(GameObject prefabAsset)
+        static public PrefabObjectPool GetOrCreatePool(GameObject prefabAsset)
         {
-            return GetOrCreatePool<MonoPooledObject, PrefabObjectPoolEx>(prefabAsset);
+            return GetOrCreatePool<MonoPooledObject, PrefabObjectPool>(prefabAsset);
         }
 
         /// <summary>
@@ -134,9 +134,9 @@ namespace Framework.Cache
         /// <typeparam name="TPooledObject">缓存对象脚本</typeparam>
         /// <param name="prefabAsset">缓存对象</param>
         /// <returns></returns>
-        static public PrefabObjectPoolEx GetOrCreatePool<TPooledObject>(GameObject prefabAsset) where TPooledObject : MonoPooledObject
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(GameObject prefabAsset) where TPooledObject : MonoPooledObject
         {
-            return GetOrCreatePool<TPooledObject, PrefabObjectPoolEx>(prefabAsset);
+            return GetOrCreatePool<TPooledObject, PrefabObjectPool>(prefabAsset);
         }
         
         /// <summary>
@@ -198,9 +198,9 @@ namespace Framework.Cache
             return (TPool)InternalBeginCreateEmptyPool(typeof(TPool));
         }
 
-        static public PrefabObjectPoolEx BeginCreateEmptyPool()
+        static public PrefabObjectPool BeginCreateEmptyPool()
         {
-            return (PrefabObjectPoolEx)InternalBeginCreateEmptyPool(typeof(PrefabObjectPoolEx));
+            return (PrefabObjectPool)InternalBeginCreateEmptyPool(typeof(PrefabObjectPool));
         }
 
         static private MonoPoolBase InternalBeginCreateEmptyPool(Type poolType)
@@ -296,9 +296,9 @@ namespace Framework.Cache
             m_MonoPools.Add(GetMonoPoolHashCode(newPool.PrefabAsset, newPool.GetType()), newPool);
 
             // 对象池统一挂载到PoolManager
-            if (PoolManagerEx.Instance.gameObject != newPool.transform.root.gameObject)
+            if (PoolManager.Instance.gameObject != newPool.transform.root.gameObject)
             {
-                newPool.transform.parent = PoolManagerEx.Instance.transform;
+                newPool.transform.parent = PoolManager.Instance.transform;
             }
         }
 
@@ -479,14 +479,14 @@ namespace Framework.Cache
         /// </summary>
         /// <param name="assetPath">对象池Prefab资源地址</param>
         /// <returns></returns>
-        static public PrefabObjectPoolEx GetOrCreatePool(string assetPath)
+        static public PrefabObjectPool GetOrCreatePool(string assetPath)
         {            
-            return (PrefabObjectPoolEx)GetOrCreatePool<MonoPooledObject, PrefabObjectPoolEx>(assetPath);
+            return (PrefabObjectPool)GetOrCreatePool<MonoPooledObject, PrefabObjectPool>(assetPath);
         }
 
-        static public PrefabObjectPoolEx GetOrCreatePool<TPooledObject>(string assetPath) where TPooledObject : MonoPooledObject
+        static public PrefabObjectPool GetOrCreatePool<TPooledObject>(string assetPath) where TPooledObject : MonoPooledObject
         {
-            return (PrefabObjectPoolEx)GetOrCreatePool<TPooledObject, PrefabObjectPoolEx>(assetPath);
+            return (PrefabObjectPool)GetOrCreatePool<TPooledObject, PrefabObjectPool>(assetPath);
         }
 
         static public MonoPoolBase GetOrCreatePool<TPooledObject, TPool>(string assetPath) where TPooledObject : MonoPooledObject where TPool : MonoPoolBase

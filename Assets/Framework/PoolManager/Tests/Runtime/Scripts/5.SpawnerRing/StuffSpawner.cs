@@ -38,7 +38,7 @@ namespace Cache.Tests
         void SpawnStuff()
         {
             Stuff prefabAsset = stuffPrefabs[Random.Range(0, stuffPrefabs.Length)];
-            Stuff spawn = (Stuff)PoolManagerEx.GetOrCreatePool(prefabAsset.gameObject).Get();
+            Stuff spawn = (Stuff)PoolManager.GetOrCreatePool(prefabAsset.gameObject).Get();
 
             spawn.transform.localPosition = transform.position;
             spawn.transform.localScale = Vector3.one * scale.RandomInRange;

@@ -33,7 +33,7 @@ namespace Cache.Tests
         {
             Stuff prefabAsset = Prefabs[Random.Range(0, Prefabs.Length)];
 
-            Stuff inst = (Stuff)PoolManagerEx.GetOrCreatePool(prefabAsset.gameObject).Get();
+            Stuff inst = (Stuff)PoolManager.GetOrCreatePool(prefabAsset.gameObject).Get();
 
             inst.transform.localPosition = Random.insideUnitSphere * 5;
             inst.transform.localRotation = Random.rotation;
@@ -51,7 +51,7 @@ namespace Cache.Tests
             {
                 foreach (var prefabAsset in Prefabs)
                 {
-                    PoolManagerEx.RemoveMonoPool<PrefabObjectPoolEx>(prefabAsset);
+                    PoolManager.RemoveMonoPool<PrefabObjectPool>(prefabAsset);
                 }
             }
         }

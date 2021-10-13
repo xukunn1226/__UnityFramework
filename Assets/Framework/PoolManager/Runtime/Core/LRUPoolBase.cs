@@ -47,7 +47,7 @@ namespace Framework.Cache
         {
             if (GroupByPoolManager)
             {
-                transform.parent = PoolManagerEx.Instance.transform;
+                transform.parent = PoolManager.Instance.transform;
             }
         }
 

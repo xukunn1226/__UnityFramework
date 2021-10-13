@@ -6,8 +6,8 @@ using UnityEditor;
 
 namespace Framework.Cache.Editor
 {
-    [CustomEditor(typeof(PoolManagerEx))]
-    public class PoolManagerExEditor : UnityEditor.Editor
+    [CustomEditor(typeof(PoolManager))]
+    public class PoolManagerEditor : UnityEditor.Editor
     {
         private Dictionary<Type, IPool>                             Pools;
 
@@ -15,15 +15,15 @@ namespace Framework.Cache.Editor
 
         // private Dictionary<string, IAssetLoader>                    ScriptedPools;
 
-        private Dictionary<string, PoolManagerEx.PrefabedPoolInfo>  PrefabedPools;
+        private Dictionary<string, PoolManager.PrefabedPoolInfo>  PrefabedPools;
 
         // private Dictionary<string, PoolManager.LRUPoolInfo>         LRUPools;
 
         private void OnEnable()
         {
-            Pools = PoolManagerEx.Pools;
-            MonoPools = PoolManagerEx.MonoPools;
-            PrefabedPools = PoolManagerEx.PrefabedPools;
+            Pools = PoolManager.Pools;
+            MonoPools = PoolManager.MonoPools;
+            PrefabedPools = PoolManager.PrefabedPools;
 
             EditorApplication.hierarchyChanged += ForceUpdate;
         }
@@ -70,7 +70,7 @@ namespace Framework.Cache.Editor
             {
                 if (GUILayout.Button("Trim"))
                 {
-                    PoolManagerEx.Trim();
+                    PoolManager.Trim();
                 }
 
                 // if(GUILayout.Button("Clear"))
@@ -80,7 +80,7 @@ namespace Framework.Cache.Editor
 
                 if (GUILayout.Button("Destroy"))
                 {
-                    PoolManagerEx.Destroy();
+                    PoolManager.Destroy();
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -165,7 +165,7 @@ namespace Framework.Cache.Editor
             EditorGUILayout.LabelField(string.Format("PrefabedPools[{0}]", PrefabedPools.Count), EditorStyles.largeLabel);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                Dictionary<string, PoolManagerEx.PrefabedPoolInfo>.Enumerator e = PrefabedPools.GetEnumerator();
+                Dictionary<string, PoolManager.PrefabedPoolInfo>.Enumerator e = PrefabedPools.GetEnumerator();
                 while (e.MoveNext())
                 {
                     EditorGUILayout.BeginHorizontal();

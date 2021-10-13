@@ -43,7 +43,7 @@ namespace Framework.Cache
             else
             {
                 Debug.LogWarning("Discard the PooledObject, because of Pool == null");
-                PoolManagerEx.Destroy(gameObject);
+                PoolManager.Destroy(gameObject);
             }
         }
     }

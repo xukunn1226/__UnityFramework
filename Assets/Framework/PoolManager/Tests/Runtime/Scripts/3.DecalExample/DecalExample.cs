@@ -16,14 +16,14 @@ namespace Cache.Tests
             if (GUI.Button(new Rect(100, 100, 150, 80), "Create Pool"))
             {
                 // method 1. 
-                Pool = PoolManagerEx.BeginCreateEmptyPool<LivingPrefabObjectPool>();
+                Pool = PoolManager.BeginCreateEmptyPool<LivingPrefabObjectPool>();
                 Pool.NormalSpeedLimitAmount = 5;
                 Pool.AmplifiedSpeed = 3;
                 Pool.PreAllocateAmount = 3;
-                PoolManagerEx.EndCreateEmptyPool<Decal>(Pool, PrefabAsset);
+                PoolManager.EndCreateEmptyPool<Decal>(Pool, PrefabAsset);
 
                 // method 2. 创建对象池
-                Pool = PoolManagerEx.GetOrCreatePool<Decal, LivingPrefabObjectPool>(PrefabAsset);                
+                Pool = PoolManager.GetOrCreatePool<Decal, LivingPrefabObjectPool>(PrefabAsset);                
             }
 
             if (GUI.Button(new Rect(100, 200, 150, 80), "Run"))
@@ -36,7 +36,7 @@ namespace Cache.Tests
             {
                 // step 3. remove pool
                 if (Pool != null)
-                    PoolManagerEx.RemoveMonoPool(Pool);
+                    PoolManager.RemoveMonoPool(Pool);
             }
         }
 
