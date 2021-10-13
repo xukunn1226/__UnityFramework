@@ -11,7 +11,6 @@ namespace Tests
         private TestUIView m_UI3;
         private TestUIView m_UI4;
 
-        // Start is called before the first frame update
         void Start()
         {
             TestUIManager.Init();
@@ -32,7 +31,7 @@ namespace Tests
             if (GUI.Button(new Rect(320, 100, 200, 80), "Unload 11"))
             {
                 if (m_UI1 != null)
-                    Unload("11");
+                    m_UI1.ReturnToPool();
             }
 
             if (GUI.Button(new Rect(100, 200, 200, 80), "Load 22"))

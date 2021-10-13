@@ -7,52 +7,34 @@ namespace Tests
 {
     public class TestUIManager
     {
-        static private LRUQueue<string, TestUIView> m_UIPrefabs = new LRUQueue<string, TestUIView>(3);
+        static private TestUILoader s_Pool;
 
         static public void Init()
         {
-            m_UIPrefabs.OnDiscard += OnDiscard;
+            if(s_Pool == null)
+            {
+                GameObject go = new GameObject("[LRU POOL] UI");
+                s_Pool = go.AddComponent<TestUILoader>();
+            }
         }
 
         static public void Uninit()
         {
-            m_UIPrefabs.Clear();
-            m_UIPrefabs.OnDiscard -= OnDiscard;
+            if(s_Pool != null)
+            {
+                s_Pool.Clear();
+                UnityEngine.Object.Destroy(s_Pool.gameObject);
+            }
         }
 
         static public TestUIView LoadUI(string assetPath)
         {
-            TestUIView view = m_UIPrefabs.Exist(assetPath);
-            if (view == null)
-            {
-                view = InternalLoadUI(assetPath);
-            }
-            view.OnGet();
-            m_UIPrefabs.Cache(assetPath, view);
-            return view;
+            return s_Pool.Load(assetPath);
         }
 
         static public void UnloadUI(string assetPath)
         {
-            TestUIView view = m_UIPrefabs.Exist(assetPath);
-            view?.OnRelease();
-        }
-
-        static private void OnDiscard(string assetPath, TestUIView ui)
-        {
-            InternalUnloadUI(assetPath, ui);
-        }
-
-        static private TestUIView InternalLoadUI(string assetPath)
-        {
-            GameObject go = new GameObject();
-            go.name = assetPath;
-            return go.AddComponent<TestUIView>();
-        }
-
-        static private void InternalUnloadUI(string assetPath, TestUIView ui)
-        {
-            Object.Destroy(ui.gameObject);
+            s_Pool.Unload(assetPath);
         }
     }
 }

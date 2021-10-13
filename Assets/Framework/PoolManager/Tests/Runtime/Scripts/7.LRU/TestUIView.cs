@@ -5,16 +5,8 @@ using Framework.Cache;
 
 namespace Tests
 {
-    public class TestUIView : MonoBehaviour
+    public class TestUIView : MonoPooledObject
     {
-        public void OnGet()
-        {
-            gameObject.SetActive(true);
-        }
-
-        public void OnRelease()
-        {
-            gameObject.SetActive(false);
-        }
+        public string assetPath;
     }
 }
