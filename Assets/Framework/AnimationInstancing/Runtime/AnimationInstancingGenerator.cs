@@ -56,7 +56,7 @@ namespace AnimationInstancingModule.Runtime
         private Texture2D                       m_BakedBoneTexture;
         public bool                             isBaking;
         private bool                            m_ExportAnimationTexture    = false;                                // 是否导出AnimationTexture，否则在二进制数据中
-        static public string                    s_AnimationInstancingRoot   = "Assets/AnimationInstancing/Art";
+        static public string                    s_AnimationInstancingRoot   = "Assets/Framework/AnimationInstancing/Art";
         static public string                    s_AnimationDataPath         = s_AnimationInstancingRoot + "/AnimationData";
         private List<Transform>                 m_BakedLODs;
 
