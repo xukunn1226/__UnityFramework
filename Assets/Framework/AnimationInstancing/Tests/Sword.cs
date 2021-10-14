@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AnimationInstancingModule.Runtime
+namespace AnimationInstancingModule.Runtime.Tests
 {
     public class Sword : MonoBehaviour, IAttachmentToInstancing
     {
