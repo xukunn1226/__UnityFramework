@@ -10,44 +10,42 @@ using Framework.Core.Editor;
 
 namespace Application.Runtime
 {
-[AttributeUsage(AttributeTargets.Field)]
-public sealed class SoftObjectAttribute : PropertyAttribute
-{
-}
-
+    [AttributeUsage(AttributeTargets.Field)]
+    public sealed class SoftObjectAttribute : PropertyAttribute
+    {
+    }
 
 #if UNITY_EDITOR
-
-[CustomPropertyDrawer(typeof(SoftObjectAttribute))]
-public class SoftObjectDrawer : PropertyDrawer
-{
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(SoftObjectAttribute))]
+    public class SoftObjectDrawer : PropertyDrawer
     {
-        if (fieldInfo.FieldType == typeof(SoftObjectPath) || fieldInfo.FieldType == typeof(SoftObject))
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            string objName = "NULL";
-            // long fileID = 0;
-            if (property.objectReferenceValue != null)
+            if (fieldInfo.FieldType == typeof(SoftObjectPath) || fieldInfo.FieldType == typeof(SoftObject))
             {
-                UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(((SoftObjectPath)property.objectReferenceValue).assetPath);
-                if (obj != null)
+                string objName = "NULL";
+                // long fileID = 0;
+                if (property.objectReferenceValue != null)
                 {
-                    objName = obj.name;
+                    UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(((SoftObjectPath)property.objectReferenceValue).assetPath);
+                    if (obj != null)
+                    {
+                        objName = obj.name;
 
-                    // string guid;
-                    // AssetDatabase.TryGetGUIDAndLocalFileIdentifier(property.objectReferenceValue, out guid, out fileID);
+                        // string guid;
+                        // AssetDatabase.TryGetGUIDAndLocalFileIdentifier(property.objectReferenceValue, out guid, out fileID);
+                    }
                 }
-            }
 
-            // 提示SoftObjectPath指向的对象名称
-            string displayName = string.Format($"{property.displayName} [{objName}] [{RedirectorDB.GetLocalID(property.objectReferenceValue)}]");
-            property.objectReferenceValue = (SoftObjectPath)EditorGUI.ObjectField(position, new GUIContent(displayName, objName/*, fileID.ToString()*/), property.objectReferenceValue, fieldInfo.FieldType, true);
-        }
-        else
-        {
-            EditorGUI.PropertyField(position, property, label);
+                // 提示SoftObjectPath指向的对象名称
+                string displayName = string.Format($"{property.displayName} [{objName}] [{RedirectorDB.GetLocalID(property.objectReferenceValue)}]");
+                property.objectReferenceValue = (SoftObjectPath)EditorGUI.ObjectField(position, new GUIContent(displayName, objName/*, fileID.ToString()*/), property.objectReferenceValue, fieldInfo.FieldType, true);
+            }
+            else
+            {
+                EditorGUI.PropertyField(position, property, label);
+            }
         }
     }
-}
 #endif
 }

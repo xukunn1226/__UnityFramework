@@ -149,34 +149,7 @@ namespace Application.Runtime
             if (m_ScriptedPool == null)
                 throw new System.ArgumentNullException("Pool", "Scripted Pool not initialize");
 
-            // PoolManager.RemoveMonoPool<TPool>(m_PoolPath);
             PoolManager.RemoveMonoPool(m_Path);
-        }
-
-        /// <summary>
-        /// 从对象池中创建对象（对象池制作成Prefab）
-        /// </summary>
-        /// <returns></returns>
-        public IPooledObject SpawnFromPrefabedPool()
-        {
-            // if (m_PrefabedPool == null)
-            // {
-            //     AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
-            //     m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoader>(m_PoolPath);
-            // }
-            // return m_PrefabedPool.Get();
-            return null;
-        }
-
-        /// <summary>
-        /// 销毁对象池，与SpawnFromPrefabedPool对应
-        /// </summary>
-        public void DestroyPrefabedPool()
-        {
-            // if (m_PrefabedPool == null)
-            //     throw new System.ArgumentNullException("Pool", "Prefabed Pool not initialize");
-
-            // PoolManager.RemoveMonoPrefabedPool(m_PoolPath);
         }
     }
 
