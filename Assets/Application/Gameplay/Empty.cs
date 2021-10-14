@@ -12,15 +12,8 @@ namespace Application.Runtime
     {
         IEnumerator Start()
         {
-            // if (Core.Instance == null)
-            //     throw new System.Exception("Empty: Core.Instance == null");
-
             if (Launcher.Instance == null)
                 throw new System.Exception("Empty: Launcher.Instance == null");
-
-            // 删除核心组件
-            // Destroy(Core.Instance.gameObject);
-
 
             // 等待所有单件的删除
             yield return null;

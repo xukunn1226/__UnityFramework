@@ -17,33 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Res/Scenes/world.unity
     guid: c700ca0f7e64cca4aa3a5809abaa9236
-  - enabled: 1
-    path: Assets/Res/Scenes/testpatch.unity
-    guid: 62b7caa67cf626c4183c8cad6cd00fd2
-  - enabled: 1
-    path: Assets/Framework/AnimationInstancing/Editor/TestMassiveInstancing.unity
-    guid: d758c8e9cad0da34b91f937a02a1f943
-  - enabled: 0
-    path: Assets/Framework/Core/Misc/Tests/Runtime/TestHybrid.unity
-    guid: 17423408c0fecae44bcc13f043fc9dcb
-  - enabled: 0
-    path: Assets/Application/Tests/Runtime/Res/Scenes/TestSpawnerRing.unity
-    guid: ff9d69c1b7cef3646866f0abde25e5e8
-  - enabled: 0
-    path: Assets/Application/Tests/Runtime/Res/Scenes/GestureSample.unity
-    guid: ec0be40600f8b7a42aa3bb0eaf6fb16d
-  - enabled: 0
-    path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/LoadPrefab.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 0
-    path: Assets/Application/Tests/Runtime/Res/Scenes/TestUIAtlas.unity
-    guid: 797bc1acfe5a0d0449255a1f78ab27c9
-  - enabled: 0
-    path: Assets/Application/Tests/Runtime/Res/Scenes/TestSpriteAtlasManager.unity
-    guid: 1a5492a7f5e6f48499f980ab58830bbe
-  - enabled: 0
-    path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestLoadScene.unity
-    guid: f2b5e6eeef4517b4f99c9096a6896933
   m_configObjects:
     com.myproject.AssetBuilderSetting: {fileID: 11400000, guid: 97bdc094262e65746b5990a4103c113e,
       type: 2}
