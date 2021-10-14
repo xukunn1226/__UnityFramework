@@ -59,8 +59,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: 8c729e594cc3be447a47df4359ba71be
-  m_AssetPath: assets/animationinstancing/art/animationdata/mirrorf2_animtexture.bytes
-  m_BundleName: assets/animationinstancing/art/animationdata.ab
+  m_AssetPath: assets/framework/animationinstancing/art/animationdata/mirrorf2_animtexture.bytes
+  m_BundleName: assets/framework/animationinstancing/art/animationdata.ab
   m_AssetName: mirrorf2_animtexture.bytes
-  m_UseLRUManage: 0
-  m_LRUedPoolAsset: {fileID: 0}

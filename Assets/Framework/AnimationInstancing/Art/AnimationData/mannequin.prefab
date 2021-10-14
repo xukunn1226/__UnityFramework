@@ -59,8 +59,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: d2732de9627e2134e9bdc2acb6a08659
-  m_AssetPath: assets/animationinstancing/art/animationdata/mannequin_animtexture.bytes
-  m_BundleName: assets/animationinstancing/art/animationdata.ab
+  m_AssetPath: assets/framework/animationinstancing/art/animationdata/mannequin_animtexture.bytes
+  m_BundleName: assets/framework/animationinstancing/art/animationdata.ab
   m_AssetName: mannequin_animtexture.bytes
-  m_UseLRUManage: 0
-  m_LRUedPoolAsset: {fileID: 0}

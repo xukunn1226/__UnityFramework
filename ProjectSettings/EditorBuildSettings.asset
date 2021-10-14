@@ -21,7 +21,7 @@ EditorBuildSettings:
     path: Assets/Res/Scenes/testpatch.unity
     guid: 62b7caa67cf626c4183c8cad6cd00fd2
   - enabled: 1
-    path: Assets/AnimationInstancing/Editor/TestMassiveInstancing.unity
+    path: Assets/Framework/AnimationInstancing/Editor/TestMassiveInstancing.unity
     guid: d758c8e9cad0da34b91f937a02a1f943
   - enabled: 0
     path: Assets/Framework/Core/Misc/Tests/Runtime/TestHybrid.unity

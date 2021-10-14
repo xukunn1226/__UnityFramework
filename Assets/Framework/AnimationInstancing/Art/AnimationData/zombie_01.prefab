@@ -59,8 +59,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_GUID: 4f266f574862ded4d9a29a4e8f69a897
-  m_AssetPath: assets/animationinstancing/art/animationdata/zombie_01_animtexture.bytes
-  m_BundleName: assets/animationinstancing/art/animationdata.ab
+  m_AssetPath: assets/framework/animationinstancing/art/animationdata/zombie_01_animtexture.bytes
+  m_BundleName: assets/framework/animationinstancing/art/animationdata.ab
   m_AssetName: zombie_01_animtexture.bytes
-  m_UseLRUManage: 0
-  m_LRUedPoolAsset: {fileID: 0}
