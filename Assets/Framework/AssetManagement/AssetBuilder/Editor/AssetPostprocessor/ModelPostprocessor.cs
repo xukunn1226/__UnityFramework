@@ -37,7 +37,7 @@ namespace Framework.AssetManagement.AssetBuilder
         
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            if(Application.isBatchMode)
+            if(UnityEngine.Application.isBatchMode)
                 return;
 
             for (int i = 0; i < importedAssets.Length; ++i)

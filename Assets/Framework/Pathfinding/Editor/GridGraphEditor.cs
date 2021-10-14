@@ -372,7 +372,7 @@ namespace Framework.Pathfinding.Editor
 
         private void RepaintSceneView()
         {
-            if (!Application.isPlaying || EditorApplication.isPaused)
+            if (!UnityEngine.Application.isPlaying || EditorApplication.isPaused)
             {
                 SceneView.RepaintAll();
             }

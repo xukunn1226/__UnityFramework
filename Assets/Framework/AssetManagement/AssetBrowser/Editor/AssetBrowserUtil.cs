@@ -442,7 +442,7 @@ namespace Framework.AssetManagement.AssetBrowser
 
         static public string GetRelativePathToProjectFolder(string fullPath)
         {
-            string projectFolder = Application.dataPath.Replace("Assets", "");
+            string projectFolder = UnityEngine.Application.dataPath.Replace("Assets", "");
             if (fullPath.StartsWith(projectFolder, System.StringComparison.OrdinalIgnoreCase))
             {
                 return fullPath.Substring(projectFolder.Length);
@@ -493,7 +493,7 @@ namespace Framework.AssetManagement.AssetBrowser
                     FileInfo[] files = di.GetFiles(bAll ? extension : "*" + extension, SearchOption.AllDirectories);
                     for (int i = 0; i < files.Length; ++i)
                     {
-                        path = files[i].FullName.Replace("\\", "/").Replace(Application.dataPath, "Assets");
+                        path = files[i].FullName.Replace("\\", "/").Replace(UnityEngine.Application.dataPath, "Assets");
                         if (ValidExtension(path))
                         {
                             paths.Add(path);

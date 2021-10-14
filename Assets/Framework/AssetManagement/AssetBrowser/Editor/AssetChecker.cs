@@ -269,7 +269,7 @@ namespace Framework.AssetManagement.AssetBrowser
 
         static private IEnumerator DoFindReference(string[] extensions = null)
         {
-            string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(UnityEngine.Application.dataPath, "*.*", SearchOption.AllDirectories);
             int startIndex = 0;
             while(startIndex < s_ReferenceFindingCommand.Count)
             {
@@ -322,7 +322,7 @@ namespace Framework.AssetManagement.AssetBrowser
 
         static private string GetRelativeAssetsPath(string path)
         {
-            return "Assets" + Path.GetFullPath(path).Replace(Path.GetFullPath(Application.dataPath), "").Replace('\\', '/');
+            return "Assets" + Path.GetFullPath(path).Replace(Path.GetFullPath(UnityEngine.Application.dataPath), "").Replace('\\', '/');
         }
         [MenuItem("Assets/AssetBrowser/Fix Redundant Mesh of ParticleSystemRender", false, 3)]
         static private void FixRedundantMeshOfParticleSystemRender()

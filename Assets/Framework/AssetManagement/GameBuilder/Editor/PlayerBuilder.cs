@@ -25,7 +25,7 @@ namespace Framework.AssetManagement.GameBuilder
             if (para == null)
             {
                 Debug.LogError($"PlayerBuilderSetting para == null");
-                if (Application.isBatchMode)
+                if (UnityEngine.Application.isBatchMode)
                 {
                     EditorApplication.Exit(1);
                 }
@@ -79,7 +79,7 @@ namespace Framework.AssetManagement.GameBuilder
 
                 Debug.LogError($"End Build Player: Failed");
 
-                if (Application.isBatchMode)
+                if (UnityEngine.Application.isBatchMode)
                 {
                     para.RestorePlayerSettings();
                     EditorApplication.Exit(1);
@@ -89,9 +89,9 @@ namespace Framework.AssetManagement.GameBuilder
 
             OnPostprocessPlayerBuild?.Invoke();
 
-            if (!Application.isBatchMode)
+            if (!UnityEngine.Application.isBatchMode)
             {
-                string appPath = Application.dataPath.Replace("Assets", "") + para.outputPath.TrimEnd(new char[] { '/' });
+                string appPath = UnityEngine.Application.dataPath.Replace("Assets", "") + para.outputPath.TrimEnd(new char[] { '/' });
                 System.Diagnostics.Process.Start("explorer", appPath.Replace('/', '\\'));
             }
 

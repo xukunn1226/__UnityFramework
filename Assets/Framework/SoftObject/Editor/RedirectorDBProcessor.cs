@@ -17,7 +17,7 @@ namespace Framework.Core.Editor
     {
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
-            if (Application.isBatchMode)
+            if (UnityEngine.Application.isBatchMode)
                 return;
 
             for (int i = 0; i < importedAssets.Length; ++i)
@@ -526,7 +526,7 @@ namespace Framework.Core.Editor
         static private EditorCoroutine m_Coroutine;
         static private IEnumerator Reimport(string[] guids, string[] filters)
         {
-            string[] files = Directory.GetFiles(Application.dataPath, "*.*", SearchOption.AllDirectories)
+            string[] files = Directory.GetFiles(UnityEngine.Application.dataPath, "*.*", SearchOption.AllDirectories)
                 .Where(s => filters.Contains(Path.GetExtension(s).ToLower())).ToArray();
 
             int startIndex = 0;
@@ -573,7 +573,7 @@ namespace Framework.Core.Editor
 
         static private string GetRelativeAssetsPath(string path)
         {
-            return "Assets" + Path.GetFullPath(path).Replace(Path.GetFullPath(Application.dataPath), "").Replace('\\', '/');
+            return "Assets" + Path.GetFullPath(path).Replace(Path.GetFullPath(UnityEngine.Application.dataPath), "").Replace('\\', '/');
         }
     }
 }

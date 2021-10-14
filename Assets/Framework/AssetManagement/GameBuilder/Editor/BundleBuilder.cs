@@ -30,7 +30,7 @@ namespace Framework.AssetManagement.GameBuilder
             if (para == null)
             {
                 Debug.LogError($"BundleBuilderSetting para == null");
-                if (Application.isBatchMode)
+                if (UnityEngine.Application.isBatchMode)
                 {
                     EditorApplication.Exit(1);
                 }
@@ -53,7 +53,7 @@ namespace Framework.AssetManagement.GameBuilder
             if(!BuildBundleWithSBP(outputPath, para))
             {
                 Debug.LogError($"End Build AssetBundles: Failed");
-                if (Application.isBatchMode)
+                if (UnityEngine.Application.isBatchMode)
                 {
                     EditorApplication.Exit(1);
                 }
@@ -264,7 +264,7 @@ namespace Framework.AssetManagement.GameBuilder
         
         static private void BuildBundleFileList()
         {
-            BundleFileList.BuildBundleFileList(string.Format($"{Application.streamingAssetsPath}/{Utility.GetPlatformName()}"), 
+            BundleFileList.BuildBundleFileList(string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}"), 
                                                string.Format($"{BundleExtracter.FILELIST_PATH}/{Utility.GetPlatformName()}/{BundleExtracter.FILELIST_NAME}"));
 
             AssetDatabase.Refresh();

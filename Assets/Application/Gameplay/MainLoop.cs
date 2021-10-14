@@ -176,7 +176,7 @@ namespace Application.Runtime
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(MainLoop))]
-    public class MainLoop_Inspector : Editor
+    public class MainLoop_Inspector : UnityEditor.Editor
     {
         SerializedProperty m_IPProp;
         SerializedProperty m_PortProp;

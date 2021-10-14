@@ -54,7 +54,7 @@ namespace Framework.AssetManagement.GameBuilder
             }
             else
             {
-                if (Application.isBatchMode)
+                if (UnityEngine.Application.isBatchMode)
                 {
                     EditorApplication.Exit(1);
                 }

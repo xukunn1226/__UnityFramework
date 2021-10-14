@@ -27,7 +27,7 @@ namespace Framework.Core.Editor
                     FileInfo[] files = di.GetFiles(bAll ? extension : "*" + extension, SearchOption.AllDirectories);
                     for (int i = 0; i < files.Length; ++i)
                     {
-                        path = files[i].FullName.Replace("\\", "/").Replace(Application.dataPath, "Assets");
+                        path = files[i].FullName.Replace("\\", "/").Replace(UnityEngine.Application.dataPath, "Assets");
                         if (ValidExtension(path))
                         {
                             paths.Add(path);

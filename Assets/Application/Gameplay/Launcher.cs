@@ -345,7 +345,7 @@ namespace Application.Runtime
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(Launcher))]
-    public class Launcher_Inspector : Editor
+    public class Launcher_Inspector : UnityEditor.Editor
     {
         private SerializedProperty  m_IsPersistentProp;
         private SerializedProperty  m_WorkerCountOfBundleExtracterProp;

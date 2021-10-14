@@ -128,7 +128,7 @@ namespace Application.Runtime
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(NetManager))]
-    public class NetManager_Inspector : Editor
+    public class NetManager_Inspector : UnityEditor.Editor
     {
         SerializedProperty m_IsPersistentProp;
         

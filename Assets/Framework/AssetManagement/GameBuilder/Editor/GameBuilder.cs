@@ -19,7 +19,7 @@ namespace Framework.AssetManagement.GameBuilder
         {
             if(gameSetting == null)
             {
-                if(Application.isBatchMode)
+                if(UnityEngine.Application.isBatchMode)
                 {
                     EditorApplication.Exit(1);
                 }
@@ -28,7 +28,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             if (gameSetting.bundleSetting == null)
             {
-                if(Application.isBatchMode)
+                if(UnityEngine.Application.isBatchMode)
                 {
                     EditorApplication.Exit(1);
                 }
@@ -37,7 +37,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             if (gameSetting.playerSetting == null)
             {
-                if (Application.isBatchMode)
+                if (UnityEngine.Application.isBatchMode)
                 {
                     EditorApplication.Exit(1);
                 }
@@ -63,7 +63,7 @@ namespace Framework.AssetManagement.GameBuilder
 
         static public void cmdBuildGame()
         {
-            if (!Application.isBatchMode)
+            if (!UnityEngine.Application.isBatchMode)
             {
                 return;
             }
@@ -100,7 +100,7 @@ namespace Framework.AssetManagement.GameBuilder
             SetOverridePara(ref setting.playerSetting.projectName,                  "ProjectName",              "MyProject");
             SetOverridePara(ref setting.playerSetting.autoRunPlayer,                "AutoRunPlayer",            true);
             // batch mode没有连接设备会出包失败
-            if (Application.isBatchMode)
+            if (UnityEngine.Application.isBatchMode)
                 setting.playerSetting.autoRunPlayer = false;
             SetOverridePara(ref setting.playerSetting.development,                  "Development",              true);
             SetOverridePara(ref setting.playerSetting.connectWithProfiler,          "ConnectWithProfiler",      false);
