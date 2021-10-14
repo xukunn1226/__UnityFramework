@@ -130,18 +130,9 @@ namespace Application.Runtime
     [CustomEditor(typeof(NetManager))]
     public class NetManager_Inspector : UnityEditor.Editor
     {
-        SerializedProperty m_IsPersistentProp;
-        
-        private void OnEnable()
-        {
-            m_IsPersistentProp = serializedObject.FindProperty("isPersistent");
-        }
-
         async public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
-            EditorGUILayout.PropertyField(m_IsPersistentProp);
 
             EditorGUI.BeginChangeCheck();
 

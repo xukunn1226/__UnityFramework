@@ -93,15 +93,8 @@ namespace AnimationInstancingModule.Runtime
 
         private void OnDestroy()
         {
-            if(!AnimationDataManager.IsDestroy())
-            {
-                AnimationDataManager.Instance.Unload(m_Prototype);
-            }
-
-            if(!AnimationInstancingManager.IsDestroy())
-            {
-                AnimationInstancingManager.Instance.RemoveInstance(this);
-            }
+            AnimationDataManager.Instance.Unload(m_Prototype);            
+            AnimationInstancingManager.Instance.RemoveInstance(this);            
         }
 
         private void OnEnable()

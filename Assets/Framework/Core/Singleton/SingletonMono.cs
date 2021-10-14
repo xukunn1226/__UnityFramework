@@ -11,9 +11,9 @@ namespace Framework.Core
     /// 
     /// As a note, this is made as MonoBehaviour because we need Coroutines.
     /// </summary>
-    public class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
+    public class SingletonMono<T> : SingletonMonoBase where T : MonoBehaviour
     {
-        public bool isPersistent = true;
+        private static bool applicationIsQuitting = false;
         private static T _instance;
 
         public static T Instance
@@ -49,16 +49,13 @@ namespace Framework.Core
 
             _instance = this as T;
             _instance.gameObject.name = "[S] " + typeof(T).Name;
-            if (isPersistent)
-            {
-                transform.parent = null;
-                DontDestroyOnLoad(_instance.gameObject);
-            }
+            
+            transform.parent = null;
+            DontDestroyOnLoad(_instance.gameObject);
 
-            applicationIsQuitting = false;
+            Add(this);
         }
 
-        private static bool applicationIsQuitting = false;
         /// <summary>
         /// When Unity quits, it destroys objects in a random order.
         /// In principle, a Singleton is only destroyed when application quits.
@@ -69,13 +66,7 @@ namespace Framework.Core
         /// </summary>
         protected virtual void OnDestroy()
         {
-            applicationIsQuitting = true;
-            // Debug.LogWarning($"OnDestroy: {gameObject.name}");
-        }
-
-        static public bool IsDestroy()
-        {
-            return applicationIsQuitting;
+            // applicationIsQuitting = true;        // !!!特殊处理：单件统一在重启游戏时删除并再次创建，故游戏时单件将始终存在
         }
     }
 

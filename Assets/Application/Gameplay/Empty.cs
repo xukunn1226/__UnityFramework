@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework.Core;
 
 namespace Application.Runtime
 {
@@ -11,16 +12,20 @@ namespace Application.Runtime
     {
         IEnumerator Start()
         {
-            if (Core.Instance == null)
-                throw new System.Exception("Empty: Core.Instance == null");
+            // if (Core.Instance == null)
+            //     throw new System.Exception("Empty: Core.Instance == null");
 
             if (Launcher.Instance == null)
                 throw new System.Exception("Empty: Launcher.Instance == null");
 
             // 删除核心组件
-            Destroy(Core.Instance.gameObject);
+            // Destroy(Core.Instance.gameObject);
 
-            yield return null;      // 等待core.OnDestroy()的调用
+
+            // 等待所有单件的删除
+            yield return null;
+            yield return null;
+            yield return null;
 
             Resources.UnloadUnusedAssets();
             System.GC.Collect();

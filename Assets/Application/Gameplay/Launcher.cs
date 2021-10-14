@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Framework.Core;
@@ -30,8 +28,10 @@ namespace Application.Runtime
     ///     LOAD_FROM_PERSISTENT:从persistent data path下加载资源（意味着执行版控流程）
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
-    public class Launcher : SingletonMono<Launcher>, IExtractListener, IPatcherListener
+    public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
     {
+        static public Launcher Instance { get; private set; }
+
         private BundleExtracter         m_BundleExtracter;
         private Patcher                 m_Patcher;
 
@@ -56,9 +56,9 @@ namespace Application.Runtime
 
         private bool                    m_theFirstStart;
 
-        protected override void Awake()
+        void Awake()
         {
-            base.Awake();
+            Instance = this;
 
             m_theFirstStart = true;
 
@@ -132,13 +132,24 @@ namespace Application.Runtime
         // 再次执行完整流程（WARNING: 流程结束或异常时才可restart，过程中不可使用）
         public void Restart()
         {
-            // 因可能有补丁下载，需要删除资源管理器，待补丁下载完毕再创建
-            if(AssetManager.Instance != null)
-                DestroyImmediate(AssetManager.Instance.gameObject);
+            StartCoroutine(DoRestart());
+        }
+
+        IEnumerator DoRestart()
+        {
+            // 重启前删除所有单件
+            SingletonMonoBase.DestroyAll();
+
+            yield return null;
+            yield return null;
+            yield return null;
 
             m_theFirstStart = false;
             StartWork();
+
+            yield break;
         }
+        
 
         private void StartBundleExtracted()
         {            
@@ -347,7 +358,6 @@ namespace Application.Runtime
     [CustomEditor(typeof(Launcher))]
     public class Launcher_Inspector : UnityEditor.Editor
     {
-        private SerializedProperty  m_IsPersistentProp;
         private SerializedProperty  m_WorkerCountOfBundleExtracterProp;
         private SerializedProperty  m_WorkerCountOfPatcherProp;
         private SerializedProperty  m_CdnURLProp;
@@ -361,7 +371,6 @@ namespace Application.Runtime
 
         void OnEnable()
         {
-            m_IsPersistentProp = serializedObject.FindProperty("isPersistent");
             m_WorkerCountOfBundleExtracterProp = serializedObject.FindProperty("WorkerCountOfPatcher");
             m_WorkerCountOfPatcherProp = serializedObject.FindProperty("WorkerCountOfPatcher");
             m_CdnURLProp = serializedObject.FindProperty("m_CdnURL");
@@ -376,7 +385,6 @@ namespace Application.Runtime
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(m_IsPersistentProp);
             EditorGUILayout.ObjectField(m_CameraProp, typeof(Camera));
             EditorGUILayout.ObjectField(m_CanvasProp, typeof(Canvas));
             EditorGUILayout.PropertyField(m_SceneNameProp);
