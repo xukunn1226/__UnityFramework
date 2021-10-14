@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using UnityEngine.U2D;
+using Framework.Core;
 
 namespace Application.Runtime.Tests
 {

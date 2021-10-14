@@ -1,21 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using Framework.Core;
-#if UNITY_EDITOR
 using UnityEditor;
-using Framework.Core.Editor;
-#endif
 
-namespace Application.Runtime
+namespace Framework.Core.Editor
 {
-    [AttributeUsage(AttributeTargets.Field)]
-    public sealed class SoftObjectAttribute : PropertyAttribute
-    {
-    }
-
-#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(SoftObjectAttribute))]
     public class SoftObjectDrawer : PropertyDrawer
     {
@@ -47,5 +37,4 @@ namespace Application.Runtime
             }
         }
     }
-#endif
 }

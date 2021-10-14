@@ -5,14 +5,14 @@ using Framework.AssetManagement.Runtime;
 using Framework.Core;
 using Framework.Cache;
 
-namespace Application.Runtime.Tests
+namespace Tests
 {
     /// <summary>
     /// 测试两种对象池的使用方法
     /// 1、代码创建对象池，使用接口SpawnFromPool、DestroyPool
     /// 2、把对象池制作成prefab，使用接口GetOrCreatePoolInst、RemoveMonoPoolInst
     /// </summary>
-    public class TestPrefabSoftObjectUsePool : MonoBehaviour
+    public class TestSoftObjectUsePool : MonoBehaviour
     {
         string info;
 
@@ -20,7 +20,7 @@ namespace Application.Runtime.Tests
         [Tooltip("缓存对象")]
         public SoftObject m_PooledObject;
        
-        private Stack<TestPooledObject> m_Stack = new Stack<TestPooledObject>();
+        private Stack<MonoPooledObject> m_Stack = new Stack<MonoPooledObject>();
 
         private void OnGUI()
         {
@@ -50,7 +50,7 @@ namespace Application.Runtime.Tests
             if (m_PooledObject == null || string.IsNullOrEmpty(m_PooledObject.assetName))
                 return;
 
-            TestPooledObject obj = (TestPooledObject)m_PooledObject.SpawnFromPool<TestPooledObject, PrefabObjectPool>();
+            MonoPooledObject obj = (MonoPooledObject)m_PooledObject.SpawnFromPool<MonoPooledObject, PrefabObjectPool>();
             obj.transform.position = Random.insideUnitSphere * 3;
 
             m_Stack.Push(obj);
@@ -63,7 +63,7 @@ namespace Application.Runtime.Tests
         {
             if (m_Stack.Count > 0)
             {
-                TestPooledObject item = m_Stack.Pop();
+                MonoPooledObject item = m_Stack.Pop();
                 item.ReturnToPool();
             }
         }

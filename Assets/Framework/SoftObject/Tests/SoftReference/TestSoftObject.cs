@@ -4,27 +4,15 @@ using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using Framework.Core;
 
-namespace Application.Runtime.Tests
+namespace Tests
 {
-    public class TestPrefabSoftObject : MonoBehaviour
+    public class TestSoftObject : MonoBehaviour
     {
-        public LoaderType type;
-
         GameObject inst;
         string info;
 
         [SoftObject]
         public SoftObject m_SoftObject;
-
-        private void Awake()
-        {
-            AssetManager.Init(type);
-        }
-
-        void OnDestroy()
-        {
-            AssetManager.Uninit();
-        }
 
         private void OnGUI()
         {

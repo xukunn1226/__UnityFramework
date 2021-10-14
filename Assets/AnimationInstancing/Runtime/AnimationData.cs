@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using Application.Runtime;
+using Framework.Core;
 using Framework.AssetManagement.Runtime;
 
 namespace AnimationInstancingModule.Runtime

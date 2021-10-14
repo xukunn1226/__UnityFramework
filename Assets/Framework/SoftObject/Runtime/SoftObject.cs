@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 // using Framework.Core.Editor;
 // #endif
 
-namespace Application.Runtime
+namespace Framework.Core
 {
     public sealed class SoftObject : SoftObjectPath
     {
