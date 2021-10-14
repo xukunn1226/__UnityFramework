@@ -11,34 +11,34 @@ using Application.Runtime;
 
 namespace Application.Editor
 {
-[CustomEditor(typeof(SoftObject))]
-public class SoftObjectEditor : SoftObjectPathEditor
-{
-    private SerializedProperty m_LRUedPoolAssetProp;
-    private SerializedProperty m_UseLRUManageProp;
+// [CustomEditor(typeof(SoftObject))]
+// public class SoftObjectEditor : SoftObjectPathEditor
+// {
+//     private SerializedProperty m_LRUedPoolAssetProp;
+//     private SerializedProperty m_UseLRUManageProp;
 
-    public override void OnEnable()
-    {
-        base.OnEnable();
-        m_LRUedPoolAssetProp = serializedObject.FindProperty("m_LRUedPoolAsset");
-        m_UseLRUManageProp = serializedObject.FindProperty("m_UseLRUManage");
-    }
+//     public override void OnEnable()
+//     {
+//         base.OnEnable();
+//         m_LRUedPoolAssetProp = serializedObject.FindProperty("m_LRUedPoolAsset");
+//         m_UseLRUManageProp = serializedObject.FindProperty("m_UseLRUManage");
+//     }
 
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
+//     public override void OnInspectorGUI()
+//     {
+//         base.OnInspectorGUI();
 
-        EditorGUILayout.Separator();
+//         EditorGUILayout.Separator();
 
-        serializedObject.Update();
+//         serializedObject.Update();
 
-        m_UseLRUManageProp.boolValue = EditorGUILayout.Toggle("Use LRU", m_UseLRUManageProp.boolValue);
+//         m_UseLRUManageProp.boolValue = EditorGUILayout.Toggle("Use LRU", m_UseLRUManageProp.boolValue);
 
-        EditorGUI.BeginDisabledGroup(!m_UseLRUManageProp.boolValue);
-        EditorGUILayout.ObjectField(m_LRUedPoolAssetProp, new GUIContent("LRU Pool", "If you would use LRU Pool manage the asset"));
-        EditorGUI.EndDisabledGroup();
+//         EditorGUI.BeginDisabledGroup(!m_UseLRUManageProp.boolValue);
+//         EditorGUILayout.ObjectField(m_LRUedPoolAssetProp, new GUIContent("LRU Pool", "If you would use LRU Pool manage the asset"));
+//         EditorGUI.EndDisabledGroup();
 
-        serializedObject.ApplyModifiedProperties();
-    }
-}
+//         serializedObject.ApplyModifiedProperties();
+//     }
+// }
 }

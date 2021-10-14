@@ -20,18 +20,7 @@ namespace Application.Runtime
         private AssetLoaderAsync<Object>    m_LoaderAsync;
 
         private MonoPoolBase                m_ScriptedPool;         // 脚本创建的对象池
-        private MonoPoolBase                m_PrefabedPool;
-        private string                      m_PoolPath;
-        public string                       poolPath { get { return m_PoolPath; } }
-
-#if UNITY_EDITOR
-        public bool                         m_UseLRUManage;         // 使用LRU管理
-#endif
-
-        [SerializeField]
-        [SoftObject]
-        private SoftObject                  m_LRUedPoolAsset;
-        // private LRUPoolBase                 m_LRUedPool;
+        private string                      m_Path;
 
         public GameObject Instantiate()
         {
@@ -125,7 +114,6 @@ namespace Application.Runtime
 
         /// <summary>
         /// 从对象池中创建对象（对象池由脚本创建）
-        /// NOTE: 对象池的创建不够友好，无法设置对象池参数，建议使用SpawnFromPrefabedPool接口，把对象池制作为Prefab，然后配置池参数
         /// </summary>
         /// <typeparam name="TPooledObject"></typeparam>
         /// <typeparam name="TPool"></typeparam>
@@ -134,23 +122,35 @@ namespace Application.Runtime
         {
             if (m_ScriptedPool == null)
             {
-                AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
-                // m_ScriptedPool = PoolManagerExtension.GetOrCreatePool<TPooledObject, TPool>(m_PoolPath);
-                // m_ScriptedPool.Warmup();
+                AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_Path);
+                #if UNITY_EDITOR
+                Debug.Assert(UnityEditor.AssetDatabase.LoadAssetAtPath<Object>(m_Path) != null);
+                #endif
+                m_ScriptedPool = PoolManager.GetOrCreatePool<TPooledObject, TPool>(m_Path);
             }
             return m_ScriptedPool.Get();
+        }
+
+        public IPooledObject SpawnFromPool<TPooledObject>() where TPooledObject : MonoPooledObject
+        {
+            return SpawnFromPool<TPooledObject, PrefabObjectPool>();
+        }
+
+        public IPooledObject SpawnFromPool()
+        {
+            return SpawnFromPool<MonoPooledObject, PrefabObjectPool>();
         }
 
         /// <summary>
         /// 销毁对象池，与SpawnFromPool对应
         /// </summary>
-        /// <typeparam name="TPool"></typeparam>
-        public void DestroyPool<TPool>() where TPool : MonoPoolBase
+        public void DestroyPool()
         {
             if (m_ScriptedPool == null)
                 throw new System.ArgumentNullException("Pool", "Scripted Pool not initialize");
 
             // PoolManager.RemoveMonoPool<TPool>(m_PoolPath);
+            PoolManager.RemoveMonoPool(m_Path);
         }
 
         /// <summary>
@@ -164,7 +164,8 @@ namespace Application.Runtime
             //     AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_PoolPath);
             //     m_PrefabedPool = PoolManager.GetOrCreatePrefabedPool<AssetLoader>(m_PoolPath);
             // }
-            return m_PrefabedPool.Get();
+            // return m_PrefabedPool.Get();
+            return null;
         }
 
         /// <summary>
@@ -172,8 +173,8 @@ namespace Application.Runtime
         /// </summary>
         public void DestroyPrefabedPool()
         {
-            if (m_PrefabedPool == null)
-                throw new System.ArgumentNullException("Pool", "Prefabed Pool not initialize");
+            // if (m_PrefabedPool == null)
+            //     throw new System.ArgumentNullException("Pool", "Prefabed Pool not initialize");
 
             // PoolManager.RemoveMonoPrefabedPool(m_PoolPath);
         }
