@@ -96,7 +96,7 @@ namespace Framework.Core
         private LinkedList<LevelCommand>                m_Commands = new LinkedList<LevelCommand>();
 
         private LevelContext                            m_MasterLevel;                                              // 当前激活的场景        
-        private Dictionary<string, LevelContext>        m_LevelsList = new Dictionary<string, LevelContext>();
+        private Dictionary<string, LevelContext>        m_LevelsList = new Dictionary<string, LevelContext>();      // 当前加载中、卸载中、加载完成的场景列表
 
         protected override void Awake()
         {
@@ -113,7 +113,7 @@ namespace Framework.Core
 
         void OnActiveSceneChanged(Scene oldScene, Scene newScene)
         {
-            // Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
+            Debug.Log($"OnActiveSceneChanged: [{Time.frameCount}]    oldScene [{oldScene.name}]    newScene [{newScene.name}]");
 
             // update newScene context
             LevelContext newContext = FindLevel(newScene.name);
@@ -126,7 +126,7 @@ namespace Framework.Core
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            // Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
+            Debug.Log($"OnSceneLoaded: [{Time.frameCount}]    Scene [{scene.name}]   Mode [{mode}]");
 
             LevelContext ctx = FindLevel(scene.name);
             if(ctx == null)
@@ -138,7 +138,7 @@ namespace Framework.Core
 
         void OnSceneUnloaded(Scene scene)
         {
-            // Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
+            Debug.Log($"OnSceneUnloaded: [{Time.frameCount}]    Scene [{scene.name}]");
 
             LevelContext ctx = FindLevel(scene.name);
             if(ctx == null)
@@ -247,6 +247,7 @@ namespace Framework.Core
             if (context == null)
                 throw new System.ArgumentNullException("context");
 
+            // context.state = StreamingState.InQueue;
             m_Commands.AddLast(new LevelCommand(context, false));
         }
 
@@ -259,6 +260,8 @@ namespace Framework.Core
             if (context.loader == null)
                 throw new System.ArgumentNullException("context.loader");
 
+            Debug.Assert(context.state == StreamingState.Done);
+
             context.state = StreamingState.Streaming;
             yield return AssetManager.UnloadSceneAsync(context.loader);
         }
@@ -268,6 +271,7 @@ namespace Framework.Core
         {
             if (context == null)
                 throw new System.ArgumentNullException("context");
+            Debug.Assert(context.state == StreamingState.InQueue);
 
             SceneLoaderAsync loader;
             if (!string.IsNullOrEmpty(context.bundlePath))
