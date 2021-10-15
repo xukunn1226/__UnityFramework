@@ -6,7 +6,7 @@ using Framework.Core;
 namespace Application.Runtime
 {
     /// <summary>
-    /// 重启游戏时过渡使用，负责删除核心组件，再重启launcher
+    /// 重启游戏时过渡使用，再重启launcher
     /// <summary>
     public class Empty : MonoBehaviour
     {
@@ -15,13 +15,12 @@ namespace Application.Runtime
             if (Launcher.Instance == null)
                 throw new System.Exception("Empty: Launcher.Instance == null");
 
-            // 等待所有单件的删除
-            yield return null;
-            yield return null;
-            yield return null;
-
             Resources.UnloadUnusedAssets();
             System.GC.Collect();
+
+            yield return null;
+            yield return null;
+            yield return null;
 
             // 重启launcher流程
             Launcher.Instance.Restart();

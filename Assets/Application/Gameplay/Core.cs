@@ -34,10 +34,5 @@ namespace Application.Runtime
         {
             GlobalConfigManager.FlushAll();
         }
-
-        void OnDestroy()
-        {
-            // SingletonMonoBase.DestroyAll();
-        }
     }
 }

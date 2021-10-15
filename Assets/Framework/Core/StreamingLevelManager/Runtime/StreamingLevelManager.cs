@@ -105,12 +105,19 @@ namespace Framework.Core
             m_MasterLevel = new LevelContext() { sceneName = SceneManager.GetActiveScene().name, 
                                                  state = StreamingState.Done };
             
-            Debug.Log($"111111   m_LevelsList.Add {m_MasterLevel.sceneName}");
             m_LevelsList.Add(m_MasterLevel.sceneName, m_MasterLevel);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
+        }
+
+        protected override void OnDestroy()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+            SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+            base.OnDestroy();
         }
 
         void OnActiveSceneChanged(Scene oldScene, Scene newScene)
@@ -147,8 +154,6 @@ namespace Framework.Core
                 throw new Exception($"OnSceneUnloaded: can't find {scene.name}");
 
             ctx.state = StreamingState.Discard;
-
-            Debug.Log($"m_LevelsList.Remove:  {ctx.sceneName}");
 
             m_LevelsList.Remove(ctx.sceneName);           // 加载/卸载指令执行完成即删除
         }
@@ -212,7 +217,6 @@ namespace Framework.Core
                 {
                     if(FindLevel(cmd.loadingContext.sceneName) == null)
                     {
-                        Debug.Log($"222222222   m_LevelsList.Add {cmd.loadingContext.sceneName}");
                         m_LevelsList.Add(cmd.loadingContext.sceneName, cmd.loadingContext);
                         StartCoroutine(InternalLoadAsync(cmd.loadingContext));
                     }
@@ -242,7 +246,6 @@ namespace Framework.Core
             if (context == null)
                 throw new System.ArgumentNullException("context");
 
-            Debug.Log($"Command.LoadAsync: {context.sceneName}");
             context.state = StreamingState.InQueue;
             context.loader = null;
             m_Commands.AddLast(new LevelCommand(context, true));
@@ -268,8 +271,6 @@ namespace Framework.Core
 
             Debug.Assert(context.state == StreamingState.Done);
 
-            Debug.Log($"InternalUnloadAsync: {Time.frameCount}  {context.sceneName}");
-
             context.state = StreamingState.Streaming;
             yield return AssetManager.UnloadSceneAsync(context.loader);
         }
@@ -280,8 +281,6 @@ namespace Framework.Core
             if (context == null)
                 throw new System.ArgumentNullException("context");
             Debug.Assert(context.state == StreamingState.InQueue);
-
-            Debug.Log($"InternalLoadAsync: {Time.frameCount}   {context.sceneName}");
 
             SceneLoaderAsync loader;
             if (!string.IsNullOrEmpty(context.bundlePath))
