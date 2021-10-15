@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
 using Framework.NetWork;
+using Framework.AssetManagement.Runtime;
 using NetProtocol;
 using Google.Protobuf;
 using System;
@@ -16,8 +17,12 @@ namespace Application.Runtime
     /// <summary>
     /// 
     /// <summary>
-    public class MainLoop : MonoBehaviour, INetManagerListener<IMessage>
+    public class MainLoop : SingletonMono<MainLoop>, INetManagerListener<IMessage>
     {
+        public string           TheFirstGame;
+        public string           ScenePath;
+        public string           BundlePath;
+
         private const string    kEmptySceneName    = "empty";
         private const string    kEmptyScenePath    = "assets/res/scenes/empty.unity";
         private const string    kBundlePath        = "assets/res/scenes.ab";
@@ -28,16 +33,18 @@ namespace Application.Runtime
         private bool            m_NeedReconnect;
         private float           m_TimeToLostFocus;
 
-        async void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             if (Launcher.Instance == null)
                 throw new System.Exception("MainLoop: Launcher.Instance == null");
             if (NetManager.Instance == null)
                 throw new System.Exception("MainLoop: NetManager.Instance == null");
 
             NetManager.Instance.SetListener(this);
-            if(AutoConnect)
-                await Connect();
+            // if(AutoConnect)
+            //     await Connect();
 
             Launcher.Instance.Disable();        // 结束Launcher流程
 
@@ -46,13 +53,24 @@ namespace Application.Runtime
 
         IEnumerator Start()
         {
-            yield return null;      // 等待组件的start执行完毕，例如GameStateBehaviour.Start
-            GameInfoManager.Instance.SwitchTo(GameState.World);
+            GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
+
+            StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
+            ctx.sceneName = TheFirstGame;
+            ctx.scenePath = ScenePath;
+            ctx.additive = false;
+            ctx.bundlePath = BundlePath;
+            StreamingLevelManager.Instance.LoadAsync(ctx);
+
+
+            // GameInfoManager.Instance.SwitchTo(GameState.World);
+            yield break;
         }
 
-        void OnDestroy()
+        protected override void OnDestroy()
         {
             LuaMainLoop.Uninit();
+            base.OnDestroy();
         }
 
         void Update()
@@ -134,6 +152,8 @@ namespace Application.Runtime
         void OnApplicationFocus(bool isFocus)
         {
             // Debug.Log($"OnApplicationFocus      isFocus: {isFocus}       {System.DateTime.Now}  {Time.frameCount}");
+            GlobalConfigManager.FlushAll();
+
             if(isFocus)
             {
                 if(Time.time - m_TimeToLostFocus > 5)
@@ -178,12 +198,18 @@ namespace Application.Runtime
     [CustomEditor(typeof(MainLoop))]
     public class MainLoop_Inspector : UnityEditor.Editor
     {
+        SerializedProperty m_TheFirstGameProp;
+        SerializedProperty m_ScenePathProp;
+        SerializedProperty m_BundlePathProp;
         SerializedProperty m_IPProp;
         SerializedProperty m_PortProp;
         SerializedProperty m_AutoConnectProp;
 
         void OnEnable()
         {
+            m_TheFirstGameProp = serializedObject.FindProperty("TheFirstGame");
+            m_ScenePathProp = serializedObject.FindProperty("ScenePath");
+            m_BundlePathProp = serializedObject.FindProperty("BundlePath");
             m_IPProp = serializedObject.FindProperty("Ip");
             m_PortProp = serializedObject.FindProperty("Port");
             m_AutoConnectProp = serializedObject.FindProperty("AutoConnect");
@@ -193,6 +219,9 @@ namespace Application.Runtime
         {
             serializedObject.Update();
 
+            EditorGUILayout.PropertyField(m_TheFirstGameProp);
+            EditorGUILayout.PropertyField(m_ScenePathProp);
+            EditorGUILayout.PropertyField(m_BundlePathProp);
             EditorGUILayout.PropertyField(m_IPProp);
             EditorGUILayout.PropertyField(m_PortProp);
             EditorGUILayout.PropertyField(m_AutoConnectProp);

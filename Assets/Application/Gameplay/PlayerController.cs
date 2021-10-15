@@ -6,7 +6,18 @@ namespace Application.Runtime
 {
     public class PlayerController : MonoBehaviour
     {
-        public Camera       mainCamera;
+        private Camera      m_MainCamera;
+        public Camera       mainCamera
+        {
+            get
+            {
+                if(m_MainCamera == null)
+                {
+                    m_MainCamera = Camera.main;
+                }
+                return m_MainCamera;
+            }
+        }
 
         public Vector3      cameraPos
         {
