@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.Core
+namespace Application.Runtime
 {
-    public class Singleton<T> where T : class, new()
+    public class Singleton<T> : SingletonBase where T : SingletonBase, new()
     {
         private static T m_Instance = null;
 

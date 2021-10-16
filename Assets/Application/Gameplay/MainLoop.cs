@@ -63,7 +63,7 @@ namespace Application.Runtime
             StreamingLevelManager.Instance.LoadAsync(ctx);
 
 
-            // GameInfoManager.Instance.SwitchTo(GameState.World);
+            GameInfoManager.Instance.SwitchTo(GameState.World);
             yield break;
         }
 
