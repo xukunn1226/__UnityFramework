@@ -19,5 +19,14 @@ namespace Application.Runtime
                 return m_Instance;
             }
         }
+        
+        protected override void Init()
+        {}
+
+        protected override void OnDestroy()
+        {}
+
+        protected override void OnUpdate(float deltaTime)
+        {}
     }
 }

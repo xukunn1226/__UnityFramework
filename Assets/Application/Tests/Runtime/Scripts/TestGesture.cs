@@ -15,7 +15,7 @@ namespace Application.Runtime.Tests
             transform.localScale *= 2;
 
             PlayerInput.HitEventData hitEventData = (PlayerInput.HitEventData)eventData;
-            ((WorldPlayerController)GameInfoManager.playerController).PanCamera(hitEventData.hitInfo.point, OnPanEnd);
+            ((WorldPlayerController)PlayerController.Instance).PanCamera(hitEventData.hitInfo.point, OnPanEnd);
         }
 
         public void OnDeselect(BaseEventData eventData)
@@ -25,7 +25,7 @@ namespace Application.Runtime.Tests
 
         private void OnPanEnd()
         {
-            ((WorldPlayerController)GameInfoManager.playerController).DiveCameraToBase();
+            ((WorldPlayerController)PlayerController.Instance).DiveCameraToBase();
         }
 
         public void OnGesture(ObjectDragEventData eventData)
@@ -33,7 +33,7 @@ namespace Application.Runtime.Tests
             switch (eventData.State)
             {
                 case RecognitionState.Started:
-                    m_Delta = transform.position - ((WorldPlayerController)GameInfoManager.playerController).GetGroundHitPoint(eventData.Position);
+                    m_Delta = transform.position - ((WorldPlayerController)PlayerController.Instance).GetGroundHitPoint(eventData.Position);
                     break;
                 case RecognitionState.InProgress:
                     SetDraggedPosition(eventData.Position);
@@ -47,7 +47,7 @@ namespace Application.Runtime.Tests
 
         private void SetDraggedPosition(Vector2 screenPosition)
         {
-            Vector3 newPos = ((WorldPlayerController)GameInfoManager.playerController).GetGroundHitPoint(screenPosition);
+            Vector3 newPos = ((WorldPlayerController)PlayerController.Instance).GetGroundHitPoint(screenPosition);
             transform.position = newPos + m_Delta;
         }
     }

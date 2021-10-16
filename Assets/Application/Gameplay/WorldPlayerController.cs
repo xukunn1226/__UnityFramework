@@ -45,6 +45,8 @@ namespace Application.Runtime
             {
                 ViewHeights[i] = new Vector2(m_ViewPoints[i], m_ViewPoints[i+1]);
             }
+
+            Instance = this;
         }
 
         void OnEnable()
@@ -221,6 +223,36 @@ namespace Application.Runtime
 
             LocomotionManager.Update(Time.deltaTime);
             AISimpleManager.Update(Time.deltaTime);
+
+            InputForDebug();
+        }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        private void InputForDebug()
+        {
+            if(Input.GetKeyDown(KeyCode.F1))
+            {
+                PanCamera(Vector3.zero);
+            }
+
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                UnityEngine.Debug.Log($"print center hit point: {GetCenterHitPoint()}");
+            }            
+        }
+
+        private void OnGUI()
+        {
+            if(GUI.Button(new Rect(Screen.width-200, Screen.height/2, 200, 100), "Create Actors"))
+            {
+                for(int i = 0; i < 20; ++i)
+                    TestActorManager.CreateActor();
+            }
+
+            if(GUI.Button(new Rect(Screen.width-200, Screen.height/2 - 120, 200, 100), "Destroy Actors"))
+            {
+                TestActorManager.DestroyAll();                
+            }
         }
     }
 }

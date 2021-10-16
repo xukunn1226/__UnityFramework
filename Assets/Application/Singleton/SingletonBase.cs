@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Application.Runtime
 {
-    public class SingletonBase
+    public abstract class SingletonBase
     {
         static private LinkedList<SingletonBase> s_SingletonList = new LinkedList<SingletonBase>();
         static public int frameCount { get; private set; }
@@ -93,13 +93,10 @@ namespace Application.Runtime
             SingletonBase.Remove(this);
         }
 
-        protected virtual void Init()
-        {}
+        protected abstract void Init();        
 
-        protected virtual void OnDestroy()
-        {}
+        protected abstract void OnDestroy();        
 
-        protected virtual void OnUpdate(float deltaTime)
-        {}
+        protected abstract void OnUpdate(float deltaTime);
     }
 }

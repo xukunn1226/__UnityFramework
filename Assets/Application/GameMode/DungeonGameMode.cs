@@ -5,7 +5,7 @@ using Framework.Core;
 
 namespace Application.Runtime
 {
-    public class DungeonGameInfo : GameInfo
+    public class DungeonGameMode : GameMode
     {
         public override GameState Id { get { return GameState.Dungeon; } }
 

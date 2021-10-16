@@ -6,6 +6,8 @@ namespace Application.Runtime
 {
     public class PlayerController : MonoBehaviour
     {
+        static public PlayerController Instance { get; protected set; }
+
         private Camera      m_MainCamera;
         public Camera       mainCamera
         {
@@ -41,12 +43,6 @@ namespace Application.Runtime
             {
                 return mainCamera.transform.eulerAngles;
             }
-        }
-
-        void Awake()
-        {
-            if(mainCamera == null)
-                throw new System.ArgumentNullException("mainCamera");
         }
 
         public void SetCullingMask(int mask)
