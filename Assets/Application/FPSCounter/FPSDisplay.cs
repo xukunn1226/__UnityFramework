@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Framework.Core
+namespace Application.Runtime
 {
     [RequireComponent(typeof(FPSCounter))]
     public class FPSDisplay : MonoBehaviour

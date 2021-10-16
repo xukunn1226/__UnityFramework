@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.Core
+namespace Application.Runtime
 {
     public class FPSCounter : MonoBehaviour
     {
