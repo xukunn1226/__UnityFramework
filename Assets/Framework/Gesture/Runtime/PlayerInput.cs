@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Framework.Core;
 
+
 namespace Framework.Gesture.Runtime
 {
     [RequireComponent(typeof(ScreenPointerDownRecognizer))]

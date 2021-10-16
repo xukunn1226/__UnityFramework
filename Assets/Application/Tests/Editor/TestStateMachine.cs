@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Framework.Core;
 
-namespace Framework.Core.Tests
+namespace Application.Runtime.Tests
 {
-
     public enum Life
     {
         Born,

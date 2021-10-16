@@ -42,8 +42,6 @@ namespace Application.Runtime
             // if(AutoConnect)
             //     await Connect();
 
-            Launcher.Instance.Disable();        // 结束Launcher流程
-
             LuaMainLoop.Init();            
         }
 
