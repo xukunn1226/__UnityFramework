@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Application.Editor
+namespace Framework.Core.Editor
 {
     public class EGUIStyles
     {

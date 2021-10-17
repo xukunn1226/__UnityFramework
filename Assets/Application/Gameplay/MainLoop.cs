@@ -33,16 +33,16 @@ namespace Application.Runtime
         {
             base.Awake();
 
-            if (Launcher.Instance == null)
-                throw new System.Exception("MainLoop: Launcher.Instance == null");
-            if (NetManager.Instance == null)
-                throw new System.Exception("MainLoop: NetManager.Instance == null");
+            // if (Launcher.Instance == null)
+            //     throw new System.Exception("MainLoop: Launcher.Instance == null");
+            // if (NetManager.Instance == null)
+            //     throw new System.Exception("MainLoop: NetManager.Instance == null");
 
             // NetManager.Instance.SetListener(this);
             // if(AutoConnect)
             //     await Connect();
 
-            LuaMainLoop.Init();            
+            // LuaMainLoop.Init();
         }
 
         IEnumerator Start()
@@ -55,13 +55,13 @@ namespace Application.Runtime
 
         protected override void OnDestroy()
         {
-            LuaMainLoop.Uninit();
+            // LuaMainLoop.Uninit();
             base.OnDestroy();
         }
 
         void Update()
         {
-            LuaMainLoop.Tick();
+            // LuaMainLoop.Tick();
         }
 
         public void ReturnToLauncher()

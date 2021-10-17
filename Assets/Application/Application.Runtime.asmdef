@@ -1,0 +1,18 @@
+{
+    "name": "Application.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
+        "GUID:4307f53044263cf4b835bd812fc161a4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
