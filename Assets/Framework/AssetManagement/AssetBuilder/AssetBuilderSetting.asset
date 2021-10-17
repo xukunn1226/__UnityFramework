@@ -15,10 +15,10 @@ MonoBehaviour:
   ForceDisplayDialogWhenAssetNameNotMet: 0
   WhiteListOfPath:
   - Assets/Res/
-  - Assets/Application/Tests/Runtime/Res
+  - Assets/Application/main/Tests/Runtime/Res
   - Assets/Framework/AssetManagement/Runtime/Tests/Res/
   - Assets/Framework/Core/StreamingLevelManager/Tests/Res
-  - Assets/Application/XLua/Lua
+  - Assets/Application/main/XLua/Lua
   - Assets/Framework/AnimationInstancing/Art
   BlackListOfFolder:
   - Resources
