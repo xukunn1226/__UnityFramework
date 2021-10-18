@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Application.Runtime
 {
-    public class AISimpleManager
+    public class AISimpleManager : Singleton<AISimpleManager>
     {
-        static private int                              s_Id     = 0;
-        static private Dictionary<int, AISimple>        s_AgentList     = new Dictionary<int, AISimple>();
+        private int                                 s_Id            = 0;
+        private Dictionary<int, AISimple>           s_AgentList     = new Dictionary<int, AISimple>();
 
-        static public int AddInstance(AISimple agent)
+        public int AddInstance(AISimple agent)
         {
             #if UNITY_EDITOR
             if(s_AgentList.ContainsValue(agent))
@@ -20,7 +20,7 @@ namespace Application.Runtime
             return s_Id++;
         }
 
-        static public void RemoveInstance(AISimple agent)
+        public void RemoveInstance(AISimple agent)
         {
             #if UNITY_EDITOR
             if(!s_AgentList.ContainsKey(agent.id))
@@ -30,7 +30,7 @@ namespace Application.Runtime
             s_AgentList.Remove(agent.id);
         }
 
-        static public void Update(float deltaTime)
+        protected override void OnUpdate(float deltaTime)
         {
             foreach(var item in s_AgentList)
             {

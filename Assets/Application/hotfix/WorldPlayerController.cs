@@ -212,17 +212,16 @@ namespace Application.Runtime
             }
             Debug.Assert(layer != -1);
             cameraViewLayer = (ViewLayer)layer;
-            cameraViewLayerAlpha = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);
-
-            ViewLayerManager.Update(cameraViewLayer, cameraViewLayerAlpha);            
+            cameraViewLayerAlpha = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);            
         }
 
         private void Update()
         {
             UpdateViewLayer();
 
-            LocomotionManager.Update(Time.deltaTime);
-            AISimpleManager.Update(Time.deltaTime);
+            // ViewLayerManager.Update(Time.deltaTime);
+            // LocomotionManager.Update(Time.deltaTime);
+            // AISimpleManager.Update(Time.deltaTime);
 
             InputForDebug();
         }

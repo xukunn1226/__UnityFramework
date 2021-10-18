@@ -34,14 +34,15 @@ namespace Application.Runtime
         static public void Update(float deltaTime)
         {
             ++frameCount;
-            LinkedListNode<SingletonBase> first = s_SingletonList.First;
-            while(first != null)
+            LinkedListNode<SingletonBase> cur = s_SingletonList.First;
+            while(cur != null)
             {
-                SingletonBase s = first.Value;
+                SingletonBase s = cur.Value;
                 if(s.pendingKill)
                 {
                     s.OnDestroy();
                     s_SingletonList.RemoveFirst();
+                    cur = s_SingletonList.First;
                 }
                 else
                 {
@@ -58,8 +59,8 @@ namespace Application.Runtime
                             s.elapsedUpdateTime = (s.elapsedUpdateTime * 1000) % (s.updateIntervalTime * 1000);
                         }
                     }
+                    cur = cur.Next;
                 }
-                first = s_SingletonList.First;
             }
         }
 

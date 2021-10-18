@@ -36,14 +36,14 @@ namespace Application.Runtime
         public override void Start()
         {
             base.Start();
-            id = LocomotionManager.AddInstance(this);
+            id = LocomotionManager.Instance.AddInstance(this);
             EnterView(startPosition, startRotation);
         }
 
         public override void Destroy()
         {
             LeaveView();
-            LocomotionManager.RemoveInstance(this);
+            LocomotionManager.Instance.RemoveInstance(this);
             base.Destroy();
         }
 

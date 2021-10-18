@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Application.Runtime
 {
-    public class LocomotionManager
+    public class LocomotionManager : Singleton<LocomotionManager>
     {
-        static private int                              s_Id            = 0;
-        static private Dictionary<int, LocomotionAgent> s_AgentList     = new Dictionary<int, LocomotionAgent>();
+        private int                                 s_Id            = 0;
+        private Dictionary<int, LocomotionAgent>    s_AgentList     = new Dictionary<int, LocomotionAgent>();
 
-        static public int AddInstance(LocomotionAgent agent)
+        public int AddInstance(LocomotionAgent agent)
         {
             #if UNITY_EDITOR
             if(s_AgentList.ContainsValue(agent))
@@ -20,7 +20,7 @@ namespace Application.Runtime
             return s_Id++;
         }
 
-        static public void RemoveInstance(LocomotionAgent agent)
+        public void RemoveInstance(LocomotionAgent agent)
         {
             #if UNITY_EDITOR
             if(!s_AgentList.ContainsKey(agent.id))
@@ -30,7 +30,7 @@ namespace Application.Runtime
             s_AgentList.Remove(agent.id);
         }
 
-        static public void Update(float deltaTime)
+        protected override void OnUpdate(float deltaTime)
         {
             foreach(var item in s_AgentList)
             {

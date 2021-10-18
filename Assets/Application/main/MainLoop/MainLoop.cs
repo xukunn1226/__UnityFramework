@@ -67,10 +67,13 @@ namespace Application.Runtime
         void Update()
         {
             // LuaMainLoop.Tick();
+            SingletonBase.Update(Time.deltaTime);
         }
 
         public void ReturnToLauncher()
         {
+            SingletonBase.DestroyAll();
+
             StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
             ctx.sceneName = kEmptySceneName;
             ctx.scenePath = kEmptyScenePath;

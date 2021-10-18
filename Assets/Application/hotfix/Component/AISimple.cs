@@ -39,7 +39,7 @@ namespace Application.Runtime
         public override void Start()
         {
             base.Start();
-            id = AISimpleManager.AddInstance(this);
+            id = AISimpleManager.Instance.AddInstance(this);
         }
 
         public override void Destroy()
@@ -48,7 +48,7 @@ namespace Application.Runtime
             m_Agent.onLeaveView -= OnLeaveView;
             m_Agent.onStopped -= OnStopped;
 
-            AISimpleManager.RemoveInstance(this);
+            AISimpleManager.Instance.RemoveInstance(this);
             base.Destroy();
         }
 

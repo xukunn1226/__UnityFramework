@@ -23,12 +23,12 @@ namespace Application.Runtime
         public override void Start()
         {
             base.Start();
-            id = ViewLayerManager.AddInstance(this);
+            id = ViewLayerManager.Instance.AddInstance(this);
         }
 
         public override void Destroy()
         {
-            ViewLayerManager.RemoveInstance(this);
+            ViewLayerManager.Instance.RemoveInstance(this);
             base.Destroy();
         }
 

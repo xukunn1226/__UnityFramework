@@ -4,27 +4,14 @@ using UnityEngine;
 
 namespace Application.Runtime
 {
-    public class ViewLayerManager
+    public class ViewLayerManager : Singleton<ViewLayerManager>
     {
-        static private int                              s_Id            = 0;
-        static private Dictionary<int, ViewLayerComp>[] s_ViewActorList;                                // [ViewLayer][]
-        static private ViewLayer                        s_PrevLayer     = ViewLayer.ViewLayer_Invalid;
-        static private ViewLayer                        s_CurLayer      = ViewLayer.ViewLayer_Invalid;
+        private int                                 s_Id            = 0;
+        private Dictionary<int, ViewLayerComp>[]    s_ViewActorList;                                // [ViewLayer][]
+        private ViewLayer                           s_PrevLayer     = ViewLayer.ViewLayer_Invalid;
+        private ViewLayer                           s_CurLayer      = ViewLayer.ViewLayer_Invalid;
 
-        static ViewLayerManager()
-        {
-            if(s_ViewActorList == null)
-            {
-                int countOfLayer = (int)ViewLayer.ViewLayer_Max;
-                s_ViewActorList = new Dictionary<int, ViewLayerComp>[countOfLayer];
-                for(int i = 0; i < countOfLayer; ++i)
-                {
-                    s_ViewActorList[i] = new Dictionary<int, ViewLayerComp>();
-                }
-            }
-        }        
-
-        static public int AddInstance(ViewLayerComp actor)
+        public int AddInstance(ViewLayerComp actor)
         {
             int id = s_Id++;
             for(int layer = (int)actor.minViewLayer; layer <= (int)actor.maxViewLayer; ++layer)
@@ -40,7 +27,7 @@ namespace Application.Runtime
             return id;
         }
 
-        static public void RemoveInstance(ViewLayerComp actor)
+        public void RemoveInstance(ViewLayerComp actor)
         {
 #if UNITY_EDITOR
             if(s_ViewActorList == null)
@@ -56,13 +43,32 @@ namespace Application.Runtime
                 s_ViewActorList[layer].Remove(actor.id);
             }
         }
-
-        static public void Update(ViewLayer layer, float alpha)
+        
+        protected override void Init()
         {
+            if(s_ViewActorList == null)
+            {
+                int countOfLayer = (int)ViewLayer.ViewLayer_Max;
+                s_ViewActorList = new Dictionary<int, ViewLayerComp>[countOfLayer];
+                for(int i = 0; i < countOfLayer; ++i)
+                {
+                    s_ViewActorList[i] = new Dictionary<int, ViewLayerComp>();
+                }
+            }
+        } 
+
+        protected override void OnUpdate(float deltaTime)
+        {
+            if(WorldPlayerController.Instance == null)
+                return;
+
             if(s_ViewActorList == null)
             { // 尚未有对象加入
                 return;
             }
+
+            ViewLayer layer = ((WorldPlayerController)PlayerController.Instance).cameraViewLayer;
+            float alpha = ((WorldPlayerController)PlayerController.Instance).cameraViewLayerAlpha;
 
             Dictionary<int, ViewLayerComp> dict;
             if(s_CurLayer != layer)
