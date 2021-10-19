@@ -12,7 +12,7 @@ namespace Application.Runtime
         {
             get
             {
-                if(m_Instance == null)
+                if(m_Instance == null || !SingletonBase.Exist(m_Instance))      // destroyAll并不会把Singleton从内存中清除，需要从逻辑上判断是否存在，不存在则再次创建
                 {
                     m_Instance = new T();
                 }

@@ -23,6 +23,11 @@ namespace Application.Runtime
             singleton.pendingKill = true;
         }
 
+        static internal bool Exist(SingletonBase singleton)
+        {
+            return s_SingletonList.Find(singleton) != null;
+        }
+
         static public void DestroyAll()
         {
             foreach(var s in s_SingletonList)
@@ -94,9 +99,9 @@ namespace Application.Runtime
             SingletonBase.Remove(this);
         }
 
-        protected abstract void Init();        
+        protected abstract void Init();
 
-        protected abstract void OnDestroy();        
+        protected abstract void OnDestroy();
 
         protected abstract void OnUpdate(float deltaTime);
     }

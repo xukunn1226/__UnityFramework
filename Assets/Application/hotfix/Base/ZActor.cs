@@ -19,7 +19,7 @@ namespace Application.Runtime
 
         public override void Destroy()
         {
-            // 添加组件的反序来执行
+            // 以添加组件的反序来执行
             for(int i = m_CompsList.Count - 1; i >= 0; --i)
             {
                 m_CompsList[i].Destroy();
@@ -28,7 +28,7 @@ namespace Application.Runtime
             base.Destroy();
         }
 
-        public ZComp AddComponent(Type compType, IData data = null)
+        public ZComp AddComponent(Type compType, IDataSource data = null)
         {
             ZComp comp = (ZComp)Activator.CreateInstance(compType, new object[] { this });
             if(comp == null)
@@ -38,7 +38,7 @@ namespace Application.Runtime
             return comp;
         }
 
-        public T AddComponent<T>(IData data = null) where T : ZComp
+        public T AddComponent<T>(IDataSource data = null) where T : ZComp
         {
             T comp = (T)Activator.CreateInstance(typeof(T), new object[] { this });
             m_CompsList.Add(comp);

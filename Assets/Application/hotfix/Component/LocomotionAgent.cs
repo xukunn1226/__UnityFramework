@@ -28,7 +28,7 @@ namespace Application.Runtime
 
         public LocomotionAgent(ZActor actor) : base(actor) {}
 
-        public override void Prepare(IData data)
+        public override void Prepare(IDataSource data)
         {
             base.Prepare(data);
         }

@@ -28,6 +28,7 @@ namespace Application.Runtime
         public bool             AutoConnect;
         private bool            m_NeedReconnect;
         private float           m_TimeToLostFocus;
+        public GameState        DefaultMode;
 
         protected override void Awake()
         {
@@ -54,7 +55,7 @@ namespace Application.Runtime
 
             GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
 
-            GameModeManager.Instance.SwitchTo(GameState.World);
+            GameModeManager.Instance.SwitchTo(DefaultMode);
             yield break;
         }
 
@@ -195,12 +196,14 @@ namespace Application.Runtime
         SerializedProperty m_IPProp;
         SerializedProperty m_PortProp;
         SerializedProperty m_AutoConnectProp;
+        SerializedProperty m_DefaultModeProp;
 
         void OnEnable()
         {
             m_IPProp = serializedObject.FindProperty("Ip");
             m_PortProp = serializedObject.FindProperty("Port");
             m_AutoConnectProp = serializedObject.FindProperty("AutoConnect");
+            m_DefaultModeProp = serializedObject.FindProperty("DefaultMode");
         }
 
         async public override void OnInspectorGUI()
@@ -210,6 +213,7 @@ namespace Application.Runtime
             EditorGUILayout.PropertyField(m_IPProp);
             EditorGUILayout.PropertyField(m_PortProp);
             EditorGUILayout.PropertyField(m_AutoConnectProp);
+            EditorGUILayout.PropertyField(m_DefaultModeProp);
 
             if (GUILayout.Button("ReturnToLauncher"))
             {

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Application.Runtime
 {
+    // 简单AI：控制角色的移动及动画表现
     public class AISimple : ZComp
     {
         public int                      id              { get; private set; }
@@ -24,7 +25,7 @@ namespace Application.Runtime
 
         public AISimple(ZActor actor) : base(actor) {}
 
-        public override void Prepare(IData data)
+        public override void Prepare(IDataSource data)
         {
             base.Prepare(data);
 

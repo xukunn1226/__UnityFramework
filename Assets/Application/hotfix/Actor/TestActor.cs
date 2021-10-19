@@ -17,17 +17,17 @@ namespace Application.Runtime
         public int                      id                  { get; set; }
         public Vector3                  startPosition;
         public Vector3                  startRotation;
-        private ViewLayerComp           m_ViewLayer;
+        private ViewLayerComponent      m_ViewLayer;
         private TestRenderableProfile   m_RenderableProxy;
         private LocomotionAgent         m_LocomotionAgent;
         private AISimple                m_AI;
 
-        public override void Prepare(IData data = null)
+        public override void Prepare(IDataSource data = null)
         {
             base.Prepare(data);
             
             // 注意组件初始化的顺序（部分组件之间有依赖关系）
-            m_ViewLayer = AddComponent<ViewLayerComp>(data);            
+            m_ViewLayer = AddComponent<ViewLayerComponent>(data);            
             m_ViewLayer.minViewLayer = ViewLayer.ViewLayer_0;
             m_ViewLayer.maxViewLayer = ViewLayer.ViewLayer_2;
 

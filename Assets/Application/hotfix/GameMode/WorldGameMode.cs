@@ -22,9 +22,7 @@ namespace Application.Runtime
         }
 
         public override void OnLeave(IState<GameState> nextState)
-        {
-            StreamingLevelManager.onLevelLoadEnd -= OnLevelLoadEnd;
-        }
+        {}
 
         public override void OnUpdate(float deltaTime)
         {}
@@ -33,6 +31,7 @@ namespace Application.Runtime
         {
             if(string.Compare(sceneName, "world") == 0)
             {
+                StreamingLevelManager.onLevelLoadEnd -= OnLevelLoadEnd;
                 Launcher.Instance.Disable();        // 结束Launcher流程
             }
         }

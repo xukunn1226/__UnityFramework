@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Application.Runtime
 {
-    public class ViewLayerComp : ZComp
+    public class ViewLayerComponent : ZComp
     {
         public delegate void onViewUpdateHandler(ViewLayer layer, float alpha);
         public delegate void onEnterHandler(ViewLayer prevLayer, ViewLayer curLayer);
@@ -18,7 +18,7 @@ namespace Application.Runtime
         public ViewLayer   maxViewLayer     { get; set; }
         public int         id               { get; private set; }
 
-        public ViewLayerComp(ZActor actor) : base(actor) {}
+        public ViewLayerComponent(ZActor actor) : base(actor) {}
 
         public override void Start()
         {

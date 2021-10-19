@@ -6,12 +6,12 @@ namespace Application.Runtime
 {
     public class ViewLayerManager : Singleton<ViewLayerManager>
     {
-        private int                                 s_Id            = 0;
-        private Dictionary<int, ViewLayerComp>[]    s_ViewActorList;                                // [ViewLayer][]
-        private ViewLayer                           s_PrevLayer     = ViewLayer.ViewLayer_Invalid;
-        private ViewLayer                           s_CurLayer      = ViewLayer.ViewLayer_Invalid;
+        private int                                     s_Id            = 0;
+        private Dictionary<int, ViewLayerComponent>[]   s_ViewActorList;                                // [ViewLayer][]
+        private ViewLayer                               s_PrevLayer     = ViewLayer.ViewLayer_Invalid;
+        private ViewLayer                               s_CurLayer      = ViewLayer.ViewLayer_Invalid;
 
-        public int AddInstance(ViewLayerComp actor)
+        public int AddInstance(ViewLayerComponent actor)
         {
             int id = s_Id++;
             for(int layer = (int)actor.minViewLayer; layer <= (int)actor.maxViewLayer; ++layer)
@@ -27,7 +27,7 @@ namespace Application.Runtime
             return id;
         }
 
-        public void RemoveInstance(ViewLayerComp actor)
+        public void RemoveInstance(ViewLayerComponent actor)
         {
 #if UNITY_EDITOR
             if(s_ViewActorList == null)
@@ -49,10 +49,10 @@ namespace Application.Runtime
             if(s_ViewActorList == null)
             {
                 int countOfLayer = (int)ViewLayer.ViewLayer_Max;
-                s_ViewActorList = new Dictionary<int, ViewLayerComp>[countOfLayer];
+                s_ViewActorList = new Dictionary<int, ViewLayerComponent>[countOfLayer];
                 for(int i = 0; i < countOfLayer; ++i)
                 {
-                    s_ViewActorList[i] = new Dictionary<int, ViewLayerComp>();
+                    s_ViewActorList[i] = new Dictionary<int, ViewLayerComponent>();
                 }
             }
         } 
@@ -70,7 +70,7 @@ namespace Application.Runtime
             ViewLayer layer = ((WorldPlayerController)PlayerController.Instance).cameraViewLayer;
             float alpha = ((WorldPlayerController)PlayerController.Instance).cameraViewLayerAlpha;
 
-            Dictionary<int, ViewLayerComp> dict;
+            Dictionary<int, ViewLayerComponent> dict;
             if(s_CurLayer != layer)
             {
                 // fire OnLeave event

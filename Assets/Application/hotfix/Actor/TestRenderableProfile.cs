@@ -22,7 +22,7 @@ namespace Application.Runtime
 
         public TestRenderableProfile(ZActor actor) : base(actor) {}
 
-        public override void Prepare(IData data)
+        public override void Prepare(IDataSource data)
         {
             base.Prepare(data);
             m_DecorateAssetPath = s_AssetPathList[Random.Range(0, s_AssetPathList.Length)];
@@ -40,7 +40,7 @@ namespace Application.Runtime
             }
 
             // prepare ViewLayer
-            ViewLayerComp viewLayer = actor.GetComponent<ViewLayerComp>();
+            ViewLayerComponent viewLayer = actor.GetComponent<ViewLayerComponent>();
             if(viewLayer == null)
             {
                 Debug.LogError("TestRenderableProfile.Prepare: can't find ViewLayerComp, plz check it");
@@ -56,7 +56,7 @@ namespace Application.Runtime
 
         public override void Destroy()
         {
-            ViewLayerComp viewLayer = actor.GetComponent<ViewLayerComp>();
+            ViewLayerComponent viewLayer = actor.GetComponent<ViewLayerComponent>();
             if(viewLayer == null)
             {
                 Debug.LogError("TestRenderableProfile.Uninit: dependent on ViewLayerComp, but can't find it");
