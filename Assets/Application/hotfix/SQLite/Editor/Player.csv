@@ -1,0 +1,6 @@
+ID,Name,Address,HP,Male
+Both,Client,Server,Both,Client
+INTEGER,TEXT,TEXT,REAL,BOOLEAN
+1,peter,shanghai,100,TRUE
+2,xukun,nanchang,20.3,FALSE
+3,,pingxiang,,FALSE

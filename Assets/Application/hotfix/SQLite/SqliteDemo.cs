@@ -12,16 +12,12 @@ namespace SQLite
         /// </summary>
         private SqlData sql;
 
-        //////// 空值处理办法
-        // SqliteDataReader reader = base.sqlDbCtr.ReadTable(base.M_TableName);
-        //  while (reader.Read())
-        //   {
-        //        int Id = reader["ID"].ToString().Equals("") ? 0 : Convert.ToInt32(reader["ID"].ToString());
-        //        string UserName = reader["UserName"].ToString().Equals("") ? "" : Convert.ToString(reader["UserName"].ToString());
-        //   }
-
-
         void Start()
+        {
+            Test2();
+        }
+
+        private void Test1()
         {
             //创建名为sqlite4unity的数据库
             sql = new SqlData("Deployment/sqlite4unity.db");
@@ -81,10 +77,70 @@ namespace SQLite
                 Debug.Log(reader.GetDouble(reader.GetOrdinal("ABC")));
             }
 
-            // //自定义SQL,删除数据表中所有Name="王五"的记录
-            // // sql.ExecuteReader("DELETE FROM table1 WHERE NAME='王五'");
-
             //关闭数据库连接
+            sql.Close();
+        }
+
+        private void Test2()
+        {
+            //创建名为sqlite4unity的数据库
+            sql = new SqlData("Deployment/sqlite4unity.db");
+
+            sql.DeleteTable("people");
+            sql.DeleteTable("addresses");
+            sql.DeleteTable("addresses2");
+
+            string querystring = @"CREATE TABLE IF NOT EXISTS people (
+   person_id INTEGER PRIMARY KEY,   
+   first_name text,
+   last_name TEXT,
+   address_id INTEGER,
+   address_id2 INTEGER,
+   FOREIGN KEY (address_id) REFERENCES addresses (id),
+   FOREIGN KEY (address_id2) REFERENCES addresses2 (id)
+);
+
+CREATE TABLE IF NOT EXISTS addresses (
+   id1 INTEGER PRIMARY KEY,
+   house_no TEXT,
+   street TEXT,
+   city TEXT,
+   postal_code TEXT,
+   country TEXT
+);
+
+CREATE TABLE IF NOT EXISTS addresses2 (
+   address_id INTEGER PRIMARY KEY,
+   house_no TEXT,
+   street TEXT,
+   city TEXT,
+   postal_code TEXT,
+   country TEXT
+);
+";
+            
+
+            sql.ExecuteNonQuery(querystring);
+
+            sql.InsertValues("people", new string[] { "'1'", "'张'", "'三'", "1", "2" });
+            sql.InsertValues("addresses", new string[] { "'1'", "'aaa'", "'bbb'", "'shanghai'", "'001'", "'China'"});
+            sql.InsertValues("addresses", new string[] { "'2'", "'aaa'", "'bbb'", "'shanghai'", "'001'", "'China'"});
+            sql.InsertValues("addresses2", new string[] { "'1'", "'aaa'", "'bbb'", "'shanghai'", "'001'", "'China'"});
+            sql.InsertValues("addresses2", new string[] { "'2'", "'aaa'", "'bbb'", "'shanghai'", "'001'", "'China'"});
+
+            Debug.Log(sql.GetNumberOfRow("addresses"));
+
+            SqliteDataReader reader = sql.ReadFullTable("people");
+            Debug.Log("------------: " + reader.Depth);
+            while (reader.Read())
+            {
+                Debug.Log(reader.GetInt32(reader.GetOrdinal("person_id")));
+                Debug.Log(reader.GetString(reader.GetOrdinal("first_name")));
+                Debug.Log(reader.GetString(reader.GetOrdinal("last_name")));
+                Debug.Log(reader.GetInt32(reader.GetOrdinal("address_id")));
+                Debug.Log(reader.GetInt32(reader.GetOrdinal("address_id2")));
+            }
+
             sql.Close();
         }
     }

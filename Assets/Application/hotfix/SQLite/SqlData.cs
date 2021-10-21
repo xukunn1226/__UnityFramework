@@ -81,19 +81,18 @@ namespace SQLite
             return m_SqlDataReader;
         }
 
-        private void ExecuteNonQuery(string command)
+        public void ExecuteNonQuery(string command)
         {
             m_SqlCommand = m_SqlConnection.CreateCommand();
             m_SqlCommand.CommandText = command;
             m_SqlCommand.ExecuteNonQuery();
         }
 
-        private bool ExecuteScalar(string command)
+        private int ExecuteScalar(string command)
         {
             m_SqlCommand = m_SqlConnection.CreateCommand();
             m_SqlCommand.CommandText = command;
-            int result = System.Convert.ToInt32(m_SqlCommand.ExecuteScalar());
-            return (result > 0);
+            return System.Convert.ToInt32(m_SqlCommand.ExecuteScalar());
         }
 
         /// <summary>
@@ -108,7 +107,13 @@ namespace SQLite
             stringBuilder.Append("SELECT COUNT(*) FROM sqlite_master where type='table' and name='");
             stringBuilder.Append(tableName);
             stringBuilder.Append("';");
-            return ExecuteScalar(stringBuilder.ToString());
+            return ExecuteScalar(stringBuilder.ToString()) > 0;
+        }
+
+        public int GetNumberOfRow(string tableName)
+        {
+            string querystring = "SELECT COUNT(*) FROM " + tableName;
+            return ExecuteScalar(querystring);
         }
 
         /// <summary>
@@ -125,7 +130,7 @@ namespace SQLite
             if(colNames.Length != colTypes.Length)
                 throw new System.Exception("colNames.length != colTypes.length");
 
-            string queryString = "CREATE TABLE " + tableName + "( " + colNames[0] + " " + colTypes[0];
+            string queryString = "CREATE TABLE IF NOT EXISTS " + tableName + "( " + colNames[0] + " " + colTypes[0] + " PRIMARY KEY";
             for (int i = 1; i < colNames.Length; i++)
             {
                 queryString += ", " + colNames[i] + " " + colTypes[i];
