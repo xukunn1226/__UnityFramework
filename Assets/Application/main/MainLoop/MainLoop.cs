@@ -48,6 +48,9 @@ namespace Application.Runtime
 
         IEnumerator Start()
         {
+            UnityEngine.Application.targetFrameRate = 300;
+            QualitySettings.vSyncCount = 0;
+
             // 等待其他组件初始化完成
             yield return null;
             yield return null;
