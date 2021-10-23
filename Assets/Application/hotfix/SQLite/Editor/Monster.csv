@@ -1,6 +1,7 @@
 ID,Name,Address,HP,Male
-Both,Client,Server,Both,Client
-INTEGER,TEXT,TEXT,REAL,BOOLEAN
+zhushi,1221,r34,ere,erter
+all,Client,Server,all,Client
+int,string,string,float,bool
 1,peter,shanghai,100,TRUE
 2,xukun,12,dd,FALSE
 3,,pingxiang,,FALSE
