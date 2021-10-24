@@ -14,7 +14,7 @@ namespace SQLite
 
         void Start()
         {
-            Test2();
+            Test1();
         }
 
         private void Test1()
