@@ -17,9 +17,9 @@ namespace Application.Runtime
         public string Name;
         public float HP;
         public bool Male;
-        public List<string> variant1;
-        public List<int> variant2;
-        public List<float> variant3;
+        public List<string> variant1 = new List<string>();
+        public List<int> variant2 = new List<int>();
+        public List<float> variant3 = new List<float>();
     }
 
 }

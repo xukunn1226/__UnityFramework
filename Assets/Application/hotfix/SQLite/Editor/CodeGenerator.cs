@@ -164,9 +164,29 @@ namespace SQLite.Editor
             for(int i = 0; i < m_ColumnLine.Length; ++i)
             {
                 // if(NeedImport(m_FlagLine, i))
-                    m_ScriptContent += "        public " + m_ValueTypeLine[i] + " " + m_ColumnLine[i] + ";\n";                
+                    m_ScriptContent += "        public " + m_ValueTypeLine[i] + " " + m_ColumnLine[i];
+                    m_ScriptContent += AppendNewIfNeed(m_ValueTypeLine[i]);
+                    m_ScriptContent += ";\n";
             }
             m_ScriptContent += "    }\n\n";
+        }
+
+        static private string AppendNewIfNeed(string valueType)
+        {
+            valueType = valueType.ToLower();
+            if(valueType == "list<string>")
+            {
+                return " = new List<string>()";
+            }
+            else if(valueType == "list<int>")
+            {
+                return " = new List<int>()";
+            }
+            else if(valueType == "list<float>")
+            {
+                return " = new List<float>()";
+            }
+            return "";
         }
 
         static private bool NeedImport(string[] flags, int index)
