@@ -30,8 +30,8 @@ namespace SQLite
             Debug.Log(sql.ExistTable("table1"));        // tableName大小写敏感
 
             //插入两条数据
-            sql.InsertValues("table1", new string[] { "'1'", "'张三'", "'22'", "'Zhang3@163.com'", "FALSE", "'0.321'" });
-            sql.InsertValues("table1", new string[] { "'2'", "'李四'", "25", "'Li4@163.com'", "3", "23.56" });
+            sql.InsertValues("table1", new string[] { "1", "''", "'22'", "'Zhang3@163.com'", "FALSE", "'0.321'" });
+            sql.InsertValues("table1", new string[] { "2", "'李四'", "25", "'Li4@163.com'", "3", "23.56" });
             // sql.InsertValues("table1", new string[] {"NAme", "age"}, new string[] {"'王二'", "99"});
             
             // 更新数据，将Name="张三"的记录中的Name改为"Zhang3"

@@ -2,9 +2,9 @@ ID,Name,Address,HP,Male
 zhushi,1221,r34,ere,erter
 all,Client,Server,all,Client
 int,string,string,float,bool
-1,peter,shanghai,100,TRUE
-2,xukun,12,dd,FALSE
-3,,pingxiang,,FALSE
-4,,df,,
-5,sd,ds,44,e
-6,,sd,55,d
+,,,,
+2,xukun,12,3,FALSE
+3,,pingxiang,4,FALSE
+4,,df,5,
+5,sd,ds,44,
+6,,sd,55,TRUE

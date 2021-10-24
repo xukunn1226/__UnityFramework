@@ -134,6 +134,21 @@ namespace SQLite.Editor
                 Debug.LogError($"关键行长度不一致： column length[{m_ColumnLine.Length}]   flag length[{m_FlagLine.Length}]  valueType length[{m_ValueTypeLine.Length}]");
                 return false;
             }
+
+
+            List<string> columnList = new List<string>();
+            List<string> valueTypeList = new List<string>();
+            for(int i = 0; i < m_FlagLine.Length; ++i)
+            {
+                if(NeedImport(m_FlagLine, i))
+                {
+                    columnList.Add(m_ColumnLine[i]);
+                    valueTypeList.Add(m_ValueTypeLine[i]);
+                }
+            }
+            m_ColumnLine = columnList.ToArray();
+            m_ValueTypeLine = valueTypeList.ToArray();
+
             return true;
         }
 
@@ -148,7 +163,8 @@ namespace SQLite.Editor
             m_ScriptContent += "    public class " + tableName + "\n    {\n";
             for(int i = 0; i < m_ColumnLine.Length; ++i)
             {
-                m_ScriptContent += "        public " + m_ValueTypeLine[i] + " " + m_ColumnLine[i] + ";\n";                
+                // if(NeedImport(m_FlagLine, i))
+                    m_ScriptContent += "        public " + m_ValueTypeLine[i] + " " + m_ColumnLine[i] + ";\n";                
             }
             m_ScriptContent += "    }\n\n";
         }
@@ -189,9 +205,15 @@ namespace SQLite.Editor
             for(int i = 4; i < m_AllLines.Length; ++i)
             {
                 string[] values = m_AllLines[i].Split(',');
-                foreach(var v in values)
-                    Debug.Log($"------ {v}");
-                m_Sql.InsertValues(tableName, values);
+
+                // 过滤服务器字段
+                List<string> valList = new List<string>();
+                for(int j = 0; j < values.Length; ++j)
+                {
+                    if(NeedImport(m_FlagLine, j))
+                        valList.Add(values[j]);
+                }
+                m_Sql.InsertValues(tableName, ConvertToSqlContents(valList.ToArray(), m_ValueTypeLine));
             }
         }
 
@@ -218,6 +240,44 @@ namespace SQLite.Editor
             for(int i = 0; i < valueTypes.Length; ++i)
             {
                 ret[i] = ConvertCustomizedValueTypeToSql(valueTypes[i]);
+            }
+            return ret;
+        }
+
+        // csv数据格式转化为sql数据格式
+        static private string ConvertToSqlContent(string content, string valueType)
+        {
+            switch(valueType.ToLower())
+            {
+                case "int":
+                    if(string.IsNullOrEmpty(content))
+                        return "0";
+                    return string.Format($"{content}");         // 不带''可以检查数据正确性
+                case "string":
+                    if(string.IsNullOrEmpty(content))
+                        return string.Format($"''");
+                    return string.Format($"'{content}'");
+                case "float":
+                    if(string.IsNullOrEmpty(content))
+                        return "0";
+                    return string.Format($"{content}");         // 同int
+                case "bool":
+                    if(string.IsNullOrEmpty(content))
+                        return "false";
+                    return string.Format($"{content}");
+            }
+
+            if(string.IsNullOrEmpty(content))
+                return string.Format($"''");
+            return string.Format($"'{content}'");
+        }
+
+        static private string[] ConvertToSqlContents(string[] contents, string[] valueTypes)
+        {
+            string[] ret = new string[valueTypes.Length];
+            for(int i = 0; i < valueTypes.Length; ++i)
+            {
+                ret[i] = ConvertToSqlContent(contents[i], valueTypes[i]);
             }
             return ret;
         }

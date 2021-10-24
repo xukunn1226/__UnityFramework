@@ -7,7 +7,6 @@ namespace Application.Runtime
     {
         public int ID;
         public string Name;
-        public string Address;
         public float HP;
         public bool Male;
     }
@@ -16,7 +15,6 @@ namespace Application.Runtime
     {
         public int ID;
         public string Name;
-        public string Address;
         public float HP;
         public bool Male;
         public List<string> variant1;

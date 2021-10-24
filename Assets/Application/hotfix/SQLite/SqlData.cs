@@ -202,7 +202,15 @@ namespace SQLite
                 queryString += ", " + values[i];
             }
             queryString += " )";
-            ExecuteNonQuery(queryString);
+            try
+            {
+                ExecuteNonQuery(queryString);
+            }
+            catch(System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                Debug.LogError(string.Format($"{tableName}:  {queryString}"));
+            }
         }
 
         public void InsertValues(string tableName, string[] colNames, string[] values)
@@ -224,7 +232,16 @@ namespace SQLite
                 queryString += ", " + values[i];
             }
             queryString += " )";
-            ExecuteNonQuery(queryString);
+
+            try
+            {
+                ExecuteNonQuery(queryString);
+            }
+            catch(System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                Debug.LogError(string.Format($"{tableName}:  {queryString}"));
+            }
         }
 
         /// <summary>
