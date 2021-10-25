@@ -14,8 +14,8 @@
 *.meta merge=unityyamlmerge eol=lf
 *.controller merge=unityyamlmerge eol=lf
 *.playable merge=unityyamlmerge eol=lf
-# *.bytes merge=unityyamlmerge eol=lf filter=lfs diff=lfs -text
-*.bytes filter=lfs diff=lfs merge=lfs -text
+*.bytes merge=unityyamlmerge eol=lf
+# *.bytes filter=lfs diff=lfs merge=lfs -text
 ProjectSettings/*.asset merge=unityyamlmerge eol=lf
 ## git-lfs ##
 #Image
