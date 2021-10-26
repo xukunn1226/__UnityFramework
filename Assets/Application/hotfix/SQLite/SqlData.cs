@@ -4,7 +4,7 @@ using UnityEngine;
 using Mono.Data.Sqlite;
 using System.Text;
 
-namespace SQLite
+namespace Application.Runtime
 {
     public class SqlData
     {
@@ -30,7 +30,7 @@ namespace SQLite
             }
             catch (System.Exception e)
             {
-                Debug.Log(e.ToString());
+                Debug.LogError(e.ToString());
             }
         }
 

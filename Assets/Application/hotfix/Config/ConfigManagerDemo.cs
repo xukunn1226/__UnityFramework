@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Application.Runtime;
+using Framework.Core;
 
-namespace SQLite
+namespace Application.Runtime
 {
     public class ConfigManagerDemo : MonoBehaviour
     {

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using SQLite;
 using Mono.Data.Sqlite;
 
 namespace Application.Runtime
@@ -34,6 +33,7 @@ namespace Application.Runtime
                 Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
             }
 
+            m_PlayerDict.Add(id, desc);
             return desc;
         }
     }

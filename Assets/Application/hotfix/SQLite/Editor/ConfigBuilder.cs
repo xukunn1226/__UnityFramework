@@ -2,72 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Framework.AssetManagement.GameBuilder;
+using Application.Runtime;
 using System.IO;
 using System.Text;
 using System;
-using System.Linq;
 
-namespace SQLite.Editor
+namespace Application.Editor
 {
-    public class CodeGenerator : EditorWindow
+    [InitializeOnLoad]
+    static public class ConfigBuilder
     {
-        static private string   m_ConfigPath        = "Assets/Application/hotfix/SQLite/Editor/";               // 配置表路径
-        static private string   m_ScriptFilePath    = "Assets/Application/hotfix/Config/DesignConfig.cs";       // 导出的配置表结构脚本目录
-        static private string   m_DatabaseFilePath  = "Assets/Application/hotfix/SQLite/Editor/config.db";      // 导出的数据库
-        static private string   m_Namespace         = "Application.Runtime";
-        static private string   m_ScriptContent;    // DesignConfig's content
-        static private string[] m_AllLines;         // 
-        static private string[] m_ColumnLine;       // the first line
-        static private string[] m_FlagLine;         // the third line
-        static private string[] m_ValueTypeLine;    // the forth line
-        static private SqlData  m_Sql;
+        static private string       m_ScriptContent;    // DesignConfig's content
+        static private string[]     m_AllLines;         // 
+        static private string[]     m_ColumnLine;       // the first line
+        static private string[]     m_FlagLine;         // the third line
+        static private string[]     m_ValueTypeLine;    // the forth line
+        static private SqlData      m_Sql;
 
-        [MenuItem("Tools/Config Generator")]
-        private static void ShowWindow()
+        static ConfigBuilder()
         {
-            var window = GetWindow<CodeGenerator>();
-            window.titleContent = new GUIContent("CodeGenerator");
-            window.Show();
+            BundleBuilder.OnPostprocessBundleBuild += OnPostprocessBundleBuild;
         }
 
-        private void OnDisable()
+        static private void OnPostprocessBundleBuild()
         {
-            m_Sql?.Close();
+            Run();
+
+            // copy db to streamingAssets
+            string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Framework.Core.Utility.GetPlatformName()}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
+            FileUtil.DeleteFileOrDirectory(dstPath);
+            FileUtil.CopyFileOrDirectory(ConfigBuilderSetting.DatabaseFilePath, dstPath);
         }
-    
-        private void OnGUI()
-        {
-            EditorGUILayout.LabelField("配置文件目录", m_ConfigPath);
-            EditorGUILayout.LabelField("数据库", m_DatabaseFilePath);
-            EditorGUILayout.LabelField("Namespace", m_Namespace);
-
-            if(GUILayout.Button("Clear"))
-            {
-                Clear();                
-                AssetDatabase.Refresh();
-            }
-
-            if(GUILayout.Button("Generate..."))
-            {
-                Run();
-            }
-        }
-
+        
         static private void Clear()
         {
             // clear code & db
-            if(File.Exists(m_ScriptFilePath))
+            if(File.Exists(ConfigBuilderSetting.ScriptFilePath))
             {
-                File.Delete(m_ScriptFilePath);
+                File.Delete(ConfigBuilderSetting.ScriptFilePath);
             }
-            Directory.CreateDirectory(m_ScriptFilePath.Substring(0, m_ScriptFilePath.LastIndexOf("/")));
+            Directory.CreateDirectory(ConfigBuilderSetting.ScriptFilePath.Substring(0, ConfigBuilderSetting.ScriptFilePath.LastIndexOf("/")));
 
-            if(File.Exists(m_DatabaseFilePath))
+            if(File.Exists(ConfigBuilderSetting.DatabaseFilePath))
             {
-                File.Delete(m_DatabaseFilePath);
+                File.Delete(ConfigBuilderSetting.DatabaseFilePath);
             }
         }
 
+        [MenuItem("Tools/Config Build %h")]
         static private void Run()
         {
             Clear();
@@ -82,9 +65,9 @@ namespace SQLite.Editor
         static private void DoCodeGenerated()
         {
             m_ScriptContent = "using System.Collections;\nusing System.Collections.Generic;\n\n";
-            m_ScriptContent += "namespace " + m_Namespace + "\n{\n";
+            m_ScriptContent += "namespace " + ConfigBuilderSetting.Namespace + "\n{\n";
             // find all csv
-            string[] files = Directory.GetFiles(m_ConfigPath, "*.csv", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
             foreach(var file in files)
             {
                 Debug.Log($"创建表结构对象: {Path.GetFileName(file)}");
@@ -100,7 +83,7 @@ namespace SQLite.Editor
             m_ScriptContent += "}";
 
             // serialized script content
-            using(FileStream fs = File.Create(m_ScriptFilePath))
+            using(FileStream fs = File.Create(ConfigBuilderSetting.ScriptFilePath))
             {
                 byte[] data = new UTF8Encoding(false).GetBytes(m_ScriptContent);
                 fs.Write(data, 0, data.Length);
@@ -198,10 +181,10 @@ namespace SQLite.Editor
 
         static private void DoDBGenerated()
         {
-            m_Sql = new SqlData(m_DatabaseFilePath);
+            m_Sql = new SqlData(ConfigBuilderSetting.DatabaseFilePath);
 
             // find all csv
-            string[] files = Directory.GetFiles(m_ConfigPath, "*.csv", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
             foreach(var file in files)
             {
                 Debug.Log($"创建表数据: {Path.GetFileName(file)}");
@@ -212,7 +195,7 @@ namespace SQLite.Editor
                 }
                 CreateTableFromCsv(file);
             }
-            Debug.Log($"数据库导出完成");
+            Debug.Log($"数据库导出完成: {ConfigBuilderSetting.DatabaseFilePath}");
 
             m_Sql.Close();
         }
@@ -301,5 +284,5 @@ namespace SQLite.Editor
             }
             return ret;
         }
-    }    
+    }
 }

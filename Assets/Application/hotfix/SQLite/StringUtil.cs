@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SQLite
+namespace Application.Runtime
 {
     public class StringUtil
     {

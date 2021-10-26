@@ -53,6 +53,11 @@ namespace Application.Runtime
             yield return null;
             yield return null;
 
+            if(Launcher.GetLauncherMode() == LoaderType.FromStreamingAssets)
+            { // 仅FromStreamingAssets时需要提取db，FromEditor从本地读取，FromPersistent会首次启动时提取
+                yield return StartCoroutine(ConfigManager.ExtractDatabase());
+            }
+
             GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
 
             GameModeManager.Instance.SwitchTo(DefaultMode);
