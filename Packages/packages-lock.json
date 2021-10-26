@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.taecg.shaderreference": {
-      "version": "https://github.com/taecg/shaderreference.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "df0d6505384c1479ea8f3a5110e41d51396597b8"
-    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -82,7 +75,7 @@
     },
     "com.unity.render-pipelines.core": {
       "version": "11.0.0",
-      "depth": 1,
+      "depth": 0,
       "source": "builtin",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
@@ -115,7 +108,7 @@
     },
     "com.unity.shadergraph": {
       "version": "11.0.0",
-      "depth": 1,
+      "depth": 0,
       "source": "builtin",
       "dependencies": {
         "com.unity.render-pipelines.core": "11.0.0",
