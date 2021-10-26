@@ -134,7 +134,7 @@ namespace Framework.AssetManagement.GameBuilder
             para.cachedIl2CppCompilerConfigureation = PlayerSettings.GetIl2CppCompilerConfiguration(buildTargetGroup);
             para.cachedUseMTRendering               = PlayerSettings.GetMobileMTRendering(buildTargetGroup);
             para.cachedBuildAppBundle               = EditorUserBuildSettings.buildAppBundle;
-            para.cachedCreateSymbols                = EditorUserBuildSettings.androidCreateSymbolsZip;
+            para.cachedCreateSymbols                = EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Disabled;
             para.cachedMacroDefines                 = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
 
             // setup new settings
@@ -155,7 +155,7 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 PlayerSettings.Android.targetArchitectures = para.useIL2CPP ? AndroidArchitecture.All : AndroidArchitecture.ARMv7;
                 EditorUserBuildSettings.buildAppBundle = para.buildAppBundle;
-                EditorUserBuildSettings.androidCreateSymbolsZip = para.createSymbols;
+                EditorUserBuildSettings.androidCreateSymbols = para.createSymbols ? AndroidCreateSymbols.Debugging : AndroidCreateSymbols.Disabled;
                 PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
 
                 PlayerSettings.Android.useCustomKeystore = para.useCustomKeystore;
@@ -215,7 +215,7 @@ namespace Framework.AssetManagement.GameBuilder
                 if(buildTargetGroup == BuildTargetGroup.Android)
                 {
                     EditorUserBuildSettings.buildAppBundle = para.cachedBuildAppBundle;
-                    EditorUserBuildSettings.androidCreateSymbolsZip = para.cachedCreateSymbols;
+                    EditorUserBuildSettings.androidCreateSymbols = para.cachedCreateSymbols ? AndroidCreateSymbols.Debugging : AndroidCreateSymbols.Disabled;
 
                     PlayerSettings.Android.useCustomKeystore = false;
                     PlayerSettings.Android.keystoreName = string.Empty;
