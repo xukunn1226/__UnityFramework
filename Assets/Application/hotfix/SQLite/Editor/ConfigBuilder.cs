@@ -38,11 +38,17 @@ namespace Application.Editor
         static private void Clear()
         {
             // clear code & db
-            if(File.Exists(ConfigBuilderSetting.ScriptFilePath))
+            if(File.Exists(ConfigBuilderSetting.DesignConfigScriptFilePath))
             {
-                File.Delete(ConfigBuilderSetting.ScriptFilePath);
+                File.Delete(ConfigBuilderSetting.DesignConfigScriptFilePath);
             }
-            Directory.CreateDirectory(ConfigBuilderSetting.ScriptFilePath.Substring(0, ConfigBuilderSetting.ScriptFilePath.LastIndexOf("/")));
+            Directory.CreateDirectory(ConfigBuilderSetting.DesignConfigScriptFilePath.Substring(0, ConfigBuilderSetting.DesignConfigScriptFilePath.LastIndexOf("/")));
+
+            if(File.Exists(ConfigBuilderSetting.ConfigManagerScriptFilePath))
+            {
+                File.Delete(ConfigBuilderSetting.ConfigManagerScriptFilePath);
+            }
+            Directory.CreateDirectory(ConfigBuilderSetting.ConfigManagerScriptFilePath.Substring(0, ConfigBuilderSetting.ConfigManagerScriptFilePath.LastIndexOf("/")));
 
             if(File.Exists(ConfigBuilderSetting.DatabaseFilePath))
             {
@@ -55,14 +61,16 @@ namespace Application.Editor
         {
             Clear();
 
-            DoCodeGenerated();
+            GenerateDesignConfigScript();
 
             DoDBGenerated();
+
+            GenerateConfigManagerScript();
             
             AssetDatabase.Refresh();
         }
 
-        static private void DoCodeGenerated()
+        static private void GenerateDesignConfigScript()
         {
             m_ScriptContent = "using System.Collections;\nusing System.Collections.Generic;\n\n";
             m_ScriptContent += "namespace " + ConfigBuilderSetting.Namespace + "\n{\n";
@@ -83,7 +91,7 @@ namespace Application.Editor
             m_ScriptContent += "}";
 
             // serialized script content
-            using(FileStream fs = File.Create(ConfigBuilderSetting.ScriptFilePath))
+            using(FileStream fs = File.Create(ConfigBuilderSetting.DesignConfigScriptFilePath))
             {
                 byte[] data = new UTF8Encoding(false).GetBytes(m_ScriptContent);
                 fs.Write(data, 0, data.Length);
@@ -283,6 +291,11 @@ namespace Application.Editor
                 ret[i] = ConvertToSqlContent(contents[i], valueTypes[i]);
             }
             return ret;
+        }
+
+        static private void GenerateConfigManagerScript()
+        {
+            
         }
     }
 }
