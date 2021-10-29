@@ -7,6 +7,7 @@ using Application.Runtime;
 using System.IO;
 using System.Text;
 using System;
+using System.Linq;
 
 namespace Application.Editor
 {
@@ -37,6 +38,8 @@ namespace Application.Editor
         
         static private void Clear()
         {
+            m_Sql?.Close();
+            
             // clear code & db
             if(File.Exists(ConfigBuilderSetting.DesignConfigScriptFilePath))
             {
@@ -125,7 +128,6 @@ namespace Application.Editor
                 Debug.LogError($"关键行长度不一致： column length[{m_ColumnLine.Length}]   flag length[{m_FlagLine.Length}]  valueType length[{m_ValueTypeLine.Length}]");
                 return false;
             }
-
 
             List<string> columnList = new List<string>();
             List<string> valueTypeList = new List<string>();
@@ -295,7 +297,163 @@ namespace Application.Editor
 
         static private void GenerateConfigManagerScript()
         {
-            
+            string content = null;
+            string[] lines = File.ReadAllLines(ConfigBuilderSetting.ConfigManagerTemplateFilePath);
+            string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
+
+            ParseConfigManager(ref content, lines, files);
+
+            content += "\n";
+
+            using(FileStream fs = File.Create(ConfigBuilderSetting.ConfigManagerScriptFilePath))
+            {
+                byte[] data = new UTF8Encoding(false).GetBytes(content);
+                fs.Write(data, 0, data.Length);
+            }
+        }
+
+        static private void ParseConfigManager(ref string content, string[] lines, string[] files)
+        {
+            for(int i = 0; i < lines.Length; ++i)
+            {
+                string flag = ExtractFlag(lines[i]);
+                if(string.IsNullOrEmpty(flag))
+                { // 无标签
+                    content += lines[i] + "\n";
+                }
+                else
+                {
+                    if(string.Compare(flag, "#ITERATOR_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#ITERATOR_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#ITERATOR_END#\"");
+                            break;
+                        }
+
+                        // 剔除首尾标签行，选取中间数据
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+                        foreach(var file in files)
+                        {
+                            Debug.Log($"----ConfigManager.{Path.GetFileName(file)}");
+                            if (!Prepare(file))
+                            {
+                                Debug.LogError($"ConfigManager导出失败：格式出错   {file}");
+                                break;
+                            }
+                            string tableName = Path.GetFileNameWithoutExtension(file);
+                            ParseConfigObjectToManager(ref content, tableName, subLines);
+                            content += "\n";
+                        }
+
+                        i = lastIndex;  // skip to last index
+                    }
+                }
+            }
+        }
+
+        static private void ParseConfigObjectToManager(ref string content, string tableName, string[] lines)
+        {
+            for(int i = 0; i < lines.Length; ++i)
+            {
+                string flag = ExtractFlag(lines[i]);
+                if(string.IsNullOrEmpty(flag))
+                { // 无标签
+                    content += lines[i] + "\n";
+                }
+                else
+                {
+                    if(string.Compare(flag, "#READER_VARIANT_BEGIN#", true) == 0)
+                    { // 遍历非数组变量
+                        int lastIndex = FindFlag("#READER_VARIANT_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#READER_VARIANT_END#\"");
+                            break;
+                        }
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+                        Debug.Assert(subLines.Length == 1);
+
+                        for(int j = 0; j < m_ColumnLine.Length; ++j)
+                        {
+                            if(m_ValueTypeLine[j].StartsWith("list<", StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+
+                            content += subLines[0].Replace("#VARIANT#", m_ColumnLine[j]).Replace("#READER_FUNCTION#", GetSQLFunctionNameByValueType(m_ValueTypeLine[j])) + "\n";
+                        }
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#READER_LIST_BEGIN#", true) == 0)
+                    { // 遍历数组变量
+                        int lastIndex = FindFlag("#READER_LIST_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#READER_LIST_END#\"");
+                            break;
+                        }
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+                        Debug.Assert(subLines.Length == 1);
+
+                        for(int j = 0; j < m_ColumnLine.Length; ++j)
+                        {
+                            if(!m_ValueTypeLine[j].StartsWith("list<", StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+
+                            content += subLines[0].Replace("#VARIANT#", m_ColumnLine[j]) + "\n";
+                        }
+
+                        i= lastIndex;
+                    }
+                    else if(string.Compare(flag, "#TABLENAME#", true) == 0)
+                    {                        
+                        content += lines[i].Replace("#TABLENAME#", tableName) + "\n";
+                    }
+                }
+            }
+        }
+
+        static private string GetSQLFunctionNameByValueType(string valueType)
+        {
+            switch(valueType)
+            {
+                case "int":
+                    return "GetInt32";
+                case "string":
+                    return "GetString";
+                case "float":
+                    return "GetFloat";
+                case "bool":
+                    return "GetBoolean";
+            }
+            return null;
+        }
+        
+        static private string ExtractFlag(string src)
+        {
+            int firstIndex = src.IndexOf("#");
+            int secondIndex = src.IndexOf("#", Mathf.Max(0, firstIndex + 1));
+            if(firstIndex == -1 || secondIndex == -1)
+                return null;
+            return src.Substring(firstIndex, secondIndex - firstIndex + 1);
+        }
+
+        static private int FindFlag(string flag, string[] lines, int startIndex)
+        {
+            // 考虑嵌套因素，倒序查找
+            for(int i = lines.Length - 1; i >= startIndex; --i)
+            {
+                if(string.Compare(flag, ExtractFlag(lines[i])) == 0)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }
