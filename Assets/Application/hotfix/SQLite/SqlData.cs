@@ -53,6 +53,7 @@ namespace Application.Runtime
 
             if (m_SqlConnection != null)
             {
+                m_SqlConnection.Dispose();
                 m_SqlConnection.Close();
                 m_SqlConnection = null;
             }

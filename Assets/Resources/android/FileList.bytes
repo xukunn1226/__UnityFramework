@@ -1,6 +1,6 @@
 {
   "Count": 48,
-  "TotalSize": 82826746,
+  "TotalSize": 82826745,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "458a25d43e632962c3d38886c4480431",
-      "Size": 3384
+      "FileHash": "ab65776c58ea2bf6fcca53b0ded2458f",
+      "Size": 3383
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/atlas.ab",
@@ -94,7 +94,7 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/mannequin.ab",
-      "FileHash": "6622d84fc3ae590e82711dacafc809a1",
+      "FileHash": "6a0c88977749cab2e2453aae078bd9c8",
       "Size": 2331161
     },
     {

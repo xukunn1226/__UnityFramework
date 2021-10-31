@@ -36,44 +36,22 @@ namespace Application.Editor
             FileUtil.CopyFileOrDirectory(ConfigBuilderSetting.DatabaseFilePath, dstPath);
         }
         
-        static private void Clear()
-        {
-            m_Sql?.Close();
-            
-            // clear code & db
-            if(File.Exists(ConfigBuilderSetting.DesignConfigScriptFilePath))
-            {
-                File.Delete(ConfigBuilderSetting.DesignConfigScriptFilePath);
-            }
-            Directory.CreateDirectory(ConfigBuilderSetting.DesignConfigScriptFilePath.Substring(0, ConfigBuilderSetting.DesignConfigScriptFilePath.LastIndexOf("/")));
-
-            if(File.Exists(ConfigBuilderSetting.ConfigManagerScriptFilePath))
-            {
-                File.Delete(ConfigBuilderSetting.ConfigManagerScriptFilePath);
-            }
-            Directory.CreateDirectory(ConfigBuilderSetting.ConfigManagerScriptFilePath.Substring(0, ConfigBuilderSetting.ConfigManagerScriptFilePath.LastIndexOf("/")));
-
-            if(File.Exists(ConfigBuilderSetting.DatabaseFilePath))
-            {
-                File.Delete(ConfigBuilderSetting.DatabaseFilePath);
-            }
-        }
-
         [MenuItem("Tools/Config Build %h")]
         static private void Run()
         {
-            Clear();
+            if(!DoDBGenerated())
+                return;
 
-            GenerateDesignConfigScript();
+            if(!GenerateDesignConfigScript())
+                return;
 
-            DoDBGenerated();
-
-            GenerateConfigManagerScript();
+            if(!GenerateConfigManagerScript())
+                return;
             
             AssetDatabase.Refresh();
         }
 
-        static private void GenerateDesignConfigScript()
+        static private bool GenerateDesignConfigScript()
         {
             m_ScriptContent = "using System.Collections;\nusing System.Collections.Generic;\n\n";
             m_ScriptContent += "namespace " + ConfigBuilderSetting.Namespace + "\n{\n";
@@ -85,7 +63,7 @@ namespace Application.Editor
                 if(!Prepare(file))
                 {
                     Debug.LogError($"配置导出失败：格式出错   {file}");
-                    break;
+                    return false;
                 }
                 ParseObjectFromCsv(file);
             }
@@ -93,12 +71,29 @@ namespace Application.Editor
 
             m_ScriptContent += "}";
 
+
+            // 脚本代码成功生成再删除老脚本
+            try
+            {
+                if(File.Exists(ConfigBuilderSetting.DesignConfigScriptFilePath))
+                {
+                    File.Delete(ConfigBuilderSetting.DesignConfigScriptFilePath);
+                }
+                Directory.CreateDirectory(ConfigBuilderSetting.DesignConfigScriptFilePath.Substring(0, ConfigBuilderSetting.DesignConfigScriptFilePath.LastIndexOf("/")));
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
+
             // serialized script content
             using(FileStream fs = File.Create(ConfigBuilderSetting.DesignConfigScriptFilePath))
             {
                 byte[] data = new UTF8Encoding(false).GetBytes(m_ScriptContent);
                 fs.Write(data, 0, data.Length);
             }
+            return true;
         }
 
         static private bool Prepare(string file)
@@ -189,8 +184,23 @@ namespace Application.Editor
             return flags[index].ToLower().Contains("all") || flags[index].ToLower().Contains("client");
         }
 
-        static private void DoDBGenerated()
+        static private bool DoDBGenerated()
         {
+            try
+            {
+                if(File.Exists(ConfigBuilderSetting.DatabaseFilePath))
+                {
+                    File.Delete(ConfigBuilderSetting.DatabaseFilePath);
+                }
+                Directory.CreateDirectory(ConfigBuilderSetting.DatabaseFilePath.Substring(0, ConfigBuilderSetting.DatabaseFilePath.LastIndexOf("/")));
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
+
+
             m_Sql = new SqlData(ConfigBuilderSetting.DatabaseFilePath);
 
             // find all csv
@@ -201,13 +211,15 @@ namespace Application.Editor
                 if(!Prepare(file))
                 {
                     Debug.LogError($"配置导出失败：格式出错   {file}");
-                    break;
+                    return false;
                 }
                 CreateTableFromCsv(file);
             }
             Debug.Log($"数据库导出完成: {ConfigBuilderSetting.DatabaseFilePath}");
 
             m_Sql.Close();
+            m_Sql = null;
+            return true;
         }
 
         static private void CreateTableFromCsv(string file)
@@ -295,24 +307,43 @@ namespace Application.Editor
             return ret;
         }
 
-        static private void GenerateConfigManagerScript()
+        static private bool GenerateConfigManagerScript()
         {
             string content = null;
             string[] lines = File.ReadAllLines(ConfigBuilderSetting.ConfigManagerTemplateFilePath);
             string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
 
-            ParseConfigManager(ref content, lines, files);
+            if(!ParseConfigManager(ref content, lines, files))
+                return false;
 
             content += "\n";
+
+
+            // 脚本代码成功生成再删除老脚本
+            try
+            {
+                if(File.Exists(ConfigBuilderSetting.ConfigManagerScriptFilePath))
+                {
+                    File.Delete(ConfigBuilderSetting.ConfigManagerScriptFilePath);
+                }
+                Directory.CreateDirectory(ConfigBuilderSetting.ConfigManagerScriptFilePath.Substring(0, ConfigBuilderSetting.ConfigManagerScriptFilePath.LastIndexOf("/")));
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
 
             using(FileStream fs = File.Create(ConfigBuilderSetting.ConfigManagerScriptFilePath))
             {
                 byte[] data = new UTF8Encoding(false).GetBytes(content);
                 fs.Write(data, 0, data.Length);
             }
+            Debug.Log($"ConfigManager导出完成");
+            return true;
         }
 
-        static private void ParseConfigManager(ref string content, string[] lines, string[] files)
+        static private bool ParseConfigManager(ref string content, string[] lines, string[] files)
         {
             for(int i = 0; i < lines.Length; ++i)
             {
@@ -329,7 +360,7 @@ namespace Application.Editor
                         if(lastIndex == -1)
                         {
                             Debug.LogError($"can't find the flag \"#ITERATOR_END#\"");
-                            break;
+                            return false;
                         }
 
                         // 剔除首尾标签行，选取中间数据
@@ -340,10 +371,11 @@ namespace Application.Editor
                             if (!Prepare(file))
                             {
                                 Debug.LogError($"ConfigManager导出失败：格式出错   {file}");
-                                break;
+                                return false;
                             }
                             string tableName = Path.GetFileNameWithoutExtension(file);
-                            ParseConfigObjectToManager(ref content, tableName, subLines);
+                            if(!ParseConfigObjectToManager(ref content, tableName, subLines))
+                                return false;
                             content += "\n";
                         }
 
@@ -351,9 +383,10 @@ namespace Application.Editor
                     }
                 }
             }
+            return true;
         }
 
-        static private void ParseConfigObjectToManager(ref string content, string tableName, string[] lines)
+        static private bool ParseConfigObjectToManager(ref string content, string tableName, string[] lines)
         {
             for(int i = 0; i < lines.Length; ++i)
             {
@@ -370,7 +403,7 @@ namespace Application.Editor
                         if(lastIndex == -1)
                         {
                             Debug.LogError($"can't find the flag \"#READER_VARIANT_END#\"");
-                            break;
+                            return false;
                         }
                         string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
                         Debug.Assert(subLines.Length == 1);
@@ -393,7 +426,7 @@ namespace Application.Editor
                         if(lastIndex == -1)
                         {
                             Debug.LogError($"can't find the flag \"#READER_LIST_END#\"");
-                            break;
+                            return false;
                         }
                         string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
                         Debug.Assert(subLines.Length == 1);
@@ -416,6 +449,7 @@ namespace Application.Editor
                     }
                 }
             }
+            return true;
         }
 
         static private string GetSQLFunctionNameByValueType(string valueType)
