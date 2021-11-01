@@ -52,6 +52,7 @@ namespace Application.Runtime
                 desc.Name = reader.GetString(reader.GetOrdinal("Name"));
                 desc.HP = reader.GetFloat(reader.GetOrdinal("HP"));
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
+                desc.MonsterDesc = GetMonsterByID(reader.GetInt32(reader.GetOrdinal("MonsterDesc")));
                 Parse(ref desc.variant1, reader.GetString(reader.GetOrdinal("variant1")));
                 Parse(ref desc.variant2, reader.GetString(reader.GetOrdinal("variant2")));
                 Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));

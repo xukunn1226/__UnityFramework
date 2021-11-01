@@ -2,7 +2,7 @@ ID,Name,Address,HP,Male
 zhushi,1221,r34,ere,erter
 all,Client,Server,all,Client
 int,string,string,float,bool
-,,,,
+1,,,,
 2,xukun,12,3,FALSE
 3,,pingxiang,4,FALSE
 4,,df,5,

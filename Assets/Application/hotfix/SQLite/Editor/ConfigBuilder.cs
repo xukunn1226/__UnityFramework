@@ -152,12 +152,13 @@ namespace Application.Editor
             for(int i = 0; i < m_ColumnLine.Length; ++i)
             {
                 // if(NeedImport(m_FlagLine, i))
-                    m_ScriptContent += "        public " + m_ValueTypeLine[i] + " " + m_ColumnLine[i];
+                    m_ScriptContent += "        public " + ConvertValueTypeToText(m_ValueTypeLine[i]) + " " + m_ColumnLine[i];
                     m_ScriptContent += AppendNewIfNeed(m_ValueTypeLine[i]);
                     m_ScriptContent += ";\n";
             }
             m_ScriptContent += "    }\n\n";
         }
+
 
         static private string AppendNewIfNeed(string valueType)
         {
@@ -175,6 +176,35 @@ namespace Application.Editor
                 return " = new List<float>()";
             }
             return "";
+        }
+
+        static private string ConvertValueTypeToText(string valueType)
+        {
+            string vt = valueType.ToLower();
+            switch(vt)
+            {
+                case "int":
+                    return "int";
+                case "float":
+                    return "float";
+                case "string":
+                    return "string";
+                case "bool":
+                    return "bool";
+                case "list<string>":
+                    return "List<string>";
+                case "list<int>":
+                    return "List<int>";
+                case "list<float>":
+                    return "List<float>";
+            }
+
+            if(valueType.StartsWith("reference@"))
+            {
+                return valueType.Substring(valueType.IndexOf("@") + 1);
+            }
+            Debug.LogError($"ConvertValueTypeToText illegal string:  {valueType}");
+            return null;
         }
 
         static private bool NeedImport(string[] flags, int index)
@@ -204,18 +234,18 @@ namespace Application.Editor
             m_Sql = new SqlData(ConfigBuilderSetting.DatabaseFilePath);
 
             // find all csv
-            string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
-            foreach(var file in files)
-            {
-                Debug.Log($"创建表数据: {Path.GetFileName(file)}");
-                if(!Prepare(file))
-                {
-                    Debug.LogError($"配置导出失败：格式出错   {file}");
-                    return false;
-                }
-                CreateTableFromCsv(file);
-            }
-            Debug.Log($"数据库导出完成: {ConfigBuilderSetting.DatabaseFilePath}");
+            // string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
+            // foreach(var file in files)
+            // {
+            //     Debug.Log($"创建表数据: {Path.GetFileName(file)}");
+            //     if(!Prepare(file))
+            //     {
+            //         Debug.LogError($"配置导出失败：格式出错   {file}");
+            //         return false;
+            //     }
+            //     CreateTableFromCsv(file);
+            // }
+            // Debug.Log($"数据库导出完成: {ConfigBuilderSetting.DatabaseFilePath}");
 
             m_Sql.Close();
             m_Sql = null;
@@ -255,6 +285,10 @@ namespace Application.Editor
                     return "REAL";
                 case "bool":
                     return "BOOLEAN";
+            }
+            if(valueType.ToLower().StartsWith("reference@"))
+            { // 引用其他表数据，记录ID
+                return "INTEGER";
             }
             return "TEXT";
         }
@@ -410,7 +444,8 @@ namespace Application.Editor
 
                         for(int j = 0; j < m_ColumnLine.Length; ++j)
                         {
-                            if(m_ValueTypeLine[j].StartsWith("list<", StringComparison.OrdinalIgnoreCase))
+                            if(m_ValueTypeLine[j].StartsWith("list<", StringComparison.OrdinalIgnoreCase)
+                            || m_ValueTypeLine[j].StartsWith("reference@", StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
                             }
@@ -442,6 +477,30 @@ namespace Application.Editor
                         }
 
                         i= lastIndex;
+                    }
+                    else if(string.Compare(flag, "#READER_REFERENCE_BEGIN#", true) == 0)
+                    { // 解析对其他表的引用
+                        int lastIndex = FindFlag("#READER_REFERENCE_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#READER_REFERENCE_END#\"");
+                            return false;
+                        }
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+                        Debug.Assert(subLines.Length == 1);
+
+                        for(int j = 0; j < m_ColumnLine.Length; ++j)
+                        {
+                            if(!m_ValueTypeLine[j].StartsWith("reference@"))
+                            {
+                                continue;
+                            }
+
+                            string referencedTableName = m_ValueTypeLine[j].Substring(m_ValueTypeLine[j].IndexOf("@") + 1);
+                            content += subLines[0].Replace("#VARIANT#", m_ColumnLine[j]).Replace("#TABLENAME#", referencedTableName) + "\n";
+                        }
+
+                        i = lastIndex;
                     }
                     else if(string.Compare(flag, "#TABLENAME#", true) == 0)
                     {                        

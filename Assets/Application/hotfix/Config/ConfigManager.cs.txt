@@ -27,6 +27,9 @@ namespace Application.Runtime
                 #READER_VARIANT_BEGIN#
                 desc.#VARIANT# = reader.#READER_FUNCTION#(reader.GetOrdinal("#VARIANT#"));
                 #READER_VARIANT_END#
+                #READER_REFERENCE_BEGIN#
+                desc.#VARIANT# = Get#TABLENAME#ByID(reader.GetInt32(reader.GetOrdinal("#VARIANT#")));
+                #READER_REFERENCE_END#
                 #READER_LIST_BEGIN#
                 Parse(ref desc.#VARIANT#, reader.GetString(reader.GetOrdinal("#VARIANT#")));
                 #READER_LIST_END#

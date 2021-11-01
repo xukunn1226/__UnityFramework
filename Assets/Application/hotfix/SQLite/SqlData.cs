@@ -87,6 +87,7 @@ namespace Application.Runtime
             m_SqlCommand = m_SqlConnection.CreateCommand();
             m_SqlCommand.CommandText = command;
             m_SqlCommand.ExecuteNonQuery();
+            m_SqlCommand.Dispose();
         }
 
         private int ExecuteScalar(string command)

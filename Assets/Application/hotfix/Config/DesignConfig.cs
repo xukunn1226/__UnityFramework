@@ -20,6 +20,7 @@ namespace Application.Runtime
         public List<string> variant1 = new List<string>();
         public List<int> variant2 = new List<int>();
         public List<float> variant3 = new List<float>();
+        public Monster MonsterDesc;
     }
 
 }
