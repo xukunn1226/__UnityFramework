@@ -41,6 +41,7 @@ namespace Application.Runtime
         {
             if (m_SqlCommand != null)
             {
+                m_SqlCommand.Cancel();
                 m_SqlCommand.Dispose();
                 m_SqlCommand = null;
             }

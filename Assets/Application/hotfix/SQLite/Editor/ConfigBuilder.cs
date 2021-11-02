@@ -234,18 +234,18 @@ namespace Application.Editor
             m_Sql = new SqlData(ConfigBuilderSetting.DatabaseFilePath);
 
             // find all csv
-            // string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
-            // foreach(var file in files)
-            // {
-            //     Debug.Log($"创建表数据: {Path.GetFileName(file)}");
-            //     if(!Prepare(file))
-            //     {
-            //         Debug.LogError($"配置导出失败：格式出错   {file}");
-            //         return false;
-            //     }
-            //     CreateTableFromCsv(file);
-            // }
-            // Debug.Log($"数据库导出完成: {ConfigBuilderSetting.DatabaseFilePath}");
+            string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
+            foreach(var file in files)
+            {
+                Debug.Log($"创建表数据: {Path.GetFileName(file)}");
+                if(!Prepare(file))
+                {
+                    Debug.LogError($"配置导出失败：格式出错   {file}");
+                    return false;
+                }
+                CreateTableFromCsv(file);
+            }
+            Debug.Log($"数据库导出完成: {ConfigBuilderSetting.DatabaseFilePath}");
 
             m_Sql.Close();
             m_Sql = null;
