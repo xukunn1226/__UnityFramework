@@ -58,6 +58,13 @@ namespace Framework.Core
                 FileInfo[] fis = di.GetFiles("*.bytes", SearchOption.AllDirectories);
                 foreach (var fi in fis)
                 {
+                    FileAttributes attributes = File.GetAttributes(fi.FullName);
+                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        attributes &= ~FileAttributes.ReadOnly;
+                        File.SetAttributes(fi.FullName, attributes);
+                    }
+
                     FileStream fs = new FileStream(fi.FullName, FileMode.Open);
                     int size = fs.Read(m_Buffer, 0, m_Buffer.Length);
                     fs.Close();
