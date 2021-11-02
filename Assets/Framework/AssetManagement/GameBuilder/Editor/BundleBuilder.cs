@@ -66,10 +66,10 @@ namespace Framework.AssetManagement.GameBuilder
             Debug.Log($"        BundleSettings: {para.ToString()}");
             Debug.Log($"End Build AssetBundles: Succeeded");
 
+            OnPostprocessBundleBuild?.Invoke();
+
             // step 4. 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
             BuildBundleFileList();
-
-            OnPostprocessBundleBuild?.Invoke();
 
             return true;
         }

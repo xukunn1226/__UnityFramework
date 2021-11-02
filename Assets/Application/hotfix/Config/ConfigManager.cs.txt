@@ -1,0 +1,43 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
+using Mono.Data.Sqlite;
+
+namespace Application.Runtime
+{
+    public partial class ConfigManager : Singleton<ConfigManager>
+    {
+        #ITERATOR_BEGIN#
+        private Dictionary<int, #TABLENAME#> m_#TABLENAME#Dict = new Dictionary<int, #TABLENAME#>();
+        public #TABLENAME# Get#TABLENAME#ByID(int id)
+        {
+            const string tableName = "#TABLENAME#";
+
+            #TABLENAME# desc;
+            if(m_#TABLENAME#Dict.TryGetValue(id, out desc))
+            {
+                return desc;
+            }
+
+            desc = new #TABLENAME#();
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, "id", "=", id.ToString());
+            while(reader.Read())
+            {                
+                #READER_VARIANT_BEGIN#
+                desc.#VARIANT# = reader.#READER_FUNCTION#(reader.GetOrdinal("#VARIANT#"));
+                #READER_VARIANT_END#
+                #READER_REFERENCE_BEGIN#
+                desc.#VARIANT# = Get#TABLENAME#ByID(reader.GetInt32(reader.GetOrdinal("#VARIANT#")));
+                #READER_REFERENCE_END#
+                #READER_LIST_BEGIN#
+                Parse(ref desc.#VARIANT#, reader.GetString(reader.GetOrdinal("#VARIANT#")));
+                #READER_LIST_END#
+            }
+
+            m_#TABLENAME#Dict.Add(id, desc);
+            return desc;
+        }
+        #ITERATOR_END#
+    }
+}
