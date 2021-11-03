@@ -112,5 +112,73 @@ namespace Application.Runtime
                 ret.Add(float.Parse(list[i]));
             }
         }
+
+        private void Parse(ref Dictionary<int, int> ret, string content)
+        {
+            string[] pairs = content.Split(';');
+            for(int i = 0; i < pairs.Length; ++i)
+            {
+                string[] items = pairs[i].Split(':');
+                Debug.Assert(items.Length == 2);
+                ret.Add(int.Parse(items[0]), int.Parse(items[1]));
+            }
+        }
+
+        private void Parse(ref Dictionary<int, string> ret, string content)
+        {
+            string[] pairs = content.Split(';');
+            for(int i = 0; i < pairs.Length; ++i)
+            {
+                if(string.IsNullOrEmpty(pairs[i])) continue;
+                
+                string[] items = pairs[i].Split(':');
+                Debug.Assert(items.Length == 2);
+                ret.Add(int.Parse(items[0]), items[1]);
+            }
+        }
+
+        private void Parse(ref Dictionary<int, float> ret, string content)
+        {
+            string[] pairs = content.Split(';');
+            for(int i = 0; i < pairs.Length; ++i)
+            {
+                string[] items = pairs[i].Split(':');
+                Debug.Assert(items.Length == 2);
+                ret.Add(int.Parse(items[0]), float.Parse(items[1]));
+            }
+        }
+
+        private void Parse(ref Dictionary<string, int> ret, string content)
+        {
+            string[] pairs = content.Split(';');
+            for(int i = 0; i < pairs.Length; ++i)
+            {
+                string[] items = pairs[i].Split(':');
+                Debug.Assert(items.Length == 2);
+                ret.Add(items[0], int.Parse(items[1]));
+            }
+        }
+
+        private void Parse(ref Dictionary<string, string> ret, string content)
+        {
+            string[] pairs = content.Split(';');
+            for(int i = 0; i < pairs.Length; ++i)
+            {
+                string[] items = pairs[i].Split(':');
+                Debug.Assert(items.Length == 2);
+                ret.Add(items[0], items[1]);
+            }
+        }
+
+        private void Parse(ref Dictionary<string, float> ret, string content)
+        {
+            string[] pairs = content.Split(';');
+            for(int i = 0; i < pairs.Length; ++i)
+            {
+                string[] items = pairs[i].Split(':');
+                Debug.Assert(items.Length == 2);
+                ret.Add(items[0], float.Parse(items[1]));
+            }
+        }
     }
 }

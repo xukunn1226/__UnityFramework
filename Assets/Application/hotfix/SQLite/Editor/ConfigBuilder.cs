@@ -175,6 +175,30 @@ namespace Application.Editor
             {
                 return " = new List<float>()";
             }
+            else if(valueType == "map<int_int>")
+            {
+                return " = new Dictionary<int, int>()";
+            }
+            else if(valueType == "map<int_float>")
+            {
+                return " = new Dictionary<int, float>()";
+            }
+            else if(valueType == "map<int_string>")
+            {
+                return " = new Dictionary<int, string>()";
+            }
+            else if(valueType == "map<string_int>")
+            {
+                return " = new Dictionary<string, int>()";
+            }
+            else if(valueType == "map<string_float>")
+            {
+                return " = new Dictionary<string, float>()";
+            }
+            else if(valueType == "map<string_string>")
+            {
+                return " = new Dictionary<string, string>()";
+            }
             return "";
         }
 
@@ -197,6 +221,18 @@ namespace Application.Editor
                     return "List<int>";
                 case "array<float>":
                     return "List<float>";
+                case "map<int_int>":
+                    return "Dictionary<int, int>";
+                case "map<int_string>":
+                    return "Dictionary<int, string>";
+                case "map<int_float>":
+                    return "Dictionary<int, float>";
+                case "map<string_int>":
+                    return "Dictionary<string, int>";
+                case "map<string_float>":
+                    return "Dictionary<string, float>";
+                case "map<string, string>":
+                    return "Dictionary<string, string>";
             }
 
             if(valueType.StartsWith("reference@"))
@@ -241,6 +277,7 @@ namespace Application.Editor
                 if(!Prepare(file))
                 {
                     Debug.LogError($"配置导出失败：格式出错   {file}");
+                    m_Sql.Close();
                     return false;
                 }
                 CreateTableFromCsv(file);
@@ -445,7 +482,8 @@ namespace Application.Editor
                         for(int j = 0; j < m_ColumnLine.Length; ++j)
                         {
                             if(m_ValueTypeLine[j].StartsWith("array<", StringComparison.OrdinalIgnoreCase)
-                            || m_ValueTypeLine[j].StartsWith("reference@", StringComparison.OrdinalIgnoreCase))
+                            || m_ValueTypeLine[j].StartsWith("reference@", StringComparison.OrdinalIgnoreCase)
+                            || m_ValueTypeLine[j].StartsWith("map<", StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
                             }
@@ -468,7 +506,8 @@ namespace Application.Editor
 
                         for(int j = 0; j < m_ColumnLine.Length; ++j)
                         {
-                            if(!m_ValueTypeLine[j].StartsWith("array<", StringComparison.OrdinalIgnoreCase))
+                            if(!m_ValueTypeLine[j].StartsWith("array<", StringComparison.OrdinalIgnoreCase)
+                            && !m_ValueTypeLine[j].StartsWith("map<", StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
                             }

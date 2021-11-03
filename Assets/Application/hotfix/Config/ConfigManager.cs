@@ -58,6 +58,7 @@ namespace Application.Runtime
                 Parse(ref desc.variant1, reader.GetString(reader.GetOrdinal("variant1")));
                 Parse(ref desc.variant2, reader.GetString(reader.GetOrdinal("variant2")));
                 Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
+                Parse(ref desc.variant4, reader.GetString(reader.GetOrdinal("variant4")));
             }
 
             m_PlayerDict.Add(_id, desc);

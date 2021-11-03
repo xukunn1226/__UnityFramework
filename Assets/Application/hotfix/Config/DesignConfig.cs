@@ -21,6 +21,7 @@ namespace Application.Runtime
         public List<int> variant2 = new List<int>();
         public List<float> variant3 = new List<float>();
         public Monster MonsterDesc;
+        public Dictionary<int, string> variant4 = new Dictionary<int, string>();
     }
 
 }
