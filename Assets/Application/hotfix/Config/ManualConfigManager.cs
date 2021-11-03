@@ -31,7 +31,7 @@ namespace Application.Runtime
             }
         }
 
-        protected override void Init()
+        protected override void InternalInit()
         {
             m_Sql = new SqlData(dataPath);
         }
@@ -130,7 +130,7 @@ namespace Application.Runtime
             for(int i = 0; i < pairs.Length; ++i)
             {
                 if(string.IsNullOrEmpty(pairs[i])) continue;
-                
+
                 string[] items = pairs[i].Split(':');
                 Debug.Assert(items.Length == 2);
                 ret.Add(int.Parse(items[0]), items[1]);

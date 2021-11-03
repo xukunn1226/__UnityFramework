@@ -44,7 +44,7 @@ namespace Application.Runtime
             }
         }
         
-        protected override void Init()
+        protected override void InternalInit()
         {
             if(s_ViewActorList == null)
             {

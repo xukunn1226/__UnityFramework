@@ -99,7 +99,17 @@ namespace Application.Runtime
             SingletonBase.Remove(this);
         }
 
-        protected abstract void Init();
+        private bool m_Init;
+        public void Init()
+        {
+            if(!m_Init)
+            {
+                InternalInit();
+                m_Init = true;
+            }
+        }
+
+        protected abstract void InternalInit();
 
         protected abstract void OnDestroy();
 

@@ -9,7 +9,7 @@ namespace Application.Runtime
         static public GameMode              gameMode            { get; private set; }
         private StateMachine<GameState>     m_StateMachine      = new StateMachine<GameState>();        
 
-        protected override void Init()
+        protected override void InternalInit()
         {
             m_StateMachine.AddState(new WorldGameMode());
             m_StateMachine.AddState(new DungeonGameMode());

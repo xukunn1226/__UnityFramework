@@ -20,7 +20,7 @@ namespace Application.Runtime
             }
         }
         
-        protected override void Init()
+        protected override void InternalInit()
         {}
 
         protected override void OnDestroy()
