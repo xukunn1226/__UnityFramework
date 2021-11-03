@@ -10,12 +10,13 @@ namespace Application.Runtime
     {
         #ITERATOR_BEGIN#
         private Dictionary<int, #TABLENAME#> m_#TABLENAME#Dict = new Dictionary<int, #TABLENAME#>();
-        public #TABLENAME# Get#TABLENAME#ByID(int id)
+        public #TABLENAME# Get#TABLENAME#ByID(#KEY_VALUETYPE# id)
         {
             const string tableName = "#TABLENAME#";
+            int _id = id#GETHASHCODE#;
 
             #TABLENAME# desc;
-            if(m_#TABLENAME#Dict.TryGetValue(id, out desc))
+            if(m_#TABLENAME#Dict.TryGetValue(_id, out desc))
             {
                 return desc;
             }
@@ -35,7 +36,7 @@ namespace Application.Runtime
                 #READER_LIST_END#
             }
 
-            m_#TABLENAME#Dict.Add(id, desc);
+            m_#TABLENAME#Dict.Add(_id, desc);
             return desc;
         }
         #ITERATOR_END#

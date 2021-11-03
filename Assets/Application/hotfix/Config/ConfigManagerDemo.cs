@@ -12,7 +12,7 @@ namespace Application.Runtime
             Debug.Log("----------");
             yield return new WaitForSeconds(1);
 
-            Player player = ConfigManager.Instance.GetPlayerByID(2);
+            Player player = ConfigManager.Instance.GetPlayerByID("2");
                 if(player != null)
                 {
                     Debug.Log(player.ID);

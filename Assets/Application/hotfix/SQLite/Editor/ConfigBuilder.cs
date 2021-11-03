@@ -115,7 +115,7 @@ namespace Application.Editor
                 return false;
             }
 
-            m_ColumnLine = m_AllLines[0].Split(',');
+            m_ColumnLine = m_AllLines[1].Split(',');
             m_FlagLine = m_AllLines[2].Split(',');
             m_ValueTypeLine = m_AllLines[3].Split(',');
             if(m_ColumnLine.Length != m_ValueTypeLine.Length || m_ColumnLine.Length != m_FlagLine.Length)
@@ -163,15 +163,15 @@ namespace Application.Editor
         static private string AppendNewIfNeed(string valueType)
         {
             valueType = valueType.ToLower();
-            if(valueType == "list<string>")
+            if(valueType == "array<string>")
             {
                 return " = new List<string>()";
             }
-            else if(valueType == "list<int>")
+            else if(valueType == "array<int>")
             {
                 return " = new List<int>()";
             }
-            else if(valueType == "list<float>")
+            else if(valueType == "array<float>")
             {
                 return " = new List<float>()";
             }
@@ -191,11 +191,11 @@ namespace Application.Editor
                     return "string";
                 case "bool":
                     return "bool";
-                case "list<string>":
+                case "array<string>":
                     return "List<string>";
-                case "list<int>":
+                case "array<int>":
                     return "List<int>";
-                case "list<float>":
+                case "array<float>":
                     return "List<float>";
             }
 
@@ -444,7 +444,7 @@ namespace Application.Editor
 
                         for(int j = 0; j < m_ColumnLine.Length; ++j)
                         {
-                            if(m_ValueTypeLine[j].StartsWith("list<", StringComparison.OrdinalIgnoreCase)
+                            if(m_ValueTypeLine[j].StartsWith("array<", StringComparison.OrdinalIgnoreCase)
                             || m_ValueTypeLine[j].StartsWith("reference@", StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
@@ -468,7 +468,7 @@ namespace Application.Editor
 
                         for(int j = 0; j < m_ColumnLine.Length; ++j)
                         {
-                            if(!m_ValueTypeLine[j].StartsWith("list<", StringComparison.OrdinalIgnoreCase))
+                            if(!m_ValueTypeLine[j].StartsWith("array<", StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
                             }
@@ -502,9 +502,29 @@ namespace Application.Editor
 
                         i = lastIndex;
                     }
-                    else if(string.Compare(flag, "#TABLENAME#", true) == 0)
-                    {                        
-                        content += lines[i].Replace("#TABLENAME#", tableName) + "\n";
+                    else
+                    {
+                        string text = lines[i];
+                        if(text.IndexOf("#TABLENAME#") != -1)
+                        {
+                            text = text.Replace("#TABLENAME#", tableName);
+                        }
+                        if(text.IndexOf("#KEY_VALUETYPE#") != -1)
+                        {
+                            text = text.Replace("#KEY_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
+                        }
+                        if(text.IndexOf("#GETHASHCODE#") != -1)
+                        {
+                            if(string.Compare(m_ValueTypeLine[0], "string") == 0)
+                            {
+                                text = text.Replace("#GETHASHCODE#", ".GetHashCode()");
+                            }
+                            else if(string.Compare(m_ValueTypeLine[0], "int") == 0)
+                            {
+                                text = text.Replace("#GETHASHCODE#", "");
+                            }
+                        }
+                        content += text + "\n";
                     }
                 }
             }

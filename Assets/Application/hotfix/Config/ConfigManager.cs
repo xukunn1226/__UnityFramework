@@ -12,9 +12,10 @@ namespace Application.Runtime
         public Monster GetMonsterByID(int id)
         {
             const string tableName = "Monster";
+            int _id = id;
 
             Monster desc;
-            if(m_MonsterDict.TryGetValue(id, out desc))
+            if(m_MonsterDict.TryGetValue(_id, out desc))
             {
                 return desc;
             }
@@ -29,17 +30,18 @@ namespace Application.Runtime
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
             }
 
-            m_MonsterDict.Add(id, desc);
+            m_MonsterDict.Add(_id, desc);
             return desc;
         }
 
         private Dictionary<int, Player> m_PlayerDict = new Dictionary<int, Player>();
-        public Player GetPlayerByID(int id)
+        public Player GetPlayerByID(string id)
         {
             const string tableName = "Player";
+            int _id = id.GetHashCode();
 
             Player desc;
-            if(m_PlayerDict.TryGetValue(id, out desc))
+            if(m_PlayerDict.TryGetValue(_id, out desc))
             {
                 return desc;
             }
@@ -48,7 +50,7 @@ namespace Application.Runtime
             SqliteDataReader reader = m_Sql.ReadTable(tableName, "id", "=", id.ToString());
             while(reader.Read())
             {                
-                desc.ID = reader.GetInt32(reader.GetOrdinal("ID"));
+                desc.ID = reader.GetString(reader.GetOrdinal("ID"));
                 desc.Name = reader.GetString(reader.GetOrdinal("Name"));
                 desc.HP = reader.GetFloat(reader.GetOrdinal("HP"));
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
@@ -58,7 +60,7 @@ namespace Application.Runtime
                 Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
             }
 
-            m_PlayerDict.Add(id, desc);
+            m_PlayerDict.Add(_id, desc);
             return desc;
         }
 
