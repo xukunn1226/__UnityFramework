@@ -22,7 +22,7 @@ namespace Application.Runtime
             }
 
             desc = new #TABLENAME#();
-            SqliteDataReader reader = m_Sql.ReadTable(tableName, "id", "=", id.ToString());
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, "#KEY_NAME#", "=", id.ToString());
             while(reader.Read())
             {                
                 #READER_VARIANT_BEGIN#

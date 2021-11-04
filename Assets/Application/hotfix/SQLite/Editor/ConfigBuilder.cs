@@ -19,6 +19,7 @@ namespace Application.Editor
         static private string[]     m_ColumnLine;       // the first line
         static private string[]     m_FlagLine;         // the third line
         static private string[]     m_ValueTypeLine;    // the forth line
+        static private string[]     m_KeyIndices;       // 关键字所在列的索引
         static private SqlData      m_Sql;
 
         static ConfigBuilder()
@@ -136,6 +137,15 @@ namespace Application.Editor
             }
             m_ColumnLine = columnList.ToArray();
             m_ValueTypeLine = valueTypeList.ToArray();
+
+            // find the "key"
+            // int count = m_FlagLine.Count((obj) => (obj.ToLower().StartsWith("key")));
+            // m_KeyIndices = new string[count];
+            // for(int i = 0; i < m_FlagLine.Count; ++i)
+            // {
+
+            // }
+            // }
 
             return true;
         }
@@ -562,6 +572,10 @@ namespace Application.Editor
                             {
                                 text = text.Replace("#GETHASHCODE#", "");
                             }
+                        }
+                        if(text.IndexOf("#KEY_NAME#") != -1)
+                        {
+                            text = text.Replace("#KEY_NAME#", "");
                         }
                         content += text + "\n";
                     }

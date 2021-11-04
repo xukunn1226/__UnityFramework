@@ -50,7 +50,7 @@ namespace Application.Runtime
             SqliteDataReader reader = m_Sql.ReadTable(tableName, "id", "=", id.ToString());
             while(reader.Read())
             {                
-                desc.ID = reader.GetString(reader.GetOrdinal("ID"));
+                desc.Building_ID = reader.GetString(reader.GetOrdinal("Building_ID"));
                 desc.Name = reader.GetString(reader.GetOrdinal("Name"));
                 desc.HP = reader.GetFloat(reader.GetOrdinal("HP"));
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));

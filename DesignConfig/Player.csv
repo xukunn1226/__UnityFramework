@@ -1,5 +1,5 @@
 ×¢ÊÍ,678,jhkhj,0--9,,,,,,
-ID,Name,Address,HP,Male,variant1,variant2,variant3,MonsterDesc,variant4
+Building_ID,Name,Address,HP,Male,variant1,variant2,variant3,MonsterDesc,variant4
 key,Client,Server,all,Client,client,client,client,client,client
 string,string,string,float,bool,array<string>,array<int>,array<float>,reference@Monster,dict<int:string>
 1,peter,shanghai,100,no,1;3;5;,,0.1;;0.2,2,1:person;2:address;3:shanghai;

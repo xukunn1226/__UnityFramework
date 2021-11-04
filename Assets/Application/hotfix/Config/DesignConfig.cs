@@ -13,7 +13,7 @@ namespace Application.Runtime
 
     public class Player
     {
-        public string ID;
+        public string Building_ID;
         public string Name;
         public float HP;
         public bool Male;

@@ -15,7 +15,7 @@ namespace Application.Runtime
             Player player = ConfigManager.Instance.GetPlayerByID("1");
                 if(player != null)
                 {
-                    Debug.Log(player.ID);
+                    Debug.Log(player.Building_ID);
                     Debug.Log(player.Name);
                     Debug.Log(player.HP);
                     Debug.Log(player.Male);
