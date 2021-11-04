@@ -175,27 +175,27 @@ namespace Application.Editor
             {
                 return " = new List<float>()";
             }
-            else if(valueType == "map<int_int>")
+            else if(valueType == "dict<int:int>")
             {
                 return " = new Dictionary<int, int>()";
             }
-            else if(valueType == "map<int_float>")
+            else if(valueType == "dict<int:float>")
             {
                 return " = new Dictionary<int, float>()";
             }
-            else if(valueType == "map<int_string>")
+            else if(valueType == "dict<int:string>")
             {
                 return " = new Dictionary<int, string>()";
             }
-            else if(valueType == "map<string_int>")
+            else if(valueType == "dict<string:int>")
             {
                 return " = new Dictionary<string, int>()";
             }
-            else if(valueType == "map<string_float>")
+            else if(valueType == "dict<string:float>")
             {
                 return " = new Dictionary<string, float>()";
             }
-            else if(valueType == "map<string_string>")
+            else if(valueType == "dict<string:string>")
             {
                 return " = new Dictionary<string, string>()";
             }
@@ -221,17 +221,17 @@ namespace Application.Editor
                     return "List<int>";
                 case "array<float>":
                     return "List<float>";
-                case "map<int_int>":
+                case "dict<int:int>":
                     return "Dictionary<int, int>";
-                case "map<int_string>":
+                case "dict<int:string>":
                     return "Dictionary<int, string>";
-                case "map<int_float>":
+                case "dict<int:float>":
                     return "Dictionary<int, float>";
-                case "map<string_int>":
+                case "dict<string:int>":
                     return "Dictionary<string, int>";
-                case "map<string_float>":
+                case "dict<string:float>":
                     return "Dictionary<string, float>";
-                case "map<string, string>":
+                case "dict<string:string>":
                     return "Dictionary<string, string>";
             }
 
@@ -247,7 +247,7 @@ namespace Application.Editor
         {
             if(index < 0 || index >= flags.Length)
                 throw new System.ArgumentOutOfRangeException("index");
-            return flags[index].ToLower().Contains("all") || flags[index].ToLower().Contains("client");
+            return !flags[index].ToLower().Contains("server");
         }
 
         static private bool DoDBGenerated()
@@ -358,9 +358,9 @@ namespace Application.Editor
                         return "0";
                     return string.Format($"{content}");         // 同int
                 case "bool":
-                    if(string.IsNullOrEmpty(content))
-                        return "false";
-                    return string.Format($"{content}");
+                    if(content.ToLower() == "yes")
+                        return "true";
+                    return "false";
             }
 
             if(string.IsNullOrEmpty(content))
@@ -483,7 +483,7 @@ namespace Application.Editor
                         {
                             if(m_ValueTypeLine[j].StartsWith("array<", StringComparison.OrdinalIgnoreCase)
                             || m_ValueTypeLine[j].StartsWith("reference@", StringComparison.OrdinalIgnoreCase)
-                            || m_ValueTypeLine[j].StartsWith("map<", StringComparison.OrdinalIgnoreCase))
+                            || m_ValueTypeLine[j].StartsWith("dict<", StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
                             }
@@ -507,7 +507,7 @@ namespace Application.Editor
                         for(int j = 0; j < m_ColumnLine.Length; ++j)
                         {
                             if(!m_ValueTypeLine[j].StartsWith("array<", StringComparison.OrdinalIgnoreCase)
-                            && !m_ValueTypeLine[j].StartsWith("map<", StringComparison.OrdinalIgnoreCase))
+                            && !m_ValueTypeLine[j].StartsWith("dict<", StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
                             }
