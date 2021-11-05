@@ -12,10 +12,9 @@ namespace Application.Runtime
         public Monster GetMonsterByID(int id)
         {
             const string tableName = "Monster";
-            int _id = id;
 
             Monster desc;
-            if(m_MonsterDict.TryGetValue(_id, out desc))
+            if(m_MonsterDict.TryGetValue(id, out desc))
             {
                 return desc;
             }
@@ -30,18 +29,17 @@ namespace Application.Runtime
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
             }
 
-            m_MonsterDict.Add(_id, desc);
+            m_MonsterDict.Add(id, desc);
             return desc;
         }
 
-        private Dictionary<int, Player> m_PlayerDict = new Dictionary<int, Player>();
+        private Dictionary<string, Player> m_PlayerDict = new Dictionary<string, Player>();
         public Player GetPlayerByID(string id)
         {
             const string tableName = "Player";
-            int _id = id.GetHashCode();
 
             Player desc;
-            if(m_PlayerDict.TryGetValue(_id, out desc))
+            if(m_PlayerDict.TryGetValue(id, out desc))
             {
                 return desc;
             }
@@ -61,7 +59,7 @@ namespace Application.Runtime
                 Parse(ref desc.variant4, reader.GetString(reader.GetOrdinal("variant4")));
             }
 
-            m_PlayerDict.Add(_id, desc);
+            m_PlayerDict.Add(id, desc);
             return desc;
         }
 

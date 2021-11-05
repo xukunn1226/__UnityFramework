@@ -570,17 +570,17 @@ namespace Application.Editor
                         {
                             text = text.Replace("#KEY_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
                         }
-                        if(text.IndexOf("#GETHASHCODE#") != -1)
-                        {
-                            if(string.Compare(m_ValueTypeLine[0], "string") == 0)
-                            {
-                                text = text.Replace("#GETHASHCODE#", ".GetHashCode()");
-                            }
-                            else if(string.Compare(m_ValueTypeLine[0], "int") == 0)
-                            {
-                                text = text.Replace("#GETHASHCODE#", "");
-                            }
-                        }
+                        // if(text.IndexOf("#GETHASHCODE#") != -1)
+                        // {
+                        //     if(string.Compare(m_ValueTypeLine[0], "string") == 0)
+                        //     {
+                        //         text = text.Replace("#GETHASHCODE#", ".GetHashCode()");
+                        //     }
+                        //     else if(string.Compare(m_ValueTypeLine[0], "int") == 0)
+                        //     {
+                        //         text = text.Replace("#GETHASHCODE#", "");
+                        //     }
+                        // }
                         if(text.IndexOf("#KEY_NAME#") != -1)
                         {
                             text = text.Replace("#KEY_NAME#", m_ColumnLine[m_KeyIndices[0]]);
