@@ -1,6 +1,6 @@
 ×¢ÊÍ,9890,£»llk,float,
 ID,Name,Address,HP,Male
-all,Client,Server,all,Client
+key,Client,Server,all,Client
 int,string,string,float,bool
 1,,,,
 2,xukun,12,3,FALSE

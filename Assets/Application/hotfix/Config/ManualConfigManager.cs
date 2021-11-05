@@ -186,39 +186,39 @@ namespace Application.Runtime
 
 
 
-//         private Dictionary<int, Dictionary<string, Player>> m_PlayerDict = new Dictionary<int, Dictionary<string, Player>>();
-//         public Player GetPlayerByID(int key1, string key2)
-//         {
-//             const string tableName = "Player";
+        // private Dictionary<int, Dictionary<string, Player>> m_PlayerDict = new Dictionary<int, Dictionary<string, Player>>();
+        // public Player GetPlayerByID(int key1, string key2)
+        // {
+        //     const string tableName = "Player";
 
-//             Dictionary<string, Player> dict;
-//             if(!m_PlayerDict.TryGetValue(key1, out dict))
-//             {
-//                 dict = new Dictionary<string, Player>();
-//                 m_PlayerDict.Add(key1, dict);
-//             }
+        //     Dictionary<string, Player> dict;
+        //     if(!m_PlayerDict.TryGetValue(key1, out dict))
+        //     {
+        //         dict = new Dictionary<string, Player>();
+        //         m_PlayerDict.Add(key1, dict);
+        //     }
 
-//             Player desc;
-//             if(dict.TryGetValue(key2, out desc))
-//             {
-//                 return desc;
-//             }
+        //     Player desc;
+        //     if(dict.TryGetValue(key2, out desc))
+        //     {
+        //         return desc;
+        //     }
 
-//             desc = new Player();
-//             SqliteDataReader reader = m_Sql.ReadTable(tableName, "id", "=", key2.ToString());
-//             while(reader.Read())
-//             {                
-//                 desc.ID = reader.GetString(reader.GetOrdinal("ID"));
-//                 desc.Name = reader.GetString(reader.GetOrdinal("Name"));
-//                 desc.HP = reader.GetFloat(reader.GetOrdinal("HP"));
-//                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
-//                 desc.MonsterDesc = GetMonsterByID(reader.GetInt32(reader.GetOrdinal("MonsterDesc")));
-//                 Parse(ref desc.variant1, reader.GetString(reader.GetOrdinal("variant1")));
-//                 Parse(ref desc.variant2, reader.GetString(reader.GetOrdinal("variant2")));
-//                 Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
-//                 Parse(ref desc.variant4, reader.GetString(reader.GetOrdinal("variant4")));
-//             }
+        //     desc = new Player();
+        //     SqliteDataReader reader = m_Sql.ReadTable(tableName, "id", "=", key2.ToString());
+        //     while(reader.Read())
+        //     {                
+        //         desc.ID = reader.GetString(reader.GetOrdinal("ID"));
+        //         desc.Name = reader.GetString(reader.GetOrdinal("Name"));
+        //         desc.HP = reader.GetFloat(reader.GetOrdinal("HP"));
+        //         desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
+        //         desc.MonsterDesc = GetMonsterByID(reader.GetInt32(reader.GetOrdinal("MonsterDesc")));
+        //         Parse(ref desc.variant1, reader.GetString(reader.GetOrdinal("variant1")));
+        //         Parse(ref desc.variant2, reader.GetString(reader.GetOrdinal("variant2")));
+        //         Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
+        //         Parse(ref desc.variant4, reader.GetString(reader.GetOrdinal("variant4")));
+        //     }
 
-//             dict.Add(key2, desc);
-//             return desc;
-//         }
+        //     dict.Add(key2, desc);
+        //     return desc;
+        // }

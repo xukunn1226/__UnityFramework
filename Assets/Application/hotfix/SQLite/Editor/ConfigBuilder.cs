@@ -19,7 +19,7 @@ namespace Application.Editor
         static private string[]     m_ColumnLine;       // the first line
         static private string[]     m_FlagLine;         // the third line
         static private string[]     m_ValueTypeLine;    // the forth line
-        static private string[]     m_KeyIndices;       // 关键字所在列的索引
+        static private int[]        m_KeyIndices;       // 关键字所在列的索引
         static private SqlData      m_Sql;
 
         static ConfigBuilder()
@@ -63,7 +63,7 @@ namespace Application.Editor
                 Debug.Log($"创建表结构对象: {Path.GetFileName(file)}");
                 if(!Prepare(file))
                 {
-                    Debug.LogError($"配置导出失败：格式出错   {file}");
+                    Debug.LogError($"DesignConfig.cs导出失败：格式出错   {file}");
                     return false;
                 }
                 ParseObjectFromCsv(file);
@@ -139,13 +139,21 @@ namespace Application.Editor
             m_ValueTypeLine = valueTypeList.ToArray();
 
             // find the "key"
-            // int count = m_FlagLine.Count((obj) => (obj.ToLower().StartsWith("key")));
-            // m_KeyIndices = new string[count];
-            // for(int i = 0; i < m_FlagLine.Count; ++i)
-            // {
-
-            // }
-            // }
+            int count = m_FlagLine.Count((obj) => (obj.ToLower().StartsWith("key")));
+            if(count == 0)
+            {
+                Debug.LogError("配置缺少key");
+                return false;
+            }
+            m_KeyIndices = new int[count];
+            int index = 0;
+            for(int i = 0; i < m_FlagLine.Length; ++i)
+            {
+                if(m_FlagLine[i].ToLower().StartsWith("key"))
+                {
+                    m_KeyIndices[index++] = i;
+                }
+            }
 
             return true;
         }
@@ -286,7 +294,7 @@ namespace Application.Editor
                 Debug.Log($"创建表数据: {Path.GetFileName(file)}");
                 if(!Prepare(file))
                 {
-                    Debug.LogError($"配置导出失败：格式出错   {file}");
+                    Debug.LogError($"数据库导出失败：格式出错   {file}");
                     m_Sql.Close();
                     return false;
                 }
@@ -575,7 +583,7 @@ namespace Application.Editor
                         }
                         if(text.IndexOf("#KEY_NAME#") != -1)
                         {
-                            text = text.Replace("#KEY_NAME#", "");
+                            text = text.Replace("#KEY_NAME#", m_ColumnLine[m_KeyIndices[0]]);
                         }
                         content += text + "\n";
                     }

@@ -21,7 +21,7 @@ namespace Application.Runtime
             }
 
             desc = new Monster();
-            SqliteDataReader reader = m_Sql.ReadTable(tableName, "id", "=", id.ToString());
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, "ID", "=", id.ToString());
             while(reader.Read())
             {                
                 desc.ID = reader.GetInt32(reader.GetOrdinal("ID"));
@@ -47,7 +47,7 @@ namespace Application.Runtime
             }
 
             desc = new Player();
-            SqliteDataReader reader = m_Sql.ReadTable(tableName, "id", "=", id.ToString());
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, "Building_ID", "=", id.ToString());
             while(reader.Read())
             {                
                 desc.Building_ID = reader.GetString(reader.GetOrdinal("Building_ID"));
