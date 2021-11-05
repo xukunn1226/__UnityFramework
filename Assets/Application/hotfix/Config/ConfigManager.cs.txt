@@ -10,18 +10,18 @@ namespace Application.Runtime
     {
         #ITERATOR_BEGIN#
         private Dictionary<#KEY_VALUETYPE#, #TABLENAME#> m_#TABLENAME#Dict = new Dictionary<#KEY_VALUETYPE#, #TABLENAME#>();
-        public #TABLENAME# Get#TABLENAME#ByID(#KEY_VALUETYPE# id)
+        public #TABLENAME# Get#TABLENAME#ByID(#KEY_VALUETYPE# key1)
         {
             const string tableName = "#TABLENAME#";
 
             #TABLENAME# desc;
-            if(m_#TABLENAME#Dict.TryGetValue(id, out desc))
+            if(m_#TABLENAME#Dict.TryGetValue(key1, out desc))
             {
                 return desc;
             }
 
             desc = new #TABLENAME#();
-            SqliteDataReader reader = m_Sql.ReadTable(tableName, "#KEY_NAME#", "=", id.ToString());
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, "#KEY_NAME#", "=", key1.ToString());
             while(reader.Read())
             {                
                 #READER_VARIANT_BEGIN#
@@ -35,7 +35,7 @@ namespace Application.Runtime
                 #READER_LIST_END#
             }
 
-            m_#TABLENAME#Dict.Add(id, desc);
+            m_#TABLENAME#Dict.Add(key1, desc);
             return desc;
         }
         #ITERATOR_END#
