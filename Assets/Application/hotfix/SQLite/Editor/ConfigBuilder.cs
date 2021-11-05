@@ -564,24 +564,13 @@ namespace Application.Editor
                         {
                             text = text.Replace("#TABLENAME#", tableName);
                         }
-                        if(text.IndexOf("#KEY_VALUETYPE#") != -1)
+                        if(text.IndexOf("#KEY_VALUETYPE1#") != -1)
                         {
-                            text = text.Replace("#KEY_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
+                            text = text.Replace("#KEY_VALUETYPE1#", m_ValueTypeLine[0]);       // key默认放第一个
                         }
-                        // if(text.IndexOf("#GETHASHCODE#") != -1)
-                        // {
-                        //     if(string.Compare(m_ValueTypeLine[0], "string") == 0)
-                        //     {
-                        //         text = text.Replace("#GETHASHCODE#", ".GetHashCode()");
-                        //     }
-                        //     else if(string.Compare(m_ValueTypeLine[0], "int") == 0)
-                        //     {
-                        //         text = text.Replace("#GETHASHCODE#", "");
-                        //     }
-                        // }
-                        if(text.IndexOf("#KEY_NAME#") != -1)
+                        if(text.IndexOf("#KEY_NAME1#") != -1)
                         {
-                            text = text.Replace("#KEY_NAME#", m_ColumnLine[m_KeyIndices[0]]);
+                            text = text.Replace("#KEY_NAME1#", m_ColumnLine[m_KeyIndices[0]]);
                         }
                         content += text + "\n";
                     }

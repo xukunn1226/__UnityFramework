@@ -32,6 +32,7 @@ namespace Application.Runtime
             m_MonsterDict.Add(key1, desc);
             return desc;
         }
+        
 
         private Dictionary<string, Player> m_PlayerDict = new Dictionary<string, Player>();
         public Player GetPlayerByID(string key1)
@@ -62,6 +63,7 @@ namespace Application.Runtime
             m_PlayerDict.Add(key1, desc);
             return desc;
         }
+        
 
     }
 }

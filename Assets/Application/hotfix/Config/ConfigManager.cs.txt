@@ -9,8 +9,8 @@ namespace Application.Runtime
     public partial class ConfigManager : Singleton<ConfigManager>
     {
         #ITERATOR_BEGIN#
-        private Dictionary<#KEY_VALUETYPE#, #TABLENAME#> m_#TABLENAME#Dict = new Dictionary<#KEY_VALUETYPE#, #TABLENAME#>();
-        public #TABLENAME# Get#TABLENAME#ByID(#KEY_VALUETYPE# key1)
+        private Dictionary<#KEY_VALUETYPE1#, #TABLENAME#> m_#TABLENAME#Dict = new Dictionary<#KEY_VALUETYPE1#, #TABLENAME#>();
+        public #TABLENAME# Get#TABLENAME#ByID(#KEY_VALUETYPE1# key1)
         {
             const string tableName = "#TABLENAME#";
 
@@ -21,7 +21,7 @@ namespace Application.Runtime
             }
 
             desc = new #TABLENAME#();
-            SqliteDataReader reader = m_Sql.ReadTable(tableName, "#KEY_NAME#", "=", key1.ToString());
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, "#KEY_NAME1#", "=", key1.ToString());
             while(reader.Read())
             {                
                 #READER_VARIANT_BEGIN#
@@ -37,7 +37,7 @@ namespace Application.Runtime
 
             m_#TABLENAME#Dict.Add(key1, desc);
             return desc;
-        }
+        }               
         #ITERATOR_END#
     }
 }

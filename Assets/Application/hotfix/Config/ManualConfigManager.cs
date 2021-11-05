@@ -208,6 +208,19 @@ namespace Application.Runtime
             return desc;
         }
 
+        private Dictionary<int, Player> m_XX = new Dictionary<int, Player>();
+
+        private bool FindPlayerByID_1Key(int key1, ref Player desc)
+        {
+            if(!m_XX.TryGetValue(key1, out desc))
+            {
+                desc = new Player();
+                return false;
+            }
+
+            return true;
+        }
+
         private bool FindPlayerByID_2Key(int key1, string key2, ref Player desc)
         {
             Dictionary<string, Player> dict;
@@ -226,6 +239,33 @@ namespace Application.Runtime
 
             return true;
         }
+
+        // private bool Find#TABLENAME#ByID_1Key(#KEY_VALUETYPE# key1, ref #TABLENAME# desc)
+        // {
+        //     if(!m_#TABLENAME#Dict.TryGetValue(key1, out desc))
+        //     {
+        //         desc = new #TABLENAME#();
+        //         return false;
+        //     }
+        //     return true;
+        // }
+        // private bool Find#TABLENAME#ByID_2Key(#KEY_VALUETYPE# key1, #KEY_VALUETYPE# key2, ref #TABLENAME# desc)
+        // {
+        //     Dictionary<#KEY_VALUETYPE#, #TABLENAME#> dict;
+        //     if(!m_#TABLENAME#Dict.TryGetValue(key1, out dict))
+        //     {
+        //         dict = new Dictionary<string, #TABLENAME#>();
+        //         m_#TABLENAME#Dict.Add(key1, dict);
+        //     }
+
+        //     if(!dict.TryGetValue(key2, out desc))
+        //     {
+        //         desc = new #TABLENAME#();
+        //         dict.Add(key2, desc);
+        //         return false;
+        //     }
+        //     return true;
+        // }
     }
 }
 
