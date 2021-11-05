@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using Framework.Core;
+using Mono.Data.Sqlite;
 
 namespace Application.Runtime
 {
@@ -179,6 +180,35 @@ namespace Application.Runtime
                 Debug.Assert(items.Length == 2);
                 ret.Add(items[0], float.Parse(items[1]));
             }
+        }
+
+        public Player GetPlayerByID(string key1, string key2)
+        {
+            const string tableName = "Player";
+
+            Player desc;
+            if(m_PlayerDict.TryGetValue(key1, out desc))
+            {
+                return desc;
+            }
+
+            desc = new Player();
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"Building_ID", "Name"}, new string[] {"=", "="}, new string[] {key1.ToString(), key2.ToString()});
+            while(reader.Read())
+            {                
+                desc.Building_ID = reader.GetString(reader.GetOrdinal("Building_ID"));
+                desc.Name = reader.GetString(reader.GetOrdinal("Name"));
+                desc.HP = reader.GetFloat(reader.GetOrdinal("HP"));
+                desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
+                desc.MonsterDesc = GetMonsterByID(reader.GetInt32(reader.GetOrdinal("MonsterDesc")));
+                Parse(ref desc.variant1, reader.GetString(reader.GetOrdinal("variant1")));
+                Parse(ref desc.variant2, reader.GetString(reader.GetOrdinal("variant2")));
+                Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
+                Parse(ref desc.variant4, reader.GetString(reader.GetOrdinal("variant4")));
+            }
+
+            m_PlayerDict.Add(key1, desc);
+            return desc;
         }
     }
 }

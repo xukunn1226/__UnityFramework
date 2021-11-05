@@ -125,19 +125,6 @@ namespace Application.Editor
                 return false;
             }
 
-            List<string> columnList = new List<string>();
-            List<string> valueTypeList = new List<string>();
-            for(int i = 0; i < m_FlagLine.Length; ++i)
-            {
-                if(NeedImport(m_FlagLine, i))
-                {
-                    columnList.Add(m_ColumnLine[i]);
-                    valueTypeList.Add(m_ValueTypeLine[i]);
-                }
-            }
-            m_ColumnLine = columnList.ToArray();
-            m_ValueTypeLine = valueTypeList.ToArray();
-
             // find the "key"
             int count = m_FlagLine.Count((obj) => (obj.ToLower().StartsWith("key")));
             if(count == 0)
@@ -146,14 +133,25 @@ namespace Application.Editor
                 return false;
             }
             m_KeyIndices = new int[count];
+
+            List<string> columnList = new List<string>();
+            List<string> valueTypeList = new List<string>();
             int index = 0;
             for(int i = 0; i < m_FlagLine.Length; ++i)
             {
-                if(m_FlagLine[i].ToLower().StartsWith("key"))
+                if(NeedImport(m_FlagLine, i))
                 {
-                    m_KeyIndices[index++] = i;
+                    columnList.Add(m_ColumnLine[i]);
+                    valueTypeList.Add(m_ValueTypeLine[i]);
+
+                    if(m_FlagLine[i].ToLower().StartsWith("key"))
+                    {
+                        m_KeyIndices[index++] = columnList.Count - 1;
+                    }
                 }
             }
+            m_ColumnLine = columnList.ToArray();
+            m_ValueTypeLine = valueTypeList.ToArray();
 
             return true;
         }

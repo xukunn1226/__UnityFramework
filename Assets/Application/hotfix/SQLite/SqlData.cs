@@ -175,26 +175,26 @@ namespace Application.Runtime
             {
                 queryString += ", " + items[i];
             }
-            queryString += " FROM " + tableName + " WHERE " + colNames[0] + " " + operations[0] + " " + colValues[0];
+            queryString += string.Format($" FROM {tableName} WHERE {colNames[0]}{operations[0]}\"{colValues[0]}\"");
             for (int i = 1; i < colNames.Length; i++)
             {
-                queryString += " AND " + colNames[i] + " " + operations[i] + " " + colValues[i];
+                queryString += string.Format($" AND {colNames[i]}{operations[i]}\"{colValues[i]}\"");
             }
             return ExecuteQuery(queryString);
         }
 
         public SqliteDataReader ReadTable(string tableName, string colName, string op, string colValue)
         {
-            string queryString = "SELECT * FROM " + tableName + " WHERE " + colName + " " + op + " " + colValue;
+            string queryString = string.Format($"SELECT * FROM {tableName} WHERE {colName}{op}\"{colValue}\"");
             return ExecuteQuery(queryString);
         }
 
         public SqliteDataReader ReadTable(string tableName, string[] colNames, string[] ops, string[] colValues)
         {
-            string queryString = "SELECT * FROM " + tableName + " WHERE " + colNames[0] + " " + ops[0] + " " + colValues[0];
+            string queryString = string.Format($"SELECT * FROM {tableName} WHERE {colNames[0]}{ops[0]}\"{colValues[0]}\"");
             for(int i = 1; i < colNames.Length; ++i)
             {
-                queryString += " AND " + colNames[i] + " " + ops[i] + " " + colValues[i];
+                queryString += string.Format($" AND {colNames[i]}{ops[i]}\"{colValues[i]}\"");
             }
             return ExecuteQuery(queryString);
         }
