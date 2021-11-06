@@ -189,12 +189,12 @@ namespace Application.Runtime
             return ExecuteQuery(queryString);
         }
 
-        public SqliteDataReader ReadTable(string tableName, string[] colNames, string[] ops, string[] colValues)
+        public SqliteDataReader ReadTable(string tableName, string[] colNames, string op, string[] colValues)
         {
-            string queryString = string.Format($"SELECT * FROM {tableName} WHERE {colNames[0]}{ops[0]}\"{colValues[0]}\"");
+            string queryString = string.Format($"SELECT * FROM {tableName} WHERE {colNames[0]}{op}\"{colValues[0]}\"");
             for(int i = 1; i < colNames.Length; ++i)
             {
-                queryString += string.Format($" AND {colNames[i]}{ops[i]}\"{colValues[i]}\"");
+                queryString += string.Format($" AND {colNames[i]}{op}\"{colValues[i]}\"");
             }
             return ExecuteQuery(queryString);
         }

@@ -9,19 +9,60 @@ namespace Application.Runtime
     public partial class ConfigManager : Singleton<ConfigManager>
     {
         #ITERATOR_BEGIN#
-        private Dictionary<#KEY_VALUETYPE1#, #TABLENAME#> m_#TABLENAME#Dict = new Dictionary<#KEY_VALUETYPE1#, #TABLENAME#>();
-        public #TABLENAME# Get#TABLENAME#ByID(#KEY_VALUETYPE1# key1)
+        #SELECT_DICT_ONE_KEY_BEGIN#
+        private Dictionary<#KEY1_VALUETYPE#, #TABLENAME#> m_#TABLENAME#Dict = new Dictionary<#KEY1_VALUETYPE#, #TABLENAME#>();
+        #SELECT_DICT_ONE_KEY_END#
+        #SELECT_DICT_TWO_KEY_BEGIN#
+        private Dictionary<#KEY1_VALUETYPE#, Dictionary<#KEY2_VALUETYPE#, #TABLENAME#>> m_#TABLENAME#Dict = new Dictionary<#KEY1_VALUETYPE#, Dictionary<#KEY2_VALUETYPE#, #TABLENAME#>>();
+        #SELECT_DICT_TWO_KEY_END#
+        #SELECT_DICT_THREE_KEY_BEGIN#
+        private Dictionary<#KEY1_VALUETYPE#, Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, #TABLENAME#>>> m_#TABLENAME#Dict = new Dictionary<#KEY1_VALUETYPE#, Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, #TABLENAME#>>>();
+        #SELECT_DICT_THREE_KEY_END#
+        #SELECT_DICT_FOUR_KEY_BEGIN#
+        private Dictionary<#KEY1_VALUETYPE#, Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>>>> m_#TABLENAME#Dict = new Dictionary<#KEY1_VALUETYPE#, Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>>>>();
+        #SELECT_DICT_FOUR_KEY_END#
+        #SELECT_ONE_KEY_BEGIN#
+        public #TABLENAME# Get#TABLENAME#ByID(#KEY1_VALUETYPE# key1)
+        #SELECT_ONE_KEY_END#
+        #SELECT_TWO_KEY_BEGIN#
+        public #TABLENAME# Get#TABLENAME#ByID(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2)
+        #SELECT_TWO_KEY_END#
+        #SELECT_THREE_KEY_BEGIN#
+        public #TABLENAME# Get#TABLENAME#ByID(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2, #KEY3_VALUETYPE# key3)
+        #SELECT_THREE_KEY_END#
+        #SELECT_FOUR_KEY_BEGIN#
+        public #TABLENAME# Get#TABLENAME#ByID(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2, #KEY3_VALUETYPE# key3, #KEY4_VALUETYPE# key4)
+        #SELECT_FOUR_KEY_END#
         {
             const string tableName = "#TABLENAME#";
-
-            #TABLENAME# desc;
-            if(m_#TABLENAME#Dict.TryGetValue(key1, out desc))
-            {
+  
+            #TABLENAME# desc = null;
+            #SELECT_FIND_1KEY_BEGIN#
+            if(Find#TABLENAME#Data(key1, ref desc))
+            #SELECT_FIND_1KEY_END#
+            #SELECT_FIND_2KEY_BEGIN#
+            if(Find#TABLENAME#Data(key1, key2, ref desc))
+            #SELECT_FIND_2KEY_END#
+            #SELECT_FIND_3KEY_BEGIN#
+            if(Find#TABLENAME#Data(key1, key2, key3, ref desc))
+            #SELECT_FIND_3KEY_END#
+            #SELECT_FIND_4KEY_BEGIN#
+            if(Find#TABLENAME#Data(key1, key2, key3, key4, ref desc))
+            #SELECT_FIND_4KEY_END#
                 return desc;
-            }
 
-            desc = new #TABLENAME#();
-            SqliteDataReader reader = m_Sql.ReadTable(tableName, "#KEY_NAME1#", "=", key1.ToString());
+            #SELECT_READER_ONE_KEY_BEGIN#
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, "#KEY1_NAME#", "=", key1.ToString());
+            #SELECT_READER_ONE_KEY_END#
+            #SELECT_READER_TWO_KEY_BEGIN#
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"#KEY1_NAME#", "#KEY2_NAME#"}, "=", new string[] {key1.ToString(), key2.ToString()});
+            #SELECT_READER_TWO_KEY_END#
+            #SELECT_READER_THREE_KEY_BEGIN#
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"#KEY1_NAME#", "#KEY2_NAME#", "#KEY3_NAME#"}, "=", new string[] {key1.ToString(), key2.ToString(), key3.ToString()});
+            #SELECT_READER_THREE_KEY_END#
+            #SELECT_READER_FOUR_KEY_BEGIN#
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"#KEY1_NAME#", "#KEY2_NAME#", "#KEY3_NAME#", "#KEY4_NAME#"}, "=", new string[] {key1.ToString(), key2.ToString(), key3.ToString(), key4.ToString()});
+            #SELECT_READER_FOUR_KEY_END#
             while(reader.Read())
             {                
                 #READER_VARIANT_BEGIN#
@@ -35,9 +76,39 @@ namespace Application.Runtime
                 #READER_LIST_END#
             }
 
-            m_#TABLENAME#Dict.Add(key1, desc);
             return desc;
-        }               
+        }
+        #FINDER_1KEY_BEGIN#
+        private bool Find#TABLENAME#Data(#KEY1_VALUETYPE# key1, ref #TABLENAME# desc)
+        {
+            if(!m_#TABLENAME#Dict.TryGetValue(key1, out desc))
+            {
+                desc = new #TABLENAME#();
+                m_#TABLENAME#Dict.Add(key1, desc);
+                return false;
+            }
+            return true;
+        }
+        #FINDER_1KEY_END#  
+        #FINDER_2KEY_BEGIN#
+        private bool Find#TABLENAME#Data(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2, ref #TABLENAME# desc)
+        {
+            Dictionary<#KEY2_VALUETYPE#, #TABLENAME#> dict;
+            if(!m_#TABLENAME#Dict.TryGetValue(key1, out dict))
+            {
+                dict = new Dictionary<#KEY2_VALUETYPE#, #TABLENAME#>();
+                m_#TABLENAME#Dict.Add(key1, dict);
+            }
+
+            if(!dict.TryGetValue(key2, out desc))
+            {
+                desc = new #TABLENAME#();
+                dict.Add(key2, desc);
+                return false;
+            }
+            return true;
+        }      
+        #FINDER_2KEY_END#
         #ITERATOR_END#
     }
 }

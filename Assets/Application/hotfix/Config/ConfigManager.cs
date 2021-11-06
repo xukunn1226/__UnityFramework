@@ -12,14 +12,11 @@ namespace Application.Runtime
         public Monster GetMonsterByID(int key1)
         {
             const string tableName = "Monster";
-
-            Monster desc;
-            if(m_MonsterDict.TryGetValue(key1, out desc))
-            {
+  
+            Monster desc = null;
+            if(FindMonsterData(key1, ref desc))
                 return desc;
-            }
 
-            desc = new Monster();
             SqliteDataReader reader = m_Sql.ReadTable(tableName, "ID", "=", key1.ToString());
             while(reader.Read())
             {                
@@ -29,24 +26,29 @@ namespace Application.Runtime
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
             }
 
-            m_MonsterDict.Add(key1, desc);
             return desc;
         }
-        
+        private bool FindMonsterData(int key1, ref Monster desc)
+        {
+            if(!m_MonsterDict.TryGetValue(key1, out desc))
+            {
+                desc = new Monster();
+                m_MonsterDict.Add(key1, desc);
+                return false;
+            }
+            return true;
+        }
 
-        private Dictionary<string, Player> m_PlayerDict = new Dictionary<string, Player>();
-        public Player GetPlayerByID(string key1)
+        private Dictionary<string, Dictionary<string, Player>> m_PlayerDict = new Dictionary<string, Dictionary<string, Player>>();
+        public Player GetPlayerByID(string key1, string key2)
         {
             const string tableName = "Player";
-
-            Player desc;
-            if(m_PlayerDict.TryGetValue(key1, out desc))
-            {
+  
+            Player desc = null;
+            if(FindPlayerData(key1, key2, ref desc))
                 return desc;
-            }
 
-            desc = new Player();
-            SqliteDataReader reader = m_Sql.ReadTable(tableName, "Building_ID", "=", key1.ToString());
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"Building_ID", "Name"}, "=", new string[] {key1.ToString(), key2.ToString()});
             while(reader.Read())
             {                
                 desc.Building_ID = reader.GetString(reader.GetOrdinal("Building_ID"));
@@ -60,10 +62,25 @@ namespace Application.Runtime
                 Parse(ref desc.variant4, reader.GetString(reader.GetOrdinal("variant4")));
             }
 
-            m_PlayerDict.Add(key1, desc);
             return desc;
         }
-        
+        private bool FindPlayerData(string key1, string key2, ref Player desc)
+        {
+            Dictionary<string, Player> dict;
+            if(!m_PlayerDict.TryGetValue(key1, out dict))
+            {
+                dict = new Dictionary<string, Player>();
+                m_PlayerDict.Add(key1, dict);
+            }
+
+            if(!dict.TryGetValue(key2, out desc))
+            {
+                desc = new Player();
+                dict.Add(key2, desc);
+                return false;
+            }
+            return true;
+        }      
 
     }
 }
