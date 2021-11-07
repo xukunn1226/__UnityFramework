@@ -168,6 +168,34 @@ namespace Framework.AssetManagement.Runtime
                 
             GameObjectLoaderAsync.Release(loader);
         }
+        
+        static public GameObject InstantiatePrefab(string assetPath)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            return PrefabLoader.Get(assetPath);
+        }
+
+        static public GameObject InstantiatePrefab(string bundleName, string assetName)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            return PrefabLoader.Get(bundleName, assetName);
+        }
+
+        static public PrefabLoaderAsync InstantiatePrefabAsync(string assetPath)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            return PrefabLoaderAsync.Get(assetPath);
+        }
+
+        static public PrefabLoaderAsync InstantiatePrefabAsync(string bundleName, string assetName)
+        {
+            if (Instance == null)
+                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            return PrefabLoaderAsync.Get(bundleName, assetName);
+        }
 
         /// <summary>
         /// 同步加载资源接口
