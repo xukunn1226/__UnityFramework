@@ -63,6 +63,7 @@ namespace Application.Runtime
             #SELECT_READER_FOUR_KEY_BEGIN#
             SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"#KEY1_NAME#", "#KEY2_NAME#", "#KEY3_NAME#", "#KEY4_NAME#"}, "=", new string[] {key1.ToString(), key2.ToString(), key3.ToString(), key4.ToString()});
             #SELECT_READER_FOUR_KEY_END#
+            bool bFind = reader.HasRows;
             while(reader.Read())
             {                
                 #READER_VARIANT_BEGIN#
@@ -76,7 +77,7 @@ namespace Application.Runtime
                 #READER_LIST_END#
             }
 
-            return desc;
+            return bFind ? desc : null;
         }
         #FINDER_1KEY_BEGIN#
         private bool Find#TABLENAME#Data(#KEY1_VALUETYPE# key1, ref #TABLENAME# desc)
@@ -109,6 +110,65 @@ namespace Application.Runtime
             return true;
         }      
         #FINDER_2KEY_END#
+        #FINDER_3KEY_BEGIN#
+        private bool Find#TABLENAME#Data(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2, #KEY3_VALUETYPE# key3, ref #TABLENAME# desc)
+        {
+            Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, #TABLENAME#>> dict;
+            if(!m_#TABLENAME#Dict.TryGetValue(key1, out dict))
+            {
+                dict = new Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, #TABLENAME#>>();
+                m_#TABLENAME#Dict.Add(key1, dict);
+            }
+
+            Dictionary<#KEY3_VALUETYPE#, #TABLENAME#> dict2;
+            if(!dict.TryGetValue(key2, out dict2))
+            {
+                dict2 = new Dictionary<#KEY3_VALUETYPE#, #TABLENAME#>();
+                dict.Add(key2, dict2);
+            }
+
+            if(!dict2.TryGetValue(key3, out desc))
+            {
+                desc = new #TABLENAME#();
+                dict2.Add(key3, desc);
+                return false;
+            }
+            return true;
+        }
+        #FINDER_3KEY_END#
+        #FINDER_4KEY_BEGIN#
+        private bool Find#TABLENAME#Data(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2, #KEY3_VALUETYPE# key3, #KEY4_VALUETYPE# key4, ref #TABLENAME# desc)
+        {
+            Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>>> dict;
+            if(!m_#TABLENAME#Dict.TryGetValue(key1, out dict))
+            {
+                dict = new Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>>>();
+                m_#TABLENAME#Dict.Add(key1, dict);
+            }
+
+            Dictionary<#KEY3_VALUETYPE#, Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>> dict2;
+            if(!dict.TryGetValue(key2, out dict2))
+            {
+                dict2 = new Dictionary<#KEY3_VALUETYPE#, Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>>();
+                dict.Add(key2, dict2);
+            }
+
+            Dictionary<#KEY4_VALUETYPE#, #TABLENAME#> dict3;
+            if(!dict2.TryGetValue(key3, out dict3))
+            {
+                dict3 = new Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>();
+                dict2.Add(key3, dict3);
+            }
+
+            if(!dict3.TryGetValue(key4, out desc))
+            {
+                desc = new #TABLENAME#();
+                dict3.Add(key4, desc);
+                return false;
+            }
+            return true;
+        }
+        #FINDER_4KEY_END#
         #ITERATOR_END#
     }
 }

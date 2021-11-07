@@ -49,6 +49,7 @@ namespace Application.Editor
             if(!GenerateConfigManagerScript())
                 return;
             
+            UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
             AssetDatabase.Refresh();
         }
 
@@ -641,13 +642,107 @@ namespace Application.Editor
                                 {
                                     text = text.Replace("#KEY2_VALUETYPE#", m_ValueTypeLine[1]);
                                 }
-                                if (text.IndexOf("#KEY1_NAME#") != -1)
+                                content += text + "\n";
+                            }
+                        }
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#FINDER_3KEY_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#FINDER_3KEY_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#FINDER_3KEY_END#\"");
+                            return false;
+                        }
+                        // 处理三key
+                        if(m_KeyIndices.Length != 3)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+
+                        foreach(var line in subLines)
+                        {
+                            string label = ExtractFlag(line);
+                            if(string.IsNullOrEmpty(label))
+                            { // 无标签
+                                content += line + "\n";
+                            }
+                            else
+                            {
+                                string text = line;
+                                if (text.IndexOf("#TABLENAME#") != -1)
                                 {
-                                    text = text.Replace("#KEY1_NAME#", m_ColumnLine[m_KeyIndices[0]]);
+                                    text = text.Replace("#TABLENAME#", tableName);
                                 }
-                                if (text.IndexOf("#KEY2_NAME#") != -1)
+                                if (text.IndexOf("#KEY1_VALUETYPE#") != -1)
                                 {
-                                    text = text.Replace("#KEY2_NAME#", m_ColumnLine[m_KeyIndices[1]]);
+                                    text = text.Replace("#KEY1_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
+                                }
+                                if (text.IndexOf("#KEY2_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY2_VALUETYPE#", m_ValueTypeLine[1]);
+                                }
+                                if (text.IndexOf("#KEY3_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY3_VALUETYPE#", m_ValueTypeLine[2]);
+                                }
+                                content += text + "\n";
+                            }
+                        }
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#FINDER_4KEY_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#FINDER_4KEY_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#FINDER_4KEY_END#\"");
+                            return false;
+                        }
+                        // 处理四key
+                        if(m_KeyIndices.Length != 4)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+
+                        foreach(var line in subLines)
+                        {
+                            string label = ExtractFlag(line);
+                            if(string.IsNullOrEmpty(label))
+                            { // 无标签
+                                content += line + "\n";
+                            }
+                            else
+                            {
+                                string text = line;
+                                if (text.IndexOf("#TABLENAME#") != -1)
+                                {
+                                    text = text.Replace("#TABLENAME#", tableName);
+                                }
+                                if (text.IndexOf("#KEY1_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY1_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
+                                }
+                                if (text.IndexOf("#KEY2_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY2_VALUETYPE#", m_ValueTypeLine[1]);
+                                }
+                                if (text.IndexOf("#KEY3_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY3_VALUETYPE#", m_ValueTypeLine[2]);
+                                }
+                                if (text.IndexOf("#KEY4_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY4_VALUETYPE#", m_ValueTypeLine[3]);
                                 }
                                 content += text + "\n";
                             }

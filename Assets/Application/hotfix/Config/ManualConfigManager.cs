@@ -35,7 +35,21 @@ namespace Application.Runtime
         protected override void InternalInit()
         {
             m_Sql = new SqlData(dataPath);
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            #endif
         }
+
+        #if UNITY_EDITOR
+        void OnPlayModeStateChanged(UnityEditor.PlayModeStateChange state)
+        {
+            if(state == UnityEditor.PlayModeStateChange.ExitingPlayMode)
+            {
+                m_Sql?.Close();
+                UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            }
+        }
+        #endif
 
         protected override void OnDestroy()
         {

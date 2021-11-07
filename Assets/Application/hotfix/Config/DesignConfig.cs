@@ -15,7 +15,8 @@ namespace Application.Runtime
     {
         public string Building_ID;
         public string Name;
-        public float HP;
+        public string Address;
+        public int HP;
         public bool Male;
         public List<string> variant1 = new List<string>();
         public List<int> variant2 = new List<int>();
