@@ -8,13 +8,13 @@ namespace Application.Runtime
 {
     public partial class ConfigManager : Singleton<ConfigManager>
     {
-        private Dictionary<string, button> m_buttonDict = new Dictionary<string, button>();
-        public button GetbuttonByID(string key1)
+        private Dictionary<string, buttonConfig> m_buttonConfigDict = new Dictionary<string, buttonConfig>();
+        public buttonConfig GetbuttonConfigByID(string key1)
         {
-            const string tableName = "button";
+            const string tableName = "buttonConfig";
   
-            button desc = null;
-            if(FindbuttonData(key1, ref desc))
+            buttonConfig desc = null;
+            if(FindbuttonConfigData(key1, ref desc))
                 return desc;
 
             SqliteDataReader reader = m_Sql.ReadTable(tableName, "button_id", "=", key1.ToString());
@@ -32,24 +32,24 @@ namespace Application.Runtime
 
             return bFind ? desc : null;
         }
-        private bool FindbuttonData(string key1, ref button desc)
+        private bool FindbuttonConfigData(string key1, ref buttonConfig desc)
         {
-            if(!m_buttonDict.TryGetValue(key1, out desc))
+            if(!m_buttonConfigDict.TryGetValue(key1, out desc))
             {
-                desc = new button();
-                m_buttonDict.Add(key1, desc);
+                desc = new buttonConfig();
+                m_buttonConfigDict.Add(key1, desc);
                 return false;
             }
             return true;
         }
 
-        private Dictionary<string, character> m_characterDict = new Dictionary<string, character>();
-        public character GetcharacterByID(string key1)
+        private Dictionary<string, characterConfig> m_characterConfigDict = new Dictionary<string, characterConfig>();
+        public characterConfig GetcharacterConfigByID(string key1)
         {
-            const string tableName = "character";
+            const string tableName = "characterConfig";
   
-            character desc = null;
-            if(FindcharacterData(key1, ref desc))
+            characterConfig desc = null;
+            if(FindcharacterConfigData(key1, ref desc))
                 return desc;
 
             SqliteDataReader reader = m_Sql.ReadTable(tableName, "character_id", "=", key1.ToString());
@@ -85,24 +85,24 @@ namespace Application.Runtime
 
             return bFind ? desc : null;
         }
-        private bool FindcharacterData(string key1, ref character desc)
+        private bool FindcharacterConfigData(string key1, ref characterConfig desc)
         {
-            if(!m_characterDict.TryGetValue(key1, out desc))
+            if(!m_characterConfigDict.TryGetValue(key1, out desc))
             {
-                desc = new character();
-                m_characterDict.Add(key1, desc);
+                desc = new characterConfig();
+                m_characterConfigDict.Add(key1, desc);
                 return false;
             }
             return true;
         }
 
-        private Dictionary<int, Dictionary<int, dialogue>> m_dialogueDict = new Dictionary<int, Dictionary<int, dialogue>>();
-        public dialogue GetdialogueByID(int key1, int key2)
+        private Dictionary<int, Dictionary<int, dialogueConfig>> m_dialogueConfigDict = new Dictionary<int, Dictionary<int, dialogueConfig>>();
+        public dialogueConfig GetdialogueConfigByID(int key1, int key2)
         {
-            const string tableName = "dialogue";
+            const string tableName = "dialogueConfig";
   
-            dialogue desc = null;
-            if(FinddialogueData(key1, key2, ref desc))
+            dialogueConfig desc = null;
+            if(FinddialogueConfigData(key1, key2, ref desc))
                 return desc;
 
             SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"dialogue_id", "dialogue_order"}, "=", new string[] {key1.ToString(), key2.ToString()});
@@ -121,60 +121,31 @@ namespace Application.Runtime
 
             return bFind ? desc : null;
         }
-        private bool FinddialogueData(int key1, int key2, ref dialogue desc)
+        private bool FinddialogueConfigData(int key1, int key2, ref dialogueConfig desc)
         {
-            Dictionary<int, dialogue> dict;
-            if(!m_dialogueDict.TryGetValue(key1, out dict))
+            Dictionary<int, dialogueConfig> dict;
+            if(!m_dialogueConfigDict.TryGetValue(key1, out dict))
             {
-                dict = new Dictionary<int, dialogue>();
-                m_dialogueDict.Add(key1, dict);
+                dict = new Dictionary<int, dialogueConfig>();
+                m_dialogueConfigDict.Add(key1, dict);
             }
 
             if(!dict.TryGetValue(key2, out desc))
             {
-                desc = new dialogue();
+                desc = new dialogueConfig();
                 dict.Add(key2, desc);
                 return false;
             }
             return true;
         }      
 
-        private Dictionary<string, initialization> m_initializationDict = new Dictionary<string, initialization>();
-        public initialization GetinitializationByID(string key1)
+        private Dictionary<int, MonsterConfig> m_MonsterConfigDict = new Dictionary<int, MonsterConfig>();
+        public MonsterConfig GetMonsterConfigByID(int key1)
         {
-            const string tableName = "initialization";
+            const string tableName = "MonsterConfig";
   
-            initialization desc = null;
-            if(FindinitializationData(key1, ref desc))
-                return desc;
-
-            SqliteDataReader reader = m_Sql.ReadTable(tableName, "initialization_id", "=", key1.ToString());
-            bool bFind = reader.HasRows;
-            while(reader.Read())
-            {                
-                desc.initialization_id = reader.GetString(reader.GetOrdinal("initialization_id"));
-            }
-
-            return bFind ? desc : null;
-        }
-        private bool FindinitializationData(string key1, ref initialization desc)
-        {
-            if(!m_initializationDict.TryGetValue(key1, out desc))
-            {
-                desc = new initialization();
-                m_initializationDict.Add(key1, desc);
-                return false;
-            }
-            return true;
-        }
-
-        private Dictionary<int, Monster> m_MonsterDict = new Dictionary<int, Monster>();
-        public Monster GetMonsterByID(int key1)
-        {
-            const string tableName = "Monster";
-  
-            Monster desc = null;
-            if(FindMonsterData(key1, ref desc))
+            MonsterConfig desc = null;
+            if(FindMonsterConfigData(key1, ref desc))
                 return desc;
 
             SqliteDataReader reader = m_Sql.ReadTable(tableName, "ID", "=", key1.ToString());
@@ -189,24 +160,24 @@ namespace Application.Runtime
 
             return bFind ? desc : null;
         }
-        private bool FindMonsterData(int key1, ref Monster desc)
+        private bool FindMonsterConfigData(int key1, ref MonsterConfig desc)
         {
-            if(!m_MonsterDict.TryGetValue(key1, out desc))
+            if(!m_MonsterConfigDict.TryGetValue(key1, out desc))
             {
-                desc = new Monster();
-                m_MonsterDict.Add(key1, desc);
+                desc = new MonsterConfig();
+                m_MonsterConfigDict.Add(key1, desc);
                 return false;
             }
             return true;
         }
 
-        private Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<int, Player>>>> m_PlayerDict = new Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<int, Player>>>>();
-        public Player GetPlayerByID(string key1, string key2, string key3, int key4)
+        private Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<int, PlayerConfig>>>> m_PlayerConfigDict = new Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<int, PlayerConfig>>>>();
+        public PlayerConfig GetPlayerConfigByID(string key1, string key2, string key3, int key4)
         {
-            const string tableName = "Player";
+            const string tableName = "PlayerConfig";
   
-            Player desc = null;
-            if(FindPlayerData(key1, key2, key3, key4, ref desc))
+            PlayerConfig desc = null;
+            if(FindPlayerConfigData(key1, key2, key3, key4, ref desc))
                 return desc;
 
             SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"Building_ID", "Name", "Address", "HP"}, "=", new string[] {key1.ToString(), key2.ToString(), key3.ToString(), key4.ToString()});
@@ -218,7 +189,7 @@ namespace Application.Runtime
                 desc.Address = reader.GetString(reader.GetOrdinal("Address"));
                 desc.HP = reader.GetInt32(reader.GetOrdinal("HP"));
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
-                desc.MonsterDesc = GetMonsterByID(reader.GetInt32(reader.GetOrdinal("MonsterDesc")));
+                desc.MonsterDesc = GetMonsterConfigByID(reader.GetInt32(reader.GetOrdinal("MonsterDesc")));
                 Parse(ref desc.variant1, reader.GetString(reader.GetOrdinal("variant1")));
                 Parse(ref desc.variant2, reader.GetString(reader.GetOrdinal("variant2")));
                 Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
@@ -227,45 +198,45 @@ namespace Application.Runtime
 
             return bFind ? desc : null;
         }
-        private bool FindPlayerData(string key1, string key2, string key3, int key4, ref Player desc)
+        private bool FindPlayerConfigData(string key1, string key2, string key3, int key4, ref PlayerConfig desc)
         {
-            Dictionary<string, Dictionary<string, Dictionary<int, Player>>> dict;
-            if(!m_PlayerDict.TryGetValue(key1, out dict))
+            Dictionary<string, Dictionary<string, Dictionary<int, PlayerConfig>>> dict;
+            if(!m_PlayerConfigDict.TryGetValue(key1, out dict))
             {
-                dict = new Dictionary<string, Dictionary<string, Dictionary<int, Player>>>();
-                m_PlayerDict.Add(key1, dict);
+                dict = new Dictionary<string, Dictionary<string, Dictionary<int, PlayerConfig>>>();
+                m_PlayerConfigDict.Add(key1, dict);
             }
 
-            Dictionary<string, Dictionary<int, Player>> dict2;
+            Dictionary<string, Dictionary<int, PlayerConfig>> dict2;
             if(!dict.TryGetValue(key2, out dict2))
             {
-                dict2 = new Dictionary<string, Dictionary<int, Player>>();
+                dict2 = new Dictionary<string, Dictionary<int, PlayerConfig>>();
                 dict.Add(key2, dict2);
             }
 
-            Dictionary<int, Player> dict3;
+            Dictionary<int, PlayerConfig> dict3;
             if(!dict2.TryGetValue(key3, out dict3))
             {
-                dict3 = new Dictionary<int, Player>();
+                dict3 = new Dictionary<int, PlayerConfig>();
                 dict2.Add(key3, dict3);
             }
 
             if(!dict3.TryGetValue(key4, out desc))
             {
-                desc = new Player();
+                desc = new PlayerConfig();
                 dict3.Add(key4, desc);
                 return false;
             }
             return true;
         }
 
-        private Dictionary<string, skill> m_skillDict = new Dictionary<string, skill>();
-        public skill GetskillByID(string key1)
+        private Dictionary<string, skillConfig> m_skillConfigDict = new Dictionary<string, skillConfig>();
+        public skillConfig GetskillConfigByID(string key1)
         {
-            const string tableName = "skill";
+            const string tableName = "skillConfig";
   
-            skill desc = null;
-            if(FindskillData(key1, ref desc))
+            skillConfig desc = null;
+            if(FindskillConfigData(key1, ref desc))
                 return desc;
 
             SqliteDataReader reader = m_Sql.ReadTable(tableName, "skill_id", "=", key1.ToString());
@@ -312,24 +283,24 @@ namespace Application.Runtime
 
             return bFind ? desc : null;
         }
-        private bool FindskillData(string key1, ref skill desc)
+        private bool FindskillConfigData(string key1, ref skillConfig desc)
         {
-            if(!m_skillDict.TryGetValue(key1, out desc))
+            if(!m_skillConfigDict.TryGetValue(key1, out desc))
             {
-                desc = new skill();
-                m_skillDict.Add(key1, desc);
+                desc = new skillConfig();
+                m_skillConfigDict.Add(key1, desc);
                 return false;
             }
             return true;
         }
 
-        private Dictionary<string, stage> m_stageDict = new Dictionary<string, stage>();
-        public stage GetstageByID(string key1)
+        private Dictionary<string, stageConfig> m_stageConfigDict = new Dictionary<string, stageConfig>();
+        public stageConfig GetstageConfigByID(string key1)
         {
-            const string tableName = "stage";
+            const string tableName = "stageConfig";
   
-            stage desc = null;
-            if(FindstageData(key1, ref desc))
+            stageConfig desc = null;
+            if(FindstageConfigData(key1, ref desc))
                 return desc;
 
             SqliteDataReader reader = m_Sql.ReadTable(tableName, "stage_id", "=", key1.ToString());
@@ -343,12 +314,12 @@ namespace Application.Runtime
 
             return bFind ? desc : null;
         }
-        private bool FindstageData(string key1, ref stage desc)
+        private bool FindstageConfigData(string key1, ref stageConfig desc)
         {
-            if(!m_stageDict.TryGetValue(key1, out desc))
+            if(!m_stageConfigDict.TryGetValue(key1, out desc))
             {
-                desc = new stage();
-                m_stageDict.Add(key1, desc);
+                desc = new stageConfig();
+                m_stageConfigDict.Add(key1, desc);
                 return false;
             }
             return true;

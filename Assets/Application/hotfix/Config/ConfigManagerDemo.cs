@@ -13,7 +13,7 @@ namespace Application.Runtime
             yield return new WaitForSeconds(1);
 
 
-            Player player = ConfigManager.Instance.GetPlayerByID("1", "peter", "shanghai", 100);
+            PlayerConfig player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 100);
                 if(player != null)
                 {
                     Debug.Log(player.Building_ID);
@@ -21,7 +21,7 @@ namespace Application.Runtime
                     Debug.Log(player.HP);
                     Debug.Log(player.Male);
                 }
-            player = ConfigManager.Instance.GetPlayerByID("1", "peter", "shanghai", 100);
+            player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 100);
         }
     }
 }

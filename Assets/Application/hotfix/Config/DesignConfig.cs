@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Application.Runtime
 {
-    public class button
+    public class buttonConfig
     {
         public string button_id;
         public int duration_time;
@@ -14,7 +14,7 @@ namespace Application.Runtime
         public string button_content;
     }
 
-    public class character
+    public class characterConfig
     {
         public string character_id;
         public float radius;
@@ -43,7 +43,7 @@ namespace Application.Runtime
         public float deadbody_recovery_delay;
     }
 
-    public class dialogue
+    public class dialogueConfig
     {
         public int dialogue_id;
         public int dialogue_order;
@@ -55,12 +55,7 @@ namespace Application.Runtime
         public string dialogue_content;
     }
 
-    public class initialization
-    {
-        public string initialization_id;
-    }
-
-    public class Monster
+    public class MonsterConfig
     {
         public int ID;
         public string Name;
@@ -68,7 +63,7 @@ namespace Application.Runtime
         public bool Male;
     }
 
-    public class Player
+    public class PlayerConfig
     {
         public string Building_ID;
         public string Name;
@@ -78,11 +73,11 @@ namespace Application.Runtime
         public List<string> variant1 = new List<string>();
         public List<int> variant2 = new List<int>();
         public List<float> variant3 = new List<float>();
-        public Monster MonsterDesc;
+        public MonsterConfig MonsterDesc;
         public Dictionary<int, string> variant4 = new Dictionary<int, string>();
     }
 
-    public class skill
+    public class skillConfig
     {
         public string skill_id;
         public float skill_cd;
@@ -122,7 +117,7 @@ namespace Application.Runtime
         public int perform_bullet_type;
     }
 
-    public class stage
+    public class stageConfig
     {
         public string stage_id;
         public string stage_editor_id;

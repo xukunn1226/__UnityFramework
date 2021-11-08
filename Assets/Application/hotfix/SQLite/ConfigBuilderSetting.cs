@@ -12,5 +12,6 @@ namespace Application.Runtime
         static public string    ConfigManagerTemplateFilePath   = "Assets/Application/hotfix/Config/ConfigManager.cs.txt";
         static public string    DatabaseFilePath                = "Assets/Application/hotfix/SQLite/Editor/config.db";      // 导出的数据库
         static public string    Namespace                       = "Application.Runtime";
+        static public string    Suffix                          = "Config";
     }
 }

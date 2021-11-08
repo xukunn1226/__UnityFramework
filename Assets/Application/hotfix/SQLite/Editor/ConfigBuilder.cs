@@ -22,7 +22,7 @@ namespace Application.Editor
         static private int[]        m_KeyIndices;       // 关键字所在列的索引
         static private SqlData      m_Sql;
         static private string       m_Info;
-        static private string       m_Suffix            = "Table";
+        static private bool         m_SkipTheFile;
 
         static ConfigBuilder()
         {
@@ -81,6 +81,10 @@ namespace Application.Editor
                     m_Info += info + "\n";
                     return false;
                 }
+
+                if(m_SkipTheFile)
+                    continue;
+                    
                 if(!ParseObjectFromCsv(file, out info))
                 {
                     Debug.LogError(info);
@@ -151,6 +155,7 @@ namespace Application.Editor
             }
 
             // find the "key"
+            m_SkipTheFile = m_FlagLine.Count((obj) => (obj.ToLower().StartsWith("client") || obj.ToLower().StartsWith("all"))) == 0;
             int count = m_FlagLine.Count((obj) => (obj.ToLower().StartsWith("key")));
             if(count == 0)
             {
@@ -168,7 +173,7 @@ namespace Application.Editor
             {
                 try
                 {
-                    if(NeedImport(m_FlagLine, i))
+                    if(ColumnNeedImport(m_FlagLine, i))
                     {
                         columnList.Add(m_ColumnLine[i]);
                         valueTypeList.Add(m_ValueTypeLine[i]);
@@ -200,7 +205,7 @@ namespace Application.Editor
         static private bool ParseObjectFromCsv(string file, out string error)
         {
             error = null;
-            string tableName = Path.GetFileNameWithoutExtension(file);
+            string tableName = GetFinalTableName(Path.GetFileNameWithoutExtension(file));
             m_ScriptContent += "    public class " + tableName + "\n    {\n";
             for(int i = 0; i < m_ColumnLine.Length; ++i)
             {
@@ -296,17 +301,22 @@ namespace Application.Editor
 
             if(valueType.StartsWith("reference@"))
             {
-                return valueType.Substring(valueType.IndexOf("@") + 1);
+                return GetFinalTableName(valueType.Substring(valueType.IndexOf("@") + 1));
             }            
             return null;
         }
 
-        static private bool NeedImport(string[] flags, int index)
+        static private bool ColumnNeedImport(string[] flags, int index)
         {
             if(index < 0 || index >= flags.Length)
                 throw new System.ArgumentOutOfRangeException($"index: {index} out of range [{flags.Length}]");
             return !flags[index].ToLower().Contains("server");
         }
+
+        // static private bool FileNeedImport(string file)
+        // {
+        //     int count = m_FlagLine.Count((obj) => (obj.ToLower().StartsWith("key")));
+        // }
 
         static private bool DoDBGenerated()
         {
@@ -343,6 +353,10 @@ namespace Application.Editor
                     m_Sql.Close();
                     return false;
                 }
+
+                if(m_SkipTheFile)
+                    continue;
+
                 string error = CreateTableFromCsv(file);
                 if(!string.IsNullOrEmpty(error))
                 {
@@ -361,7 +375,7 @@ namespace Application.Editor
 
         static private string CreateTableFromCsv(string file)
         {
-            string tableName = Path.GetFileNameWithoutExtension(file);
+            string tableName = GetFinalTableName(Path.GetFileNameWithoutExtension(file));
             m_Sql.CreateTable(tableName, m_ColumnLine, ConvertCustomizedValueTypesToSql(m_ValueTypeLine));
 
             for(int i = 4; i < m_AllLines.Length; ++i)
@@ -377,7 +391,7 @@ namespace Application.Editor
                 List<string> valList = new List<string>();
                 for(int j = 0; j < values.Length; ++j)
                 {
-                    if(NeedImport(m_FlagLine, j))
+                    if(ColumnNeedImport(m_FlagLine, j))
                         valList.Add(values[j]);
                 }
                 try
@@ -549,7 +563,11 @@ namespace Application.Editor
                                 m_Info += info + "\n";
                                 return false;
                             }
-                            string tableName = Path.GetFileNameWithoutExtension(file);
+
+                            if(m_SkipTheFile)
+                                continue;
+
+                            string tableName = GetFinalTableName(Path.GetFileNameWithoutExtension(file));
                             if(!ParseConfigObjectToManager(ref content, tableName, subLines))
                                 return false;
                             content += "\n";
@@ -641,7 +659,7 @@ namespace Application.Editor
                             }
 
                             string referencedTableName = m_ValueTypeLine[j].Substring(m_ValueTypeLine[j].IndexOf("@") + 1);
-                            content += subLines[0].Replace("#VARIANT#", m_ColumnLine[j]).Replace("#TABLENAME#", referencedTableName) + "\n";
+                            content += subLines[0].Replace("#VARIANT#", m_ColumnLine[j]).Replace("#TABLENAME#", GetFinalTableName(referencedTableName)) + "\n";
                         }
 
                         i = lastIndex;
@@ -1260,6 +1278,11 @@ namespace Application.Editor
                 }
             }
             return true;
+        }
+
+        static private string GetFinalTableName(string tableName)
+        {
+            return string.Format($"{tableName}{ConfigBuilderSetting.Suffix}");
         }
 
         static private string GetSQLFunctionNameByValueType(string valueType)
