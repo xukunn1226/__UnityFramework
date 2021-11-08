@@ -1,0 +1,4 @@
+对白id,对白序号,对白类型,对白人物,人物资源,语音,持续时间,对白内容
+dialogue_id,dialogue_order,dialogue_type,dialogue_character,character_model,dialogue_voice,duration_time,dialogue_content
+key,key,client,client,client,client,client,client
+int,int,int,string,string,string,int,string

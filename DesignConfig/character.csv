@@ -1,0 +1,5 @@
+单位id,碰撞半径,重量（避让权重）,移动速度,耐久值上限,每秒耐久恢复,技能值上限,每秒技能值恢复,普攻技能ID,主动技能ID,索敌范围,协助范围,外观id,头像icon,受击位置高度,血条位置高度,血条尺寸类型,假等级，临时用于显示,单位类型(1堡垒2直立3车辆4多足爬行5飞行）,移动动画播放速率,被击表现（0无动画仅闪白及动作停顿、1待机时有受击动画）,模型特效缩放比例,出生特效,回收特效,尸体回收时间
+character_id,radius,weight,move_velocity,hp_max,hp_recover,sp_max,sp_recover,attack_id,skill_id,search_radius,assist_radius,mesh_id,button_icon,target_height,hpbar_height,hpbar_type,show_level,unit_type,move_animetion_playspeed,hit_perform,scale,born_effect,recovery_effect,deadbody_recovery_delay
+key,all,all,all,all,all,all,all,all,all,all,all,client,client,client,client,client,client,client,client,client,client,client,client,client
+string,float,float,float,float,float,float,float,string,string,float,float,string,string,float,float,string,int,int,float,int,float,string,string,float
+1001,9,10,2,5000,1,100,5,10011,0,10,5,player01,,5,10,hpbar_xl,5,1,0.8,0,1,FX_Army_Appear,FX_Army_Appear,

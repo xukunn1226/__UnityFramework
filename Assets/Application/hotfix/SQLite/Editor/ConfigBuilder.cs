@@ -21,6 +21,8 @@ namespace Application.Editor
         static private string[]     m_ValueTypeLine;    // the forth line
         static private int[]        m_KeyIndices;       // 关键字所在列的索引
         static private SqlData      m_Sql;
+        static private string       m_Info;
+        static private string       m_Suffix            = "Table";
 
         static ConfigBuilder()
         {
@@ -40,6 +42,16 @@ namespace Application.Editor
         [MenuItem("Tools/Config Build %h")]
         static private void Run()
         {
+            DoRun();            
+            
+            UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
+            AssetDatabase.Refresh();
+        }
+
+        static public void DoRun()
+        {
+            m_Info = null;
+
             if(!DoDBGenerated())
                 return;
 
@@ -48,9 +60,6 @@ namespace Application.Editor
 
             if(!GenerateConfigManagerScript())
                 return;
-            
-            UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
-            AssetDatabase.Refresh();
         }
 
         static private bool GenerateDesignConfigScript()
@@ -61,18 +70,27 @@ namespace Application.Editor
             string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
             foreach(var file in files)
             {
-                Debug.Log($"创建表结构对象: {Path.GetFileName(file)}");
+                string info = string.Format($"创建表结构对象: {Path.GetFileName(file)}");
+                Debug.Log(info);
+                m_Info += info + "\n";
+
                 if(!Prepare(file))
                 {
-                    Debug.LogError($"DesignConfig.cs导出失败：格式出错   {file}");
+                    info = string.Format($"DesignConfig.cs导出失败：格式出错   {file}");
+                    Debug.LogError(info);
+                    m_Info += info + "\n";
                     return false;
                 }
-                ParseObjectFromCsv(file);
+                if(!ParseObjectFromCsv(file, out info))
+                {
+                    Debug.LogError(info);
+                    m_Info += info + "\n";
+                    return false;
+                }
             }
-            Debug.Log($"配置脚本导出完成");
+            Debug.Log($"配置脚本DesignConfig.cs导出完成");
 
             m_ScriptContent += "}";
-
 
             // 脚本代码成功生成再删除老脚本
             try
@@ -86,6 +104,7 @@ namespace Application.Editor
             catch(Exception e)
             {
                 Debug.LogError(e.Message);
+                m_Info += e.Message + "\n";
                 return false;
             }
 
@@ -108,12 +127,15 @@ namespace Application.Editor
             catch(Exception e)
             {
                 Debug.LogError(e.Message);
+                m_Info += e.Message + "\n";
                 return false;
             }
 
             if(m_AllLines.Length < 4)
             {
-                Debug.LogError($"配置起始关键行不足：{m_AllLines.Length} < 4   ");
+                string info = string.Format($"配置起始关键行不足：{m_AllLines.Length} < 4   ");
+                Debug.LogError(info);
+                m_Info += info + "\n";
                 return false;
             }
 
@@ -122,7 +144,9 @@ namespace Application.Editor
             m_ValueTypeLine = m_AllLines[3].Split(',');
             if(m_ColumnLine.Length != m_ValueTypeLine.Length || m_ColumnLine.Length != m_FlagLine.Length)
             {
-                Debug.LogError($"关键行长度不一致： column length[{m_ColumnLine.Length}]   flag length[{m_FlagLine.Length}]  valueType length[{m_ValueTypeLine.Length}]");
+                string info = string.Format($"关键行长度不一致： column length[{m_ColumnLine.Length}]   flag length[{m_FlagLine.Length}]  valueType length[{m_ValueTypeLine.Length}]");
+                Debug.LogError(info);
+                m_Info += info + "\n";
                 return false;
             }
 
@@ -130,7 +154,9 @@ namespace Application.Editor
             int count = m_FlagLine.Count((obj) => (obj.ToLower().StartsWith("key")));
             if(count == 0)
             {
-                Debug.LogError("配置缺少key");
+                string info = string.Format("配置缺少key");
+                Debug.LogError(info);
+                m_Info += info + "\n";
                 return false;
             }
             m_KeyIndices = new int[count];
@@ -140,15 +166,24 @@ namespace Application.Editor
             int index = 0;
             for(int i = 0; i < m_FlagLine.Length; ++i)
             {
-                if(NeedImport(m_FlagLine, i))
+                try
                 {
-                    columnList.Add(m_ColumnLine[i]);
-                    valueTypeList.Add(m_ValueTypeLine[i]);
-
-                    if(m_FlagLine[i].ToLower().StartsWith("key"))
+                    if(NeedImport(m_FlagLine, i))
                     {
-                        m_KeyIndices[index++] = columnList.Count - 1;
+                        columnList.Add(m_ColumnLine[i]);
+                        valueTypeList.Add(m_ValueTypeLine[i]);
+
+                        if (m_FlagLine[i].ToLower().StartsWith("key"))
+                        {
+                            m_KeyIndices[index++] = columnList.Count - 1;
+                        }
                     }
+                }
+                catch(System.Exception e)
+                {
+                    Debug.LogError(e.Message);
+                    m_Info += e.Message + "\n";
+                    return false;
                 }
             }
             m_ColumnLine = columnList.ToArray();
@@ -162,22 +197,29 @@ namespace Application.Editor
         // line2: comment
         // line3: client or server or all
         // line4: value type (int, float, bool, string, List<int>, List<float>, List<string>)
-        static private void ParseObjectFromCsv(string file)
+        static private bool ParseObjectFromCsv(string file, out string error)
         {
+            error = null;
             string tableName = Path.GetFileNameWithoutExtension(file);
             m_ScriptContent += "    public class " + tableName + "\n    {\n";
             for(int i = 0; i < m_ColumnLine.Length; ++i)
             {
-                // if(NeedImport(m_FlagLine, i))
-                    m_ScriptContent += "        public " + ConvertValueTypeToText(m_ValueTypeLine[i]) + " " + m_ColumnLine[i];
-                    m_ScriptContent += AppendNewIfNeed(m_ValueTypeLine[i]);
-                    m_ScriptContent += ";\n";
+                string typeString = ConvertValueTypeToText(m_ValueTypeLine[i]);
+                if(string.IsNullOrEmpty(typeString))
+                {
+                    error = string.Format($"非法的值类型:  {m_ValueTypeLine[i]}  检查第{i + 1}列");
+                    return false;
+                }
+                
+                m_ScriptContent += "        public " + typeString + " " + m_ColumnLine[i];
+                m_ScriptContent += AppendInitIfNeed(m_ValueTypeLine[i]);
+                m_ScriptContent += ";\n";
             }
             m_ScriptContent += "    }\n\n";
+            return true;
         }
 
-
-        static private string AppendNewIfNeed(string valueType)
+        static private string AppendInitIfNeed(string valueType)
         {
             valueType = valueType.ToLower();
             if(valueType == "array<string>")
@@ -255,15 +297,14 @@ namespace Application.Editor
             if(valueType.StartsWith("reference@"))
             {
                 return valueType.Substring(valueType.IndexOf("@") + 1);
-            }
-            Debug.LogError($"ConvertValueTypeToText illegal string:  {valueType}");
+            }            
             return null;
         }
 
         static private bool NeedImport(string[] flags, int index)
         {
             if(index < 0 || index >= flags.Length)
-                throw new System.ArgumentOutOfRangeException("index");
+                throw new System.ArgumentOutOfRangeException($"index: {index} out of range [{flags.Length}]");
             return !flags[index].ToLower().Contains("server");
         }
 
@@ -280,9 +321,9 @@ namespace Application.Editor
             catch(Exception e)
             {
                 Debug.LogError(e.Message);
+                m_Info += e.Message + "\n";
                 return false;
             }
-
 
             m_Sql = new SqlData(ConfigBuilderSetting.DatabaseFilePath);
 
@@ -290,14 +331,26 @@ namespace Application.Editor
             string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
             foreach(var file in files)
             {
-                Debug.Log($"创建表数据: {Path.GetFileName(file)}");
+                string info = string.Format($"创建表数据: {Path.GetFileName(file)}");
+                Debug.Log(info);
+                m_Info += info + "\n";
+
                 if(!Prepare(file))
                 {
-                    Debug.LogError($"数据库导出失败：格式出错   {file}");
+                    info = string.Format($"数据库导出失败：格式出错   {file}");
+                    Debug.LogError(info);
+                    m_Info += info + "\n";
                     m_Sql.Close();
                     return false;
                 }
-                CreateTableFromCsv(file);
+                string error = CreateTableFromCsv(file);
+                if(!string.IsNullOrEmpty(error))
+                {
+                    Debug.LogError(error);
+                    m_Info += error + "\n";
+                    m_Sql.Close();
+                    return false;
+                }
             }
             Debug.Log($"数据库导出完成: {ConfigBuilderSetting.DatabaseFilePath}");
 
@@ -306,7 +359,7 @@ namespace Application.Editor
             return true;
         }
 
-        static private void CreateTableFromCsv(string file)
+        static private string CreateTableFromCsv(string file)
         {
             string tableName = Path.GetFileNameWithoutExtension(file);
             m_Sql.CreateTable(tableName, m_ColumnLine, ConvertCustomizedValueTypesToSql(m_ValueTypeLine));
@@ -315,6 +368,11 @@ namespace Application.Editor
             {
                 string[] values = m_AllLines[i].Split(',');
 
+                if(values.Length != m_FlagLine.Length)
+                {
+                    return string.Format($"检查是否有配置非法字符\",\"：第{i + 1}行");
+                }
+
                 // 过滤服务器字段
                 List<string> valList = new List<string>();
                 for(int j = 0; j < values.Length; ++j)
@@ -322,8 +380,17 @@ namespace Application.Editor
                     if(NeedImport(m_FlagLine, j))
                         valList.Add(values[j]);
                 }
-                m_Sql.InsertValues(tableName, ConvertToSqlContents(valList.ToArray(), m_ValueTypeLine));
+                try
+                {
+                    m_Sql.InsertValues(tableName, ConvertToSqlContents(valList.ToArray(), m_ValueTypeLine));
+                }
+                catch(Exception e)
+                {
+                    Debug.LogError(e.Message);
+                    return e.Message;
+                }
             }
+            return null;
         }
 
         // 自定义的类型标签转化为SQLite的类型标签
@@ -398,14 +465,29 @@ namespace Application.Editor
         static private bool GenerateConfigManagerScript()
         {
             string content = null;
-            string[] lines = File.ReadAllLines(ConfigBuilderSetting.ConfigManagerTemplateFilePath);
-            string[] files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
+            string[] lines = null;
+            string[] files = null;
+            try
+            {
+                lines = File.ReadAllLines(ConfigBuilderSetting.ConfigManagerTemplateFilePath);
+                files = Directory.GetFiles(ConfigBuilderSetting.ConfigPath, "*.csv", SearchOption.AllDirectories);
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e.Message);
+                m_Info += e.Message + "\n";
+                return false;
+            }
 
             if(!ParseConfigManager(ref content, lines, files))
+            {
+                string error = string.Format($"ConfigManager导出失败");
+                Debug.LogError(error);
+                m_Info += error + "\n";
                 return false;
+            }
 
             content += "\n";
-
 
             // 脚本代码成功生成再删除老脚本
             try
@@ -419,6 +501,7 @@ namespace Application.Editor
             catch(Exception e)
             {
                 Debug.LogError(e.Message);
+                m_Info += e.Message + "\n";
                 return false;
             }
 
@@ -427,7 +510,8 @@ namespace Application.Editor
                 byte[] data = new UTF8Encoding(false).GetBytes(content);
                 fs.Write(data, 0, data.Length);
             }
-            Debug.Log($"ConfigManager导出完成");
+            string info = string.Format($"ConfigManager导出完成");
+            m_Info += info + "\n";
             return true;
         }
 
@@ -455,10 +539,14 @@ namespace Application.Editor
                         string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
                         foreach(var file in files)
                         {
-                            Debug.Log($"----ConfigManager.{Path.GetFileName(file)}");
+                            string info = string.Format($"----ConfigManager.{Path.GetFileName(file)}");
+                            Debug.Log(info);
+                            m_Info += info + "\n";
                             if (!Prepare(file))
                             {
-                                Debug.LogError($"ConfigManager导出失败：格式出错   {file}");
+                                info = string.Format($"ConfigManager导出失败：格式出错   {file}");
+                                Debug.LogError(info);
+                                m_Info += info + "\n";
                                 return false;
                             }
                             string tableName = Path.GetFileNameWithoutExtension(file);

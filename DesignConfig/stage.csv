@@ -1,0 +1,5 @@
+关卡ID,调用编辑器文件id,关卡准入等级
+stage_id,stage_editor_id,player_lv_requirement
+key,all,all
+string,string,int
+10001,10001,1

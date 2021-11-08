@@ -1,0 +1,4 @@
+按钮id,读条时间,出现特效,持续特效,读条特效,按钮图片,按钮文字
+button_id,duration_time,born_effect,continuous_effect,reading_effect,button_picture,button_content
+key,client,client,client,client,client,client
+string,int,string,string,string,string,string

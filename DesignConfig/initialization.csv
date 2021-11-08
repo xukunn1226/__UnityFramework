@@ -1,0 +1,5 @@
+初始化ID,玩家角色id,玩家初始角色等级,初始开放装备栏�?玩家初始装备,初始药品栏格�?初始背包格数,初始开启关�?,,
+initialization_id,character_id,character_lv,equipment_solt_id,equipment_id,potion_bag_capacity,item_bag_capacity,stage_id
+key,server,server,server,server,server,server,server
+string,string,int,array<string>,array<string>,int,int,string
+1,1001,1,weapon;body,,,2,10001
