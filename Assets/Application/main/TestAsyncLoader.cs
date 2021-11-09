@@ -8,17 +8,33 @@ namespace Application.Runtime
     public class TestAsyncLoader : MonoBehaviour
     {
         private TestLoadCube m_Inst = new TestLoadCube();
+        private IEnumerator m_Coroutine;
+        private PrefabLoaderAsync m_Loader;
 
         // Start is called before the first frame update
         void Start()
         {
-            StartCoroutine(Load("assets/res/players/symbol.prefab"));
+            // StartCoroutine(Load("assets/res/players/symbol.prefab"));
+
+            m_Loader = AssetManager.InstantiatePrefabAsync("assets/res/players/symbol.prefab");
+
+            // m_Coroutine = CoroutineA(1, "dd");
         }
 
         // Update is called once per frame
         void Update()
         {
+            // if(Input.anyKeyDown)
+            // {
+            //     bool next = m_Coroutine.MoveNext();
+            //     Debug.Log($"MoveNext: {next}");
+            // }
 
+            // if(Input.anyKeyDown)
+            {
+                bool next = m_Loader.MoveNext();
+                Debug.Log($"MoveNext: {next}");
+            }
         }
 
         void OnGUI()
@@ -29,14 +45,15 @@ namespace Application.Runtime
         private IEnumerator Load(string assetPath)
         {
             PrefabLoaderAsync loader = AssetManager.InstantiatePrefabAsync(assetPath);
-            while(!loader.IsDone())
-            {
-                Debug.Log(Time.frameCount);
-                yield return null;
-            }
+            // while(loader.MoveNext())
+            // {
+            //     Debug.Log(Time.frameCount);
+            //     yield return null;
+            // }
 
             // finish
             Debug.LogWarning("========== Finish    " + Time.frameCount);
+            yield break;
         }
 
         public IEnumerator CoroutineA(int arg1, string arg2)
@@ -46,7 +63,7 @@ namespace Application.Runtime
             Debug.Log("刚刚协程被暂停了一帧");
             yield return new WaitForSeconds(1.0f);
             Debug.Log("刚刚协程被暂停了一秒");
-            yield return (CoroutineB(arg1, arg2));
+            yield return StartCoroutine(CoroutineB(arg1, arg2));
             Debug.Log("CoroutineB运行结束后协程A才被唤醒");
             yield return new WaitForEndOfFrame();
             Debug.Log("在这一帧的最后，协程被唤醒");
