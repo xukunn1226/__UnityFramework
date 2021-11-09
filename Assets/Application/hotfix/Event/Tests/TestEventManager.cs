@@ -18,7 +18,7 @@ namespace Application.Runtime.Tests
         {
             if(GUI.Button(new Rect(100, 100, 200, 60), "Add Listener"))
             {
-                // m_Player.Start();
+                m_Player.AddListener();
             }
             if(GUI.Button(new Rect(100, 300, 200, 60), "Dispatch"))
             {
@@ -26,7 +26,7 @@ namespace Application.Runtime.Tests
             }
             if(GUI.Button(new Rect(100, 500, 200, 60), "Remove Listener"))
             {
-                // m_Player.OnDestroy();
+                m_Player.RemoveListener();
             }
 
             if(GUI.Button(new Rect(100, 700, 200, 60), "Test WeakReference"))

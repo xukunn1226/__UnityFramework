@@ -28,20 +28,14 @@ namespace Application.Runtime
             Delegate[] delegates = actions?.GetInvocationList();
             if(delegates != null)
             {
-                if(Array.Exists(delegates, item => item == (Delegate)action))
-                {
-                    Debug.LogWarning($"duplicated event listener: {type}.{action}");
-                }
-                else
-                {
-                    actions += action;
-                }
+                Debug.Assert(!Array.Exists(delegates, item => item == (Delegate)action));       // duplicated event listener                
+                actions += action;
             }
             else
             {
                 actions = action;
             }
-            m_Listeners[type] = actions;
+            m_Listeners[type] = actions;        // Action类似struct，非引用类型，修改后重新赋值
         }
 
         static public void RemoveEventListener(Enum type, Action<EventArgs> action)
@@ -123,11 +117,11 @@ namespace Application.Runtime
         }
     }    
 
-    static public class EventManagerExtensionEx
+    static public class EventManagerExtension
     {
-        static public void DispatchEx(this EventArgs args)
+        static public void Dispatch(this EventArgs args)
         {
-            EventManagerEx.Dispatch(args);
+            EventManager.Dispatch(args);
         }
     }
 }

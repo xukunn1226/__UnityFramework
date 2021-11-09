@@ -185,6 +185,12 @@
 	一种Shader变体收集打包以及编译优化的思路	https://answer.uwa4d.com/question/5da86670e84db43d6efbda72	https://mp.weixin.qq.com/s/9_Wl-cm-4ZF2lAl4FLnYxg	
 	扩展FPS组件，捕获帧率突变
 	https://mp.weixin.qq.com/s/sOeYNbYfn-iX7w2CT0E28g  谈谈游戏中常见的后处理技术
+	https://zhuanlan.zhihu.com/p/80677638   48行代码撸一个商业级的JoyStick
+
+
+
+
+	
 
 *************************************** UI框架设计 ***************************************
 	* 界面的制作、业务开发模式

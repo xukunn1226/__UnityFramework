@@ -165,7 +165,7 @@ namespace Framework.AssetManagement.Runtime
 #endif
         }
 
-        private bool IsDone()
+        public bool IsDone()
         {
 #if UNITY_EDITOR
             if(AssetManager.Instance.loaderType == LoaderType.FromEditor)

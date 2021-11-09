@@ -7,13 +7,13 @@ namespace Application.Runtime.Tests
     public class TestPlayer : MonoBehaviour
     {
         // Start is called before the first frame update
-        public void Start()
+        public void AddListener()
         {            
             EventManager.AddEventListener(HPEvent.HPChange, OnFoo1);
             EventManager.AddEventListener(HPEvent.HPChange, OnFoo2);
         }
 
-        public void OnDestroy()
+        public void RemoveListener()
         {
             EventManager.RemoveEventListener(HPEvent.HPChange, OnFoo1);
             EventManager.RemoveEventListener(HPEvent.HPChange, OnFoo2);
