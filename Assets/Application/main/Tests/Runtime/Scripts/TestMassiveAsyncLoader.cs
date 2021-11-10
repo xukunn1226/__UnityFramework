@@ -15,12 +15,19 @@ namespace Application.Runtime
             {
                 for(int i = 0; i < 1; ++i)
                     AsyncLoaderManager.Instance.AsyncLoad(s_AssetPathList[0], OnCompleted);
+                Destroy(gameObject);        // 测试发送异步加载请求的对象，如果在资源加载完成之前被销毁的情况，见OnCompleted
+                Debug.Log($"1. {Time.frameCount}");
             }
         }
         
         void OnCompleted(GameObject go)
         {
-            Debug.Log($"{Time.frameCount}");
+            Debug.Log($"2. {Time.frameCount}");
+            if(this == null)
+            { // 对象本身在资源加载完成之前可能已经销毁，需要判断
+                Debug.Log($"发送异步加载请求的对象已销毁    {Time.frameCount}");
+                return;
+            }
             go.transform.position = Random.insideUnitSphere * 5;
         }
     }
