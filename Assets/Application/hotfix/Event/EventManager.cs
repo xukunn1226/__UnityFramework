@@ -81,6 +81,20 @@ namespace Application.Runtime
             ReturnToPool(args);     // EventArgs使用完毕立即回收
         }
 
+        // 无参数事件类型
+        static public void Dispatch(Enum eventType)
+        {
+            Action<EventArgs> actions = GetEventList(eventType);
+            if (actions == null)
+            {
+                Debug.LogWarning($"Dispatch failed, because there is no {eventType} event listener");
+            }
+            else
+            {
+                actions?.Invoke(null);
+            }
+        }
+
         static public T Allocate<T>() where T : EventArgs, new()
         {
             EventArgs args;

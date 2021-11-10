@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace Application.Runtime
 {
-    public static class CoroutineEx
+    public static class CoroutineExtension
     {
         public static CoroutineHandler Start(this IEnumerator enumerator)
         {
@@ -14,6 +14,7 @@ namespace Application.Runtime
             return handler;
         }
     }
+
     public class CoroutineHandler
     {
         public IEnumerator Coroutine { get; private set; } = null;
@@ -39,14 +40,14 @@ namespace Application.Runtime
 
         public void Start()
         {
-            if (null != Coroutine)
+            if (null != Coroutine && !Running)
             {
                 Running = true;
-                CoroutineDriver.Run(CallWrapper());
+                CoroutineManager.Instance.StartCoroutine(CallWrapper());
             }
             else
             {
-                Debug.Log("Coroutine 未指定，避免直接调用该方法。");
+                Debug.LogWarning("Coroutine 未指定，避免直接调用该方法。");
             }
         }
 
@@ -76,7 +77,6 @@ namespace Application.Runtime
             return this;
         }
 
-        #region IEnumerator Wrapper
         IEnumerator CallWrapper()
         {
             yield return null;
@@ -98,37 +98,6 @@ namespace Application.Runtime
                 }
             }
             Finish();
-        }
-        #endregion
-
-        internal class CoroutineDriver : MonoBehaviour
-        {
-            static CoroutineDriver driver;
-            static CoroutineDriver Driver
-            {
-                get
-                {
-                    if (null == driver)
-                    {
-                        GameObject go = new GameObject("[CoroutineDriver]");
-                        driver = go.AddComponent<CoroutineDriver>();
-                        GameObject.DontDestroyOnLoad(go);
-                        go.hideFlags = HideFlags.HideAndDontSave;
-                    }
-                    return driver;
-                }
-            }
-            private void Awake()
-            {
-                if (null != driver && driver != this) //避免了跳场景导致的重复生成问题
-                {
-                    GameObject.Destroy(gameObject);
-                }
-            }
-            public static Coroutine Run(IEnumerator target)
-            {
-                return Driver.StartCoroutine(target);
-            }
         }
     }
 }
