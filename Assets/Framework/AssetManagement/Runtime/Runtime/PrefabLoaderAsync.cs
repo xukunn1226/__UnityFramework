@@ -165,7 +165,7 @@ namespace Framework.AssetManagement.Runtime
 #endif
         }
 
-        public bool IsDone()
+        private bool IsDone()
         {
 #if UNITY_EDITOR
             if(AssetManager.Instance.loaderType == LoaderType.FromEditor)
@@ -201,7 +201,7 @@ namespace Framework.AssetManagement.Runtime
             return m_Request.isDone;
         }
 
-        object IEnumerator.Current
+        public object Current
         {
             get { return asset; }
         }
