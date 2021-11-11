@@ -200,7 +200,7 @@ namespace AnimationInstancingModule.Runtime
 
                     // remove VertexCache
                     {
-                        vertexCache.onGetAnimTexture -= inst.animDataInst.GetAnimTexture;
+                        // vertexCache.onGetAnimTexture -= inst.animDataInst.GetAnimTexture;
                         --vertexCache.refCount;
                         if(vertexCache.refCount == 0)
                         {
@@ -225,6 +225,7 @@ namespace AnimationInstancingModule.Runtime
                 vertexCache.mesh = rendererCache.mesh;
                 vertexCache.blockWidth = inst.animDataInst.textureBlockWidth;
                 vertexCache.blockHeight = inst.animDataInst.textureBlockHeight;
+                vertexCache.animTexture = inst.animDataInst.animTexture;
                 vertexCache.shadowCastingMode = inst.shadowCastingMode;
                 vertexCache.receiveShadows = inst.receiveShadows;
                 vertexCache.layer = inst.layer;
@@ -232,7 +233,7 @@ namespace AnimationInstancingModule.Runtime
 
                 UnityEngine.Profiling.Profiler.EndSample();
             }
-            vertexCache.onGetAnimTexture += inst.animDataInst.GetAnimTexture;
+            // vertexCache.onGetAnimTexture += inst.animDataInst.GetAnimTexture;
             ++vertexCache.refCount;
             UnityEngine.Profiling.Profiler.EndSample();
             return vertexCache;
@@ -256,6 +257,8 @@ namespace AnimationInstancingModule.Runtime
                 materialBlock.instancingCount       = 0;
                 materialBlock.packageList           = new List<InstancingPackage>();
                 vertexCache.matBlockList.Add(materialsHashCode, materialBlock);
+
+                SetupMaterialBlockPropertyIfNeed(materialBlock, vertexCache);
             }
             materialBlock.onOverridePropertyBlock += inst.ExecutePropertyBlock;
             ++materialBlock.refCount;
@@ -265,15 +268,15 @@ namespace AnimationInstancingModule.Runtime
 
         private void SetupMaterialBlockPropertyIfNeed(MaterialBlock block, VertexCache vertexCache)
         {
-            if(block.isInitMaterial || vertexCache.GetAnimTexture() == null)
+            if(block.isInitMaterial)
                 return;
 
             block.isInitMaterial = true;
             for(int i = 0; i < block.subMeshCount; ++i)
             {
-                block.materials[i].SetTexture("_boneTexture", vertexCache.GetAnimTexture());
-                block.materials[i].SetInt("_boneTextureWidth", vertexCache.GetAnimTexture().width);
-                block.materials[i].SetInt("_boneTextureHeight", vertexCache.GetAnimTexture().height);
+                block.materials[i].SetTexture("_boneTexture", vertexCache.animTexture);
+                block.materials[i].SetInt("_boneTextureWidth", vertexCache.animTexture.width);
+                block.materials[i].SetInt("_boneTextureHeight", vertexCache.animTexture.height);
                 block.materials[i].SetInt("_boneTextureBlockWidth", vertexCache.blockWidth);
                 block.materials[i].SetInt("_boneTextureBlockHeight", vertexCache.blockHeight);
                 if(!useGPUInstancing)
@@ -395,10 +398,10 @@ namespace AnimationInstancingModule.Runtime
                     MaterialBlock materialBlock = rendererCache.materialBlock;
                     Debug.Assert(materialBlock != null);
 
-                    // 因有资源异步加载，在轮询中检测
-                    SetupMaterialBlockPropertyIfNeed(materialBlock, rendererCache.vertexCache);
-                    if(!materialBlock.isInitMaterial)
-                        continue;       // 资源仍未加载
+                    // // 因有资源异步加载，在轮询中检测
+                    // SetupMaterialBlockPropertyIfNeed(materialBlock, rendererCache.vertexCache);
+                    // if(!materialBlock.isInitMaterial)
+                    //     continue;       // 资源仍未加载
 
                     ++materialBlock.instancingCount;
 

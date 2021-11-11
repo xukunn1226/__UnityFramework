@@ -628,6 +628,7 @@ namespace AnimationInstancingModule.Runtime
                 writer.Write(m_TextureBlockHeight);
             }
 
+            // 动画数据有负值，以贴图格式保存下来会normalized，所以保存为二进制，运行时再转为texture
             string animTextureRawDataFilename = GetAnimationTextureRawDataFilename();
             using(FileStream fs = File.Open(animTextureRawDataFilename, FileMode.Create, FileAccess.Write))
             {
@@ -660,7 +661,7 @@ namespace AnimationInstancingModule.Runtime
             animData.manifest = AssetDatabase.LoadAssetAtPath<TextAsset>(GetManifestFilename());
 
             // add animation texture
-            animData.animTex = AssetDatabase.LoadAssetAtPath<TextAsset>(GetAnimationTextureRawDataFilename());
+            animData.animTexData = AssetDatabase.LoadAssetAtPath<TextAsset>(GetAnimationTextureRawDataFilename());
 
             // save Prefab
             GameObject animDataAsset = PrefabUtility.SaveAsPrefabAsset(animDataPrefab, GetAnimationDataPrefabFilename());

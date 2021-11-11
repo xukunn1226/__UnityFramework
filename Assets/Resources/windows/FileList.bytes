@@ -1,6 +1,6 @@
 {
   "Count": 47,
-  "TotalSize": 79493868,
+  "TotalSize": 79493865,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,7 +9,7 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "77e4bcd0cf186b3b95625e81a2d9da9b",
+      "FileHash": "4a554dd51e94d2dec9c382f6757bf739",
       "Size": 3342
     },
     {
@@ -84,8 +84,8 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/animationdata.ab",
-      "FileHash": "e1f8dcb352571b52eac8fafac7f75198",
-      "Size": 487008
+      "FileHash": "fb131a5ffa87578432346711923deec1",
+      "Size": 487005
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/mannequin.ab",

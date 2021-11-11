@@ -20,8 +20,8 @@ namespace AnimationInstancingModule.Runtime
         public int                                  textureBlockHeight  { get; private set; }       // read from manifest.bytes
         public List<AnimationInfo>                  aniInfos            { get; private set; }       // read from manifest.bytes
         private Dictionary<string, ExtraBoneInfo>   m_ExtraBoneInfos;                               // 绑点骨骼的所有动画矩阵
-        public TextAsset                            animTex;
-        private Texture2D                           m_AnimTexture;                                  // 注意：异步加载，可能为NULL
+        public TextAsset                            animTexData;
+        public Texture2D                            animTexture         { get; private set; }
         private AnimationInfo                       m_SearchInfo;
         private ComparerHash                        m_Comparer;
 
@@ -30,6 +30,7 @@ namespace AnimationInstancingModule.Runtime
             m_SearchInfo = new AnimationInfo();
             m_Comparer = new ComparerHash();
             
+            //////////// 解析manifest.bytes
             // 1、数据轻量级；2、且涉及到动画逻辑数据，所以同步加载最佳
             using(BinaryReader reader = new BinaryReader(new MemoryStream(manifest.bytes)))
             {
@@ -37,29 +38,25 @@ namespace AnimationInstancingModule.Runtime
                 aniInfos.Sort(m_Comparer);      // 提高后续二分法查找效率
                 PostprocessExtraBoneInfos();
                 ReadAnimationTexture(reader);
-            }
-            manifest = null;        // 已无用，可以立即释放
-        }
+            }            
+            // 已无用，可以立即释放
+            Resources.UnloadAsset(manifest);
 
-        void Start()
-        {
-            using(BinaryReader reader = new BinaryReader(new MemoryStream(animTex.bytes)))
+            //////////// 解析animTexData.bytes
+            using(BinaryReader reader = new BinaryReader(new MemoryStream(animTexData.bytes)))
             {
                 int textureWidth = reader.ReadInt32();
                 int textureHeight = reader.ReadInt32();
                 int byteSize = reader.ReadInt32();
                 byte[] bytes = new byte[byteSize];
                 bytes = reader.ReadBytes(byteSize);
-                m_AnimTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBAHalf, false, true);
-                m_AnimTexture.filterMode = FilterMode.Point;
-                m_AnimTexture.LoadRawTextureData(bytes);
-                m_AnimTexture.Apply(false, true);       // the texture is marked as no longer readable and memory is freed after uploading to GPU
+                animTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBAHalf, false, true);
+                animTexture.filterMode = FilterMode.Point;
+                animTexture.LoadRawTextureData(bytes);
+                animTexture.Apply(false, true);       // the texture is marked as no longer readable and memory is freed after uploading to GPU
             }
-        }
-
-        internal Texture2D GetAnimTexture()
-        {
-            return m_AnimTexture;
+            // 已无用，可以立即释放
+            Resources.UnloadAsset(animTexData);
         }
 
 #if UNITY_EDITOR

@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manifest: {fileID: 4900000, guid: bb8c2ca507d99304a92095956906e08f, type: 3}
-  animTex: {fileID: 4900000, guid: 92bd0257eded8704bbf5bf28d2349af4, type: 3}
+  animTexData: {fileID: 4900000, guid: 92bd0257eded8704bbf5bf28d2349af4, type: 3}

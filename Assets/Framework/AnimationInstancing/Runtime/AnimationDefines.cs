@@ -137,7 +137,7 @@ namespace AnimationInstancingModule.Runtime
     [System.Serializable]
     public class RendererCache
     {
-        public Mesh                             mesh;
+        public Mesh                             mesh;                   // SkinnedMeshRenderer.mesh
         public Material[]                       materials;              // materials.Length == mesh.subMeshCount        
         public int                              bonePerVertex   = 4;    // 每顶点受多少骨骼影响
         [NonSerialized] public VertexCache      vertexCache;
@@ -149,19 +149,14 @@ namespace AnimationInstancingModule.Runtime
     {
         public int                              nameHash;               // mesh name's hash
         public Mesh                             mesh;
-        public Dictionary<int, MaterialBlock>   matBlockList            = new Dictionary<int, MaterialBlock>();      // 同一个mesh可能搭配不同材质使用  key: materials' hash code
+        public Dictionary<int, MaterialBlock>   matBlockList            = new Dictionary<int, MaterialBlock>();      // 同一个mesh可能搭配不同材质使用  key:  hash code of mesh's name + materials' name
         public int                              blockWidth;
         public int                              blockHeight;
+        public Texture2D                        animTexture;
         public ShadowCastingMode                shadowCastingMode;
         public bool                             receiveShadows;
         public int                              layer;
-        public int                              refCount;               // 
-        public delegate Texture2D               animTextureHandler();
-        public event animTextureHandler         onGetAnimTexture;       // mesh对应的动画数据
-        public Texture2D                        GetAnimTexture()
-        {
-            return onGetAnimTexture?.Invoke();
-        }
+        public int                              refCount;               // 不同的实例(AnimationInstancing)可能共用VertexCache，故做引用计数管理
     }
 
     public class MaterialBlock
