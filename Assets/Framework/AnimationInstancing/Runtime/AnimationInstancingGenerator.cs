@@ -658,11 +658,9 @@ namespace AnimationInstancingModule.Runtime
             // add AnimationData component
             AnimationData animData = animDataPrefab.AddComponent<AnimationData>();
             animData.manifest = AssetDatabase.LoadAssetAtPath<TextAsset>(GetManifestFilename());
-            
-            // add SoftObject component
-            SoftObject texSoftObject = animDataPrefab.AddComponent<SoftObject>();
-            texSoftObject.assetPath = GetAnimationTextureRawDataFilename().ToLower();
-            animData.animTexSoftObject = texSoftObject;
+
+            // add animation texture
+            animData.animTex = AssetDatabase.LoadAssetAtPath<TextAsset>(GetAnimationTextureRawDataFilename());
 
             // save Prefab
             GameObject animDataAsset = PrefabUtility.SaveAsPrefabAsset(animDataPrefab, GetAnimationDataPrefabFilename());

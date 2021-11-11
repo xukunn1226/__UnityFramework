@@ -11,6 +11,23 @@ namespace Application.Runtime
         private string m_CachedName;
         private float m_CachedTransitionDuration;
         private float m_CachedPlaySpeed;
+
+        public override bool enable
+        {
+            get { return m_Enable; }
+            set
+            {
+                if(m_Enable != value)
+                {
+                    m_Enable = value;
+
+                    if(m_Inst != null)
+                    {
+                        m_Inst.isShow = m_Enable;       // 不能SetActive(false)，因AnimationInstancing.OnDisable被用于销毁时使用
+                    }
+                }
+            }
+        }
         
         public AnimationInstancingRenderable(ZActor actor) : base(actor) {}
 

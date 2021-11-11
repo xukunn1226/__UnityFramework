@@ -68,7 +68,6 @@ MonoBehaviour:
   forceRebuildReference: 0
   referenceTo: {fileID: 0}
   fps: 15
-  exposeAttachments: 0
   m_ExtraBoneNames:
   - LOD0
   - Bip001
@@ -79,9 +78,9 @@ MonoBehaviour:
   - die
   - hit
   - idle
-  - run01
   - run02
   - walk
+  - run
   m_GenerateAnimSelectables: 01010101010101
   m_BoneTransform: []
   isBaking: 0

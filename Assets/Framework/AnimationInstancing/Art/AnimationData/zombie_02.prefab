@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4966003758015664546}
   - component: {fileID: 2392900094666931566}
-  - component: {fileID: 3438026439396117697}
   m_Layer: 0
   m_Name: zombie_02
   m_TagString: Untagged
@@ -45,20 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manifest: {fileID: 4900000, guid: 76a679e3b12798d44aae4b0b8eac3fc6, type: 3}
-  animTexSoftObject: {fileID: 3438026439396117697}
---- !u!114 &3438026439396117697
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8097909679437301546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_GUID: 47594796e27fc9b43a66e91b37ae703a
-  m_AssetPath: assets/framework/animationinstancing/art/animationdata/zombie_02_animtexture.bytes
-  m_BundleName: assets/framework/animationinstancing/art/animationdata.ab
-  m_AssetName: zombie_02_animtexture.bytes
+  animTex: {fileID: 4900000, guid: 47594796e27fc9b43a66e91b37ae703a, type: 3}

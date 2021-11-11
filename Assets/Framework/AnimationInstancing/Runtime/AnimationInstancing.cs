@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 namespace AnimationInstancingModule.Runtime
 {
     /// <summary>
-    /// controller of animation instancing
+    /// animation instancing
     /// feature:
     ///     culling
     ///     lod
@@ -60,6 +60,7 @@ namespace AnimationInstancingModule.Runtime
         private bool                    m_CachedPause;
         public bool                     isPause             { get; private set; }
         public bool                     isPlaying           { get { return m_CurAnimationIndex >= 0 && !isPause; } }
+        public bool                     isShow              = true;
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
         private Dictionary<string, AttachmentInfo> m_AttachmentInfo = new Dictionary<string, AttachmentInfo>();
 
@@ -92,14 +93,15 @@ namespace AnimationInstancingModule.Runtime
         }
 
         // ugly code!!!
-        // 原本应该是在OnDestroy调用，但AnimationInstancing销毁时（AssetManager.ReleaseInst）可能会导致AssetBundle.Unload(true)的调用，
-        // 使得资源（mesh，material）马上失效，而RemoveInstance仍会使用到那些资源，所以导致异常，正确流程应该是业务层Remove，最后才是资源的清除，
-        // Object.Destroy会立即执行OnDisable，下一帧再执行OnDestroy，时序不符合需求，先在OnDisable执行RemoveInstance操作吧。。。
-        // 注意：不能执行AnimationInstancing的enabled或SetActive等操作
+        // 问题：原本应该是在OnDestroy调用，但AnimationInstancing销毁时（AssetManager.ReleaseInst）可能会导致AssetBundle.Unload(true)的调用，
+        // 使得资源（mesh，material）马上失效，而RemoveInstance仍会使用到那些资源，所以导致异常。
+        // 解决方案：正确流程应该是业务层Remove，最后才是资源的清除，Object.Destroy会立即执行OnDisable，下一帧再执行OnDestroy，时序不符合需求，先在
+        // OnDisable执行RemoveInstance操作吧。。。
+        // 注意：因OnDisable用于销毁操作，故不能执行AnimationInstancing的enabled或SetActive等操作
         private void OnDisable()
         {
-            AnimationDataManager.Instance.Unload(m_Prototype);            
-            AnimationInstancingManager.Instance.RemoveInstance(this);            
+            AnimationDataManager.Instance.Unload(m_Prototype);
+            AnimationInstancingManager.Instance.RemoveInstance(this);
         }
 
         public void Pause()
@@ -115,7 +117,7 @@ namespace AnimationInstancingModule.Runtime
 
         internal bool ShouldRender()
         {
-            return isActiveAndEnabled && !isCulled;
+            return !isCulled && isShow;
         }
 
         public delegate void OverridePropertyBlockHandler(int materialIndex, MaterialPropertyBlock block);
@@ -282,7 +284,7 @@ namespace AnimationInstancingModule.Runtime
 
         internal void UpdateAnimation()
         {
-            if(!isPlaying || !isActiveAndEnabled || isCulled)
+            if(!isPlaying || isCulled || !isShow)
             {
                 return;
             }

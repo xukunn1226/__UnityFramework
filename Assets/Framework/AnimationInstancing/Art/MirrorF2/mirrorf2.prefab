@@ -56,7 +56,6 @@ MonoBehaviour:
       materials:
       - {fileID: 2100000, guid: 97d060b1f3243cb4db7ee0f883aa2c58, type: 2}
       bonePerVertex: 4
-  m_Speed: 1
   m_Radius: 2.19
   shadowCastingMode: 1
   receiveShadows: 0

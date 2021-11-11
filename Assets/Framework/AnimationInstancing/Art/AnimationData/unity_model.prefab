@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6775444597511290522}
   - component: {fileID: 7510236452438445231}
-  - component: {fileID: 5881626374535807873}
   m_Layer: 0
   m_Name: unity_model
   m_TagString: Untagged
@@ -45,20 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manifest: {fileID: 4900000, guid: bb8c2ca507d99304a92095956906e08f, type: 3}
-  animTexSoftObject: {fileID: 5881626374535807873}
---- !u!114 &5881626374535807873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540620078647373549}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5526957ebeb07bd4299f5213397a148b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_GUID: 92bd0257eded8704bbf5bf28d2349af4
-  m_AssetPath: assets/framework/animationinstancing/art/animationdata/unity_model_animtexture.bytes
-  m_BundleName: assets/framework/animationinstancing/art/animationdata.ab
-  m_AssetName: unity_model_animtexture.bytes
+  animTex: {fileID: 4900000, guid: 92bd0257eded8704bbf5bf28d2349af4, type: 3}

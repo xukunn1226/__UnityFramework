@@ -53,7 +53,6 @@ MonoBehaviour:
       - {fileID: 2100000, guid: b474199e7852a76439eca62605322320, type: 2}
       - {fileID: 2100000, guid: 697362ba5e759b3429dfe141e5b7e679, type: 2}
       bonePerVertex: 4
-  m_Speed: 1
   m_Radius: 3.48
   shadowCastingMode: 1
   receiveShadows: 0

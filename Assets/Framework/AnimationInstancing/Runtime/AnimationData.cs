@@ -10,7 +10,7 @@ namespace AnimationInstancingModule.Runtime
     /// <summary>
     /// 动画数据集合
     /// manifest: 所有动画逻辑数据（名称、起始帧、总帧数、事件、绑点骨骼矩阵等）、textureBlockWidth、textureBlockHeight
-    /// animTexSoftObject: 动画矩阵数据
+    /// animTex: 动画矩阵数据
     /// NOTE: 共用动画的角色应使用同一套AnimationData
     /// <summary>
     public class AnimationData : MonoBehaviour
@@ -20,7 +20,7 @@ namespace AnimationInstancingModule.Runtime
         public int                                  textureBlockHeight  { get; private set; }       // read from manifest.bytes
         public List<AnimationInfo>                  aniInfos            { get; private set; }       // read from manifest.bytes
         private Dictionary<string, ExtraBoneInfo>   m_ExtraBoneInfos;                               // 绑点骨骼的所有动画矩阵
-        [SoftObject] public SoftObject              animTexSoftObject;
+        public TextAsset                            animTex;
         private Texture2D                           m_AnimTexture;                                  // 注意：异步加载，可能为NULL
         private AnimationInfo                       m_SearchInfo;
         private ComparerHash                        m_Comparer;
@@ -41,14 +41,9 @@ namespace AnimationInstancingModule.Runtime
             manifest = null;        // 已无用，可以立即释放
         }
 
-        IEnumerator Start()
+        void Start()
         {
-            // 动画贴图数据量大，异步加载
-            AssetLoaderAsync<Object> loader = animTexSoftObject.LoadAssetAsync();
-            yield return loader;
-            TextAsset asset = (TextAsset)loader.asset;
-
-            using(BinaryReader reader = new BinaryReader(new MemoryStream(asset.bytes)))
+            using(BinaryReader reader = new BinaryReader(new MemoryStream(animTex.bytes)))
             {
                 int textureWidth = reader.ReadInt32();
                 int textureHeight = reader.ReadInt32();
@@ -60,8 +55,6 @@ namespace AnimationInstancingModule.Runtime
                 m_AnimTexture.LoadRawTextureData(bytes);
                 m_AnimTexture.Apply(false, true);       // the texture is marked as no longer readable and memory is freed after uploading to GPU
             }
-
-            animTexSoftObject?.UnloadAsset();       // 已无用，可以立即释放
         }
 
         internal Texture2D GetAnimTexture()
