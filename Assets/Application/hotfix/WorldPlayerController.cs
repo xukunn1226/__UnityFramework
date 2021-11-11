@@ -92,11 +92,11 @@ namespace Application.Runtime
 
         private void OnGesture(ScreenPointerUpEventData eventData)
         {
-            if(cameraViewLayer > ViewLayer.ViewLayer_1)
-            { // 一层以上时，迅速推进镜头
-                PanCamera(GetGroundHitPoint(eventData.screenPosition), () => { DiveCameraToBase(); });
-            }
-            else
+            // if(cameraViewLayer > ViewLayer.ViewLayer_1)
+            // { // 一层以上时，迅速推进镜头
+            //     PanCamera(GetGroundHitPoint(eventData.screenPosition), () => { DiveCameraToBase(); });
+            // }
+            // else
             {
                 PickGameObject(eventData.screenPosition);
             }

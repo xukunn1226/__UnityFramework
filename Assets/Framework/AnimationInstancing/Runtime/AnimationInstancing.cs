@@ -58,7 +58,7 @@ namespace AnimationInstancingModule.Runtime
         public float[]                  lodDistance         = new float[2];
         private int                     m_FixedLodLevel     = -1;
         private bool                    m_CachedPause;
-        public bool                     isPause             { get; set; }
+        public bool                     isPause             { get; private set; }
         public bool                     isPlaying           { get { return m_CurAnimationIndex >= 0 && !isPause; } }
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
         private Dictionary<string, AttachmentInfo> m_AttachmentInfo = new Dictionary<string, AttachmentInfo>();
@@ -91,21 +91,26 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
-        private void OnDestroy()
+        // ugly code!!!
+        // 原本应该是在OnDestroy调用，但AnimationInstancing销毁时（AssetManager.ReleaseInst）可能会导致AssetBundle.Unload(true)的调用，
+        // 使得资源（mesh，material）马上失效，而RemoveInstance仍会使用到那些资源，所以导致异常，正确流程应该是业务层Remove，最后才是资源的清除，
+        // Object.Destroy会立即执行OnDisable，下一帧再执行OnDestroy，时序不符合需求，先在OnDisable执行RemoveInstance操作吧。。。
+        // 注意：不能执行AnimationInstancing的enabled或SetActive等操作
+        private void OnDisable()
         {
             AnimationDataManager.Instance.Unload(m_Prototype);            
             AnimationInstancingManager.Instance.RemoveInstance(this);            
         }
 
-        private void OnEnable()
-        {
-            isPause = m_CachedPause;
-        }
-
-        private void OnDisable()
+        public void Pause()
         {
             m_CachedPause = isPause;
             isPause = true;
+        }
+
+        public void Resume()
+        {
+            isPause = m_CachedPause;
         }
 
         internal bool ShouldRender()
