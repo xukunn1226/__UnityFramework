@@ -60,7 +60,7 @@ namespace AnimationInstancingModule.Runtime
         private bool                    m_CachedPause;
         public bool                     isPause             { get; private set; }
         public bool                     isPlaying           { get { return m_CurAnimationIndex >= 0 && !isPause; } }
-        public bool                     isShow              = true;
+        [NonSerialized] public bool     isShow              = true;
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
         private Dictionary<string, AttachmentInfo> m_AttachmentInfo = new Dictionary<string, AttachmentInfo>();
 
