@@ -155,7 +155,6 @@ namespace AnimationInstancingModule.Runtime
                     continue;
 
                 VertexCache vertexCache = GetOrCreateVertexCache(inst, rendererCache);
-                rendererCache.vertexCache = vertexCache;
                 rendererCache.materialBlock = GetOrCreateMaterialBlock(inst, vertexCache, rendererCache);
                 rendererCache.isUsed = true;
             }
@@ -200,7 +199,6 @@ namespace AnimationInstancingModule.Runtime
 
                     // remove VertexCache
                     {
-                        // vertexCache.onGetAnimTexture -= inst.animDataInst.GetAnimTexture;
                         --vertexCache.refCount;
                         if(vertexCache.refCount == 0)
                         {
@@ -268,10 +266,6 @@ namespace AnimationInstancingModule.Runtime
 
         private void SetupMaterialBlockPropertyIfNeed(MaterialBlock block, VertexCache vertexCache)
         {
-            if(block.isInitMaterial)
-                return;
-
-            block.isInitMaterial = true;
             for(int i = 0; i < block.subMeshCount; ++i)
             {
                 block.materials[i].SetTexture("_boneTexture", vertexCache.animTexture);

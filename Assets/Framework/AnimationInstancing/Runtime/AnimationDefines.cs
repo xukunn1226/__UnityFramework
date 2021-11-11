@@ -140,7 +140,6 @@ namespace AnimationInstancingModule.Runtime
         public Mesh                             mesh;                   // SkinnedMeshRenderer.mesh
         public Material[]                       materials;              // materials.Length == mesh.subMeshCount        
         public int                              bonePerVertex   = 4;    // 每顶点受多少骨骼影响
-        [NonSerialized] public VertexCache      vertexCache;
         [NonSerialized] public MaterialBlock    materialBlock;
         [NonSerialized] public bool             isUsed;
     }
@@ -156,7 +155,7 @@ namespace AnimationInstancingModule.Runtime
         public ShadowCastingMode                shadowCastingMode;
         public bool                             receiveShadows;
         public int                              layer;
-        public int                              refCount;               // 不同的实例(AnimationInstancing)可能共用VertexCache，故做引用计数管理
+        public int                              refCount;               // 共用此mesh的实例数量
     }
 
     public class MaterialBlock
@@ -166,8 +165,7 @@ namespace AnimationInstancingModule.Runtime
         public MaterialPropertyBlock[]          propertyBlocks;         // length == materials.length
         public int                              instancingCount;        // 总的实例化数量值
         public List<InstancingPackage>          packageList;
-        public int                              refCount;               // 
-        public bool                             isInitMaterial;         // 是否
+        public int                              refCount;               // 共用此MaterialBlock的实例数量
         public delegate void                    propertyBlockHandler(int materialIndex, MaterialPropertyBlock block);
         public event propertyBlockHandler       onOverridePropertyBlock;
         public void                             ExecutePropertyBlock(int materialIndex, MaterialPropertyBlock block)
@@ -178,7 +176,7 @@ namespace AnimationInstancingModule.Runtime
 
     public class InstancingPackage
     {
-        public int                              count;
+        public int                              count;                  // 此package包含的实例化数量, <= s_MaxInstanceCountPerRendering
         public Matrix4x4[]                      worldMatrix;            // 所有实例的世界坐标矩阵
         public float[]                          frameIndex;             // 所有实例播放的当前帧
         public float[]                          preFrameIndex;          // 所有实例播放的上一帧

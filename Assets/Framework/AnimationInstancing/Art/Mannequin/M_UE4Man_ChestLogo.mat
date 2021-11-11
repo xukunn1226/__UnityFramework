@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: m_ue4man_chestlogo
+  m_Name: M_UE4Man_ChestLogo
   m_Shader: {fileID: 4800000, guid: af245fa39f6a32848b1150644b8ecb6f, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
