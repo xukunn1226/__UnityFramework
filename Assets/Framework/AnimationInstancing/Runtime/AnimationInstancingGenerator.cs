@@ -50,7 +50,6 @@ namespace AnimationInstancingModule.Runtime
         private AnimationBakeInfo               m_WorkingBakeInfo;
         private int                             m_CurWorkingBakeInfoIndex;
         private Dictionary<AnimationClip, UnityEngine.AnimationEvent[]> m_CacheAnimationEvent = new Dictionary<AnimationClip, UnityEngine.AnimationEvent[]>();
-        private List<AnimationInfo>             m_AnimationInfo             = new List<AnimationInfo>();            // 待序列化的动画数据
         private int                             m_TextureBlockWidth         = 4;                                    // 4个像素表示一个矩阵
         private int                             m_TextureBlockHeight;
         private Texture2D                       m_BakedBoneTexture;
@@ -177,7 +176,6 @@ namespace AnimationInstancingModule.Runtime
                 m_CurWorkingBakeInfoIndex = 0;
                 m_BakeInfo.Clear();
                 m_CacheAnimationEvent.Clear();
-                m_AnimationInfo.Clear();
                 m_WorkingBakeInfo = null;
                 AnimatorController controller = GetComponent<Animator>().runtimeAnimatorController as AnimatorController;
                 AnalyzeStateMachine(controller.layers[0].stateMachine, GetComponent<Animator>(), fps, 0);
@@ -243,8 +241,6 @@ namespace AnimationInstancingModule.Runtime
 
                 if (++m_WorkingBakeInfo.workingFrame >= m_WorkingBakeInfo.info.totalFrame)
                 {
-                    m_AnimationInfo.Add(m_WorkingBakeInfo.info);
-
                     m_WorkingBakeInfo = null;
                     ++m_CurWorkingBakeInfoIndex;
 
@@ -399,13 +395,13 @@ namespace AnimationInstancingModule.Runtime
             //      transform.localToWorldMatrix: 模型（根节点）的局部坐标空间到世界坐标空间
             //      Vmesh：模型空间顶点
             //      见https://docs.unity3d.com/ScriptReference/Mesh-bindposes.html
-            // bonePose.localToWorldMatrix：骨骼空间到模型空间
+            // boneTransform.localToWorldMatrix：骨骼空间到世界空间转换矩阵
             Matrix4x4[] matrix = new Matrix4x4[boneTransform.Count];
             for (int i = 0; i != boneTransform.Count; ++i)
             {
                 matrix[i] = root.worldToLocalMatrix * boneTransform[i].localToWorldMatrix * bindPose[i];
             }
-            return matrix;
+            return matrix;      // 模型空间的顶点坐标通过此矩阵转换到某一帧的模型空间
         }
 
         private void GenerateExtraBoneMatrix(AnimationBakeInfo bakeInfo, List<Transform> boneTransform)
@@ -544,11 +540,12 @@ namespace AnimationInstancingModule.Runtime
             for(int i = 0; i < m_BakeInfo.Count; ++i)
             {
                 m_BakeInfo[i].info.startFrameIndex = pixelx / m_TextureBlockWidth + pixely / m_TextureBlockHeight * (m_BakedBoneTexture.width / m_TextureBlockWidth);
-                int frameCount = m_BakeInfo[i].boneMatrix.Count;
+                int frameCount = m_BakeInfo[i].boneMatrix.Count;    // 动画帧数，一个Matrix4x4记录了一帧的数据
                 for(int j = 0; j < frameCount; ++j)
                 {
                     // Debug.Log($"{j}  {pixelx}  {pixely}");
-                    Color[] colors = Convert2Color(m_BakeInfo[i].boneMatrix[j]);        // 一块block数据（boneCount * 4），即一帧
+                    Color[] colors = Convert2Color(m_BakeInfo[i].boneMatrix[j]);        // 把一帧所有骨骼的变换矩阵转换为Color[]
+                                                                                        // 一块block数据（boneCount * 4），即一帧
                     m_BakedBoneTexture.SetPixels(pixelx, pixely, m_TextureBlockWidth, m_TextureBlockHeight, colors);
 
                     pixelx += m_TextureBlockWidth;
