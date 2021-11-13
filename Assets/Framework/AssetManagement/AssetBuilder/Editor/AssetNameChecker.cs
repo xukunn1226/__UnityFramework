@@ -11,6 +11,8 @@ namespace Framework.AssetManagement.AssetBuilder
 
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
+            if(UnityEngine.Application.isBatchMode)
+                return;
             foreach (string assetPath in importedAssets)
             {
                 // 仅检查指定目录下的资源名

@@ -8,6 +8,46 @@ namespace Framework.AssetManagement.AssetBuilder
 {
     static internal class AssetBuilderUtil
     {
+        [MenuItem("Tools/Clear All BundleName")]
+        static private void ClearAllBundleNames()
+        {
+            string[] guids = AssetDatabase.FindAssets("*");
+            foreach(var guid in guids)
+            {
+                AssetImporter importer = AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(guid));
+                importer.assetBundleName = null;
+            }
+            AssetDatabase.RemoveUnusedAssetBundleNames();
+            AssetDatabase.Refresh();
+            UnityEngine.Debug.Log($"------- Done: {guids.Length}");
+        }
+
+        // 返回资源所属的bundle name，如果不打包则返回null
+        static public string GetAssetBundleName(string assetPath)
+        {
+            // 文件夹不设置bundle name
+            if(AssetDatabase.IsValidFolder(assetPath))
+                return null;
+
+            if(AssetBuilderUtil.IsBlockedByExtension(assetPath))
+                return null;
+
+            if(AssetBuilderUtil.IsPassByWhiteList(assetPath) && !AssetBuilderUtil.IsBlockedByBlackList(assetPath))
+            {
+                string[] folderNames = assetPath.Substring(0, assetPath.LastIndexOf("/")).TrimEnd(new char[] { '/' }).Split('/');
+                UnityEngine.Debug.Assert(folderNames.Length >= 2);
+
+                if(AssetBuilderUtil.IsSpecialFolderName(folderNames[folderNames.Length - 1]))
+                {
+                    string path = assetPath.Substring(0, assetPath.LastIndexOf("/"));
+                    return path.Substring(0, path.LastIndexOf("/")).ToLower() + ".ab";
+                }
+                return assetPath.Substring(0, assetPath.LastIndexOf("/")).ToLower() + ".ab";
+            }
+
+            return null;
+        }
+        
         /// <summary>
         /// 路径是否在白名单内
         /// </summary>
@@ -15,11 +55,11 @@ namespace Framework.AssetManagement.AssetBuilder
         /// <returns>true：在白名单内</returns>
         static internal bool IsPassByWhiteList(string assetPath)
         { // assetPath可能是文件或文件夹的
-            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/"));
+            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/") + 1);
             for (int i = 0; i < AssetBuilderSetting.GetDefault().WhiteListOfPath.Length; ++i)
             {
                 string whitePath = AssetBuilderSetting.GetDefault().WhiteListOfPath[i];
-                whitePath = whitePath.TrimEnd(new char[] { '/' });
+                whitePath = whitePath.TrimEnd(new char[] { '/' }) + "/";
                 if(directory.StartsWith(whitePath, true, System.Globalization.CultureInfo.CurrentCulture))
                     return true;
             }
@@ -34,8 +74,8 @@ namespace Framework.AssetManagement.AssetBuilder
         /// <returns>true: 在黑名单内</returns>
         static internal bool IsBlockedByBlackList(string assetPath)
         {
-            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/"));
-            string[] folderNames = directory.Split('/');
+            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/") + 1);
+            string[] folderNames = directory.TrimEnd(new char[] { '/' }).Split('/');
             foreach (string path in AssetBuilderSetting.GetDefault().BlackListOfFolder)
             {
                 for (int i = 0; i < folderNames.Length; ++i)

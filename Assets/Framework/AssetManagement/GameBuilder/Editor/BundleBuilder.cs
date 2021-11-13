@@ -9,6 +9,7 @@ using UnityEditor.Build.Pipeline;
 using UnityEditor.Build.Content;
 using UnityEditor.Build.Player;
 using UnityEngine.Build.Pipeline;
+using Framework.AssetManagement.AssetBuilder;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -94,46 +95,51 @@ namespace Framework.AssetManagement.GameBuilder
             }
         }
 
+        static private AssetBundleBuild[] GenerateAssetBundleBuilds()
+        {
+            // 收集所有需要打包的资源
+            Dictionary<string, List<string>> BundleFileList = new Dictionary<string, List<string>>();       // assetBundleName : List<assetPath>
+            string[] guids = AssetDatabase.FindAssets("*", AssetBuilderSetting.GetDefault().WhiteListOfPath);
+            foreach(var guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid).ToLower();
+                string bundleName = AssetBuilderUtil.GetAssetBundleName(assetPath);
+                if(string.IsNullOrEmpty(bundleName))
+                    continue;
+
+                List<string> list;
+                if(!BundleFileList.TryGetValue(bundleName, out list))
+                {
+                    list = new List<string>();
+                    BundleFileList.Add(bundleName, list);
+                }
+                list.Add(assetPath);
+            }
+
+            // generate AssetBundleBuild
+            AssetBundleBuild[] BuildList = new AssetBundleBuild[BundleFileList.Count];
+            int index = 0;
+            foreach(var bundleFile in BundleFileList)
+            {
+                AssetBundleBuild abb = new AssetBundleBuild();
+                abb.assetBundleName = bundleFile.Key;
+
+                abb.assetNames = new string[bundleFile.Value.Count];
+                abb.addressableNames = new string[bundleFile.Value.Count];
+                for(int i = 0; i < bundleFile.Value.Count; ++i)
+                {
+                    abb.assetNames[i] = bundleFile.Value[i];
+                    abb.addressableNames[i] = Path.GetFileName(abb.assetNames[i]);
+                }
+
+                BuildList[index++] = abb;
+            }
+            return BuildList;
+        }
+
         static private bool BuildBundleWithSBP(string output, BundleBuilderSetting setting)
         {
-            // step1. construct the new BundleBuildContent class
-            string ResourcePath = string.IsNullOrEmpty(setting.OverrideResourcePath) ? null : setting.OverrideResourcePath.ToLower();
-            ResourcePath = string.IsNullOrEmpty(ResourcePath) ? ResourcePath : ResourcePath.TrimEnd(new char[] { '/' }) + "/";
-
-            // 过滤不输出的资源
-            AssetBundleBuild[] BuildList = ContentBuildInterface.GenerateAssetBundleBuilds();
-            int count = BuildList.Length;
-            if(!string.IsNullOrEmpty(ResourcePath))
-            {
-                count = 0;
-                for (int i = 0; i < BuildList.Length; ++i)
-                {
-                    AssetBundleBuild abb = BuildList[i];
-                    if (abb.assetBundleName.StartsWith(ResourcePath, true, CultureInfo.InvariantCulture))
-                    {
-                        ++count;
-                        continue;
-                    }
-                }
-            }
-
-            AssetBundleBuild[] FinalBuildList = new AssetBundleBuild[count];
-            int index = 0;
-            for (int i = 0; i < BuildList.Length; ++i)
-            {
-                if(!string.IsNullOrEmpty(ResourcePath) && !BuildList[i].assetBundleName.StartsWith(ResourcePath))
-                {
-                    continue;
-                }
-
-                AssetBundleBuild abb = BuildList[i];
-                abb.addressableNames = new string[abb.assetNames.Length];
-                for (int j = 0; j < abb.assetNames.Length; ++j)
-                    abb.addressableNames[j] = Path.GetFileName(abb.assetNames[j]).ToLower();
-
-                FinalBuildList[index++] = abb;
-            }
-            var buildContent = new BundleBuildContent(FinalBuildList);
+            var buildContent = new BundleBuildContent(GenerateAssetBundleBuilds());
 
             // step2. Construct the new parameters class
             var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
