@@ -47,7 +47,7 @@ namespace Framework.AssetManagement.AssetBuilder
 
             return null;
         }
-        
+
         /// <summary>
         /// 路径是否在白名单内
         /// </summary>
@@ -96,6 +96,20 @@ namespace Framework.AssetManagement.AssetBuilder
         static internal bool IsSpecialFolderName(string folderName)
         {
             return AssetBuilderSetting.GetDefault().BundleNameWithParent.Count( t =>  string.Compare(t, folderName, true) == 0 ) > 0;
+        }
+
+        static public string[] GetAllAssetBundleNames()
+        {
+            HashSet<string> set = new HashSet<string>();
+            string[] guids = AssetDatabase.FindAssets("*", AssetBuilderSetting.GetDefault().WhiteListOfPath);
+            foreach(var guid in guids)
+            {
+                string bundleName = AssetBuilderUtil.GetAssetBundleName(AssetDatabase.GUIDToAssetPath(guid).ToLower());
+                if(string.IsNullOrEmpty(bundleName))
+                    continue;
+                set.Add(bundleName);
+            }
+            return set.ToArray();
         }
 
         // 根据扩展名筛选文件 e.g. ".fbx", ".prefab", ".asset", "*.*"
