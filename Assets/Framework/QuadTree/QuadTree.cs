@@ -104,7 +104,7 @@ namespace Framework.Core
                 LinkedList<T>.Enumerator it = node.objects.GetEnumerator();
                 while(it.MoveNext())
                 {
-                    if(InRegion(queryRect, it.Current.rect) || queryRect.Overlaps(it.Current.rect))
+                    if(queryRect.Overlaps(it.Current.rect))
                         objs.Add(it.Current);
                 }
                 it.Dispose();
@@ -115,7 +115,21 @@ namespace Framework.Core
                 if(node.children[i] == null)
                     continue;
 
-                if(InRegion(queryRect, node.children[i].rect) || queryRect.Overlaps(node.children[i].rect))
+                // 子区域包含查询区域，则跳过其他子区域
+                if(InRegion(node.children[i].rect, queryRect))
+                {
+                    Traverse(node.children[i], queryRect, ref objs);
+                    break;
+                }
+
+                // 查询区域包含子区域，则计入子区域内所有对象
+                if(InRegion(queryRect, node.children[i].rect))
+                {
+                    GetNodeAllObjects(node.children[i], ref objs);
+                    continue;
+                }
+
+                if(queryRect.Overlaps(node.children[i].rect))
                 {
                     Traverse(node.children[i], queryRect, ref objs);
                 }
@@ -125,6 +139,19 @@ namespace Framework.Core
         public void Traverse(Rect queryRect, ref List<T> objs)
         {
             Traverse(m_Root, queryRect, ref objs);
+        }
+
+        // 获取此节点及所有子节点的对象
+        public void GetNodeAllObjects(Node node, ref List<T> objs)
+        {
+            if(node == null)
+                return;
+
+            objs.AddRange(node.objects);
+            for(int i = 0; i < 4; ++i)
+            {
+                GetNodeAllObjects(node.children[i], ref objs);
+            }
         }
 
         // 插入一个对象，返回对象所属节点，若插入失败则返回null
@@ -205,6 +232,19 @@ namespace Framework.Core
             {
                 node.objects.Remove(obj.quadNode as LinkedListNode<T>);
             }
+        }
+
+        public int Count(Node node)
+        {
+            if(node == null)
+                return 0;
+
+            int count = node.objects.Count;
+            for(int i = 0; i < 4; ++i)
+            {
+                count += Count(node.children[i]);
+            }
+            return count;
         }
         
         // 区域与节点node的包含关系
