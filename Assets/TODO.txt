@@ -186,7 +186,7 @@
 	扩展FPS组件，捕获帧率突变
 	https://mp.weixin.qq.com/s/sOeYNbYfn-iX7w2CT0E28g  谈谈游戏中常见的后处理技术
 	https://zhuanlan.zhihu.com/p/80677638   48行代码撸一个商业级的JoyStick
-
+	https://cloud.tencent.com/developer/article/1546598  Unity使用AssetImporter整理资源对其进行打包
 
 
 
