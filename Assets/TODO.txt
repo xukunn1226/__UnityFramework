@@ -187,7 +187,9 @@
 	https://mp.weixin.qq.com/s/sOeYNbYfn-iX7w2CT0E28g  谈谈游戏中常见的后处理技术
 	https://zhuanlan.zhihu.com/p/80677638   48行代码撸一个商业级的JoyStick
 	https://cloud.tencent.com/developer/article/1546598  Unity使用AssetImporter整理资源对其进行打包
-
+	https://blog.unity.com/technology/unitytips-particlesystem-performance-culling  particle culling performance
+	https://blog.csdn.net/u010019717/article/details/97690363  利用Culling Group实现LOD和剔除逻辑
+	
 
 
 	

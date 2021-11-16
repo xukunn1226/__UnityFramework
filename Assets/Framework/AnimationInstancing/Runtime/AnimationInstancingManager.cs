@@ -28,10 +28,6 @@ namespace AnimationInstancingModule.Runtime
                 if(value != null)
                 {
                     m_TargetCamera = value;
-                    if(m_CullingGroup != null)
-                    {
-                        m_CullingGroup.targetCamera = value;
-                    }
                 }
             }
         }
@@ -51,12 +47,13 @@ namespace AnimationInstancingModule.Runtime
         protected override void Awake()
         {
             base.Awake();
+            targetCamera = Camera.main;
+            
             InitCullingGroup();
             if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.OpenGLES2)
             {
                 useGPUInstancing = false;
             }
-            targetCamera = Camera.main;
         }
 
         protected override void OnDestroy()
