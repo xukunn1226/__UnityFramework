@@ -55,9 +55,12 @@ namespace Framework.Core
             m_Root.rect = rect;
         }
 
-        // 包含区域rect的最小节点
+        // 包含区域queryRect的最小节点
         public Node Search(Node node, Rect queryRect)
         {
+            if(node == null)
+                return null;
+
             int ret = GetQuadrant(ref node.rect, ref queryRect);
             if(ret == -1)
                 return null;
@@ -65,8 +68,7 @@ namespace Framework.Core
             if(ret == 0)
                 return node;
 
-            Node child = node.children[ret - 1];
-            return child != null ? Search(child, queryRect) : node;
+            return Search(node.children[ret - 1], queryRect);
         }
 
         public Node Search(Rect queryRect)
@@ -74,33 +76,33 @@ namespace Framework.Core
             return Search(m_Root, queryRect);
         }
 
-        public void Traverse(Node node, ref List<T> objs)
+        public void Query(ref List<T> objs)
+        {
+            Query(m_Root, ref objs);
+        }
+
+        private void Query(Node node, ref List<T> objs)
         {
             if(node == null)
                 return;
-            
-            if(node.objects != null)
-            {
-                LinkedList<T>.Enumerator it = node.objects.GetEnumerator();
-                while(it.MoveNext())
-                {
-                    objs.Add(it.Current);
-                }
-                it.Dispose();
-            }
+
+            objs.AddRange(node.objects);
+
+            if(node.children == null)
+                return;
 
             for(int i = 0; i < 4; ++i)
             {
-                Traverse(node.children[i], ref objs);
+                Query(node.children[i], ref objs);
             }
         }
 
-        public void Traverse(ref List<T> objs)
+        public void Query(Rect queryRect, ref List<T> objs)
         {
-            Traverse(m_Root, ref objs);
+            Query(m_Root, queryRect, ref objs);
         }
 
-        public void Traverse(Node node, Rect queryRect, ref List<T> objs)
+        private void Query(Node node, Rect queryRect, ref List<T> objs)
         {
             if(node == null)
                 return;
@@ -116,48 +118,51 @@ namespace Framework.Core
                 it.Dispose();
             }
 
+            if(node.children == null)
+                return;
+
             for(int i = 0; i < 4; ++i)
             {
-                if(node.children[i] == null)
-                    continue;
-
                 // 子区域包含查询区域，则跳过其他子区域
                 if(InRegion(node.children[i].rect, ref queryRect))
                 {
-                    Traverse(node.children[i], queryRect, ref objs);
+                    Query(node.children[i], queryRect, ref objs);
                     break;
                 }
 
                 // 查询区域包含子区域，则计入子区域内所有对象
                 if(InRegion(queryRect, ref node.children[i].rect))
                 {
-                    GetNodeAllObjects(node.children[i], ref objs);
+                    GetAllObjects(node.children[i], ref objs);
                     continue;
                 }
 
                 if(queryRect.Overlaps(node.children[i].rect))
                 {
-                    Traverse(node.children[i], queryRect, ref objs);
+                    Query(node.children[i], queryRect, ref objs);
                 }
             }
         }
 
-        public void Traverse(Rect queryRect, ref List<T> objs)
-        {
-            Traverse(m_Root, queryRect, ref objs);
-        }
-
         // 获取此节点及所有子节点的对象
-        public void GetNodeAllObjects(Node node, ref List<T> objs)
+        private void GetAllObjects(Node node, ref List<T> objs)
         {
             if(node == null)
                 return;
 
             objs.AddRange(node.objects);
-            for(int i = 0; i < 4; ++i)
+            if(node.children != null)
             {
-                GetNodeAllObjects(node.children[i], ref objs);
+                for (int i = 0; i < 4; ++i)
+                {
+                    GetAllObjects(node.children[i], ref objs);
+                }
             }
+        }
+
+        public void GetAllObjects(ref List<T> objs)
+        {
+            GetAllObjects(m_Root, ref objs);
         }
 
         public bool Insert(T obj)
@@ -262,9 +267,12 @@ namespace Framework.Core
                 return 0;
 
             int count = node.objects.Count;
-            for(int i = 0; i < 4; ++i)
+            if(node.children != null)
             {
-                count += Count(node.children[i]);
+                for (int i = 0; i < 4; ++i)
+                {
+                    count += Count(node.children[i]);
+                }
             }
             return count;
         }
