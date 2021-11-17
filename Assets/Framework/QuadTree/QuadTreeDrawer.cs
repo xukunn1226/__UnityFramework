@@ -6,16 +6,39 @@ namespace Framework.Core
 {
     public class QuadTreeDrawer : MonoBehaviour
     {
-        // Start is called before the first frame update
+        private IQuadTreeDrawable m_QuadTreeDrawable;
+
+#if UNITY_EDITOR
         void Start()
         {
+            MonoBehaviour[] comps = GetComponents<MonoBehaviour>();
+            foreach(var comp in comps)
+            {
+                m_QuadTreeDrawable = comp as IQuadTreeDrawable;
+                if(m_QuadTreeDrawable != null)
+                    break;
+            }
 
+            if(m_QuadTreeDrawable == null)
+            {
+                Debug.LogError($"can't find any QuadTreeDrawable");
+            }
         }
 
-        // Update is called once per frame
-        void Update()
+        void OnDrawGizmosSelected()
         {
 
         }
+
+        void OnDrawGizmos()
+        {
+            
+        }
+#endif        
+    }
+
+    public interface IQuadTreeDrawable
+    {
+        QuadTree quadTree { get; }
     }
 }

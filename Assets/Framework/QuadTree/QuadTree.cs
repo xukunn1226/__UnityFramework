@@ -11,7 +11,10 @@ namespace Framework.Core
         LinkedListNode<INodeObject> quadNode    { get; set; }
     }
 
-    public class QuadTree<T> where T : INodeObject, new()
+    public class QuadTree
+    {}
+
+    public class QuadTree<T> : QuadTree where T : INodeObject, new()
     {
         /* 一个矩形区域的象限划分：
           
