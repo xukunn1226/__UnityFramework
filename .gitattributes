@@ -69,4 +69,8 @@ ProjectSettings/*.asset merge=unityyamlmerge eol=lf
 *.spm filter=lfs diff=lfs merge=lfs -text
 LightingData.asset filter=lfs diff=lfs merge=lfs -text
 *.exe filter=lfs diff=lfs merge=lfs -text
-
+#FMOD
+*.bank filter=lfs diff=lfs merge=lfs -text
+*.bc filter=lfs diff=lfs merge=lfs -text
+/Assets/Plugins/FMOD/platforms/mac/lib/fmodstudio.bundle/** filter=lfs diff=lfs merge=lfs -text
+/Assets/Plugins/FMOD/platforms/mac/lib/fmodstudioL.bundle/** filter=lfs diff=lfs merge=lfs -text

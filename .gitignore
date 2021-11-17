@@ -86,6 +86,10 @@ UserSettings/
 [Aa]ssets/Application/XLua/Gen.meta
 [Aa]ssets/Assets.index
 [Aa]ssets/Assets.index.meta
+/Assets/Plugins/FMOD/Cache/*
+/Assets/Plugins/FMOD/Cache.meta
+fmod.log
+fmod_editor.log
 
 
 # some plugins
