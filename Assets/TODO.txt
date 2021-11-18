@@ -189,7 +189,7 @@
 	https://cloud.tencent.com/developer/article/1546598  Unity使用AssetImporter整理资源对其进行打包
 	https://blog.unity.com/technology/unitytips-particlesystem-performance-culling  particle culling performance
 	https://blog.csdn.net/u010019717/article/details/97690363  利用Culling Group实现LOD和剔除逻辑
-	
+	https://zhuanlan.zhihu.com/p/430878486  Unity实现无缝大世界--植被
 
 
 	
