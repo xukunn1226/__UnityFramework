@@ -1,6 +1,6 @@
 {
   "Count": 47,
-  "TotalSize": 71754725,
+  "TotalSize": 71677313,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "d9d7b64efaafc01745b9e5df79efe7bf",
-      "Size": 3332
+      "FileHash": "16b1ded64a1cccb2789c7f2affe664a7",
+      "Size": 3328
     },
     {
       "BundleName": "assets/res/animationclip.ab",
@@ -34,8 +34,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "d92b69ad6bb8bec6d268cfc843e129d8",
-      "Size": 183515
+      "FileHash": "0cead16ea5c7eb121a9baa7779d6a84b",
+      "Size": 171594
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -109,8 +109,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/scenes.ab",
-      "FileHash": "534f2b1456fd155b0afc18aace2143b6",
-      "Size": 94786
+      "FileHash": "8610d87bb26af548ea4453658d8b7a20",
+      "Size": 44678
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
@@ -144,8 +144,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "645efdf78a105d4e51d609ec2ed11aa4",
-      "Size": 277298
+      "FileHash": "bfffa854fbe7f0a8dfa668bec68d9bd5",
+      "Size": 261913
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -234,8 +234,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/atlases/misc.ab",
-      "FileHash": "9ac2c30e83a7ee715cc76e945808cd51",
-      "Size": 3245518
+      "FileHash": "855a6644f1bf47f599118e8609d442b8",
+      "Size": 3245524
     }
   ]
 }

@@ -410,7 +410,7 @@ MonoBehaviour:
   EncryptionKey: 
   ImportType: 0
   TargetAssetPath: FMODBanks
-  TargetBankFolder: 11
+  TargetBankFolder: FMOD
   EventLinkage: 0
   LoggingLevel: 2
   SpeakerModeSettings: []
