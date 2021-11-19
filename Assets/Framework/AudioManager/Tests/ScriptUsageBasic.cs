@@ -52,10 +52,13 @@ namespace Framework.Core.Tests
             //--------------------------------------------------------------------
             playerState = FMODUnity.RuntimeManager.CreateInstance(PlayerStateEvent);
             playerState.start();
+            playerState.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(gameObject, cachedRigidBody));
+return;
 
             playerIntro = FMODUnity.RuntimeManager.CreateInstance(PlayerIntroEvent);
             playerIntro.start();
 
+            
             //--------------------------------------------------------------------
             // 5: The RuntimeManager can track event instances and update their 
             //    positions to match a given game object every frame. This is
@@ -87,14 +90,31 @@ namespace Framework.Core.Tests
             fullHealthParameterId = fullHealParameterDescription.id;
         }
 
+        void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                playerState.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            }
+            if(Input.GetKeyDown(KeyCode.R))
+            {
+                playerState.release();
+            }
+            if(Input.GetKeyDown(KeyCode.S))
+            {
+                playerState.start();
+            }
+        }
+
         void OnDestroy()
         {
-            StopAllPlayerEvents();
+            // StopAllPlayerEvents();
 
             //--------------------------------------------------------------------
             // 6: This shows how to release resources when the unity object is 
             //    disabled.
             //--------------------------------------------------------------------
+            playerState.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             playerState.release();
         }
 
@@ -109,7 +129,7 @@ namespace Framework.Core.Tests
             playerState.start();
         }
 
-        void Update()
+        void Update1()
         {
             //--------------------------------------------------------------------
             // 8: This shows how to manually update the instance of a 3D event so 

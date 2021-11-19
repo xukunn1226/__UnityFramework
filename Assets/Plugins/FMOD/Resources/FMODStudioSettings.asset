@@ -405,7 +405,7 @@ MonoBehaviour:
   BankRefreshCooldown: 5
   ShowBankRefreshWindow: 1
   AutomaticEventLoading: 0
-  BankLoadType: 2
+  BankLoadType: 1
   AutomaticSampleLoading: 0
   EncryptionKey: 
   ImportType: 0
@@ -436,6 +436,10 @@ MonoBehaviour:
   - Music
   - Master.strings
   - Master
+  - Dialogue_EN
+  - SFX
+  - Vehicles
+  - VO
   LiveUpdatePort: 9264
   EnableMemoryTracking: 1
   AndroidUseOBB: 0
