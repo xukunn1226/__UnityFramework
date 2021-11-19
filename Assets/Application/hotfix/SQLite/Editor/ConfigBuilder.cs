@@ -31,7 +31,7 @@ namespace Application.Editor
 
         static private void OnPostprocessBundleBuild()
         {
-            Run();
+            DoRun();
 
             // copy db to streamingAssets
             string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Framework.Core.Utility.GetPlatformName()}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
