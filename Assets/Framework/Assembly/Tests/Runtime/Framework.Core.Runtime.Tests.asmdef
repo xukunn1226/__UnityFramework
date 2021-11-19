@@ -2,7 +2,8 @@
     "name": "Framework.Core.Runtime.Tests",
     "rootNamespace": "",
     "references": [
-        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf"
+        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf",
+        "GUID:0c752da273b17c547ae705acf0f2adf2"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
