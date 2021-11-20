@@ -3,17 +3,17 @@
    <bool name="lilith_sdk_is_debug">true</bool>
    <bool name="lilith_sdk_is_foreign">true</bool>
    <bool name="lilith_sdk_show_lilith">false</bool>
-   <string name="lilith_sdk_app_id">2932663</string>
-   <string name="lilith_sdk_game_id">10069</string>
+   <string name="lilith_sdk_app_id">6227411</string>
+   <string name="lilith_sdk_game_id">10070</string>
    <string name="lilith_sdk_wechat_app_id"></string>
    <string name="lilith_sdk_qq_app_id"></string>
    <string name="lilith_sdk_payssion_api_key">null</string>
-   <string name="lilith_sdk_facebook_app_id">3045519829104935</string>
+   <string name="lilith_sdk_facebook_app_id">410490133763606</string>
    <string name="lilith_sdk_facebook_app_invite_url"></string>
    <string name="lilith_sdk_google_server_client_id"></string>
    <string name="lilith_sdk_google_play_game_id"></string>
-   <string name="lilith_sdk_adjust_app_token">g7qhdbaxel8g</string>
-   <string name="lilith_sdk_adjust_app_secrets">(1, 1646654188, 1111098719, 713858950, 38753033)</string>
+   <string name="lilith_sdk_adjust_app_token">kk0lt0167400</string>
+   <string name="lilith_sdk_adjust_app_secrets">(1, 884860050, 1929552575, 671525307, 518825415)</string>
    <string name="lilith_sdk_toutiao_app_id"></string>
    <string name="lilith_sdk_kuaishou_app_id"></string>
    <string name="lilith_sdk_kuaishou_name"></string>
@@ -56,5 +56,7 @@
    <string name="lilith_sdk_protocol_private_url"></string>
    <string name="lilith_sdk_gdt_app_id"></string>
    <string name="lilith_sdk_gdt_app_secret"></string>
-   <string name="cbt_tag_name"></string>
+   <string name="cbt_tag_name">cbt1</string>
+   <string name="lilith_sdk_weibo_app_key">undefined</string>
+   <string name="lilith_sdk_weibo_redirect_url">undefined</string>
 </resources>
