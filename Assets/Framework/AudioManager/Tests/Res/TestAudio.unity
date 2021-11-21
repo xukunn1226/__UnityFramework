@@ -269,11 +269,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerStateEvent:
     Guid:
-      Data1: -939964675
-      Data2: 1234949781
-      Data3: 661987496
-      Data4: 496157849
-    Path: event:/Music/Level 02
+      Data1: -672482519
+      Data2: 1079487449
+      Data3: -101840716
+      Data4: 711972407
+    Path: event:/VO/Welcome
   DamageEvent:
     Guid:
       Data1: 526938424
@@ -290,11 +290,11 @@ MonoBehaviour:
     Path: event:/Character/Door Close
   PlayerIntroEvent:
     Guid:
-      Data1: 614123342
-      Data2: 1179152036
-      Data3: 1814092417
-      Data4: 28844622
-    Path: event:/Ambience/Country
+      Data1: -939964675
+      Data2: 1234949781
+      Data3: 661987496
+      Data4: 496157849
+    Path: event:/Music/Level 02
   StartingHealth: 100
 --- !u!4 &1255159864
 Transform:

@@ -41,6 +41,10 @@ namespace Framework.Core.Tests
 
         Rigidbody cachedRigidBody;
 
+        private void OnGUI()
+        {
+
+        }
         void Start()
         {
             cachedRigidBody = GetComponent<Rigidbody>();
@@ -50,13 +54,14 @@ namespace Framework.Core.Tests
             // 4: This shows how to create an instance of an event and manually 
             //    start it.
             //--------------------------------------------------------------------
-            playerState = FMODUnity.RuntimeManager.CreateInstance(PlayerStateEvent);
-            playerState.start();
-            playerState.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(gameObject, cachedRigidBody));
-return;
+            //playerState = FMODUnity.RuntimeManager.CreateInstance(PlayerStateEvent);
+            //playerState.start();
+            //playerState.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(gameObject, cachedRigidBody));
 
             playerIntro = FMODUnity.RuntimeManager.CreateInstance(PlayerIntroEvent);
             playerIntro.start();
+
+            return;
 
             
             //--------------------------------------------------------------------
@@ -92,13 +97,37 @@ return;
 
         void Update()
         {
-            if(Input.GetKeyDown(KeyCode.Space))
+            if(Input.GetKeyDown(KeyCode.A))
+            {
+                playerState = FMODUnity.RuntimeManager.CreateInstance(PlayerStateEvent);
+                playerState.start();
+                playerState.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(gameObject, cachedRigidBody));
+
+                // FMOD.Studio.EventDescription desc = FMODUnity.RuntimeManager.GetEventDescription(PlayerStateEvent);
+                // FMOD.RESULT ret = desc.loadSampleData();
+                // UnityEngine.Debug.Log($"== ret: {ret}");
+
+                //FMOD.Studio.EventInstance inst = FMODUnity.RuntimeManager.CreateInstance(PlayerStateEvent);
+                //inst.start();
+                //inst.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(gameObject, cachedRigidBody));
+            }
+            if(Input.GetKeyDown(KeyCode.B))
+            {
+                FMOD.Studio.EventDescription desc = FMODUnity.RuntimeManager.GetEventDescription(PlayerStateEvent);
+                FMOD.Studio.LOADING_STATE state;
+                FMOD.RESULT ret = desc.getSampleLoadingState(out state);
+                int count;
+                desc.getInstanceCount(out count);
+                UnityEngine.Debug.Log($"---- state: {state}  ret: {ret}     count: {count}");
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 playerState.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             }
             if(Input.GetKeyDown(KeyCode.R))
             {
                 playerState.release();
+                playerState.clearHandle();
             }
             if(Input.GetKeyDown(KeyCode.S))
             {
