@@ -43,20 +43,13 @@ namespace Framework.AssetManagement.GameBuilder
 
             OnPreprocessBundleBuild?.Invoke();
 
-            // step 1. create directory
-            string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
-            if (Directory.Exists(outputPath))
-                Directory.Delete(outputPath, true);
-            Directory.CreateDirectory(outputPath);
-            Debug.Log($"        Bundles Output: {outputPath}");
-
             // create "Assets/StreamingAssets"
             string targetPath = @"Assets/StreamingAssets";
             AssetDatabase.DeleteAsset(targetPath);
             AssetDatabase.CreateFolder("Assets", "StreamingAssets");
             AssetDatabase.CreateFolder(targetPath, Utility.GetPlatformName());
 
-            // step 2. build bundles to streaming assets
+            // build bundles to streaming assets
             // Debug.Log($"        BuildAssetBundleOptions: {para.GenerateOptions()}");
             if(!BuildBundleWithSBP(targetPath + "/" + Utility.GetPlatformName(), para))
             {
@@ -79,27 +72,29 @@ namespace Framework.AssetManagement.GameBuilder
             return true;
         }
 
-        private class BuildProcessor : IPreprocessBuildWithReport, IPostprocessBuildWithReport
+        private class BuildProcessor : IPreprocessBuildWithReport
         {
             public int callbackOrder { get { return 99; } }     // 确保在BuildPlayer之前最后执行
 
             // 等所有需要打包的资源汇集到了streaming assets再执行
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
-            {                
+            {
                 // 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
                 BuildBundleFileList();
 
+                // step 1. create directory
+                string outputPath = "Deployment/Latest/AssetBundles" + "/" + Utility.GetPlatformName();
+                if (Directory.Exists(outputPath))
+                    Directory.Delete(outputPath, true);
+                Directory.CreateDirectory(outputPath);
+                Debug.Log($"        Bundles Output: {outputPath}");
+
                 // 最后把所有StreamingAssets中的资源复制到发布目录（Deployment/Latest/AssetBundles）
                 // 有些资源例如FMOD有自己的发布流程，等其发布完最后再执行
-                Framework.Core.Editor.EditorUtility.CopyDirectory("Assets/StreamingAssets/" + Utility.GetPlatformName(), "Deployment/Latest/AssetBundles");
+                Framework.Core.Editor.EditorUtility.CopyDirectory("Assets/StreamingAssets/" + Utility.GetPlatformName(), outputPath);
                 Debug.Log($"        Copy streaming assets to Deployment/Latest/AssetBundles");
             }
-
-            public void OnPostprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
-            {
-            }
         }
-
 
         class CustomBuildParameters : BundleBuildParameters
         {

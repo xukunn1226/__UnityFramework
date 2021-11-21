@@ -1,6 +1,6 @@
 {
-  "Count": 47,
-  "TotalSize": 67842400,
+  "Count": 56,
+  "TotalSize": 100337755,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,53 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "a1f213734c571c475f76e19d4ad80daa",
-      "Size": 3320
+      "FileHash": "7003f88325379717b5a4fa5fbb2ea191",
+      "Size": 3305
+    },
+    {
+      "BundleName": "FMOD/Dialogue_CN.bank",
+      "FileHash": "32f20842a6b9a77724d2d86dab0c9682",
+      "Size": 52416
+    },
+    {
+      "BundleName": "FMOD/Dialogue_EN.bank",
+      "FileHash": "87593af7b024abd8f061ee1fc9c6f2fa",
+      "Size": 61120
+    },
+    {
+      "BundleName": "FMOD/Dialogue_JP.bank",
+      "FileHash": "82bb2e5e0ceb099aa5565e63044211f3",
+      "Size": 66560
+    },
+    {
+      "BundleName": "FMOD/Master.bank",
+      "FileHash": "f43db248685619c00c5fa2d9c46157b9",
+      "Size": 15592
+    },
+    {
+      "BundleName": "FMOD/Master.strings.bank",
+      "FileHash": "ba43c6125880a9d4b47ac79ccec92b14",
+      "Size": 4014
+    },
+    {
+      "BundleName": "FMOD/Music.bank",
+      "FileHash": "139af4e68abdf208462524b760b41fe1",
+      "Size": 10454368
+    },
+    {
+      "BundleName": "FMOD/SFX.bank",
+      "FileHash": "d4742ae6bb0436356e230a98b30b2b3d",
+      "Size": 21580064
+    },
+    {
+      "BundleName": "FMOD/Vehicles.bank",
+      "FileHash": "e4f6a02221a8db770fbff6c532f11d75",
+      "Size": 222464
+    },
+    {
+      "BundleName": "FMOD/VO.bank",
+      "FileHash": "cd2446e93a89c933ca398d90030b18e7",
+      "Size": 38624
     },
     {
       "BundleName": "assets/res/animationclip.ab",
@@ -34,8 +79,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "707764b94eb06280dd2b51f42c55aaa8",
-      "Size": 308029
+      "FileHash": "8cca564c5092abc916f2925a0790b100",
+      "Size": 308180
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -144,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "04049cbe407ac2c09f6316eb8fe8b6a8",
-      "Size": 1098102
+      "FileHash": "79cbe89d675368faa42b45905e077a8c",
+      "Size": 1098093
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -234,8 +279,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/atlases/misc.ab",
-      "FileHash": "31de7d39aad3ac30a0acf4072b8da913",
-      "Size": 3254644
+      "FileHash": "722b83a638f8f5cdb1658ba382802caf",
+      "Size": 3254650
     }
   ]
 }
