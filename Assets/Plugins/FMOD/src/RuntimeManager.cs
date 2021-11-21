@@ -959,6 +959,65 @@ retry:
             }
         }
 
+        // added by xukun@2021.11.21
+        public static void LoadBank(string bankName, string bankPath, bool loadSamples = false)
+        {
+            if (Instance.loadedBanks.ContainsKey(bankName))
+            {
+                LoadedBank loadedBank = Instance.loadedBanks[bankName];
+                loadedBank.RefCount++;
+
+                if (loadSamples)
+                {
+                    loadedBank.Bank.loadSampleData();
+                }
+                Instance.loadedBanks[bankName] = loadedBank;
+            }
+            else
+            {
+//                string bankFolder = Instance.currentPlatform.GetBankFolder();
+
+//#if !UNITY_EDITOR
+//                if (!string.IsNullOrEmpty(Settings.Instance.TargetSubFolder))
+//                {
+//                    bankFolder = RuntimeUtils.GetCommonPlatformPath(Path.Combine(bankFolder, Settings.Instance.TargetSubFolder));
+//                }
+//#endif
+
+                const string BankExtension = ".bank";
+
+                //string bankPath;
+
+                if (System.IO.Path.GetExtension(bankName) != BankExtension)
+                {
+                    bankPath = string.Format("{0}/{1}{2}", bankPath, bankName, BankExtension);
+                }
+                else
+                {
+                    bankPath = string.Format("{0}/{1}", bankPath, bankName);
+                }
+                Instance.LoadingBanksRef++;
+#if UNITY_ANDROID && !UNITY_EDITOR
+                if (Settings.Instance.AndroidUseOBB)
+                {
+                    Instance.StartCoroutine(Instance.loadFromWeb(bankPath, bankName, loadSamples));
+                }
+                else
+#elif UNITY_WEBGL && !UNITY_EDITOR
+                if (true)
+                {
+                    Instance.StartCoroutine(Instance.loadFromWeb(bankPath, bankName, loadSamples));
+                }
+                else
+#endif // (UNITY_ANDROID || UNITY_WEBGL) && !UNITY_EDITOR
+                {
+                    LoadedBank loadedBank = new LoadedBank();
+                    FMOD.RESULT loadResult = Instance.studioSystem.loadBankFile(bankPath, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out loadedBank.Bank);
+                    Instance.loadedBankRegister(loadedBank, bankPath, bankName, loadSamples, loadResult);
+                }
+            }
+        }
+
         public const string BankStubPrefix = "bank stub:";
 
         public static void LoadBank(TextAsset asset, bool loadSamples = false)

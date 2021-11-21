@@ -1,6 +1,6 @@
 {
-  "Count": 47,
-  "TotalSize": 71754362,
+  "Count": 56,
+  "TotalSize": 129686315,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,53 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "ab57ee64fc326a917d54e1af2b2291ca",
-      "Size": 3305
+      "FileHash": "9134fa8d18cf06658f72acf4e9f6d04a",
+      "Size": 3304
+    },
+    {
+      "BundleName": "FMOD/Dialogue_CN.bank",
+      "FileHash": "5e1edb4b50edbd23d52d015f3cbbea5e",
+      "Size": 141056
+    },
+    {
+      "BundleName": "FMOD/Dialogue_EN.bank",
+      "FileHash": "6e971d24166d0df5fa17f6d4e01d3d08",
+      "Size": 163168
+    },
+    {
+      "BundleName": "FMOD/Dialogue_JP.bank",
+      "FileHash": "eeca1822e8706f56eddecf21caaa3f38",
+      "Size": 172704
+    },
+    {
+      "BundleName": "FMOD/Master.bank",
+      "FileHash": "63fb5c91a78dc9e0da08de2122f384c2",
+      "Size": 15592
+    },
+    {
+      "BundleName": "FMOD/Master.strings.bank",
+      "FileHash": "ba43c6125880a9d4b47ac79ccec92b14",
+      "Size": 4014
+    },
+    {
+      "BundleName": "FMOD/Music.bank",
+      "FileHash": "e54c13dfd64f54c0f465027fa013684e",
+      "Size": 20747584
+    },
+    {
+      "BundleName": "FMOD/SFX.bank",
+      "FileHash": "7514a5b12205c3c4c0827ea533da0fc5",
+      "Size": 36303552
+    },
+    {
+      "BundleName": "FMOD/Vehicles.bank",
+      "FileHash": "9e25feb0f2a682446e413ec6b69ff4cf",
+      "Size": 328352
+    },
+    {
+      "BundleName": "FMOD/VO.bank",
+      "FileHash": "0c6ae4e7894efb650ab5e3ba1ee1bee0",
+      "Size": 55936
     },
     {
       "BundleName": "assets/res/animationclip.ab",
@@ -34,7 +79,7 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "238c1980d300a710cfa29fbdc1f44a54",
+      "FileHash": "b7a1d3ea13dd971049ea5bbac4dab455",
       "Size": 183479
     },
     {
@@ -69,8 +114,8 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/wgame.ab",
-      "FileHash": "2813f8b4a4433b5e78a081d259bf3909",
-      "Size": 20583291
+      "FileHash": "c836592b907451ec96bdd6bb9443ed00",
+      "Size": 20583288
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_01.ab",
@@ -144,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "2b2ff77dd4334efed51327e63d16e571",
-      "Size": 277110
+      "FileHash": "da6a788c0ea45fb13114c9801e80cf46",
+      "Size": 277109
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",

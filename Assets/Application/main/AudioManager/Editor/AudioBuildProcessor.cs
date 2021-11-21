@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Build;
+using Framework.Core;
 
-namespace Framework.Core.Editor
+namespace Application.Editor
 {
     public class AudioBuildProcessor : IPreprocessBuildWithReport
     {

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Framework.Core.Tests
+namespace Application.Runtime
 {
     class ScriptUsageBasic : MonoBehaviour
     {

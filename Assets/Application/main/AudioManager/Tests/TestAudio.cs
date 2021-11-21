@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.Core.Tests
+namespace Application.Runtime
 {
     public class TestAudio : MonoBehaviour
     {
