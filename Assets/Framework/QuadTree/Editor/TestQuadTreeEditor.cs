@@ -13,11 +13,6 @@ namespace Framework.Core.Editor
         private QuadTree<TestQuadNodeObject>.Node m_Root;
         private float m_Thickness = 2;
 
-        void OnEnable()
-        {
-            
-        }
-
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -30,12 +25,12 @@ namespace Framework.Core.Editor
             EditorGUILayout.BeginHorizontal();
             if(GUILayout.Button("Insert small object"))
             {
-                ((TestQuadTree)target).Insert(0.01f, 0.05f);
+                ((TestQuadTree)target).InsertSmall();
                 RepaintSceneView();
             }
             if(GUILayout.Button("Insert big object"))
             {
-                ((TestQuadTree)target).Insert(0.1f, 0.5f);
+                ((TestQuadTree)target).InsertBig();
                 RepaintSceneView();
             }
             EditorGUILayout.EndHorizontal();
@@ -45,14 +40,24 @@ namespace Framework.Core.Editor
         {
             Handles.Label(((TestQuadTree)target).transform.position, "QuadTree");
 
-            Handles.BeginGUI();
+            // Handles.BeginGUI();
 
-            if(GUI.Button(new Rect(20, 350, 100, 40), "Create QuadTree"))
-            {
-                ((TestQuadTree)target).CreateQuadTree();
-            }
+            // if(GUI.Button(new Rect(Screen.width - 200, 120, 150, 40), "Create QuadTree"))
+            // {
+            //     ((TestQuadTree)target).CreateQuadTree();
+            // }
 
-            Handles.EndGUI();
+            // if(GUI.Button(new Rect(Screen.width - 200, 180, 150, 40), "Insert small object"))
+            // {
+            //     ((TestQuadTree)target).Insert(0.01f, 0.05f);
+            // }
+
+            // if(GUI.Button(new Rect(Screen.width - 200, 240, 150, 40), "Insert big object"))
+            // {
+            //     ((TestQuadTree)target).Insert(0.1f, 0.2f);
+            // }
+
+            // Handles.EndGUI();
 
             m_QuadTree = ((TestQuadTree)target).quadTree;
             if(m_QuadTree == null)

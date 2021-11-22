@@ -15,6 +15,9 @@ namespace Framework.Core.Tests
         public int height;
         public int maxObjects;
         public int maxDepth;
+        public float largeObjectSize;
+        public Vector2 smallObjectSize;
+        public Vector2 bigObjectSize;
 
 #if UNITY_EDITOR        
         private QuadTree<TestQuadNodeObject> m_QuadTree;
@@ -27,10 +30,20 @@ namespace Framework.Core.Tests
         {
             float x = transform.position.x - width * 0.5f;
             float y = transform.position.z - height * 0.5f;
-            m_QuadTree = new QuadTree<TestQuadNodeObject>(new Rect(x, y, width, height), maxObjects, maxDepth, 0.5f);
+            m_QuadTree = new QuadTree<TestQuadNodeObject>(new Rect(x, y, width, height), maxObjects, maxDepth, largeObjectSize);
         }
 
-        public void Insert(float min, float max)
+        public void InsertSmall()
+        {
+            Insert(smallObjectSize.x, smallObjectSize.y);
+        }
+
+        public void InsertBig()
+        {
+            Insert(bigObjectSize.x, bigObjectSize.y);
+        }
+
+        private void Insert(float min, float max)
         {
             TestQuadNodeObject obj = new TestQuadNodeObject(RandomRect(min, max));
             m_QuadTree.Insert(obj);

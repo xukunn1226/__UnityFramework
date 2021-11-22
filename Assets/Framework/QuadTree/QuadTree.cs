@@ -45,16 +45,15 @@ namespace Framework.Core
                                                                 // 做测试，大物件才拿bound与区域bound做相交性测试
 
         // 指定范围内创建指定层次的四叉树
-        public QuadTree(Rect rect, int maxObjects, int maxDepth, float scaleToMinRect = 0)
+        public QuadTree(Rect rect, int maxObjects, int maxDepth, float largeObjectSize = 0)
         {
             m_MaxDepth = Mathf.Max(1, maxDepth);
             m_MaxObjects = Mathf.Max(4, maxObjects);
+            m_LargeObjectSize = largeObjectSize;
 
             m_Root = new Node();
             m_Root.depth = 0;
             m_Root.rect = rect;
-
-            m_LargeObjectSize = Mathf.Max(minWidth, minHeight) * scaleToMinRect;
         }
 
         public Node rootNode { get { return m_Root; } }
@@ -63,7 +62,7 @@ namespace Framework.Core
             get
             {
                 if(m_Root == null) return 0;
-                return m_Root.rect.width / (1 >> (m_MaxDepth - 1));
+                return m_Root.rect.width / (1 << (m_MaxDepth - 1));
             } 
         }
 
@@ -72,7 +71,7 @@ namespace Framework.Core
             get
             {
                 if(m_Root == null) return 0;
-                return m_Root.rect.height / (1 >> (m_MaxDepth - 1));
+                return m_Root.rect.height / (1 << (m_MaxDepth - 1));
             }
         }
 
@@ -197,6 +196,7 @@ namespace Framework.Core
         private bool Insert(Node node, T obj)
         {
             int ret = GetQuadrant(ref node.rect, ref obj.rect);
+            // Debug.Log($"node: {node.rect}   obj: {obj.rect}     ret: {ret}");
             if(ret == -1)
                 return false;        // 超出范围
             
