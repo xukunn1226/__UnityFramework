@@ -45,6 +45,15 @@ namespace Framework.Core.Editor
         {
             Handles.Label(((TestQuadTree)target).transform.position, "QuadTree");
 
+            Handles.BeginGUI();
+
+            if(GUI.Button(new Rect(20, 350, 100, 40), "Create QuadTree"))
+            {
+                ((TestQuadTree)target).CreateQuadTree();
+            }
+
+            Handles.EndGUI();
+
             m_QuadTree = ((TestQuadTree)target).quadTree;
             if(m_QuadTree == null)
                 return;
