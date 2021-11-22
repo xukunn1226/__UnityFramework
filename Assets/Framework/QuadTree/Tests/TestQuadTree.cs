@@ -2,43 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Core.Tests
 {
-    public class TestQuadTree : MonoBehaviour, IQuadTreeDrawable
+    [ExecuteInEditMode]
+    public class TestQuadTree : MonoBehaviour
     {
         public int width;
         public int height;
-        public int maxObject;
+        public int maxObjects;
         public int maxDepth;
 
+#if UNITY_EDITOR        
         private QuadTree<TestQuadNodeObject> m_QuadTree;
 
-        public QuadTree quadTree { get { return m_QuadTree; } }
+        public QuadTree<TestQuadNodeObject> quadTree { get { return m_QuadTree; } }
 
-        // Start is called before the first frame update
-        void Start()
+        public QuadTree<TestQuadNodeObject>.Node rootNode { get { return m_QuadTree?.rootNode; } }
+
+        public void CreateQuadTree()
         {
-            m_QuadTree = new QuadTree<TestQuadNodeObject>(new Rect(new Vector2(transform.position.x, transform.position.z), new Vector2(width, height)), maxObject, maxDepth);
-        }
-        
-        void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.Space))
-            {
-                bool ret = m_QuadTree.Insert(new TestQuadNodeObject(RandomRect()));
-                Debug.Log($"Insert: {ret}");
-            }            
+            float x = transform.position.x - width * 0.5f;
+            float y = transform.position.z - height * 0.5f;
+            m_QuadTree = new QuadTree<TestQuadNodeObject>(new Rect(x, y, width, height), maxObjects, maxDepth, 0.5f);
         }
 
-        Rect RandomRect()
+        public void Insert(float min, float max)
         {
-            float x = Random.Range(transform.position.x - 0.6f * width, transform.position.x + 0.6f * width);
-            float y = Random.Range(transform.position.y - 0.6f * height, transform.position.y + 0.6f * height);
-            float w = Random.Range(0.01f, 0.1f) * width;
-            float h = Random.Range(0.01f, 0.1f) * height;
+            TestQuadNodeObject obj = new TestQuadNodeObject(RandomRect(min, max));
+            m_QuadTree.Insert(obj);
+        }
+
+        Rect RandomRect(float min, float max)
+        {
+            float x = transform.position.x + Random.Range(-0.5f * width, 0.5f * width);
+            float y = transform.position.z + Random.Range(-0.5f * height, 0.5f * height);
+            float w = width * Random.Range(min, max);
+            float h = height * Random.Range(min, max);
             return new Rect(x, y, w, h);
         }
+#endif        
     }
 
     public class TestQuadNodeObject : INodeObject
@@ -48,8 +54,6 @@ namespace Framework.Core.Tests
         public ref Rect rect => ref m_Rect;
 
         public LinkedListNode<INodeObject> quadNode    { get; set; }
-
-        public TestQuadNodeObject() {}
 
         public TestQuadNodeObject(Rect rect)
         {
