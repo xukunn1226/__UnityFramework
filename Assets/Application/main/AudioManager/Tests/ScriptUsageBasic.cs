@@ -5,6 +5,7 @@ namespace Application.Runtime
 {
     class ScriptUsageBasic : MonoBehaviour
     {
+        public FMODUnity.EventReference Test1Event;
         //--------------------------------------------------------------------
         // 1: Using the EventReference type will present the designer with
         //    the UI for selecting events.
@@ -45,55 +46,52 @@ namespace Application.Runtime
         {
 
         }
-        void Start()
-        {
-            cachedRigidBody = GetComponent<Rigidbody>();
-            health = StartingHealth;
+        // void Start()
+        // {
+        //     cachedRigidBody = GetComponent<Rigidbody>();
+        //     health = StartingHealth;
 
-            //--------------------------------------------------------------------
-            // 4: This shows how to create an instance of an event and manually 
-            //    start it.
-            //--------------------------------------------------------------------
-            //playerState = FMODUnity.RuntimeManager.CreateInstance(PlayerStateEvent);
-            //playerState.start();
-            //playerState.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(gameObject, cachedRigidBody));
+        //     //--------------------------------------------------------------------
+        //     // 4: This shows how to create an instance of an event and manually 
+        //     //    start it.
+        //     //--------------------------------------------------------------------
+        //     //playerState = FMODUnity.RuntimeManager.CreateInstance(PlayerStateEvent);
+        //     //playerState.start();
+        //     //playerState.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(gameObject, cachedRigidBody));
 
-            playerIntro = FMODUnity.RuntimeManager.CreateInstance(PlayerIntroEvent);
-            playerIntro.start();
-
-            return;
-
+        //     playerIntro = FMODUnity.RuntimeManager.CreateInstance(PlayerIntroEvent);
+        //     playerIntro.start();
             
-            //--------------------------------------------------------------------
-            // 5: The RuntimeManager can track event instances and update their 
-            //    positions to match a given game object every frame. This is
-            //    an easier alternative to manually doing this for every instance
-            //    as shown in (8).
-            //--------------------------------------------------------------------
-            FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerIntro, GetComponent<Transform>(), GetComponent<Rigidbody>());
+        //     //--------------------------------------------------------------------
+        //     // 5: The RuntimeManager can track event instances and update their 
+        //     //    positions to match a given game object every frame. This is
+        //     //    an easier alternative to manually doing this for every instance
+        //     //    as shown in (8).
+        //     //--------------------------------------------------------------------
+        //     FMODUnity.RuntimeManager.AttachInstanceToGameObject(playerIntro, GetComponent<Transform>(), GetComponent<Rigidbody>());
 
-            //--------------------------------------------------------------------
-            //    Cache a handle to the "health" parameter for usage in Update()
-            //    as shown in (9). Using the handle is much better for performance
-            //    than trying to set the parameter by name every update.
-            //--------------------------------------------------------------------
-            FMOD.Studio.EventDescription healthEventDescription;
-            playerState.getDescription(out healthEventDescription);
-            FMOD.Studio.PARAMETER_DESCRIPTION healthParameterDescription;
-            healthEventDescription.getParameterDescriptionByName("health", out healthParameterDescription);
-            healthParameterId = healthParameterDescription.id;
+        //     //--------------------------------------------------------------------
+        //     //    Cache a handle to the "health" parameter for usage in Update()
+        //     //    as shown in (9). Using the handle is much better for performance
+        //     //    than trying to set the parameter by name every update.
+        //     //--------------------------------------------------------------------
+        //     FMOD.Studio.EventDescription healthEventDescription;
+        //     playerState.getDescription(out healthEventDescription);
+        //     FMOD.Studio.PARAMETER_DESCRIPTION healthParameterDescription;
+        //     healthEventDescription.getParameterDescriptionByName("health", out healthParameterDescription);
+        //     healthParameterId = healthParameterDescription.id;
 
-            //--------------------------------------------------------------------
-            //    Cache a handle to the "FullHeal" parameter for usage in 
-            //    ReceiveHealth() as shown in (13). Even though the event instance
-            //    is recreated each time it is played, the parameter handle will
-            //    always remain the same.
-            //--------------------------------------------------------------------
-            FMOD.Studio.EventDescription fullHealEventDescription = FMODUnity.RuntimeManager.GetEventDescription(HealEvent);
-            FMOD.Studio.PARAMETER_DESCRIPTION fullHealParameterDescription;
-            fullHealEventDescription.getParameterDescriptionByName("FullHeal", out fullHealParameterDescription);
-            fullHealthParameterId = fullHealParameterDescription.id;
-        }
+        //     //--------------------------------------------------------------------
+        //     //    Cache a handle to the "FullHeal" parameter for usage in 
+        //     //    ReceiveHealth() as shown in (13). Even though the event instance
+        //     //    is recreated each time it is played, the parameter handle will
+        //     //    always remain the same.
+        //     //--------------------------------------------------------------------
+        //     FMOD.Studio.EventDescription fullHealEventDescription = FMODUnity.RuntimeManager.GetEventDescription(HealEvent);
+        //     FMOD.Studio.PARAMETER_DESCRIPTION fullHealParameterDescription;
+        //     fullHealEventDescription.getParameterDescriptionByName("FullHeal", out fullHealParameterDescription);
+        //     fullHealthParameterId = fullHealParameterDescription.id;
+        // }
 
         void Update()
         {
@@ -119,11 +117,7 @@ namespace Application.Runtime
                 int count;
                 desc.getInstanceCount(out count);
                 UnityEngine.Debug.Log($"---- state: {state}  ret: {ret}     count: {count}");
-            }
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                playerState.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            }
+            }            
             if(Input.GetKeyDown(KeyCode.R))
             {
                 playerState.release();
@@ -133,6 +127,19 @@ namespace Application.Runtime
             {
                 playerState.start();
             }
+
+
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Test1();
+            }
+        }
+
+        // 测试PlayOneShot播放2D音效
+        void Test1()
+        {
+            FMODUnity.RuntimeManager.PlayOneShot(Test1Event, transform.position);
         }
 
         void OnDestroy()

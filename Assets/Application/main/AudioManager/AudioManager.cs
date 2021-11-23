@@ -4,6 +4,7 @@ using UnityEngine;
 using FMODUnity;
 using Framework.Core;
 using Framework.AssetManagement.Runtime;
+using System.IO;
 
 namespace Application.Runtime
 {
@@ -13,29 +14,45 @@ namespace Application.Runtime
         {
             base.Awake();
 
+            LoadAllBanks();
+        }
+
+        protected override void OnDestroy()
+        {
+            UnloadAllBanks();
+
+            RuntimeManager[] manager = Resources.FindObjectsOfTypeAll<RuntimeManager>();
+            foreach(var mgr in manager)
+            {
+                Destroy(mgr.gameObject);
+            }
+            base.OnDestroy();
+        }
+
+        private void LoadAllBanks()
+        {
             string bankPath = GetBankFolder();
-
-            //foreach (string masterBankFileName in Settings.Instance.MasterBanks)
-            //{
-            //    RuntimeManager.LoadBank(masterBankFileName, bankPath);
-            //    RuntimeManager.LoadBank(masterBankFileName + ".strings", bankPath);
-            //}
-
-            //foreach (var bank in Settings.Instance.Banks)
-            //{
-            //    RuntimeManager.LoadBank(bank, bankPath);
-            //}
-
-            string[] files = System.IO.Directory.GetFiles(bankPath, "*.bank");
+            string[] files = Directory.GetFiles(bankPath, "*.bank");
             foreach(var file in files)
             {
-                RuntimeManager.LoadBank(System.IO.Path.GetFileNameWithoutExtension(file), bankPath);
+                RuntimeManager.LoadBank(Path.GetFileNameWithoutExtension(file), bankPath);
+            }
+
+            RuntimeManager.WaitForAllLoads();
+        }
+
+        private void UnloadAllBanks()
+        {
+            string bankPath = GetBankFolder();
+            string[] files = Directory.GetFiles(bankPath, "*.bank");
+            foreach(var file in files)
+            {
+                RuntimeManager.UnloadBank(Path.GetFileNameWithoutExtension(file));
             }
         }
 
         private string GetBankFolder()
         {
-            // FromPersistent and FromStreamingAssets(mobile android)
             string bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
 
             LoaderType type = Launcher.GetLauncherMode();
@@ -68,9 +85,51 @@ namespace Application.Runtime
 #endif
                     }
                     break;
+                case LoaderType.FromPersistent:
+                    {
+                        bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.persistentDataPath, Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
+                    }
+                    break;
             }
 
             return bankFolder;
+        }
+
+        static public void PlayOneShot(EventReference eventReference, Vector3 position = new Vector3())
+        {
+            PlayOneShot(eventReference.Guid, position);
+        }
+
+        static public void PlayOneShot(string path, Vector3 position = new Vector3())
+        {
+            PlayOneShot(RuntimeManager.PathToGUID(path), position);
+        }
+
+        // 播放3D非循环音效
+        static public void PlayOneShot(FMOD.GUID guid, Vector3 position = new Vector3())
+        {
+            #if UNITY_EDITOR
+            FMOD.Studio.EventDescription desc = RuntimeManager.GetEventDescription(guid);
+            bool is3D;
+            desc.is3D(out is3D);
+            bool isOneShot;
+            desc.isOneshot(out isOneShot);
+            if(!is3D || !isOneShot)
+                throw new System.Exception($"PlayOneShot exception: is3D: {is3D}    isOneShot: {isOneShot}");
+            #endif
+
+            RuntimeManager.PlayOneShot(guid, position);
+        }
+
+        // 播放3D音效，并依附于gameObject，音效播放完毕或对象删除内部才删除
+        static public void PlayOneShotAttached(EventReference eventReference, GameObject gameObject)
+        {
+            RuntimeManager.PlayOneShotAttached(eventReference.Guid, gameObject);
+        }
+
+        static public void PlayOneShot2D(EventReference eventReference)
+        {
+            
         }
     }
 }
