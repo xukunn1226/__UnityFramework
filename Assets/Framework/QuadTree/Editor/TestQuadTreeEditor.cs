@@ -12,6 +12,11 @@ namespace Framework.Core.Editor
         private QuadTree<TestQuadNodeObject> m_QuadTree;
         private QuadTree<TestQuadNodeObject>.Node m_Root;
         private float m_Thickness = 2;
+        private Color m_QueryBoxClr = new Color(182/255.0f, 3/255.0f, 252/255.0f, 1);
+        private Color m_QueryObjectClr = new Color(252/255.0f, 3/255.0f, 127/255.0f, 1);
+        private bool m_ShowQueryBox;
+        private Rect m_QueryBox;
+        private List<TestQuadNodeObject> m_QueryObjectList = new List<TestQuadNodeObject>();
 
         public override void OnInspectorGUI()
         {
@@ -20,6 +25,7 @@ namespace Framework.Core.Editor
             if(GUILayout.Button("Create QuadTree"))
             {
                 ((TestQuadTree)target).CreateQuadTree();
+                m_ShowQueryBox = false;
                 RepaintSceneView();
             }
             EditorGUILayout.BeginHorizontal();
@@ -34,30 +40,29 @@ namespace Framework.Core.Editor
                 RepaintSceneView();
             }
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            if(GUILayout.Button("Query"))
+            {
+                m_QueryBox = ((TestQuadTree)target).RandomQueryRect();
+                m_ShowQueryBox = true;
+
+                m_QueryObjectList.Clear();
+                m_QuadTree.Query(m_QueryBox, ref m_QueryObjectList);
+
+                RepaintSceneView();
+            }
+            if(GUILayout.Button("Clear"))
+            {
+                m_ShowQueryBox = false;
+                RepaintSceneView();
+            }
+            EditorGUILayout.EndHorizontal();
         }
 
         private void OnSceneGUI()
         {
-            Handles.Label(((TestQuadTree)target).transform.position, "QuadTree");
-
-            // Handles.BeginGUI();
-
-            // if(GUI.Button(new Rect(Screen.width - 200, 120, 150, 40), "Create QuadTree"))
-            // {
-            //     ((TestQuadTree)target).CreateQuadTree();
-            // }
-
-            // if(GUI.Button(new Rect(Screen.width - 200, 180, 150, 40), "Insert small object"))
-            // {
-            //     ((TestQuadTree)target).Insert(0.01f, 0.05f);
-            // }
-
-            // if(GUI.Button(new Rect(Screen.width - 200, 240, 150, 40), "Insert big object"))
-            // {
-            //     ((TestQuadTree)target).Insert(0.1f, 0.2f);
-            // }
-
-            // Handles.EndGUI();
+            Handles.Label(((TestQuadTree)target).transform.position + new Vector3(0.2f, 1.5f, 0), "QuadTree");
 
             m_QuadTree = ((TestQuadTree)target).quadTree;
             if(m_QuadTree == null)
@@ -72,7 +77,19 @@ namespace Framework.Core.Editor
             // draw border
             DrawRect(m_Root.rect, ToColor(0));      // 使用第一层颜色绘制边界
 
+            // draw quad tree
             DrawNode(m_Root);
+
+            // draw query box and query objects
+            if(m_ShowQueryBox)
+            {
+                DrawRect(m_QueryBox, m_QueryBoxClr);
+                foreach(var obj in m_QueryObjectList)
+                {
+                    DrawRect(obj.rect, m_QueryObjectClr);
+                    Handles.Label(new Vector3(m_QueryBox.center.x, 0, m_QueryBox.center.y), m_QueryObjectList.Count.ToString(), EditorStyles.boldLabel);
+                }
+            }
 
             Handles.color = cachedColor;
         }
@@ -85,14 +102,16 @@ namespace Framework.Core.Editor
             if(node.children != null)
             {
                 DrawCross(node.rect, ToColor(node.depth + 1));
-                Handles.Label(new Vector3(node.rect.center.x + 0.2f, 0, node.rect.center.y - 0.2f), m_QuadTree.Count(node).ToString(), EditorStyles.boldLabel);
+
+                string info = string.Format($"{m_QuadTree.Count(node)}({m_QuadTree.CountSelf(node)})");
+                Handles.Label(new Vector3(node.rect.center.x + 0.2f, 0, node.rect.center.y - 0.2f), info, EditorStyles.boldLabel);
             }
 
             if(node.objects != null)
             {
                 foreach(var obj in node.objects)
                 {
-                    DrawRect(obj.rect, ToColor(node.depth));
+                    DrawRect(obj.rect, node.children != null ? ToColor(node.depth + 1) : ToColor(node.depth));
                 }
             }
 

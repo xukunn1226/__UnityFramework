@@ -203,18 +203,20 @@ namespace Framework.Core
             if(ret == 0)
             { // 被节点自身包含，只有大物体可能执行这里
                 AddObjectToNode(node, obj);
-                return true;
             }
-
-            // 有子区域，优先放入
-            if(node.children != null)
+            else
             {
-                Insert(node.children[ret - 1], obj);
-                return true;
+                // 有子区域，优先放入
+                if (node.children != null)
+                {
+                    Insert(node.children[ret - 1], obj);
+                }
+                else
+                {
+                    // 没有子区域则加入本节点
+                    AddObjectToNode(node, obj);
+                }
             }
-
-            // 没有子区域则加入本节点
-            AddObjectToNode(node, obj);
 
             if(node.children == null && node.objects.Count > m_MaxObjects && node.depth + 1 < m_MaxDepth)
             {
@@ -284,6 +286,11 @@ namespace Framework.Core
         //         node.objects.Remove(obj.quadNode as LinkedListNode<T>);
         //     }
         // }
+
+        public int CountSelf(Node node)
+        {
+            return node != null ? node.objects.Count : 0;
+        }
 
         public int Count(Node node)
         {
