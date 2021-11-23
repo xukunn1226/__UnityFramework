@@ -127,9 +127,44 @@ namespace Application.Runtime
             RuntimeManager.PlayOneShotAttached(eventReference.Guid, gameObject);
         }
 
-        static public void PlayOneShot2D(EventReference eventReference)
+        static public FMOD.Studio.EventInstance Play2D(EventReference eventReference, bool release = true)
         {
-            
+            return Play2D(eventReference.Guid, release);            
+        }
+
+        static public FMOD.Studio.EventInstance Play2D(string path, bool release = true)
+        {
+            return Play2D(RuntimeManager.PathToGUID(path), release);
+        }
+
+        static public FMOD.Studio.EventInstance Play2D(FMOD.GUID guid, bool release = true)
+        {
+            var instance = RuntimeManager.CreateInstance(guid);
+            instance.start();
+            if(release)
+            {
+                instance.release();
+                instance.clearHandle();
+            }
+            return instance;
+        }
+
+        static public void Stop2D(FMOD.Studio.EventInstance instance, bool AllowFadeout = true)
+        {
+            if(instance.isValid())
+            {
+                instance.stop(AllowFadeout ? FMOD.Studio.STOP_MODE.ALLOWFADEOUT : FMOD.Studio.STOP_MODE.IMMEDIATE);
+                instance.release();
+                instance.clearHandle();
+            }
+        }
+
+        static public void Restart2D(FMOD.Studio.EventInstance instance)
+        {
+            if(instance.isValid())
+            {
+                instance.start();
+            }
         }
     }
 }
