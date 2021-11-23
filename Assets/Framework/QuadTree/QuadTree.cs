@@ -11,10 +11,7 @@ namespace Framework.Core
         LinkedListNode<INodeObject> quadNode    { get; set; }
     }
 
-    public class QuadTree
-    {}
-
-    public class QuadTree<T> : QuadTree where T : INodeObject, new()
+    public class QuadTree<T> where T : INodeObject
     {
         /* 一个矩形区域的象限划分：
           
@@ -35,7 +32,7 @@ namespace Framework.Core
         {
             public Rect             rect;                       // 节点所代表的矩形区域
             public int              depth;                      // 节点所在深度，根节点深度为0
-            public LinkedList<T>    objects;                    // 归属此节点的物体
+            public LinkedList<T>    objects = new LinkedList<T>();  // 归属此节点的物体
             public Node             parent;
             public Node[]           children;                   // Node[0]: upper right; Node[1]: upper left; Node[2]: lower left; Node[3]: lower right
         }
@@ -43,19 +40,39 @@ namespace Framework.Core
         private Node                m_Root;                     // 根节点
         private int                 m_MaxDepth;                 // 最大深度
         private int                 m_MaxObjects;               // 每个区域最多容纳的物体数量
-        private const float         LARGE_OBJECT_SIZE = 5;      // 判定大物件的尺寸阈值(只有大物体可以包含于上一层节点，能有更大概率被查询到)
+        private float               m_LargeObjectSize;          // 判定大物件的尺寸阈值(只有大物体可以包含于上一层节点，能有更大概率被查询到)
                                                                 // 为了减少物体与区域边界相交时不好判定归属的问题，设计规则是小物件仅拿坐标与区域bound
                                                                 // 做测试，大物件才拿bound与区域bound做相交性测试
 
         // 指定范围内创建指定层次的四叉树
-        public QuadTree(Rect rect, int maxObject, int maxDepth)
+        public QuadTree(Rect rect, int maxObjects, int maxDepth, float largeObjectSize = 0)
         {
-            m_MaxDepth = Mathf.Max(0, maxDepth);
-            m_MaxObjects = Mathf.Max(4, maxObject);
+            m_MaxDepth = Mathf.Max(1, maxDepth);
+            m_MaxObjects = Mathf.Max(4, maxObjects);
+            m_LargeObjectSize = largeObjectSize;
 
             m_Root = new Node();
             m_Root.depth = 0;
             m_Root.rect = rect;
+        }
+
+        public Node rootNode { get { return m_Root; } }
+        public float minWidth
+        {
+            get
+            {
+                if(m_Root == null) return 0;
+                return m_Root.rect.width / (1 << (m_MaxDepth - 1));
+            } 
+        }
+
+        public float minHeight
+        {
+            get
+            {
+                if(m_Root == null) return 0;
+                return m_Root.rect.height / (1 << (m_MaxDepth - 1));
+            }
         }
 
         // 包含区域queryRect的最小节点
@@ -89,7 +106,8 @@ namespace Framework.Core
             if(node == null)
                 return;
 
-            objs.AddRange(node.objects);
+            if(node.objects.Count > 0)
+                objs.AddRange(node.objects);
 
             if(node.children == null)
                 return;
@@ -110,7 +128,7 @@ namespace Framework.Core
             if(node == null)
                 return;
 
-            if(node.objects != null)
+            if(node.objects.Count > 0)
             {
                 LinkedList<T>.Enumerator it = node.objects.GetEnumerator();
                 while(it.MoveNext())
@@ -153,7 +171,9 @@ namespace Framework.Core
             if(node == null)
                 return;
 
-            objs.AddRange(node.objects);
+            if(node.objects.Count > 0)
+                objs.AddRange(node.objects);
+
             if(node.children != null)
             {
                 for (int i = 0; i < 4; ++i)
@@ -176,25 +196,29 @@ namespace Framework.Core
         private bool Insert(Node node, T obj)
         {
             int ret = GetQuadrant(ref node.rect, ref obj.rect);
+            // Debug.Log($"node: {node.rect}   obj: {obj.rect}     ret: {ret}");
             if(ret == -1)
                 return false;        // 超出范围
             
             if(ret == 0)
             { // 被节点自身包含，只有大物体可能执行这里
                 AddObjectToNode(node, obj);
-                return true;
             }
-
-            // 有子区域，优先放入
-            if(node.children != null)
+            else
             {
-                Insert(node.children[ret - 1], obj);
-                return true;
+                // 有子区域，优先放入
+                if (node.children != null)
+                {
+                    Insert(node.children[ret - 1], obj);
+                }
+                else
+                {
+                    // 没有子区域则加入本节点
+                    AddObjectToNode(node, obj);
+                }
             }
 
-            AddObjectToNode(node, obj);
-
-            if(node.children == null && node.objects.Count > m_MaxObjects && node.depth < m_MaxDepth)
+            if(node.children == null && node.objects.Count > m_MaxObjects && node.depth + 1 < m_MaxDepth)
             {
                 Split(node);
 
@@ -219,7 +243,6 @@ namespace Framework.Core
                 child.parent = node;
                 child.depth = node.depth + 1;
                 child.rect = GetSubRect(ref node.rect, (Quadrant)i);
-                child.objects = new LinkedList<T>();
                 node.children[i] = child;
             }
         }
@@ -264,6 +287,11 @@ namespace Framework.Core
         //     }
         // }
 
+        public int CountSelf(Node node)
+        {
+            return node != null ? node.objects.Count : 0;
+        }
+
         public int Count(Node node)
         {
             if(node == null)
@@ -302,7 +330,7 @@ namespace Framework.Core
                 if(GetSubRect(ref nodeRect, Quadrant.LL).Contains(objRect.center)) return 3;
                 if(GetSubRect(ref nodeRect, Quadrant.LR).Contains(objRect.center)) return 4;
 
-                Debug.Assert(false);        // 小物体不判定与本节点的相交性，理论上不会执行到这里
+                Debug.Assert(false);        // 小物体不判定与本节点的相交性，理论上不会执行到这里                
                 return 0;
             }
 
@@ -325,7 +353,7 @@ namespace Framework.Core
                 case Quadrant.LL:
                     return new Rect(rect.center + new Vector2(rect.width * -0.5f, rect.height * -0.5f), rect.size * 0.5f);
                 case Quadrant.LR:
-                    return new Rect(rect.center + new Vector2(rect.width *  0.5f, rect.height * -0.5f), rect.size * 0.5f);
+                    return new Rect(rect.center + new Vector2(0, rect.height * -0.5f),                  rect.size * 0.5f);
             }
             return rect;
         }
@@ -344,7 +372,7 @@ namespace Framework.Core
 
         private bool IsBigObject(ref Rect rect)
         {
-            return Mathf.Max(rect.width, rect.height) > LARGE_OBJECT_SIZE;
+            return Mathf.Max(rect.width, rect.height) > m_LargeObjectSize;
         }
     }
 }
