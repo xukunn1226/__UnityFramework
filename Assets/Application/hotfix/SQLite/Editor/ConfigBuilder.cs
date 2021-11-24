@@ -1322,5 +1322,12 @@ namespace Application.Editor
             }
             return -1;
         }
+        
+        [UnityEditor.Callbacks.DidReloadScripts]
+        private static void OnScriptsReloaded()
+        {
+            // do something
+            Debug.LogError("====== OnScriptsReloaded");
+        }
     }
 }
