@@ -95,6 +95,44 @@ namespace Application.Runtime
             return bankFolder;
         }
 
+        void Update()
+        {
+            if(m_ElapsedTime >= 0)
+            {
+                m_ElapsedTime -= Time.deltaTime;
+                if(m_ElapsedTime < 0)
+                {
+                    m_ElapsedTime = -1;
+                    m_BGM = Play2D(m_PendingBGM, false);
+                }                
+            }
+        }
+
+        static private EventReference               m_PendingBGM;
+        static private FMOD.Studio.EventInstance    m_BGM;
+        static private float                        m_ElapsedTime = -1;
+        static public void PlayBGM(EventReference eventReference, float delay = 0)
+        {
+            if(m_BGM.isValid())
+            {
+                m_BGM.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                m_BGM.release();
+                m_BGM.clearHandle();
+            }
+            m_ElapsedTime = Mathf.Max(0, delay);
+            m_PendingBGM = eventReference;
+        }
+
+        static public void StopBGM()
+        {
+            if(m_BGM.isValid())
+            {
+                m_BGM.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                m_BGM.release();
+                m_BGM.clearHandle();
+            }
+        }
+
         static public void PlayOneShot(EventReference eventReference, Vector3 position = new Vector3())
         {
             PlayOneShot(eventReference.Guid, position);
@@ -105,43 +143,52 @@ namespace Application.Runtime
             PlayOneShot(RuntimeManager.PathToGUID(path), position);
         }
 
-        // 播放3D非循环音效
         static public void PlayOneShot(FMOD.GUID guid, Vector3 position = new Vector3())
         {
-            #if UNITY_EDITOR
-            FMOD.Studio.EventDescription desc = RuntimeManager.GetEventDescription(guid);
-            bool is3D;
-            desc.is3D(out is3D);
-            bool isOneShot;
-            desc.isOneshot(out isOneShot);
-            if(!is3D || !isOneShot)
-                throw new System.Exception($"PlayOneShot exception: is3D: {is3D}    isOneShot: {isOneShot}");
-            #endif
-
             RuntimeManager.PlayOneShot(guid, position);
         }
 
-        // 播放3D音效，并依附于gameObject，音效播放完毕或对象删除内部才删除
         static public void PlayOneShotAttached(EventReference eventReference, GameObject gameObject)
         {
-            RuntimeManager.PlayOneShotAttached(eventReference.Guid, gameObject);
+            PlayOneShotAttached(eventReference.Guid, gameObject);
+        }
+        
+        static public void PlayOneShotAttached(string path, GameObject gameObject)
+        {
+            PlayOneShotAttached(RuntimeManager.PathToGUID(path), gameObject);
         }
 
-        static public FMOD.Studio.EventInstance Play2D(EventReference eventReference, bool release = true)
+        static public void PlayOneShotAttached(FMOD.GUID guid, GameObject gameObject)
         {
-            return Play2D(eventReference.Guid, release);            
+            RuntimeManager.PlayOneShotAttached(guid, gameObject);
         }
 
-        static public FMOD.Studio.EventInstance Play2D(string path, bool release = true)
+        static public FMOD.Studio.EventInstance Play2D(EventReference eventReference, bool isOneShot = true)
         {
-            return Play2D(RuntimeManager.PathToGUID(path), release);
+            return Play2D(eventReference.Guid, isOneShot);            
         }
 
-        static public FMOD.Studio.EventInstance Play2D(FMOD.GUID guid, bool release = true)
+        static public FMOD.Studio.EventInstance Play2D(string path, bool isOneShot = true)
         {
+            return Play2D(RuntimeManager.PathToGUID(path), isOneShot);
+        }
+
+        // 2D音效播放接口，isOneShot=true表示音效播放完毕自动回收，也意味着播放完毕前失去了控制，不可停止，不可重播
+        static public FMOD.Studio.EventInstance Play2D(FMOD.GUID guid, bool isOneShot = true)
+        {
+            FMOD.Studio.EventDescription desc = RuntimeManager.GetEventDescription(guid);
+            bool isOneShotOfMeta;
+            desc.isOneshot(out isOneShotOfMeta);
+            // 循环音效被设置成isOneShot会导致handle失效，无法stop
+            if(!isOneShotOfMeta && isOneShot)
+            {
+                Debug.LogWarning("设置循环音效为isOneShot，需要手动释放");
+                isOneShot = false;
+            }
+
             var instance = RuntimeManager.CreateInstance(guid);
             instance.start();
-            if(release)
+            if(isOneShot)
             {
                 instance.release();
                 instance.clearHandle();
@@ -149,7 +196,7 @@ namespace Application.Runtime
             return instance;
         }
 
-        static public void Stop2D(FMOD.Studio.EventInstance instance, bool AllowFadeout = true)
+        static public void Stop(FMOD.Studio.EventInstance instance, bool AllowFadeout = true)
         {
             if(instance.isValid())
             {
@@ -159,10 +206,11 @@ namespace Application.Runtime
             }
         }
 
-        static public void Restart2D(FMOD.Studio.EventInstance instance)
+        static public void Restart(FMOD.Studio.EventInstance instance, bool AllowFadeout = true)
         {
             if(instance.isValid())
             {
+                instance.stop(AllowFadeout ? FMOD.Studio.STOP_MODE.ALLOWFADEOUT : FMOD.Studio.STOP_MODE.IMMEDIATE);
                 instance.start();
             }
         }
