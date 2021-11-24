@@ -63,6 +63,7 @@ namespace AnimationInstancingModule.Runtime
         [NonSerialized] public bool     isShow              = true;
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
         private Dictionary<string, AttachmentInfo> m_AttachmentInfo = new Dictionary<string, AttachmentInfo>();
+        public int                      index               { get; set; } = -1;         // 记录在AnimationInstancingManager中的索引
 
         private void Awake()
         {

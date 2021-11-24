@@ -104,8 +104,10 @@ namespace AnimationInstancingModule.Runtime
             inst.isCulled = !m_CullingGroup.IsVisible(m_UsedBoundingSphereCount - 1);
         }
 
-        private void RemoveBoundingSphere()
+        private void RemoveBoundingSphere(int index)
         {
+            m_BoundingSphere[index] = m_BoundingSphere[m_UsedBoundingSphereCount - 1];
+
             --m_UsedBoundingSphereCount;
             m_CullingGroup.SetBoundingSphereCount(m_UsedBoundingSphereCount);
             Debug.Assert(m_UsedBoundingSphereCount >= 0);
@@ -125,22 +127,40 @@ namespace AnimationInstancingModule.Runtime
 #endif            
 
             m_AnimInstancingList.Add(inst);
+            inst.index = m_AnimInstancingList.Count - 1;
             AddBoundingSphere(inst);
         }
 
         internal void RemoveInstance(AnimationInstancing inst)
         {
-            if(m_AnimInstancingList.Remove(inst))
-            {
-                RemoveAllVertexCache(inst);
-                RemoveBoundingSphere();                
-            }
-#if UNITY_EDITOR            
-            else
+            if(inst.index == -1 || inst.index >= m_AnimInstancingList.Count)
             {
                 Debug.LogError($"{inst.gameObject.name} remove from AnimationInstancingManager fail.");
+                return;
             }
-#endif            
+
+            // swap removed instancing and last instancing
+            AnimationInstancing lastInst = m_AnimInstancingList[m_AnimInstancingList.Count - 1];
+            lastInst.index = inst.index;
+            m_AnimInstancingList[m_AnimInstancingList.Count - 1] = inst;
+            m_AnimInstancingList[inst.index] = lastInst;
+            m_AnimInstancingList.RemoveAt(m_AnimInstancingList.Count - 1);
+
+            RemoveAllVertexCache(inst);
+            RemoveBoundingSphere(inst.index);
+
+
+//             if(m_AnimInstancingList.Remove(inst))
+//             {
+//                 RemoveAllVertexCache(inst);
+//                 RemoveBoundingSphere();                
+//             }
+// #if UNITY_EDITOR            
+//             else
+//             {
+//                 Debug.LogError($"{inst.gameObject.name} remove from AnimationInstancingManager fail.");
+//             }
+// #endif            
         }
 
         internal void AddVertexCache(AnimationInstancing inst, LODInfo lodInfo)
