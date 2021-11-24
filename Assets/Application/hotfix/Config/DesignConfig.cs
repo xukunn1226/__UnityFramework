@@ -73,7 +73,7 @@ namespace Application.Runtime
         public List<string> variant1 = new List<string>();
         public List<int> variant2 = new List<int>();
         public List<float> variant3 = new List<float>();
-        public MonsterConfig MonsterDesc;
+        public int MonsterDesc;
         public Dictionary<int, string> variant4 = new Dictionary<int, string>();
     }
 

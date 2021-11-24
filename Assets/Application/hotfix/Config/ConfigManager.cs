@@ -189,7 +189,7 @@ namespace Application.Runtime
                 desc.Address = reader.GetString(reader.GetOrdinal("Address"));
                 desc.HP = reader.GetInt32(reader.GetOrdinal("HP"));
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
-                desc.MonsterDesc = GetMonsterConfigByID(reader.GetInt32(reader.GetOrdinal("MonsterDesc")));
+                desc.MonsterDesc = reader.GetInt32(reader.GetOrdinal("MonsterDesc"));
                 Parse(ref desc.variant1, reader.GetString(reader.GetOrdinal("variant1")));
                 Parse(ref desc.variant2, reader.GetString(reader.GetOrdinal("variant2")));
                 Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
