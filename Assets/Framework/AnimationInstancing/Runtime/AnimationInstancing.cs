@@ -64,6 +64,7 @@ namespace AnimationInstancingModule.Runtime
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
         private Dictionary<string, AttachmentInfo> m_AttachmentInfo = new Dictionary<string, AttachmentInfo>();
         private bool                    m_isQuitting;
+        public int                      index               { get; set; } = -1;         // 记录在AnimationInstancingManager中的索引
 
         private void Awake()
         {

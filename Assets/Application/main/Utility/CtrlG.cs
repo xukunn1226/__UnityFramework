@@ -50,28 +50,7 @@ namespace Application.Runtime
             {
                 SceneManager.sceneLoaded -= OnSceneLoaded;
             }
-        }
-
-        [MenuItem("Tools/Quick Launch %g", false)]
-        static void RunOrStopGame()
-        {
-            if(EditorApplication.isPlaying)
-            {
-                EditorApplication.isPlaying = false;
-            }
-            else
-            {
-                EditorPrefs.SetString("CtrlG_PrevScenePath", EditorSceneManager.GetActiveScene().path);
-                Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-
-                GameObject go = GameObject.Find("/CtrlG");
-                if(go == null)
-                {
-                    new GameObject("CtrlG", typeof(CtrlG));
-                }
-                EditorApplication.isPlaying = true;
-            }
-        }
+        }        
 #endif
     }   
 }

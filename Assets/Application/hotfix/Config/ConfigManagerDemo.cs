@@ -19,7 +19,7 @@ namespace Application.Runtime
                     Debug.Log(player.Building_ID);
                     Debug.Log(player.Name);
                     Debug.Log(player.HP);
-                    Debug.Log(player.Male);
+                    Debug.Log(player.MonsterDesc);
                 }
             player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 100);
         }
