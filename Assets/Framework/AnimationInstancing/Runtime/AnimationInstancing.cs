@@ -63,6 +63,7 @@ namespace AnimationInstancingModule.Runtime
         [NonSerialized] public bool     isShow              = true;
         public bool                     isLoop              { get { return m_WrapMode == WrapMode.Loop; } }
         private Dictionary<string, AttachmentInfo> m_AttachmentInfo = new Dictionary<string, AttachmentInfo>();
+        private bool                    m_isQuitting;
         public int                      index               { get; set; } = -1;         // 记录在AnimationInstancingManager中的索引
 
         private void Awake()
@@ -101,8 +102,16 @@ namespace AnimationInstancingModule.Runtime
         // 注意：因OnDisable用于销毁操作，故不能执行AnimationInstancing的enabled或SetActive等操作
         private void OnDisable()
         {
-            AnimationDataManager.Instance.Unload(m_Prototype);
-            AnimationInstancingManager.Instance.RemoveInstance(this);
+            if(!m_isQuitting)
+            {
+                AnimationDataManager.Instance.Unload(m_Prototype);
+                AnimationInstancingManager.Instance.RemoveInstance(this);
+            }
+        }
+
+        void OnApplicationQuit()
+        {
+            m_isQuitting = true;
         }
 
         public void Pause()
