@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: lilithgames
-  productName: Times Evolution
+  productName: Arena Knights
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -345,7 +345,7 @@ PlayerSettings:
       m_SubKind: 
     - m_Textures:
       - {fileID: 2800000, guid: 1786c9aba4afa0f4eac8bc909dad43ed, type: 3}
-      - {fileID: 2800000, guid: c7d64893ed64f8e40b3ccbe31502fefc, type: 3}
+      - {fileID: 2800000, guid: f554d9e7d32576345bd8e549eb7a0f7c, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
