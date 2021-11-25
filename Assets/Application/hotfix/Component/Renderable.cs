@@ -17,7 +17,8 @@ namespace Application.Runtime
                 if(m_Enable != value)
                 {
                     m_Enable = value;
-                    renderer?.SetActive(value);
+                    if(renderer != null)
+                        renderer.SetActive(value);
                 }
             }
         }

@@ -250,7 +250,7 @@ namespace Application.Runtime
 
             if(GUI.Button(new Rect(Screen.width-200, Screen.height/2 - 120, 200, 100), "Destroy Actors"))
             {
-                TestActorManager.DestroyAll();                
+                TestActorManager.DestroyRandom();
             }
         }
     }

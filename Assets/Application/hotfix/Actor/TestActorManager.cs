@@ -33,6 +33,12 @@ namespace Application.Runtime
             s_Actors.Remove(id);
         }
 
+        static public void DestroyRandom()
+        {
+            int id = UnityEngine.Random.Range(0, s_Actors.Count - 1);
+            DestroyActor(id);
+        }
+
         static public void DestroyAll()
         {
             foreach(var item in s_Actors)
