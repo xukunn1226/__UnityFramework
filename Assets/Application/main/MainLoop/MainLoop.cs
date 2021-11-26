@@ -64,6 +64,8 @@ namespace Application.Runtime
             GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
 
             GameModeManager.Instance.SwitchTo(DefaultMode);
+            AudioManager.PlayBGM("event:/Ambience/City");
+            
             yield break;
         }
 

@@ -111,6 +111,12 @@ namespace Application.Runtime
         static private EventReference               m_PendingBGM;
         static private FMOD.Studio.EventInstance    m_BGM;
         static private float                        m_ElapsedTime = -1;
+
+        static public void PlayBGM(string path, float delay = 0)
+        {
+            PlayBGM(RuntimeManager.PathToEventReference(path), delay);
+        }
+        
         static public void PlayBGM(EventReference eventReference, float delay = 0)
         {
             if(m_BGM.isValid())
