@@ -76,6 +76,21 @@ namespace Application.Runtime
                 Parse(ref desc.#VARIANT#, reader.GetString(reader.GetOrdinal("#VARIANT#")));
                 #READER_LIST_END#
             }
+            if(!bFind)
+            {
+                #REMOVE_ONE_KEY_BEGIN#
+                Remove#TABLENAME#Data(key1);
+                #REMOVE_ONE_KEY_END#
+                #REMOVE_TWO_KEY_BEGIN#
+                Remove#TABLENAME#Data(key1, key2);
+                #REMOVE_TWO_KEY_END#
+                #REMOVE_THREE_KEY_BEGIN#
+                Remove#TABLENAME#Data(key1, key2, key3);
+                #REMOVE_THREE_KEY_END#
+                #REMOVE_FOUR_KEY_BEGIN#
+                Remove#TABLENAME#Data(key1, key2, key3, key4);
+                #REMOVE_FOUR_KEY_END#
+            }
 
             return bFind ? desc : null;
         }
@@ -169,6 +184,81 @@ namespace Application.Runtime
             return true;
         }
         #FINDER_4KEY_END#
+        #REMOVE_ONE_KEY_IMPLEMENTION_BEGIN#
+        private void Remove#TABLENAME#Data(#KEY1_VALUETYPE# key1)
+        {
+            m_#TABLENAME#Dict.Remove(key1);
+        }
+        #REMOVE_ONE_KEY_IMPLEMENTION_END#
+        #REMOVE_TWO_KEY_IMPLEMENTION_BEGIN#
+        private void Remove#TABLENAME#Data(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2)
+        {
+            Dictionary<#KEY2_VALUETYPE#, #TABLENAME#> dict;
+            if(!m_#TABLENAME#Dict.TryGetValue(key1, out dict))
+            {
+                return;
+            }
+
+            #TABLENAME# desc;
+            if(!dict.TryGetValue(key2, out desc))
+            {
+                return;
+            }
+            dict.Remove(key2);
+        }
+        #REMOVE_TWO_KEY_IMPLEMENTION_END#
+        #REMOVE_THREE_KEY_IMPLEMENTION_BEGIN#
+        private void Remove#TABLENAME#Data(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2, #KEY3_VALUETYPE# key3)
+        {
+            Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, #TABLENAME#>> dict;
+            if(!m_#TABLENAME#Dict.TryGetValue(key1, out dict))
+            {
+                return;
+            }
+
+            Dictionary<#KEY3_VALUETYPE#, #TABLENAME#> dict2;
+            if(!dict.TryGetValue(key2, out dict2))
+            {
+                return;
+            }
+
+            #TABLENAME# desc;
+            if(!dict2.TryGetValue(key3, out desc))
+            {
+                return;
+            }
+            dict2.Remove(key3);
+        }
+        #REMOVE_THREE_KEY_IMPLEMENTION_END#
+        #REMOVE_FOUR_KEY_IMPLEMENTION_BEGIN#
+        private void Remove#TABLENAME#Data(#KEY1_VALUETYPE# key1, #KEY2_VALUETYPE# key2, #KEY3_VALUETYPE# key3, #KEY4_VALUETYPE# key4)
+        {
+            Dictionary<#KEY2_VALUETYPE#, Dictionary<#KEY3_VALUETYPE#, Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>>> dict;
+            if(!m_#TABLENAME#Dict.TryGetValue(key1, out dict))
+            {
+                return;
+            }
+
+            Dictionary<#KEY3_VALUETYPE#, Dictionary<#KEY4_VALUETYPE#, #TABLENAME#>> dict2;
+            if(!dict.TryGetValue(key2, out dict2))
+            {
+                return;
+            }
+
+            Dictionary<#KEY4_VALUETYPE#, #TABLENAME#> dict3;
+            if(!dict2.TryGetValue(key3, out dict3))
+            {
+                return;
+            }
+
+            #TABLENAME# desc;
+            if(!dict3.TryGetValue(key4, out desc))
+            {
+                return;
+            }
+            dict3.Remove(key4);
+        }
+        #REMOVE_FOUR_KEY_IMPLEMENTION_END#
         #ITERATOR_END#
     }
 }

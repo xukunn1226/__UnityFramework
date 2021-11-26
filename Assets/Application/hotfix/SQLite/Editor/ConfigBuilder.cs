@@ -1258,6 +1258,286 @@ namespace Application.Editor
 
                         i = lastIndex;
                     }
+                    else if(string.Compare(flag, "#REMOVE_ONE_KEY_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#REMOVE_ONE_KEY_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#REMOVE_ONE_KEY_END#\"");
+                            return false;
+                        }
+                        // 处理单key
+                        if(m_KeyIndices.Length != 1)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+                        Debug.Assert(subLines.Length == 1);
+
+                        content += subLines[0].Replace("#TABLENAME#", tableName) + "\n";
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#REMOVE_TWO_KEY_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#REMOVE_TWO_KEY_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#REMOVE_TWO_KEY_END#\"");
+                            return false;
+                        }
+                        // 处理双key
+                        if(m_KeyIndices.Length != 2)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+                        Debug.Assert(subLines.Length == 1);
+
+                        content += subLines[0].Replace("#TABLENAME#", tableName) + "\n";
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#REMOVE_THREE_KEY_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#REMOVE_THREE_KEY_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#REMOVE_THREE_KEY_END#\"");
+                            return false;
+                        }
+                        // 处理三key
+                        if(m_KeyIndices.Length != 3)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+                        Debug.Assert(subLines.Length == 1);
+
+                        content += subLines[0].Replace("#TABLENAME#", tableName) + "\n";
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#REMOVE_FOUR_KEY_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#REMOVE_FOUR_KEY_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#REMOVE_FOUR_KEY_END#\"");
+                            return false;
+                        }
+                        // 处理四key
+                        if(m_KeyIndices.Length != 4)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+                        Debug.Assert(subLines.Length == 1);
+
+                        content += subLines[0].Replace("#TABLENAME#", tableName) + "\n";
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#REMOVE_ONE_KEY_IMPLEMENTION_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#REMOVE_ONE_KEY_IMPLEMENTION_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#REMOVE_ONE_KEY_IMPLEMENTION_END#\"");
+                            return false;
+                        }
+                        // 处理单key
+                        if(m_KeyIndices.Length != 1)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+
+                        foreach(var line in subLines)
+                        {
+                            string label = ExtractFlag(line);
+                            if(string.IsNullOrEmpty(label))
+                            { // 无标签
+                                content += line + "\n";
+                            }
+                            else
+                            {
+                                string text = line;
+                                if (text.IndexOf("#TABLENAME#") != -1)
+                                {
+                                    text = text.Replace("#TABLENAME#", tableName);
+                                }
+                                if (text.IndexOf("#KEY1_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY1_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
+                                }
+                                if (text.IndexOf("#KEY1_NAME#") != -1)
+                                {
+                                    text = text.Replace("#KEY1_NAME#", m_ColumnLine[m_KeyIndices[0]]);
+                                }
+                                content += text + "\n";
+                            }
+                        }
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#REMOVE_TWO_KEY_IMPLEMENTION_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#REMOVE_TWO_KEY_IMPLEMENTION_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#REMOVE_TWO_KEY_IMPLEMENTION_END#\"");
+                            return false;
+                        }
+                        // 处理双key
+                        if(m_KeyIndices.Length != 2)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+
+                        foreach(var line in subLines)
+                        {
+                            string label = ExtractFlag(line);
+                            if(string.IsNullOrEmpty(label))
+                            { // 无标签
+                                content += line + "\n";
+                            }
+                            else
+                            {
+                                string text = line;
+                                if (text.IndexOf("#TABLENAME#") != -1)
+                                {
+                                    text = text.Replace("#TABLENAME#", tableName);
+                                }
+                                if (text.IndexOf("#KEY1_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY1_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
+                                }
+                                if (text.IndexOf("#KEY2_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY2_VALUETYPE#", m_ValueTypeLine[1]);
+                                }
+                                content += text + "\n";
+                            }
+                        }
+
+                        i = lastIndex;
+                    }        
+                    else if(string.Compare(flag, "#REMOVE_THREE_KEY_IMPLEMENTION_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#REMOVE_THREE_KEY_IMPLEMENTION_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#REMOVE_THREE_KEY_IMPLEMENTION_END#\"");
+                            return false;
+                        }
+                        // 处理三key
+                        if(m_KeyIndices.Length != 3)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+
+                        foreach(var line in subLines)
+                        {
+                            string label = ExtractFlag(line);
+                            if(string.IsNullOrEmpty(label))
+                            { // 无标签
+                                content += line + "\n";
+                            }
+                            else
+                            {
+                                string text = line;
+                                if (text.IndexOf("#TABLENAME#") != -1)
+                                {
+                                    text = text.Replace("#TABLENAME#", tableName);
+                                }
+                                if (text.IndexOf("#KEY1_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY1_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
+                                }
+                                if (text.IndexOf("#KEY2_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY2_VALUETYPE#", m_ValueTypeLine[1]);
+                                }
+                                if (text.IndexOf("#KEY3_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY3_VALUETYPE#", m_ValueTypeLine[2]);
+                                }
+                                content += text + "\n";
+                            }
+                        }
+
+                        i = lastIndex;
+                    }
+                    else if(string.Compare(flag, "#REMOVE_FOUR_KEY_IMPLEMENTION_BEGIN#", true) == 0)
+                    {
+                        int lastIndex = FindFlag("#REMOVE_FOUR_KEY_IMPLEMENTION_END#", lines, i + 1);
+                        if(lastIndex == -1)
+                        {
+                            Debug.LogError($"can't find the flag \"#REMOVE_FOUR_KEY_IMPLEMENTION_END#\"");
+                            return false;
+                        }
+                        // 处理四key
+                        if(m_KeyIndices.Length != 4)
+                        {
+                            i = lastIndex;
+                            continue;
+                        }
+
+                        string[] subLines = lines.Where((lines, index) => index > i && index < lastIndex).ToArray();
+
+                        foreach(var line in subLines)
+                        {
+                            string label = ExtractFlag(line);
+                            if(string.IsNullOrEmpty(label))
+                            { // 无标签
+                                content += line + "\n";
+                            }
+                            else
+                            {
+                                string text = line;
+                                if (text.IndexOf("#TABLENAME#") != -1)
+                                {
+                                    text = text.Replace("#TABLENAME#", tableName);
+                                }
+                                if (text.IndexOf("#KEY1_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY1_VALUETYPE#", m_ValueTypeLine[0]);       // key默认放第一个
+                                }
+                                if (text.IndexOf("#KEY2_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY2_VALUETYPE#", m_ValueTypeLine[1]);
+                                }
+                                if (text.IndexOf("#KEY3_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY3_VALUETYPE#", m_ValueTypeLine[2]);
+                                }
+                                if (text.IndexOf("#KEY4_VALUETYPE#") != -1)
+                                {
+                                    text = text.Replace("#KEY4_VALUETYPE#", m_ValueTypeLine[3]);
+                                }
+                                content += text + "\n";
+                            }
+                        }
+
+                        i = lastIndex;
+                    }            
                     else
                     {
                         string text = lines[i];

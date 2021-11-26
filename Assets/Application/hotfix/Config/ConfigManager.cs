@@ -29,6 +29,10 @@ namespace Application.Runtime
                 desc.button_picture = reader.GetString(reader.GetOrdinal("button_picture"));
                 desc.button_content = reader.GetString(reader.GetOrdinal("button_content"));
             }
+            if(!bFind)
+            {
+                RemovebuttonConfigData(key1);
+            }
 
             return bFind ? desc : null;
         }
@@ -41,6 +45,10 @@ namespace Application.Runtime
                 return false;
             }
             return true;
+        }
+        private void RemovebuttonConfigData(string key1)
+        {
+            m_buttonConfigDict.Remove(key1);
         }
 
         private Dictionary<string, characterConfig> m_characterConfigDict = new Dictionary<string, characterConfig>();
@@ -82,6 +90,10 @@ namespace Application.Runtime
                 desc.recovery_effect = reader.GetString(reader.GetOrdinal("recovery_effect"));
                 desc.deadbody_recovery_delay = reader.GetFloat(reader.GetOrdinal("deadbody_recovery_delay"));
             }
+            if(!bFind)
+            {
+                RemovecharacterConfigData(key1);
+            }
 
             return bFind ? desc : null;
         }
@@ -94,6 +106,10 @@ namespace Application.Runtime
                 return false;
             }
             return true;
+        }
+        private void RemovecharacterConfigData(string key1)
+        {
+            m_characterConfigDict.Remove(key1);
         }
 
         private Dictionary<int, Dictionary<int, dialogueConfig>> m_dialogueConfigDict = new Dictionary<int, Dictionary<int, dialogueConfig>>();
@@ -118,6 +134,10 @@ namespace Application.Runtime
                 desc.duration_time = reader.GetInt32(reader.GetOrdinal("duration_time"));
                 desc.dialogue_content = reader.GetString(reader.GetOrdinal("dialogue_content"));
             }
+            if(!bFind)
+            {
+                RemovedialogueConfigData(key1, key2);
+            }
 
             return bFind ? desc : null;
         }
@@ -138,6 +158,21 @@ namespace Application.Runtime
             }
             return true;
         }      
+        private void RemovedialogueConfigData(int key1, int key2)
+        {
+            Dictionary<int, dialogueConfig> dict;
+            if(!m_dialogueConfigDict.TryGetValue(key1, out dict))
+            {
+                return;
+            }
+
+            dialogueConfig desc;
+            if(!dict.TryGetValue(key2, out desc))
+            {
+                return;
+            }
+            dict.Remove(key2);
+        }
 
         private Dictionary<int, MonsterConfig> m_MonsterConfigDict = new Dictionary<int, MonsterConfig>();
         public MonsterConfig GetMonsterConfigByID(int key1)
@@ -157,6 +192,10 @@ namespace Application.Runtime
                 desc.HP = reader.GetFloat(reader.GetOrdinal("HP"));
                 desc.Male = reader.GetBoolean(reader.GetOrdinal("Male"));
             }
+            if(!bFind)
+            {
+                RemoveMonsterConfigData(key1);
+            }
 
             return bFind ? desc : null;
         }
@@ -169,6 +208,10 @@ namespace Application.Runtime
                 return false;
             }
             return true;
+        }
+        private void RemoveMonsterConfigData(int key1)
+        {
+            m_MonsterConfigDict.Remove(key1);
         }
 
         private Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<int, PlayerConfig>>>> m_PlayerConfigDict = new Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<int, PlayerConfig>>>>();
@@ -194,6 +237,10 @@ namespace Application.Runtime
                 Parse(ref desc.variant2, reader.GetString(reader.GetOrdinal("variant2")));
                 Parse(ref desc.variant3, reader.GetString(reader.GetOrdinal("variant3")));
                 Parse(ref desc.variant4, reader.GetString(reader.GetOrdinal("variant4")));
+            }
+            if(!bFind)
+            {
+                RemovePlayerConfigData(key1, key2, key3, key4);
             }
 
             return bFind ? desc : null;
@@ -228,6 +275,33 @@ namespace Application.Runtime
                 return false;
             }
             return true;
+        }
+        private void RemovePlayerConfigData(string key1, string key2, string key3, int key4)
+        {
+            Dictionary<string, Dictionary<string, Dictionary<int, PlayerConfig>>> dict;
+            if(!m_PlayerConfigDict.TryGetValue(key1, out dict))
+            {
+                return;
+            }
+
+            Dictionary<string, Dictionary<int, PlayerConfig>> dict2;
+            if(!dict.TryGetValue(key2, out dict2))
+            {
+                return;
+            }
+
+            Dictionary<int, PlayerConfig> dict3;
+            if(!dict2.TryGetValue(key3, out dict3))
+            {
+                return;
+            }
+
+            PlayerConfig desc;
+            if(!dict3.TryGetValue(key4, out desc))
+            {
+                return;
+            }
+            dict3.Remove(key4);
         }
 
         private Dictionary<string, skillConfig> m_skillConfigDict = new Dictionary<string, skillConfig>();
@@ -280,6 +354,10 @@ namespace Application.Runtime
                 Parse(ref desc.gunpoint_name, reader.GetString(reader.GetOrdinal("gunpoint_name")));
                 Parse(ref desc.perform_bullet_name, reader.GetString(reader.GetOrdinal("perform_bullet_name")));
             }
+            if(!bFind)
+            {
+                RemoveskillConfigData(key1);
+            }
 
             return bFind ? desc : null;
         }
@@ -292,6 +370,10 @@ namespace Application.Runtime
                 return false;
             }
             return true;
+        }
+        private void RemoveskillConfigData(string key1)
+        {
+            m_skillConfigDict.Remove(key1);
         }
 
         private Dictionary<string, stageConfig> m_stageConfigDict = new Dictionary<string, stageConfig>();
@@ -311,6 +393,10 @@ namespace Application.Runtime
                 desc.stage_editor_id = reader.GetString(reader.GetOrdinal("stage_editor_id"));
                 desc.player_lv_requirement = reader.GetInt32(reader.GetOrdinal("player_lv_requirement"));
             }
+            if(!bFind)
+            {
+                RemovestageConfigData(key1);
+            }
 
             return bFind ? desc : null;
         }
@@ -323,6 +409,10 @@ namespace Application.Runtime
                 return false;
             }
             return true;
+        }
+        private void RemovestageConfigData(string key1)
+        {
+            m_stageConfigDict.Remove(key1);
         }
 
     }

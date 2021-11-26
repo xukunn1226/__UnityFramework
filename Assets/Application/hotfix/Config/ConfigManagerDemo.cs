@@ -21,7 +21,8 @@ namespace Application.Runtime
                     Debug.Log(player.HP);
                     Debug.Log(player.MonsterDesc);
                 }
-            player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 100);
+            player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 0);
+            player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "nanchang", 2);
         }
     }
 }
