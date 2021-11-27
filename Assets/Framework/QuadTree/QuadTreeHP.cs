@@ -5,13 +5,7 @@ using System.Linq;
 
 namespace Framework.Core
 {
-    public interface INodeObject
-    {
-        ref Rect                    rect        { get; }
-        LinkedListNode<INodeObject> quadNode    { get; set; }
-    }
-
-    public class QuadTree<T> where T : INodeObject
+    public class QuadTreeHP<T> where T : INodeObject
     {
         /* 一个矩形区域的象限划分：
           
@@ -45,7 +39,7 @@ namespace Framework.Core
                                                                 // 做测试，大物件才拿bound与区域bound做相交性测试
 
         // 指定范围内创建指定层次的四叉树
-        public QuadTree(Rect rect, int maxObjects, int maxDepth, float largeObjectSize = 0)
+        public QuadTreeHP(Rect rect, int maxObjects, int maxDepth, float largeObjectSize = 0)
         {
             m_MaxDepth = Mathf.Max(1, maxDepth);
             m_MaxObjects = Mathf.Max(4, maxObjects);
