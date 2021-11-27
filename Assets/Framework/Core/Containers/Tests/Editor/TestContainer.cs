@@ -243,5 +243,27 @@ namespace Framework.Core.Tests
 
             list.PrintIt();
         }
+
+        [Test]
+        public void TestBitSet()
+        {
+            BitSet bs1 = new BitSet(33);
+            for(int i = 0; i < 32; ++i)
+                bs1.Set(i, true);
+            bs1.SetAll(true);
+
+            BitSet bs2 = new BitSet(33);
+            bs2.Set(0, true);
+            bs2.Set(3, true);
+            bs2.Set(10, true);
+            bs2.Set(32, true);
+
+            // BitSet ret = bs1.And(bs2);
+            IEnumerator e = bs2.GetBlockEnumerator();
+            while(e.MoveNext())
+            {
+                int n = (int)e.Current;
+            }
+        }
     }
 }
