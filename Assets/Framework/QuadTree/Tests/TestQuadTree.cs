@@ -99,6 +99,7 @@ namespace Framework.Core.Tests
         public ref Rect rect => ref m_Rect;
 
         public LinkedListNode<INodeObject> quadNode    { get; set; }
+        public System.Object userData { get; set; }
 
         public TestQuadNodeObject(Rect rect)
         {

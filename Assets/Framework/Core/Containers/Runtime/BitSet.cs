@@ -196,6 +196,19 @@ namespace Framework.Core
             return this;
         }
 
+        public void CopyTo(BitSet target)
+        {
+            if(target == null)
+                throw new System.ArgumentNullException("target");
+
+            target.m_length = m_length;
+            if(target.m_array == null || target.m_array.Length != m_array.Length)
+            {
+                target.m_array = new int[m_array.Length];
+            }
+            Array.Copy(m_array, target.m_array, m_array.Length);
+        }
+
         public int Length
         {
             get
@@ -242,9 +255,9 @@ namespace Framework.Core
             return new BitSetEnumeratorSimple(this);
         }
 
-        public IEnumerator GetBlockEnumerator()
+        public IEnumerator GetFastEnumerator(int length = -1)
         {
-            return new BitSetBlockEnumerator(this);
+            return new BitSetFastEnumerator(this, length);
         }
 
         private class BitSetEnumeratorSimple : IEnumerator
@@ -287,29 +300,42 @@ namespace Framework.Core
             }
         }
 
-        private class BitSetBlockEnumerator : IEnumerator
+        private class BitSetFastEnumerator : IEnumerator
         {
-            private BitSet bitset;
-            private int index;
-            private int currentElement;
-               
-            internal BitSetBlockEnumerator(BitSet bitarray)
+            private BitSet  bitset;
+            private int     bitIndex;
+            private int     currentIndex;
+            private int     bitLength;
+            
+            internal BitSetFastEnumerator(BitSet bitarray, int length)
             {
                 this.bitset = bitarray;
-                this.index = -1;
+                this.bitIndex = -1;
+                this.bitLength = length <= 0 ? bitarray.m_length : System.Math.Min(length, bitarray.m_length);
             }
             
             public virtual bool MoveNext()
             {
-                if (index < bitset.m_array.Length - 1)
+                while (bitIndex < bitLength - 1)
                 {
-                    index++;
-                    currentElement = bitset.m_array[index];
-                    return true;
+                    ++bitIndex;
+                    int index = bitIndex / 32;
+                    int offset = bitIndex % 32;
+                    if(index >= bitset.m_array.Length)
+                        return false;
+                    if (bitset.m_array[index] == 0)
+                    {
+                        bitIndex = (index + 1) * 32 - 1;
+                    }
+                    else
+                    {
+                        if ((bitset.m_array[index] & (1 << offset)) != 0)
+                        {
+                            currentIndex = bitIndex;
+                            return true;
+                        }
+                    }
                 }
-                else
-                    index = bitset.m_array.Length;
-                
                 return false;
             }
     
@@ -317,13 +343,13 @@ namespace Framework.Core
             {
                 get
                 {
-                    return currentElement;
+                    return currentIndex;
                 }
             }
     
             public void Reset()
             {
-                index = -1;
+                bitIndex = -1;
             }
         }
     }

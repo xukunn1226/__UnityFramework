@@ -252,17 +252,20 @@ namespace Framework.Core.Tests
                 bs1.Set(i, true);
             bs1.SetAll(true);
 
-            BitSet bs2 = new BitSet(33);
-            bs2.Set(0, true);
-            bs2.Set(3, true);
-            bs2.Set(10, true);
-            bs2.Set(32, true);
+            BitSet bs2 = new BitSet(66);
+            // bs2.Set(0, true);
+            // bs2.Set(3, true);
+            // bs2.Set(10, true);
+            // bs2.Set(32, true);
+            bs2.Set(64, true);
+            // bs2.Set(65, true);
 
             // BitSet ret = bs1.And(bs2);
-            IEnumerator e = bs2.GetBlockEnumerator();
+            IEnumerator e = bs2.GetFastEnumerator(66);
             while(e.MoveNext())
             {
                 int n = (int)e.Current;
+                UnityEngine.Debug.Log($"{n}");
             }
         }
     }

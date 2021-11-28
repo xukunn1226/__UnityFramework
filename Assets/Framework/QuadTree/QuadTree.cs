@@ -9,6 +9,7 @@ namespace Framework.Core
     {
         ref Rect                    rect        { get; }
         LinkedListNode<INodeObject> quadNode    { get; set; }
+        System.Object               userData    { get; set; }
     }
 
     public class QuadTree<T> where T : INodeObject
@@ -47,8 +48,13 @@ namespace Framework.Core
         // 指定范围内创建指定层次的四叉树
         public QuadTree(Rect rect, int maxObjects, int maxDepth, float largeObjectSize = 0)
         {
-            m_MaxDepth = Mathf.Max(1, maxDepth);
-            m_MaxObjects = Mathf.Max(4, maxObjects);
+            if(maxDepth < 1)
+                throw new System.ArgumentOutOfRangeException($"maxDepth: {maxDepth} < 1");
+            if(maxObjects < 4)
+                throw new System.ArgumentOutOfRangeException($"maxObjects: {maxObjects} < 4");
+
+            m_MaxDepth = maxDepth;
+            m_MaxObjects = maxObjects;
             m_LargeObjectSize = largeObjectSize;
 
             m_Root = new Node();
@@ -85,7 +91,7 @@ namespace Framework.Core
             if(ret == -1)
                 return null;
 
-            if(ret == 0)
+            if(ret == 0 || node.children == null)
                 return node;
 
             return Search(node.children[ret - 1], queryRect);
@@ -311,6 +317,11 @@ namespace Framework.Core
         public int Count()
         {
             return Count(m_Root);
+        }
+
+        public bool IsVisible(ref Rect objRect, ref Rect queryRect)
+        {
+            return GetQuadrant(ref queryRect, ref objRect) != -1;
         }
         
         // 物体与节点node的包含关系
