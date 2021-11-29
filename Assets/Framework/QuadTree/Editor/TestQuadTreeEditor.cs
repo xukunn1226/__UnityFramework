@@ -44,17 +44,18 @@ namespace Framework.Core.Editor
             EditorGUILayout.BeginHorizontal();
             if(GUILayout.Button("Query"))
             {
-                m_QueryBox = ((TestQuadTree)target).RandomQueryRect();
                 m_ShowQueryBox = true;
-
-                m_QueryObjectList.Clear();
-                m_QuadTree.Query(m_QueryBox, ref m_QueryObjectList);
+                m_QueryBox = ((TestQuadTree)target).RandomQueryRect();
+                ((TestQuadTree)target).Query(ref m_QueryBox);
 
                 RepaintSceneView();
             }
             if(GUILayout.Button("Clear"))
             {
                 m_ShowQueryBox = false;
+                m_QueryBox = new Rect();
+                ((TestQuadTree)target).Query(ref m_QueryBox);
+
                 RepaintSceneView();
             }
             EditorGUILayout.EndHorizontal();
@@ -62,6 +63,8 @@ namespace Framework.Core.Editor
 
         private void OnSceneGUI()
         {
+            m_QueryObjectList = ((TestQuadTree)target).queryObjects;
+
             Handles.Label(((TestQuadTree)target).transform.position + new Vector3(0.2f, 1.5f, 0), "QuadTree");
 
             m_QuadTree = ((TestQuadTree)target).quadTree;
@@ -112,6 +115,7 @@ namespace Framework.Core.Editor
                 foreach(var obj in node.objects)
                 {
                     DrawRect(obj.rect, node.children != null ? ToColor(node.depth + 1) : ToColor(node.depth));
+                    DrawLabel(obj.rect, obj.ToString());
                 }
             }
 
@@ -122,6 +126,12 @@ namespace Framework.Core.Editor
                     DrawNode(subNode);
                 }
             }
+        }
+
+        private void DrawLabel(Rect rect, string info)
+        {
+            Handles.color = Color.gray;
+            Handles.Label(new Vector3(rect.x, 0, rect.y - 0.2f), info);
         }
 
         private Color ToColor(int depth)

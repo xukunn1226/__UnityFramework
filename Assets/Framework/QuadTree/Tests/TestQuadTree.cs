@@ -23,10 +23,27 @@ namespace Framework.Core.Tests
 #if UNITY_EDITOR        
         private SceneManagement<TestQuadNodeObject> m_SceneManagement;
 
-        public QuadTree<TestQuadNodeObject>         quadTree { get { return m_SceneManagement?.quadTree; } }
+        public QuadTree<TestQuadNodeObject>         quadTree        { get { return m_SceneManagement?.quadTree; } }
+        public QuadTree<TestQuadNodeObject>.Node    rootNode        { get { return quadTree?.rootNode; } }
+        public List<TestQuadNodeObject>             queryObjects    { get { return m_SceneManagement?.queryObjects; } }
+        public Rect                                 queryRect;
 
-        public QuadTree<TestQuadNodeObject>.Node    rootNode { get { return quadTree?.rootNode; } }
+        private void OnEnable()
+        {
+            if(!UnityEngine.Application.isPlaying)
+            {
+                EditorApplication.update += EditorApplication.QueuePlayerLoopUpdate;
+            }
+        }
 
+        private void OnDisable()
+        {
+            if(!UnityEngine.Application.isPlaying)
+            {
+                EditorApplication.update -= EditorApplication.QueuePlayerLoopUpdate;
+            }
+        }
+        
         public void CreateQuadTree()
         {
             float x = transform.position.x - width * 0.5f;
@@ -34,7 +51,18 @@ namespace Framework.Core.Tests
             Rect rect = new Rect(x, y, width, height);
             
             m_SceneManagement = new SceneManagement<TestQuadNodeObject>();
+            m_SceneManagement.onStateChanged += OnStateChanged;
             m_SceneManagement.Init(capacity, rect, maxObjects, maxDepth, largeObjectSize);
+        }
+
+        public void Query(ref Rect queryRect)
+        {
+            this.queryRect = queryRect;
+        }
+
+        void Update()
+        {            
+            m_SceneManagement?.Query(ref queryRect);
         }
 
         public Rect RandomQueryRect()
@@ -63,7 +91,6 @@ namespace Framework.Core.Tests
         private void Insert(float min, float max)
         {
             TestQuadNodeObject obj = new TestQuadNodeObject(RandomObjectRect(min, max));
-            // quadTree.Insert(obj);
             m_SceneManagement.Insert(obj);
         }
 
@@ -81,7 +108,6 @@ namespace Framework.Core.Tests
         private void InsertSpecial(float min, float max)
         {
             TestQuadNodeObject obj = new TestQuadNodeObject(RandomSpecialRect(min, max));
-            // quadTree.Insert(obj);
             m_SceneManagement.Insert(obj);
         }
 
@@ -94,6 +120,12 @@ namespace Framework.Core.Tests
             float w = width * Random.Range(min, max);
             float h = height * Random.Range(min, max);
             return new Rect(x, y, w, h);
+        }
+
+        private void OnStateChanged(SceneStateEvent evt)
+        {
+            TestQuadNodeObject obj = (TestQuadNodeObject)evt.sceneObject;
+            Debug.Log($"Index: {obj.ToString()}     hasBecomeVisible: {evt.hasBecomeVisible}    hasBecomeInvisible: {evt.hasBecomeInvisible}");
         }
 #endif        
     }
@@ -111,5 +143,15 @@ namespace Framework.Core.Tests
         {
             m_Rect = rect;
         }
+#if UNITY_EDITOR
+        public override string ToString()
+        {
+            if(userData is SceneManagement<TestQuadNodeObject>.SceneObject)
+            {
+                return ((SceneManagement<TestQuadNodeObject>.SceneObject)userData).Index.ToString();
+            }
+            return null;
+        }
+#endif        
     }
 }

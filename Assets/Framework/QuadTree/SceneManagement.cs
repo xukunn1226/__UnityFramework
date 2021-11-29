@@ -23,8 +23,10 @@ namespace Framework.Core
         public int              maxDepth;
         public float            largeObjectSize;
         public int              capacity;
-        public Rect             queryRect;
 
+        #if UNITY_EDITOR
+        public 
+        #endif
         class SceneObject
         {
             public int          Index;
@@ -43,6 +45,7 @@ namespace Framework.Core
 
         #if UNITY_EDITOR
         public QuadTree<T>      quadTree        { get { return m_QuadTree; } }
+        public List<T>          queryObjects    { get { return m_QueryObjects; } }
         #endif
 
         public void Init(int capacity, Rect totalRect, int maxObjects, int maxDepth, float largeObjectSize)
@@ -82,11 +85,11 @@ namespace Framework.Core
             m_SceneObjects[m_UsedSceneObjectCount++] = so;
         }
 
-        public void Update()
+        public void Query(ref Rect queryRect)
         {
             // Query current objects by query rect
             m_QueryObjects.Clear();
-            m_QuadTree.Query(queryRect, ref m_QueryObjects);
+            m_QuadTree.Query(ref queryRect, ref m_QueryObjects);
 
             m_CurVisibleData.SetAll(false);
             for(int i = 0; i < m_QueryObjects.Count; ++i)

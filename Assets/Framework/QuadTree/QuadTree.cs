@@ -124,12 +124,12 @@ namespace Framework.Core
             }
         }
 
-        public void Query(Rect queryRect, ref List<T> objs)
+        public void Query(ref Rect queryRect, ref List<T> objs)
         {
-            Query(m_Root, queryRect, ref objs);
+            Query(m_Root, ref queryRect, ref objs);
         }
 
-        private void Query(Node node, Rect queryRect, ref List<T> objs)
+        private void Query(Node node, ref Rect queryRect, ref List<T> objs)
         {
             if(node == null)
                 return;
@@ -153,7 +153,7 @@ namespace Framework.Core
                 // 子区域包含查询区域，则跳过其他子区域
                 if(InRegion(node.children[i].rect, ref queryRect))
                 {
-                    Query(node.children[i], queryRect, ref objs);
+                    Query(node.children[i], ref queryRect, ref objs);
                     break;
                 }
 
@@ -166,7 +166,7 @@ namespace Framework.Core
 
                 if(queryRect.Overlaps(node.children[i].rect))
                 {
-                    Query(node.children[i], queryRect, ref objs);
+                    Query(node.children[i], ref queryRect, ref objs);
                 }
             }
         }
