@@ -310,7 +310,8 @@ namespace Application.Editor
         {
             if(index < 0 || index >= flags.Length)
                 throw new System.ArgumentOutOfRangeException($"index: {index} out of range [{flags.Length}]");
-            return !flags[index].ToLower().Contains("server");
+            string flag = flags[index].ToLower();
+            return flag.Contains("key") || flag.Contains("all") || flag.Contains("client");
         }
 
         // static private bool FileNeedImport(string file)
