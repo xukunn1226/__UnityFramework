@@ -16,29 +16,33 @@ namespace Framework.Core.Tests
         public int maxObjects;
         public int maxDepth;
         public float largeObjectSize;
+        public int capacity;
         public Vector2 smallObjectSize;
         public Vector2 bigObjectSize;
 
 #if UNITY_EDITOR        
-        private QuadTree<TestQuadNodeObject> m_QuadTree;
+        private SceneManagement<TestQuadNodeObject> m_SceneManagement;
 
-        public QuadTree<TestQuadNodeObject> quadTree { get { return m_QuadTree; } }
+        public QuadTree<TestQuadNodeObject>         quadTree { get { return m_SceneManagement?.quadTree; } }
 
-        public QuadTree<TestQuadNodeObject>.Node rootNode { get { return m_QuadTree?.rootNode; } }
+        public QuadTree<TestQuadNodeObject>.Node    rootNode { get { return quadTree?.rootNode; } }
 
         public void CreateQuadTree()
         {
             float x = transform.position.x - width * 0.5f;
             float y = transform.position.z - height * 0.5f;
-            m_QuadTree = new QuadTree<TestQuadNodeObject>(new Rect(x, y, width, height), maxObjects, maxDepth, largeObjectSize);
+            Rect rect = new Rect(x, y, width, height);
+            
+            m_SceneManagement = new SceneManagement<TestQuadNodeObject>();
+            m_SceneManagement.Init(capacity, rect, maxObjects, maxDepth, largeObjectSize);
         }
 
         public Rect RandomQueryRect()
         {
-            if(m_QuadTree == null)
+            if(rootNode == null)
                 return new Rect();
 
-            QuadTree<TestQuadNodeObject>.Node root = m_QuadTree.rootNode;
+            QuadTree<TestQuadNodeObject>.Node root = rootNode;
             float x = Random.Range(root.rect.xMin - root.rect.width * 0.2f, root.rect.xMax + root.rect.width * 0.2f);
             float y = Random.Range(root.rect.yMin - root.rect.height * 0.2f, root.rect.yMax + root.rect.height * 0.2f);
             float w = Random.Range(root.rect.width * 0.2f, root.rect.width * 1.5f);
@@ -59,7 +63,8 @@ namespace Framework.Core.Tests
         private void Insert(float min, float max)
         {
             TestQuadNodeObject obj = new TestQuadNodeObject(RandomObjectRect(min, max));
-            m_QuadTree.Insert(obj);
+            // quadTree.Insert(obj);
+            m_SceneManagement.Insert(obj);
         }
 
         Rect RandomObjectRect(float min, float max)
@@ -76,7 +81,8 @@ namespace Framework.Core.Tests
         private void InsertSpecial(float min, float max)
         {
             TestQuadNodeObject obj = new TestQuadNodeObject(RandomSpecialRect(min, max));
-            m_QuadTree.Insert(obj);
+            // quadTree.Insert(obj);
+            m_SceneManagement.Insert(obj);
         }
 
         Rect RandomSpecialRect(float min, float max)
