@@ -1,16 +1,16 @@
 {
   "Count": 56,
-  "TotalSize": 129686315,
+  "TotalSize": 129686750,
   "FileList": [
     {
       "BundleName": "config.db",
-      "FileHash": "0e28280d290e934e53753052f7e7b3dc",
+      "FileHash": "8ec7de855c49fbdd8e8b8463f96b01af",
       "Size": 53248
     },
     {
       "BundleName": "manifest",
-      "FileHash": "9134fa8d18cf06658f72acf4e9f6d04a",
-      "Size": 3304
+      "FileHash": "a9da70599ee54cefc7a2f870abbfdf56",
+      "Size": 3311
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -59,228 +59,228 @@
     },
     {
       "BundleName": "assets/res/animationclip.ab",
-      "FileHash": "3c4057059f8e6f4841fcfee9b83670ab",
-      "Size": 1029338
+      "FileHash": "ddc791c68b372f5372f147b268569881",
+      "Size": 1029339
     },
     {
       "BundleName": "assets/res/core.ab",
-      "FileHash": "c8dbe07281da91c3f9d674d247a65868",
-      "Size": 10702
+      "FileHash": "264ac5b098af692f90410ac1b9c947d1",
+      "Size": 10699
     },
     {
       "BundleName": "assets/res/globalconfig.ab",
-      "FileHash": "89818457feb38d652045eaf939a90a58",
-      "Size": 1323
+      "FileHash": "2fea19cd2898fccc6df647c4fd4b098e",
+      "Size": 1320
     },
     {
       "BundleName": "assets/res/players.ab",
-      "FileHash": "fe3a3b0feeeb290e7ec72f05ee78178e",
-      "Size": 57614
+      "FileHash": "cc092549691fc39285e39bc342c22ae3",
+      "Size": 57613
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "b7a1d3ea13dd971049ea5bbac4dab455",
-      "Size": 183479
+      "FileHash": "e3d5505016212338585c9474a53b0403",
+      "Size": 183709
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
-      "FileHash": "b3149dc11f8f6dfa56a23542f8d5e38e",
-      "Size": 1069
+      "FileHash": "cb3cc0a7d8a1aedd8f1773c94e092a39",
+      "Size": 1067
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/animationdata.ab",
-      "FileHash": "0ac44fd465c9e21df61d59f8f6775298",
-      "Size": 487010
+      "FileHash": "eb84d0bab0050134eddc5fd30dd0a4f0",
+      "Size": 487008
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/mannequin.ab",
-      "FileHash": "926b9b45576282dad75db4039573b3bd",
-      "Size": 1288901
+      "FileHash": "cca32cc46bf8a4dcc20bfa54f1b3a8b1",
+      "Size": 1288899
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/mirrorf2.ab",
-      "FileHash": "ce10358c502f926baf62463e8087ffeb",
-      "Size": 340538
+      "FileHash": "cd3d05a0e8395838090f668fded2adb5",
+      "Size": 340536
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/twinsword.ab",
-      "FileHash": "dcc408780c9fe2ba863e5752aab8912d",
-      "Size": 412415
+      "FileHash": "010ec616b88bbfbf9acf301b377eb2ab",
+      "Size": 412416
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/unity_model.ab",
-      "FileHash": "04f414775f2bc602cf56c8d9954bc024",
-      "Size": 5093102
+      "FileHash": "9c3e6f9748d8f6573eca9567bd9d7160",
+      "Size": 5093024
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/wgame.ab",
-      "FileHash": "c836592b907451ec96bdd6bb9443ed00",
+      "FileHash": "645a95344b54090a8c1c960a4dae5195",
       "Size": 20583288
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_01.ab",
-      "FileHash": "3da7e04b3679020f0bdc9503bdb407e1",
-      "Size": 132532
+      "FileHash": "acd68197c3402931e33e1d01e0b10cfd",
+      "Size": 132531
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_01_ref.ab",
-      "FileHash": "488b298132e03b9468bc5773df35818f",
-      "Size": 132310
+      "FileHash": "dc0542088b979f7242c716e27fcb59d5",
+      "Size": 132309
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_02.ab",
-      "FileHash": "64881e495533c57940ddb1e931ed866c",
-      "Size": 508231
+      "FileHash": "04f7c448d4bee1682cbb2a766c06f96f",
+      "Size": 508250
     },
     {
       "BundleName": "assets/application/main/xlua/lua/core.ab",
-      "FileHash": "46df67afa279ae17e492fe725f387438",
-      "Size": 1113
+      "FileHash": "539ed53154de9c9b446091936d41ed9d",
+      "Size": 1111
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/atlas.ab",
-      "FileHash": "ba197f4eba2900bc3f646705baae9060",
-      "Size": 14480
+      "FileHash": "e8560b459fa116c5eca24ac94267e7d7",
+      "Size": 14476
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/atlas2.ab",
-      "FileHash": "99319fb131693155ba0c247f65a3d17c",
-      "Size": 13703
+      "FileHash": "b9ebf1259088714cee8a9311f661c18b",
+      "Size": 13698
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/prefabs.ab",
-      "FileHash": "f7b4bf68a93b91b9ddd079ae22f7297f",
-      "Size": 7013
+      "FileHash": "1b5d1992d54618d18bd9080353fb68c1",
+      "Size": 7010
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/scenes.ab",
-      "FileHash": "0546b493dcd32ecbd1d32bc52e813613",
-      "Size": 94730
+      "FileHash": "bee8fc32ad58a16411ec9e017b26f556",
+      "Size": 94784
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
-      "FileHash": "8464ca85e9c767f53ae9f06dda79605a",
-      "Size": 111280
+      "FileHash": "77cdb7ea9f51d8dc9db9c360411c625d",
+      "Size": 111277
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/builtinres.ab",
-      "FileHash": "847c2b3ea4cffed41a686074e4bf571c",
-      "Size": 1297570
+      "FileHash": "55d8a1ecb6e0b9718772401ca47f82e7",
+      "Size": 1297567
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/model.ab",
-      "FileHash": "68c1dfada95c235ae1a51bd8c0016dda",
-      "Size": 144031
+      "FileHash": "3f2d6edc7d9ba08396c26dd41b45a52e",
+      "Size": 144029
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab.ab",
-      "FileHash": "98adb24d91bc81119ad9371d6fcdd7e4",
-      "Size": 5630388
+      "FileHash": "ff38d38dc83f5cd02bf791160d2981ed",
+      "Size": 5630386
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab2.ab",
-      "FileHash": "9bcafdc4343216559dc243d1e5a51a19",
+      "FileHash": "4e196986866d2778ef1db0285c20a107",
       "Size": 68694
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/ps.ab",
-      "FileHash": "a41a32f7d6e49bf32fe0297166e11ee1",
-      "Size": 276952
+      "FileHash": "9084a655c845570389cbfc82cb54f661",
+      "Size": 276948
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "da6a788c0ea45fb13114c9801e80cf46",
-      "Size": 277109
+      "FileHash": "34d868b900a27145d3f86e98fb626c96",
+      "Size": 277286
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
-      "FileHash": "d3c036a81cb56caa9bab4d85bb3386d7",
-      "Size": 22792
+      "FileHash": "4fc38fa688b5c4c8ce517c5769f19dc4",
+      "Size": 22790
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/texture.ab",
-      "FileHash": "57513890098f8955341df0f65745f035",
-      "Size": 366707
+      "FileHash": "2876ed5fb7fdd8d5204087fdbd303141",
+      "Size": 366705
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/prefab.ab",
-      "FileHash": "33b9c3a007dca084d89a1dc92558e73b",
-      "Size": 55801
+      "FileHash": "30301339b6db41a3be7280fbba0f6e96",
+      "Size": 55799
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/scenes.ab",
-      "FileHash": "c93ba0b4c40c345abb9595e57e43bcf6",
-      "Size": 147047
+      "FileHash": "a8059e687567e3536db98ac84a1b2614",
+      "Size": 147100
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/misc/111.ab",
-      "FileHash": "0a570d8a133006c149ebe44e5d37ceb3",
-      "Size": 45391
+      "FileHash": "dc18e91fd7584fb887e19eba7448cecf",
+      "Size": 45389
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/misc/materials.ab",
-      "FileHash": "cfc465dc58559943ebc0d29b47c19823",
-      "Size": 61566
+      "FileHash": "f8a4fed25e88a39f818bdd914fc5fcce",
+      "Size": 61564
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/testfx_root/fx.ab",
-      "FileHash": "e81af38b937e3b43b620df7aef118769",
-      "Size": 1771675
+      "FileHash": "08c77a0e15cc6761e6cf1722d6036829",
+      "Size": 1771704
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/prefabs.ab",
-      "FileHash": "220ef89a710f48d93028872d41e1024f",
-      "Size": 5100
+      "FileHash": "dc373c7c90d0a091dbe7c0974453a5b3",
+      "Size": 5096
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/111.ab",
-      "FileHash": "4ed13f421923cf95fb735b99697f6b57",
-      "Size": 45660
+      "FileHash": "f664ad1d5596893f2c4b851b4b8699ce",
+      "Size": 45658
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/333.ab",
-      "FileHash": "7b56d6000d67e6bca1814cdba4e64470",
-      "Size": 45896
+      "FileHash": "cd54ded18367ff0d0f1309ac4377e916",
+      "Size": 45894
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab/1234.ab",
-      "FileHash": "2c1e8ec115e71238a0407b3e02aa5538",
-      "Size": 4786
+      "FileHash": "a39533587eb7c2b459eba72c306a5baf",
+      "Size": 4783
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testdep/555555555.ab",
-      "FileHash": "c6112855d380fbb8f8f87b280da52300",
-      "Size": 5518173
+      "FileHash": "9cb871668ceb355a10550518bdb98a7a",
+      "Size": 5518174
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testdep/mat.ab",
-      "FileHash": "b60f84cc332df27ea0407c1160543e4e",
-      "Size": 2574
+      "FileHash": "f1fe1b7c955a6340b9829f6d86f1d827",
+      "Size": 2571
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab",
-      "FileHash": "64e4f970f87803702c7efa0690d4b6b7",
-      "Size": 5580129
+      "FileHash": "e30b219977203a83bb7fba91e6d7c4af",
+      "Size": 5580127
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/atlases/bag.ab",
-      "FileHash": "21df4a3a71eb7d2214de475ed0d64aab",
-      "Size": 8283996
+      "FileHash": "f149281463293a00221c3c6b9fbe6ecb",
+      "Size": 8283990
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/atlases/common.ab",
-      "FileHash": "c451e597cf068e5a5696bbf924759b6e",
-      "Size": 8276431
+      "FileHash": "50ed5fbc96f11fd1bdc298ce1f7cdae6",
+      "Size": 8276419
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/atlases/mail.ab",
-      "FileHash": "468bacac253d0b57bf5b2efa62fccc14",
-      "Size": 19642
+      "FileHash": "258dcf5e1ded81080eab2261e8439c14",
+      "Size": 19641
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/atlases/misc.ab",
-      "FileHash": "855a6644f1bf47f599118e8609d442b8",
-      "Size": 3245524
+      "FileHash": "3fbd7d6c26989da8ff7784283d5c1715",
+      "Size": 3245555
     }
   ]
 }
