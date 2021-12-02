@@ -1,6 +1,6 @@
 {
-  "Count": 56,
-  "TotalSize": 129609159,
+  "Count": 47,
+  "TotalSize": 71650565,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,53 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "46253b3a2888264bd5febb633f89d094",
-      "Size": 3309
-    },
-    {
-      "BundleName": "FMOD/Dialogue_CN.bank",
-      "FileHash": "5e1edb4b50edbd23d52d015f3cbbea5e",
-      "Size": 141056
-    },
-    {
-      "BundleName": "FMOD/Dialogue_EN.bank",
-      "FileHash": "6e971d24166d0df5fa17f6d4e01d3d08",
-      "Size": 163168
-    },
-    {
-      "BundleName": "FMOD/Dialogue_JP.bank",
-      "FileHash": "eeca1822e8706f56eddecf21caaa3f38",
-      "Size": 172704
-    },
-    {
-      "BundleName": "FMOD/Master.bank",
-      "FileHash": "63fb5c91a78dc9e0da08de2122f384c2",
-      "Size": 15592
-    },
-    {
-      "BundleName": "FMOD/Master.strings.bank",
-      "FileHash": "ba43c6125880a9d4b47ac79ccec92b14",
-      "Size": 4014
-    },
-    {
-      "BundleName": "FMOD/Music.bank",
-      "FileHash": "e54c13dfd64f54c0f465027fa013684e",
-      "Size": 20747584
-    },
-    {
-      "BundleName": "FMOD/SFX.bank",
-      "FileHash": "7514a5b12205c3c4c0827ea533da0fc5",
-      "Size": 36303552
-    },
-    {
-      "BundleName": "FMOD/Vehicles.bank",
-      "FileHash": "9e25feb0f2a682446e413ec6b69ff4cf",
-      "Size": 328352
-    },
-    {
-      "BundleName": "FMOD/VO.bank",
-      "FileHash": "0c6ae4e7894efb650ab5e3ba1ee1bee0",
-      "Size": 55936
+      "FileHash": "a7013c2908cfd174c85d52601020d7b4",
+      "Size": 3311
     },
     {
       "BundleName": "assets/res/animationclip.ab",
@@ -79,8 +34,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "884a15e7b4be9ae0cbd51f40eb78df12",
-      "Size": 171649
+      "FileHash": "98b31860154d0fd984c43f50c15352e5",
+      "Size": 145955
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -189,8 +144,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "ff2df7b6d80243fc32bb9f0cc18d6a10",
-      "Size": 261868
+      "FileHash": "ce62b1c0bfb867ec529b9477f53b3f78",
+      "Size": 260924
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
