@@ -10,11 +10,12 @@ namespace Application.Runtime
 {
     public class AudioManager : SingletonMono<AudioManager>
     {
-        protected override void Awake()
-        {
-            base.Awake();
+        private List<string> m_BanksList = new List<string>();
 
+        IEnumerator Start()
+        {
             LoadAllBanks();
+            yield break;
         }
 
         protected override void OnDestroy()
@@ -32,25 +33,47 @@ namespace Application.Runtime
         private void LoadAllBanks()
         {
             string bankPath = GetBankFolder();
+#if LOAD_FROM_PERSISTENT            // 因为资源已提取，可以使用System.IO.Directory
             string[] files = Directory.GetFiles(bankPath, "*.bank");
             foreach(var file in files)
             {
-                RuntimeManager.LoadBank(Path.GetFileNameWithoutExtension(file), bankPath);
+                string bankName = Path.GetFileNameWithoutExtension(file);
+                RuntimeManager.LoadBank(bankName, bankPath);
+
+                m_BanksList.Add(bankName);
             }
+#else   // 资源未提取，使用Settings数据（这里记录了所有的bank）
+            foreach (string masterBankFileName in Settings.Instance.MasterBanks)
+            {
+                RuntimeManager.LoadBank(masterBankFileName + ".strings", bankPath);
+                RuntimeManager.LoadBank(masterBankFileName, bankPath);
+
+                m_BanksList.Add(masterBankFileName + ".strings");
+                m_BanksList.Add(masterBankFileName);
+            }
+            foreach(var bank in Settings.Instance.Banks)
+            {
+                RuntimeManager.LoadBank(bank, bankPath);
+
+                m_BanksList.Add(bank);
+            }
+#endif
 
             RuntimeManager.WaitForAllLoads();
         }
 
         private void UnloadAllBanks()
         {
-            string bankPath = GetBankFolder();
-            string[] files = Directory.GetFiles(bankPath, "*.bank");
-            foreach(var file in files)
+            foreach(var bank in m_BanksList)
             {
-                RuntimeManager.UnloadBank(Path.GetFileNameWithoutExtension(file));
+                RuntimeManager.UnloadBank(bank);
             }
+            m_BanksList.Clear();
         }
 
+        // FromEditor: 从Assets/FMODAssets读取数据
+        // FromStreamingAssets: 从Application.streamingAssetsPath读取数据，真机环境加前缀"file:///android_asset"
+        // FromPersistent：从Application.persistentDataPath读取数据
         private string GetBankFolder()
         {
             string bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
