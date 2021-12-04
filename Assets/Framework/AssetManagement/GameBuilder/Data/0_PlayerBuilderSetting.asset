@@ -25,7 +25,13 @@ MonoBehaviour:
   useIL2CPP: 0
   il2CppCompilerConfiguration: 2
   useMTRendering: 0
-  useAPKExpansionFiles: 0
+  buildAppBundle: 0
+  createSymbols: 0
+  useCustomKeystore: 0
+  keystoreName: 
+  keystorePass: 
+  keyaliasName: 
+  keyaliasPass: 
   macroDefines: 
   excludedDefines: 
   bOverrideBuildScenes: 0

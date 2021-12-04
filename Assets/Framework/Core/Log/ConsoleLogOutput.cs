@@ -38,19 +38,19 @@ namespace Framework.Core
         private Rect    m_ResizerRect;
         private bool    m_Resizing;        
 
-        protected override void OnEnable()
-        {
-#if ENABLE_PROFILER
-            base.OnEnable();
-#endif
-        }
+//         protected override void OnEnable()
+//         {
+// #if ENABLE_PROFILER
+//             base.OnEnable();
+// #endif
+//         }
 
-        protected override void OnDisable()
-        {
-#if ENABLE_PROFILER
-            base.OnDisable();
-#endif            
-        }
+//         protected override void OnDisable()
+//         {
+// #if ENABLE_PROFILER
+//             base.OnDisable();
+// #endif            
+//         }
 
         public override void Output(string logString, string stackTrace, LogType type)
         {
@@ -66,7 +66,7 @@ namespace Framework.Core
 
         public override void Dispose() {}
 
-        [System.Diagnostics.Conditional("ENABLE_PROFILER")]
+        // [System.Diagnostics.Conditional("ENABLE_PROFILER")]
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.BackQuote))

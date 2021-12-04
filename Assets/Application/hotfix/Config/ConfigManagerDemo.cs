@@ -12,17 +12,22 @@ namespace Application.Runtime
             Debug.Log("----------");
             yield return new WaitForSeconds(1);
 
+            Debug.developerConsoleVisible = false;
 
             PlayerConfig player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 100);
                 if(player != null)
                 {
-                    Debug.Log(player.Building_ID);
-                    Debug.Log(player.Name);
+                    Debug.LogError(player.Building_ID);
+                    Debug.LogWarning(player.Name);
                     Debug.Log(player.HP);
                     Debug.Log(player.MonsterDesc);
+                    GameDebug.LogError("33333333333");
+                    GameDebug.LogWarning("5555555555555");
+                    GameDebug.Log("777777777777");
                 }
             player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 0);
             player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "nanchang", 2);
+            
         }
     }
 }
