@@ -1,6 +1,6 @@
 {
   "Count": 56,
-  "TotalSize": 99764503,
+  "TotalSize": 99763194,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "163391cd6beb610fbb4e2e55b7b88a20",
-      "Size": 3318
+      "FileHash": "ec09f62367a1d8b733f87f9d1c8295ca",
+      "Size": 3315
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "a2c08bb561c73f33089aee2f70d33129",
-      "Size": 1000172
+      "FileHash": "fa4cf2bcb911af357ab07e15131c35d3",
+      "Size": 999014
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -209,8 +209,8 @@
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/scenes.ab",
-      "FileHash": "1e1efad14a054db31b29da55142eaedd",
-      "Size": 343845
+      "FileHash": "84cf7852a99998eb31118f61577b9e9f",
+      "Size": 343697
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/misc/111.ab",

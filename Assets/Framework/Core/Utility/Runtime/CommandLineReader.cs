@@ -101,11 +101,7 @@ namespace Framework.Core
                 return false;
             }
 
-            if (string.IsNullOrEmpty(value))
-            { // 没有参数默认为true
-                para = true;
-            }
-            else
+            if (!string.IsNullOrEmpty(value))
             {
                 if(value.ToLower() == "true")
                 {

@@ -119,7 +119,7 @@ namespace Framework.AssetManagement.GameBuilder
             SetOverridePara(ref setting.playerSetting.compressWithLz4HC,            "CompressWithLz4HC",        false);
             SetOverridePara(ref setting.playerSetting.strictMode,                   "PlayerStrictMode",         true);
             // SetOverridePara(ref setting.playerSetting.bundleVersion,                "BundleVersion",            "0.1");
-            SetOverridePara(ref setting.playerSetting.useIL2CPP,                    "useIL2CPP",                true);
+            SetOverridePara(ref setting.playerSetting.useIL2CPP,                    "useIL2CPP",                false);
             SetOverridePara(ref setting.playerSetting.il2CppCompilerConfiguration,  "CompilerConfiguration",    "Master");
             SetOverridePara(ref setting.playerSetting.useMTRendering,               "UseMTRendering",           true);
             SetOverridePara(ref setting.playerSetting.buildAppBundle,               "BuildAppBundle",           false);
