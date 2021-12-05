@@ -9,12 +9,13 @@ namespace Application.Editor
 {
     public class AudioBuildProcessor : IPreprocessBuildWithReport
     {
-        public int callbackOrder { get { return 50; } }     // ÔÚFMOD×ÊÔ´µ¼ÈëStreamingAssetsÖ®ºóÔÙÖ´ĞĞ£¬¼ûFMOD.EventManager.CopyToStreamingAssets
+        public int callbackOrder { get { return 50; } }     // åœ¨FMODèµ„æºå¯¼å…¥StreamingAssetsä¹‹åå†æ‰§è¡Œï¼Œè§FMOD.EventManager.CopyToStreamingAssets
 
-        // µÈËùÓĞĞèÒª´ò°üµÄ×ÊÔ´»ã¼¯µ½ÁËstreaming assetsÔÙÖ´ĞĞ
+        // ç­‰æ‰€æœ‰éœ€è¦æ‰“åŒ…çš„èµ„æºæ±‡é›†åˆ°äº†streaming assetså†æ‰§è¡Œ
         public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
         {
-            // FMODÄ¬ÈÏ°Ñ×ÊÔ´¸´ÖÆµ½StreamingAssets/ÏÂ£¬ĞèÒª½øÒ»²½¸´ÖÆµ½Ö¸¶¨ÎÄ¼ş¼Ğ
+            Debug.Log("AudioBuildProcessor: 11111111");
+            // FMODé»˜è®¤æŠŠèµ„æºå¤åˆ¶åˆ°StreamingAssets/ä¸‹ï¼Œéœ€è¦è¿›ä¸€æ­¥å¤åˆ¶åˆ°æŒ‡å®šæ–‡ä»¶å¤¹
             string srcFMOD = "Assets/StreamingAssets/" + FMODUnity.Settings.Instance.TargetSubFolder;
             if (System.IO.Directory.Exists(srcFMOD))
             {
@@ -25,6 +26,7 @@ namespace Application.Editor
                     //System.IO.Directory.CreateDirectory(newPath);
                 }
                 AssetDatabase.MoveAsset(srcFMOD, newPath);
+                Debug.Log("AudioBuildProcessor: 2222222222");
             }
         }
     }

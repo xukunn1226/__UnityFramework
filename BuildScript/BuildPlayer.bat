@@ -55,7 +55,7 @@ echo "	[Unity Path]:		D:\Program Files\2021.2.3f1\Editor\Unity.exe"
 
 
 
-::"D:\Program Files\2021.2.3f1\Editor\Unity.exe" %FIXED_COMMAND% %OVERRIDE_COMMAND%
+"D:\Program Files\2021.2.3f1\Editor\Unity.exe" %FIXED_COMMAND% %OVERRIDE_COMMAND%
 
 
 echo %errorlevel%
