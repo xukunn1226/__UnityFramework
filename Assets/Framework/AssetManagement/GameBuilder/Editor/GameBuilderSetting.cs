@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -11,6 +12,7 @@ namespace Framework.AssetManagement.GameBuilder
     public class GameBuilderSetting : ScriptableObject
     {
         public string               displayName;
+        public BuildTarget          buildTarget;
         public BundleBuilderSetting bundleSetting;
         public PlayerBuilderSetting playerSetting;
 

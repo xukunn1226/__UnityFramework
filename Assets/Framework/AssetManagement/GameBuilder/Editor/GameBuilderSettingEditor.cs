@@ -11,6 +11,7 @@ namespace Framework.AssetManagement.GameBuilder
     {
         SerializedProperty  m_bundleSettingProp;
         SerializedProperty  m_playerSettingProp;
+        SerializedProperty  m_buildTargetProp;
         SerializedProperty  m_buildModeProp;
 
         Editor              m_bundleSettingEditor;
@@ -24,6 +25,7 @@ namespace Framework.AssetManagement.GameBuilder
         {
             m_bundleSettingProp = serializedObject.FindProperty("bundleSetting");
             m_playerSettingProp = serializedObject.FindProperty("playerSetting");
+            m_buildTargetProp   = serializedObject.FindProperty("buildTarget");
             m_buildModeProp     = serializedObject.FindProperty("buildMode");
             m_AppVersion        = AppVersion.EditorLoad();
         }
@@ -46,6 +48,10 @@ namespace Framework.AssetManagement.GameBuilder
                                                                                     m_playerSettingProp.objectReferenceValue, 
                                                                                     typeof(PlayerBuilderSetting), 
                                                                                     false);
+
+            BuildTarget bt = (BuildTarget)m_buildTargetProp.enumValueFlag;
+            bt = (BuildTarget)EditorGUILayout.EnumFlagsField("Build Target", bt);
+            m_buildTargetProp.enumValueFlag = (int)bt;
 
             EditorGUILayout.Separator();
             DrawBundleSettingEditor();

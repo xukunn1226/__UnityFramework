@@ -44,6 +44,15 @@ namespace Framework.AssetManagement.GameBuilder
                 throw new System.ArgumentNullException("PlayerBuilderSetting", "playerSetting == null");
             }
 
+            if(gameSetting.buildTarget != EditorUserBuildSettings.activeBuildTarget)
+            {
+                if (UnityEngine.Application.isBatchMode)
+                {
+                    EditorApplication.Exit(1);
+                }
+                throw new System.InvalidOperationException($"build target  [{gameSetting.buildTarget}] not match the active build target  [{EditorUserBuildSettings.activeBuildTarget}]");
+            }
+
             switch(gameSetting.buildMode)
             {
                 case GameBuilderSetting.BuildMode.Bundles:

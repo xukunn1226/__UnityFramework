@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 0_GameBuilderSetting
   m_EditorClassIdentifier: 
   displayName: Win64
+  buildTarget: 19
   bundleSetting: {fileID: 11400000, guid: bc39a789828ae184d9c403134feda49b, type: 2}
   playerSetting: {fileID: 11400000, guid: ee628fffbff308641a6b4a2d3c1eb844, type: 2}
-  deploy: 1
   buildMode: 0
