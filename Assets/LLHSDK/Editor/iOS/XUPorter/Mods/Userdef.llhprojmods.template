@@ -1,0 +1,17 @@
+{
+  "group": "Lilith_Userdef",
+  "patches": [],
+  "libs": [],
+  "frameworks": [],
+  "headerpaths": [],
+  "files": [],
+  "folders": [],
+  "excludes": ["^.*\\.meta$", "^.*\\.mdown^", "^.*\\.pdf$"],
+  "compiler_flags": [],
+  "linker_flags": [],
+  "embed_binaries": [],
+  "plist": ${plist},
+  "build_settings": {
+    "ENABLE_BITCODE": "NO"
+  }
+}
