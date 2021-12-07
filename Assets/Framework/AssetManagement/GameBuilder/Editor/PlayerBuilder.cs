@@ -15,6 +15,8 @@ namespace Framework.AssetManagement.GameBuilder
         static public event onPreprocessPlayerBuild OnPreprocessPlayerBuild;
         static public event onPostprocessPlayerBuild OnPostprocessPlayerBuild;
 
+        static private PlayerBuilderSetting m_Setting;
+
         /// <summary>
         /// 构建Player接口（唯一）
         /// </summary>
@@ -32,6 +34,8 @@ namespace Framework.AssetManagement.GameBuilder
                 return null;
             }
 
+            m_Setting = para;
+
             // clear previous directory and create new one
             string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
             if (Directory.Exists(outputPath))
@@ -46,11 +50,6 @@ namespace Framework.AssetManagement.GameBuilder
 
             // setup PlayerSettings
             para.SetupPlayerSettings(version);
-
-            if(para.buildAppBundle)
-            {
-                PrepareForAppBundle();
-            }
 
             BuildPipeline.BuildPlayer(para.GenerateBuildPlayerOptions());
 
@@ -113,7 +112,21 @@ namespace Framework.AssetManagement.GameBuilder
             return report;
         }
 
-        private static void PrepareForAppBundle()
+        private class BuildProcessor : UnityEditor.Build.IPreprocessBuildWithReport
+        {
+            public int callbackOrder { get { return 100; } }     // 在BundleBuilder.BuildProcessor之后执行
+
+            // 等所有需要打包的资源汇集到了streaming assets再执行
+            public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+            {
+                if(m_Setting.buildAppBundle)
+                {
+                    CopyStreamingAssetsToCustomPackage();
+                }
+            }
+        }
+
+        private static void CopyStreamingAssetsToCustomPackage()
         {
             string targetPath = @"Assets/CustomAssetPacks.androidpack";
             string streamingAssetPath = @"Assets/StreamingAssets";
