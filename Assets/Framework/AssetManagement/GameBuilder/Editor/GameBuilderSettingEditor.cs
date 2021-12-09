@@ -49,9 +49,9 @@ namespace Framework.AssetManagement.GameBuilder
                                                                                     typeof(PlayerBuilderSetting), 
                                                                                     false);
 
-            // BuildTarget bt = (BuildTarget)m_buildTargetProp.enumValueFlag;
-            // bt = (BuildTarget)EditorGUILayout.EnumFlagsField("Build Target", bt);
-            // m_buildTargetProp.enumValueFlag = (int)bt;
+            BuildTarget bt = (BuildTarget)m_buildTargetProp.enumValueFlag;
+            bt = (BuildTarget)EditorGUILayout.EnumFlagsField("Build Target", bt);
+            m_buildTargetProp.enumValueFlag = (int)bt;
 
             EditorGUILayout.Separator();
             DrawBundleSettingEditor();
