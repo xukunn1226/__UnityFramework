@@ -20,14 +20,14 @@ namespace Framework.NetWork
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        byte[] Serialize(T msg);
+        byte[] Serialize(int msgid, T msg);
 
         /// <summary>
         /// 序列化消息对象到MemoryStream
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="output"></param>
-        void Serialize(T msg, MemoryStream output);
+        void Serialize(int msgid, T msg, MemoryStream output);
 
         /// <summary>
         /// IPacket包的字节长度
@@ -35,5 +35,12 @@ namespace Framework.NetWork
         /// <param name="msg"></param>
         /// <returns></returns>
         int CalculateSize(T msg);
+
+        /// <summary>
+        /// 取得整包，带包头的长度
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        int GetTotalPacketLen(T msg);
     }
 }

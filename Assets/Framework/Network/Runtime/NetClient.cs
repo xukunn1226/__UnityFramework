@@ -83,11 +83,12 @@ namespace Framework.NetWork
                 IPAddress ip = IPAddress.Parse(m_Host);
                 state = ConnectState.Connecting;
                 await m_Client.ConnectAsync(ip, m_Port);
-                OnConnectSuccess();
 
                 m_Cts = new CancellationTokenSource();
                 m_StreamWriter.Start(m_Client.GetStream(), m_Cts);
                 m_StreamReader.Start(m_Client.GetStream(), m_Cts);
+
+                OnConnectSuccess();
             }
             catch (ArgumentNullException e)
             {
@@ -235,28 +236,28 @@ namespace Framework.NetWork
             m_Listener.OnNetworkReceive(m_MessageList);
         }
 
-        public void SendData(byte[] buf, int offset, int length)
-        {
-            try
-            {
-                m_StreamWriter.Send(buf, offset, length);
-            }
-            catch (ArgumentNullException e)
-            {
-                ((IConnector)this).RaiseException(e);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                ((IConnector)this).RaiseException(e);
-            }
-        }
+        // public void SendData(byte[] buf, int offset, int length)
+        // {
+        //     try
+        //     {
+        //         m_StreamWriter.Send(buf, offset, length);
+        //     }
+        //     catch (ArgumentNullException e)
+        //     {
+        //         ((IConnector)this).RaiseException(e);
+        //     }
+        //     catch (ArgumentOutOfRangeException e)
+        //     {
+        //         ((IConnector)this).RaiseException(e);
+        //     }
+        // }
 
-        public void SendData(byte[] buf)
-        {
-            SendData(buf, 0, buf.Length);
-        }
+        // public void SendData(byte[] buf)
+        // {
+        //     SendData(buf, 0, buf.Length);
+        // }
 
-        public bool SendData(TMessage data)
+        public bool SendData(int msgid, TMessage data)
         {
             // method 1. 序列化到新的空间，有GC
             //byte[] buf = m_Parser.Serialize(data);
@@ -267,7 +268,7 @@ namespace Framework.NetWork
             MemoryStream stream;
             if (m_StreamWriter.RequestBufferToWrite(length, out stream))
             {
-                m_Parser.Serialize(data, stream);
+                m_Parser.Serialize(msgid, data, stream);
                 m_StreamWriter.FinishBufferWriting(length);
                 return true;
             }

@@ -180,17 +180,29 @@ namespace Application.Runtime
                 while (UnityEngine.Application.isPlaying && NetManager.Instance != null && NetManager.Instance.state == ConnectState.Connected)
                 {
                     ++index;
-                    StoreRequest msg = new StoreRequest();
-                    msg.Name = "1233";
-                    msg.Num = 3;
-                    msg.Result = 4;
-                    if (index % 2 == 0)
-                        msg.MyList.Add("22222222222");
-                    if (index % 3 == 0)
-                        msg.MyList.Add("33333333333333");
-                    // UnityEngine.Debug.LogWarning("");
-                    if (!NetManager.Instance.SendData(msg))
-                        break;
+
+                    // LoginReq req = new LoginReq();
+                    // req.Token = UnityEngine.SystemInfo.deviceUniqueIdentifier;
+
+                    // int msgid = NetModuleManager.MakeMsgID((int)ModuleType.ModuleLogin, (int)LoginMsgID.Login);
+                    // if (!NetManager.Instance.SendData(msgid, req))
+                    //     break;
+
+
+
+
+
+                    // StoreRequest msg = new StoreRequest();
+                    // msg.Name = "1233";
+                    // msg.Num = 3;
+                    // msg.Result = 4;
+                    // if (index % 2 == 0)
+                    //     msg.MyList.Add("22222222222");
+                    // if (index % 3 == 0)
+                    //     msg.MyList.Add("33333333333333");
+                    // // UnityEngine.Debug.LogWarning("");
+                    // if (!NetManager.Instance.SendData(msg))
+                    //     break;
 
                     await Task.Yield();
                 }

@@ -12,11 +12,11 @@ using UnityEditor;
 
 namespace Application.Runtime
 {
-    public class NetManager : SingletonMono<NetManager>, INetListener<IMessage>
+    public class NetManager : SingletonMono<NetManager>, INetListener<NetMsgData>
     {
-        static private IPacket<IMessage>        s_Parser    = new PacketProtobuf();
-        private NetClient<IMessage>             m_NetClient;
-        private INetManagerListener<IMessage>   m_Listener;
+        static private IPacket<NetMsgData>      s_Parser    = new PacketProtobuf();
+        private NetClient<NetMsgData>           m_NetClient;
+        private INetManagerListener<NetMsgData> m_Listener;
 
         public string                           Ip          = "192.168.2.7";
         public int                              Port        = 11000;
@@ -33,7 +33,7 @@ namespace Application.Runtime
         {
             base.Awake();
 
-            m_NetClient = new NetClient<IMessage>(this);
+            m_NetClient = new NetClient<NetMsgData>(this);
         }
 
         void Update()
@@ -41,7 +41,7 @@ namespace Application.Runtime
             m_NetClient?.Tick();
         }
 
-        public void SetListener(INetManagerListener<IMessage> listener)
+        public void SetListener(INetManagerListener<NetMsgData> listener)
         {
             m_Listener = listener;
         }
@@ -51,6 +51,9 @@ namespace Application.Runtime
             Ip = ip;
             Port = port;
             await Connect();
+
+            //测试发数据
+            //SendData(1)
         }
 
         async public Task Connect()
@@ -68,53 +71,77 @@ namespace Application.Runtime
             await m_NetClient?.Reconnect();
         }
 
-        public bool SendData(IMessage data)
+        public bool SendData(int msgid)
         {
-            return m_NetClient?.SendData(data) ?? false;
+            NetMsgData msg = NetMsgData.Get();
+            msg.MsgID = msgid;
+
+            bool bVal = m_NetClient?.SendData(msgid, msg) ?? false;
+            NetMsgData.Release(msg);
+            return bVal;
         }
 
-        public void SendData(byte[] buf, int offset, int length)
+        public bool SendData(int msgid, IMessage data)
         {
-            m_NetClient?.SendData(buf, offset, length);
+            int nLen = data.CalculateSize();
+            byte[] byData = data.ToByteArray();
+            
+            NetMsgData msg = NetMsgData.Get();
+            msg.MsgID = msgid;
+            msg.CopyFrom(byData, 0, byData.Length);
+
+            bool bVal = m_NetClient?.SendData(msgid, msg) ?? false;
+            NetMsgData.Release(msg);
+            return bVal;
         }
 
-        public void SendData(byte[] buf)
-        {
-            m_NetClient?.SendData(buf);
-        }
+        // public bool SendData(IMessage data)
+        // {
+        //     return m_NetClient?.SendData(data) ?? false;
+        // }
 
-        void INetListener<IMessage>.OnNetworkReceive(in List<IMessage> msgs)
+        // public void SendData(byte[] buf, int offset, int length)
+        // {
+        //     m_NetClient?.SendData(buf, offset, length);
+        // }
+
+        // public void SendData(byte[] buf)
+        // {
+        //     m_NetClient?.SendData(buf);
+        // }
+
+        void INetListener<NetMsgData>.OnNetworkReceive(in List<NetMsgData> msgs)
         {
             m_Listener?.OnNetworkReceive(msgs);
         }
 
         // 连接成功
-        void INetListener<IMessage>.OnPeerConnectSuccess()
+        void INetListener<NetMsgData>.OnPeerConnectSuccess()
         {
             m_Listener?.OnPeerConnectSuccess();
         }
 
         // 连接失败
-        void INetListener<IMessage>.OnPeerConnectFailed(Exception e)
+        void INetListener<NetMsgData>.OnPeerConnectFailed(Exception e)
         {
             m_Listener?.OnPeerConnectFailed(e);
         }
 
         // 异常断开连接
-        void INetListener<IMessage>.OnPeerDisconnected(Exception e)
+        void INetListener<NetMsgData>.OnPeerDisconnected(Exception e)
         {
             m_Listener?.OnPeerDisconnected(e);
         }
 
         // 主动断开连接
-        void INetListener<IMessage>.OnPeerClose()
+        void INetListener<NetMsgData>.OnPeerClose()
         {
             m_Listener?.OnPeerClose();
         }
 
-        int INetListener<IMessage>.sendBufferSize       { get { return 4096; } }
-        int INetListener<IMessage>.receiveBufferSize    { get { return 2048; } }
-        IPacket<IMessage> INetListener<IMessage>.parser { get { return s_Parser; } }
+        int INetListener<NetMsgData>.sendBufferSize       { get { return 4096; } }
+        int INetListener<NetMsgData>.receiveBufferSize    { get { return 2048; } }
+        IPacket<NetMsgData> INetListener<NetMsgData>.parser { get { return s_Parser; } }
     }
 
     public interface INetManagerListener<TMessage> where TMessage : class
