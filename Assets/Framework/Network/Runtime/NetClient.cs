@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
-using Framework.NetWork.Log;
 using System.IO;
 using System.Collections.Generic;
 
@@ -57,8 +56,6 @@ namespace Framework.NetWork
 
         public NetClient(INetListener<TMessage> listener)
         {
-            Trace.EnableConsole();
-
             m_Listener = listener;
             m_Parser = listener.parser;
 
@@ -317,12 +314,12 @@ namespace Framework.NetWork
                 // 10035 == WSAEWOULDBLOCK
                 if (e.NativeErrorCode.Equals(10035))
                 {
-                    Trace.Debug("Still Connected, but the Send would block");
+                    UnityEngine.Debug.Log("Still Connected, but the Send would block");
                     isConnected = true;
                 }
                 else
                 {
-                    Trace.Debug($"Disconnected: error code {e.NativeErrorCode}!");
+                    UnityEngine.Debug.Log($"Disconnected: error code {e.NativeErrorCode}!");
                     isConnected = false;
                 }
             }

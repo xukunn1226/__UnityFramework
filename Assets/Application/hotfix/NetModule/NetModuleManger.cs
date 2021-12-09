@@ -27,7 +27,7 @@ namespace Application.Runtime
             if (m_netModules[mo.GetModuleID()] != null)
             //if (dicNetmodules.ContainsKey(mo.GetModuleID()))
             {
-                Framework.NetWork.Log.Trace.Error($"RegisterModule msgid {mo.GetModuleID()} already exist!");
+                UnityEngine.Debug.LogError($"RegisterModule msgid {mo.GetModuleID()} already exist!");
                 return;
             }
             //dicNetmodules.Add(mo.GetModuleID(), mo);

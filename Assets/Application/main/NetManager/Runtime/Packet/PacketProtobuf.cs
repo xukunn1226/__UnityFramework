@@ -1,7 +1,4 @@
 ﻿using System.IO;
-using Framework.NetWork.Log;
-using Google.Protobuf;
-using NetProtocol;
 using Framework.NetWork;
 
 namespace Application.Runtime
@@ -116,7 +113,7 @@ namespace Application.Runtime
 
             if (packetLength >= NetMsgData.MsgMaxSize)
             {
-                Trace.Error($"packetLength >= NetMsgData.MsgMaxSize, len {packetLength}");
+                UnityEngine.Debug.LogError($"packetLength >= NetMsgData.MsgMaxSize, len {packetLength}");
                 realLength = 0;
                 msg = default(NetMsgData);
                 return false;

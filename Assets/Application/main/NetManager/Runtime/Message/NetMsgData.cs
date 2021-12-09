@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-//using UnityEngine;
 using Framework.Cache;
 using System;
-using Framework.NetWork.Log;
-using Google.Protobuf;
 
 namespace Application.Runtime
 {
@@ -53,7 +48,7 @@ namespace Application.Runtime
                 return true;
             }
 
-            Trace.Error($"NetMsgData->CopyFrom copyLen too large : {copyLen}");
+            UnityEngine.Debug.LogError($"NetMsgData->CopyFrom copyLen too large : {copyLen}");
             return false;
         }
         
@@ -97,7 +92,7 @@ namespace Application.Runtime
         {
             if (m_Pool == null)
             {
-                Trace.Error($"Pool[{f.GetType().Name}] not exist");
+                UnityEngine.Debug.LogError($"Pool[{f.GetType().Name}] not exist");
                 return;
             }
 
