@@ -1,0 +1,264 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+import "common.proto";
+
+
+
+//node和id和状态结构 
+message NodeObjectIDAndState
+{
+    int32 UID = 1;                          
+}
+
+/////////////////////////////////////////////////////////////////////
+//所有的交互节点
+enum InteractionType
+{
+    PickUpAll = 0;          //全部拾取
+    HPZero = 1;             //血量
+    Dialogue = 2;           //对白交互完成
+    CloseInteraction = 3;   //靠近交互触发
+    UIClickButton = 4;      //UI交互(如：开关门等)
+    NPCAI = 5;              //NPC执行AI行为
+    BeFollowed = 6;         //成为随从
+    ActiveMonsterAI = 7;    //激活怪物AI
+    CloseAdsorb = 8;        //靠近物件直接吸附获得
+    ActiveTimeLine = 9;     //触发timeline
+    RefreshMonster = 10;    //刷怪
+    MonsterDie = 11;        //怪物死亡
+}
+
+message InteractionBase
+{
+    InteractionType interactionType = 1;
+    bytes interactions = 2;    //存放interaction类（泛型）
+    int32 state = 3;            //改自身状态
+}
+
+message InteractionActiveMonsterAI
+{
+     int32 nodeId = 1;
+}
+
+message InteractionAbsorbItem
+{
+    string Id = 1;
+    int32 num = 2;
+}
+
+message InteractionTimeLine{
+    string Id = 1;
+}
+
+//点击UI交互
+message InteractionClickUIButton
+{
+    //NodeObjectIDAndState changeNodeState = 1;
+    string uiButtonID = 2;      //list表的ID
+    //其它
+}
+
+message InteractionBeFollowed
+{
+    string npcID = 1;
+}
+
+message InteractionNPCAI
+{
+    string npcID = 1;
+    string npcAIID = 2;
+}
+
+//对话交互
+message InteractionDialogue
+{
+    //NodeObjectIDAndState changeNodeState = 1;
+
+    string dialogueID = 2;      //对话表ID
+    //string npcID = 3;
+    //string npcAIID = 4;
+}
+
+message InteractionPickup
+{
+    //NodeObjectIDAndState changeNodeState = 1;
+    string objectId = 1;    //对应DungeonTreasureList 宝箱
+    bool IsAuto = 2;        //是否自动穿戴
+}
+
+
+//血条交互
+message InteractionHPZero
+{
+    //NodeObjectIDAndState changeNodeState = 1;
+    //其它
+
+}
+
+//刷怪
+message InteractionRefreshMontster
+{
+    NodeObjectIDAndState changeNodeState = 1; //怪物全杀掉后，触发
+    repeated MonsterArea MonsterArea = 2;   //刷怪，repeated表示可以一次刷多波怪
+}
+////////////////////////////////////////////////////////////////////////
+//node被击类型
+enum NodeDamageTypeDef
+{
+    NodeDamageTypeNone = 0;           //不受击
+    NodeDamageTypeAll = 1;          //受到所有伤害
+    NodeDamageTypeSpecified = 2;    //受到指定类型伤害
+}
+
+//node的属性
+message NodePropertys
+{
+    float delay = 1;
+    bool showHp = 2;
+    string buttonid = 3;
+    bool IsHorizontalCollide = 4;
+    bool IsverticalCollide = 5;
+    //string destroyEffect = 5;
+    int32 interaction = 6;
+    NodeDamageTypeDef demageType = 7;
+    int32 CollideEffect = 8;
+    string animation = 9;
+    //string buttonId = 10;
+    
+    //编辑器用
+    int32 id = 100;
+    string guid = 101;
+    Vector2Int rectPos = 102;
+    Vector2Int rectSize = 103;
+}
+
+//服务器用
+enum NodeType
+{
+    NodeTypeSingle = 0; //零散的node
+    NodeTypeTask = 1;   //任务连中的node，node会有nextIds的后续
+    NodeTypeBorn = 2;   //出生点类型
+    NodeTypeNPC = 3;    //NPC
+}
+//服务器专用
+message ServerSaveData
+{
+    bool isDone = 1; //是否被触发过
+    int32 originState = 2; //保存最原始的状态值，重置时使用
+    int32 entityID = 3;     //服务器使用
+    int32 nodeType = 4;     //node的类型
+}
+
+//连线用的node
+message LinkedNodeObject
+{
+    int32 UID = 1;                          //自己的唯一ID
+    bool isCanRepeatDo = 2;                 //是否可以重复做(只在任务链的第一个节点上配置)
+    //int32 currState = 3;                    //当前状态
+    NodeObjectTemplate object = 4;                     
+    Vector3Float pos = 5;
+    //float size = 6;
+    //string prefab = 6;
+    Vector3Float rotation = 6;
+    Vector3Float scale = 7;
+    repeated int32 nextIds = 8; //表示连线
+
+    //编辑器用
+    string guid = 100;
+    Vector2Int rectPos = 101;
+    Vector2Int rectSize = 102;
+    string prefab = 103; //prefab路径
+
+    //服务器用
+    ServerSaveData serverData = 150;
+}
+
+//单个node
+message NodeObjectTemplate
+{
+    //int32 UID = 1;                                //自己的唯一ID
+    repeated NodePropertys attrs = 1;               //属性(数组下标与state对应)
+    repeated InteractionBase interactions = 2;      //存放interaction类(数组下标与state对应)
+    string gameobjectType = 3;
+    int32 currState = 4;
+    float range = 5;
+    float cd = 6;
+    string destroyClip = 7;
+    string destroySkill = 8;
+    bool isReset = 9;
+    string battleId = 10;
+
+    //编辑器用
+    string guid = 100;
+    Vector2Int rectPos = 101;
+    Vector2Int rectSize = 102;
+    string prefab = 103; //prefab路径
+}
+
+//一个任务链
+message SingleTask
+{
+    int32 taskID = 1;                           //任务ID
+    int32 firstNodeID = 2;           //任务链的起始
+    //map<int32, LinkedNodeObject> allNodes = 3;
+    repeated int32 allNodes = 3;
+    int32 lastNodeID = 4;          //任务链的结束
+
+    //编辑器用
+    repeated NodePropertys properts = 100;
+    string guid = 101;
+}
+
+//一个区域
+message SingleArea
+{
+    Vector3Float pos = 1;               //位置
+    float radius = 2;                   //半径
+    int32 id = 3;                       //出生点id
+}
+
+message MonsterArea
+{
+    Vector3Float pos = 1;
+    Vector3Float rotation = 2;
+    Vector3Float scale = 3;
+    string id = 4;                       //怪物id
+    int32 num = 5;                      //刷怪数量
+    float radius = 6;                   //刷怪半径
+    string dropItemID = 7;              //刷怪掉落
+    
+}
+
+message MonsterGroup
+{
+    repeated MonsterArea monsterAreas = 1;
+    bool IsNPC = 2;
+    int32 nodeID = 3;
+    bool IsInit = 4;
+}
+
+//所有出生点（不在任务链里的）
+message BornMsg
+{
+    int32 firstBorn = 1;
+    repeated int32 bornPos = 2;
+    int32 lastActivatedBorn = 3; //服务器用。用来记录最后玩家激活的复活点
+}
+
+//关卡
+message SingleStage
+{
+    int32 stageID = 1;
+    BornMsg bornPos = 2; //所有出生点（不在任务链里的）
+    repeated MonsterGroup monsters = 3;   //所有一开始就刷出来的怪以及npc
+    repeated int32 nodes = 4; //不在任务链里 散落在地图各个小物件
+    //repeated SingleArea bornPos = 4;
+    map<int32, SingleTask> tasks = 5;
+    //key是编辑器里生成的
+    map<int32, LinkedNodeObject> allObjectNodes = 6;
+
+
+    //服务器专用(key是服务器重新生成的)
+    map<int32, LinkedNodeObject> allNodes = 50;
+    repeated int32 canDestoryObjects = 51; //可被功击摧毁的node
+}

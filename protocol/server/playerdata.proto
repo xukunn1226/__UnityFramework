@@ -1,0 +1,49 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+import "stagedata.proto";
+
+//帐号信息
+message SaveCharactorInfo
+{
+    string charID = 1; //帐号ID
+    //repeated SaveRoleInfo roleIds = 2; //所有的角色ID
+    SaveRoleInfo roleInfo = 2;              //角色信息
+}
+
+//角色信息
+message SaveRoleInfo
+{
+    int64 roleID = 1;                               //角色的实例ID 
+    string configID = 2;                            //character表的配置ID
+    int32 level = 3;                                //角色等级
+    map<string, int64> equips = 4;                 //装备
+    repeated SingleItemInfo items = 5;              //背包数据
+
+    int64 currDungeonID = 50;//当前正在哪个地下城中
+    map<string, SaveDungeonInfo> stageInfos = 51;    //有进度的地下城信息
+}
+
+message SingleItemInfo
+{
+    int32 entityID = 1;
+    string configID = 2;
+    int32 num = 3;
+    int32 level = 4;
+}
+
+//交互数据
+message InteractionData
+{
+    map<int32, InteractionBase> data = 1; //交互数据 key是nodeobject当前的state
+}
+
+//地下层数据
+message SaveDungeonInfo
+{
+    int64 dungeonID = 1;                    //地下层实例ID
+    string configID = 2;                    //配置表ID
+    SingleStage stageInfo = 3;              //关卡数据
+    map<int32, SingleItemInfo> items = 4;
+    //repeated SingleItemInfo items = 4;      //局内背包
+    map<int32, InteractionData> interactionDatas = 5; //保存的交互数据
+}

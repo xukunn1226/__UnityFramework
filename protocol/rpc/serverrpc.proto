@@ -1,0 +1,21 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+
+service GeneralRPC 
+{
+    rpc CallServerFun (CallServerReq) returns (CallServerAck) {}
+}
+
+//
+message CallServerReq 
+{
+    int32 msgid = 1;
+    bytes msgdata = 2;
+}
+
+//
+message CallServerAck
+{
+    int32 msgid = 1;
+    bytes msgdata = 2;
+}

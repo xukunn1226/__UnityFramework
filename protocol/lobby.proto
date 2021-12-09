@@ -1,0 +1,45 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+//import "common.proto";
+//package gameproto.lobby;
+import "errorcode.proto";
+
+
+enum LobbyMsgID
+{
+    EnterLobby = 0;         //进入大厅
+    CreateCharactor = 1;    //创角色
+}
+
+message CharactorInfo
+{
+    //角色配置表ID
+    string roleConfigID = 1;
+    //等级
+    int32 level = 2;
+    //装备信息
+    map<string, int64> equips = 4;  //装备
+}
+
+//进入大厅
+message EnterLobbyReq
+{
+}
+
+//大厅信息返回
+message EnterLobbyAck
+{
+    ErrorCode errorCode = 1;
+    CharactorInfo charInfo = 2; //角色信息，如果为空，表示新号需要创建角色
+}
+
+//创建角色
+message CreateCharactorReq {
+    string selRoleConfigID = 1; //选择角
+}
+
+//创建是否成功，如果失败推送这个协议，如果成功推送EnterLobbyAck的协议
+message CreateCharactorAck {
+    ErrorCode errorCode = 1;
+}
+

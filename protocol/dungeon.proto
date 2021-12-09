@@ -1,0 +1,466 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+import "common.proto";
+import "errorcode.proto";
+
+enum DungeonMsgID 
+{
+    ////////////////////////////////////////////////
+    //前端请求
+
+    //当前地下层的进度信息
+    DungeonInfo = 0;
+
+    //请求进入地下城
+    EnterDungeon = 1;
+
+    //请求退出地下城
+    ExitDungeon = 2;
+
+    //客户端ready
+    ClientReady = 3;
+    
+    //同步角色位置信息
+    SyncRoleInfo = 4;
+
+    //刷新怪物或是其它entity
+    SyncRefreshEntity = 5;
+
+    //服务器推送怪物的称动信息
+    SyncEntityInfo = 6;
+
+    //预备使用技能（如：突近距离，抬枪等）
+    PreUseSkillStart = 7;
+    PreUseSkillEnd = 8;
+
+    //换弹
+    ChangeBullet = 9;
+    CancelChangeBullet = 10;
+
+    //使用技能
+    UseSkill = 20;
+    EndSkill = 21;
+
+    //怪物放技能
+    MonsterPreUseSkillStart = 22;
+    MonsterPreUseSkillEnd = 23;
+    MonsterUseSkill = 24;
+    MonsterEndSkill = 25;
+
+
+    //通知失去BUFF
+    LostBuff = 30;
+
+    //掉落
+    DropItem = 40;
+
+    //捡取
+    PickDropItem = 41;
+
+    //////////////////////////////////////////
+    //使用道具
+    UseItem = 50;
+
+    //得到道具
+    GotItem = 51;
+
+    /////////////////////////////////////////
+    //得到一个随从
+    GotPartner = 60;
+
+    //////////////////////////////////////////
+    //武器从50开始
+    //装备武器
+    EquipWeapon = 70;
+
+    //副本结算
+    StageSettlement = 100;
+}
+
+//////////////////////////////////////////////////
+//属性的类型
+enum AttributeTypeDef_t
+{
+    CURR_HP = 0;        //当前血量
+    MAX_HP = 1;         //血量上限
+    LEVEL = 2;     //移动速度
+    MOVE_SPEED = 3;     //移动速度
+    //其它
+}
+
+//////////////////////////////////////////////////////
+//相关结构
+
+//单个地下城的进度信息等
+message SingleDungeon_t
+{
+    string dungeonID = 1;    //地下城ID
+    float progress = 2;     //已完成进度
+}
+
+//单个属性
+message SingleAttribute_t
+{
+    AttributeTypeDef_t attriType = 1;
+    float attriValue = 2;   //属性的最终值
+}
+
+//单个装备
+message EquipInfo_t
+{
+    int32 uid = 1;          //装备的实例ID 
+    string configID = 2;    //配置表ID
+    int32 level = 3;            //等级
+}
+
+//单个武器
+message WeaponInfo_t
+{
+    int32 uid = 1;          //武器实例ID
+    string configID = 2;    //配置表ID
+}
+
+//道具
+message ItemInfo_t
+{
+    int32 entityID = 1;              //实例ID
+    string configID = 2;        //配置表ID
+    int32 num = 3;            //数量
+}
+
+//掉落道具的结构
+message DropItemInfo_t
+{
+    string configID = 1;        //配置表ID
+    int32 num = 2;            //数量
+}
+
+//entity
+message Entity_t
+{
+    int32 entityID = 1;          //实例ID
+    string configID = 2;    //配置表ID
+    EntityPos_t pos = 3;    //位置信息
+}
+
+//buff
+message BuffInfo_t
+{
+    int32 entityID = 1;                     //实例ID
+    int32 ownerBuffID = 2;                  //谁得到了这个ID
+    int32 configID = 3;                    //BUFF的配置表ID
+    int32 level = 4;                     //BUFF等级
+    int32 buffCasterEntityID = 5;       //buff的施放者（来原）
+    float remainingTime = 6;            //剩余时长，秒（-1表示无限时长）
+}
+
+//entity
+message EntityPos_t
+{
+    //当前位置
+    Vector3Float pos = 1;
+    //朝向
+    Vector3Float dir = 2;
+    //速度
+    Vector3Float velocity = 3;
+}
+
+//一块区域
+message CircleArea_t
+{
+    Vector3Float center = 1;
+    float radius = 2;
+}
+
+message DungeonRoleInfo_t
+{
+    //实例ID
+    int32 entityID = 1;
+
+    //角色的配置表ID
+    string configID = 2;
+
+    //相关属性
+    repeated SingleAttribute_t attributes = 3;
+    
+    //相关装备
+    repeated EquipInfo_t equips = 4;
+    
+    //相关BUFF
+    repeated BuffInfo_t buffs = 6;
+
+    //当前位置
+    EntityPos_t posInfo = 7;
+
+    //当前武器
+    WeaponInfo_t currWeapon = 8;    
+}
+
+message EntityAttributeChanged_t
+{
+    //哪个角色/怪物属性发生了变化
+    int32 entityID = 1;
+
+    //哪些数据发生了变化
+    repeated SingleAttribute_t attributes = 5;
+}
+
+//////////////////////////////////////////////////
+//地下城进度列表
+message DungeonInfoReq
+{
+
+}
+
+message DungeonInfoAck
+{
+    repeated SingleDungeon_t dungeons = 1;
+}
+
+//进入地下室请求
+message EnterDungeonReq
+{
+    //地下城的配置表ID
+    string dungeonID = 1; 
+}
+
+//服务器创建副本或是找出之前的副本进度
+message EnterDungeonAck
+{
+    //错误码
+    ErrorCode errorCode = 1;
+    
+    string dungeonID = 2; 
+    //角色和随从的数组(0号是主角，其它是随从)   
+    repeated DungeonRoleInfo_t roles = 3;
+    //相关道具
+    repeated ItemInfo_t items = 4;
+}
+
+//客户端准备完成（loading完成了）
+message ClientReadyReq
+{
+}
+message ClientReadyAck
+{
+}
+
+//客户端同步玩家位置
+//(移动中每隔0.5秒出步一次，停止、开始移动移动状态变化时)
+//原地静止时不需要同步
+message SyncRoleInfoReq
+{
+    int32 entityID = 1;
+    EntityPos_t posInfo = 2;
+}
+
+//同步的返回，给自己（有错误时才返回，正常情况不返回， 除非玩家作弊，拉回同步前的位置和之前的速度）
+message SyncRoleInfoAck
+{
+    int32 entityID = 1;
+    EntityPos_t posInfo = 2;
+}
+
+//服务器推送怪物
+message SyncEntityInfoAck
+{
+    //怪物、角色的实例ID
+    int32 entityID = 1;
+    
+    Vector3Float currPos = 2;   //当前位置
+    Vector3Float tarPos = 3;    //目标位置
+    float speed = 4;            //当前速度
+}
+
+//通知刷新怪物
+message SyncRefreshEntityAck
+{
+    repeated Entity_t entitys = 1;
+}
+
+//失去BUFF的通知(BUFF 到时间了 或是其他原因)
+message LostBuffAck
+{
+    //谁失去了BUFF
+    int32 entityID = 1;  //BUFF的唯 一ID
+    int32 ownerEntityID = 2;    //这个BUFF是在谁身上的
+    //属性变化
+    repeated EntityAttributeChanged_t attriChanged = 4;
+}
+
+
+//使用道具 (如果有属生变化 会通知EntityAttributeChangedAck这么协议)
+message UseItemReq
+{
+    string configID = 1;     
+    int32 num = 2;          //使用数量
+}
+
+message UseItemAck
+{
+    ErrorCode errorCode = 1;
+    string configID = 2;     
+    int32 num = 3;          //剩余数量
+
+    //BUFF信息
+    repeated BuffInfo_t addBuffs = 4;
+
+    //属性变化
+    repeated EntityAttributeChanged_t attriChanged = 6;
+}
+
+//得到道具
+message GotItemAck
+{
+    repeated ItemInfo_t items = 1;
+}
+
+//服务器推送，得到一个随从
+message GotPartnerAck
+{
+    DungeonRoleInfo_t partner = 1;
+}
+
+//装备武器
+message EquipWeaponReq
+{
+    int32 entityID = 1;         //武器的实例ID
+}
+
+message EquipWeaponAck
+{
+    ErrorCode errorCode = 1;
+    int32 entityID = 2;         //武器的实例ID
+}
+
+//使用技能 （技能造成的属性变化，走通用协议 EntityAttributeChangedAck）
+message UseSkillReq
+{
+    int32 entityID = 1;                     //主角或是随从的实例ID
+    int32 skillID = 2;                     //技能ID
+    EntityPos_t posInfo = 3;                //放技能时，当时的位置，方向等
+    repeated int32 tars = 4;                //功击目标是谁,可以多个 （0号是直接命中的敌人）
+
+    Vector3Float center = 6;                //根据skillID读表，如果是一个区域技能，用这个字段
+}
+
+message UseSkillAck
+{
+    ErrorCode errorCode = 1;
+    int32 entityID = 2;         //主角或是随从的实例ID
+    int32 skillID = 3;       
+
+    //BUFF信息
+    repeated BuffInfo_t addBuffs = 4;
+    //属性变化
+    repeated EntityAttributeChanged_t attriChanged = 5;
+}
+
+//技能结束
+message EndSkillReq
+{
+    int32 entityID = 2;         //主角或是随从的实例ID
+}
+
+message EndSkillAck
+{
+    ErrorCode errorCode = 1;
+    int32 entityID = 2;         //主角或是随从的实例ID
+}
+
+//请求换弹
+message ChangeBulletReq
+{
+    int32 entityID = 1;         //主角或是随从的实例ID
+}
+
+message ChangeBulletAck
+{
+    ErrorCode errorCode = 1;
+    int32 entityID = 2;         //主角或是随从的实例ID
+}
+
+//取消换弹
+message CancelChangeBulletReq
+{
+    int32 entityID = 1;         //主角或是随从的实例ID
+}
+
+message CancelChangeBulletAck
+{
+    ErrorCode errorCode = 1;
+    int32 entityID = 2;         //主角或是随从的实例ID
+}
+
+//预备使用技能(开始)
+message PreUseSkillStartReq
+{
+    int32 entityID = 1;                     //主角或是随从的实例ID
+    int32 skillID = 2;                     //技能ID 
+    EntityPos_t posInfo = 3;                //放技能时，当时的位置，方向等
+}
+
+message PreUseSkillStartAck
+{
+    ErrorCode errorCode = 1;
+    int32 entityID = 2;                     //主角或是随从的实例ID
+    int32 skillID = 3;                      //技能ID 
+    //BUFF信息
+    repeated BuffInfo_t addBuffs = 4;   
+    //属性变化
+    repeated EntityAttributeChanged_t attriChanged = 5;   
+}
+
+//预备使用技能(开始)
+message PreUseSkillEndReq
+{
+    int32 entityID = 1;                     //主角或是随从的实例ID
+    int32 skillID = 2;                     //技能ID 
+    EntityPos_t posInfo = 3;                //放技能时，当时的位置，方向等
+}
+
+//验证结束的位置是否有效（正常验证有效，不会返回，只有验证失败时才返回）
+message PreUseSkillEndAck
+{
+    ErrorCode errorCode = 1;            
+    int32 entityID = 2;                     //主角或是随从的实例ID
+    int32 skillID = 3;                     //技能ID 
+}
+
+//死亡掉落 
+message DropItemAck
+{
+    int32 dropEntityID = 1;                 //这次掉落的实例ID（唯一）
+    repeated DropItemInfo_t items = 2;
+    Vector3Float pos = 3;                   //掉落位置
+}
+
+//捡取掉落 
+message PickDropItemReq
+{
+    int32 dropEntityID = 1;   //掉落实例ID
+}
+
+message PickDropItemAck
+{
+    ErrorCode errorCode = 1;
+    int32 dropEntityID = 2;   //掉落实例ID
+}
+
+//中途退出副本
+message ExitDungeonReq
+{
+}
+
+message ExitDungeonAck
+{
+    //错误码
+    ErrorCode errorCode = 1;
+}
+
+//通关结算（中途退出是否有结算，有哪些奖励）
+message StageSettlementAck
+{
+
+}
+

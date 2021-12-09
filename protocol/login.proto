@@ -1,0 +1,27 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+//import "common.proto";
+import "errorcode.proto";
+
+
+enum LoginMsgID 
+{
+    LoginMsgIDNone = 0;
+    Login = 1;
+}
+
+//临时登陆（以后根据正常的来）
+message LoginReq 
+{
+    string token = 1; //一个唯一的key,如：机器的唯一设备编号，或是用户名
+}
+
+message LoginAck 
+{
+    ErrorCode errorCode = 1;
+    // int64 playerID = 2;             //玩家的唯一ID
+    // string lobbyServerIP = 3;       //大厅服务器的IP
+    // int32 lobbyPort = 4;            //大厅服务器的端口
+    // string dungeonServerIP = 5;     //地下城服务器的ip
+    // int32 dungeonPort = 6;          //地下城服务器的端口
+}

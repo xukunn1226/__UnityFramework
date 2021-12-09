@@ -1,0 +1,41 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+
+enum ModuleType
+{
+    ModuleNone = 0;
+    //登陆模块
+    ModuleLogin = 1;
+    //大厅模块
+    ModuleLobby = 2;
+    //地下城模块
+    ModuleDungeon = 3;
+    //地下城战斗验证模块
+    ModuleBattleVerify = 4;
+}
+
+message Vector3Float 
+{
+    float x = 1;
+    float y = 2;
+    float z = 3;
+}
+
+message Vector2Float 
+{
+    float x = 1;
+    float y = 2;
+}
+
+message Vector3Int
+{
+    int32 x = 1;
+    int32 y = 2;
+    int32 z = 3;
+}
+
+message Vector2Int
+{
+    int32 x = 1;
+    int32 y = 2;
+}

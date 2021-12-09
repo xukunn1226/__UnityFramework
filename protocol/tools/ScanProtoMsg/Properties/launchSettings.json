@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ScanProtoMsg": {
+      "commandName": "Project",
+      "commandLineArgs": "-s \"../../../../../../protocol\" -d \"../../../../../../protocol/tools/output_test\""
+    }
+  }
+}

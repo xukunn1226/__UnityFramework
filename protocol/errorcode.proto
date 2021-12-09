@@ -1,0 +1,38 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+//package gameproto.error;
+
+enum ErrorCode
+{
+    None = 0;          //0表示没有错误
+
+    //通用错误码的区间为1000~2000
+    ServerInternalError = 1000;     //服务器内部错误
+    ConfigError = 1001;             //配置表错误
+    ServerCheckValidError = 1002;   //服务器验证失败
+    ServerCommonErrorMax = 2000; 
+
+    //Login相关错误码
+    ServerLoginErrorMin = 20001;
+    ServerLoginErrorMax = 20100;
+
+    //Lobby相关错误码
+    ServerLobbyErrorMin = 20101;
+    ServerLobbyHasnotRole = 20102;      //没有角色信息
+    RoleAlreadExist = 20103;            //角色已存在
+    ServerLobbyErrorMax = 20200;
+
+    //Dungeon相关错误码
+    ServerDungeonErrorMin = 20201;
+    ServerDungeonNotFoundDungeionInfo = 20202;  //没有找到玩家的地下层数据
+    ServerDungeonNotFoundTask = 20203;  //地下城任务未找到
+    ServerDungeonNotFoundNode = 20204;  //地下城node未找到
+    ServerDungeonConditionNotMet = 20205;   //节点触发条件不满足
+    ServerDungeonInvalidSkillID = 20206;    //无效的技能ID
+    ServerDungeonInvalidPos = 20207;        //无效的位置
+    ServerDungeonSkillTarNumSoMuch = 20208; //功击目标太多
+    ServerDungeonChangeBulletError = 20209; //换弹失败
+    ServerDungeonNotEnoughBullet = 20210;   //没有足够的子弹
+    ServerDungeonSkillNotCoolDown = 20211;  //技能CD没有冷却
+    ServerDungeonErrorMax = 20300;
+}

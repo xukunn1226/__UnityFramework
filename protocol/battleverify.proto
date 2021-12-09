@@ -1,0 +1,104 @@
+syntax = "proto3";
+option go_package = "../../server/protocol";
+import "errorcode.proto";
+//import "common.proto";
+import "stagedata.proto";
+
+//战斗验证服
+enum BattleVerifyMsgID
+{
+    //已完成的或是触发过的节点的信息（没有触发过的不发送）
+    NodeObjectInfos = 0;
+
+    //请求触发某个节点的事件
+    TriggerNodeObject = 1;    
+
+    //服务器主动推送。节点的状态改变（如杀怪完成，触发哪个节点完成或是状态改变了）
+    NotifyNodeObjectChanged = 2;
+
+    //请求交互
+    InteractionCompleted = 3;
+
+    //通知NPC移动
+    NotifyNpcDoAction = 4;
+
+}
+
+//////////////////////////////////////////////
+//单个节点的信息
+message NodeObjectServer_t
+{
+    int32 entityID = 1; 
+    //node的id
+    int32 nodeObjectID = 2;
+
+    //node的当前状态
+    int32 nodeCurrState = 3;
+
+    //切换到下一个状态
+    int32 nodeChangeToState = 4;
+
+    //是否可触发
+    bool isCanDo = 5;
+}
+
+//////////////////////////////////////////////
+//请求地下城的关卡机关数据
+
+message NodeObjectInfosReq {
+    //地下城ID
+    string dungeonID = 1;
+}
+
+message NodeObjectInfosAck {
+
+    //错误码
+    ErrorCode errorCode = 1;
+    //地下城ID
+    string dungeonID = 2;
+    //发送所有的node信息
+    repeated NodeObjectServer_t nodeObjectInfo = 3;
+}
+
+//触发事件
+message TriggerNodeObjectReq
+{
+    //int32 taskID = 1;               //任务ID
+    int32 entityID = 1;             //服务器生成的那个uid
+    //int32 willChangeStateTo = 2;    //想到切换到哪个状态
+}
+
+message TriggerNodeObjectAck
+{
+    //如果触发不成功，会返回错误码
+    ErrorCode errorCode = 1;
+    int32 entityID = 2;             //服务器生成的那个uid
+}
+
+//服务器主动推送。节点的状态改变
+message NotifyNodeObjectChangedAck
+{
+    repeated NodeObjectServer_t nodeObjectInfo = 1;
+}
+
+//请求 交互完成
+message InteractionCompletedReq
+{
+    int32 entityID = 1;                           //哪个node
+    //InteractionBase interactionData = 2;      //交互的数据
+}
+
+message InteractionCompletedAck
+{
+    ErrorCode errorCode = 1;
+    int32 entityID = 2;               //哪个node
+    InteractionBase interBase = 3;  //交互数据
+}
+
+//通知NPC移动
+message NotifyNpcDoActionAck
+{
+    int32 entityID = 1;
+    string actionID = 2;
+}
+

@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "ScanProtoMsg/1.0.0": {
+        "dependencies": {
+          "CommandLineArgumentsParser": "3.0.22"
+        },
+        "runtime": {
+          "ScanProtoMsg.dll": {}
+        }
+      },
+      "CommandLineArgumentsParser/3.0.22": {
+        "runtime": {
+          "lib/netstandard2.0/CommandLineArgumentsParser.dll": {
+            "assemblyVersion": "3.0.22.0",
+            "fileVersion": "3.0.22.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ScanProtoMsg/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CommandLineArgumentsParser/3.0.22": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-A7JMfeyb0vRT+KNXXMUKUrJ/xKd96kp98eA5/JJOfsz0y9oIdo6DjXOg8soBlgbJBha3zhenjJ65IwEyz2bffw==",
+      "path": "commandlineargumentsparser/3.0.22",
+      "hashPath": "commandlineargumentsparser.3.0.22.nupkg.sha512"
+    }
+  }
+}
