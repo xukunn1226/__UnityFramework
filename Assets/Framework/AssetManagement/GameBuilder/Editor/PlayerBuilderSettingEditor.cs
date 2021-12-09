@@ -23,7 +23,6 @@ namespace Framework.AssetManagement.GameBuilder
         // SerializedProperty              m_bundleVersionProp;
         SerializedProperty              m_versionChangedModeProp;
         SerializedProperty              m_useIL2CPPProp;
-        SerializedProperty              m_compilerConfiguration;
         SerializedProperty              m_useMTRenderingProp;
         SerializedProperty              m_buildAppBundleProp;
         SerializedProperty              m_createSymbolsProp;
@@ -56,7 +55,6 @@ namespace Framework.AssetManagement.GameBuilder
             // m_bundleVersionProp         = serializedObject.FindProperty("bundleVersion");
             m_versionChangedModeProp    = serializedObject.FindProperty("versionChangedMode");
             m_useIL2CPPProp             = serializedObject.FindProperty("useIL2CPP");
-            m_compilerConfiguration     = serializedObject.FindProperty("il2CppCompilerConfiguration");
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
             m_buildAppBundleProp        = serializedObject.FindProperty("buildAppBundle");
             m_createSymbolsProp         = serializedObject.FindProperty("createSymbols");
@@ -279,10 +277,7 @@ namespace Framework.AssetManagement.GameBuilder
                 m_useIL2CPPProp.boolValue = EditorGUILayout.Toggle("UseIL2CPP", m_useIL2CPPProp.boolValue);
 
                 EditorGUI.BeginDisabledGroup(!m_useIL2CPPProp.boolValue);
-                // ((PlayerBuilderSetting)target).il2CppCompilerConfiguration = (Il2CppCompilerConfiguration)EditorGUILayout.EnumPopup("CompilerConfiguration", ((PlayerBuilderSetting)target).il2CppCompilerConfiguration);
-                Il2CppCompilerConfiguration cc = (Il2CppCompilerConfiguration)m_compilerConfiguration.enumValueFlag;
-                cc = (Il2CppCompilerConfiguration)EditorGUILayout.EnumFlagsField("CompilerConfiguration", cc);
-                m_compilerConfiguration.enumValueFlag = (int)cc;
+                ((PlayerBuilderSetting)target).il2CppCompilerConfiguration = (Il2CppCompilerConfiguration)EditorGUILayout.EnumPopup("CompilerConfiguration", ((PlayerBuilderSetting)target).il2CppCompilerConfiguration);
                 EditorGUI.EndDisabledGroup();
 
                 m_useMTRenderingProp.boolValue = EditorGUILayout.Toggle("UseMTRendering", m_useMTRenderingProp.boolValue);

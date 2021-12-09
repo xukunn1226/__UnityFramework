@@ -35,7 +35,8 @@ namespace Application.Runtime
 
         static public void DestroyRandom()
         {
-            DestroyActor(s_Actors.Count);
+            int id = UnityEngine.Random.Range(0, s_Actors.Count - 1);
+            DestroyActor(id);
         }
 
         static public void DestroyAll()
