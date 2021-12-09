@@ -22,11 +22,16 @@ MonoBehaviour:
   compressWithLz4: 0
   compressWithLz4HC: 0
   strictMode: 0
-  bundleVersion: 
-  useIL2CPP: 0
+  useIL2CPP: 1
   il2CppCompilerConfiguration: 0
   useMTRendering: 0
-  useAPKExpansionFiles: 0
+  buildAppBundle: 0
+  createSymbols: 0
+  useCustomKeystore: 0
+  keystoreName: 
+  keystorePass: 
+  keyaliasName: 
+  keyaliasPass: 
   macroDefines: 
   excludedDefines: 
   bOverrideBuildScenes: 0
