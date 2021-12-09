@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <bool name="lilith_sdk_is_debug">true</bool>
+   <bool name="lilith_sdk_is_foreign">true</bool>
+   <bool name="lilith_sdk_show_lilith">false</bool>
+   <string name="lilith_sdk_app_id">9979118</string>
+   <string name="lilith_sdk_game_id">10072</string>
+   <string name="lilith_sdk_wechat_app_id"></string>
+   <string name="lilith_sdk_qq_app_id"></string>
+   <string name="lilith_sdk_payssion_api_key">null</string>
+   <string name="lilith_sdk_facebook_app_id">449397393201024</string>
+   <string name="lilith_sdk_facebook_app_invite_url"></string>
+   <string name="lilith_sdk_google_server_client_id"></string>
+   <string name="lilith_sdk_google_play_game_id"></string>
+   <string name="lilith_sdk_adjust_app_token">er62m0tq3m68</string>
+   <string name="lilith_sdk_adjust_app_secrets">(1, 714465488, 123506142, 251698980, 863494775)</string>
+   <string name="lilith_sdk_toutiao_app_id"></string>
+   <string name="lilith_sdk_kuaishou_app_id"></string>
+   <string name="lilith_sdk_kuaishou_name"></string>
+   <string name="lilith_sdk_apps_flyer_token"></string>
+   <string name="lilith_sdk_playphone_secret_key"></string>
+   <string name="lilith_sdk_adwords_conversion_id"></string>
+   <string name="lilith_sdk_adwords_install_label"></string>
+   <string name="lilith_sdk_adwords_launch_label"></string>
+   <string name="lilith_sdk_adwords_purchase_label"></string>
+   <integer name="lilith_sdk_report_trac">1</integer>
+   <string name="lilith_sdk_report_adjust_activation">tsfu3r</string>
+   <string name="lilith_sdk_talking_data_app_id"></string>
+   <string name="default_web_client_id" translatable="false"></string>
+   <string name="firebase_database_url" translatable="false"></string>
+   <string name="gcm_defaultSenderId" translatable="false"></string>
+   <string name="google_api_key" translatable="false"></string>
+   <string name="google_app_id" translatable="false"></string>
+   <string name="google_crash_reporting_api_key" translatable="false"></string>
+   <string name="google_storage_bucket" translatable="false"></string>
+   <string name="project_id" translatable="false"></string>
+   <bool name="lilith_sdk_switcher_login_quick">true</bool>
+   <bool name="lilith_sdk_switcher_login_lilith">false</bool>
+   <bool name="lilith_sdk_switcher_login_mobile">false</bool>
+   <bool name="lilith_sdk_switcher_login_fb">true</bool>
+   <bool name="lilith_sdk_switcher_login_google">false</bool>
+   <bool name="lilith_sdk_switcher_login_google_plus">false</bool>
+   <bool name="lilith_sdk_switcher_login_wechat">false</bool>
+   <bool name="lilith_sdk_switcher_login_qq">false</bool>
+   <bool name="lilith_sdk_switcher_login_auto">true</bool>
+   <bool name="lilith_sdk_switcher_pay_ali">false</bool>
+   <bool name="lilith_sdk_switcher_pay_wechat">false</bool>
+   <bool name="lilith_sdk_switcher_pay_union">false</bool>
+   <bool name="lilith_sdk_switcher_pay_google">false</bool>
+   <bool name="lilith_sdk_switcher_pay_play_phone">false</bool>
+   <bool name="lilith_sdk_switcher_pay_my_card">false</bool>
+   <bool name="lilith_sdk_switcher_pay_samsung">false</bool>
+   <bool name="lilith_sdk_daike_email_enable">true</bool>
+   <string name="lilith_sdk_daike_email_addr">support_japan@art-of-conquest.com</string>
+   <string name="lilith_sdk_gdt_app_id"></string>
+   <string name="lilith_sdk_gdt_app_secret"></string>
+   <string name="cbt_tag_name">obt</string>
+   <string name="lilith_sdk_weibo_app_key">undefined</string>
+   <string name="lilith_sdk_weibo_redirect_url">undefined</string>
+</resources>
