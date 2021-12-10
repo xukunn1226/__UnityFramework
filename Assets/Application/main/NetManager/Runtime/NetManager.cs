@@ -58,7 +58,7 @@ namespace Application.Runtime
 
         async public Task Connect()
         {
-            await m_NetClient.Connect(Ip, Port);
+            await Connect(Ip, Port);
         }
 
         public void Shutdown()
