@@ -6,12 +6,12 @@ namespace Application.Runtime
         
     public class NetMsgData : IPooledObject
     {
-        static private ObjectPool<NetMsgData> m_Pool;
-        static private int m_kInitSize = 20;
-        static public int MsgMaxSize = 1024;
-        public int MsgID = 0;
-        public byte[] MsgData = null;
-        public int MsgLen = 0;
+        static private ObjectPool<NetMsgData>   m_Pool;
+        static private int                      m_kInitSize = 20;
+        static public int                       MsgMaxSize = 1024;
+        public int                              MsgID = 0;
+        public byte[]                           MsgData = null;
+        public int                              MsgLen = 0;
 
         public IPool Pool 
         {
@@ -71,11 +71,13 @@ namespace Application.Runtime
         public void OnRelease()
         {
             //Debug.Log("NetMsgData::OnRelease");
+            MsgLen = 0;
         }
 
         public void ReturnToPool()
         {
             //Debug.Log("NetMsgData::ReturnToPool");
+            Release(this);
         }
 
         public static NetMsgData Get()

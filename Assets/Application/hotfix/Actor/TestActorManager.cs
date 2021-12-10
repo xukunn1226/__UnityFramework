@@ -35,7 +35,7 @@ namespace Application.Runtime
 
         static public void DestroyRandom()
         {
-            DestroyActor(s_Actors.Count);
+            DestroyActor(s_Actors.Count - 1);
         }
 
         static public void DestroyAll()

@@ -365,6 +365,7 @@ RectTransform:
 	增强AnimationInstancingManager的DebugInfo
 	Opt：Animation Texture占用两份内存，怎么优化？
 	性能测试
+	BatchRendererGroup优化AnimationInstancing: https://zhuanlan.zhihu.com/p/105616808 Unity大世界超多物体渲染---BatchRendererGroup
 
 
 

@@ -74,29 +74,27 @@ namespace Application.Runtime
         //     return m_HeadLength + msg.CalculateSize();
         // }
 
-        private const int m_HeadLength = 8;         // 报头数据占用的字节长度(前4个字节是长度，后4个字节是msgid)
+        private const int m_HeadLength = 8;         // 报头数据占用的字节长度(前4个字节是msgdata长度，后4个字节是msgid)
 
         public bool Deserialize(in byte[] data, int offset, int length, out int realLength, out NetMsgData msg)
         {
             // 解析报头数据
-            if (length < m_HeadLength)
+            if (length <= m_HeadLength)
             {
                 realLength = 0;
                 msg = default(NetMsgData);
                 return false;
             }
 
-            // 报头数据：整个packet的字节流长度
-            //bool isLittle = System.BitConverter.IsLittleEndian;
+            // packetLength：msg data's length
             int packetLength = (int)System.BitConverter.ToUInt32(data, offset);
-            //if (packetLength <= m_HeadLength)
-            //{
-            //    Trace.Error("msg head length <= 8");
-
-            //    realLength = 0;
-            //    msg = default(INetMsgData);
-            //    return false;
-            //}
+            if (packetLength >= NetMsgData.MsgMaxSize)
+            {
+                UnityEngine.Debug.LogError($"packetLength >= NetMsgData.MsgMaxSize, len {packetLength}");
+                realLength = 0;
+                msg = default(NetMsgData);
+                return false;
+            }
 
             // 接收到的字节流长度(length)小于消息字节数(packetLength)，数据量不够解析，继续等待数据
             if (length < (packetLength + m_HeadLength))
@@ -106,20 +104,7 @@ namespace Application.Runtime
                 return false;
             }
 
-            //msg = new StoreRequest();
-            //msg.MergeFrom(data, offset + m_HeadLength, packetLength - m_HeadLength);
-
             uint msgid = System.BitConverter.ToUInt32(data, offset + 4);
-
-            if (packetLength >= NetMsgData.MsgMaxSize)
-            {
-                UnityEngine.Debug.LogError($"packetLength >= NetMsgData.MsgMaxSize, len {packetLength}");
-                realLength = 0;
-                msg = default(NetMsgData);
-                return false;
-            }
-
-            //msg = new NetMsgData();
             msg = NetMsgData.Get();
             msg.MsgID = (int)msgid;
             msg.CopyFrom(data, offset + m_HeadLength, packetLength);
@@ -183,7 +168,7 @@ namespace Application.Runtime
 
         public int GetTotalPacketLen(NetMsgData msg)
         {
-            return msg.MsgLen + 8;
+            return msg.MsgLen + m_HeadLength;
         }
     }
 }
