@@ -43,11 +43,11 @@ namespace Application.Runtime
                 return;
             }
 
-            //ÇëÇó½øÈë´óÌü
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             NetReqs.Send(NetMsgIds.LobbyModule.EnterLobby);
-            //EnterLobbyReq req = new EnterLobbyReq();
-            //int msgid = NetModuleManager.MakeMsgID((int)ModuleType.ModuleLobby, (int)LobbyMsgID.EnterLobby);
-            //NetManager.Instance.SendData(msgid, req);
+            EnterLobbyReq req = new EnterLobbyReq();
+            int msgid = NetModuleManager.MakeMsgID((int)ModuleType.ModuleLobby, (int)LobbyMsgID.EnterLobby);
+            NetManager.Instance.SendData(msgid, req);
         }
     }
 

@@ -32,10 +32,10 @@ namespace Application.Runtime
             //ack.MergeFrom(data.MsgData, 0, data.MsgLen);
             var ack = (EnterLobbyAck)msg;
 
-            //如果沒有角色，發送創角的請求
+            //锟斤拷锟斤拷]锟叫斤拷色锟斤拷锟絣锟酵勶拷锟角碉拷請锟斤拷
             if (ack.ErrorCode == ErrorCode.ServerLobbyHasnotRole)
             {
-                //这里需要显示创色的UI,暂时没有
+                //锟斤拷锟斤拷锟斤拷要锟斤拷示锟斤拷色锟斤拷UI,锟斤拷时没锟斤拷
 
                 var req = new CreateCharactorReq();
                 req.SelRoleConfigID = "1";

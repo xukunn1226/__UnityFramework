@@ -24,14 +24,9 @@ namespace Application.Runtime
             output.Write(data, 0, data.Length);
         }
 
-        public int CalculateSize(string msg)
-        {
-            return Encoding.ASCII.GetByteCount(msg);
-        }
-
         public int GetTotalPacketLen(string msg)
         {
-            throw new System.NotImplementedException();
+            return Encoding.ASCII.GetByteCount(msg);
         }
     }
 }

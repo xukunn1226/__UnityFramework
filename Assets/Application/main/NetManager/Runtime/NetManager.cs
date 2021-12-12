@@ -39,6 +39,13 @@ namespace Application.Runtime
         void Update()
         {
             m_NetClient?.Tick();
+
+            // if(Input.GetKeyDown(KeyCode.Space))
+            if(m_NetClient.IsConnected())
+            {
+                // 测试发数据
+                SendData(1);
+            }
         }
 
         public void SetListener(INetManagerListener<NetMsgData> listener)
@@ -51,19 +58,21 @@ namespace Application.Runtime
             Ip = ip;
             Port = port;
             await Connect();
-
-            //测试发数据
-            //SendData(1)
         }
 
         async public Task Connect()
         {
-            await Connect(Ip, Port);
+            await m_NetClient?.Connect(Ip, Port);
         }
 
         public void Shutdown()
         {
             m_NetClient?.Shutdown();
+        }
+
+        public void Cancel()
+        {
+            m_NetClient?.Cancel();
         }
 
         async public Task Reconnect()
@@ -183,6 +192,10 @@ namespace Application.Runtime
             if (GUILayout.Button("Reconnect"))
             {
                 await ((NetManager)target).Reconnect();
+            }
+            if(GUILayout.Button("Cancel"))
+            {
+                ((NetManager)target).Cancel();
             }
 
             serializedObject.ApplyModifiedProperties();

@@ -79,7 +79,7 @@ namespace Application.Runtime
         public bool Deserialize(in byte[] data, int offset, int length, out int realLength, out NetMsgData msg)
         {
             // 解析报头数据
-            if (length <= m_HeadLength)
+            if (length < m_HeadLength)
             {
                 realLength = 0;
                 msg = default(NetMsgData);
@@ -143,7 +143,7 @@ namespace Application.Runtime
 
         public void Serialize(int msgid, NetMsgData msg, MemoryStream output)
         {
-            int packetLength = CalculateSize(msg);
+            int packetLength = msg.MsgLen;
 
             // write "packetLength" to packet
             output.WriteByte((byte)packetLength);
@@ -159,11 +159,6 @@ namespace Application.Runtime
 
             // write "data" to packet
             output.Write(msg.MsgData, 0, msg.MsgLen);
-        }
-
-        public int CalculateSize(NetMsgData msg)
-        {
-            return msg.MsgLen;
         }
 
         public int GetTotalPacketLen(NetMsgData msg)

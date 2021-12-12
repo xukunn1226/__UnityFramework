@@ -12,6 +12,7 @@ namespace Framework.NetWork
         private NetworkStream           m_Stream;
         private byte[]                  m_SpanBuffer    = new byte[1024];
         private CancellationTokenSource m_Cts;
+        private Exception               m_Exception;
 
         internal NetStreamReader(IConnector netClient, int capacity = 8 * 1024)
             : base(capacity)
@@ -21,16 +22,16 @@ namespace Framework.NetWork
             m_NetClient = netClient;
         }
 
-        internal void Start(NetworkStream stream, CancellationTokenSource cts)
+        internal void Start(NetworkStream stream)
         {
-            m_Stream = stream;
-            m_Cts = cts;
-
             // setup environment
             Reset();
-            
+
+            m_Stream = stream;
+            m_Cts = new CancellationTokenSource();
+
             Task.Run(ReceiveAsync, m_Cts.Token);
-        }
+        }        
 
         protected override void Dispose(bool disposing)
         {
@@ -43,22 +44,30 @@ namespace Framework.NetWork
             }
 
             // free unmanaged resources
-            m_Stream?.Dispose();
+            // m_Stream?.Dispose();
 
             m_Disposed = true;
         }
 
-        private async void ReceiveAsync()
+        public void Cancel()
+        {
+            m_Cts?.Cancel();
+        }
+
+        private void ReceiveAsync()
         {
             try
             {
                 while (m_NetClient.state == ConnectState.Connected)
                 {
+                    if(!m_Stream.DataAvailable)
+                        continue;
+
                     int freeCount = GetConsecutiveUnusedCapacityFromHeadToEnd();             // 填充连续的空闲空间                
                     if (freeCount == 0)
                         throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {Head}     Tail: {Tail}   Time: {DateTime.Now.ToString()}");
 
-                    int receiveByte = await m_Stream.ReadAsync(Buffer, Head, freeCount, m_Cts.Token);
+                    int receiveByte = m_Stream.Read(Buffer, Head, freeCount);
                     AdvanceHead(receiveByte);
 
                     if (receiveByte <= 0)              // 连接中断
@@ -89,22 +98,25 @@ namespace Framework.NetWork
             {
                 RaiseException(e);
             }
-            catch(TaskCanceledException e)
+            catch(OperationCanceledException e)
             {
-                if (e.CancellationToken == m_Cts.Token && m_Cts.IsCancellationRequested)
-                {
-                    UnityEngine.Debug.Log("==================== NetStreamReader is cancel normally.");
-                }
-                else
-                {
-                    RaiseException(e);
-                }
+                RaiseException(e);
             }
-            UnityEngine.Debug.Log($"Exit to net reading thread");
+            catch(Exception e)
+            {
+                RaiseException(e);
+            }
+            finally
+            {
+                m_Cts.Dispose();
+                m_Cts = null;
+            }
+            UnityEngine.Debug.Log($"Exit to net reading thread: {m_Exception?.Message ?? ""}");
         }
 
         private void RaiseException(Exception e)
         {
+            m_Exception = e;
             m_NetClient.RaiseException(e);
         }
 
@@ -136,5 +148,89 @@ namespace Framework.NetWork
         {
             EndRead(length);
         }
+
+
+
+
+        
+        // private async void ReceiveAsync()
+        // {
+        //     try
+        //     {
+        //         while (m_NetClient.state == ConnectState.Connected)
+        //         {
+        //             int freeCount = GetConsecutiveUnusedCapacityFromHeadToEnd();             // 填充连续的空闲空间                
+        //             if (freeCount == 0)
+        //                 throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {Head}     Tail: {Tail}   Time: {DateTime.Now.ToString()}");
+
+        //             int receiveByte = await m_Stream.ReadAsync(Buffer, Head, freeCount, m_Cts.Token);
+        //             AdvanceHead(receiveByte);
+
+        //             if (receiveByte <= 0)              // 连接中断
+        //             {
+        //                 RaiseException(new Exception("socket disconnected. receiveByte <= 0"));
+        //             }
+        //         }
+        //     }
+        //     catch (SocketException e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     catch (ObjectDisposedException e)
+        //     {
+        //         // The NetworkStream is closed
+        //         RaiseException(e);
+        //     }
+        //     catch (InvalidOperationException e)
+        //     {
+        //         // The NetworkStream does not support reading
+        //         RaiseException(e);
+        //     }
+        //     catch (IOException e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     catch (ArgumentOutOfRangeException e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     catch(TaskCanceledException e)
+        //     {
+        //         if (e.CancellationToken == m_Cts.Token && m_Cts.IsCancellationRequested)
+        //         {
+        //             UnityEngine.Debug.Log("==================== NetStreamReader is cancel normally.");
+        //         }
+        //         else
+        //         {
+        //             RaiseException(e);
+        //         }
+        //     }
+        //     UnityEngine.Debug.Log($"Exit to net reading thread");
+        // }
+        
+        // private void foo()
+        // {
+        //     try
+        //     {
+        //         m_Cts.Token.ThrowIfCancellationRequested();
+
+        //         bool moreToDo = true;
+        //         while (moreToDo)
+        //         {
+        //             // Poll on this property if you have to do
+        //             // other cleanup before throwing.
+        //             if (m_Cts.Token.IsCancellationRequested)
+        //             {
+        //                 // Clean up here, then...
+        //                 m_Cts.Token.ThrowIfCancellationRequested();
+        //             }
+        //         }
+        //     }
+        //     catch(OperationCanceledException e)
+        //     {
+        //         UnityEngine.Debug.Log($"=== {e.Message}");
+        //     }
+        //     UnityEngine.Debug.Log("==Exit reader thread");
+        // }
     }
 }

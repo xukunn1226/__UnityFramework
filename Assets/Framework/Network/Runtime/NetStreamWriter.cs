@@ -10,12 +10,13 @@ namespace Framework.NetWork
     sealed internal class NetStreamWriter : NetStream
     {
         private IConnector                  m_NetClient;
-        private NetworkStream               m_NetworkStream;
+        private NetworkStream               m_Stream;
         //private SemaphoreSlim               m_SendBufferSema;                       // 控制是否可以消息发送的信号量
                                                                                     // The count is decremented each time a thread enters the semaphore, and incremented each time a thread releases the semaphore
         //private bool                        m_isSendingBuffer;                      // 发送消息IO是否进行中
         private MemoryStream                m_MemoryStream;
         private CancellationTokenSource     m_Cts;
+        private Exception                   m_Exception;
 
         //struct WriteCommand
         //{
@@ -33,16 +34,13 @@ namespace Framework.NetWork
             m_MemoryStream = new MemoryStream(Buffer, true);
         }
 
-        internal void Start(NetworkStream stream, CancellationTokenSource cts)
+        internal void Start(NetworkStream stream)
         {
-            m_NetworkStream = stream;
-            m_Cts = cts;
-
             Reset();
+
+            m_Stream = stream;
+            m_Cts = new CancellationTokenSource();
             m_MemoryStream.Seek(0, SeekOrigin.Begin);
-            //m_SendBufferSema?.Dispose();
-            //m_SendBufferSema = new SemaphoreSlim(0, 1);
-            //m_isSendingBuffer = false;
 
             Task.Run(WriteAsync, m_Cts.Token);
         }
@@ -59,97 +57,36 @@ namespace Framework.NetWork
 
             // free unmanaged resources
             m_MemoryStream?.Dispose();
-            m_NetworkStream?.Dispose();
-            //m_SendBufferSema?.Dispose();
 
             m_Disposed = true;
         }
 
-        /// <summary>
-        /// 中止数据发送(WriteAsync)
-        /// </summary>
-        internal void Shutdown()
+        public void Cancel()
         {
-            // release semaphore, make WriteAsync jump out from the while loop
-            //if (m_SendBufferSema?.CurrentCount == 0)
-            //{
-            //    m_SendBufferSema.Release();
-            //}
-            //m_SendBufferSema?.Dispose();
-            //m_SendBufferSema = null;
+            m_Cts?.Cancel();
         }
 
-        internal void Flush()
-        {
-            //if (m_NetClient?.state == ConnectState.Connected &&
-            //    m_SendBufferSema != null &&
-            //    m_SendBufferSema.CurrentCount == 0 &&           // The number of remaining threads that can enter the semaphore
-            //    !m_isSendingBuffer &&                           // 上次消息已发送完成
-            //    !IsEmpty())                                     // 已缓存一定的待发送消息
-            //{
-            //    // cache the pending sending data
-            //    m_CommandQueue.Enqueue(new WriteCommand() { Head = this.Head, Fence = this.Fence });
-
-            //    // 每次push command完重置Fence
-            //    ResetFence();
-
-            //    m_SendBufferSema.Release();                     // Sema.CurrentCount += 1
-            //}
-        }
-
-        private async void WriteAsync()
+        private void WriteAsync()
         {
             try
             {
                 while (m_NetClient.state == ConnectState.Connected)
                 {
-                    //await m_SendBufferSema.WaitAsync();         // CurrentCount==0将等待，直到Sema.CurrentCount > 0，执行完Sema.CurrentCount -= 1
-
-                    //// todo：这里还能做优化，把command queue合并，减少WriteAsync调用次数
-                    //m_isSendingBuffer = true;
-                    //if(m_CommandQueue.Count > 0)
-                    //{
-                    //    WriteCommand cmd = m_CommandQueue.Peek();
-
-                    //    int length = GetUsedCapacity(cmd.Head);
-                    //    if (cmd.Head > Tail)
-                    //    {
-                    //        await m_NetworkStream.WriteAsync(Buffer, Tail, length);
-                    //    }
-                    //    else
-                    //    {
-                    //        if (cmd.Fence > 0)
-                    //            await m_NetworkStream.WriteAsync(Buffer, Tail, cmd.Fence - Tail);
-                    //        else
-                    //            await m_NetworkStream.WriteAsync(Buffer, Tail, Buffer.Length - Tail);
-
-                    //        if (cmd.Head > 0)
-                    //            await m_NetworkStream.WriteAsync(Buffer, 0, cmd.Head);
-                    //    }
-
-                    //    FinishBufferSending(length);        // 数据发送完成，更新Tail
-                    //    m_CommandQueue.Dequeue();
-                    //}
-                    //m_isSendingBuffer = false;
-
-                    if(IsEmpty())
-                    {
-                        await Task.Yield();
-                    }
-                    else
+                    if(!IsEmpty())
                     {
                         int head = Head;        // Head由主线程维护，记录下来保证子线程作用域中此数值一致性
                         int length = GetUsedCapacity(head);
 
                         if (Fence > 0)
                         {
-                            await m_NetworkStream.WriteAsync(Buffer, Tail, Fence - Tail, m_Cts.Token);
-                            await m_NetworkStream.WriteAsync(Buffer, 0, head, m_Cts.Token);
+                            m_Stream.Write(Buffer, Tail, Fence - Tail);
+                            m_Stream.Write(Buffer, 0, head);
                         }
                         else
                         {
-                            await m_NetworkStream.WriteAsync(Buffer, Tail, head - Tail, m_Cts.Token);
+                            m_Stream.Write(Buffer, Tail, head - Tail);
                         }
+                        UnityEngine.Debug.Log($"Write: Head {head}  Tail {Tail}");
 
                         FinishBufferSending(length);
                         ResetFence();
@@ -182,22 +119,25 @@ namespace Framework.NetWork
             {
                 RaiseException(e);
             }
-            catch (TaskCanceledException e)
+            catch(OperationCanceledException e)
             {
-                if (e.CancellationToken == m_Cts.Token && m_Cts.IsCancellationRequested)
-                {
-                    UnityEngine.Debug.Log("==================== NetStreamWriter is cancel normally.");
-                }
-                else
-                {
-                    RaiseException(e);
-                }
+                RaiseException(e);
             }
-            UnityEngine.Debug.Log($"Exit to net writing thread");
+            catch(Exception e)
+            {
+                RaiseException(e);
+            }
+            finally
+            {
+                m_Cts.Dispose();
+                m_Cts = null;
+            }
+            UnityEngine.Debug.Log($"Exit to net writing thread: {m_Exception?.Message ?? ""}");
         }
 
         private void RaiseException(Exception e)
         {
+            m_Exception = e;
             m_NetClient.RaiseException(e);
         }
 
@@ -272,5 +212,153 @@ namespace Framework.NetWork
         {
             EndWrite(length);
         }
+        
+
+
+
+        
+        /// <summary>
+        /// 中止数据发送(WriteAsync)
+        /// </summary>
+        internal void Shutdown()
+        {
+            // release semaphore, make WriteAsync jump out from the while loop
+            //if (m_SendBufferSema?.CurrentCount == 0)
+            //{
+            //    m_SendBufferSema.Release();
+            //}
+            //m_SendBufferSema?.Dispose();
+            //m_SendBufferSema = null;
+        }        
+
+        internal void Flush()
+        {
+            //if (m_NetClient?.state == ConnectState.Connected &&
+            //    m_SendBufferSema != null &&
+            //    m_SendBufferSema.CurrentCount == 0 &&           // The number of remaining threads that can enter the semaphore
+            //    !m_isSendingBuffer &&                           // 上次消息已发送完成
+            //    !IsEmpty())                                     // 已缓存一定的待发送消息
+            //{
+            //    // cache the pending sending data
+            //    m_CommandQueue.Enqueue(new WriteCommand() { Head = this.Head, Fence = this.Fence });
+
+            //    // 每次push command完重置Fence
+            //    ResetFence();
+
+            //    m_SendBufferSema.Release();                     // Sema.CurrentCount += 1
+            //}
+        }
+
+        // private async void WriteAsync()
+        // {
+        //     try
+        //     {
+        //         while (m_NetClient.state == ConnectState.Connected)
+        //         {
+        //             //await m_SendBufferSema.WaitAsync();         // CurrentCount==0将等待，直到Sema.CurrentCount > 0，执行完Sema.CurrentCount -= 1
+
+        //             //// todo：这里还能做优化，把command queue合并，减少WriteAsync调用次数
+        //             //m_isSendingBuffer = true;
+        //             //if(m_CommandQueue.Count > 0)
+        //             //{
+        //             //    WriteCommand cmd = m_CommandQueue.Peek();
+
+        //             //    int length = GetUsedCapacity(cmd.Head);
+        //             //    if (cmd.Head > Tail)
+        //             //    {
+        //             //        await m_NetworkStream.WriteAsync(Buffer, Tail, length);
+        //             //    }
+        //             //    else
+        //             //    {
+        //             //        if (cmd.Fence > 0)
+        //             //            await m_NetworkStream.WriteAsync(Buffer, Tail, cmd.Fence - Tail);
+        //             //        else
+        //             //            await m_NetworkStream.WriteAsync(Buffer, Tail, Buffer.Length - Tail);
+
+        //             //        if (cmd.Head > 0)
+        //             //            await m_NetworkStream.WriteAsync(Buffer, 0, cmd.Head);
+        //             //    }
+
+        //             //    FinishBufferSending(length);        // 数据发送完成，更新Tail
+        //             //    m_CommandQueue.Dequeue();
+        //             //}
+        //             //m_isSendingBuffer = false;
+
+        //             if(IsEmpty())
+        //             {
+        //                 await Task.Yield();
+        //             }
+        //             else
+        //             {
+        //                 int head = Head;        // Head由主线程维护，记录下来保证子线程作用域中此数值一致性
+        //                 int length = GetUsedCapacity(head);
+
+        //                 if (Fence > 0)
+        //                 {
+        //                     await m_Stream.WriteAsync(Buffer, Tail, Fence - Tail, m_Cts.Token);
+        //                     await m_Stream.WriteAsync(Buffer, 0, head, m_Cts.Token);
+        //                 }
+        //                 else
+        //                 {
+        //                     await m_Stream.WriteAsync(Buffer, Tail, head - Tail, m_Cts.Token);
+        //                 }
+
+        //                 FinishBufferSending(length);
+        //                 ResetFence();
+        //             }
+        //         }
+        //     }
+        //     catch (ObjectDisposedException e)
+        //     {
+        //         // The NetworkStream is closed
+        //         RaiseException(e);
+        //     }
+        //     catch (ArgumentNullException e)
+        //     {
+        //         // The buffer parameter is NULL
+        //         RaiseException(e);
+        //     }
+        //     catch (ArgumentOutOfRangeException e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     catch (InvalidOperationException e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     catch (IOException e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     catch (SocketException e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     catch(OperationCanceledException e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     catch(Exception e)
+        //     {
+        //         RaiseException(e);
+        //     }
+        //     finally
+        //     {
+        //         m_Cts.Dispose();
+        //         m_Cts = null;
+        //     }
+        //     // catch (TaskCanceledException e)
+        //     // {
+        //     //     if (e.CancellationToken == m_Cts.Token && m_Cts.IsCancellationRequested)
+        //     //     {
+        //     //         UnityEngine.Debug.Log("==================== NetStreamWriter is cancel normally.");
+        //     //     }
+        //     //     else
+        //     //     {
+        //     //         RaiseException(e);
+        //     //     }
+        //     // }
+        //     UnityEngine.Debug.Log($"Exit to net writing thread: {m_Exception?.Message ?? ""}");
+        // }
     }
 }

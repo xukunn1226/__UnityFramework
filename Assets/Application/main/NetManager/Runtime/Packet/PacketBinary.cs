@@ -19,11 +19,6 @@ namespace Application.Runtime
         public void Serialize(int msgid, byte[] msg, System.IO.MemoryStream output)
         { }
 
-        public int CalculateSize(byte[] msg)
-        {
-            return 0;
-        }
-
         public int GetTotalPacketLen(byte[] msg)
         {
             return 0;

@@ -30,13 +30,6 @@ namespace Framework.NetWork
         void Serialize(int msgid, T msg, MemoryStream output);
 
         /// <summary>
-        /// IPacket包的字节长度
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
-        int CalculateSize(T msg);
-
-        /// <summary>
         /// 取得整包，带包头的长度
         /// </summary>
         /// <param name="msg"></param>

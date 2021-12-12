@@ -52,7 +52,6 @@ namespace Framework.NetWork
         private IPacket<TMessage>       m_Parser;
         private List<TMessage>          m_MessageList   = new List<TMessage>();
         private INetListener<TMessage>  m_Listener;
-        private CancellationTokenSource m_Cts;
 
         public NetClient(INetListener<TMessage> listener)
         {
@@ -81,9 +80,8 @@ namespace Framework.NetWork
                 state = ConnectState.Connecting;
                 await m_Client.ConnectAsync(ip, m_Port);
 
-                m_Cts = new CancellationTokenSource();
-                m_StreamWriter.Start(m_Client.GetStream(), m_Cts);
-                m_StreamReader.Start(m_Client.GetStream(), m_Cts);
+                m_StreamWriter.Start(m_Client.GetStream());
+                m_StreamReader.Start(m_Client.GetStream());
 
                 OnConnectSuccess();
             }
@@ -121,6 +119,12 @@ namespace Framework.NetWork
             m_Exception = null;
         }
 
+        public void Cancel()
+        {
+            m_StreamReader.Cancel();
+            m_StreamWriter.Cancel();
+        }
+
         private void OnConnectSuccess()
         {
             state = ConnectState.Connected;
@@ -156,26 +160,25 @@ namespace Framework.NetWork
         {
             if (m_HandleException && m_Client != null)
             {
+                m_HandleException = false;
+
                 InternalClose();
 
                 OnDisconnected(m_Exception);
             }
-            m_HandleException = false;
         }
 
         private void InternalClose()
         {
-            if(m_Cts != null)
-            {
-                m_Cts.Cancel();
-                m_Cts.Dispose();
-                m_Cts = null;
-            }
+            Cancel();
 
             if (m_Client != null)
             {
                 if (m_Client.Connected)                          // 当远端主动断开网络时，NetworkStream呈已关闭状态
-                    m_Client.GetStream().Close();
+                {
+                    m_Client.GetStream().Dispose();
+                    // m_Client.GetStream().Close();
+                }
                 m_Client.Close();
                 m_Client = null;
             }
@@ -197,7 +200,7 @@ namespace Framework.NetWork
             // 接收消息
             ReceiveData();
 
-            HandleException();            
+            HandleException();
         }
         
         private void ReceiveData()
@@ -261,7 +264,7 @@ namespace Framework.NetWork
             //Send(buf);
 
             // method 2. 序列化到stream，因buff已预先分配、循环利用，无GC
-            int length = m_Parser.CalculateSize(data);
+            int length = m_Parser.GetTotalPacketLen(data);
             MemoryStream stream;
             if (m_StreamWriter.RequestBufferToWrite(length, out stream))
             {
@@ -293,7 +296,7 @@ namespace Framework.NetWork
         public bool IsConnected()
         {
             if (m_Client == null || m_Client.Client == null)
-                throw new ArgumentNullException("socket");
+                return false;
 
             if (!m_Client.Client.Connected)      // Connected记录的是最近一次Send或Receive时的状态
                 return false;
