@@ -207,7 +207,7 @@ namespace Framework.NetWork
         {
             int offset;
             int length;
-            ref readonly byte[] data = ref m_StreamReader.FetchBufferToRead(out offset, out length);            // 获取已接收的消息
+            byte[] data = m_StreamReader.FetchBufferToRead(out offset, out length);            // 获取已接收的消息
             if (length == 0)
                 return;
 

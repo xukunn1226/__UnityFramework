@@ -40,8 +40,8 @@ namespace Application.Runtime
         {
             m_NetClient?.Tick();
 
-            // if(Input.GetKeyDown(KeyCode.Space))
-            if(m_NetClient.IsConnected())
+            //if(Input.GetKeyDown(KeyCode.Space))
+            if (m_NetClient.IsConnected())
             {
                 // 测试发数据
                 SendData(1);
@@ -148,7 +148,7 @@ namespace Application.Runtime
             m_Listener?.OnPeerClose();
         }
 
-        int INetListener<NetMsgData>.sendBufferSize       { get { return 4096; } }
+        int INetListener<NetMsgData>.sendBufferSize       { get { return 16; } }
         int INetListener<NetMsgData>.receiveBufferSize    { get { return 2048; } }
         IPacket<NetMsgData> INetListener<NetMsgData>.parser { get { return s_Parser; } }
     }

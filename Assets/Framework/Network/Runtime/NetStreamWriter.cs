@@ -72,23 +72,25 @@ namespace Framework.NetWork
             {
                 while (m_NetClient.state == ConnectState.Connected)
                 {
-                    if(!IsEmpty())
-                    {
-                        int head = Head;        // Head由主线程维护，记录下来保证子线程作用域中此数值一致性
-                        int length = GetUsedCapacity(head);
+                    int head = Head;        // Head由主线程维护，记录下来保证子线程作用域中此数值一致性
+                    int tail = Tail;
+                    int fence = Fence;
+                    if (!IsEmpty(head, tail))
+                    {                        
+                        int length = GetUsedCapacity(head, tail);
 
-                        if (Fence > 0)
+                        if (fence > 0)
                         {
-                            m_Stream.Write(Buffer, Tail, Fence - Tail);
+                            m_Stream.Write(Buffer, tail, fence - tail);
                             m_Stream.Write(Buffer, 0, head);
                         }
                         else
                         {
-                            m_Stream.Write(Buffer, Tail, head - Tail);
+                            m_Stream.Write(Buffer, tail, length);
                         }
-                        UnityEngine.Debug.Log($"Write: Head {head}  Tail {Tail}");
+                        UnityEngine.Debug.Log($"Write: Head {head}  Tail {tail}");
 
-                        FinishBufferSending(length);
+                        AdvanceTail(length);
                         ResetFence();
                     }
                 }

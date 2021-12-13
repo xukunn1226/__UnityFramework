@@ -8,7 +8,7 @@ namespace Framework.NetWork
     /// </summary>
     internal class NetRingBuffer
     {
-        private const int       m_MinCapacity   = 1024;
+        private const int       m_MinCapacity   = 16;
         private byte[]          m_Buffer;
 
         protected byte[]        Buffer          { get { return m_Buffer; } }
@@ -43,12 +43,22 @@ namespace Framework.NetWork
 
         protected bool IsEmpty()
         {
-            return Head == Tail;
+            return IsEmpty(Head, Tail);
+        }
+
+        protected bool IsEmpty(int head, int tail)
+        {
+            return head == tail;
         }
 
         protected bool IsFull()
         {
-            return ((Head + 1) & IndexMask) == Tail;
+            return IsFull(Head, Tail);
+        }
+
+        protected bool IsFull(int head, int tail)
+        {
+            return ((head + 1) & IndexMask) == tail;
         }
 
         private int GetMaxCapacity()
@@ -62,21 +72,26 @@ namespace Framework.NetWork
         /// <returns></returns>
         private int GetUnusedCapacity()
         {
-            return GetMaxCapacity() - GetUsedCapacity();
+            return GetUnusedCapacity(Head, Tail);
+        }
+
+        private int GetUnusedCapacity(int head, int tail)
+        {
+            return GetMaxCapacity() - GetUsedCapacity(head, tail);
         }
 
         /// <summary>
         /// 获取使用中的空间大小，不考虑连续性
         /// </summary>
         /// <returns></returns>
-        private int GetUsedCapacity()
+        protected int GetUsedCapacity()
         {
-            return Head >= Tail ? Head - Tail : m_Buffer.Length - (Tail - Head);
+            return GetUsedCapacity(Head, Tail);
         }
 
-        protected int GetUsedCapacity(int head)
+        protected int GetUsedCapacity(int head, int tail)
         {
-            return head >= Tail ? head - Tail : m_Buffer.Length - (Tail - head);
+            return (head - tail + m_Buffer.Length) % m_Buffer.Length;
         }
 
         private int NextPowerOfTwo(int n)
@@ -136,14 +151,29 @@ namespace Framework.NetWork
         //    }
         //}
 
+        protected bool IsSpan()
+        {
+            return IsSpan(Head, Tail);
+        }
+
+        protected bool IsSpan(int head, int tail)
+        {
+            return head > 0 && head < tail;
+        }
+
         /// <summary>
         /// 获取从Head至end（Buffer End OR Tail）的连续空闲空间大小，不跨界
         /// </summary>
         /// <returns></returns>
         protected int GetConsecutiveUnusedCapacityFromHeadToEnd()
         {
-            int count = Head >= Tail ? m_Buffer.Length - Head : Tail - Head - 1;
-            return Math.Min(GetUnusedCapacity(), count);
+            return GetConsecutiveUnusedCapacityFromHeadToEnd(Head, Tail);
+        }
+
+        protected int GetConsecutiveUnusedCapacityFromHeadToEnd(int head, int tail)
+        {
+            int count = head >= tail ? m_Buffer.Length - head : tail - head - 1;
+            return Math.Min(GetUnusedCapacity(head, tail), count);
         }
 
         /// <summary>
@@ -153,11 +183,7 @@ namespace Framework.NetWork
         protected int GetConsecutiveUnusedCapacityFromStartToEnd()
         {
             int count = 0;
-            if(Head > 0 && Head < Tail)
-            {
-                count = 0;
-            }
-            else
+            if(!IsSpan())
             {
                 if(Head == 0 && Tail == 0)
                 {
@@ -184,24 +210,6 @@ namespace Framework.NetWork
         protected void AdvanceTail(int length)
         {
             Tail = (Tail + length) & IndexMask;
-        }
-
-        /// <summary>
-        /// 获取已接收到的网络数据，可能跨界
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
-        protected ref readonly byte[] BeginRead(out int offset, out int length)
-        {
-            offset = Tail;
-            length = GetUsedCapacity();
-            return ref m_Buffer;
-        }
-
-        protected void EndRead(int length)
-        {
-            AdvanceTail(length);
         }
 
         /// <summary>
@@ -283,16 +291,6 @@ namespace Framework.NetWork
         protected void ResetFence()
         {
             Fence = 0;
-        }
-
-        /// <summary>
-        /// 发送数据完成，子线程调用
-        /// </summary>
-        /// <param name="length"></param>
-        protected void FinishBufferSending(int length)
-        {
-            // 数据包发送完成更新m_Tail
-            AdvanceTail(length);
         }
     }
 }

@@ -63,7 +63,9 @@ namespace Framework.NetWork
                     if(!m_Stream.DataAvailable)
                         continue;
 
-                    int freeCount = GetConsecutiveUnusedCapacityFromHeadToEnd();             // 填充连续的空闲空间                
+                    int head = Head;
+                    int tail = Tail;        // Tail由主线程维护，记录下来保证子线程作用域中此数值一致性
+                    int freeCount = GetConsecutiveUnusedCapacityFromHeadToEnd(head, tail);             // 填充连续的空闲空间                
                     if (freeCount == 0)
                         throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {Head}     Tail: {Tail}   Time: {DateTime.Now.ToString()}");
 
@@ -126,27 +128,29 @@ namespace Framework.NetWork
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        internal ref readonly byte[] FetchBufferToRead(out int offset, out int length)
+        internal byte[] FetchBufferToRead(out int offset, out int length)
         {
-            ref readonly byte[] buf = ref BeginRead(out offset, out length);
-            if(Head > 0 && Head < Tail)
+            offset = Tail;
+            length = GetUsedCapacity();
+            // buf数据可能跨界，需要处理成连续空间
+            if(IsSpan())
             { // 当数据跨界时复制至Span Buffer以使空间连续
                 if(length > m_SpanBuffer.Length)
                 {
                     m_SpanBuffer = new byte[length];
                 }
                 int countToEnd = Buffer.Length - Tail;
-                System.Buffer.BlockCopy(buf, offset, m_SpanBuffer, 0, countToEnd);
-                System.Buffer.BlockCopy(buf, 0, m_SpanBuffer, countToEnd, length - countToEnd);
+                System.Buffer.BlockCopy(Buffer, offset, m_SpanBuffer, 0, countToEnd);
+                System.Buffer.BlockCopy(Buffer, 0, m_SpanBuffer, countToEnd, length - countToEnd);
                 offset = 0;     // 此时是m_SpanBuffer，从头开始读取
-                return ref m_SpanBuffer;
+                return m_SpanBuffer;
             }
-            return ref buf;
+            return Buffer;
         }
 
         internal void FinishRead(int length)
         {
-            EndRead(length);
+            AdvanceTail(length);
         }
 
 
