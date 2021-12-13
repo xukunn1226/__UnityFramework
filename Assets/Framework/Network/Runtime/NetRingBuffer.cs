@@ -12,9 +12,9 @@ namespace Framework.NetWork
         private byte[]          m_Buffer;
 
         protected byte[]        Buffer          { get { return m_Buffer; } }
-        protected int           Head            { get; private set; }
-        protected int           Tail            { get; private set; }
-        protected int           Fence           { get; private set; }
+        protected int           Head            { get; set; }
+        protected int           Tail            { get; set; }
+        protected int           Fence           { get; set; }
         private int             IndexMask       { get; set; }
 
         internal NetRingBuffer(int capacity = 8 * 1024)
@@ -70,7 +70,7 @@ namespace Framework.NetWork
         /// 获取空闲空间大小，不考虑连续性
         /// </summary>
         /// <returns></returns>
-        private int GetUnusedCapacity()
+        protected int GetUnusedCapacity()
         {
             return GetUnusedCapacity(Head, Tail);
         }
@@ -212,85 +212,6 @@ namespace Framework.NetWork
             Tail = (Tail + length) & IndexMask;
         }
 
-        /// <summary>
-        /// 写入待发送的数据，主线程调用
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        protected void Write(byte[] data, int offset, int length)
-        {
-            if (data == null)
-                throw new ArgumentNullException("data == null");
-
-            // 传入参数的合法性检查:可写入空间大小的检查
-            if (offset + length > data.Length)
-                throw new ArgumentOutOfRangeException("offset + length > data.Length");
-
-            if (length > GetUnusedCapacity())
-                throw new ArgumentOutOfRangeException("NetRingBuffer is FULL, can't write anymore");
-            
-            if (Head + length <= m_Buffer.Length)
-            {
-                System.Buffer.BlockCopy(data, offset, m_Buffer, Head, length);
-            }
-            else
-            {
-                int countToEnd = m_Buffer.Length - Head;
-                System.Buffer.BlockCopy(data, offset, m_Buffer, Head, countToEnd);
-                System.Buffer.BlockCopy(data, countToEnd, m_Buffer, 0, length - countToEnd);
-            }
-            AdvanceHead(length);
-        }
-
-        /// <summary>
-        /// 同上
-        /// </summary>
-        /// <param name="data"></param>
-        protected void Write(byte[] data)
-        {
-            Write(data, 0, data.Length);
-        }
-
-        /// <summary>
-        /// 获取连续地、指定大小(length)的buff，返回给上层写入数据，主线程调用
-        /// </summary>
-        /// <param name="length">the length of write, expand buffer's capacity internally if necessary</param>
-        /// <param name="buf">buffer to write</param>
-        /// <param name="offset">the position where can be written</param>
-        protected void BeginWrite(int length, out byte[] buf, out int offset)
-        {
-            int headToEnd = GetConsecutiveUnusedCapacityFromHeadToEnd();        // 优先使用
-            if(headToEnd < length)
-            { // headToEnd空间不够则跨界从头寻找
-                int startToTail = GetConsecutiveUnusedCapacityFromStartToEnd();
-                if(startToTail < length)
-                {
-                    throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    headToEnd: {headToEnd}  startToTail: {startToTail}");
-                }
-
-                Fence = Head;
-                Head = 0;
-            }
-            offset = Head;
-            buf = m_Buffer;
-        }
-
-        /// <summary>
-        /// 数据写入缓存完成，与FetchBufferToWrite对应，同一帧调用
-        /// </summary>
-        /// <param name="length"></param>
-        protected void EndWrite(int length)
-        {
-            AdvanceHead(length);
-        }
-
-        /// <summary>
-        /// reset Fence
-        /// </summary>
-        protected void ResetFence()
-        {
-            Fence = 0;
-        }
+             
     }
 }

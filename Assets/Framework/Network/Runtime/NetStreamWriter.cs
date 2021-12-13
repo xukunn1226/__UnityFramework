@@ -151,12 +151,56 @@ namespace Framework.NetWork
         /// <param name="length"></param>
         internal void Send(byte[] data, int offset, int length)
         {
-            Write(data, offset, length);
+            if (data == null)
+                throw new ArgumentNullException("data == null");
+
+            // 传入参数的合法性检查:可写入空间大小的检查
+            if (offset + length > data.Length)
+                throw new ArgumentOutOfRangeException("offset + length > data.Length");
+
+            if (length > GetUnusedCapacity())
+                throw new ArgumentOutOfRangeException("NetRingBuffer is FULL, can't write anymore");
+
+            if (Head + length <= Buffer.Length)
+            {
+                System.Buffer.BlockCopy(data, offset, Buffer, Head, length);
+            }
+            else
+            {
+                int countToEnd = Buffer.Length - Head;
+                System.Buffer.BlockCopy(data, offset, Buffer, Head, countToEnd);
+                System.Buffer.BlockCopy(data, countToEnd, Buffer, 0, length - countToEnd);
+            }
+            AdvanceHead(length);
         }
 
         internal void Send(byte[] data)
         {
-            Write(data);
+            Send(data, 0, data.Length);
+        }
+
+        /// <summary>
+        /// 获取连续地、指定大小(length)的buff，返回给上层写入数据，主线程调用
+        /// </summary>
+        /// <param name="length">the length of write, expand buffer's capacity internally if necessary</param>
+        /// <param name="buf">buffer to write</param>
+        /// <param name="offset">the position where can be written</param>
+        private void BeginWrite(int length, out byte[] buf, out int offset)
+        {
+            int headToEnd = GetConsecutiveUnusedCapacityFromHeadToEnd();        // 优先使用
+            if (headToEnd < length)
+            { // headToEnd空间不够则跨界从头寻找
+                int startToTail = GetConsecutiveUnusedCapacityFromStartToEnd();
+                if (startToTail < length)
+                {
+                    throw new ArgumentOutOfRangeException($"NetRingBuffer: no space to receive data {length}    head: {Head}    tail: {Tail}    headToEnd: {headToEnd}  startToTail: {startToTail}");
+                }
+
+                Fence = Head;
+                Head = 0;
+            }
+            offset = Head;
+            buf = Buffer;
         }
 
         /// <summary>
@@ -207,18 +251,26 @@ namespace Framework.NetWork
         }
 
         /// <summary>
-        /// 见RequestBufferToWrite
+        /// 数据写入缓存完成，与FetchBufferToWrite对应，同一帧调用
         /// </summary>
         /// <param name="length"></param>
         internal void FinishBufferWriting(int length)
         {
-            EndWrite(length);
+            AdvanceHead(length);
         }
-        
+
+        /// <summary>
+        /// reset Fence
+        /// </summary>
+        private void ResetFence()
+        {
+            Fence = 0;
+        }
 
 
 
-        
+
+
         /// <summary>
         /// 中止数据发送(WriteAsync)
         /// </summary>
