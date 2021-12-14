@@ -212,6 +212,12 @@ namespace Framework.NetWork
             Tail = (Tail + length) & IndexMask;
         }
 
-             
+        /// <summary>
+        /// reset Fence
+        /// </summary>
+        protected void ResetFence()
+        {
+            Fence = 0;
+        }
     }
 }

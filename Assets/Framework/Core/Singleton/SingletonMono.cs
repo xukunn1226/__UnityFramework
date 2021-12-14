@@ -66,7 +66,7 @@ namespace Framework.Core
         /// </summary>
         protected virtual void OnDestroy()
         {
-            // applicationIsQuitting = true;        // !!!特殊处理：单件统一在重启游戏时删除并再次创建，故游戏时单件将始终存在
+            applicationIsQuitting = true;        // !!!特殊处理：单件统一在重启游戏时删除并再次创建，故游戏时单件将始终存在
         }
     }
 

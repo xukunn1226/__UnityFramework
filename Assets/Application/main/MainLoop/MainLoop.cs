@@ -17,7 +17,7 @@ namespace Application.Runtime
     /// <summary>
     /// 
     /// <summary>
-    public class MainLoop : SingletonMono<MainLoop>, INetManagerListener<IMessage>
+    public class MainLoop : SingletonMono<MainLoop>, INetManagerListener<NetMsgData>
     {
         private const string    kEmptySceneName    = "empty";
         private const string    kEmptyScenePath    = "assets/res/scenes/empty.unity";
@@ -26,25 +26,8 @@ namespace Application.Runtime
         public string           Ip                 = "192.168.2.7";
         public int              Port               = 11000;
         public bool             AutoConnect;
-        private bool            m_NeedReconnect;
         private float           m_TimeToLostFocus;
         public GameState        DefaultMode;
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            // if (Launcher.Instance == null)
-            //     throw new System.Exception("MainLoop: Launcher.Instance == null");
-            // if (NetManager.Instance == null)
-            //     throw new System.Exception("MainLoop: NetManager.Instance == null");
-
-            // NetManager.Instance.SetListener(this);
-            // if(AutoConnect)
-            //     await Connect();
-
-            // LuaMainLoop.Init();
-        }
 
         IEnumerator Start()
         {
@@ -61,7 +44,14 @@ namespace Application.Runtime
                 yield return StartCoroutine(ConfigManager.ExtractDatabase());
             }
 
-            GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
+            //GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
+            //LuaMainLoop.Init();
+
+            if (AutoConnect)
+            {
+                NetManager.Instance.SetListener(this);
+                _ = Connect();
+            }
 
             GameModeManager.Instance.SwitchTo(DefaultMode);
             AudioManager.PlayBGM("event:/Ambience/City");
@@ -79,6 +69,12 @@ namespace Application.Runtime
         {
             // LuaMainLoop.Tick();
             SingletonBase.Update(Time.deltaTime);
+
+            // 测试发数据
+            //if (NetManager.Instance.state == ConnectState.Connected && Time.frameCount % 100 == 0)
+            //{
+            //    NetManager.Instance.SendData(1);
+            //}
         }
 
         public void ReturnToLauncher()
@@ -100,6 +96,7 @@ namespace Application.Runtime
 
         async public Task Reconnect()
         {
+            Shutdown();
             await Task.Delay(500);          // hack: ensure that the socket is closed completely
             await NetManager.Instance.Reconnect();
         }
@@ -110,103 +107,52 @@ namespace Application.Runtime
         }
 
         // 连接成功
-        async void INetManagerListener<IMessage>.OnPeerConnectSuccess()
+        void INetManagerListener<NetMsgData>.OnPeerConnectSuccess()
         {
-            Debug.Log($"connected success:   {Ip}:{Port}");
-            await AutoSendingForDebug();
+            Debug.LogWarning($"MainLoop: connected success:   {Ip}:{Port}");
         }
 
         // 连接失败
-        void INetManagerListener<IMessage>.OnPeerConnectFailed(Exception e)
+        void INetManagerListener<NetMsgData>.OnPeerConnectFailed(Exception e)
         {
-            Debug.LogWarning($"connect failed: {e.ToString()}");
+            Debug.LogWarning($"MainLoop: connect failed: {e.ToString()}");
         }
 
         // 异常断开连接
-        async void INetManagerListener<IMessage>.OnPeerDisconnected(Exception e)
+        void INetManagerListener<NetMsgData>.OnPeerDisconnected(Exception e)
         {
-            Debug.LogError($"network error: {e.ToString()}");
-
-            if(m_NeedReconnect)
-            {
-                await Reconnect();
-                m_NeedReconnect = false;
-            }
+            Debug.LogError($"MainLoop: network error: {e.ToString()}");
         }
 
         // 主动断开连接
-        async void INetManagerListener<IMessage>.OnPeerClose()
+        void INetManagerListener<NetMsgData>.OnPeerClose()
         {
-            Debug.Log($"connect shutdown:   {Time.frameCount}");
-
-            if(m_NeedReconnect)
-            {
-                await Reconnect();
-                m_NeedReconnect = false;
-            }
+            Debug.Log($"MainLoop: connect shutdown:   {Time.frameCount}");
         }
 
-        void INetManagerListener<IMessage>.OnNetworkReceive(in List<IMessage> msgs)
+        void INetManagerListener<NetMsgData>.OnNetworkReceive(in List<NetMsgData> msgs)
         {
-            // foreach (var msg in msgs)
-            // {
-            //     Debug.Log($"====Receive: {msg}");
-            // }
+            Debug.Log($"MainLoop: receive data   {msgs.Count}");
         }
 
         void OnApplicationFocus(bool isFocus)
         {
             // Debug.Log($"OnApplicationFocus      isFocus: {isFocus}       {System.DateTime.Now}  {Time.frameCount}");
-            GlobalConfigManager.FlushAll();
+            //GlobalConfigManager.FlushAll();
 
             if(isFocus)
             {
                 if(Time.time - m_TimeToLostFocus > 5)
                 {
-                    m_NeedReconnect = true;
-                    NetManager.Instance.Shutdown();
+                    //Debug.LogWarning("receive focus -----------");
+                    //NetManager.Instance.Shutdown();
+                    //_ = Reconnect();
                 }
             }
             else
             {
                 m_TimeToLostFocus = Time.time;
-            }
-        }
-
-        async Task AutoSendingForDebug()
-        {
-            {
-                int index = 0;
-                while (UnityEngine.Application.isPlaying && NetManager.Instance != null && NetManager.Instance.state == ConnectState.Connected)
-                {
-                    ++index;
-
-                    // LoginReq req = new LoginReq();
-                    // req.Token = UnityEngine.SystemInfo.deviceUniqueIdentifier;
-
-                    // int msgid = NetModuleManager.MakeMsgID((int)ModuleType.ModuleLogin, (int)LoginMsgID.Login);
-                    // if (!NetManager.Instance.SendData(msgid, req))
-                    //     break;
-
-
-
-
-
-                    // StoreRequest msg = new StoreRequest();
-                    // msg.Name = "1233";
-                    // msg.Num = 3;
-                    // msg.Result = 4;
-                    // if (index % 2 == 0)
-                    //     msg.MyList.Add("22222222222");
-                    // if (index % 3 == 0)
-                    //     msg.MyList.Add("33333333333333");
-                    // // UnityEngine.Debug.LogWarning("");
-                    // if (!NetManager.Instance.SendData(msg))
-                    //     break;
-
-                    await Task.Yield();
-                }
-                Debug.Log("退出模拟发包");
+                //Debug.LogWarning("------- lost focus");
             }
         }
     }
@@ -249,7 +195,6 @@ namespace Application.Runtime
 
             if (GUILayout.Button("Reconnect"))
             {
-                ((MainLoop)target).Shutdown();
                 await ((MainLoop)target).Reconnect();
             }
 

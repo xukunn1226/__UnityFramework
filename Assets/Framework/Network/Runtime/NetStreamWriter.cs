@@ -40,28 +40,11 @@ namespace Framework.NetWork
 
             m_Stream = stream;
             m_Cts = new CancellationTokenSource();
-            m_MemoryStream.Seek(0, SeekOrigin.Begin);
 
             Task.Run(WriteAsync, m_Cts.Token);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (m_Disposed)
-                return;
-
-            if (disposing)
-            {
-                // free managed resources
-            }
-
-            // free unmanaged resources
-            m_MemoryStream?.Dispose();
-
-            m_Disposed = true;
-        }
-
-        public void Cancel()
+        internal void Shutdown()
         {
             m_Cts?.Cancel();
         }
@@ -72,6 +55,12 @@ namespace Framework.NetWork
             {
                 while (m_NetClient.state == ConnectState.Connected)
                 {
+                    if (m_Cts.Token.IsCancellationRequested)
+                    {
+                        // Clean up here, then...
+                        m_Cts.Token.ThrowIfCancellationRequested();
+                    }
+
                     int head = Head;        // Head由主线程维护，记录下来保证子线程作用域中此数值一致性
                     int tail = Tail;
                     int fence = Fence;
@@ -88,7 +77,7 @@ namespace Framework.NetWork
                         {
                             m_Stream.Write(Buffer, tail, length);
                         }
-                        UnityEngine.Debug.Log($"Write: Head {head}  Tail {tail}");
+                        //UnityEngine.Debug.Log($"Write: Head {head}  Tail {tail}");
 
                         AdvanceTail(length);
                         ResetFence();
@@ -134,7 +123,7 @@ namespace Framework.NetWork
                 m_Cts.Dispose();
                 m_Cts = null;
             }
-            UnityEngine.Debug.Log($"Exit to net writing thread: {m_Exception?.Message ?? ""}");
+            UnityEngine.Debug.Log($"Exit to net writing thread: {m_Exception?.Message ?? "_______"}");
         }
 
         private void RaiseException(Exception e)
@@ -149,7 +138,7 @@ namespace Framework.NetWork
         /// <param name="data"></param>
         /// <param name="offset"></param>
         /// <param name="length"></param>
-        internal void Send(byte[] data, int offset, int length)
+        internal void Write(byte[] data, int offset, int length)
         {
             if (data == null)
                 throw new ArgumentNullException("data == null");
@@ -174,9 +163,9 @@ namespace Framework.NetWork
             AdvanceHead(length);
         }
 
-        internal void Send(byte[] data)
+        internal void Write(byte[] data)
         {
-            Send(data, 0, data.Length);
+            Write(data, 0, data.Length);
         }
 
         /// <summary>
@@ -185,7 +174,7 @@ namespace Framework.NetWork
         /// <param name="length">the length of write, expand buffer's capacity internally if necessary</param>
         /// <param name="buf">buffer to write</param>
         /// <param name="offset">the position where can be written</param>
-        private void BeginWrite(int length, out byte[] buf, out int offset)
+        internal void BeginWrite(int length, out byte[] buf, out int offset)
         {
             int headToEnd = GetConsecutiveUnusedCapacityFromHeadToEnd();        // 优先使用
             if (headToEnd < length)
@@ -204,67 +193,27 @@ namespace Framework.NetWork
         }
 
         /// <summary>
-        /// 请求指定长度（length）的连续空间由上层逻辑填充数据，填充完毕调用FinishBufferWriting，主线程调用
-        /// </summary>
-        /// <param name="length"></param>
-        /// <param name="buf"></param>
-        /// <param name="offset"></param>
-        /// <returns></returns>
-        internal bool RequestBufferToWrite(int length, out byte[] buf, out int offset)
-        {
-            try
-            {
-                BeginWrite(length, out buf, out offset);
-                return true;
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                UnityEngine.Debug.LogError(e.Message);
-                buf = null;
-                offset = 0;
-                return false;
-            }
-        }
-
-        /// <summary>
         /// 同上
         /// </summary>
         /// <param name="length"></param>
         /// <param name="stream"></param>
         /// <returns></returns>
-        internal bool RequestBufferToWrite(int length, out MemoryStream stream)
+        internal void BeginWrite(int length, out MemoryStream stream)
         {            
             stream = m_MemoryStream;
-            try
-            {
-                byte[] buf;
-                int offset;
-                BeginWrite(length, out buf, out offset);
-                m_MemoryStream.Seek(offset, SeekOrigin.Begin);
-                return true;
-            }
-            catch(ArgumentOutOfRangeException e)
-            {
-                UnityEngine.Debug.LogError(e.Message);
-                return false;
-            }
+            byte[] buf;
+            int offset;
+            BeginWrite(length, out buf, out offset);
+            m_MemoryStream.Seek(offset, SeekOrigin.Begin);
         }
 
         /// <summary>
         /// 数据写入缓存完成，与FetchBufferToWrite对应，同一帧调用
         /// </summary>
         /// <param name="length"></param>
-        internal void FinishBufferWriting(int length)
+        internal void EndWrite(int length)
         {
             AdvanceHead(length);
-        }
-
-        /// <summary>
-        /// reset Fence
-        /// </summary>
-        private void ResetFence()
-        {
-            Fence = 0;
         }
 
 
@@ -274,8 +223,8 @@ namespace Framework.NetWork
         /// <summary>
         /// 中止数据发送(WriteAsync)
         /// </summary>
-        internal void Shutdown()
-        {
+        //internal void Shutdown()
+        //{
             // release semaphore, make WriteAsync jump out from the while loop
             //if (m_SendBufferSema?.CurrentCount == 0)
             //{
@@ -283,7 +232,7 @@ namespace Framework.NetWork
             //}
             //m_SendBufferSema?.Dispose();
             //m_SendBufferSema = null;
-        }        
+        //}        
 
         internal void Flush()
         {

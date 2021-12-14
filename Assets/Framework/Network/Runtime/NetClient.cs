@@ -52,6 +52,7 @@ namespace Framework.NetWork
         private IPacket<TMessage>       m_Parser;
         private List<TMessage>          m_MessageList   = new List<TMessage>();
         private INetListener<TMessage>  m_Listener;
+        private bool                    m_isShutdowning;
 
         public NetClient(INetListener<TMessage> listener)
         {
@@ -115,14 +116,20 @@ namespace Framework.NetWork
         /// </summary>
         public void Shutdown()
         {
-            m_HandleException = true;
-            m_Exception = null;
-        }
+            UnityEngine.Debug.LogWarning("Shutdown");
+            
+            m_isShutdowning = true;
 
-        public void Cancel()
-        {
-            m_StreamReader.Cancel();
-            m_StreamWriter.Cancel();
+            m_StreamReader.Shutdown();
+            m_StreamWriter.Shutdown();
+
+            if (m_Client != null)
+            {
+                if(m_Client.Connected)
+                    m_Client.GetStream().Close();
+                m_Client.Close();
+            }
+            m_Listener.OnPeerClose();               // 主动断开连接
         }
 
         private void OnConnectSuccess()
@@ -140,10 +147,8 @@ namespace Framework.NetWork
         private void OnDisconnected(Exception e)
         {
             state = ConnectState.Disconnected;
-            if (e != null)
-                m_Listener.OnPeerDisconnected(e);   // 异常断开连接
-            else
-                m_Listener.OnPeerClose();           // 主动断开连接
+            if(!m_isShutdowning)    // 因主动断开连接而抛出的异常不处理
+                m_Listener.OnPeerDisconnected(e);       // 异常断开连接
         }
         
         /// <summary>
@@ -162,41 +167,20 @@ namespace Framework.NetWork
             {
                 m_HandleException = false;
 
-                InternalClose();
+                if (m_Client != null)
+                {
+                    if (m_Client.Connected)                          // 当远端主动断开网络时，NetworkStream呈已关闭状态
+                        m_Client.GetStream().Close();
+                    m_Client.Close();
+                    m_Client = null;
+                }
 
                 OnDisconnected(m_Exception);
             }
         }
 
-        private void InternalClose()
-        {
-            Cancel();
-
-            if (m_Client != null)
-            {
-                if (m_Client.Connected)                          // 当远端主动断开网络时，NetworkStream呈已关闭状态
-                {
-                    m_Client.GetStream().Dispose();
-                    // m_Client.GetStream().Close();
-                }
-                m_Client.Close();
-                m_Client = null;
-            }
-        }
-        
         public void Tick()
         {
-            // if(m_Client != null && state == ConnectState.Connected)
-            // {
-            //     if (!IsConnected())
-            //     {
-            //         Trace.Error("失去连接");
-            //     }
-            // }
-
-            // 发送消息
-            //m_StreamWriter.Flush();
-
             // 接收消息
             ReceiveData();
 
@@ -236,61 +220,26 @@ namespace Framework.NetWork
             m_Listener.OnNetworkReceive(m_MessageList);
         }
 
-        // public void SendData(byte[] buf, int offset, int length)
-        // {
-        //     try
-        //     {
-        //         m_StreamWriter.Send(buf, offset, length);
-        //     }
-        //     catch (ArgumentNullException e)
-        //     {
-        //         ((IConnector)this).RaiseException(e);
-        //     }
-        //     catch (ArgumentOutOfRangeException e)
-        //     {
-        //         ((IConnector)this).RaiseException(e);
-        //     }
-        // }
-
-        // public void SendData(byte[] buf)
-        // {
-        //     SendData(buf, 0, buf.Length);
-        // }
-
-        public bool SendData(int msgid, TMessage data)
+        public void SendData(int msgid, TMessage data)
         {
-            // method 1. 序列化到新的空间，有GC
-            //byte[] buf = m_Parser.Serialize(data);
-            //Send(buf);
-
-            // method 2. 序列化到stream，因buff已预先分配、循环利用，无GC
+            // 序列化到stream，因buff已预先分配、循环利用，无GC
             int length = m_Parser.GetTotalPacketLen(data);
             MemoryStream stream;
-            if (m_StreamWriter.RequestBufferToWrite(length, out stream))
-            {
-                m_Parser.Serialize(msgid, data, stream);
-                m_StreamWriter.FinishBufferWriting(length);
-                return true;
-            }
-            return false;
+            m_StreamWriter.BeginWrite(length, out stream);
+            m_Parser.Serialize(msgid, data, stream);
+            m_StreamWriter.EndWrite(length);
         }
 
-        /// <summary>
-        /// 请求指定长度（length）的连续空间，写入完成后务必调用FinishBufferWriting
-        /// </summary>
-        /// <param name="length"></param>
-        /// <param name="buf"></param>
-        /// <param name="offset"></param>
-        /// <returns></returns>
-        public void RequestBufferToWrite(int length, out byte[] buf, out int offset)
+        public void SendData(byte[] data)
         {
-            m_StreamWriter.RequestBufferToWrite(length, out buf, out offset);
+            m_StreamWriter.Write(data);
         }
 
-        public void FinishBufferWriting(int length)
+        public void SendData(byte[] data, int offset, int length)
         {
-            m_StreamWriter.FinishBufferWriting(length);
+            m_StreamWriter.Write(data, offset, length);
         }
+
 
         // https://docs.microsoft.com/zh-cn/dotnet/api/system.net.sockets.socket.connected?redirectedfrom=MSDN&view=netcore-3.1#System_Net_Sockets_Socket_Connected
         public bool IsConnected()

@@ -16,7 +16,20 @@ namespace Framework.NetWork
             Dispose(false);
         }
 
-        protected abstract void Dispose(bool disposing);
+        protected virtual void Dispose(bool disposing)
+        {
+            if (m_Disposed)
+                return;
+
+            if (disposing)
+            {
+                // free managed resources
+            }
+
+            // free unmanaged resources
+
+            m_Disposed = true;
+        }
 
         public void Dispose()
         {

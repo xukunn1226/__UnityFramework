@@ -36,16 +36,22 @@ namespace Application.Runtime
             m_NetClient = new NetClient<NetMsgData>(this);
         }
 
+        protected override void OnDestroy()
+        {
+            Shutdown();
+            base.OnDestroy();
+        }
+
         void Update()
         {
             m_NetClient?.Tick();
 
             //if(Input.GetKeyDown(KeyCode.Space))
-            if (m_NetClient.IsConnected())
-            {
-                // 测试发数据
-                SendData(1);
-            }
+            //if (state == ConnectState.Connected)
+            //{
+            //    // 测试发数据
+            //    SendData(1);
+            //}
         }
 
         public void SetListener(INetManagerListener<NetMsgData> listener)
@@ -70,27 +76,21 @@ namespace Application.Runtime
             m_NetClient?.Shutdown();
         }
 
-        public void Cancel()
-        {
-            m_NetClient?.Cancel();
-        }
-
         async public Task Reconnect()
         {
             await m_NetClient?.Reconnect();
         }
 
-        public bool SendData(int msgid)
+        public void SendData(int msgid)
         {
             NetMsgData msg = NetMsgData.Get();
             msg.MsgID = msgid;
 
-            bool bVal = m_NetClient?.SendData(msgid, msg) ?? false;
+            m_NetClient?.SendData(msgid, msg);
             NetMsgData.Release(msg);
-            return bVal;
         }
 
-        public bool SendData(int msgid, IMessage data)
+        public void SendData(int msgid, IMessage data)
         {
             int nLen = data.CalculateSize();
             byte[] byData = data.ToByteArray();
@@ -99,56 +99,45 @@ namespace Application.Runtime
             msg.MsgID = msgid;
             msg.CopyFrom(byData, 0, byData.Length);
 
-            bool bVal = m_NetClient?.SendData(msgid, msg) ?? false;
+            m_NetClient?.SendData(msgid, msg);
             NetMsgData.Release(msg);
-            return bVal;
         }
-
-        // public bool SendData(IMessage data)
-        // {
-        //     return m_NetClient?.SendData(data) ?? false;
-        // }
-
-        // public void SendData(byte[] buf, int offset, int length)
-        // {
-        //     m_NetClient?.SendData(buf, offset, length);
-        // }
-
-        // public void SendData(byte[] buf)
-        // {
-        //     m_NetClient?.SendData(buf);
-        // }
 
         void INetListener<NetMsgData>.OnNetworkReceive(in List<NetMsgData> msgs)
         {
+            //Debug.Log($"receive data: {msgs.Count}");
             m_Listener?.OnNetworkReceive(msgs);
         }
 
         // 连接成功
         void INetListener<NetMsgData>.OnPeerConnectSuccess()
         {
+            //Debug.Log($"NetManager: connect success!");
             m_Listener?.OnPeerConnectSuccess();
         }
 
         // 连接失败
         void INetListener<NetMsgData>.OnPeerConnectFailed(Exception e)
         {
+            //Debug.Log($"NetManager: connect failed {e.Message}");
             m_Listener?.OnPeerConnectFailed(e);
         }
 
         // 异常断开连接
         void INetListener<NetMsgData>.OnPeerDisconnected(Exception e)
         {
+            //Debug.Log($"NetManager: connect disconnected {e.Message}");
             m_Listener?.OnPeerDisconnected(e);
         }
 
         // 主动断开连接
         void INetListener<NetMsgData>.OnPeerClose()
         {
+            //Debug.Log($"NetManager: connect close!");
             m_Listener?.OnPeerClose();
         }
 
-        int INetListener<NetMsgData>.sendBufferSize       { get { return 16; } }
+        int INetListener<NetMsgData>.sendBufferSize       { get { return 8192; } }
         int INetListener<NetMsgData>.receiveBufferSize    { get { return 2048; } }
         IPacket<NetMsgData> INetListener<NetMsgData>.parser { get { return s_Parser; } }
     }
@@ -193,11 +182,6 @@ namespace Application.Runtime
             {
                 await ((NetManager)target).Reconnect();
             }
-            if(GUILayout.Button("Cancel"))
-            {
-                ((NetManager)target).Cancel();
-            }
-
             serializedObject.ApplyModifiedProperties();
         }
     }
