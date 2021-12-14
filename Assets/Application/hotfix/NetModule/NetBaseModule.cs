@@ -9,6 +9,7 @@ namespace Application.Runtime
 {
     public abstract class NetBaseModule : INetModule
     {
+        public delegate void MsgHandler(NetMsgData data);
         protected NetModuleManager m_manager;
         public NetBaseModule(NetModuleManager manager)
         {
@@ -38,30 +39,10 @@ namespace Application.Runtime
             dicDelegates[msgid](data);
         }
 
-
         public void SendMsg(int msgid, IMessage msg)
         {
             msgid = NetModuleManager.MakeMsgID(GetModuleID(), msgid);
             NetManager.Instance.SendData(msgid, msg);
         }
-
-
-        #region Net Waiting Obj
-
-        private Dictionary<int, NetWaitingObj> m_waitingObjs = new Dictionary<int, NetWaitingObj>();
-
-        public NetWaitingObj WaitFor(int msgId)
-        {
-            int g_msgId = NetModuleManager.MakeMsgID(GetModuleID(), msgId);
-            if (!m_waitingObjs.TryGetValue(g_msgId, out NetWaitingObj netWaitingObj))
-            {
-                netWaitingObj = new NetWaitingObj(msgId);
-                m_waitingObjs[msgId] = netWaitingObj;
-            }
-
-            return netWaitingObj;
-
-        }
-        #endregion
     }
 }

@@ -2,22 +2,19 @@
 using Google.Protobuf;
 
 namespace Application.Runtime
-{
-    public delegate void MsgHandler(NetMsgData data);
+{    
     public interface INetModule
     {
-        //È¡µÃÄ£¿éID
+        // å–å¾—æ¨¡å—ID
         public abstract int GetModuleID();
 
-        //³õÊ¼»¯ËùÓĞº¯Êı
+        // åˆå§‹åŒ–æ‰€æœ‰å‡½æ•°
         public abstract void InitMsgFunc();
 
-        //´¦ÀíÏûÏ¢µÄÈë¿Ú
+        // å¤„ç†æ¶ˆæ¯çš„å…¥å£
         public abstract void OnMessage(NetMsgData data);
 
-        //·¢ËÍĞÅÏ¢
+        // å‘é€ä¿¡æ¯
         public abstract void SendMsg(int msgid, IMessage msg);
-
     }
 }
-

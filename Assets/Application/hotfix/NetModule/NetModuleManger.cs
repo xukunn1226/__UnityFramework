@@ -7,45 +7,43 @@ namespace Application.Runtime
 {
     public class NetModuleManager : Singleton<NetModuleManager>
     {
-        //private Dictionary<int, INetmodule> dicNetmodules = new Dictionary<int, INetmodule>();
-        private const int m_modulesnum = 10;
-        private INetModule[] m_netModules = null;
-        private Dictionary<string, INetModule> m_netModulesByName = new Dictionary<string, INetModule>();
-
+        private const int                       m_ModuleCount       = 10;
+        private INetModule[]                    m_NetModules        = null;
+        private Dictionary<string, INetModule>  m_NetModulesByName  = new Dictionary<string, INetModule>();
 
         //初始化所有的网络模块
         protected override void InternalInit()
         {
-            m_netModules = new INetModule[m_modulesnum];
+            m_NetModules = new INetModule[m_ModuleCount];
             RegisterModule(new NetModuleLogin(this));
             RegisterModule(new NetModuleLobby(this));
             RegisterModule(new NetModuleDungeon(this));
             RegisterModule(new NetModuleBattleVerify(this));
         }
-        private void RegisterModule(INetModule mo)
+
+        private void RegisterModule(INetModule module)
         {
-            if (m_netModules[mo.GetModuleID()] != null)
-            //if (dicNetmodules.ContainsKey(mo.GetModuleID()))
+            if (m_NetModules[module.GetModuleID()] != null)
             {
-                UnityEngine.Debug.LogError($"RegisterModule msgid {mo.GetModuleID()} already exist!");
+                UnityEngine.Debug.LogError($"RegisterModule msgid {module.GetModuleID()} already exist!");
                 return;
             }
-            //dicNetmodules.Add(mo.GetModuleID(), mo);
-            m_netModules[mo.GetModuleID()] = mo;
-            m_netModulesByName[mo.GetType().Name] = mo;
-            mo.InitMsgFunc();
+            
+            m_NetModules[module.GetModuleID()] = module;
+            m_NetModulesByName[module.GetType().Name] = module;
+            module.InitMsgFunc();
         }
 
         public INetModule GetNetModule(int nModuleID)
         {
-            INetModule mo = m_netModules[nModuleID];
-            return mo;
+            INetModule module = m_NetModules[nModuleID];
+            return module;
         }
 
         public T GetNetModule<T>()
         {
             string name = typeof(T).Name;
-            if (m_netModulesByName.TryGetValue(name, out INetModule netModule))
+            if (m_NetModulesByName.TryGetValue(name, out INetModule netModule))
             {
                 return (T)netModule;
             }
@@ -55,7 +53,6 @@ namespace Application.Runtime
 #if DEBUG
         private static Dictionary<int, NetMsgDefines.NetMsgDefineInfo> m_msgDefinesDict = new Dictionary<int, NetMsgDefines.NetMsgDefineInfo>();
         private static bool m_isInitDict = false;
-
 #endif
         private static string GetMsgName(int msgId)
         {
@@ -91,9 +88,9 @@ namespace Application.Runtime
 #endif
             int moduleid = data.GetTypeID();
 
-            if (m_netModules[moduleid] != null)
+            if (m_NetModules[moduleid] != null)
             {
-                m_netModules[moduleid].OnMessage(data);
+                m_NetModules[moduleid].OnMessage(data);
             }
 
             OnReceive(data);
@@ -121,8 +118,8 @@ namespace Application.Runtime
         {
             NetMsgIds.DungeonModule.SyncRoleInfo,
             NetMsgIds.DungeonModule.SyncEntityInfo,
-
         };
+
         public void SendData(int msgid, IMessage req)
         {
 #if DEBUG
@@ -132,7 +129,6 @@ namespace Application.Runtime
             }
 #endif
             NetManager.Instance.SendData(msgid, req);
-
         }
 
 #region Msg Dispatcher Handlers

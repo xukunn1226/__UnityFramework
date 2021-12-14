@@ -10,11 +10,8 @@ namespace Application.Runtime
 {
     public delegate void NetRecvHandler(IMessage msg, NetMsgData data);
 
-
-
     public class NetMsgReceiver 
     {
-
         private Dictionary<int, NetRecvHandler> m_addedHandlers = new Dictionary<int, NetRecvHandler>();
 
 

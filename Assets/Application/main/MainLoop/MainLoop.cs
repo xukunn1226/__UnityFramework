@@ -39,6 +39,8 @@ namespace Application.Runtime
             yield return null;
             yield return null;
 
+            NetModuleManager.Instance.Init();
+
             if(Launcher.GetLauncherMode() == LoaderType.FromStreamingAssets)
             { // 仅FromStreamingAssets时需要提取db，FromEditor从本地读取，FromPersistent会首次启动时提取
                 yield return StartCoroutine(ConfigManager.ExtractDatabase());
@@ -133,6 +135,11 @@ namespace Application.Runtime
         void INetManagerListener<NetMsgData>.OnNetworkReceive(in List<NetMsgData> msgs)
         {
             Debug.Log($"MainLoop: receive data   {msgs.Count}");
+            foreach(var msg in msgs)
+            {
+                NetModuleManager.Instance.DispatchMsg(msg);
+                NetMsgData.Release(msg);
+            }
         }
 
         void OnApplicationFocus(bool isFocus)
