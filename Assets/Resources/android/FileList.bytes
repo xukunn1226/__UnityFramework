@@ -1,6 +1,6 @@
 {
   "Count": 56,
-  "TotalSize": 129686393,
+  "TotalSize": 129598461,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "2cd9eeed0f42e41d9ab933ff7254e077",
-      "Size": 3309
+      "FileHash": "b12ded08efae8c7e1362edc556e4cc7d",
+      "Size": 3313
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -59,8 +59,8 @@
     },
     {
       "BundleName": "assets/res/animationclip.ab",
-      "FileHash": "ddc791c68b372f5372f147b268569881",
-      "Size": 1029339
+      "FileHash": "2e81825cace971b29e8c32c100e8af52",
+      "Size": 1029334
     },
     {
       "BundleName": "assets/res/core.ab",
@@ -79,8 +79,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "8f1f606ddf9c83ce2a02966a9dfb086e",
-      "Size": 183674
+      "FileHash": "7477846fa7f0ddb86912e318361b6f0a",
+      "Size": 160951
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -154,8 +154,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/scenes.ab",
-      "FileHash": "389e8ac49bfe75fc8b0be38705f0cc86",
-      "Size": 94726
+      "FileHash": "07d71a59a23ed19de8756bc91b948d6e",
+      "Size": 44673
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "deebacb73f0c7d733172ae3ebaf5ebbe",
-      "Size": 277086
+      "FileHash": "4738b930618aa0ef4e010754e8576876",
+      "Size": 261869
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -209,8 +209,8 @@
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/scenes.ab",
-      "FileHash": "93a517322ab996f7ec4bc03e1fd3f260",
-      "Size": 147038
+      "FileHash": "a8059e687567e3536db98ac84a1b2614",
+      "Size": 147100
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/misc/111.ab",
