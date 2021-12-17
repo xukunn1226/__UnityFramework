@@ -12,13 +12,27 @@ namespace Application.Editor
         [MenuItem("Tools/Quick Launch %g", false)]
         static void RunOrStopGame()
         {
+            InternalRunOrStopGame(true);
+        }
+
+        [MenuItem("Tools/Quick Launch Without Build %#z", false)]
+        static void RunOrStopGameWithoutBuild()
+        {
+            InternalRunOrStopGame(false);
+        }
+
+        static void InternalRunOrStopGame(bool buildOther)
+        {
             if(EditorApplication.isPlaying)
             {
                 EditorApplication.isPlaying = false;
             }
             else
             {
-                ConfigBuilder.DoRun();
+                if(buildOther)
+                {
+                    ConfigBuilder.DoRun();
+                }
 
                 EditorPrefs.SetString("CtrlG_PrevScenePath", EditorSceneManager.GetActiveScene().path);
                 UnityEngine.SceneManagement.Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);

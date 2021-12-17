@@ -368,7 +368,11 @@ RectTransform:
 	BatchRendererGroup优化AnimationInstancing: https://zhuanlan.zhihu.com/p/105616808 Unity大世界超多物体渲染---BatchRendererGroup
 
 
-
+* Patch
+	https://zhuanlan.zhihu.com/p/38863442  基于累积差异的Patch系统实现
+	https://zhuanlan.zhihu.com/p/150171940  浅谈倩女手游中的资源更新
+	https://edu.uwa4d.com/course-intro/0/143?purchased=true  成熟的Unity热更新以及版本管理的解决方案
+	https://edu.uwa4d.com/course-intro/0/145?purchased=true  手游HTTP多线程下载原理与优化
 
 
 
