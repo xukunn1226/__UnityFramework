@@ -28,7 +28,7 @@ MonoBehaviour:
   buildAppBundle: 1
   createSymbols: 0
   useCustomKeystore: 1
-  keystoreName: ./android1.keystore
+  keystoreName: ./android3.keystore
   keystorePass: lilith
   keyaliasName: android
   keyaliasPass: lilith
