@@ -1,6 +1,6 @@
 {
   "Count": 56,
-  "TotalSize": 129598461,
+  "TotalSize": 129609453,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "b12ded08efae8c7e1362edc556e4cc7d",
-      "Size": 3313
+      "FileHash": "8769d1f9d3edf191841dc2e4d5d2fefa",
+      "Size": 3306
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -79,8 +79,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "7477846fa7f0ddb86912e318361b6f0a",
-      "Size": 160951
+      "FileHash": "63f57bb817e5f67bb585b6eec9b891a3",
+      "Size": 171954
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -114,8 +114,8 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/wgame.ab",
-      "FileHash": "645a95344b54090a8c1c960a4dae5195",
-      "Size": 20583288
+      "FileHash": "6cf2070abf33f560d411c1e4641dc4f5",
+      "Size": 20583285
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_01.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "4738b930618aa0ef4e010754e8576876",
-      "Size": 261869
+      "FileHash": "de36b77fd6064bc080c0f463c4a8e350",
+      "Size": 261868
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -234,12 +234,12 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/111.ab",
-      "FileHash": "f664ad1d5596893f2c4b851b4b8699ce",
+      "FileHash": "d1d483a498d5e2c01df4de95de806c1c",
       "Size": 45658
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/333.ab",
-      "FileHash": "cd54ded18367ff0d0f1309ac4377e916",
+      "FileHash": "28e4d3ae770796b3031139e1c6f8596e",
       "Size": 45894
     },
     {

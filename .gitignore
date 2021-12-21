@@ -112,6 +112,10 @@ TestNative/x64
 *.androidpack.meta
 
 
+# exclude file or directory
+!/Tools/*.unitypackage
+
+
 
 
 
