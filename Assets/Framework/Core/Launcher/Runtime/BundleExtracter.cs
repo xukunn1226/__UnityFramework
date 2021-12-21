@@ -125,6 +125,10 @@ namespace Framework.Core
         {
             string versionStr = PlayerPrefs.GetString(BASE_APPVERSION);
             bool bShould = string.IsNullOrEmpty(versionStr) ? true : m_BaseVersion.CompareTo(versionStr) != 0;
+            if(bShould)
+            { // means that the first install or install app again
+                PlayerPrefs.DeleteKey(Patcher.CUR_APPVERSION);
+            }
             m_Listener?.OnShouldExtract(ref bShould);
             return bShould;
         }
