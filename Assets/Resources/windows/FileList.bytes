@@ -1,6 +1,6 @@
 {
   "Count": 56,
-  "TotalSize": 99947587,
+  "TotalSize": 100338478,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "eecf94c444632f2ddd389907cf7d8c74",
-      "Size": 3310
+      "FileHash": "5fd42df6544383580c9e32a74773f591",
+      "Size": 3315
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -59,8 +59,8 @@
     },
     {
       "BundleName": "assets/res/animationclip.ab",
-      "FileHash": "77f01b78ca81e0dcace7bae46fd89e45",
-      "Size": 979001
+      "FileHash": "1b332ee0f6e9100256a5781026b52615",
+      "Size": 979007
     },
     {
       "BundleName": "assets/res/core.ab",
@@ -74,13 +74,13 @@
     },
     {
       "BundleName": "assets/res/players.ab",
-      "FileHash": "d51828a288956cc4039e6669f1953aea",
-      "Size": 33293
+      "FileHash": "7075ac6a8e1b054794bacfb043e1a457",
+      "Size": 33450
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "935ff8fd897f5f125759e2c9438ca522",
-      "Size": 292685
+      "FileHash": "64c1f5df966f38e03ab720d516c56d8a",
+      "Size": 308608
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -154,8 +154,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/scenes.ab",
-      "FileHash": "45ca9b2892083bd7c31709088f9fd6a6",
-      "Size": 37221
+      "FileHash": "135f06350a188f312304cb697a4071fa",
+      "Size": 316583
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "2819a0eff98f5d6358a4610e1ffc1d42",
-      "Size": 1002487
+      "FileHash": "e163cc6812f82a46793637ab45f28b77",
+      "Size": 1098073
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -209,8 +209,8 @@
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/scenes.ab",
-      "FileHash": "1e1efad14a054db31b29da55142eaedd",
-      "Size": 343845
+      "FileHash": "84cf7852a99998eb31118f61577b9e9f",
+      "Size": 343697
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/misc/111.ab",
