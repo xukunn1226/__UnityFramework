@@ -206,7 +206,7 @@ namespace Framework.AssetManagement.GameBuilder
             string dstPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{directory}");
             EditorGUILayout.LabelField("备份目录", dstPath);
 
-            string patchPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_Cdn_PatchPath}/{Utility.GetPlatformName()}/{directory}");
+            string patchPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.patchPath}/{Utility.GetPlatformName()}/{directory}");
             EditorGUILayout.LabelField("补丁目录", patchPath);
 
             EditorGUI.BeginDisabledGroup(!string.IsNullOrEmpty(error));

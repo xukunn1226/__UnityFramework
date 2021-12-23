@@ -1,6 +1,6 @@
 {
   "Count": 56,
-  "TotalSize": 99854962,
+  "TotalSize": 99947587,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "77e8a51efd4ab7ae6c589c6ac8c9ce57",
-      "Size": 3313
+      "FileHash": "eecf94c444632f2ddd389907cf7d8c74",
+      "Size": 3310
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -74,13 +74,13 @@
     },
     {
       "BundleName": "assets/res/players.ab",
-      "FileHash": "aa7d7b906355f19fead7787e88affcd6",
-      "Size": 33013
+      "FileHash": "d51828a288956cc4039e6669f1953aea",
+      "Size": 33293
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "b609f213e679f15253d40d35145298f9",
-      "Size": 200338
+      "FileHash": "935ff8fd897f5f125759e2c9438ca522",
+      "Size": 292685
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "8d069f33813d966bfee771f56ae0af9e",
-      "Size": 1002486
+      "FileHash": "2819a0eff98f5d6358a4610e1ffc1d42",
+      "Size": 1002487
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",

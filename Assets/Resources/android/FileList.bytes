@@ -1,6 +1,6 @@
 {
   "Count": 56,
-  "TotalSize": 129609453,
+  "TotalSize": 129609470,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "8769d1f9d3edf191841dc2e4d5d2fefa",
-      "Size": 3306
+      "FileHash": "6e71f77b68b9d11899cb7a001c077737",
+      "Size": 3309
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -79,7 +79,7 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "63f57bb817e5f67bb585b6eec9b891a3",
+      "FileHash": "d457a72e35caf5b1f29db7a2449c4893",
       "Size": 171954
     },
     {
@@ -119,8 +119,8 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_01.ab",
-      "FileHash": "acd68197c3402931e33e1d01e0b10cfd",
-      "Size": 132531
+      "FileHash": "416b7b06317e561cc3577ae5755988ca",
+      "Size": 132544
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_01_ref.ab",
@@ -129,8 +129,8 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_02.ab",
-      "FileHash": "04f7c448d4bee1682cbb2a766c06f96f",
-      "Size": 508250
+      "FileHash": "3dfe3c563fde65c0e64bfe3ee3323b60",
+      "Size": 508248
     },
     {
       "BundleName": "assets/application/main/xlua/lua/core.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "de36b77fd6064bc080c0f463c4a8e350",
-      "Size": 261868
+      "FileHash": "42d4440e94629c53af3b1e27e8cf2b03",
+      "Size": 261871
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -234,12 +234,12 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/111.ab",
-      "FileHash": "d1d483a498d5e2c01df4de95de806c1c",
+      "FileHash": "f664ad1d5596893f2c4b851b4b8699ce",
       "Size": 45658
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/333.ab",
-      "FileHash": "28e4d3ae770796b3031139e1c6f8596e",
+      "FileHash": "cd54ded18367ff0d0f1309ac4377e916",
       "Size": 45894
     },
     {

@@ -451,7 +451,7 @@ namespace Application.Editor
                 case "string":
                     if(string.IsNullOrEmpty(content))
                         return string.Format($"''");
-                    return string.Format($"'{content}'");
+                    return string.Format($"'{PostprocessContent(content)}'");
                 case "float":
                     if(string.IsNullOrEmpty(content))
                         return "0";
@@ -465,6 +465,12 @@ namespace Application.Editor
             if(string.IsNullOrEmpty(content))
                 return string.Format($"''");
             return string.Format($"'{content}'");
+        }
+
+        static private string PostprocessContent(string content)
+        {
+            content = content.Replace("'", "''");
+            return content;
         }
 
         static private string[] ConvertToSqlContents(string[] contents, string[] valueTypes)
