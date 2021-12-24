@@ -126,7 +126,20 @@ namespace Application.Editor
             m_AllLines = null;
             try
             {
-                m_AllLines = File.ReadAllLines(file);
+                using (FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        string line;
+                        List<string> allLine = new List<string>();
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            allLine.Add(line);
+                        }
+                        m_AllLines = allLine.ToArray();
+                    }
+                }
+                // m_AllLines = File.ReadAllLines(file);
             }
             catch(Exception e)
             {

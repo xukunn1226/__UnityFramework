@@ -15,8 +15,7 @@ namespace Framework.AssetManagement.GameBuilder
         static public string s_BackupDirectoryPath  = "backup";                         // 备份各平台下发布的资源（app & bundles）
         static public string s_CdnRootPath          = "cdn";                            // cdn path, base on s_DefaultRootPath
         static public string s_Cdn_DataPath         = "data";                           // 存储最新版本的资源数据
-        static public string s_Cdn_PatchPath        = "patch";                          // 所有平台的补丁数据
-        static public string s_BackdoorPath         = s_CdnRootPath + "/backdoor.json";
+        static public string s_BackdoorPath         = s_CdnRootPath + "/" + Patcher.BACKDOOR_FILENAME;
 
         // 全量资源路径
         static public string baseDataPath
@@ -32,7 +31,7 @@ namespace Framework.AssetManagement.GameBuilder
         {
             get
             {
-                return string.Format($"{s_CdnRootPath}/{s_Cdn_PatchPath}");
+                return string.Format($"{s_CdnRootPath}/{Patcher.PATCH_PATH}");
             }
         }
 
@@ -160,7 +159,6 @@ namespace Framework.AssetManagement.GameBuilder
 
         /// <summary>
         /// 生成其他版本到当前版本（appDirectory）的差异数据
-        /// WARNING: 调用前配置backdoor.minVersion & versionHistory
         /// </summary>
         /// <param name="rootPath"></param>
         /// <param name="appDirectory"></param>

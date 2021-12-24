@@ -21,6 +21,8 @@ namespace Framework.Core
         static public readonly string       CUR_APPVERSION              = "CurAppVersion_fe2679cf89a145ccb45b715568e6bc07";
         static public readonly string       DIFFCOLLECTION_FILENAME     = "diffcollection.json";
         static public readonly string       DIFF_FILENAME               = "diff.json";
+        static public readonly string       PATCH_PATH                  = "patch";              // 基于CDN根目录的补丁数据路径
+        static public readonly string       BACKDOOR_FILENAME           = "backdoor.json";
 
         private int                         m_WorkerCount;
         private List<DownloadTask>          m_TaskWorkerList;
@@ -34,12 +36,70 @@ namespace Framework.Core
         private Backdoor                    m_Backdoor;                 // 服务器下载的backdoor
         private DiffCollection              m_DiffCollection;           // 对应最新版本的diffcollection.json
         private Diff                        m_Diff;                     // 补丁包差异配置数据
-        private string                      m_CurVersion;               // 当前版本号（记录在PlayerPrefs）
+        private AppVersion                  m_RemoteVersion;            // 远程版本号（记录在backdoor）
+        private AppVersion                  m_CurVersion;               // 当前版本号（记录在PlayerPrefs）
 
         private string                      m_CdnURL;
         private string                      m_Error;
 
         private IPatcherListener            m_Listener;
+
+        private string localBackdoorURL
+        {
+            get
+            {
+                return string.Format($"{Application.persistentDataPath}/{BACKDOOR_FILENAME}");
+            }
+        }
+
+        private string remoteBackdoorURL
+        {
+            get
+            {
+                return string.Format($"{m_CdnURL}/{BACKDOOR_FILENAME}");
+            }
+        }
+
+        /// <summary>
+        /// 获取远程版本号
+        /// </summary>
+        /// <returns></returns>
+        public AppVersion remoteCurVersion
+        {
+            get
+            {
+                if(m_RemoteVersion == null)
+                {
+                    m_RemoteVersion = AppVersion.CreateInstance<AppVersion>();
+                    m_RemoteVersion.Set(m_Backdoor.CurVersion);
+                }
+                return m_RemoteVersion;
+            }
+        }
+
+        /// <summary>
+        /// 获取本地当前版本号
+        /// </summary>
+        /// <returns></returns>
+        public AppVersion localCurVersion
+        {
+            get
+            {
+                if(m_CurVersion == null)
+                {
+                    m_CurVersion = AppVersion.CreateInstance<AppVersion>();
+                }
+                string cachedCurVersion = PlayerPrefs.GetString(CUR_APPVERSION);
+                if(string.IsNullOrEmpty(cachedCurVersion))
+                { // 首次安装，尚未下载过会没有CUR_APPVERSION标记，则使用母包的版本号
+                    AppVersion version = AppVersion.Load();
+                    cachedCurVersion = version.ToString();
+                    AppVersion.Unload(version);
+                }
+                m_CurVersion.Set(cachedCurVersion);
+                return m_CurVersion;
+            }
+        }
 
         public void StartWork(string cdnURL, int workerCount, IPatcherListener listener = null)
         {
@@ -91,21 +151,23 @@ namespace Framework.Core
             }
             
             // prepare for downloading
-            if(!Prepare())
-                yield break;
+            long size = Prepare();
+            m_Listener?.Prepare(m_DownloadFileList.Count, size);
 
             // step5. downloading...
-            yield return StartCoroutine(Downloading());
+            if(size > 0)
+                yield return StartCoroutine(Downloading());
+
+            DownloadingFinished();
         }
 
         private IEnumerator DownloadBackdoor()
         {
-            string localBackdoorURL = string.Format($"{Application.persistentDataPath}/backdoor.json");
             if (File.Exists(localBackdoorURL))
                 File.Delete(localBackdoorURL);
 
             DownloadTaskInfo info = new DownloadTaskInfo();
-            info.srcUri = new Uri(string.Format($"{m_CdnURL}/backdoor.json"));
+            info.srcUri = new Uri(remoteBackdoorURL);
             info.dstURL = localBackdoorURL;
             info.verifiedHash = null;
             info.retryCount = 3;
@@ -128,37 +190,7 @@ namespace Framework.Core
         /// <returns></returns>
         private bool IsLatestVersion()
         {
-            string localCurVersion = GetLocalCurVersion();
-
-            AppVersion remoteCurVersion = AppVersion.CreateInstance<AppVersion>();
-            remoteCurVersion.Set(m_Backdoor.CurVersion);
-
-            return !string.IsNullOrEmpty(localCurVersion) && remoteCurVersion.CompareTo(localCurVersion) == 0;
-        }
-
-        /// <summary>
-        /// 获取本地当前版本号
-        /// </summary>
-        /// <returns></returns>
-        private string GetLocalCurVersion()
-        {
-            if (string.IsNullOrEmpty(m_CurVersion))
-            {
-                m_CurVersion = PlayerPrefs.GetString(CUR_APPVERSION);
-                if (string.IsNullOrEmpty(m_CurVersion))
-                { // 首次安装，尚未下载过会没有CUR_APPVERSION标记，则使用母包的版本号
-                    AppVersion version = AppVersion.Load();
-                    m_CurVersion = version.ToString();
-                    AppVersion.Unload(version);
-                }
-
-                if (!string.IsNullOrEmpty(AppVersion.Check(m_CurVersion)))
-                {
-                    m_CurVersion = null;
-                    throw new ArgumentNullException($"GetLocalCurVersion: {m_CurVersion} is not standard");
-                }
-            }
-            return m_CurVersion;
+            return !string.IsNullOrEmpty(localCurVersion.ToString()) && remoteCurVersion.CompareTo(localCurVersion.ToString()) == 0;
         }
 
         private IEnumerator DownloadDiffCollection()
@@ -175,7 +207,7 @@ namespace Framework.Core
                 File.Delete(localDiffCollectionURL);
 
             DownloadTaskInfo info = new DownloadTaskInfo();
-            info.srcUri = new Uri(string.Format($"{m_CdnURL}/patch/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/{DIFFCOLLECTION_FILENAME}"));
+            info.srcUri = new Uri(string.Format($"{m_CdnURL}/{PATCH_PATH}/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/{DIFFCOLLECTION_FILENAME}"));
             info.dstURL = localDiffCollectionURL;
             info.verifiedHash = hash;
             info.retryCount = 3;
@@ -194,7 +226,7 @@ namespace Framework.Core
 
         private IEnumerator DownloadDiff()
         {
-            string hash = m_DiffCollection.GetDiffFileHash(GetLocalCurVersion());
+            string hash = m_DiffCollection.GetDiffFileHash(localCurVersion.ToString());
             if (string.IsNullOrEmpty(hash))
             {
                 m_Error = string.Format($"can't find the hash of diff.json, plz check diffcollection.json's VersionHashMap");
@@ -206,7 +238,7 @@ namespace Framework.Core
                 File.Delete(localDiffURL);
 
             DownloadTaskInfo info = new DownloadTaskInfo();
-            string diffURL = Path.Combine(m_CdnURL, "patch", Utility.GetPlatformName(), m_Backdoor.CurVersion, GetLocalCurVersion(), DIFF_FILENAME);
+            string diffURL = Path.Combine(m_CdnURL, "patch", Utility.GetPlatformName(), m_Backdoor.CurVersion, localCurVersion.ToString(), DIFF_FILENAME);
             info.srcUri = new Uri(diffURL);
             info.dstURL = localDiffURL;
             info.verifiedHash = hash;
@@ -226,6 +258,8 @@ namespace Framework.Core
 
         private IEnumerator Downloading()
         {
+            string srcUriPrefix = Path.Combine(m_CdnURL, PATCH_PATH, Utility.GetPlatformName(), remoteCurVersion.ToString(), localCurVersion.ToString());
+            string dstURLPrefix = Path.Combine(Application.persistentDataPath, Utility.GetPlatformName());
             while(true)
             {
                 foreach(var task in m_TaskWorkerList)
@@ -243,8 +277,8 @@ namespace Framework.Core
                         continue;
 
                     DownloadTaskInfo info   = new DownloadTaskInfo();
-                    info.srcUri             = new System.Uri(Path.Combine(m_CdnURL, "patch", Utility.GetPlatformName(), m_Backdoor.CurVersion, m_CurVersion, fileInfo.BundleName));
-                    info.dstURL             = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{fileInfo.BundleName}");
+                    info.srcUri             = new System.Uri(Path.Combine(srcUriPrefix, fileInfo.BundleName));
+                    info.dstURL             = Path.Combine(dstURLPrefix, fileInfo.BundleName);
                     info.verifiedHash       = fileInfo.FileHash;
                     info.retryCount         = 3;
                     info.onProgress         = OnTaskProgress;
@@ -263,11 +297,20 @@ namespace Framework.Core
                 {
                     break;
                 }
+            }            
+        }
+        
+        private bool IsStillWorking()
+        {
+            foreach (var task in m_TaskWorkerList)
+            {
+                if (task.isRunning)
+                    return true;
             }
-            DownloadingFinished();
+            return false;
         }
 
-        private bool Prepare()
+        private long Prepare()
         {
             CollectPendingDownloadFileList();
 
@@ -283,7 +326,12 @@ namespace Framework.Core
                 m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
             }
 
-            return m_Listener != null ? m_Listener.Prepare(m_DownloadFileList.Count, m_Diff.Size) : false;
+            long size = 0;
+            foreach(var file in m_DownloadFileList)
+            {
+                size += file.Size;
+            }
+            return size;
         }
 
         private void DownloadingFinished()
@@ -293,12 +341,12 @@ namespace Framework.Core
                 PlayerPrefs.SetString(CUR_APPVERSION, m_Backdoor.CurVersion);
                 PlayerPrefs.Save();
 
-                Debug.Log($"patch completed...{m_CurVersion}  ->  {m_Backdoor.CurVersion}");
-                m_CurVersion = m_Backdoor.CurVersion;
+                Debug.Log($"patch completed...{localCurVersion.ToString()}  ->  {m_Backdoor.CurVersion}");
+                localCurVersion.Set(m_Backdoor.CurVersion);
             }
             else
             {
-                //Debug.LogWarning($"patch failed...{m_Error}");
+                Debug.LogError($"patch failed...{m_Error}");
             }
 
             m_Listener?.OnPatchCompleted(m_Error);
@@ -329,17 +377,7 @@ namespace Framework.Core
         private void OnDownloadError(DownloadTaskInfo taskInfo, string error)
         {
             m_Error = string.Format($"OnDownloadError: {error} : {taskInfo.srcUri}");
-        }
-
-        private bool IsStillWorking()
-        {
-            foreach (var task in m_TaskWorkerList)
-            {
-                if (task.isRunning)
-                    return true;
-            }
-            return false;
-        }
+        }        
 
         private void CollectPendingDownloadFileList()
         {

@@ -390,9 +390,9 @@ namespace Application.Runtime
             EditorGUILayout.PropertyField(m_SceneNameProp);
             EditorGUILayout.PropertyField(m_ScenePathProp);
             EditorGUILayout.PropertyField(m_BundlePathProp);
+            EditorGUILayout.PropertyField(m_CdnURLProp);
             EditorGUILayout.IntSlider(m_WorkerCountOfBundleExtracterProp, 1, 10, "Extracter Worker");
             EditorGUILayout.IntSlider(m_WorkerCountOfPatcherProp, 1, 10, "Patcher Worker");
-            EditorGUILayout.LabelField("CDN", m_CdnURLProp.stringValue, EditorStyles.boldLabel);
 
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
