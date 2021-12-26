@@ -1,6 +1,6 @@
 {
   "Count": 56,
-  "TotalSize": 99947302,
+  "TotalSize": 99945833,
   "FileList": [
     {
       "BundleName": "config.db",
@@ -9,8 +9,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "0402c9651c6310af702169da49630e07",
-      "Size": 3310
+      "FileHash": "c7ead34cb0dc34e2c98c7126ea7ff504",
+      "Size": 3315
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -59,8 +59,8 @@
     },
     {
       "BundleName": "assets/res/animationclip.ab",
-      "FileHash": "77f01b78ca81e0dcace7bae46fd89e45",
-      "Size": 979001
+      "FileHash": "1b332ee0f6e9100256a5781026b52615",
+      "Size": 979007
     },
     {
       "BundleName": "assets/res/core.ab",
@@ -79,8 +79,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "935ff8fd897f5f125759e2c9438ca522",
-      "Size": 292685
+      "FileHash": "a06f1e5c1b0191f3622de26534fbf9d5",
+      "Size": 292325
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "45c6db42b1354bf461b70bfef931ac83",
-      "Size": 1002482
+      "FileHash": "c3ca3774900008841c285399c786db52",
+      "Size": 1001510
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -209,8 +209,8 @@
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/scenes.ab",
-      "FileHash": "1e1efad14a054db31b29da55142eaedd",
-      "Size": 343845
+      "FileHash": "84cf7852a99998eb31118f61577b9e9f",
+      "Size": 343697
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/misc/111.ab",
@@ -234,12 +234,12 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/111.ab",
-      "FileHash": "9ba0ccaf0eb4eb61d901baa6c54c10a1",
+      "FileHash": "6e274ff49faf77d22d01b8875f57971e",
       "Size": 29656
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/333.ab",
-      "FileHash": "50f8635c256851046bdd9e1d1f250af7",
+      "FileHash": "36df3cb5d0b810052ee17453704a0657",
       "Size": 29891
     },
     {

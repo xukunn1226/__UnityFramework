@@ -30,7 +30,19 @@ namespace Application.Runtime
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
     public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
     {
-        static public Launcher Instance { get; private set; }
+        static public Launcher          Instance { get; private set; }
+
+        enum LaunchPhase
+        {
+            None,
+            BeginExtract,
+            Extracting,
+            EndExtract,
+            BeginPatch,
+            Patching,
+            EndPatch,
+        }
+        private LaunchPhase             m_Phase = LaunchPhase.None;
 
         private BundleExtracter         m_BundleExtracter;
         private Patcher                 m_Patcher;
@@ -40,6 +52,7 @@ namespace Application.Runtime
 #pragma warning disable CS0414
         [SerializeField]
         private string                  m_CdnURL = "http://10.21.22.59";
+        public bool                     useLocalCDN = true;
 #pragma warning restore CS0414
         private string                  m_Error;
 
@@ -54,13 +67,9 @@ namespace Application.Runtime
         public string                   ScenePath;
         public string                   BundlePath;
 
-        private bool                    m_theFirstStart;
-
         void Awake()
         {
             Instance = this;
-
-            m_theFirstStart = true;
 
             m_BundleExtracter = GetComponent<BundleExtracter>();
             m_Patcher = GetComponent<Patcher>();
@@ -84,9 +93,45 @@ namespace Application.Runtime
 
         void Start()
         {
-            // await TestPing("202.108.22.5", 3);
-
             StartWork();
+        }
+
+        void Update()
+        {
+            switch(m_Phase)
+            {
+                case LaunchPhase.BeginExtract:
+                    StartBundleExtracted();
+                    break;
+                case LaunchPhase.Extracting:
+                    break;
+                case LaunchPhase.EndExtract:
+                    m_Phase = LaunchPhase.BeginPatch;
+                    break;
+                case LaunchPhase.BeginPatch:
+                    if(!ResloveCDN())
+                    {
+                        m_Phase = LaunchPhase.None;                        
+                        OnFailedResloveCDN();
+                    }
+                    else
+                    {
+                        m_Phase = LaunchPhase.Patching;
+                        StartPatch();
+                    }
+                    break;
+                case LaunchPhase.Patching:
+                    if(!IsNetworkReachability())
+                    {
+                        m_Phase = LaunchPhase.None;                        
+                        OnPatchingNetworkNotReachable();
+                    }
+                    break;
+                case LaunchPhase.EndPatch:
+                    m_Phase = LaunchPhase.None;
+                    VersionControlFinished();
+                    break;
+            }
         }
 
         // 启动模式
@@ -117,16 +162,10 @@ namespace Application.Runtime
         {
             ShowUI(true);
 
-            LoaderType type = GetLauncherMode();
-            Debug.Log($"launcher mode is {type}");
-            if(type == LoaderType.FromPersistent)
-            { // 启动模式是FromPersistent时执行版控流程
-                StartBundleExtracted();
-            }
-            else
-            { // 略过版控流程
-                VersionControlFinished();
-            }
+            // 启动模式是FromPersistent时执行版控流程，否则略过版控流程
+            m_Phase = GetLauncherMode() == LoaderType.FromPersistent ? LaunchPhase.BeginExtract : LaunchPhase.EndPatch;
+            
+            Debug.Log($"launcher mode is {GetLauncherMode()}");
         }
         
         // 再次执行完整流程（WARNING: 流程结束或异常时才可restart，过程中不可使用）
@@ -144,19 +183,12 @@ namespace Application.Runtime
             yield return null;
             yield return null;
 
-            m_theFirstStart = false;
             StartWork();
-
-            yield break;
         }
-        
 
         private void StartBundleExtracted()
-        {            
-            if(m_theFirstStart)
-                m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
-            else
-                m_BundleExtracter.Restart();
+        {
+            m_BundleExtracter.StartWork(WorkerCountOfBundleExtracter, this);
         }
 
         private void StartPatch()
@@ -167,7 +199,7 @@ namespace Application.Runtime
         private string GetCDNURL()
         {
 #if UNITY_EDITOR
-            return string.Format($"{UnityEngine.Application.dataPath}/../Deployment/CDN");          // 编辑模式下默认的CDN地址
+            return useLocalCDN ? string.Format($"{UnityEngine.Application.dataPath}/../Deployment/CDN") : m_CdnURL;
 #else
             return m_CdnURL;
 #endif
@@ -182,10 +214,7 @@ namespace Application.Runtime
         {
             Debug.Log($"IExtractListener.OnShouldExtract:   {shouldExtract}");
 
-            if (!shouldExtract)
-            { // 不需要提取直接执行补丁流程
-                StartPatch();
-            }
+            m_Phase = shouldExtract ? LaunchPhase.Extracting : LaunchPhase.EndExtract;
         }
 
         void IExtractListener.OnBegin(int countOfFiles)
@@ -198,14 +227,16 @@ namespace Application.Runtime
             if (string.IsNullOrEmpty(error))
             {
                 Debug.Log($"========================= IExtractListener.OnEnd:     elapsedTime({elapsedTime})");
-
-                StartPatch();       // 提取结束执行补丁流程
+                
+                m_Phase = LaunchPhase.EndExtract;
             }
             else
             {
                 Debug.LogError($"IExtractListener.OnEnd:     elapsedTime({elapsedTime})      error({error})");
 
                 m_Error = error;
+
+                // UI提示异常
             }
         }
 
@@ -219,10 +250,24 @@ namespace Application.Runtime
             Debug.Log($"IExtractListener.OnFileProgress:    filename({filename})    downedLength({downedLength})    totalLength({totalLength})      downloadSpeed({downloadSpeed})");
         }
 
-        void IPatcherListener.OnError_DownloadBackdoor(string error)
+        void OnFailedResloveCDN()
+        {
+
+        }
+
+        // 下载backdoor的事件回调
+        bool IPatcherListener.OnError_DownloadBackdoor(string error, Backdoor backdoor)
         {
             Debug.LogError($"IPatcherListener.OnError_DownloadBackdoor:  error({error})");
             m_Error = error;
+
+            // 判断当前app version是否满足backdoor要求的最小引擎版本
+            if(!string.IsNullOrEmpty(backdoor.MinVersion) && m_Patcher.localAppVersion.AppCompareTo(backdoor.MinVersion) == -1)
+            { // 提示去商店下载最新包
+                Debug.LogError($"当前引擎版本号小于要求的最低引擎版本号：{m_Patcher.localAppVersion.ToString()} < {backdoor.MinVersion.ToString()}");
+                return false;
+            }
+            return true;
         }
 
         void IPatcherListener.OnCheck_IsLatestVersion(bool isLatestVersion)
@@ -231,7 +276,7 @@ namespace Application.Runtime
 
             if (isLatestVersion)
             {
-                VersionControlFinished();
+                m_Phase = LaunchPhase.EndPatch;
             }
         }
 
@@ -247,10 +292,9 @@ namespace Application.Runtime
             m_Error = error;
         }
 
-        bool IPatcherListener.Prepare(int count, long size)
+        void IPatcherListener.Prepare(int count, long size)
         {
             Debug.Log($"IPatcherListener.OnBeginDownload:   count({count})  size({size})");
-            return true;
         }
 
         void IPatcherListener.OnPatchCompleted(string error)
@@ -258,7 +302,7 @@ namespace Application.Runtime
             Debug.Log($"IPatcherListener.OnEndDownload:     error({error})");
 
             m_Error = error;
-            VersionControlFinished();
+            m_Phase = LaunchPhase.EndPatch;
         }
 
         void IPatcherListener.OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed)
@@ -269,6 +313,12 @@ namespace Application.Runtime
         void IPatcherListener.OnFileDownloadCompleted(string filename, bool success)
         {
             Debug.Log($"IPatcherListener.OnFileDownloadCompleted:   filename({filename})    success({success})");
+        }
+
+        // 下载补丁时网络异常
+        void OnPatchingNetworkNotReachable()
+        {
+
         }
 
         private void VersionControlFinished()
@@ -299,7 +349,7 @@ namespace Application.Runtime
             ctx.additive = false;
             ctx.bundlePath = BundlePath;
             StreamingLevelManager.Instance.LoadAsync(ctx);
-        }        
+        }
 
         // disable Launcher
         public void Disable()
@@ -311,8 +361,49 @@ namespace Application.Runtime
         {
             Canvas.enabled = show;
             Camera.enabled = show;
+        }        
+
+        private bool IsWifi()
+        {
+#if UNITY_EDITOR
+            return true;
+#else            
+            return UnityEngine.Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
+#endif            
         }
 
+        // 网络链接是否断开
+        private bool IsNetworkReachability()
+        {
+#if UNITY_EDITOR
+            return true;
+#else           
+            return UnityEngine.Application.internetReachability != NetworkReachability.NotReachable;
+#endif            
+        }
+
+        private bool ResloveCDN()
+        {
+#if UNITY_EDITOR
+            if(useLocalCDN)
+            {
+                return true;
+            }
+#endif
+            try
+            {
+                Dns.GetHostEntry(GetCDNURL());
+            }
+#pragma warning disable CS0168
+            catch(Exception e)
+            {
+                return false;
+            }
+#pragma warning restore CS0168            
+            return true;
+        }
+
+#if UNITY_EDITOR
         public async Task<bool> TestPing(string ipString, int tryCount = 3)
         {
             System.Net.NetworkInformation.Ping ping = new System.Net.NetworkInformation.Ping();
@@ -341,17 +432,7 @@ namespace Application.Runtime
             }
             return false;
         }
-
-        private bool IsWifi()
-        {
-            return UnityEngine.Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
-        }
-
-        // 网络链接是否断开
-        private bool IsNetworkReachability()
-        {
-            return UnityEngine.Application.internetReachability != NetworkReachability.NotReachable;
-        }
+#endif        
     }
 
 #if UNITY_EDITOR
@@ -361,6 +442,7 @@ namespace Application.Runtime
         private SerializedProperty  m_WorkerCountOfBundleExtracterProp;
         private SerializedProperty  m_WorkerCountOfPatcherProp;
         private SerializedProperty  m_CdnURLProp;
+        private SerializedProperty  m_useLocalCDNProp;
         private SerializedProperty  m_CameraProp;
         private SerializedProperty  m_CanvasProp;
         private SerializedProperty  m_SceneNameProp;
@@ -374,6 +456,7 @@ namespace Application.Runtime
             m_WorkerCountOfBundleExtracterProp = serializedObject.FindProperty("WorkerCountOfPatcher");
             m_WorkerCountOfPatcherProp = serializedObject.FindProperty("WorkerCountOfPatcher");
             m_CdnURLProp = serializedObject.FindProperty("m_CdnURL");
+            m_useLocalCDNProp = serializedObject.FindProperty("useLocalCDN");
             m_CameraProp = serializedObject.FindProperty("Camera");
             m_CanvasProp = serializedObject.FindProperty("Canvas");
             m_SceneNameProp = serializedObject.FindProperty("SceneName");
@@ -390,6 +473,7 @@ namespace Application.Runtime
             EditorGUILayout.PropertyField(m_SceneNameProp);
             EditorGUILayout.PropertyField(m_ScenePathProp);
             EditorGUILayout.PropertyField(m_BundlePathProp);
+            EditorGUILayout.PropertyField(m_useLocalCDNProp, new GUIContent("Use local CDN", @"Local CDN is ""Assets/../Deployment/CDN"""));
             EditorGUILayout.PropertyField(m_CdnURLProp);
             EditorGUILayout.IntSlider(m_WorkerCountOfBundleExtracterProp, 1, 10, "Extracter Worker");
             EditorGUILayout.IntSlider(m_WorkerCountOfPatcherProp, 1, 10, "Patcher Worker");

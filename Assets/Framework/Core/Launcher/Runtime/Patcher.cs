@@ -38,6 +38,7 @@ namespace Framework.Core
         private Diff                        m_Diff;                     // 补丁包差异配置数据
         private AppVersion                  m_RemoteVersion;            // 远程版本号（记录在backdoor）
         private AppVersion                  m_CurVersion;               // 当前版本号（记录在PlayerPrefs）
+        private AppVersion                  m_AppVersion;               // 当前引擎版本号，记录在Resources/
 
         private string                      m_CdnURL;
         private string                      m_Error;
@@ -61,7 +62,7 @@ namespace Framework.Core
         }
 
         /// <summary>
-        /// 获取远程版本号
+        /// 获取远程版本号（可能三位或四位）
         /// </summary>
         /// <returns></returns>
         public AppVersion remoteCurVersion
@@ -78,7 +79,7 @@ namespace Framework.Core
         }
 
         /// <summary>
-        /// 获取本地当前版本号
+        /// 获取本地当前版本号（可能三位或四位）
         /// </summary>
         /// <returns></returns>
         public AppVersion localCurVersion
@@ -92,12 +93,28 @@ namespace Framework.Core
                 string cachedCurVersion = PlayerPrefs.GetString(CUR_APPVERSION);
                 if(string.IsNullOrEmpty(cachedCurVersion))
                 { // 首次安装，尚未下载过会没有CUR_APPVERSION标记，则使用母包的版本号
-                    AppVersion version = AppVersion.Load();
-                    cachedCurVersion = version.ToString();
-                    AppVersion.Unload(version);
+                    cachedCurVersion = localAppVersion.ToString();
                 }
                 m_CurVersion.Set(cachedCurVersion);
                 return m_CurVersion;
+            }
+        }
+
+        /// <summary>
+        /// 本地母包的引擎版本号（三位）
+        /// </summary>
+        public AppVersion localAppVersion
+        {
+            get
+            {
+                if(m_AppVersion == null)
+                {
+                    m_AppVersion = AppVersion.CreateInstance<AppVersion>();
+                    AppVersion version = AppVersion.Load();
+                    m_AppVersion.Set(version.ToString());
+                    AppVersion.Unload(version);
+                }
+                return m_AppVersion;
             }
         }
 
@@ -117,10 +134,10 @@ namespace Framework.Core
 
             // step1. download backdoor config
             yield return StartCoroutine(DownloadBackdoor());
-            if(!string.IsNullOrEmpty(m_Error))
+
+            bool isContinue = m_Listener?.OnError_DownloadBackdoor(m_Error, m_Backdoor) ?? true;
+            if(!string.IsNullOrEmpty(m_Error) || !isContinue)
             {
-                // Debug.LogError(m_Error);
-                m_Listener?.OnError_DownloadBackdoor(m_Error);
                 yield break;
             }
 
@@ -436,11 +453,11 @@ namespace Framework.Core
 
     public interface IPatcherListener
     {
-        void OnError_DownloadBackdoor(string error);
+        bool OnError_DownloadBackdoor(string error, Backdoor backdoor);
         void OnCheck_IsLatestVersion(bool isLatestVersion);
         void OnError_DownloadDiffCollection(string error);
         void OnError_DownloadDiff(string error);
-        bool Prepare(int count, long size);     // true: 开始下载；false：取消下载
+        void Prepare(int count, long size);
         void OnPatchCompleted(string error);
         void OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);
         void OnFileDownloadCompleted(string filename, bool success);

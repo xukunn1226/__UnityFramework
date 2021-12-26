@@ -55,13 +55,12 @@ namespace Framework.Core
             StartCoroutine(Extracting());
         }
 
-        /// <summary>
-        /// 重新执行提取操作，不可在之前提取操作未完成时执行
-        /// </summary>
+#if UNITY_EDITOR
         public void Restart()
         {
             StartWork(m_WorkerCount, m_Listener);
         }
+#endif        
 
         /// <summary>
         /// load the appVersion and FileList for bundle extracting
