@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: item
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: a7de5546e30dd884088880be2b0af5b7, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 4515889176a67894fa745b2ff45aafc0, type: 3}
+  - {fileID: 21300000, guid: de9c9f038cb841549adb303d2f678200, type: 3}
+  - {fileID: 21300000, guid: 88720f943ce2b7642853dd53f6f3bc2e, type: 3}
+  - {fileID: 21300000, guid: d068ec666e3f5144ab4a083b64233ae1, type: 3}
+  - {fileID: 21300000, guid: 5ffadee693c05184d83d09f849ca53dc, type: 3}
+  - {fileID: 21300000, guid: de023c7724bc5ab42ad352e1f7cd9a7a, type: 3}
+  - {fileID: 21300000, guid: 2399c0c7d08dae8479610a2d4dc9cfcf, type: 3}
+  - {fileID: 21300000, guid: e761e5c771b966a4895af8795b9665db, type: 3}
+  - {fileID: 21300000, guid: f50616c874937fe4981e40aef1f3db00, type: 3}
+  - {fileID: 21300000, guid: cd501ec813f0a2940856cb619e9bbb80, type: 3}
+  - {fileID: 21300000, guid: 539b9089d96f57941853519aefc1e7ba, type: 3}
+  - {fileID: 21300000, guid: 8e6c08dba435ab54883cf89aaa45107e, type: 3}
+  - {fileID: 21300000, guid: d432e6dc9a91ff5449ce71c3b28cdb32, type: 3}
+  - {fileID: 21300000, guid: 8d16be0d85ad35d4b9d9d9de04847659, type: 3}
+  - {fileID: 21300000, guid: 9f1a7cad5ebbc334c985c49d66542455, type: 3}
+  - {fileID: 21300000, guid: 747736dd02cff954797619c8953d9648, type: 3}
+  - {fileID: 21300000, guid: 6ec177fdc82e5854f8fc1711ae67b7f3, type: 3}
+  - {fileID: 21300000, guid: d236db6f09c2c82438ac9d3ed136283c, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - UI_Common_Item_MetalParts
+  - material_radio
+  - drug_whosyourdaddy
+  - weapon_new_player_rifle
+  - UI_Common_Item_Glass
+  - material_building_sheep
+  - material_iron_man_model
+  - material_tiger_ring
+  - UI_Common_Item_Cloth
+  - UI_Common_Item_Rubber
+  - material_expired_canned
+  - material_useless_chip
+  - drug_letsgo
+  - drug_greedisgood
+  - UI_Common_Item_Plastic
+  - material_panda_hat
+  - weapon_new_player_baseball_bat
+  - UI_Common_Item_ElectronicParts
+  m_RenderDataMap: {}
+  m_Tag: item
+  m_IsVariant: 0
