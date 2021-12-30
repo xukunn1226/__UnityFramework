@@ -38,13 +38,13 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 62798100d8b32274ba0b0b4eea0be127, type: 3}
-  - {fileID: 21300000, guid: d3065815c75264f46b13a291602dcf33, type: 3}
-  - {fileID: 21300000, guid: aa30c4686ad05c6409596af54162a3fe, type: 3}
+  - {fileID: 21300000, guid: be4a6fb37fa691648a95584daa0a706a, type: 3}
+  - {fileID: 21300000, guid: 28daf5d51b643d042815d42abe1bbdf5, type: 3}
+  - {fileID: 21300000, guid: 1731d40eb5a85db43b32918d57731bf4, type: 3}
   m_PackedSpriteNamesToIndex:
-  - Icon2
+  - Icon3
   - tex23431
-  - Icon1
+  - Icon2
   m_RenderDataMap: {}
   m_Tag: Bag
   m_IsVariant: 0
