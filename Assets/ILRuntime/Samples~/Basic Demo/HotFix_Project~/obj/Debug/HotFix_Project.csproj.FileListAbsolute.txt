@@ -1,0 +1,6 @@
+D:\myexe\ILRuntimeU3D\ILRuntimeDemo\Assets\StreamingAssets\HotFix_Project.dll
+D:\myexe\ILRuntimeU3D\ILRuntimeDemo\Assets\StreamingAssets\HotFix_Project.pdb
+D:\myexe\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6.7\Demo\HotFix_Project~\obj\Debug\HotFix_Project.csproj.CoreCompileInputs.cache
+D:\myexe\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6.7\Demo\HotFix_Project~\obj\Debug\HotFix_Project.dll
+D:\myexe\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6.7\Demo\HotFix_Project~\obj\Debug\HotFix_Project.pdb
+D:\myexe\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6.7\Demo\HotFix_Project~\obj\Debug\HotFix_Project.csprojAssemblyReference.cache
