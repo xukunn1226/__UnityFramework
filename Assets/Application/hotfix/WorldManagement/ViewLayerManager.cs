@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Application.Runtime;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public class ViewLayerManager : Singleton<ViewLayerManager>
     {

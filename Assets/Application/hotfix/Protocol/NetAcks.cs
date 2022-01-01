@@ -1,7 +1,9 @@
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
-namespace Application.Runtime
+using Application.Runtime;
+
+namespace Application.HotFix
 {
 
 #region NetAcks

@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Runtime;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public delegate void NetRecvHandler(IMessage msg, NetMsgData data);
 

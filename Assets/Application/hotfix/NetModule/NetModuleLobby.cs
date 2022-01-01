@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Google.Protobuf;
 using UnityEngine;
+using Application.Runtime;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public class NetModuleLobby : NetBaseModule
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     /// <summary>
     /// 事件系统 ———— ！！！系统存在漏洞，不推荐使用：当传入匿名函数时有问题

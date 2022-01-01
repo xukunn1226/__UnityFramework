@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Application.Runtime;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     /// <summary>
     /// 不同层级视角下角色表现方式

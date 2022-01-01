@@ -1,7 +1,7 @@
-
+using Application.Runtime;
 using Google.Protobuf;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {    
     public interface INetModule
     {

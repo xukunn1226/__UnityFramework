@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public static class NetModuleUtility
     {

@@ -240,17 +240,18 @@ namespace Application.Runtime
             }            
         }
 
+        // TODO: 
         private void OnGUI()
         {
             if(GUI.Button(new Rect(Screen.width-200, Screen.height/2, 200, 100), "Create Actors"))
             {
-                for(int i = 0; i < 20; ++i)
-                    TestActorManager.CreateActor();
+                // for(int i = 0; i < 20; ++i)
+                //     TestActorManager.CreateActor();
             }
 
             if(GUI.Button(new Rect(Screen.width-200, Screen.height/2 - 120, 200, 100), "Destroy Actors"))
             {
-                TestActorManager.DestroyRandom();
+                // TestActorManager.DestroyRandom();
             }
         }
     }

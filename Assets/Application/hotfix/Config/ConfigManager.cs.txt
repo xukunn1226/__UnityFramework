@@ -4,7 +4,7 @@ using UnityEngine;
 using System.IO;
 using Mono.Data.Sqlite;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public partial class ConfigManager : Singleton<ConfigManager>
     {

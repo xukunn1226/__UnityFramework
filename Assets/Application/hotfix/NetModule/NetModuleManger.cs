@@ -2,8 +2,9 @@ using Framework.Core;
 using Google.Protobuf;
 using System.Collections;
 using System.Collections.Generic;
+using Application.Runtime;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public class NetModuleManager : Singleton<NetModuleManager>
     {

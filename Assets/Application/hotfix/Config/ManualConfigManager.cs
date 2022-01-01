@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using Framework.Core;
+using Application.Runtime;
 using Mono.Data.Sqlite;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public partial class ConfigManager : Singleton<ConfigManager>
     {

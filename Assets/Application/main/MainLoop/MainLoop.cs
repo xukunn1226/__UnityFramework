@@ -2,10 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
-using Framework.NetWork;
-using Framework.AssetManagement.Runtime;
-using NetProtocol;
-using Google.Protobuf;
 using System;
 using System.Threading.Tasks;
 #if UNITY_EDITOR
@@ -27,7 +23,7 @@ namespace Application.Runtime
         public int              Port               = 11000;
         public bool             AutoConnect;
         private float           m_TimeToLostFocus;
-        public GameState        DefaultMode;
+        public Application.HotFix.GameState        DefaultMode;
 
         IEnumerator Start()
         {
@@ -39,15 +35,16 @@ namespace Application.Runtime
             yield return null;
             yield return null;
 
-            NetModuleManager.Instance.Init();
+            // TODO:
+            // NetModuleManager.Instance.Init();
 
-            if(Launcher.GetLauncherMode() == LoaderType.FromStreamingAssets)
-            { // 仅FromStreamingAssets时需要提取db，FromEditor从本地读取，FromPersistent会首次启动时提取
-                yield return StartCoroutine(ConfigManager.ExtractDatabase());
-            }
+            // if(Launcher.GetLauncherMode() == LoaderType.FromStreamingAssets)
+            // { // 仅FromStreamingAssets时需要提取db，FromEditor从本地读取，FromPersistent会首次启动时提取
+            //     yield return StartCoroutine(ConfigManager.ExtractDatabase());
+            // }
 
-            //GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
-            //LuaMainLoop.Init();
+            // //GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
+            // //LuaMainLoop.Init();
 
             if (AutoConnect)
             {
@@ -55,8 +52,8 @@ namespace Application.Runtime
                 _ = Connect();
             }
 
-            GameModeManager.Instance.SwitchTo(DefaultMode);
-            AudioManager.PlayBGM("event:/Ambience/City");
+            // GameModeManager.Instance.SwitchTo(DefaultMode);
+            // AudioManager.PlayBGM("event:/Ambience/City");
             
             yield break;
         }
@@ -70,7 +67,7 @@ namespace Application.Runtime
         void Update()
         {
             // LuaMainLoop.Tick();
-            SingletonBase.Update(Time.deltaTime);
+            // SingletonBase.Update(Time.deltaTime);        // TODO:
 
             // 测试发数据
             //if (NetManager.Instance.state == ConnectState.Connected && Time.frameCount % 100 == 0)
@@ -81,7 +78,7 @@ namespace Application.Runtime
 
         public void ReturnToLauncher()
         {
-            SingletonBase.DestroyAll();
+            // SingletonBase.DestroyAll();      // TODO:
 
             StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
             ctx.sceneName = kEmptySceneName;
@@ -137,7 +134,7 @@ namespace Application.Runtime
             Debug.Log($"MainLoop: receive data   {msgs.Count}");
             foreach(var msg in msgs)
             {
-                NetModuleManager.Instance.DispatchMsg(msg);
+                // NetModuleManager.Instance.DispatchMsg(msg);      // TODO:
                 NetMsgData.Release(msg);
             }
         }

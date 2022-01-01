@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public class buttonConfig
     {

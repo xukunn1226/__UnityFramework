@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Application.Runtime
+namespace Application.HotFix
 {
     public class ConfigBuilderSetting : MonoBehaviour
     {
@@ -11,7 +11,7 @@ namespace Application.Runtime
         static public string    ConfigManagerScriptFilePath     = "Assets/Application/hotfix/Config/ConfigManager.cs";
         static public string    ConfigManagerTemplateFilePath   = "Assets/Application/hotfix/Config/ConfigManager.cs.txt";
         static public string    DatabaseFilePath                = "Assets/Application/hotfix/SQLite/Editor/config.db";      // 导出的数据库
-        static public string    Namespace                       = "Application.Runtime";
+        static public string    Namespace                       = "Application.HotFix";
         static public string    Suffix                          = "Config";
     }
 }
