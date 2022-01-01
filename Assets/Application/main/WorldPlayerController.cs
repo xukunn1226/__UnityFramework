@@ -5,9 +5,11 @@ using Framework.Gesture.Runtime;
 using Framework.Core;
 
 namespace Application.Runtime
-{    
+{
     public class WorldPlayerController : PlayerController
     {
+        static public System.Action<ViewLayer, float> onViewLayerUpdate;
+
         public WorldCamera              virtualCamera;
         private Plane                   m_Ground;               // 虚拟水平面
         [Tooltip("水平面高度")]
@@ -212,16 +214,14 @@ namespace Application.Runtime
             }
             Debug.Assert(layer != -1);
             cameraViewLayer = (ViewLayer)layer;
-            cameraViewLayerAlpha = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);            
+            cameraViewLayerAlpha = (height - (GroundZ + ViewHeights[layer].x)) / (ViewHeights[layer].y - ViewHeights[layer].x);
+
+            onViewLayerUpdate?.Invoke(cameraViewLayer, cameraViewLayerAlpha);
         }
 
         private void Update()
         {
             UpdateViewLayer();
-
-            // ViewLayerManager.Update(Time.deltaTime);
-            // LocomotionManager.Update(Time.deltaTime);
-            // AISimpleManager.Update(Time.deltaTime);
 
             InputForDebug();
         }
@@ -253,6 +253,17 @@ namespace Application.Runtime
                 TestActorManager.DestroyRandom();
             }
         }
+    }
+    
+    // 视野层级
+    public enum ViewLayer
+    {
+        ViewLayer_Invalid = -1,
+        ViewLayer_0,
+        ViewLayer_1,
+        ViewLayer_2,
+        ViewLayer_3,
+        ViewLayer_Max,
     }
 }
 

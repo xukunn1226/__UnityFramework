@@ -6,100 +6,116 @@ namespace Application.Runtime
 {
     public class ViewLayerManager : Singleton<ViewLayerManager>
     {
-        private int                                     s_Id            = 0;
-        private Dictionary<int, ViewLayerComponent>[]   s_ViewActorList;                                // [ViewLayer][]
-        private ViewLayer                               s_PrevLayer     = ViewLayer.ViewLayer_Invalid;
-        private ViewLayer                               s_CurLayer      = ViewLayer.ViewLayer_Invalid;
+        private int                                     m_Id            = 0;
+        private Dictionary<int, ViewLayerComponent>[]   m_ViewActorList;                                // [ViewLayer][]
+        private ViewLayer                               m_PrevLayer     = ViewLayer.ViewLayer_Invalid;
+        private ViewLayer                               m_CurLayer      = ViewLayer.ViewLayer_Invalid;
+        private ViewLayer                               m_CameraViewLayer;
+        private float                                   m_CameraViewLayerAlpha;
 
         public int AddInstance(ViewLayerComponent actor)
         {
-            int id = s_Id++;
+            int id = m_Id++;
             for(int layer = (int)actor.minViewLayer; layer <= (int)actor.maxViewLayer; ++layer)
             {
 #if UNITY_EDITOR
-                if(s_ViewActorList[layer].ContainsValue(actor))
+                if(m_ViewActorList[layer].ContainsValue(actor))
                     throw new System.ArgumentException("Failed to AddInstance: ViewActor has exist");
 #endif                
-                s_ViewActorList[layer].Add(id, actor); 
+                m_ViewActorList[layer].Add(id, actor); 
             }
             
-            actor.OnEnter(s_PrevLayer, s_CurLayer);                         // s_PrevLayer可能为Invalid，因为可能没有切换至其他区间
+            actor.OnEnter(m_PrevLayer, m_CurLayer);                         // s_PrevLayer可能为Invalid，因为可能没有切换至其他区间
             return id;
         }
 
         public void RemoveInstance(ViewLayerComponent actor)
         {
 #if UNITY_EDITOR
-            if(s_ViewActorList == null)
+            if(m_ViewActorList == null)
                 throw new System.ArgumentException("RemoveInstance: s_ViewActorList == null");
 #endif
-            actor.OnLeave(s_CurLayer, ViewLayer.ViewLayer_Invalid);
+            actor.OnLeave(m_CurLayer, ViewLayer.ViewLayer_Invalid);
             for(int layer = (int)actor.minViewLayer; layer <= (int)actor.maxViewLayer; ++layer)
             {
 #if UNITY_EDITOR
-                if(!s_ViewActorList[layer].ContainsKey(actor.id))
+                if(!m_ViewActorList[layer].ContainsKey(actor.id))
                     throw new System.ArgumentException($"Failed to RemoveInstance: ID {actor.id} has not exist");
 #endif                
-                s_ViewActorList[layer].Remove(actor.id);
+                m_ViewActorList[layer].Remove(actor.id);
             }
         }
         
         protected override void InternalInit()
         {
-            if(s_ViewActorList == null)
+            if(m_ViewActorList == null)
             {
                 int countOfLayer = (int)ViewLayer.ViewLayer_Max;
-                s_ViewActorList = new Dictionary<int, ViewLayerComponent>[countOfLayer];
+                m_ViewActorList = new Dictionary<int, ViewLayerComponent>[countOfLayer];
                 for(int i = 0; i < countOfLayer; ++i)
                 {
-                    s_ViewActorList[i] = new Dictionary<int, ViewLayerComponent>();
+                    m_ViewActorList[i] = new Dictionary<int, ViewLayerComponent>();
                 }
             }
-        } 
+
+            WorldPlayerController.onViewLayerUpdate += OnViewLayerUpdate;
+        }
+
+        protected override void OnDestroy()
+        {
+            WorldPlayerController.onViewLayerUpdate -= OnViewLayerUpdate;
+            base.OnDestroy();
+        }
+
+        private void OnViewLayerUpdate(ViewLayer layer, float alpha)
+        {
+            m_CameraViewLayer = layer;
+            m_CameraViewLayerAlpha = alpha;
+        }
 
         protected override void OnUpdate(float deltaTime)
         {
             if(WorldPlayerController.Instance == null)
                 return;
 
-            if(s_ViewActorList == null)
+            if(m_ViewActorList == null)
             { // 尚未有对象加入
                 return;
             }
 
-            ViewLayer layer = ((WorldPlayerController)PlayerController.Instance).cameraViewLayer;
-            float alpha = ((WorldPlayerController)PlayerController.Instance).cameraViewLayerAlpha;
+            // ViewLayer layer = ((WorldPlayerController)PlayerController.Instance).cameraViewLayer;
+            // float alpha = ((WorldPlayerController)PlayerController.Instance).cameraViewLayerAlpha;
 
             Dictionary<int, ViewLayerComponent> dict;
-            if(s_CurLayer != layer)
+            if(m_CurLayer != m_CameraViewLayer)
             {
                 // fire OnLeave event
-                if(s_CurLayer != ViewLayer.ViewLayer_Invalid)
+                if(m_CurLayer != ViewLayer.ViewLayer_Invalid)
                 {
-                    dict = s_ViewActorList[(int)s_CurLayer];
+                    dict = m_ViewActorList[(int)m_CurLayer];
                     foreach (var item in dict)
                     {
-                        item.Value.OnLeave(s_CurLayer, layer);
+                        item.Value.OnLeave(m_CurLayer, m_CameraViewLayer);
                     }
                 }
 
-                s_PrevLayer = s_CurLayer;
-                s_CurLayer = layer;
+                m_PrevLayer = m_CurLayer;
+                m_CurLayer = m_CameraViewLayer;
 
                 // fire OnEnter event
-                dict = s_ViewActorList[(int)s_CurLayer];
+                dict = m_ViewActorList[(int)m_CurLayer];
                 foreach(var item in dict)
                 {
-                    item.Value.OnEnter(s_PrevLayer, s_CurLayer);
+                    item.Value.OnEnter(m_PrevLayer, m_CurLayer);
                 }
             }
             else
             {
-                Debug.Assert(s_CurLayer != ViewLayer.ViewLayer_Invalid);
-                dict = s_ViewActorList[(int)s_CurLayer];
+                Debug.Assert(m_CurLayer != ViewLayer.ViewLayer_Invalid);
+                dict = m_ViewActorList[(int)m_CurLayer];
                 foreach(var item in dict)
                 {
-                    item.Value.OnViewUpdate(s_CurLayer, alpha);
+                    item.Value.OnViewUpdate(m_CurLayer, m_CameraViewLayerAlpha);
                 }
             }
         }
