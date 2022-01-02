@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Application.Runtime
 {
-    public class CodeModeStartup : MonoBehaviour
+    public class ILStartup : MonoBehaviour
     {
         public CodeMode CodeMode = CodeMode.Mono;
 		
