@@ -88,8 +88,8 @@ namespace Application.Runtime
         public static void RegisterAdaptor(ILRuntime.Runtime.Enviorment.AppDomain appdomain)
         {
             // 这里需要注册所有热更DLL中用到的跨域继承Adapter，否则无法正确抓取引用
-            appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());            
-            appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdaptor());
+            appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineAdapter());            
+            appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
             appdomain.RegisterCrossBindingAdaptor(new CoroutineAdaptor());
             appdomain.RegisterValueTypeBinder(typeof(UnityEngine.Vector3), new Vector3Binder());
             appdomain.RegisterValueTypeBinder(typeof(UnityEngine.Vector2), new Vector2Binder());
