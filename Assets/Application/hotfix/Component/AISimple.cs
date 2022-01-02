@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     // 简单AI：控制角色的移动及动画表现
     public class AISimple : ZComp

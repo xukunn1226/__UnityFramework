@@ -4,7 +4,7 @@ using UnityEngine;
 using Google.Protobuf;
 using Application.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class NetModuleLogin : NetBaseModule
     {

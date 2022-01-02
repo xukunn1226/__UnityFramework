@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {    
     public class Renderable : ZComp
     {

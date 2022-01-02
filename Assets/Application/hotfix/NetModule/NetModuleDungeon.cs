@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Application.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class NetModuleDungeon : NetBaseModule
     {

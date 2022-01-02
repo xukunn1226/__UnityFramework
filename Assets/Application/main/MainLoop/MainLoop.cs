@@ -23,7 +23,7 @@ namespace Application.Runtime
         public int              Port               = 11000;
         public bool             AutoConnect;
         private float           m_TimeToLostFocus;
-        public Application.HotFix.GameState        DefaultMode;
+        // public Application.Logic.GameState        DefaultMode;
 
         IEnumerator Start()
         {
@@ -168,14 +168,14 @@ namespace Application.Runtime
         SerializedProperty m_IPProp;
         SerializedProperty m_PortProp;
         SerializedProperty m_AutoConnectProp;
-        SerializedProperty m_DefaultModeProp;
+        // SerializedProperty m_DefaultModeProp;
 
         void OnEnable()
         {
             m_IPProp = serializedObject.FindProperty("Ip");
             m_PortProp = serializedObject.FindProperty("Port");
             m_AutoConnectProp = serializedObject.FindProperty("AutoConnect");
-            m_DefaultModeProp = serializedObject.FindProperty("DefaultMode");
+            // m_DefaultModeProp = serializedObject.FindProperty("DefaultMode");
         }
 
         async public override void OnInspectorGUI()
@@ -185,7 +185,7 @@ namespace Application.Runtime
             EditorGUILayout.PropertyField(m_IPProp);
             EditorGUILayout.PropertyField(m_PortProp);
             EditorGUILayout.PropertyField(m_AutoConnectProp);
-            EditorGUILayout.PropertyField(m_DefaultModeProp);
+            // EditorGUILayout.PropertyField(m_DefaultModeProp);
 
             if (GUILayout.Button("ReturnToLauncher"))
             {

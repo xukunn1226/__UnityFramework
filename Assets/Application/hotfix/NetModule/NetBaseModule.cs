@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public abstract class NetBaseModule : INetModule
     {

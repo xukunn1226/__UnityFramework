@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mono.Data.Sqlite;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class SqliteDemo : MonoBehaviour
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class ConfigManagerDemo : MonoBehaviour
     {

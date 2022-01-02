@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Application.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     /// <summary>
     /// 不同层级视角下角色表现方式

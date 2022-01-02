@@ -5,7 +5,7 @@ using AnimationInstancingModule.Runtime;
 using Framework.AssetManagement.Runtime;
 using Application.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     /// <summary>
     /// 测试用例，设计显示规则如下：

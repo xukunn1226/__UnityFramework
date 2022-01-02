@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class Singleton<T> : SingletonBase where T : SingletonBase, new()
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class StateMachine<T> where T : System.Enum
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     /// <summary>
     /// 组件基类

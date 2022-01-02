@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     /// <summary>
     /// 事件系统

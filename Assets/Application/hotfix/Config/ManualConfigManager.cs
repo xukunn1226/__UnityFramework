@@ -6,7 +6,7 @@ using Framework.Core;
 using Application.Runtime;
 using Mono.Data.Sqlite;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public partial class ConfigManager : Singleton<ConfigManager>
     {

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public delegate void NetRecvHandler(IMessage msg, NetMsgData data);
 

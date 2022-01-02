@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public sealed class SimpleState<T> : IState<T> where T : System.Enum
     {

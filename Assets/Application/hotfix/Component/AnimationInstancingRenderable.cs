@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AnimationInstancingModule.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class AnimationInstancingRenderable : Renderable
     {

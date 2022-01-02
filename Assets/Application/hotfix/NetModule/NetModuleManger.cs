@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Application.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class NetModuleManager : Singleton<NetModuleManager>
     {

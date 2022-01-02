@@ -4,7 +4,7 @@ using Google.Protobuf;
 using UnityEngine;
 using Application.Runtime;
 
-namespace Application.HotFix
+namespace Application.Logic
 {
     public class NetModuleLobby : NetBaseModule
     {
