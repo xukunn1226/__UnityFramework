@@ -46,15 +46,6 @@ namespace Application.Runtime
             AssetDatabase.Refresh();
 
             Debug.Log("生成适配器完成");
-        }
-
-        [UnityEditor.Callbacks.DidReloadScripts]
-        private static void CopyLogicDLLToStreamingAssets()
-        {
-            Debug.Log("====");
-            // string srcFile = UnityEngine.Application.dataPath.Substring(0, UnityEngine.Application.dataPath.Length - 7) + "/Library/ScriptAssemblies/HotFix_Project.dll";
-            // string dstFile = UnityEngine.Application.streamingAssetsPath + "/HotFix_Project.dll";
-            // File.Copy(srcFile, dstFile, true);
-        }
+        }        
     }
 }

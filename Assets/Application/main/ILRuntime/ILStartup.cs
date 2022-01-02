@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework.AssetManagement.Runtime;
+using Framework.Core;
 
 namespace Application.Runtime
 {
@@ -22,7 +24,27 @@ namespace Application.Runtime
 
 		private void Start()
 		{
-			CodeLoader.Instance.Start(string.Format($"{UnityEngine.Application.dataPath}/../Library/ScriptAssemblies"), "Application.Logic");
+			LoaderType type = Launcher.GetLauncherMode();
+			string dllPath = UnityEngine.Application.streamingAssetsPath;
+			switch(type)
+			{
+				case LoaderType.FromEditor:
+				{
+					dllPath = string.Format($"{UnityEngine.Application.dataPath}/../Library/ScriptAssemblies");
+					break;
+				}
+				case LoaderType.FromStreamingAssets:
+				{
+					dllPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
+					break;
+				}
+				case LoaderType.FromPersistent:
+				{
+					dllPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}");
+					break;
+				}
+			}
+			CodeLoader.Instance.Start(dllPath, "Application.Logic");
 		}
 
 		private void Update()

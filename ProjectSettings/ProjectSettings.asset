@@ -810,6 +810,7 @@ PlayerSettings:
     Standalone: 0
   il2cppCompilerConfiguration:
     Android: 0
+    Standalone: -1
   managedStrippingLevel:
     Android: 1
     Standalone: 1

@@ -23,7 +23,7 @@ MonoBehaviour:
   compressWithLz4HC: 1
   strictMode: 1
   useIL2CPP: 0
-  il2CppCompilerConfiguration: 2
+  il2CppCompilerConfiguration: 1
   useMTRendering: 0
   buildAppBundle: 0
   createSymbols: 0

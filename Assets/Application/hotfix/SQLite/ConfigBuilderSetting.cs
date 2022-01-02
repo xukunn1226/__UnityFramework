@@ -11,7 +11,7 @@ namespace Application.Logic
         static public string    ConfigManagerScriptFilePath     = "Assets/Application/hotfix/Config/ConfigManager.cs";
         static public string    ConfigManagerTemplateFilePath   = "Assets/Application/hotfix/Config/ConfigManager.cs.txt";
         static public string    DatabaseFilePath                = "Assets/Application/hotfix/SQLite/Editor/config.db";      // 导出的数据库
-        static public string    Namespace                       = "Application.HotFix";
+        static public string    Namespace                       = "Application.Logic";
         static public string    Suffix                          = "Config";
     }
 }
