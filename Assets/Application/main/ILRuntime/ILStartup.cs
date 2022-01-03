@@ -49,12 +49,12 @@ namespace Application.Runtime
 
 		private void Update()
 		{
-			CodeLoader.Instance.Update();
+			CodeLoader.Instance.Update?.Invoke();
 		}
 
 		private void OnApplicationQuit()
 		{
-			CodeLoader.Instance.OnApplicationQuit();
+			CodeLoader.Instance.OnApplicationQuit?.Invoke();
 			CodeLoader.Instance.Dispose();
 		}
     }

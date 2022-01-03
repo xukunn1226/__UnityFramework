@@ -1,6 +1,6 @@
 {
   "Count": 66,
-  "TotalSize": 110264377,
+  "TotalSize": 110264384,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
@@ -19,8 +19,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "ab482c5a73e3de2d3475ec8c5dff6f18",
-      "Size": 3618
+      "FileHash": "7292b5c459dd137b87f241497f2b3d17",
+      "Size": 3619
     },
     {
       "BundleName": "FMOD/Dialogue_CN.bank",
@@ -239,8 +239,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "6bd2062354e4ad56ee832bd033f792e6",
-      "Size": 1098064
+      "FileHash": "4e7b30d5630b1e3fd41a951f6448e5cf",
+      "Size": 1098070
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",

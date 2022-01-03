@@ -25,7 +25,7 @@ namespace Application.Logic
         {
             if(m_addedHandlers.TryGetValue(msgId,out NetRecvHandler lastHandler))
             {
-                GameDebug.LogError($"Can not add handler with msg id which already exist in the receiver");
+                UnityEngine.Debug.LogError($"Can not add handler with msg id which already exist in the receiver");
                 manager.RemoveReceiver(msgId, lastHandler);
             }
             m_addedHandlers.Add(msgId, handler);
@@ -40,7 +40,7 @@ namespace Application.Logic
             }
             else
             {
-                GameDebug.LogError($"Can not found handler with msgid [{msgId}]");
+                UnityEngine.Debug.LogError($"Can not found handler with msgid [{msgId}]");
             }
         }
 

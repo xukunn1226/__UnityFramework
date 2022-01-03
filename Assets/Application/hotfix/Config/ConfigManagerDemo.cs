@@ -21,9 +21,9 @@ namespace Application.Logic
                     Debug.LogWarning(player.Name);
                     Debug.Log(player.HP);
                     Debug.Log(player.MonsterDesc);
-                    GameDebug.LogError("33333333333");
-                    GameDebug.LogWarning("5555555555555");
-                    GameDebug.Log("777777777777");
+                    UnityEngine.Debug.LogError("33333333333");
+                    UnityEngine.Debug.LogWarning("5555555555555");
+                    UnityEngine.Debug.Log("777777777777");
                 }
             player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 0);
             player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "nanchang", 2);

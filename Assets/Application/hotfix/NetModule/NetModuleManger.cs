@@ -71,7 +71,7 @@ namespace Application.Logic
             }
             else
             {
-                GameDebug.LogError($"Unkown msg [{msgId}]");
+                UnityEngine.Debug.LogError($"Unkown msg [{msgId}]");
                 return "Unknown";
             }
 #else
@@ -84,7 +84,7 @@ namespace Application.Logic
 #if DEBUG
             if (!m_ignoreMsgIgds.Contains(data.MsgID))
             {
-                GameDebug.Log($"[Net]Receiving msg [{GetMsgName(data.MsgID)}]");
+                UnityEngine.Debug.Log($"[Net]Receiving msg [{GetMsgName(data.MsgID)}]");
             }
 #endif
             int moduleid = data.GetTypeID();
@@ -110,7 +110,7 @@ namespace Application.Logic
         public void SendData(int msgid)
         {
 #if DEBUG
-            GameDebug.Log($"[Net]Sending msg [{GetMsgName(msgid)}]");
+            UnityEngine.Debug.Log($"[Net]Sending msg [{GetMsgName(msgid)}]");
 #endif
             NetManager.Instance.SendData(msgid);
         }
@@ -126,7 +126,7 @@ namespace Application.Logic
 #if DEBUG
             if (!m_ignoreMsgIgds.Contains(msgid))
             {
-                GameDebug.Log($"[Net]Sending msg [{GetMsgName(msgid)}]");
+                UnityEngine.Debug.Log($"[Net]Sending msg [{GetMsgName(msgid)}]");
             }
 #endif
             NetManager.Instance.SendData(msgid, req);
@@ -165,7 +165,7 @@ namespace Application.Logic
                 if(ack == null)
                 {
 #if DEBUG
-                    GameDebug.Log($"received msg [{GetMsgName(msgId)}] parsing error.");
+                    UnityEngine.Debug.Log($"received msg [{GetMsgName(msgId)}] parsing error.");
 #endif
                 }
                 foreach (var handler in handlers)

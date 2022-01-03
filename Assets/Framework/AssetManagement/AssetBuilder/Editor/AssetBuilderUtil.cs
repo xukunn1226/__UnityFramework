@@ -8,7 +8,7 @@ namespace Framework.AssetManagement.AssetBuilder
 {
     static internal class AssetBuilderUtil
     {
-        [MenuItem("Tools/Clear All BundleName")]
+        // [MenuItem("Tools/Clear All BundleName")]
         static private void ClearAllBundleNames()
         {
             string[] guids = AssetDatabase.FindAssets("*");

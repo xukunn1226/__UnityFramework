@@ -2,8 +2,7 @@ using Framework.Cache;
 using System;
 
 namespace Application.Runtime
-{
-        
+{        
     public class NetMsgData : IPooledObject
     {
         static private ObjectPool<NetMsgData>   m_Pool;
@@ -51,7 +50,6 @@ namespace Application.Runtime
             UnityEngine.Debug.LogError($"NetMsgData->CopyFrom copyLen too large : {copyLen}");
             return false;
         }
-        
 
         public void OnInit()
         {

@@ -119,7 +119,7 @@ namespace Application.Logic
         private void OnClientReady(IMessage msg, NetMsgData data)
         {
             // 收到服务器场景开始标志
-            GameDebug.Log($"On client ready");
+            UnityEngine.Debug.Log($"On client ready");
 
 
         }

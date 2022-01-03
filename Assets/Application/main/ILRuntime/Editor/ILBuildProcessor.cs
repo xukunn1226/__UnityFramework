@@ -14,6 +14,7 @@ namespace Application.Runtime
 
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
             {
+                ILRuntimeCLRBinding.GenerateCLRBindingByAnalysis();
                 CopyLogicDLLToStreamingAssets();
             }
         }
@@ -21,6 +22,7 @@ namespace Application.Runtime
         [UnityEditor.Callbacks.DidReloadScripts]
         private static void CopyLogicDLLToStreamingAssets()
         {
+            Debug.Log("CopyLogicDLLToStreamingAssets");
             const string filename = "Application.Logic";
             string srcPath = string.Format($"{UnityEngine.Application.dataPath}/../Library/ScriptAssemblies");
             string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
