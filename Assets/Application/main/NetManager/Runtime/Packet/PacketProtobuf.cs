@@ -151,7 +151,7 @@ namespace Application.Runtime
             output.WriteByte((byte)(packetLength >> 16));
             output.WriteByte((byte)(packetLength >> 24));
 
-            // write "packetLength" to packet
+            // write "msgid" to packet
             output.WriteByte((byte)msgid);
             output.WriteByte((byte)(msgid >> 8));
             output.WriteByte((byte)(msgid >> 16));
