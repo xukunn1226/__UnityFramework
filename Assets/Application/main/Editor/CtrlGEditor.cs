@@ -4,11 +4,15 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using Application.Runtime;
+using System;
 
 namespace Application.Editor
 {
     static public class CtrlGEditor
     {
+        public delegate void onPreprocessQuickLaunch();
+        static public event onPreprocessQuickLaunch OnPreprocessQuickLaunch;
+
         [MenuItem("Tools/Quick Launch %g", false)]
         static void RunOrStopGame()
         {
@@ -31,7 +35,7 @@ namespace Application.Editor
             {
                 if(buildOther)
                 {
-                    ConfigBuilder.DoRun();
+                    OnPreprocessQuickLaunch?.Invoke();
                 }
 
                 EditorPrefs.SetString("CtrlG_PrevScenePath", EditorSceneManager.GetActiveScene().path);

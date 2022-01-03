@@ -27,6 +27,7 @@ namespace Application.Editor
         static ConfigBuilder()
         {
             BundleBuilder.OnPostprocessBundleBuild += OnPostprocessBundleBuild;
+            CtrlGEditor.OnPreprocessQuickLaunch += DoRun;
         }
 
         static private void OnPostprocessBundleBuild()
