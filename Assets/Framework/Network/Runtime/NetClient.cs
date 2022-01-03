@@ -21,7 +21,7 @@ namespace Framework.NetWork
         void OnPeerConnectFailed(Exception e);                  // 连接失败回调
         void OnPeerClose();                                     // 主动断开连接
         void OnPeerDisconnected(Exception e);                   // 异常断开连接
-        void OnNetworkReceive(in List<TMessage> msgs);          // 网络包回调
+        void OnNetworkReceive(List<TMessage> msgs);             // 网络包回调
         int sendBufferSize          { get; }                    // 发送消息包缓存区大小
         int receiveBufferSize       { get; }                    // 接收消息包缓存区大小
         IPacket<TMessage> parser    { get; }                    // 
@@ -203,7 +203,7 @@ namespace Framework.NetWork
             {
                 int realLength;                 // 单次解析的长度(byte)
                 TMessage msg;
-                bool success = m_Parser.Deserialize(in data, startOffset, totalLength, out realLength, out msg);
+                bool success = m_Parser.Deserialize(data, startOffset, totalLength, out realLength, out msg);
                 if (success)
                     m_MessageList.Add(msg);
 

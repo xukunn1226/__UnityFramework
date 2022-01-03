@@ -76,7 +76,7 @@ namespace Application.Runtime
 
         private const int m_HeadLength = 8;         // 报头数据占用的字节长度(前4个字节是msgdata长度，后4个字节是msgid)
 
-        public bool Deserialize(in byte[] data, int offset, int length, out int realLength, out NetMsgData msg)
+        public bool Deserialize(byte[] data, int offset, int length, out int realLength, out NetMsgData msg)
         {
             // 解析报头数据
             if (length < m_HeadLength)

@@ -57,7 +57,10 @@ namespace Framework.NetWork
                     int tail = Tail;        // Tail由主线程维护，记录下来保证子线程作用域中此数值一致性
                     int freeCount = GetConsecutiveUnusedCapacityFromHeadToEnd(head, tail);             // 填充连续的空闲空间                
                     if (freeCount == 0)
-                        throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {head}     Tail: {tail}   Time: {DateTime.Now.ToString()}");
+                    {
+                        continue;           // 当没有连续空间时继续等待
+                        // throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {head}     Tail: {tail}   Time: {DateTime.Now.ToString()}");
+                    }
 
                     int receiveByte = m_Stream.Read(Buffer, head, freeCount);
                     AdvanceHead(receiveByte);
@@ -142,89 +145,5 @@ namespace Framework.NetWork
         {
             AdvanceTail(length);
         }
-
-
-
-
-
-        // private async void ReceiveAsync()
-        // {
-        //     try
-        //     {
-        //         while (m_NetClient.state == ConnectState.Connected)
-        //         {
-        //             int freeCount = GetConsecutiveUnusedCapacityFromHeadToEnd();             // 填充连续的空闲空间                
-        //             if (freeCount == 0)
-        //                 throw new ArgumentOutOfRangeException($"ReadAsync: buff is full  Head: {Head}     Tail: {Tail}   Time: {DateTime.Now.ToString()}");
-
-        //             int receiveByte = await m_Stream.ReadAsync(Buffer, Head, freeCount, m_Cts.Token);
-        //             AdvanceHead(receiveByte);
-
-        //             if (receiveByte <= 0)              // 连接中断
-        //             {
-        //                 RaiseException(new Exception("socket disconnected. receiveByte <= 0"));
-        //             }
-        //         }
-        //     }
-        //     catch (SocketException e)
-        //     {
-        //         RaiseException(e);
-        //     }
-        //     catch (ObjectDisposedException e)
-        //     {
-        //         // The NetworkStream is closed
-        //         RaiseException(e);
-        //     }
-        //     catch (InvalidOperationException e)
-        //     {
-        //         // The NetworkStream does not support reading
-        //         RaiseException(e);
-        //     }
-        //     catch (IOException e)
-        //     {
-        //         RaiseException(e);
-        //     }
-        //     catch (ArgumentOutOfRangeException e)
-        //     {
-        //         RaiseException(e);
-        //     }
-        //     catch(TaskCanceledException e)
-        //     {
-        //         if (e.CancellationToken == m_Cts.Token && m_Cts.IsCancellationRequested)
-        //         {
-        //             UnityEngine.Debug.Log("==================== NetStreamReader is cancel normally.");
-        //         }
-        //         else
-        //         {
-        //             RaiseException(e);
-        //         }
-        //     }
-        //     UnityEngine.Debug.Log($"Exit to net reading thread");
-        // }
-
-        //private void foo()
-        //{
-        //    try
-        //    {
-        //        m_Cts.Token.ThrowIfCancellationRequested();
-
-        //        bool moreToDo = true;
-        //        while (moreToDo)
-        //        {
-        //            // Poll on this property if you have to do
-        //            // other cleanup before throwing.
-        //            if (m_Cts.Token.IsCancellationRequested)
-        //            {
-        //                // Clean up here, then...
-        //                m_Cts.Token.ThrowIfCancellationRequested();
-        //            }
-        //        }
-        //    }
-        //    catch (OperationCanceledException e)
-        //    {
-        //        UnityEngine.Debug.Log($"=== {e.Message}");
-        //    }
-        //    UnityEngine.Debug.Log("==Exit reader thread");
-        //}
     }
 }

@@ -6,7 +6,7 @@ namespace Application.Runtime
 {
     public class PacketString : IPacket<string>
     {
-        public bool Deserialize(in byte[] data, int offset, int length, out int realLength, out string msg)
+        public bool Deserialize(byte[] data, int offset, int length, out int realLength, out string msg)
         {
             realLength = length;
             msg = Encoding.ASCII.GetString(data, offset, length);

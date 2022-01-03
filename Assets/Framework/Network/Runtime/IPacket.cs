@@ -13,7 +13,7 @@ namespace Framework.NetWork
         /// <param name="realLength">实际解析的长度</param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        bool Deserialize(in byte[] data, int offset, int length, out int realLength, out T msg);
+        bool Deserialize(byte[] data, int offset, int length, out int realLength, out T msg);
 
         /// <summary>
         /// 序列化消息对象到字节流

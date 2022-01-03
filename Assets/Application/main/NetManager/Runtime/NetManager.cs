@@ -102,7 +102,7 @@ namespace Application.Runtime
             NetMsgData.Release(msg);
         }
 
-        void INetListener<NetMsgData>.OnNetworkReceive(in List<NetMsgData> msgs)
+        void INetListener<NetMsgData>.OnNetworkReceive(List<NetMsgData> msgs)
         {
             //Debug.Log($"receive data: {msgs.Count}");
             m_Listener?.OnNetworkReceive(msgs);

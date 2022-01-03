@@ -4,7 +4,7 @@ namespace Application.Runtime
 {
     public class PacketBinary : IPacket<byte[]>
     {
-        public bool Deserialize(in byte[] data, int offset, int length, out int realLength, out byte[] msg)
+        public bool Deserialize(byte[] data, int offset, int length, out int realLength, out byte[] msg)
         {
             realLength = 0;
             msg = null;
