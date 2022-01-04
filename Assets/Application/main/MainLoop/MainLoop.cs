@@ -24,6 +24,8 @@ namespace Application.Runtime
         public bool             AutoConnect;
         private float           m_TimeToLostFocus;
         // public Application.Logic.GameState        DefaultMode;
+        public CodeMode         codeMode            = CodeMode.Mono;
+        private ILStartup       codeStartup;
 
         IEnumerator Start()
         {
@@ -34,6 +36,9 @@ namespace Application.Runtime
             yield return null;
             yield return null;
             yield return null;
+
+            codeStartup = gameObject.AddComponent<ILStartup>();
+            codeStartup.codeMode = codeMode;
 
             // TODO:
             // NetModuleManager.Instance.Init();
@@ -46,11 +51,11 @@ namespace Application.Runtime
             // //GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
             // //LuaMainLoop.Init();
 
-            if (AutoConnect)
-            {
-                NetManager.Instance.SetListener(this);
-                _ = Connect();
-            }
+            // if (AutoConnect)
+            // {
+            //     NetManager.Instance.SetListener(this);
+            //     _ = Connect();
+            // }
 
             // GameModeManager.Instance.SwitchTo(DefaultMode);
             // AudioManager.PlayBGM("event:/Ambience/City");
@@ -68,12 +73,6 @@ namespace Application.Runtime
         {
             // LuaMainLoop.Tick();
             // SingletonBase.Update(Time.deltaTime);        // TODO:
-
-            // 测试发数据
-            //if (NetManager.Instance.state == ConnectState.Connected && Time.frameCount % 100 == 0)
-            //{
-            //    NetManager.Instance.SendData(1);
-            //}
         }
 
         public void ReturnToLauncher()

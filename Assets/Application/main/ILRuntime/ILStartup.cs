@@ -8,7 +8,13 @@ namespace Application.Runtime
 {
     public class ILStartup : MonoBehaviour
     {
-        public CodeMode CodeMode = CodeMode.Mono;
+		[SerializeField]
+        private CodeMode 	m_CodeMode = CodeMode.Mono;
+		public CodeMode 	codeMode
+		{
+			get { return m_CodeMode; }
+			set { CodeLoader.Instance.codeMode = value; }
+		}
 		
 		private void Awake()
 		{
@@ -16,10 +22,8 @@ namespace Application.Runtime
 			{
 				Debug.LogError(e.ExceptionObject.ToString());
 			};
-						
-			DontDestroyOnLoad(gameObject);
-
-			CodeLoader.Instance.codeMode = this.CodeMode;
+			
+			codeMode = this.m_CodeMode;
 		}
 
 		private void Start()
@@ -56,6 +60,11 @@ namespace Application.Runtime
 		{
 			CodeLoader.Instance.OnApplicationQuit?.Invoke();
 			CodeLoader.Instance.Dispose();
+		}
+
+		private void OnApplicationFocus(bool isFocus)
+		{
+
 		}
     }
 }

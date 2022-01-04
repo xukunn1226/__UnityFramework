@@ -15,7 +15,7 @@ namespace Logic
 
         static public void Update()
         {
-            Debug.Log("Update");
+            // Debug.Log("Update");
         }
     }
 }
