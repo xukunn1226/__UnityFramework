@@ -1,0 +1,24 @@
+{
+    "name": "Application.Logic.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d4d02809d0795c54d961ea024b1e5526",
+        "GUID:4640eea12395f1345b1a9417e3fa72a9",
+        "GUID:ce1f8f4f612bcfe498902f71ff4dd0bf",
+        "GUID:0c752da273b17c547ae705acf0f2adf2",
+        "GUID:aab3caaf43456d6449a3e035348ff798",
+        "GUID:0d4ca0a1456d45249868451c04281519",
+        "GUID:68848b40850af254ab55192e02c21b0f"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
