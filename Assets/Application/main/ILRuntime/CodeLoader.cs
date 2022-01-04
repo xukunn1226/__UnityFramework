@@ -16,14 +16,16 @@ namespace Application.Runtime
 	
     public class CodeLoader : System.IDisposable
     {
-        public static CodeLoader Instance = new CodeLoader();
-        public System.Action    Update;
-		public System.Action    OnApplicationQuit;
+        public static CodeLoader    Instance = new CodeLoader();
+        public System.Action        Update;
+		public System.Action        OnApplicationQuit;
+        public System.Action<bool>  OnApplicationFocus;
+        public System.Action        OnDestroy;
 
-        public CodeMode         codeMode    { get; set; }
-        private Assembly        m_Assembly;
-        private AppDomain       m_AppDomain;
-        private System.Type[]   allTypes;
+        public CodeMode             codeMode    { get; set; }
+        private Assembly            m_Assembly;
+        private AppDomain           m_AppDomain;
+        private System.Type[]       allTypes;
 
         private CodeLoader()
         {}

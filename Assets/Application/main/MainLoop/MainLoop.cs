@@ -23,7 +23,6 @@ namespace Application.Runtime
         public int              Port               = 11000;
         public bool             AutoConnect;
         private float           m_TimeToLostFocus;
-        // public Application.Logic.GameState        DefaultMode;
         public CodeMode         codeMode            = CodeMode.Mono;
         private ILStartup       codeStartup;
 
@@ -56,9 +55,6 @@ namespace Application.Runtime
             //     NetManager.Instance.SetListener(this);
             //     _ = Connect();
             // }
-
-            // GameModeManager.Instance.SwitchTo(DefaultMode);
-            // AudioManager.PlayBGM("event:/Ambience/City");
             
             yield break;
         }
@@ -72,13 +68,10 @@ namespace Application.Runtime
         void Update()
         {
             // LuaMainLoop.Tick();
-            // SingletonBase.Update(Time.deltaTime);        // TODO:
         }
 
         public void ReturnToLauncher()
         {
-            // SingletonBase.DestroyAll();      // TODO:
-
             StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
             ctx.sceneName = kEmptySceneName;
             ctx.scenePath = kEmptyScenePath;
@@ -167,14 +160,14 @@ namespace Application.Runtime
         SerializedProperty m_IPProp;
         SerializedProperty m_PortProp;
         SerializedProperty m_AutoConnectProp;
-        // SerializedProperty m_DefaultModeProp;
+        SerializedProperty m_CodeModeProp;
 
         void OnEnable()
         {
             m_IPProp = serializedObject.FindProperty("Ip");
             m_PortProp = serializedObject.FindProperty("Port");
             m_AutoConnectProp = serializedObject.FindProperty("AutoConnect");
-            // m_DefaultModeProp = serializedObject.FindProperty("DefaultMode");
+            m_CodeModeProp = serializedObject.FindProperty("codeMode");
         }
 
         async public override void OnInspectorGUI()
@@ -184,7 +177,7 @@ namespace Application.Runtime
             EditorGUILayout.PropertyField(m_IPProp);
             EditorGUILayout.PropertyField(m_PortProp);
             EditorGUILayout.PropertyField(m_AutoConnectProp);
-            // EditorGUILayout.PropertyField(m_DefaultModeProp);
+            EditorGUILayout.PropertyField(m_CodeModeProp);
 
             if (GUILayout.Button("ReturnToLauncher"))
             {

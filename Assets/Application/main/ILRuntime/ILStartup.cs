@@ -26,6 +26,12 @@ namespace Application.Runtime
 			codeMode = this.m_CodeMode;
 		}
 
+		private void OnDestroy()
+		{
+			CodeLoader.Instance.OnDestroy?.Invoke();
+			CodeLoader.Instance.Dispose();
+		}
+
 		private void Start()
 		{
 			LoaderType type = Launcher.GetLauncherMode();
