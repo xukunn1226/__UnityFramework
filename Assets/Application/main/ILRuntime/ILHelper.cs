@@ -63,24 +63,6 @@ namespace Application.Runtime
                 });
             });
 
-            // appdomain.DelegateManager.RegisterDelegateConvertor<Framework.Core.StreamingLevelManager.Action>((act) =>
-            // {
-            //     return new Framework.Core.StreamingLevelManager.Action((sceneName) =>
-            //     {
-            //         ((Action<System.String>)act)(sceneName);
-            //     });
-            // });
-
-
-            //             appdomain.DelegateManager.RegisterDelegateConvertor<Framework.Core.StreamingLevelManager.LevelOperationEnd>((act) =>
-            // {
-            //     return new Framework.Core.StreamingLevelManager.LevelOperationEnd((sceneName) =>
-            //     {
-            //         ((Action<System.String>)act)(sceneName);
-            //     });
-            // });
-
-
             // 注册适配器
             RegisterAdaptor(appdomain);
 

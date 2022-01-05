@@ -22,7 +22,7 @@ namespace Application.Runtime
         public System.Action<bool>  OnApplicationFocus;
         public System.Action        OnDestroy;
 
-        public CodeMode             codeMode    { get; set; }
+        public CodeMode             codeMode    { get; set; }        
         private Assembly            m_Assembly;
         private AppDomain           m_AppDomain;
         private System.Type[]       allTypes;
@@ -77,5 +77,21 @@ namespace Application.Runtime
 		{
 			return this.allTypes;
 		}
+
+        static public IStaticMethod GetStaticMethod(string typename, string methodname, int paramCount)
+        {
+            switch(CodeLoader.Instance.codeMode)
+            {
+                case CodeMode.Mono:
+                {
+                    return new MonoStaticMethod(CodeLoader.Instance.m_Assembly, typename, methodname);
+                }
+                case CodeMode.ILRuntime:
+                {
+                    return new ILStaticMethod(CodeLoader.Instance.m_AppDomain, typename, methodname, paramCount);
+                }                
+            }
+            return null;
+        }
     }
 }
