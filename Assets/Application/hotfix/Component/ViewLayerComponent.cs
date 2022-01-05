@@ -19,6 +19,7 @@ namespace Application.Logic
         public ViewLayer   maxViewLayer     { get; set; }
         public int         id               { get; private set; }
 
+        public ViewLayerComponent() {}
         public ViewLayerComponent(ZActor actor) : base(actor) {}
 
         public override void Start()

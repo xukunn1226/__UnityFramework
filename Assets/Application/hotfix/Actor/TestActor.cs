@@ -38,7 +38,7 @@ namespace Application.Logic
             m_LocomotionAgent.startRotation = startRotation;
 
             // 显示组件靠后挂载
-            m_RenderableProxy = AddComponent<TestRenderableProfile>(data);
+            m_RenderableProxy = (TestRenderableProfile)AddComponent(typeof(TestRenderableProfile), data);
 
             m_AI = AddComponent<AISimple>(data);
         }

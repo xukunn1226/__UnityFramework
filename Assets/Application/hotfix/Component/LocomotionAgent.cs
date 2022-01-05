@@ -26,7 +26,9 @@ namespace Application.Logic
         public float    stoppingDistance    { get; set; }
         private bool    m_isReached;
 
-        public LocomotionAgent(ZActor actor) : base(actor) {}
+        public LocomotionAgent() {}
+        public LocomotionAgent(ZActor actor) : base(actor)
+        { }
 
         public override void Prepare(IDataSource data)
         {

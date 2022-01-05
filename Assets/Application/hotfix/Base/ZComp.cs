@@ -10,8 +10,9 @@ namespace Application.Logic
     /// <summary>
     public class ZComp : ZEntity
     {
-        public ZActor actor { get; }
+        public ZActor actor { get; set; }
 
+        public ZComp() {}
         public ZComp(ZActor actor)
         {
             Debug.Assert(actor != null);

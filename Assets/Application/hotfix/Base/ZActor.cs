@@ -30,17 +30,21 @@ namespace Application.Logic
 
         public ZComp AddComponent(Type compType, IDataSource data = null)
         {
-            ZComp comp = (ZComp)Activator.CreateInstance(compType, new object[] { this });
+            // ZComp comp = (ZComp)Activator.CreateInstance(compType, new object[] { this });   // ILRuntime暂不支持传参数的CreateInstance
+            ZComp comp = (ZComp)Activator.CreateInstance(compType);
             if(comp == null)
                 throw new ArgumentException($"the type of {compType} is not ZComp");
+            comp.actor = this;
             m_CompsList.Add(comp);
             comp.Prepare(data);
             return comp;
         }
 
-        public T AddComponent<T>(IDataSource data = null) where T : ZComp
+        public T AddComponent<T>(IDataSource data = null) where T : ZComp, new()
         {
-            T comp = (T)Activator.CreateInstance(typeof(T), new object[] { this });
+            // T comp = (T)Activator.CreateInstance(typeof(T), new object[] { this });          // ILRuntime暂不支持传参数的CreateInstance
+            T comp = (T)Activator.CreateInstance<T>();
+            comp.actor = this;
             m_CompsList.Add(comp);
             comp.Prepare(data);
             return comp;

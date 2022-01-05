@@ -47,7 +47,7 @@ namespace Application.Runtime
                     m_Assembly = Assembly.Load(assemblyBytes, pdbBytes);
                     this.allTypes = m_Assembly.GetTypes();
 
-                    IStaticMethod start = new MonoStaticMethod(m_Assembly, "Logic.Entry", "Start");
+                    IStaticMethod start = new MonoStaticMethod(m_Assembly, "Application.Logic.Entry", "Start");
 					start.Exec();
                     break;
                 }
@@ -66,7 +66,7 @@ namespace Application.Runtime
                     // binder & register
                     ILHelper.InitILRuntime(m_AppDomain);
 
-                    IStaticMethod start = new ILStaticMethod(m_AppDomain, "Logic.Entry", "Start", 0);
+                    IStaticMethod start = new ILStaticMethod(m_AppDomain, "Application.Logic.Entry", "Start", 0);
 					start.Exec();
                     break;
                 }

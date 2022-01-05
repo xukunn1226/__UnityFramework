@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Application.Runtime;
-using Application.Logic;
 
-namespace Logic
+namespace Application.Logic
 {
     static public class Entry
     {

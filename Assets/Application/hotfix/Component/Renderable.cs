@@ -26,6 +26,7 @@ namespace Application.Logic
         private string              m_AssetPath;
         private GameObjectLoader    m_Loader;
 
+        public Renderable() {}
         public Renderable(ZActor actor) : base(actor) {}
 
         public override void Destroy()

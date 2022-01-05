@@ -33,6 +33,8 @@ namespace Application.Runtime
             appdomain.DelegateManager.RegisterMethodDelegate<long, IPEndPoint>();
             appdomain.DelegateManager.RegisterMethodDelegate<ILTypeInstance>();
             appdomain.DelegateManager.RegisterMethodDelegate<AsyncOperation>();
+            appdomain.DelegateManager.RegisterMethodDelegate<Application.Runtime.ViewLayer, float>();
+
             
             
             appdomain.DelegateManager.RegisterFunctionDelegate<UnityEngine.Events.UnityAction>();

@@ -21,7 +21,11 @@ namespace Application.Logic
         private string                          m_SymbolAssetPath;
         private LocomotionAgent                 m_Agent;
 
-        public TestRenderableProfile(ZActor actor) : base(actor) {}
+        public TestRenderableProfile()
+        { }
+
+        public TestRenderableProfile(ZActor actor) : base(actor)
+        { }
 
         public override void Prepare(IDataSource data)
         {

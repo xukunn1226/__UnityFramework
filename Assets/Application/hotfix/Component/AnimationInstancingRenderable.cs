@@ -29,6 +29,7 @@ namespace Application.Logic
             }
         }
         
+        public AnimationInstancingRenderable() {}
         public AnimationInstancingRenderable(ZActor actor) : base(actor) {}
 
         public override void Load(string assetPath)

@@ -23,6 +23,7 @@ namespace Application.Logic
         private float                   m_Time;
         private float                   m_ElapsedTime;
 
+        public AISimple() {}
         public AISimple(ZActor actor) : base(actor) {}
 
         public override void Prepare(IDataSource data)
