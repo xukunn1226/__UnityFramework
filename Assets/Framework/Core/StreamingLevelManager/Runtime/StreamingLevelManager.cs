@@ -17,13 +17,10 @@ namespace Framework.Core
     /// </summary>
     public sealed class StreamingLevelManager : SingletonMono<StreamingLevelManager>
     {
-        public delegate void LevelOperationBegin(string sceneName);
-        public delegate void LevelOperationEnd(string sceneName);
-
-        static public event LevelOperationBegin     onLevelLoadBegin;
-        static public event LevelOperationEnd       onLevelLoadEnd;
-        static public event LevelOperationBegin     onLevelUnloadBegin;
-        static public event LevelOperationEnd       onLevelUnloadEnd;
+        static public Action<string>      onLevelLoadBegin;
+        static public Action<string>      onLevelLoadEnd;
+        static public Action<string>      onLevelUnloadBegin;
+        static public Action<string>      onLevelUnloadEnd;
         
         // LoadScene: InQueue -> Streaming -> Done
         // UnloadScene: Done -> Streaming -> Discard
