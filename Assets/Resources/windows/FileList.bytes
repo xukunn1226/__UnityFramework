@@ -1,16 +1,16 @@
 {
-  "Count": 66,
-  "TotalSize": 110264384,
+  "Count": 64,
+  "TotalSize": 109839951,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "cf161aa9660766abd0dc14eaf328515d",
-      "Size": 5120
+      "FileHash": "c01151b5e8fa05cad5852537f2cfeeeb",
+      "Size": 65536
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "19940c7394b8221a78d1cec825675beb",
-      "Size": 17028
+      "FileHash": "e3918a52ecd1c123c98da410a2f36c6a",
+      "Size": 43456
     },
     {
       "BundleName": "config.db",
@@ -19,23 +19,13 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "7292b5c459dd137b87f241497f2b3d17",
-      "Size": 3619
-    },
-    {
-      "BundleName": "FMOD/Dialogue_CN.bank",
-      "FileHash": "32f20842a6b9a77724d2d86dab0c9682",
-      "Size": 52416
+      "FileHash": "6cdef0e5da362d5901560f28cb51ebda",
+      "Size": 3626
     },
     {
       "BundleName": "FMOD/Dialogue_EN.bank",
       "FileHash": "87593af7b024abd8f061ee1fc9c6f2fa",
       "Size": 61120
-    },
-    {
-      "BundleName": "FMOD/Dialogue_JP.bank",
-      "FileHash": "82bb2e5e0ceb099aa5565e63044211f3",
-      "Size": 66560
     },
     {
       "BundleName": "FMOD/Master.bank",
@@ -89,8 +79,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "3f86f9fc2def6d4a81ae34e0e8afcec0",
-      "Size": 308594
+      "FileHash": "25cd441cb561f8a3133eff3c94af3e08",
+      "Size": 292210
     },
     {
       "BundleName": "assets/res/ui.ab",
@@ -204,8 +194,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/scenes.ab",
-      "FileHash": "135f06350a188f312304cb697a4071fa",
-      "Size": 316583
+      "FileHash": "45ca9b2892083bd7c31709088f9fd6a6",
+      "Size": 37221
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
@@ -239,8 +229,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "4e7b30d5630b1e3fd41a951f6448e5cf",
-      "Size": 1098070
+      "FileHash": "24745289bff101329aed811dc22fe392",
+      "Size": 1001508
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",

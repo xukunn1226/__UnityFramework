@@ -14,7 +14,7 @@ namespace Application.Runtime
 
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
             {
-                ILRuntimeCLRBinding.GenerateCLRBindingByAnalysis();
+                // ILRuntimeCLRBinding.GenerateCLRBindingByAnalysis();
                 CopyLogicDLLToStreamingAssets();
             }
         }

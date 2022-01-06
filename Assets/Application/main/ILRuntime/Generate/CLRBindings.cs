@@ -62,7 +62,6 @@ namespace ILRuntime.Runtime.Generated
             Framework_Core_Utility_Binding.Register(app);
             System_IO_Path_Binding.Register(app);
             System_Array_Binding.Register(app);
-            UnityEditor_EditorApplication_Binding.Register(app);
             System_Byte_Binding.Register(app);
             Framework_Core_DownloadTask_Binding.Register(app);
             Framework_Core_DownloadTaskInfo_Binding.Register(app);
