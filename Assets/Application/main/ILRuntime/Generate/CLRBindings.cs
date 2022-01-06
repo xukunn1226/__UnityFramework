@@ -51,6 +51,7 @@ namespace ILRuntime.Runtime.Generated
             System_ArgumentNullException_Binding.Register(app);
             Framework_AssetManagement_Runtime_AssetManager_Binding.Register(app);
             Framework_AssetManagement_Runtime_GameObjectLoader_Binding.Register(app);
+            Application_Runtime_SqlData_Binding.Register(app);
             System_Data_Common_DbDataReader_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Dictionary_2_Int32_ILTypeInstance_Binding.Register(app);
@@ -58,6 +59,7 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_Dictionary_2_String_Dictionary_2_String_Dictionary_2_Int32_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_Dictionary_2_Int32_ILTypeInstance_Binding.Register(app);
             Application_Runtime_Launcher_Binding.Register(app);
+            Application_Runtime_ConfigBuilderSetting_Binding.Register(app);
             UnityEngine_Application_Binding.Register(app);
             Framework_Core_Utility_Binding.Register(app);
             System_IO_Path_Binding.Register(app);
@@ -95,15 +97,6 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding_Enumerator_Binding.Register(app);
             System_Collections_Generic_LinkedListNode_1_ILTypeInstance_Binding.Register(app);
-            System_Data_Common_DbCommand_Binding.Register(app);
-            System_ComponentModel_Component_Binding.Register(app);
-            System_Data_Common_DbConnection_Binding.Register(app);
-            Mono_Data_Sqlite_SqliteConnection_Binding.Register(app);
-            Mono_Data_Sqlite_SqliteCommand_Binding.Register(app);
-            System_Convert_Binding.Register(app);
-            System_Text_StringBuilder_Binding.Register(app);
-            System_Exception_Binding.Register(app);
-            Mono_Data_Sqlite_SqliteException_Binding.Register(app);
             Application_Runtime_WorldPlayerController_Binding.Register(app);
             Application_Runtime_PlayerController_Binding.Register(app);
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Application.Logic
+namespace Application.Runtime
 {
     public class ConfigBuilderSetting : MonoBehaviour
     {

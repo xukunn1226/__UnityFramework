@@ -4,7 +4,7 @@ using UnityEngine;
 using Mono.Data.Sqlite;
 using System.Text;
 
-namespace Application.Logic
+namespace Application.Runtime
 {
     public class SqlData
     {

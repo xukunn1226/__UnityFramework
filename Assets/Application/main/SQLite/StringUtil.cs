@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Logic
+namespace Application.Runtime
 {
     public class StringUtil
     {
