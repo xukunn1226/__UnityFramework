@@ -92,7 +92,7 @@ namespace Application.Runtime
         public void SendData(int msgid, IMessage data)
         {
             int nLen = data.CalculateSize();
-            byte[] byData = data.ToByteArray();
+            byte[] byData = data.ToByteArray();     // TODO: 待优化，使用IMessage.WriteTo
             
             NetMsgData msg = NetMsgData.Get();
             msg.MsgID = msgid;
@@ -106,6 +106,10 @@ namespace Application.Runtime
         {
             //Debug.Log($"receive data: {msgs.Count}");
             m_Listener?.OnNetworkReceive(msgs);
+            foreach(var msg in msgs)
+            {
+                NetMsgData.Release(msg);
+            }
         }
 
         // 连接成功

@@ -127,7 +127,6 @@ namespace Application.Runtime
             foreach(var msg in msgs)
             {
                 // NetModuleManager.Instance.DispatchMsg(msg);      // TODO:
-                NetMsgData.Release(msg);
             }
         }
 
