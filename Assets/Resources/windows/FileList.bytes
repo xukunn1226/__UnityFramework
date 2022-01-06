@@ -1,16 +1,16 @@
 {
   "Count": 64,
-  "TotalSize": 109839951,
+  "TotalSize": 109825829,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "c01151b5e8fa05cad5852537f2cfeeeb",
-      "Size": 65536
+      "FileHash": "e5e43e80b71cccc17f9c5d4f42809aa7",
+      "Size": 54784
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "e3918a52ecd1c123c98da410a2f36c6a",
-      "Size": 43456
+      "FileHash": "7d35a0f197e9425b84e80e9b5dc17851",
+      "Size": 40088
     },
     {
       "BundleName": "config.db",
@@ -19,8 +19,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "6cdef0e5da362d5901560f28cb51ebda",
-      "Size": 3626
+      "FileHash": "751c15a493cdefd5255506084b39ea03",
+      "Size": 3624
     },
     {
       "BundleName": "FMOD/Dialogue_EN.bank",
@@ -229,7 +229,7 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "24745289bff101329aed811dc22fe392",
+      "FileHash": "1b31d84f9eb6528ac161041966e9e162",
       "Size": 1001508
     },
     {
