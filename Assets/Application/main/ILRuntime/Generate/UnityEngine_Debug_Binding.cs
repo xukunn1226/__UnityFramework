@@ -23,14 +23,57 @@ namespace ILRuntime.Runtime.Generated
             Type[] args;
             Type type = typeof(UnityEngine.Debug);
             args = new Type[]{typeof(System.Object)};
+            method = type.GetMethod("LogError", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, LogError_0);
+            args = new Type[]{typeof(System.Boolean)};
+            method = type.GetMethod("Assert", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, Assert_1);
+            args = new Type[]{typeof(System.Object)};
             method = type.GetMethod("Log", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, Log_0);
+            app.RegisterCLRMethodRedirection(method, Log_2);
+            args = new Type[]{typeof(System.Boolean)};
+            method = type.GetMethod("set_developerConsoleVisible", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, set_developerConsoleVisible_3);
+            args = new Type[]{typeof(System.Object)};
+            method = type.GetMethod("LogWarning", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, LogWarning_4);
 
 
         }
 
 
-        static StackObject* Log_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* LogError_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Object @message = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+
+            UnityEngine.Debug.LogError(@message);
+
+            return __ret;
+        }
+
+        static StackObject* Assert_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Boolean @condition = ptr_of_this_method->Value == 1;
+
+
+            UnityEngine.Debug.Assert(@condition);
+
+            return __ret;
+        }
+
+        static StackObject* Log_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -42,6 +85,37 @@ namespace ILRuntime.Runtime.Generated
 
 
             UnityEngine.Debug.Log(@message);
+
+            return __ret;
+        }
+
+        static StackObject* set_developerConsoleVisible_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Boolean @value = ptr_of_this_method->Value == 1;
+
+
+            UnityEngine.Debug.developerConsoleVisible = value;
+
+            return __ret;
+        }
+
+        static StackObject* LogWarning_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Object @message = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+
+            UnityEngine.Debug.LogWarning(@message);
 
             return __ret;
         }

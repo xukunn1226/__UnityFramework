@@ -31,6 +31,18 @@ namespace ILRuntime.Runtime.Generated
             app.RegisterCLRFieldGetter(field, get_Update_1);
             app.RegisterCLRFieldSetter(field, set_Update_1);
             app.RegisterCLRFieldBinding(field, CopyToStack_Update_1, AssignFromStack_Update_1);
+            field = type.GetField("OnApplicationQuit", flag);
+            app.RegisterCLRFieldGetter(field, get_OnApplicationQuit_2);
+            app.RegisterCLRFieldSetter(field, set_OnApplicationQuit_2);
+            app.RegisterCLRFieldBinding(field, CopyToStack_OnApplicationQuit_2, AssignFromStack_OnApplicationQuit_2);
+            field = type.GetField("OnApplicationFocus", flag);
+            app.RegisterCLRFieldGetter(field, get_OnApplicationFocus_3);
+            app.RegisterCLRFieldSetter(field, set_OnApplicationFocus_3);
+            app.RegisterCLRFieldBinding(field, CopyToStack_OnApplicationFocus_3, AssignFromStack_OnApplicationFocus_3);
+            field = type.GetField("OnDestroy", flag);
+            app.RegisterCLRFieldGetter(field, get_OnDestroy_4);
+            app.RegisterCLRFieldSetter(field, set_OnDestroy_4);
+            app.RegisterCLRFieldBinding(field, CopyToStack_OnDestroy_4, AssignFromStack_OnDestroy_4);
 
 
         }
@@ -87,6 +99,78 @@ namespace ILRuntime.Runtime.Generated
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Action @Update = (System.Action)typeof(System.Action).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
             ((Application.Runtime.CodeLoader)o).Update = @Update;
+            return ptr_of_this_method;
+        }
+
+        static object get_OnApplicationQuit_2(ref object o)
+        {
+            return ((Application.Runtime.CodeLoader)o).OnApplicationQuit;
+        }
+
+        static StackObject* CopyToStack_OnApplicationQuit_2(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
+        {
+            var result_of_this_method = ((Application.Runtime.CodeLoader)o).OnApplicationQuit;
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        static void set_OnApplicationQuit_2(ref object o, object v)
+        {
+            ((Application.Runtime.CodeLoader)o).OnApplicationQuit = (System.Action)v;
+        }
+
+        static StackObject* AssignFromStack_OnApplicationQuit_2(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            System.Action @OnApplicationQuit = (System.Action)typeof(System.Action).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
+            ((Application.Runtime.CodeLoader)o).OnApplicationQuit = @OnApplicationQuit;
+            return ptr_of_this_method;
+        }
+
+        static object get_OnApplicationFocus_3(ref object o)
+        {
+            return ((Application.Runtime.CodeLoader)o).OnApplicationFocus;
+        }
+
+        static StackObject* CopyToStack_OnApplicationFocus_3(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
+        {
+            var result_of_this_method = ((Application.Runtime.CodeLoader)o).OnApplicationFocus;
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        static void set_OnApplicationFocus_3(ref object o, object v)
+        {
+            ((Application.Runtime.CodeLoader)o).OnApplicationFocus = (System.Action<System.Boolean>)v;
+        }
+
+        static StackObject* AssignFromStack_OnApplicationFocus_3(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            System.Action<System.Boolean> @OnApplicationFocus = (System.Action<System.Boolean>)typeof(System.Action<System.Boolean>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
+            ((Application.Runtime.CodeLoader)o).OnApplicationFocus = @OnApplicationFocus;
+            return ptr_of_this_method;
+        }
+
+        static object get_OnDestroy_4(ref object o)
+        {
+            return ((Application.Runtime.CodeLoader)o).OnDestroy;
+        }
+
+        static StackObject* CopyToStack_OnDestroy_4(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
+        {
+            var result_of_this_method = ((Application.Runtime.CodeLoader)o).OnDestroy;
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        static void set_OnDestroy_4(ref object o, object v)
+        {
+            ((Application.Runtime.CodeLoader)o).OnDestroy = (System.Action)v;
+        }
+
+        static StackObject* AssignFromStack_OnDestroy_4(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            System.Action @OnDestroy = (System.Action)typeof(System.Action).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
+            ((Application.Runtime.CodeLoader)o).OnDestroy = @OnDestroy;
             return ptr_of_this_method;
         }
 
