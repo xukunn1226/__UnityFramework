@@ -28,17 +28,17 @@ namespace Application.Logic
             base.Destroy();
         }
 
-        public ZComp AddComponent(Type compType, IDataSource data = null)
-        {
-            // ZComp comp = (ZComp)Activator.CreateInstance(compType, new object[] { this });   // ILRuntime暂不支持传参数的CreateInstance
-            ZComp comp = (ZComp)Activator.CreateInstance(compType);
-            if(comp == null)
-                throw new ArgumentException($"the type of {compType} is not ZComp");
-            comp.actor = this;
-            m_CompsList.Add(comp);
-            comp.Prepare(data);
-            return comp;
-        }
+        // IL jit模式会抛异常，暂屏蔽
+        // public ZComp AddComponent(Type compType, IDataSource data = null)
+        // {
+        //     ZComp comp = (ZComp)Activator.CreateInstance(compType);
+        //     if(comp == null)
+        //         throw new ArgumentException($"the type of {compType} is not ZComp");
+        //     comp.actor = this;
+        //     m_CompsList.Add(comp);
+        //     comp.Prepare(data);
+        //     return comp;
+        // }
 
         public T AddComponent<T>(IDataSource data = null) where T : ZComp, new()
         {
