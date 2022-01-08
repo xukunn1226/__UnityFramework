@@ -272,11 +272,5 @@ namespace Framework.Core.Editor
             process.Close();
             return exit_code;
         }
-
-        [MenuItem("Tools/FindAssetFromGUID")]
-        static private void FindAsset()
-        {
-            Debug.Log(AssetDatabase.GUIDToAssetPath("d1e012d3a8ba4bf418a171f098054dd9"));
-        }
     }
 }
