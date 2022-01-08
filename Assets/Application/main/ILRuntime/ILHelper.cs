@@ -5,7 +5,7 @@ using ILRuntime.Runtime.Stack;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.Utils;
-using ILRuntime.CLR.TypeSystem;
+using Framework.Core;
 using System;
 using System.IO;
 using System.Net;
@@ -34,6 +34,10 @@ namespace Application.Runtime
             appdomain.DelegateManager.RegisterMethodDelegate<ILTypeInstance>();
             appdomain.DelegateManager.RegisterMethodDelegate<AsyncOperation>();
             appdomain.DelegateManager.RegisterMethodDelegate<Application.Runtime.ViewLayer, float>();
+            appdomain.DelegateManager.RegisterMethodDelegate<Framework.Core.DownloadTaskInfo, System.Boolean, System.Int32>();
+            appdomain.DelegateManager.RegisterMethodDelegate<Framework.Core.DownloadTaskInfo, System.String>();
+
+
 
             
             
@@ -49,14 +53,16 @@ namespace Application.Runtime
             appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<int, List<int>>, bool>();
             appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<int, int>, KeyValuePair<int, int>, int>();
             
+
+
+
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction>((act) =>
             {
                 return new UnityEngine.Events.UnityAction(() =>
                 {
                     ((Action)act)();
                 });
-            });
-            
+            });            
             appdomain.DelegateManager.RegisterDelegateConvertor<Comparison<KeyValuePair<int, int>>>((act) =>
             {
                 return new Comparison<KeyValuePair<int, int>>((x, y) =>
@@ -64,9 +70,24 @@ namespace Application.Runtime
                     return ((Func<KeyValuePair<int, int>, KeyValuePair<int, int>, int>)act)(x, y);
                 });
             });
+            appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<System.Boolean>>((act) =>
+            {
+                return new UnityEngine.Events.UnityAction<System.Boolean>((arg0) =>
+                {
+                    ((Action<System.Boolean>)act)(arg0);
+                });
+            });
+
+
+
+
 
             // 注册适配器
             RegisterAdaptor(appdomain);
+
+
+
+
 
             // 注册重定向函数
             LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
@@ -91,7 +112,7 @@ namespace Application.Runtime
         public static void RegisterAdaptor(ILRuntime.Runtime.Enviorment.AppDomain appdomain)
         {
             // 这里需要注册所有热更DLL中用到的跨域继承Adapter，否则无法正确抓取引用
-            appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineAdapter());            
+            appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineAdapter());
             appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
             appdomain.RegisterCrossBindingAdaptor(new CoroutineAdaptor());
             appdomain.RegisterValueTypeBinder(typeof(UnityEngine.Vector3), new Vector3Binder());
@@ -123,6 +144,34 @@ namespace Application.Runtime
             UnityEngine.Debug.Log(message + "\n" + stacktrace);
 
             return __ret;
+        }
+
+        static public IEnumerator ExtractHotFixDLL()
+        {
+            string srcDLLPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
+            string dstDLLPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
+
+            DownloadTask task       = new DownloadTask(new byte[1024]);
+            DownloadTaskInfo info   = new DownloadTaskInfo();
+            info.srcUri             = new System.Uri(srcDLLPath);
+            info.dstURL             = dstDLLPath;
+            info.verifiedHash       = null;
+            info.retryCount         = 3;
+            yield return task.Run(info);
+        }
+
+        static public IEnumerator ExtractHotFixPDB()
+        {
+            string srcPDBPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
+            string dstPDBPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
+
+            DownloadTask task       = new DownloadTask(new byte[1024]);
+            DownloadTaskInfo info   = new DownloadTaskInfo();
+            info.srcUri             = new System.Uri(srcPDBPath);
+            info.dstURL             = dstPDBPath;
+            info.verifiedHash       = null;
+            info.retryCount         = 3;
+            yield return task.Run(info);
         }
     }
 }

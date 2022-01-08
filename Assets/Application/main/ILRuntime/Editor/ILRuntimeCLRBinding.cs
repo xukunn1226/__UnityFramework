@@ -12,7 +12,7 @@ namespace Application.Runtime
         {
             //用新的分析热更dll调用引用来生成绑定代码
             ILRuntime.Runtime.Enviorment.AppDomain domain = new ILRuntime.Runtime.Enviorment.AppDomain();
-            using (FileStream fs = new FileStream("Library/ScriptAssemblies/Application.Logic.dll", FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new FileStream($"Library/ScriptAssemblies/{ILStartup.dllFilename}.dll", FileMode.Open, FileAccess.Read))
             {
                 domain.LoadAssembly(fs);
                 

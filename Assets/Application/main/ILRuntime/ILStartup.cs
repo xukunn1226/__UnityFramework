@@ -8,6 +8,8 @@ namespace Application.Runtime
 {
     public class ILStartup : MonoBehaviour
     {
+		static public string dllFilename = "Application.Logic";		// Assets/Application/hotfix/Application.Logic.asmdef
+
 		[SerializeField]
         private CodeMode 	m_CodeMode = CodeMode.Mono;
 		public CodeMode 	codeMode
@@ -32,8 +34,14 @@ namespace Application.Runtime
 			CodeLoader.Instance.Dispose();
 		}
 
-		private void Start()
+		IEnumerator Start()
 		{
+			if(Launcher.GetLauncherMode() == Framework.AssetManagement.Runtime.LoaderType.FromStreamingAssets)
+            { // 仅FromStreamingAssets时需要提取，FromEditor从本地读取，FromPersistent会首次启动时提取
+                yield return ILHelper.ExtractHotFixDLL();
+				yield return ILHelper.ExtractHotFixPDB();
+            }
+
 			LoaderType type = Launcher.GetLauncherMode();
 			string dllPath = UnityEngine.Application.streamingAssetsPath;
 			switch(type)
@@ -44,17 +52,13 @@ namespace Application.Runtime
 					break;
 				}
 				case LoaderType.FromStreamingAssets:
-				{
-					dllPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
-					break;
-				}
 				case LoaderType.FromPersistent:
 				{
 					dllPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}");
 					break;
 				}
 			}
-			CodeLoader.Instance.Start(dllPath, "Application.Logic");
+			CodeLoader.Instance.Start(dllPath, dllFilename);
 		}
 
 		private void Update()

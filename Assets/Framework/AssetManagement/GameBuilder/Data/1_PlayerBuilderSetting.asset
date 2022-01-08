@@ -22,7 +22,7 @@ MonoBehaviour:
   compressWithLz4: 1
   compressWithLz4HC: 0
   strictMode: 1
-  useIL2CPP: 1
+  useIL2CPP: 0
   il2CppCompilerConfiguration: 1
   useMTRendering: 1
   buildAppBundle: 0
@@ -32,7 +32,7 @@ MonoBehaviour:
   keystorePass: lilith
   keyaliasName: android
   keyaliasPass: lilith
-  macroDefines: LOAD_FROM_PERSISTENT
+  macroDefines: 
   excludedDefines: 
   bOverrideBuildScenes: 0
   overrideBuildScenes: []

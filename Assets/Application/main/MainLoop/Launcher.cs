@@ -106,8 +106,8 @@ namespace Application.Runtime
                 case LaunchPhase.Extracting:
                     break;
                 case LaunchPhase.EndExtract:
-                    // m_Phase = LaunchPhase.BeginPatch;        // 暂时屏蔽patch流程
-                    m_Phase = LaunchPhase.EndPatch;
+                    m_Phase = LaunchPhase.BeginPatch;
+                    // m_Phase = LaunchPhase.EndPatch;
                     break;
                 case LaunchPhase.BeginPatch:
                     if(!ResloveCDN())
