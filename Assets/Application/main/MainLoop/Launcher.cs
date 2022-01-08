@@ -177,14 +177,8 @@ namespace Application.Runtime
 
         IEnumerator DoRestart()
         {
-            // 重启前删除所有单件
-            SingletonMonoBase.DestroyAll();
-
-            yield return null;
-            yield return null;
-            yield return null;
-
             StartWork();
+            yield break;
         }
 
         private void StartBundleExtracted()

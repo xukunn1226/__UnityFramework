@@ -116,7 +116,7 @@ namespace Framework.NetWork
         /// </summary>
         public void Shutdown()
         {
-            UnityEngine.Debug.LogWarning("Shutdown");
+            UnityEngine.Debug.Log("Shutdown");
             
             m_isShutdowning = true;
 

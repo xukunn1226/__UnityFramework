@@ -13,7 +13,6 @@ namespace Framework.Core
     /// </summary>
     public class SingletonMono<T> : SingletonMonoBase where T : MonoBehaviour
     {
-        private static bool applicationIsQuitting = false;
         private static T _instance;
 
         public static T Instance
@@ -54,19 +53,6 @@ namespace Framework.Core
             DontDestroyOnLoad(_instance.gameObject);
 
             Add(this);
-        }
-
-        /// <summary>
-        /// When Unity quits, it destroys objects in a random order.
-        /// In principle, a Singleton is only destroyed when application quits.
-        /// If any script calls Instance after it have been destroyed, 
-        ///   it will create a buggy ghost object that will stay on the Editor scene
-        ///   even after stopping playing the Application. Really bad!
-        /// So, this was made to be sure we're not creating that buggy ghost object.
-        /// </summary>
-        protected virtual void OnDestroy()
-        {
-            applicationIsQuitting = true;        // !!!特殊处理：单件统一在重启游戏时删除并再次创建，故游戏时单件将始终存在
         }
     }
 
