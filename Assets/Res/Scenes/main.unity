@@ -3390,7 +3390,7 @@ MonoBehaviour:
   Ip: 192.168.2.12
   Port: 11000
   AutoConnect: 0
-  codeMode: 1
+  codeMode: 2
 --- !u!1 &1446825332
 GameObject:
   m_ObjectHideFlags: 0

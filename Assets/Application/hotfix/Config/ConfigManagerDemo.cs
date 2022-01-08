@@ -5,13 +5,10 @@ using Framework.Core;
 
 namespace Application.Logic
 {
-    public class ConfigManagerDemo : MonoBehaviour
+    public class ConfigManagerDemo
     {
-        IEnumerator Start()
+        static public void Start()
         {
-            Debug.Log("----------");
-            yield return new WaitForSeconds(1);
-
             Debug.developerConsoleVisible = false;
 
             PlayerConfig player = ConfigManager.Instance.GetPlayerConfigByID("1", "peter", "shanghai", 100);

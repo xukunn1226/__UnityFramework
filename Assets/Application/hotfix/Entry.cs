@@ -50,6 +50,8 @@ namespace Application.Logic
             CodeLoader.Instance.OnApplicationFocus  += OnApplicationFocus;
             CodeLoader.Instance.OnDestroy           += OnDestroy;
             GameModeManager.Instance.SwitchTo(GameState.World);
+
+            // ConfigManagerDemo.Start();
         }
     }
 }

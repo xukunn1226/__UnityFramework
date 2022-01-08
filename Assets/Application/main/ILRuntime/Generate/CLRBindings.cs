@@ -78,13 +78,12 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_Dictionary_2_String_Int32_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_String_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_Single_Binding.Register(app);
-            UnityEngine_WaitForSeconds_Binding.Register(app);
-            System_NotSupportedException_Binding.Register(app);
             Application_Runtime_CoroutineExtension_Binding.Register(app);
             Application_Runtime_CoroutineHandler_Binding.Register(app);
             UnityEngine_Events_UnityEvent_1_Boolean_Binding.Register(app);
             Application_Runtime_CodeLoader_Binding.Register(app);
             UnityEngine_Time_Binding.Register(app);
+            System_NotSupportedException_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Enum_Action_1_ILTypeInstance_Binding.Register(app);
             System_Action_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_ILTypeInstance_Binding.Register(app);
