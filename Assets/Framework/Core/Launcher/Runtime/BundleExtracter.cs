@@ -181,8 +181,8 @@ namespace Framework.Core
         private IEnumerator Extracting()
         {
             OnExtractBegin();
-            string srcUriPrefix = Path.Combine(Application.streamingAssetsPath, Utility.GetPlatformName());
-            string dstURLPrefix = Path.Combine(Application.persistentDataPath, Utility.GetPlatformName());
+            string srcUriPrefix = string.Format($"{Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
+            string dstURLPrefix = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}");
             while (true)
             {
                 foreach (var task in m_TaskWorkerList)
@@ -207,8 +207,8 @@ namespace Framework.Core
 
                     // begin to extract file
                     DownloadTaskInfo info   = new DownloadTaskInfo();
-                    info.srcUri             = new System.Uri(Path.Combine(srcUriPrefix, fileInfo.BundleName));
-                    info.dstURL             = Path.Combine(dstURLPrefix, fileInfo.BundleName);
+                    info.srcUri             = new System.Uri(string.Format($"{srcUriPrefix}/{fileInfo.BundleName}"));
+                    info.dstURL             = string.Format($"{dstURLPrefix}/{fileInfo.BundleName}");
                     info.verifiedHash       = fileInfo.FileHash;
                     info.retryCount         = 3;
                     info.onProgress         = OnProgress;

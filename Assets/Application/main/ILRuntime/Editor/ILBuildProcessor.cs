@@ -22,6 +22,12 @@ namespace Application.Runtime
         [UnityEditor.Callbacks.DidReloadScripts]
         private static void CopyLogicDLLToStreamingAssets()
         {
+            // FromPersistent模式下禁用，因为会导致dll’s hash与FileList不一致，从而下载失败
+            if(Launcher.GetLauncherMode() == Framework.AssetManagement.Runtime.LoaderType.FromPersistent)
+            {
+                return;
+            }
+
             string srcPath = string.Format($"{UnityEngine.Application.dataPath}/../Library/ScriptAssemblies");
             string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
 

@@ -255,7 +255,7 @@ namespace Framework.Core
                 File.Delete(localDiffURL);
 
             DownloadTaskInfo info = new DownloadTaskInfo();
-            string diffURL = Path.Combine(m_CdnURL, "patch", Utility.GetPlatformName(), m_Backdoor.CurVersion, localCurVersion.ToString(), DIFF_FILENAME);
+            string diffURL = string.Format($"{m_CdnURL}/{PATCH_PATH}/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/{localCurVersion.ToString()}/{DIFF_FILENAME}");
             info.srcUri = new Uri(diffURL);
             info.dstURL = localDiffURL;
             info.verifiedHash = hash;
@@ -275,8 +275,8 @@ namespace Framework.Core
 
         private IEnumerator Downloading()
         {
-            string srcUriPrefix = Path.Combine(m_CdnURL, PATCH_PATH, Utility.GetPlatformName(), remoteCurVersion.ToString(), localCurVersion.ToString());
-            string dstURLPrefix = Path.Combine(Application.persistentDataPath, Utility.GetPlatformName());
+            string srcUriPrefix = string.Format($"{m_CdnURL}/{PATCH_PATH}/{Utility.GetPlatformName()}/{remoteCurVersion.ToString()}/{localCurVersion.ToString()}");
+            string dstURLPrefix = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}");
             while(true)
             {
                 foreach(var task in m_TaskWorkerList)
@@ -294,8 +294,8 @@ namespace Framework.Core
                         continue;
 
                     DownloadTaskInfo info   = new DownloadTaskInfo();
-                    info.srcUri             = new System.Uri(Path.Combine(srcUriPrefix, fileInfo.BundleName));
-                    info.dstURL             = Path.Combine(dstURLPrefix, fileInfo.BundleName);
+                    info.srcUri             = new System.Uri(string.Format($"{srcUriPrefix}/{fileInfo.BundleName}"));
+                    info.dstURL             = string.Format($"{dstURLPrefix}/{fileInfo.BundleName}");
                     info.verifiedHash       = fileInfo.FileHash;
                     info.retryCount         = 3;
                     info.onProgress         = OnTaskProgress;

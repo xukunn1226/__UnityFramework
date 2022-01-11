@@ -110,12 +110,12 @@ namespace Application.Runtime
                     // m_Phase = LaunchPhase.EndPatch;
                     break;
                 case LaunchPhase.BeginPatch:
-                    if(!ResloveCDN())
-                    {
-                        m_Phase = LaunchPhase.None;                        
-                        OnFailedResloveCDN();
-                    }
-                    else
+                    // if(!ResloveCDN())
+                    // {
+                    //     m_Phase = LaunchPhase.None;                        
+                    //     OnFailedResloveCDN();
+                    // }
+                    // else
                     {
                         m_Phase = LaunchPhase.Patching;
                         StartPatch();
@@ -247,14 +247,18 @@ namespace Application.Runtime
 
         void OnFailedResloveCDN()
         {
-
+            Debug.LogError($"Failed to reslove cdn: {GetCDNURL()}");
         }
 
         // 下载backdoor的事件回调
         bool IPatcherListener.OnError_DownloadBackdoor(string error, Backdoor backdoor)
-        {
-            Debug.LogError($"IPatcherListener.OnError_DownloadBackdoor:  error({error})");
+        {            
             m_Error = error;
+            if(!string.IsNullOrEmpty(m_Error))
+            {
+                Debug.LogError($"IPatcherListener.OnError_DownloadBackdoor:  error({error})");
+                return false;
+            }
 
             // 判断当前app version是否满足backdoor要求的最小引擎版本
             if(!string.IsNullOrEmpty(backdoor.MinVersion) && m_Patcher.localAppVersion.AppCompareTo(backdoor.MinVersion) == -1)
@@ -387,11 +391,15 @@ namespace Application.Runtime
 #endif
             try
             {
-                Dns.GetHostEntry(GetCDNURL());
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                Dns.GetHostEntry(GetCDNURL().ToLower().Replace("http://", "").Replace("https://", ""));
+                Debug.Log($"reslove cdn...{sw.ElapsedMilliseconds * 0.001f}s");
             }
 #pragma warning disable CS0168
             catch(Exception e)
             {
+                Debug.LogError(e.Message);
                 return false;
             }
 #pragma warning restore CS0168            
