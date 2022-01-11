@@ -194,7 +194,8 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
                 historyVer.Set(item.Key);                
-                if (string.IsNullOrEmpty(bd.MinVersion) || (historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
+                if ((string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(curVersion) < 0) 
+                || (!string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
                 {
                     if(Diff(rootPath, item.Key, appDirectory) == null)
                     {
@@ -211,7 +212,8 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
                 historyVer.Set(item.Key);
-                if (string.IsNullOrEmpty(bd.MinVersion) || (historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
+                if ((string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(curVersion) < 0)
+                || (!string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
                 {
                     string subDirectory = string.Format($"{rootPath}/{patchPath}/{Utility.GetPlatformName()}/{appDirectory}/{item.Key}");
                     string diffFilename = string.Format($"{subDirectory}/{Patcher.DIFF_FILENAME}");

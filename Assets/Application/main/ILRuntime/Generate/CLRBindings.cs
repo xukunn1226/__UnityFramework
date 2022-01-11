@@ -99,6 +99,7 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding_Enumerator_Binding.Register(app);
             System_Collections_Generic_LinkedListNode_1_ILTypeInstance_Binding.Register(app);
+            System_Collections_Generic_Stack_1_ILTypeInstance_Binding.Register(app);
             Application_Runtime_WorldPlayerController_Binding.Register(app);
             Application_Runtime_PlayerController_Binding.Register(app);
 
