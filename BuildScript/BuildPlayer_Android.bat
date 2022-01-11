@@ -17,6 +17,9 @@ if "%BUILD_TARGET%" == "" (
 set BUILD_PROFILE=Android
 echo "	[BUILD TARGET]:"	%BUILD_TARGET%
 echo "	[BUILD PROFILE]:"	%BUILD_PROFILE%
+if "%UNITY_PATH%" == "" (
+	set UNITY_PATH="D:\Program Files\2021.2.3f1\Editor\Unity.exe"
+)
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Bundle Output
@@ -24,7 +27,7 @@ set BUNDLE_PATH=%PROJECT_PATH%\Deployment\Latest\AssetBundles
 echo "	[BUNDLE PATH]:"		%BUILD_PROFILE%
 
 :: Player Output
-set PLAYER_PATH=%PROJECT_PATH%\Deployment\Latest\Player
+:: set PLAYER_PATH=%PROJECT_PATH%\Deployment\Latest\Player
 echo "	[PLAYER PATH]:"		%PLAYER_PATH%
 
 :: Log
@@ -51,14 +54,14 @@ set FIXED_COMMAND=-batchmode -quit -nographics -projectPath %PROJECT_PATH% -buil
 echo "	[FIXED COMMAND]:"	%FIXED_COMMAND%
 
 :: Optional Command
-set OVERRIDE_COMMAND=-bundlesOutput %BUNDLE_PATH% -playerOutput %PLAYER_PATH% -logFile %LOG_PATH% -BuildMode %BUILD_MODE_PARAMETER% -VersionNoChanged -Development %DEVELOPMENT% -useIL2CPP %USEIL2CPP% -MacroDefines %MACRODEFINES%
+set OVERRIDE_COMMAND=-bundlesOutput %BUNDLE_PATH% -playerOutput %PLAYER_PATH% -BuildMode %BUILD_MODE_PARAMETER% -VersionNoChanged -Development %DEVELOPMENT% -useIL2CPP %USEIL2CPP% -MacroDefines %MACRODEFINES%
 echo "	[OVERRIDE COMMAND]:"	%OVERRIDE_COMMAND%
 
-echo "	[Unity Path]:		D:\Program Files\2021.2.3f1\Editor\Unity.exe"
+echo "	[Unity Path]:	" %UNITY_PATH%
 
 
 
-"D:\Program Files\2021.2.3f1\Editor\Unity.exe" %FIXED_COMMAND% %OVERRIDE_COMMAND%
+"%UNITY_PATH%" %FIXED_COMMAND% %OVERRIDE_COMMAND%
 
 
 echo %errorlevel%

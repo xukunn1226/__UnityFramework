@@ -1,5 +1,6 @@
 #!/bin/bash
-echo "start building...iOS"
+
+echo "start building...Android"
 
 # Working directory
 BATCH_PATH=$(cd $(dirname $0); pwd)
@@ -9,22 +10,38 @@ BATCH_TO_PROJECT=..
 PROJECT_PATH=${BATCH_PATH}/${BATCH_TO_PROJECT}
 echo "	[PROJECT PATH]:"	$PROJECT_PATH
 
-BUILD_TARGET=$BUILD_TARGET
-BUILD_PROFILE=$BUILD_PROFILE
+if [ -z "$BUILD_TARGET" ]; then
+    BUILD_TARGET="Android"
+else
+    BUILD_TARGET=$BUILD_TARGET
+fi
+
+if [ -z "$BUILD_PROFILE" ]; then
+    BUILD_PROFILE="Android"
+else
+    BUILD_PROFILE=$BUILD_PROFILE
+fi
+
+if [ -z "$UNITY_PATH" ]; then
+    UNITY_PATH="/Applications/Unity/Hub/Editor/2021.2.3f1/Unity.app/Contents/MacOS/Unity"
+else
+    UNITY_PATH=$UNITY_PATH
+fi
+
 echo "	[BUILD TARGET]:"	$BUILD_TARGET
 echo "	[BUILD PROFILE]:"	$BUILD_PROFILE
 
 ########################################################################
 # Bundle Output
-BUNDLE_PATH=${PROJECT_PATH}\Deployment\Latest\AssetBundles
+BUNDLE_PATH=${PROJECT_PATH}/Deployment/Latest/AssetBundles
 echo "	[BUNDLE PATH]:"		${BUILD_PROFILE}
 
 # Player Output
-PLAYER_PATH=${PROJECT_PATH}\Deployment\Latest\Player
+# PLAYER_PATH=${PROJECT_PATH}/Deployment/Latest/Player
 echo "	[PLAYER PATH]:"		${PLAYER_PATH}
 
 # Log
-LOG_PATH=${PROJECT_PATH}\Deployment\Latest\build_log.txt
+LOG_PATH=${PROJECT_PATH}/Deployment/Latest/build_log.txt
 echo "	[LOG PATH]:"		${LOG_PATH}
 
 # Build Mode: 0(Bundles & Player)、1(Bundles)、2(Player)
@@ -47,13 +64,19 @@ FIXED_COMMAND="-batchmode -quit -nographics -projectPath ${PROJECT_PATH} -buildT
 echo "	[FIXED COMMAND]:"	${FIXED_COMMAND}
 
 # Optional Command
-OVERRIDE_COMMAND="-bundlesOutput ${BUNDLE_PATH} -playerOutput ${PLAYER_PATH} -logFile ${LOG_PATH} -BuildMode ${BUILD_MODE_PARAMETER} -VersionNoChanged -Development ${DEVELOPMENT} -useIL2CPP ${USEIL2CPP} -MacroDefines" ${MACRODEFINES}
+OVERRIDE_COMMAND="-bundlesOutput ${BUNDLE_PATH} -playerOutput ${PLAYER_PATH} -BuildMode ${BUILD_MODE_PARAMETER} -VersionNoChanged -Development ${DEVELOPMENT} -useIL2CPP ${USEIL2CPP} -MacroDefines" ${MACRODEFINES}
 echo "	[OVERRIDE COMMAND]:"	${OVERRIDE_COMMAND}
 
-echo "	[Unity Path]:		D:\Program Files\2021.2.3f1\Editor\Unity.exe"
+echo "	[Unity Path]:	"${UNITY_PATH}
 
 
-"D:\Program Files\2021.2.3f1\Editor\Unity.exe" ${FIXED_COMMAND} ${OVERRIDE_COMMAND}
+${UNITY_PATH} ${FIXED_COMMAND} ${OVERRIDE_COMMAND}
+build_result=$?
+echo "Unity打包结果: "$build_result
 
-
-echo "End building...iOS"
+if [ "$build_result" != 0 ]; then
+    echo "build Android fail"
+    exit 1
+else
+    echo "End building...Android"
+fi
