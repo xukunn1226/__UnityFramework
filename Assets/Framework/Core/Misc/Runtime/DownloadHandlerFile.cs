@@ -38,6 +38,11 @@ namespace Framework.Core
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
 
+            if(File.Exists(m_Path))
+                File.Delete(m_Path);
+            if(File.Exists(m_Path + ".tmp"))
+                File.Delete(m_Path + ".tmp");
+
             // create FileStream
             m_TempPath = m_Path + ".tmp";
             try

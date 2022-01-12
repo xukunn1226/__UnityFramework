@@ -246,7 +246,7 @@ namespace Framework.Core
             string hash = m_DiffCollection.GetDiffFileHash(localCurVersion.ToString());
             if (string.IsNullOrEmpty(hash))
             {
-                m_Error = string.Format($"can't find the hash of diff.json, plz check diffcollection.json's VersionHashMap");
+                m_Error = string.Format($"can't find the version [{localCurVersion.ToString()}] hash of diff.json, plz check diffcollection.json's VersionHashMap");
                 yield break;
             }
 
