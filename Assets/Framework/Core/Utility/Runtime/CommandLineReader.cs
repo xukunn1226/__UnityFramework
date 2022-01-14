@@ -128,11 +128,7 @@ namespace Framework.Core
                 return false;
             }
 
-            if (string.IsNullOrEmpty(value))
-            {
-                para = 0;
-            }
-            else
+            if (!string.IsNullOrEmpty(value))
             {
                 para = int.Parse(value, System.Globalization.NumberStyles.Integer);
             }

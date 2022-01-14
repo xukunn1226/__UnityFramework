@@ -99,33 +99,32 @@ namespace Framework.AssetManagement.GameBuilder
             SetOverridePara(ref setting.buildMode,                                  "BuildMode",                GameBuilderSetting.BuildMode.BundlesAndPlayer);
 
             // override the bundle setting parameters
-            SetOverridePara(ref setting.bundleSetting.outputPath,                   "BundlesOutput",            "Deployment/AssetBundles");
-            SetOverridePara(ref setting.bundleSetting.useLZ4Compress,               "UseLZ4Compress",           true);
-            SetOverridePara(ref setting.bundleSetting.appendHash,                   "AppendHash",               false);
-            SetOverridePara(ref setting.bundleSetting.rebuildBundles,               "RebuildBundles",           false);
+            SetOverridePara(ref setting.bundleSetting.outputPath,                   "BundlesOutput");
+            SetOverridePara(ref setting.bundleSetting.useLZ4Compress,               "UseLZ4Compress");
+            SetOverridePara(ref setting.bundleSetting.appendHash,                   "AppendHash");
+            SetOverridePara(ref setting.bundleSetting.rebuildBundles,               "RebuildBundles");
 
             // override the player setting parameters
-            SetOverridePara(ref setting.playerSetting.outputPath,                   "PlayerOutput",             "Deployment/Player");            
-            SetOverridePara(ref setting.playerSetting.projectName,                  "ProjectName",              "MyProject");
-            SetOverridePara(ref setting.playerSetting.autoRunPlayer,                "AutoRunPlayer",            true);
+            SetOverridePara(ref setting.playerSetting.outputPath,                   "PlayerOutput");
+            SetOverridePara(ref setting.playerSetting.projectName,                  "ProjectName");
+            SetOverridePara(ref setting.playerSetting.autoRunPlayer,                "AutoRunPlayer");
             // batch mode没有连接设备会出包失败
             if (UnityEngine.Application.isBatchMode)
                 setting.playerSetting.autoRunPlayer = false;
-            SetOverridePara(ref setting.playerSetting.development,                  "Development",              true);
-            SetOverridePara(ref setting.playerSetting.connectWithProfiler,          "ConnectWithProfiler",      false);
-            SetOverridePara(ref setting.playerSetting.allowDebugging,               "AllowDebugging",           false);
-            SetOverridePara(ref setting.playerSetting.buildScriptsOnly,             "BuildScriptsOnly",         false);
-            SetOverridePara(ref setting.playerSetting.compressWithLz4,              "CompressWithLz4",          false);
-            SetOverridePara(ref setting.playerSetting.compressWithLz4HC,            "CompressWithLz4HC",        false);
-            SetOverridePara(ref setting.playerSetting.strictMode,                   "PlayerStrictMode",         true);
-            // SetOverridePara(ref setting.playerSetting.bundleVersion,                "BundleVersion",            "0.1");
-            SetOverridePara(ref setting.playerSetting.useIL2CPP,                    "useIL2CPP",                false);
-            SetOverridePara(ref setting.playerSetting.il2CppCompilerConfiguration,  "CompilerConfiguration",    "Master");
-            SetOverridePara(ref setting.playerSetting.useMTRendering,               "UseMTRendering",           true);
-            SetOverridePara(ref setting.playerSetting.buildAppBundle,               "BuildAppBundle",           false);
-            SetOverridePara(ref setting.playerSetting.createSymbols,                "CreateSymbols",            false);
-            SetOverridePara(ref setting.playerSetting.macroDefines,                 "MacroDefines",             "");
-            SetOverridePara(ref setting.playerSetting.excludedDefines,              "ExcludedDefines",          "");
+            SetOverridePara(ref setting.playerSetting.development,                  "Development");
+            SetOverridePara(ref setting.playerSetting.connectWithProfiler,          "ConnectWithProfiler");
+            SetOverridePara(ref setting.playerSetting.allowDebugging,               "AllowDebugging");
+            SetOverridePara(ref setting.playerSetting.buildScriptsOnly,             "BuildScriptsOnly");
+            SetOverridePara(ref setting.playerSetting.compressWithLz4,              "CompressWithLz4");
+            SetOverridePara(ref setting.playerSetting.compressWithLz4HC,            "CompressWithLz4HC");
+            SetOverridePara(ref setting.playerSetting.strictMode,                   "PlayerStrictMode");
+            SetOverridePara(ref setting.playerSetting.useIL2CPP,                    "useIL2CPP");
+            SetOverridePara(ref setting.playerSetting.il2CppCompilerConfiguration,  "CompilerConfiguration");
+            SetOverridePara(ref setting.playerSetting.useMTRendering,               "UseMTRendering");
+            SetOverridePara(ref setting.playerSetting.buildAppBundle,               "BuildAppBundle");
+            SetOverridePara(ref setting.playerSetting.createSymbols,                "CreateSymbols");
+            SetOverridePara(ref setting.playerSetting.macroDefines,                 "MacroDefines");
+            SetOverridePara(ref setting.playerSetting.excludedDefines,              "ExcludedDefines");
 
             // 版本号修改指令
             bool isVersionNoChanged = false;
@@ -164,20 +163,37 @@ namespace Framework.AssetManagement.GameBuilder
             BuildGame(setting);
         }
 
+        // 优先使用command传入的参数，否则使用defaultValue
         static private void SetOverridePara(ref string overridePara, string command, string defaultValue)
         {
-            if (CommandLineReader.GetCommand(command, ref defaultValue))
-                overridePara = defaultValue;
+            CommandLineReader.GetCommand(command, ref defaultValue);
+            overridePara = defaultValue;
         }
 
+        // 优先使用command传入的参数，没有则不改变overridePara
+        static private void SetOverridePara(ref string overridePara, string command)
+        {
+            string defaultValue = overridePara;
+            SetOverridePara(ref overridePara, command, defaultValue);
+        }
+
+        // 优先使用command传入的参数，否则使用defaultValue
         static private void SetOverridePara(ref bool overridePara, string command, bool defaultValue)
         {
-            if (CommandLineReader.GetCommand(command, ref defaultValue))
-                overridePara = defaultValue;
+            CommandLineReader.GetCommand(command, ref defaultValue);
+            overridePara = defaultValue;
         }
 
-        static private void SetOverridePara(ref Il2CppCompilerConfiguration overridePara, string command, string defaultValue)
+        // 优先使用command传入的参数，没有则不改变overridePara
+        static private void SetOverridePara(ref bool overridePara, string command)
         {
+            bool defaultValue = overridePara;
+            SetOverridePara(ref overridePara, command, defaultValue);
+        }
+
+        static private void SetOverridePara(ref Il2CppCompilerConfiguration overridePara, string command)
+        {
+            string defaultValue = string.Empty;
             if (CommandLineReader.GetCommand(command, ref defaultValue))
             {
                 string lowerValue = defaultValue.ToLower();
@@ -198,12 +214,14 @@ namespace Framework.AssetManagement.GameBuilder
 
         static private void SetOverridePara(ref GameBuilderSetting.BuildMode overridePara, string command, GameBuilderSetting.BuildMode defaultValue)
         {
-            overridePara = defaultValue;
-
-            int buildMode = 0;
+            int buildMode = (int)defaultValue;
             if(CommandLineReader.GetCommand(command, ref buildMode))
             {
                 overridePara = (GameBuilderSetting.BuildMode)buildMode;
+            }
+            else
+            {
+                overridePara = defaultValue;
             }
         }
 

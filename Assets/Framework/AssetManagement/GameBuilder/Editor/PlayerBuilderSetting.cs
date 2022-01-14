@@ -40,9 +40,6 @@ namespace Framework.AssetManagement.GameBuilder
 
         public bool                         strictMode;                         // Do not allow the build to succeed if any errors are reporting during it.
 
-        ////////////////////// PlayerSettings
-        // public string                       bundleVersion;                      // Application bundle version shared between iOS & Android platforms
-        
         [System.NonSerialized]
         public VersionChangedMode           versionChangedMode;                 // 版本号设定方式
         [System.NonSerialized] public int   mainVersion;
@@ -236,12 +233,6 @@ namespace Framework.AssetManagement.GameBuilder
             opt.target = EditorUserBuildSettings.activeBuildTarget;
             opt.targetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
             opt.options = para.GenerateBuildOptions();
-
-            if(opt.target == BuildTarget.Android)
-            { // 出aab包时不能带这两个option
-                opt.options &= ~BuildOptions.CompressWithLz4;
-                opt.options &= ~BuildOptions.CompressWithLz4HC;
-            }
             return opt;
         }
 
