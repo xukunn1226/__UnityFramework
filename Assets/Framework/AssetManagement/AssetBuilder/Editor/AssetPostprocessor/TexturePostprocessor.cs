@@ -8,8 +8,10 @@ namespace Framework.AssetManagement.AssetBuilder
     {
         void OnPreprocessTexture()
         {
-            TextureImporter ti = assetImporter as TextureImporter;
+            if(!AssetBuilderUtil.IsPassByWhiteList(assetPath) || AssetBuilderUtil.IsBlockedByBlackList(assetPath))
+                return;
 
+            TextureImporter ti = assetImporter as TextureImporter;
             // 设置平台无关属性
             TextureImporterSettings importerSettings = new TextureImporterSettings();
             ti.ReadTextureSettings(importerSettings);
