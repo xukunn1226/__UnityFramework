@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Application.Logic
 {
+    // https://jenocn.github.io/2019/07/UnityUiModel/
     public abstract class UIPanelBase
     {
         public UIDefines defines { get; private set; }

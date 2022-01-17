@@ -11,13 +11,15 @@ namespace Application.Logic
         public string       path            { get; protected set; }
         public bool         isFullscreen    { get; protected set; }
         public int          hideMode        { get; protected set; }         // 隐藏时的方式（SetActive（false）、out of screen、disable canvas、set view layer）
-        public bool         registerUpdate  { get; protected set; }         // 
+        public bool         registerUpdate  { get; protected set; }         // 是否注册Update
+        public bool         isPersistent    { get; protected set; }         // true: 常驻内存，不会被销毁; false: LRU管理
     }
 
     public enum UIPanelType
     {
-        LoginPanel,
-        SettingPanel,
-        GuildPanel,
+        Main,
+        Login,
+        Setting,
+        Guild,
     }
 }

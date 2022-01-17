@@ -31,6 +31,8 @@ namespace Application.Runtime
             string srcPath = string.Format($"{UnityEngine.Application.dataPath}/../Library/ScriptAssemblies");
             string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
 
+            if(!System.IO.Directory.Exists(dstPath))
+                System.IO.Directory.CreateDirectory(dstPath);
             System.IO.File.Copy(string.Format($"{srcPath}/{ILStartup.dllFilename}.dll"), string.Format($"{dstPath}/{ILStartup.dllFilename}.dll"), true);
             System.IO.File.Copy(string.Format($"{srcPath}/{ILStartup.dllFilename}.pdb"), string.Format($"{dstPath}/{ILStartup.dllFilename}.pdb"), true);
         }

@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Application.Logic
 {
+    /// <summary>
+    /// 界面管理器
+    /// 
+    /// </summary>
     public class UIManager : Singleton<UIManager>
     {
         private Dictionary<UIPanelType, UIPanelBase> m_PanelDict = new Dictionary<UIPanelType, UIPanelBase>();

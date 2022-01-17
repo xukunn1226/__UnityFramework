@@ -8,7 +8,7 @@ namespace Application.Logic
     {
         public UILoginDefines()
         {
-            panelType = UIPanelType.LoginPanel;
+            panelType = UIPanelType.Login;
             path = "";
         }
     }
