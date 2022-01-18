@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5801535782905647431}
   m_Layer: 5
-  m_Name: AlertLayer
+  m_Name: _Alert
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5801535782922785298}
   m_Layer: 5
-  m_Name: MainLayer
+  m_Name: _Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,7 +82,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5801535783083845499}
   m_Layer: 5
-  m_Name: TipsLayer
+  m_Name: _Tips
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -118,7 +118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5801535783570715070}
   m_Layer: 5
-  m_Name: WindowsLayer
+  m_Name: _Windowed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,7 +154,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5801535783986685422}
   m_Layer: 5
-  m_Name: FullscreenLayer
+  m_Name: _Fullscreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -296,7 +296,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5801535784172096921}
   m_Layer: 5
-  m_Name: LoadingLayer
+  m_Name: _Loading
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

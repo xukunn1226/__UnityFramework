@@ -6,7 +6,9 @@ namespace Application.Logic
 {
     /// <summary>
     /// 界面管理器
-    /// 
+    /// 层级管理：
+    ///     Main, Fullscreen, Windowed, Tips, Loading, Alert
+    /// Panel生命周期管理：
     /// </summary>
     public class UIManager : Singleton<UIManager>
     {
@@ -15,7 +17,6 @@ namespace Application.Logic
 
         protected override void InternalInit()
         {
-            
         }
 
         public void Load(UIPanelType type)
