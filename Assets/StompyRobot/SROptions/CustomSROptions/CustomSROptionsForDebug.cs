@@ -17,70 +17,123 @@ using Framework.Core;
 
 public partial class SROptions
 {
-    [Category("TestSkill")] // Options will be grouped by category
-    public bool SkillDebug
+    // [Category("TestSkill")] // Options will be grouped by category
+    // public bool SkillDebug
+    // {
+    //     get;
+    //     set;
+    // }
+
+    // [Category("TestSkill")] // Options will be grouped by category
+    // public float SkillDebugDelayTime
+    // {
+    //     get;
+    //     set;
+    // }
+
+    // [Category("TestDissolve")]
+    // public void ChangeDissolveShader_Origin()
+    // {
+    //     SetDissovleShader(0);
+    // }
+
+    // [Category("TestDissolve")]
+    // public void ChangeDissolveShader_1()
+    // {
+    //     SetDissovleShader(1);
+    // }
+
+    // [Category("TestDissolve")]
+    // public void ChangeDissolveShader_2()
+    // {
+    //     SetDissovleShader(2);
+    // }
+
+    // private void SetDissovleShader(int index)
+    // {
+    //     Debug.Log($"SetDissovleShader to [{index}]");
+    // }
+
+    // [Category("TestDissolve")] // Options will be grouped by category
+    // public bool ToggleProbe
+    // {
+    //     get;
+    //     set;
+    // }
+
+    // [Category("Resolution")]
+    // public void SetResolution_1()
+    // {
+    //     SetResolution(1.0f);
+    // }
+
+    // [Category("Resolution")]
+    // public void SetResolution_08()
+    // {
+    //     SetResolution(0.8f);
+    // }
+
+    // [Category("Resolution")]
+    // public void SetResolution_06()
+    // {
+    //     SetResolution(0.6f);
+    // }    
+
+    // private void SetResolution(float scale)
+    // {
+    // }
+
+    [Category("FPS")]
+    public void SetFrameRate_0()
     {
-        get;
-        set;
+        SetTargetFrameRate(-1);
     }
 
-    [Category("TestSkill")] // Options will be grouped by category
-    public float SkillDebugDelayTime
+    [Category("FPS")]
+    public void SetFrameRate_10()
     {
-        get;
-        set;
+        SetTargetFrameRate(10);
     }
 
-    [Category("TestDissolve")]
-    public void ChangeDissolveShader_Origin()
+    [Category("FPS")]
+    public void SetFrameRate_30()
     {
-        SetDissovleShader(0);
+        SetTargetFrameRate(30);
     }
 
-    [Category("TestDissolve")]
-    public void ChangeDissolveShader_1()
+    [Category("FPS")]
+    public void SetFrameRate_60()
     {
-        SetDissovleShader(1);
+        SetTargetFrameRate(60);
     }
 
-    [Category("TestDissolve")]
-    public void ChangeDissolveShader_2()
+    [Category("FPS")]
+    public void SetFrameRate_120()
     {
-        SetDissovleShader(2);
+        SetTargetFrameRate(120);
     }
 
-    private void SetDissovleShader(int index)
+    private void SetTargetFrameRate(int frameRate)
     {
-        Debug.Log($"SetDissovleShader to [{index}]");
+        QualitySettings.vSyncCount = 0;
+        UnityEngine.Application.targetFrameRate = frameRate;
     }
 
-    [Category("TestDissolve")] // Options will be grouped by category
-    public bool ToggleProbe
+    [Category("renderFrameInterval_1")]
+    public void SetInterval_1()
     {
-        get;
-        set;
+        SetRenderFrameInterval(1);
     }
 
-    [Category("Resolution")]
-    public void SetResolution_1()
+    [Category("renderFrameInterval_6")]
+    public void SetInterval_6()
     {
-        SetResolution(1.0f);
+        SetRenderFrameInterval(6);
     }
 
-    [Category("Resolution")]
-    public void SetResolution_08()
+    private void SetRenderFrameInterval(int interval)
     {
-        SetResolution(0.8f);
-    }
-
-    [Category("Resolution")]
-    public void SetResolution_06()
-    {
-        SetResolution(0.6f);
-    }    
-
-    private void SetResolution(float scale)
-    {
+        UnityEngine.Rendering.OnDemandRendering.renderFrameInterval = interval;
     }
 }
 
