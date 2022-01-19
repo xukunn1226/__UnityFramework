@@ -45,6 +45,8 @@ namespace Application.Logic
 
         static private void OnCompletedPrepare(bool stopped)
         {
+            GameSetting.Init();
+            
             CodeLoader.Instance.Update              += Update;
             CodeLoader.Instance.OnApplicationQuit   += OnApplicationQuit;
             CodeLoader.Instance.OnApplicationFocus  += OnApplicationFocus;
