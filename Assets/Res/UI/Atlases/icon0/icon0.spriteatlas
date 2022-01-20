@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: icon0
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 49043fafdcde5fa48b28ba967816e05f, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 3288e8000aed14a0798358eaadea3e53, type: 3}
+  - {fileID: 21300000, guid: 531ec83020de24b7f80dd45b4fca5db6, type: 3}
+  - {fileID: 21300000, guid: ba5c1c80ca0e643649aee457a6fd7369, type: 3}
+  - {fileID: 21300000, guid: b476dd01c25bd4bf7a1e8bd355d305ba, type: 3}
+  - {fileID: 21300000, guid: 582e5731e05334a4baedd52f6ede9f56, type: 3}
+  - {fileID: 21300000, guid: 6179b742a99dd43e3967b14e2b9bef7c, type: 3}
+  - {fileID: 21300000, guid: 0f349ec438c0c484abcbd6baa29126b2, type: 3}
+  - {fileID: 21300000, guid: 431680e4c1d544238a4745d795cc0ac9, type: 3}
+  - {fileID: 21300000, guid: 0d6731c5aad4f4e03bea1c341e977c59, type: 3}
+  - {fileID: 21300000, guid: b1d03668ea891406e9cd884f85a0252f, type: 3}
+  - {fileID: 21300000, guid: b6a18a999eb8a4fb8814bdcf49b03a72, type: 3}
+  - {fileID: 21300000, guid: 36c9a8aa03d904d5f8dbb471d4d496d2, type: 3}
+  - {fileID: 21300000, guid: 3542ac1bbafd840e6908643d098f025f, type: 3}
+  - {fileID: 21300000, guid: d4c0d50c6039f4b89b1cd08c9d1b4c53, type: 3}
+  - {fileID: 21300000, guid: 22a287fc1a62243d6884a9fd0574d4a8, type: 3}
+  - {fileID: 21300000, guid: 1430e41db55d0410eae9ca1f4cfd6554, type: 3}
+  - {fileID: 21300000, guid: 678ce66dd793f4ef79eb579d6547d9d2, type: 3}
+  - {fileID: 21300000, guid: d702dd3eeb4c141f58a7b9b5fd5b8358, type: 3}
+  - {fileID: 21300000, guid: 3e5224fe88e144f68b198fdee4a58b2d, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - UI_Banner_Wood
+  - UI_Button_Green
+  - UI_Bar_Fill_Green
+  - UI_Panel_Paper_Inset
+  - UI_Panel_Tab_Active
+  - UI_Bar_Fill_Orange
+  - UI_Button_Blue
+  - UI_Button_Red
+  - UI_Panel_Paper
+  - UI_Bar_Fill_Red
+  - UI_Bar_Fill_Blue
+  - UI_Bar
+  - UI_Panel_Tab_Inactive
+  - UI_Button_Grey
+  - UI_Panel_Window
+  - UI_Panel_Window_Blank
+  - UI_Mask
+  - UI_Misc_Button_Close
+  - UI_Button_Orange
+  m_RenderDataMap: {}
+  m_Tag: icon0
+  m_IsVariant: 0
