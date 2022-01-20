@@ -15,6 +15,11 @@ namespace Application.Logic
         private Dictionary<UIPanelType, UIPanelBase> m_PanelDict = new Dictionary<UIPanelType, UIPanelBase>();
         private Stack<UIPanelBase> m_PanelStack = new Stack<UIPanelBase>();
 
+        static public void StaticInit()
+        {
+            UIManager.Instance.Init();
+        }
+
         protected override void InternalInit()
         {
         }
