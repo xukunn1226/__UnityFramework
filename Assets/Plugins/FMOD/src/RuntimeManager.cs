@@ -1134,6 +1134,12 @@ retry:
 
         private IEnumerable<string> BanksToLoad(Settings fmodSettings)
         {
+            #if UNITY_EDITOR
+            if(!UnityEngine.Application.isPlaying)
+            {
+                fmodSettings.BankLoadType = BankLoadType.All;
+            }
+            #endif
             switch (fmodSettings.BankLoadType)
             {
                 case BankLoadType.All:
