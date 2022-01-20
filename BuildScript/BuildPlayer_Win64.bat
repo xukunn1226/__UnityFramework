@@ -27,7 +27,9 @@ set BUNDLE_PATH=%PROJECT_PATH%\Deployment\Latest\AssetBundles
 echo "	[BUNDLE PATH]:"		%BUILD_PROFILE%
 
 :: Player Output
-:: set PLAYER_PATH=%PROJECT_PATH%\Deployment\Latest\Player
+if "%PLAYER_PATH%" == "" (
+	set PLAYER_PATH=%PROJECT_PATH%\Deployment\Latest\Player
+)
 echo "	[PLAYER PATH]:"		%PLAYER_PATH%
 
 :: Log
@@ -38,11 +40,25 @@ echo "	[LOG PATH]:"		%LOG_PATH%
 set BUILD_MODE_PARAMETER=0
 echo "	[BUILD MODE]:"		%BUILD_MODE_PARAMETER%
 
-set DEVELOPMENT=%DEVELOPMENT%
-echo "	[DEVELOPMENT]:"		%DEVELOPMENT%
+if "%Development%" == "" (
+	set Development=true
+)
+echo "	[Development]:"		%Development%
 
-set USEIL2CPP=%USEIL2CPP%
-echo "	[USEIL2CPP]:"		%USEIL2CPP%
+if "%useIL2CPP%" == "" (
+	set useIL2CPP=false
+)
+echo "	[useIL2CPP]:"		%useIL2CPP%
+
+if "%useMTRendering%" == "" (
+	set useMTRendering=true
+)
+echo "	[useMTRendering]:"	%useMTRendering%
+
+if "%RebuildBundles%" == "" (
+	set RebuildBundles=false
+)
+echo "	[RebuildBundles]:"	%RebuildBundles%
 
 set MACRODEFINES=%MACRODEFINES%
 echo "	[MACRODEFINES]:"	%MACRODEFINES%
@@ -54,7 +70,7 @@ set FIXED_COMMAND=-batchmode -quit -nographics -projectPath %PROJECT_PATH% -buil
 echo "	[FIXED COMMAND]:"	%FIXED_COMMAND%
 
 :: Optional Command
-set OVERRIDE_COMMAND=-bundlesOutput %BUNDLE_PATH% -playerOutput %PLAYER_PATH% -BuildMode %BUILD_MODE_PARAMETER% -VersionNoChanged -Development %DEVELOPMENT% -useIL2CPP %USEIL2CPP% -MacroDefines %MACRODEFINES%
+set OVERRIDE_COMMAND=-bundlesOutput %BUNDLE_PATH% -playerOutput %PLAYER_PATH% -BuildMode %BUILD_MODE_PARAMETER% -VersionNoChanged -Development %Development% -useIL2CPP %useIL2CPP% -useMTRendering %useMTRendering% -RebuildBundles %RebuildBundles% -MacroDefines %MACRODEFINES%
 echo "	[OVERRIDE COMMAND]:"	%OVERRIDE_COMMAND%
 
 echo "	[Unity Path]:	" %UNITY_PATH%
