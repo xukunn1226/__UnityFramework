@@ -1139,6 +1139,8 @@ retry:
             {
                 fmodSettings.BankLoadType = BankLoadType.All;
             }
+            #else
+            fmodSettings.BankLoadType = BankLoadType.None;
             #endif
             switch (fmodSettings.BankLoadType)
             {
