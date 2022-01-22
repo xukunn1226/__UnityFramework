@@ -13,6 +13,8 @@ namespace Application.Logic
             this.defines = defines;
         }
 
+        private UIPanelBase() {}
+
         public abstract void OnCreate();
         public abstract void OnOpen();
         public abstract void OnOpenAction();

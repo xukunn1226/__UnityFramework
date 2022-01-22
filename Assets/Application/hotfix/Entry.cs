@@ -8,7 +8,7 @@ namespace Application.Logic
     static public class Entry
     {
         static public void Start()
-        {            
+        {
             // Debug.Log("Entry.Start======");
             // await System.Threading.Tasks.Task.Delay(3000);
             Debug.Log("Entry.Start======");
@@ -44,7 +44,7 @@ namespace Application.Logic
         }
 
         static private void OnCompletedPrepare(bool stopped)
-        {            
+        {
             CodeLoader.Instance.Update              += Update;
             CodeLoader.Instance.OnApplicationQuit   += OnApplicationQuit;
             CodeLoader.Instance.OnApplicationFocus  += OnApplicationFocus;

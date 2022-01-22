@@ -35,7 +35,8 @@ namespace Application.Runtime
             appdomain.DelegateManager.RegisterMethodDelegate<AsyncOperation>();
             appdomain.DelegateManager.RegisterMethodDelegate<Application.Runtime.ViewLayer, float>();
             appdomain.DelegateManager.RegisterMethodDelegate<Framework.Core.DownloadTaskInfo, System.Boolean, System.Int32>();
-            appdomain.DelegateManager.RegisterMethodDelegate<Framework.Core.DownloadTaskInfo, System.String>();
+            appdomain.DelegateManager.RegisterMethodDelegate<Framework.Core.DownloadTaskInfo, System.String>();            
+
 
 
 
@@ -52,6 +53,7 @@ namespace Application.Runtime
             appdomain.DelegateManager.RegisterFunctionDelegate<int, int, int>();//Linq
             appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<int, List<int>>, bool>();
             appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<int, int>, KeyValuePair<int, int>, int>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<System.Type, System.Boolean>();
             
 
 
@@ -115,6 +117,7 @@ namespace Application.Runtime
             appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineAdapter());
             appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
             appdomain.RegisterCrossBindingAdaptor(new CoroutineAdaptor());
+            appdomain.RegisterCrossBindingAdaptor(new IEnumerable_1_ObjectAdapter());
             appdomain.RegisterValueTypeBinder(typeof(UnityEngine.Vector3), new Vector3Binder());
             appdomain.RegisterValueTypeBinder(typeof(UnityEngine.Vector2), new Vector2Binder());
             appdomain.RegisterValueTypeBinder(typeof(UnityEngine.Quaternion), new QuaternionBinder());

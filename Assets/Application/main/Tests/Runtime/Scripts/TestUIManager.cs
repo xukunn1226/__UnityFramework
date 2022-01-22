@@ -92,7 +92,7 @@ namespace Application.Runtime.Tests
                     // binder & register
                     ILHelper.InitILRuntime(m_AppDomain);
 
-                    IStaticMethod start = new ILStaticMethod(m_AppDomain, "Application.Logic.UIManager", "Init", 0);
+                    IStaticMethod start = new ILStaticMethod(m_AppDomain, "Application.Logic.UIManager", "StaticInit", 0);
 					start.Exec();
                     break;
                 }
