@@ -8,18 +8,17 @@ namespace Application.Logic
 {
     public class UIDefines
     {
-        static private Dictionary<int, UIDefines> s_Defines = new Dictionary<int, UIDefines>();
-        static public string    s_RootPath      = "";                           // root path of ui prefab
-        public virtual int      id              { get; protected set; }
+        static private Dictionary<string, UIDefines> s_Defines = new Dictionary<string, UIDefines>();
+        public virtual string   id              { get; protected set; }
         public virtual string   layer           { get; protected set; }
-        public virtual string   path            { get; protected set; }
+        public virtual string   assetPath       { get; protected set; }
         public virtual int      hideMode        { get; protected set; }         // 隐藏时的方式（SetActive（false）、out of screen、disable canvas、set view layer）
         public virtual bool     isPersistent    { get; protected set; }         // true: 常驻内存，不会被销毁; false: LRU管理
 
         protected UIDefines()
         {}
 
-        static public UIDefines Get(int id)
+        static public UIDefines Get(string id)
         {
             UIDefines def;
             s_Defines.TryGetValue(id, out def);
@@ -81,11 +80,9 @@ namespace Application.Logic
         }
     }
     
-    public class UIPanelID
+    public partial class UIPanelID
     {
-        static public int       Main            { get; private set; }   = 0;
-        static public int       Login           { get; private set; }   = 12;
-        static public int       Setting         { get; private set; }   = 2;
-        static public int       Guild           { get; private set; }   = 3;
+        static public string    Setting         { get; private set; }   = "Setting";
+        static public string    Guild           { get; private set; }   = "Guild";
     }
 }

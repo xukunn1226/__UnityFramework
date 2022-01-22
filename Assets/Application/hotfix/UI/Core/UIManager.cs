@@ -12,7 +12,7 @@ namespace Application.Logic
     /// </summary>
     public class UIManager : Singleton<UIManager>
     {
-        private Dictionary<int, UIPanelBase>        m_PanelDict     = new Dictionary<int, UIPanelBase>();           // 
+        private Dictionary<string, UIPanelBase>     m_PanelDict     = new Dictionary<string, UIPanelBase>();        // 
         private Stack<UIPanelBase>                  m_PanelStack    = new Stack<UIPanelBase>();                     // 
         private Canvas                              m_Root;
         private const string                        m_UIRootName    = "UIRoot";
@@ -66,10 +66,14 @@ namespace Application.Logic
             }
         }
 
-        public void Load(int id)
-        {}
+        public void Load(string id)
+        {
+            UIDefines def = UIDefines.Get(id);
+            if(def == null)
+                throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
+        }
 
-        public void Unload(int id)
+        public void Unload(string id)
         {}
     }
 }

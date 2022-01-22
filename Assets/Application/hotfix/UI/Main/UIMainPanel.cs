@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Application.Logic
 {
-    public class UILoginPanel : UIPanelBase
+    public class UIMainPanel : UIPanelBase
     {
-        public new UILoginDefines defines { get; private set; }
-        public UILoginPanel(UILoginDefines defines) : base(defines) {}
+        public new UIMainDefines defines { get; private set; }
+        public UIMainPanel(UIMainDefines defines) : base(defines) {}
 
         public override void OnCreate() {}
         public override void OnOpen() {}
