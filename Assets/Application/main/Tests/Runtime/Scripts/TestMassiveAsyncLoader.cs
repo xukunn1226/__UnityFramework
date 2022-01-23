@@ -20,7 +20,7 @@ namespace Application.Runtime
             }
         }
         
-        void OnCompleted(GameObject go)
+        void OnCompleted(GameObject go, System.Object userData)
         {
             Debug.Log($"2. {Time.frameCount}");
             if(this == null)

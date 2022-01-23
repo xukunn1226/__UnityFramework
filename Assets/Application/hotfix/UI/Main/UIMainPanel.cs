@@ -9,8 +9,9 @@ namespace Application.Logic
         public new UIMainDefines defines { get; private set; }
         public UIMainPanel(UIMainDefines defines) : base(defines) {}
 
+        public override void OnInit() {}
         public override void OnCreate() {}
-        public override void OnOpen() {}
+        public override void OnOpen(bool isReady) {}
         public override void OnOpenAction() {}
         public override void OnUpdate() {}
         public override void OnPause() {}

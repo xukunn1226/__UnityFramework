@@ -9,11 +9,12 @@ namespace Application.Logic
     public class UIDefines
     {
         static private Dictionary<string, UIDefines> s_Defines = new Dictionary<string, UIDefines>();
-        public virtual string   id              { get; protected set; }
-        public virtual string   layer           { get; protected set; }
-        public virtual string   assetPath       { get; protected set; }
-        public virtual int      hideMode        { get; protected set; }         // 隐藏时的方式（SetActive（false）、out of screen、disable canvas、set view layer）
-        public virtual bool     isPersistent    { get; protected set; }         // true: 常驻内存，不会被销毁; false: LRU管理
+        public virtual string       id              { get; protected set; }     // see UIPanelID
+        public virtual string       layer           { get; protected set; }     // see UILayer
+        public virtual string       assetPath       { get; protected set; }     // asset path
+        public virtual EHideMode    hideMode        { get; protected set; }     // 隐藏时的方式（SetActive（false）、out of screen、disable canvas、set view layer）
+        public virtual bool         isPersistent    { get; protected set; }     // true: 常驻内存，不会被销毁; false: LRU管理
+        public virtual Type         typeOfPanel     { get; protected set; }     // type of panel
 
         protected UIDefines()
         {}
@@ -78,6 +79,14 @@ namespace Application.Logic
             yield return Loading;
             yield return Alert;
         }
+    }
+
+    public enum EHideMode
+    {
+        SetActive,
+        OutOfScreen,
+        DisableCanvas,
+        OutOfViewLayer,
     }
     
     public partial class UIPanelID

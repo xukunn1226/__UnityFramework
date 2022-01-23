@@ -13,7 +13,8 @@ namespace Application.Runtime
         struct LoaderTrack
         {
             public string               assetPath;
-            public Action<GameObject>   actions;
+            public Action<GameObject, System.Object>   actions;
+            public System.Object        userData;
             public PrefabLoaderAsync    loader;
         }
         private LinkedList<LoaderTrack> m_Requests      = new LinkedList<LoaderTrack>();
@@ -53,7 +54,7 @@ namespace Application.Runtime
                     { // complete
                         try
                         {
-                            track.actions?.Invoke(track.loader.asset);      // asset可能为null，当资源加载失败时
+                            track.actions?.Invoke(track.loader.asset, track.userData);      // asset可能为null，当资源加载失败时
                         }
                         catch(Exception e)
                         {
@@ -66,7 +67,7 @@ namespace Application.Runtime
             }
         }
 
-        public void AsyncLoad(string assetPath, Action<GameObject> cb)
+        public void AsyncLoad(string assetPath, Action<GameObject, System.Object> cb, System.Object userData = null)
         {
             UnityEngine.Debug.Assert(Instance != null);
             UnityEngine.Debug.Assert(cb != null);
@@ -75,6 +76,7 @@ namespace Application.Runtime
             track.assetPath = assetPath;
             track.loader = AssetManager.InstantiatePrefabAsync(assetPath);
             track.actions = cb;
+            track.userData = userData;
             m_Requests.AddLast(track);
         }
     }
