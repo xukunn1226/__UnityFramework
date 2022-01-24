@@ -9,8 +9,7 @@ namespace Framework.Cache
     /// <typeparam name="V"></typeparam>
     public class LRUQueue<K, V> where V : class
     {
-        public delegate void DiscardCallback(K key, V value);
-        public event DiscardCallback OnDiscard;
+        public System.Action<K, V> OnDiscard;
 
         class TNode<T, U>
         {
