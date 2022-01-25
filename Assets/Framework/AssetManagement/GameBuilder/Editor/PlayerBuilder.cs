@@ -15,7 +15,7 @@ namespace Framework.AssetManagement.GameBuilder
         static public event onPreprocessPlayerBuild OnPreprocessPlayerBuild;
         static public event onPostprocessPlayerBuild OnPostprocessPlayerBuild;
 
-        static private PlayerBuilderSetting m_Setting;
+        static public PlayerBuilderSetting m_Setting;
 
         /// <summary>
         /// 构建Player接口（唯一）

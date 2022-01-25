@@ -8,31 +8,37 @@ namespace Application.Runtime
 {
     public class AssembyBuilder
     {
-        [MenuItem("Tools/Build Assembly Sync")]
-        public static void BuildAssemblySync()
+        // [MenuItem("Tools/Build Assembly Sync")]
+        private static void BuildAssemblySync()
         {
             BuildAssembly(true);
         }
 
-        static void BuildAssembly(bool wait)
+        static public void BuildAssembly(bool wait, bool release = true)
         {
-            var scripts = new[] { "Temp/MyAssembly/MyScript1.cs", "Temp/MyAssembly/MyScript2.cs" };
-            var outputAssembly = "Temp/MyAssembly/MyAssembly.dll";
-            var assemblyProjectPath = "Assets/MyAssembly.dll";
+            string buildOutput = "Temp/MyAssembly";
+            var outputAssembly = string.Format($"{buildOutput}/{ILStartup.dllFilename}.dll");
+            Directory.CreateDirectory(buildOutput);
 
-            Directory.CreateDirectory("Temp/MyAssembly");
+            string[] scriptPaths = Directory.GetFiles("Assets/Application/hotfix", "*.cs", SearchOption.AllDirectories);
 
-            // Create scripts
-            foreach (var scriptPath in scripts)
+            var assemblyBuilder = new AssemblyBuilder(outputAssembly, scriptPaths);
+            assemblyBuilder.additionalReferences    = null; // GetAdditionalReferences();
+            foreach(var def in assemblyBuilder.defaultDefines)
             {
-                var scriptName = Path.GetFileNameWithoutExtension(scriptPath);
-                File.WriteAllText(scriptPath, string.Format("using UnityEngine; public class {0} : MonoBehaviour {{ void Start() {{ Debug.Log(\"{0}\"); }} }}", scriptName));
+                Debug.Log($"========== def >> {def}");
             }
-
-            var assemblyBuilder = new AssemblyBuilder(outputAssembly, scripts);
-
-            // Exclude a reference to the copy of the assembly in the Assets folder, if any.
-            assemblyBuilder.excludeReferences = new string[] { assemblyProjectPath };
+            assemblyBuilder.additionalDefines       = new string[] { "DISABLE_ILRUNTIME_DEBUG" };
+            assemblyBuilder.excludeReferences       = GetExcludeReferences();
+            assemblyBuilder.buildTarget             = EditorUserBuildSettings.activeBuildTarget;
+            assemblyBuilder.buildTargetGroup        = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+            assemblyBuilder.flags                   = release ? AssemblyBuilderFlags.None : AssemblyBuilderFlags.DevelopmentBuild;
+            assemblyBuilder.referencesOptions       = ReferencesOptions.UseEngineModules;
+            
+            assemblyBuilder.compilerOptions.AllowUnsafeCode             = true;
+            assemblyBuilder.compilerOptions.CodeOptimization            = release ? CodeOptimization.Release : CodeOptimization.Debug;
+            assemblyBuilder.compilerOptions.ApiCompatibilityLevel       = PlayerSettings.GetApiCompatibilityLevel(assemblyBuilder.buildTargetGroup);
+            assemblyBuilder.compilerOptions.AdditionalCompilerArguments = new string[] { "-optimize", "-deterministic" };
 
             // Called on main thread
             assemblyBuilder.buildStarted += delegate (string assemblyPath)
@@ -47,12 +53,30 @@ namespace Application.Runtime
                 var warningCount = compilerMessages.Count(m => m.type == CompilerMessageType.Warning);
 
                 Debug.LogFormat("Assembly build finished for {0}", assemblyPath);
+
+                for(int i = 0; i < warningCount; ++i)
+                {
+                    if(compilerMessages[i].type == CompilerMessageType.Warning)
+                    {
+                        Debug.Log($"{compilerMessages[i].message}   file: {compilerMessages[i].file}  line: {compilerMessages[i].line}  column: {compilerMessages[i].column}");
+                    }
+                }
+                for(int i = 0; i < errorCount; ++i)
+                {
+                    if(compilerMessages[i].type == CompilerMessageType.Error)
+                    {
+                        Debug.Log($"{compilerMessages[i].message}   file: {compilerMessages[i].file}  line: {compilerMessages[i].line}  column: {compilerMessages[i].column}");
+                    }
+                }
                 Debug.LogFormat("Warnings: {0} - Errors: {0}", errorCount, warningCount);
 
                 if (errorCount == 0)
                 {
-                    File.Copy(outputAssembly, assemblyProjectPath, true);
-                    AssetDatabase.ImportAsset(assemblyProjectPath);
+                    string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Framework.Core.Utility.GetPlatformName()}");
+                    if(!Directory.Exists(dstPath))
+                        Directory.CreateDirectory(dstPath);
+                    File.Copy(string.Format($"{buildOutput}/{ILStartup.dllFilename}.dll"), string.Format($"{dstPath}/{ILStartup.dllFilename}.dll"), true);
+                    File.Copy(string.Format($"{buildOutput}/{ILStartup.dllFilename}.pdb"), string.Format($"{dstPath}/{ILStartup.dllFilename}.pdb"), true);
                 }
             };
 
@@ -68,6 +92,20 @@ namespace Application.Runtime
                 while (assemblyBuilder.status != AssemblyBuilderStatus.Finished)
                     System.Threading.Thread.Sleep(10);
             }
+        }
+
+        static private string[] GetAdditionalReferences()
+        {
+            return new string[] {"Library/ScriptAssemblies/Framework.Core.Runtime.dll",
+                                 "Library/ScriptAssemblies/Application.Runtime.dll",
+                                 "Library/ScriptAssemblies/UnityEngine.UI.dll",
+                                 "Library/ScriptAssemblies/FMODUnity.dll",
+                                 "Library/ScriptAssemblies/Cinemachine.dll"};
+        }
+
+        static private string[] GetExcludeReferences()
+        {
+            return new string[] { "Library/ScriptAssemblies/Application.Logic.dll" };
         }
     }
 }

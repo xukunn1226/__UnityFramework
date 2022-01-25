@@ -14,6 +14,8 @@ namespace Application.Runtime
 {
     public class ILHelper
     {
+        public static List<Type> list = new List<Type>();
+
         unsafe public static void InitILRuntime(ILRuntime.Runtime.Enviorment.AppDomain appdomain)
         {
 #if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
@@ -21,6 +23,24 @@ namespace Application.Runtime
             appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
             appdomain.DebugService.StartDebugService(56000);
 #endif
+
+            list.Add(typeof(Dictionary<int, ILTypeInstance>));
+            list.Add(typeof(Dictionary<long, ILTypeInstance>));
+            list.Add(typeof(Dictionary<string, ILTypeInstance>));
+            list.Add(typeof(Dictionary<int, int>));
+            list.Add(typeof(Dictionary<object, object>));
+            list.Add(typeof(Dictionary<int, object>));
+            list.Add(typeof(Dictionary<long, object>));
+            list.Add(typeof(Dictionary<long, int>));
+            list.Add(typeof(Dictionary<int, long>));
+            list.Add(typeof(Dictionary<string, long>));
+            list.Add(typeof(Dictionary<string, int>));
+            list.Add(typeof(Dictionary<string, object>));
+            list.Add(typeof(List<ILTypeInstance>));
+            list.Add(typeof(List<int>));
+            list.Add(typeof(List<long>));
+            list.Add(typeof(List<string>));
+            list.Add(typeof(List<object>));
 
             // 注册委托
             appdomain.DelegateManager.RegisterMethodDelegate<List<object>>();

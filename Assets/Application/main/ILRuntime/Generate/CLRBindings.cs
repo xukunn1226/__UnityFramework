@@ -106,10 +106,14 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_List_1_Type_Binding.Register(app);
             System_Reflection_Assembly_Binding.Register(app);
             System_Linq_Enumerable_Binding.Register(app);
+            Framework_Cache_LRUQueue_2_String_RectTransform_Binding.Register(app);
             UnityEngine_Component_Binding.Register(app);
             System_Collections_IEnumerator_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_RectTransform_Binding.Register(app);
+            Framework_Core_SingletonMono_1_AsyncLoaderManager_Binding.Register(app);
+            Application_Runtime_AsyncLoaderManager_Binding.Register(app);
             System_Collections_Generic_Stack_1_ILTypeInstance_Binding.Register(app);
+            Framework_Core_GameDebug_Binding.Register(app);
             Application_Runtime_WorldPlayerController_Binding.Register(app);
             Application_Runtime_PlayerController_Binding.Register(app);
 

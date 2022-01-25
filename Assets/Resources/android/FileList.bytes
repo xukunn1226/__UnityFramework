@@ -1,16 +1,16 @@
 {
-  "Count": 59,
-  "TotalSize": 96595803,
+  "Count": 65,
+  "TotalSize": 99011102,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "a26089d0fb616860aa1ede055bf5fa18",
-      "Size": 57344
+      "FileHash": "fa80fa3cd38b9eb08272e97c8bb100b2",
+      "Size": 60416
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "d5419180b0c3b3837b83893e4d66fec3",
-      "Size": 41804
+      "FileHash": "be554a4e4e66dd3911e5fb60bad209d2",
+      "Size": 40668
     },
     {
       "BundleName": "config.db",
@@ -19,8 +19,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "18c3b1ac680a04f1430d420f1bdfc4f7",
-      "Size": 3430
+      "FileHash": "e88f5257e672b4d28c715cdc9b069bac",
+      "Size": 3637
     },
     {
       "BundleName": "assets/res.ab",
@@ -84,18 +84,28 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "c60c8c36259456c9a5699e49ce15d938",
-      "Size": 173071
-    },
-    {
-      "BundleName": "assets/res/ui.ab",
-      "FileHash": "e4b2e819a7749f81adc4e09c521c6f2d",
-      "Size": 31102
+      "FileHash": "5828ccd31e7edb54d2a37899d1c99b17",
+      "Size": 159751
     },
     {
       "BundleName": "assets/res/ui/controls.ab",
       "FileHash": "cf918a3a45cff14f09623a1438a084f4",
       "Size": 12954
+    },
+    {
+      "BundleName": "assets/res/ui/fonts.ab",
+      "FileHash": "cf71e7fdb3dfb9f69c87e77307ebcd92",
+      "Size": 32316
+    },
+    {
+      "BundleName": "assets/res/ui/prefabs.ab",
+      "FileHash": "5bfd9d27e11572ad25981b55fcb7e2ed",
+      "Size": 76597
+    },
+    {
+      "BundleName": "assets/res/ui/textures.ab",
+      "FileHash": "28fcdb3b67aaf5a2d78ca2d4459e744e",
+      "Size": 1446631
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
@@ -148,6 +158,26 @@
       "Size": 301888
     },
     {
+      "BundleName": "assets/res/ui/atlases/icon0.ab",
+      "FileHash": "b1f922dfc69939f7b9dd57d316dde11d",
+      "Size": 24207
+    },
+    {
+      "BundleName": "assets/res/ui/atlases/icon1.ab",
+      "FileHash": "efadbbdb0533951d5c8648299713e95b",
+      "Size": 282054
+    },
+    {
+      "BundleName": "assets/res/ui/atlases/icon2.ab",
+      "FileHash": "6aa63facd73e57ffa7f31121e462d97f",
+      "Size": 254396
+    },
+    {
+      "BundleName": "assets/res/ui/atlases/icon3.ab",
+      "FileHash": "6ad32a1510cf3d25c4df24dfbf6d1a55",
+      "Size": 326103
+    },
+    {
       "BundleName": "assets/application/main/xlua/lua/core.ab",
       "FileHash": "539ed53154de9c9b446091936d41ed9d",
       "Size": 1111
@@ -169,8 +199,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/scenes.ab",
-      "FileHash": "07d71a59a23ed19de8756bc91b948d6e",
-      "Size": 44673
+      "FileHash": "734261c094eef9b88b5490a3036b4acb",
+      "Size": 59947
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
