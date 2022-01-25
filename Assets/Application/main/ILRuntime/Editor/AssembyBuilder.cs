@@ -24,10 +24,6 @@ namespace Application.Runtime
 
             var assemblyBuilder = new AssemblyBuilder(outputAssembly, scriptPaths);
             assemblyBuilder.additionalReferences    = null; // GetAdditionalReferences();
-            foreach(var def in assemblyBuilder.defaultDefines)
-            {
-                Debug.Log($"========== def >> {def}");
-            }
             assemblyBuilder.additionalDefines       = new string[] { "DISABLE_ILRUNTIME_DEBUG" };
             assemblyBuilder.excludeReferences       = GetExcludeReferences();
             assemblyBuilder.buildTarget             = EditorUserBuildSettings.activeBuildTarget;

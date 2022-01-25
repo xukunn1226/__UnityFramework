@@ -16,6 +16,6 @@ MonoBehaviour:
   useLZ4Compress: 1
   rebuildBundles: 0
   appendHash: 0
-  DisableWriteTypeTree: 0
+  DisableWriteTypeTree: 1
   DevelopmentBuild: 0
   OverrideResourcePath: 
