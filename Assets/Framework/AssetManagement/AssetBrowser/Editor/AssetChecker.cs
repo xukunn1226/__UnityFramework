@@ -398,6 +398,38 @@ namespace Framework.AssetManagement.AssetBrowser
             }
         }
 
+        // 清理序列化在材质中，但没有使用的keyword
+        public static void RemoveRedundantMaterialShaderKeywords(Material material)
+        {
+            List<string> materialKeywordsLst = new List<string>(material.shaderKeywords);
+            List<string> shaderKeywordsList = new List<string>();
+            var getKeywordsMethod =
+                typeof(ShaderUtil).GetMethod("GetShaderGlobalKeywords", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            string[] keywords = (string[])getKeywordsMethod.Invoke(null, new object[] { material.shader });
+            shaderKeywordsList.AddRange(keywords);
+
+            getKeywordsMethod =
+                typeof(ShaderUtil).GetMethod("GetShaderLocalKeywords", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            keywords = (string[])getKeywordsMethod.Invoke(null, new object[] { material.shader });
+            shaderKeywordsList.AddRange(keywords);
+
+            List<string> notExistKeywords = new List<string>();
+            foreach (var each in materialKeywordsLst)
+            {
+                if (!shaderKeywordsList.Contains(each))
+                {
+                    notExistKeywords.Add(each);
+                }
+            }
+
+            foreach (var each in notExistKeywords)
+            {
+                materialKeywordsLst.Remove(each);
+            }
+
+            material.shaderKeywords = materialKeywordsLst.ToArray();
+        }
+
         static private bool DoCleanMotionVectors(GameObject obj)
         {
             if (obj == null)
