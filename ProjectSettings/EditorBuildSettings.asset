@@ -27,3 +27,5 @@ EditorBuildSettings:
       type: 2}
     com.myproject.GameBuilderSettingCollection: {fileID: 11400000, guid: 841f09953baa39b4a8e1ffd3d4fd5a5e,
       type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7,
+      type: 2}
