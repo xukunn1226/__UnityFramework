@@ -33,7 +33,7 @@ namespace StarterAssets
                 compatibleList = null;
 
                 // find the projects required package list
-                var requiredPackagesListFile = Directory.GetFiles(Application.dataPath, PackagesToImportDataFile,
+                var requiredPackagesListFile = Directory.GetFiles(UnityEngine.Application.dataPath, PackagesToImportDataFile,
                     SearchOption.AllDirectories);
 
                 // if no PackageImportList.txt exists
