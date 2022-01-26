@@ -1,16 +1,16 @@
 {
   "Count": 65,
-  "TotalSize": 98149369,
+  "TotalSize": 98221953,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "7032f80cb8c393b0c8dd419a18cd5ba4",
+      "FileHash": "2b58b1d434fb3d150ed17edc8a590f10",
       "Size": 60416
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "a146cd58fdbc5476f36eb80dfee26c98",
-      "Size": 40644
+      "FileHash": "6fed25996b5c2bda052583be6949fc9f",
+      "Size": 40668
     },
     {
       "BundleName": "config.db",
@@ -19,8 +19,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "76ac7409d86cfbcc21495acb4edf37ad",
-      "Size": 3637
+      "FileHash": "4107477289bfa14d222ea5936c14d824",
+      "Size": 3634
     },
     {
       "BundleName": "assets/res.ab",
@@ -84,8 +84,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "9b68399248c192f3c92ed80bfa71853e",
-      "Size": 106723
+      "FileHash": "38077b134724e420a477c267e8d92d2c",
+      "Size": 122944
     },
     {
       "BundleName": "assets/res/ui/controls.ab",
@@ -199,8 +199,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/scenes.ab",
-      "FileHash": "acb4f2596c76efd52e1647a27603ab24",
-      "Size": 14798
+      "FileHash": "8f6eb2755ccf6630ad1f347c8c8060cc",
+      "Size": 56400
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/audio.ab",
@@ -234,8 +234,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/scenes.ab",
-      "FileHash": "ebfeb78a7bae28e65a13fbd815341199",
-      "Size": 158399
+      "FileHash": "6a0b19dc444e989d55d261b7e3207350",
+      "Size": 173081
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testunload.ab",
@@ -254,8 +254,8 @@
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/scenes.ab",
-      "FileHash": "250b2fbf4876e095c860ecb13db8c411",
-      "Size": 94598
+      "FileHash": "24967db1a56e6058219d33d41576d75f",
+      "Size": 94654
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/misc/111.ab",
@@ -324,8 +324,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/atlases/misc.ab",
-      "FileHash": "856234e3eb86adca4834b400ac30cfad",
-      "Size": 1317170
+      "FileHash": "6ba76cd8691f59c41d3d70fb54d993b9",
+      "Size": 1317172
     }
   ]
 }

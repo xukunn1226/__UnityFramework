@@ -38,9 +38,9 @@ namespace Application.Runtime
 
             codeStartup = gameObject.AddComponent<ILStartup>();
             codeStartup.codeMode = codeMode;
-            #if !UNITY_EDITOR
-            codeStartup.codeMode = CodeMode.ILRuntime;
-            #endif
+            // #if !UNITY_EDITOR
+            // codeStartup.codeMode = CodeMode.ILRuntime;
+            // #endif
 
             // TODO:
             // NetModuleManager.Instance.Init();
