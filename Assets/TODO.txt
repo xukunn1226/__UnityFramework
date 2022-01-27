@@ -334,7 +334,8 @@ RectTransform:
     3、（anchorMax.x, anchorMin.y） ——右下角
     4、（anchorMax.x, anchorMax.y） ——右上角
 * anchoredPosition：pivot相对anchor的位置，（面板上的PosX，PosY）
-* sizeDelta：当anchor非strech模式时，等同于size；当anchor为stretch模式时，为相比父节点的差异值（面板上Width，Height）
+* sizeDelta：当anchor全部重合时，等同于size（面板上Width，Height）；当anchor有任意一个是父节点的corners时，它是相对父矩形的delta size
+* RectTransform.rect获得矩形尺寸信息
 * pivot：（0,0）面板左下角，（1,1）面板右上角；以pivot点轴心旋转
 * offsetMin:  The offset of the lower left corner of the rectangle relative to the lower left anchor
 * offsetMax:  The offset of the upper right corner of the rectangle relative to the upper right anchor
