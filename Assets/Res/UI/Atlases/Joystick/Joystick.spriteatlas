@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Joystick
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 5f6e831fd1448f246b14ff73e79e0e88, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 04df3461bb035834fb45b4eced724a3f, type: 3}
+  - {fileID: 21300000, guid: 66dbba239f332bd40a36439f891e34a0, type: 3}
+  - {fileID: 21300000, guid: bf5da80531e1ec6439be8292c5f63c34, type: 3}
+  - {fileID: 21300000, guid: b58fa167fb73b674b9497e1094e4c69a, type: 3}
+  - {fileID: 21300000, guid: e356bdc704d236940af66b4ab762b60e, type: 3}
+  - {fileID: 21300000, guid: b22e3258814641d4eaf78e2e36b6ee2c, type: 3}
+  - {fileID: 21300000, guid: c5cf0188244c2364389ae90d13f8987d, type: 3}
+  - {fileID: 21300000, guid: 64e01a99313723c49b58966b858ba6c3, type: 3}
+  - {fileID: 21300000, guid: 54a1062df0186f645aab880d641a1d95, type: 3}
+  - {fileID: 21300000, guid: 42c10d5deab952349813fb8d8b64c8c4, type: 3}
+  - {fileID: 21300000, guid: dcae555e19ba4f8418a5442b75223f0e, type: 3}
+  - {fileID: 21300000, guid: 04d0768eea14b7b4f9d1d77eb23e9abf, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - AllAxis_Outline
+  - Handle_Ridged_Arrows
+  - AllAxis_Ridged_Arrows
+  - Handle_Outline
+  - Handle_Outline_Arrows
+  - AllAxis_Plain
+  - AllAxis_Ridged
+  - AllAxis_Outline_Arrows
+  - Handle_Plain_Arrows
+  - Handle_Plain
+  - Handle_Ridged
+  - AllAxis_Plain_Arrows
+  m_RenderDataMap: {}
+  m_Tag: Joystick
+  m_IsVariant: 0
