@@ -12,6 +12,10 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public System.Action<Vector2> onMove;
+		public System.Action<Vector2> onLook;
+		public System.Action<bool> onJump;
+		public System.Action<bool> onSprint;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -53,21 +57,25 @@ namespace StarterAssets
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
+			onMove?.Invoke(move);
 		} 
 
 		public void LookInput(Vector2 newLookDirection)
 		{
 			look = newLookDirection;
+			onLook?.Invoke(look);
 		}
 
 		public void JumpInput(bool newJumpState)
 		{
 			jump = newJumpState;
+			onJump?.Invoke(jump);
 		}
 
 		public void SprintInput(bool newSprintState)
 		{
 			sprint = newSprintState;
+			onSprint?.Invoke(sprint);
 		}
 
 #if !UNITY_IOS || !UNITY_ANDROID
