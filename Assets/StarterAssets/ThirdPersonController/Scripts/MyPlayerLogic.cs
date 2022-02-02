@@ -22,67 +22,49 @@ namespace StarterAssets
 			player?.Uninit();
 		}
 
-		public int id;
+		public int 			id;
 
-        [Header("Player")]
-		[Tooltip("Move speed of the character in m/s")]
-		public float MoveSpeed = 2.0f;
-		[Tooltip("Sprint speed of the character in m/s")]
-		public float SprintSpeed = 5.335f;
+		public float 		MoveSpeed = 2.0f;				// walk时的速度
+		public float 		SprintSpeed = 5.335f;			// sprint时的速度
 		[Tooltip("How fast the character turns to face movement direction")]
 		[Range(0.0f, 0.3f)]
-		public float RotationSmoothTime = 0.12f;
-		[Tooltip("Acceleration and deceleration")]
-		public float SpeedChangeRate = 10.0f;
-
-		[Space(10)]
-		[Tooltip("The height the player can jump")]
-		public float JumpHeight = 1.2f;
-		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
-		public float Gravity = -15.0f;
-
-		[Space(10)]
-		[Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-		public float JumpTimeout = 0.50f;
-		[Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-		public float FallTimeout = 0.15f;
-
-		[Header("Player Grounded")]
-		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
-		public bool Grounded = true;
-		[Tooltip("Useful for rough ground")]
-		public float GroundedOffset = -0.14f;
-		[Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
-		public float GroundedRadius = 0.28f;
-		[Tooltip("What layers the character uses as ground")]
-		public LayerMask GroundLayers;
+		public float 		RotationSmoothTime = 0.12f;		// 
+		public float 		SpeedChangeRate = 10.0f;		// 加速度
+		public float 		JumpHeight = 1.2f;				// 最大跳跃高度		
+		public float 		Gravity = -15.0f;				// 重力加速度
+		public float 		JumpTimeout = 0.50f;			// 着地后可以再次跳跃的间隔时间		
+		public float 		FallTimeout = 0.15f;			// 浮空状态多长时间判定为free fall
+		public bool 		Grounded = true;				// 着地状态，自行计算，!= CharacterController.isGrounded
+		public float 		GroundedOffset = -0.14f;		// 
+		public float 		GroundedRadius = 0.28f;			// 判断是否落地的sphere radius，大小匹配CharacterController.radius
+		public LayerMask 	GroundLayers;
 
 
 		// player
-		private float _speed;
-		private float _animationBlend;
-		private float _targetRotation = 0.0f;
-		private float _rotationVelocity;
-		private float _verticalVelocity;
-		private float _terminalVelocity = 53.0f;
+		private float 		m_Speed;
+		private float 		m_AnimationBlend;
+		private float 		m_TargetRotation = 0.0f;
+		private float 		m_RotationVelocity;
+		private float 		m_VerticalVelocity;
+		private float 		m_TerminalVelocity = 53.0f;
 
 		// timeout deltatime
-		private float _jumpTimeoutDelta;
-		private float _fallTimeoutDelta;
+		private float 		m_JumpTimeoutDelta;
+		private float 		m_FallTimeoutDelta;
 
         // input
-        private Vector2 m_Move;
-        private Vector2 m_Look;
-        private bool m_Jump;
-        private bool m_Sprint;
+        private Vector2 	m_Move;
+        private Vector2 	m_Look;
+        private bool 		m_Jump;
+        private bool 		m_Sprint;
 
 
 
-        private GameObject m_Player;
-        private MyPlayerBehaviour m_PlayerBehaviour;
+        private GameObject 			m_Player;
+        private MyPlayerBehaviour 	m_PlayerBehaviour;
         private StarterAssetsInputs m_Input;
-		public Transform playerCameraRoot => m_PlayerCameraRoot;
-		private Transform m_PlayerCameraRoot;
+		public Transform 			playerCameraRoot => m_PlayerCameraRoot;
+		private Transform 			m_PlayerCameraRoot;
 
         public void Init(GameObject go)
         {
@@ -93,8 +75,8 @@ namespace StarterAssets
 			m_PlayerCameraRoot = m_Player.transform.Find("PlayerCameraRoot");
 
             // reset our timeouts on start
-			_jumpTimeoutDelta = JumpTimeout;
-			_fallTimeoutDelta = FallTimeout;
+			m_JumpTimeoutDelta = JumpTimeout;
+			m_FallTimeoutDelta = FallTimeout;
 
             GroundLayers = LayerMask.GetMask(new string[] {"Default", "Base"});
 
@@ -122,26 +104,34 @@ namespace StarterAssets
 
         private void GroundedCheck()
 		{
-			// set sphere position, with offset
 			Vector3 spherePosition = new Vector3(m_Player.transform.position.x, m_Player.transform.position.y - GroundedOffset, m_Player.transform.position.z);
 			Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
 
-			// update animator if using character
+			// trigger player behaviour
             m_PlayerBehaviour.SetGrounded(Grounded);
+		}
+
+		public void OnDrawGizmosSelected()
+		{
+			Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
+			Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+
+			if (Grounded) Gizmos.color = transparentGreen;
+			else Gizmos.color = transparentRed;
+			
+			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
+			Gizmos.DrawSphere(new Vector3(m_Player.transform.position.x, m_Player.transform.position.y - GroundedOffset, m_Player.transform.position.z), GroundedRadius);
 		}
 
         private void Move()
 		{
-			// set target speed based on move speed, sprint speed and if sprint is pressed
 			float targetSpeed = m_Sprint ? SprintSpeed : MoveSpeed;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
-			// note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-			// if there is no input, set the target speed to 0
 			if (m_Move == Vector2.zero) targetSpeed = 0.0f;
 
-			// a reference to the players current horizontal velocity
+			// 水平速度值
 			float currentHorizontalSpeed = new Vector3(m_PlayerBehaviour.velocity.x, 0.0f, m_PlayerBehaviour.velocity.z).magnitude;
 
 			float speedOffset = 0.1f;
@@ -152,39 +142,37 @@ namespace StarterAssets
 			{
 				// creates curved result rather than a linear one giving a more organic speed change
 				// note T in Lerp is clamped, so we don't need to clamp our speed
-				_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+				m_Speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
 
 				// round speed to 3 decimal places
-				_speed = Mathf.Round(_speed * 1000f) / 1000f;
+				m_Speed = Mathf.Round(m_Speed * 1000f) / 1000f;
 			}
 			else
 			{
-				_speed = targetSpeed;
+				m_Speed = targetSpeed;
 			}
-			_animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
-
-			// normalise input direction
-			Vector3 inputDirection = new Vector3(m_Input.move.x, 0.0f, m_Input.move.y).normalized;
-
-			// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-			// if there is a move input rotate player when the player is moving
+			m_AnimationBlend = Mathf.Lerp(m_AnimationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+	
+			// rotation
 			if (m_Input.move != Vector2.zero)
 			{
-				_targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
-				float rotation = Mathf.SmoothDampAngle(m_Player.transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, RotationSmoothTime);
+				// normalise input direction
+				Vector3 inputDirection = new Vector3(m_Input.move.x, 0.0f, m_Input.move.y).normalized;
+
+				m_TargetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
+				float rotation = Mathf.SmoothDampAngle(m_Player.transform.eulerAngles.y, m_TargetRotation, ref m_RotationVelocity, RotationSmoothTime);
 
 				// rotate to face input direction relative to camera position
 				m_Player.transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
 			}
 
-
-			Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+			Vector3 targetDirection = Quaternion.Euler(0.0f, m_TargetRotation, 0.0f) * Vector3.forward;
 
 			// move the player
-            m_PlayerBehaviour.SetMotion(targetDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            m_PlayerBehaviour.SetMotion(targetDirection.normalized * (m_Speed * Time.deltaTime) + new Vector3(0.0f, m_VerticalVelocity, 0.0f) * Time.deltaTime);
 
 			// update animator if using character
-            m_PlayerBehaviour.SetSpeed(_animationBlend);
+            m_PlayerBehaviour.SetSpeed(m_AnimationBlend);
             m_PlayerBehaviour.SetMotionSpeed(inputMagnitude);
 		}
 
@@ -192,59 +180,61 @@ namespace StarterAssets
 		{
 			if (Grounded)
 			{
-				// reset the fall timeout timer
-				_fallTimeoutDelta = FallTimeout;
+				// 落地即重置浮空超时时间
+				m_FallTimeoutDelta = FallTimeout;
 
-				// update animator if using character
+				// trigger player behaviour
                 m_PlayerBehaviour.SetJump(false);
                 m_PlayerBehaviour.SetFreeFall(false);
 
 				// stop our velocity dropping infinitely when grounded
-				if (_verticalVelocity < 0.0f)
+				if (m_VerticalVelocity < 0.0f)
 				{
-					_verticalVelocity = -2f;
+					m_VerticalVelocity = -2f;
 				}
 
 				// Jump
-				if (m_Jump && _jumpTimeoutDelta <= 0.0f)
+				if (m_Jump && m_JumpTimeoutDelta <= 0.0f)
 				{
-					// the square root of H * -2 * G = how much velocity needed to reach desired height
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					// h = 0.5 * g * t * t
+					// v = g * t
+					// v = sqrt(2 * h * g)
+					m_VerticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);		// 要达到最大跳跃高度需要的速度
 
 					// update animator if using character
                     m_PlayerBehaviour.SetJump(true);
 				}
 
 				// jump timeout
-				if (_jumpTimeoutDelta >= 0.0f)
+				if (m_JumpTimeoutDelta >= 0.0f)
 				{
-					_jumpTimeoutDelta -= Time.deltaTime;
+					m_JumpTimeoutDelta -= Time.deltaTime;
 				}
 			}
 			else
 			{
-				// reset the jump timeout timer
-				_jumpTimeoutDelta = JumpTimeout;
+				// 浮空状态即重置跳跃超时时间
+				m_JumpTimeoutDelta = JumpTimeout;
 
 				// fall timeout
-				if (_fallTimeoutDelta >= 0.0f)
+				if (m_FallTimeoutDelta >= 0.0f)
 				{
-					_fallTimeoutDelta -= Time.deltaTime;
+					m_FallTimeoutDelta -= Time.deltaTime;
 				}
 				else
 				{
-					// update animator if using character
+					// 只有当idle，walk，sprint切换至InAir状态时才根据fallTimeout判定，若jumpStart触发了将自动切换至InAir
                     m_PlayerBehaviour.SetFreeFall(true);
 				}
 
-				// if we are not grounded, do not jump
+				// 浮空状态不可跳跃
                 m_Jump = false;
 			}
 
-			// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
-			if (_verticalVelocity < _terminalVelocity)
+			// v = g * t
+			if (m_VerticalVelocity < m_TerminalVelocity)
 			{
-				_verticalVelocity += Gravity * Time.deltaTime;
+				m_VerticalVelocity += Gravity * Time.deltaTime;
 			}
 		}
 

@@ -29,5 +29,13 @@ namespace StarterAssets
         {
             m_PlayerLogic?.Update(Time.deltaTime);
         }
+
+        public void OnDrawGizmosSelected()
+        {
+            if(m_PlayerLogic != null)
+            {
+                m_PlayerLogic.OnDrawGizmosSelected();
+            }
+        }
     }
 }
