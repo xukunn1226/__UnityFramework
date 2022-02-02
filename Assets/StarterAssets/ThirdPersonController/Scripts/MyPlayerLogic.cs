@@ -28,7 +28,7 @@ namespace StarterAssets
 		public float 		SprintSpeed = 5.335f;			// sprint时的速度
 		[Tooltip("How fast the character turns to face movement direction")]
 		[Range(0.0f, 0.3f)]
-		public float 		RotationSmoothTime = 0.12f;		// 
+		public float 		RotationSmoothTime = 0.12f;		// 转向速度
 		public float 		SpeedChangeRate = 10.0f;		// 加速度
 		public float 		JumpHeight = 1.2f;				// 最大跳跃高度		
 		public float 		Gravity = -15.0f;				// 重力加速度
@@ -125,26 +125,22 @@ namespace StarterAssets
 
         private void Move()
 		{
-			float targetSpeed = m_Sprint ? SprintSpeed : MoveSpeed;
-
-			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
-
-			if (m_Move == Vector2.zero) targetSpeed = 0.0f;
-
 			// 水平速度值
 			float currentHorizontalSpeed = new Vector3(m_PlayerBehaviour.velocity.x, 0.0f, m_PlayerBehaviour.velocity.z).magnitude;
 
 			float speedOffset = 0.1f;
-			float inputMagnitude = m_Input.analogMovement ? m_Input.move.magnitude : 1f;
+			float inputMagnitude = Mathf.Max(1, m_Input.analogMovement ? m_Input.move.magnitude : 1f);
+			Debug.Log($"{inputMagnitude}	sprint: {m_Sprint}");
 
-			// accelerate or decelerate to target speed
+			float targetSpeed = (m_Sprint ? SprintSpeed : MoveSpeed) * inputMagnitude;
+			if (m_Move == Vector2.zero) targetSpeed = 0.0f;
+
+			// 与目标速度的差异值达到speedOffset执行加速、减速模拟
 			if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
 			{
-				// creates curved result rather than a linear one giving a more organic speed change
-				// note T in Lerp is clamped, so we don't need to clamp our speed
-				m_Speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+				// v = v0 + at
+				m_Speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed, Time.deltaTime * SpeedChangeRate);
 
-				// round speed to 3 decimal places
 				m_Speed = Mathf.Round(m_Speed * 1000f) / 1000f;
 			}
 			else
@@ -172,8 +168,8 @@ namespace StarterAssets
             m_PlayerBehaviour.SetMotion(targetDirection.normalized * (m_Speed * Time.deltaTime) + new Vector3(0.0f, m_VerticalVelocity, 0.0f) * Time.deltaTime);
 
 			// update animator if using character
-            m_PlayerBehaviour.SetSpeed(m_AnimationBlend);
-            m_PlayerBehaviour.SetMotionSpeed(inputMagnitude);
+            m_PlayerBehaviour.SetSpeed(m_AnimationBlend);			// 控制动画（idle, walk, sprint）的融合程度
+            m_PlayerBehaviour.SetMotionSpeed(1);		// 控制动画的播放速度
 		}
 
 		private void JumpAndGravity()
