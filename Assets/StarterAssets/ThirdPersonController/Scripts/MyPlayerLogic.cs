@@ -129,8 +129,8 @@ namespace StarterAssets
 			float currentHorizontalSpeed = new Vector3(m_PlayerBehaviour.velocity.x, 0.0f, m_PlayerBehaviour.velocity.z).magnitude;
 
 			float speedOffset = 0.1f;
-			float inputMagnitude = Mathf.Max(1, m_Input.analogMovement ? m_Input.move.magnitude : 1f);
-			Debug.Log($"{inputMagnitude}	sprint: {m_Sprint}");
+			float inputMagnitude = m_Input.analogMovement ? m_Input.move.magnitude : 1f;
+			// Debug.Log($"{inputMagnitude}	sprint: {m_Sprint}");
 
 			float targetSpeed = (m_Sprint ? SprintSpeed : MoveSpeed) * inputMagnitude;
 			if (m_Move == Vector2.zero) targetSpeed = 0.0f;
