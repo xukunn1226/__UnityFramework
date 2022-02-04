@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
+using StarterAssets;
 
-namespace StarterAssets
+namespace Application.Logic
 {
     public class MyPlayerLogic
     {

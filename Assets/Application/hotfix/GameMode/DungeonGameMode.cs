@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
 using Application.Runtime;
+using StarterAssets;
+using Cinemachine;
 
 namespace Application.Logic
 {
     public class DungeonGameMode : GameMode
     {
         public override GameState Id { get { return GameState.Dungeon; } }
+
+        private MyPlayerLogic m_PlayerLogic;
 
         public override void OnEnter(IState<GameState> prevState)
         {
@@ -26,7 +30,9 @@ namespace Application.Logic
         {}
 
         public override void OnUpdate(float deltaTime)
-        {}
+        {
+            m_PlayerLogic?.Update(deltaTime);
+        }
         
         private void OnLevelLoadEnd(string sceneName)
         {
@@ -34,6 +40,12 @@ namespace Application.Logic
             {
                 StreamingLevelManager.onLevelLoadEnd -= OnLevelLoadEnd;
                 Launcher.Instance.Disable();        // 结束Launcher流程
+
+                m_PlayerLogic = MyPlayerLogic.Create(1);
+
+                // bind Player to camera follow target
+                CinemachineVirtualCamera vc = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
+                vc.m_Follow = m_PlayerLogic.playerCameraRoot;
             }
         }
     }

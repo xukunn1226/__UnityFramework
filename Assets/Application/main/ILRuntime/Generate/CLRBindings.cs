@@ -96,6 +96,7 @@ namespace ILRuntime.Runtime.Generated
             Framework_Core_StreamingLevelManager_Binding.Register(app);
             Framework_Core_StreamingLevelManager_Binding_LevelContext_Binding.Register(app);
             Framework_Core_SingletonMono_1_StreamingLevelManager_Binding.Register(app);
+            Cinemachine_CinemachineVirtualCamera_Binding.Register(app);
             UnityEngine_QualitySettings_Binding.Register(app);
             UnityEngine_Screen_Binding.Register(app);
             UnityEngine_Resolution_Binding.Register(app);
@@ -116,6 +117,13 @@ namespace ILRuntime.Runtime.Generated
             Framework_Core_GameDebug_Binding.Register(app);
             Application_Runtime_WorldPlayerController_Binding.Register(app);
             Application_Runtime_PlayerController_Binding.Register(app);
+            UnityEngine_LayerMask_Binding.Register(app);
+            StarterAssets_StarterAssetsInputs_Binding.Register(app);
+            UnityEngine_Physics_Binding.Register(app);
+            StarterAssets_MyPlayerBehaviour_Binding.Register(app);
+            UnityEngine_Color_Binding.Register(app);
+            UnityEngine_Gizmos_Binding.Register(app);
+            UnityEngine_Vector2_Binding.Register(app);
 
             ILRuntime.CLR.TypeSystem.CLRType __clrType = null;
             __clrType = (ILRuntime.CLR.TypeSystem.CLRType)app.GetType (typeof(UnityEngine.Vector3));
