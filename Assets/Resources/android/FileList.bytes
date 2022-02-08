@@ -1,15 +1,15 @@
 {
   "Count": 82,
-  "TotalSize": 108352814,
+  "TotalSize": 108343746,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "0d7a00cf2daa9d6c019803dbdde966ab",
+      "FileHash": "0d11ba8c08a4002594ec096f85e14250",
       "Size": 65024
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "a535acd51a23db900534399ae868c36a",
+      "FileHash": "b0786b775befbec6253e954a1c3bbf89",
       "Size": 42208
     },
     {
@@ -19,7 +19,7 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "c5f473e9324819605efa373753366795",
+      "FileHash": "5647c003d83fca7d9d971995fc470e48",
       "Size": 4371
     },
     {
@@ -84,8 +84,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "623fc880c052c3d21825257d2918dfb6",
-      "Size": 360640
+      "FileHash": "3422c574f31e57c22e04dd1e125b8dd7",
+      "Size": 351572
     },
     {
       "BundleName": "assets/res/dungeondemo/prefabs.ab",
