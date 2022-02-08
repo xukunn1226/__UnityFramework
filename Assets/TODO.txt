@@ -234,6 +234,7 @@
 	https://zhuanlan.zhihu.com/p/102278660   个人对于游戏UI架构的思考与总结
 	https://blog.uwa4d.com/archives/UWA_UITree.html   UI开发与优化知识Tree
 	https://github.com/NVentimiglia/Unity3d-Foundation
+	https://github.com/Misaka-Mikoto-Tech/UIControlBinding  控件绑定方案，UI绑定
 
 	* UI Opt
 	https://learn.unity.com/tutorial/optimizing-unity-ui
@@ -377,6 +378,11 @@ RectTransform:
 	https://edu.uwa4d.com/course-intro/0/143?purchased=true  成熟的Unity热更新以及版本管理的解决方案
 	https://edu.uwa4d.com/course-intro/0/145?purchased=true  手游HTTP多线程下载原理与优化
 
+
+* File IO Performance
+	https://www.jacksondunstan.com/articles/3318
+	https://stackoverflow.com/questions/2036718/fastest-way-of-reading-and-writing-binary
+	https://zhuanlan.zhihu.com/p/39478710
 
 
 

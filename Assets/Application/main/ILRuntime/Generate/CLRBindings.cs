@@ -78,11 +78,18 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_Dictionary_2_String_Int32_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_String_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_Single_Binding.Register(app);
+            UnityEngine_LayerMask_Binding.Register(app);
+            StarterAssets_StarterAssetsInputs_Binding.Register(app);
+            UnityEngine_Physics_Binding.Register(app);
+            StarterAssets_MyPlayerBehaviour_Binding.Register(app);
+            UnityEngine_Color_Binding.Register(app);
+            UnityEngine_Gizmos_Binding.Register(app);
+            UnityEngine_Vector2_Binding.Register(app);
+            UnityEngine_Time_Binding.Register(app);
             Application_Runtime_CoroutineExtension_Binding.Register(app);
             Application_Runtime_CoroutineHandler_Binding.Register(app);
             UnityEngine_Events_UnityEvent_1_Boolean_Binding.Register(app);
             Application_Runtime_CodeLoader_Binding.Register(app);
-            UnityEngine_Time_Binding.Register(app);
             System_NotSupportedException_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Enum_Action_1_ILTypeInstance_Binding.Register(app);
             System_Action_1_ILTypeInstance_Binding.Register(app);
@@ -117,13 +124,6 @@ namespace ILRuntime.Runtime.Generated
             Framework_Core_GameDebug_Binding.Register(app);
             Application_Runtime_WorldPlayerController_Binding.Register(app);
             Application_Runtime_PlayerController_Binding.Register(app);
-            UnityEngine_LayerMask_Binding.Register(app);
-            StarterAssets_StarterAssetsInputs_Binding.Register(app);
-            UnityEngine_Physics_Binding.Register(app);
-            StarterAssets_MyPlayerBehaviour_Binding.Register(app);
-            UnityEngine_Color_Binding.Register(app);
-            UnityEngine_Gizmos_Binding.Register(app);
-            UnityEngine_Vector2_Binding.Register(app);
 
             ILRuntime.CLR.TypeSystem.CLRType __clrType = null;
             __clrType = (ILRuntime.CLR.TypeSystem.CLRType)app.GetType (typeof(UnityEngine.Vector3));
