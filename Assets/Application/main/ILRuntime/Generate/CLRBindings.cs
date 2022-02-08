@@ -79,9 +79,9 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_Dictionary_2_String_String_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_Single_Binding.Register(app);
             UnityEngine_LayerMask_Binding.Register(app);
-            StarterAssets_StarterAssetsInputs_Binding.Register(app);
+            Application_Runtime_StarterAssetsInputs_Binding.Register(app);
             UnityEngine_Physics_Binding.Register(app);
-            StarterAssets_MyPlayerBehaviour_Binding.Register(app);
+            Application_Runtime_MyPlayerBehaviour_Binding.Register(app);
             UnityEngine_Color_Binding.Register(app);
             UnityEngine_Gizmos_Binding.Register(app);
             UnityEngine_Vector2_Binding.Register(app);

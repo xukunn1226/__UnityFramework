@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.Core;
 using Application.Runtime;
-using StarterAssets;
 using Cinemachine;
 
 namespace Application.Logic

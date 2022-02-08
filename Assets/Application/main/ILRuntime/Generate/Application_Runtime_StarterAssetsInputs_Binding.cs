@@ -14,14 +14,14 @@ using ILRuntime.CLR.Utils;
 
 namespace ILRuntime.Runtime.Generated
 {
-    unsafe class StarterAssets_StarterAssetsInputs_Binding
+    unsafe class Application_Runtime_StarterAssetsInputs_Binding
     {
         public static void Register(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
             BindingFlags flag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
             FieldInfo field;
             Type[] args;
-            Type type = typeof(StarterAssets.StarterAssetsInputs);
+            Type type = typeof(Application.Runtime.StarterAssetsInputs);
 
             field = type.GetField("onMove", flag);
             app.RegisterCLRFieldGetter(field, get_onMove_0);
@@ -55,108 +55,108 @@ namespace ILRuntime.Runtime.Generated
 
         static object get_onMove_0(ref object o)
         {
-            return ((StarterAssets.StarterAssetsInputs)o).onMove;
+            return ((Application.Runtime.StarterAssetsInputs)o).onMove;
         }
 
         static StackObject* CopyToStack_onMove_0(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = ((StarterAssets.StarterAssetsInputs)o).onMove;
+            var result_of_this_method = ((Application.Runtime.StarterAssetsInputs)o).onMove;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
         static void set_onMove_0(ref object o, object v)
         {
-            ((StarterAssets.StarterAssetsInputs)o).onMove = (System.Action<UnityEngine.Vector2>)v;
+            ((Application.Runtime.StarterAssetsInputs)o).onMove = (System.Action<UnityEngine.Vector2>)v;
         }
 
         static StackObject* AssignFromStack_onMove_0(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Action<UnityEngine.Vector2> @onMove = (System.Action<UnityEngine.Vector2>)typeof(System.Action<UnityEngine.Vector2>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
-            ((StarterAssets.StarterAssetsInputs)o).onMove = @onMove;
+            ((Application.Runtime.StarterAssetsInputs)o).onMove = @onMove;
             return ptr_of_this_method;
         }
 
         static object get_onLook_1(ref object o)
         {
-            return ((StarterAssets.StarterAssetsInputs)o).onLook;
+            return ((Application.Runtime.StarterAssetsInputs)o).onLook;
         }
 
         static StackObject* CopyToStack_onLook_1(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = ((StarterAssets.StarterAssetsInputs)o).onLook;
+            var result_of_this_method = ((Application.Runtime.StarterAssetsInputs)o).onLook;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
         static void set_onLook_1(ref object o, object v)
         {
-            ((StarterAssets.StarterAssetsInputs)o).onLook = (System.Action<UnityEngine.Vector2>)v;
+            ((Application.Runtime.StarterAssetsInputs)o).onLook = (System.Action<UnityEngine.Vector2>)v;
         }
 
         static StackObject* AssignFromStack_onLook_1(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Action<UnityEngine.Vector2> @onLook = (System.Action<UnityEngine.Vector2>)typeof(System.Action<UnityEngine.Vector2>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
-            ((StarterAssets.StarterAssetsInputs)o).onLook = @onLook;
+            ((Application.Runtime.StarterAssetsInputs)o).onLook = @onLook;
             return ptr_of_this_method;
         }
 
         static object get_onJump_2(ref object o)
         {
-            return ((StarterAssets.StarterAssetsInputs)o).onJump;
+            return ((Application.Runtime.StarterAssetsInputs)o).onJump;
         }
 
         static StackObject* CopyToStack_onJump_2(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = ((StarterAssets.StarterAssetsInputs)o).onJump;
+            var result_of_this_method = ((Application.Runtime.StarterAssetsInputs)o).onJump;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
         static void set_onJump_2(ref object o, object v)
         {
-            ((StarterAssets.StarterAssetsInputs)o).onJump = (System.Action<System.Boolean>)v;
+            ((Application.Runtime.StarterAssetsInputs)o).onJump = (System.Action<System.Boolean>)v;
         }
 
         static StackObject* AssignFromStack_onJump_2(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Action<System.Boolean> @onJump = (System.Action<System.Boolean>)typeof(System.Action<System.Boolean>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
-            ((StarterAssets.StarterAssetsInputs)o).onJump = @onJump;
+            ((Application.Runtime.StarterAssetsInputs)o).onJump = @onJump;
             return ptr_of_this_method;
         }
 
         static object get_onSprint_3(ref object o)
         {
-            return ((StarterAssets.StarterAssetsInputs)o).onSprint;
+            return ((Application.Runtime.StarterAssetsInputs)o).onSprint;
         }
 
         static StackObject* CopyToStack_onSprint_3(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = ((StarterAssets.StarterAssetsInputs)o).onSprint;
+            var result_of_this_method = ((Application.Runtime.StarterAssetsInputs)o).onSprint;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
         static void set_onSprint_3(ref object o, object v)
         {
-            ((StarterAssets.StarterAssetsInputs)o).onSprint = (System.Action<System.Boolean>)v;
+            ((Application.Runtime.StarterAssetsInputs)o).onSprint = (System.Action<System.Boolean>)v;
         }
 
         static StackObject* AssignFromStack_onSprint_3(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Action<System.Boolean> @onSprint = (System.Action<System.Boolean>)typeof(System.Action<System.Boolean>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
-            ((StarterAssets.StarterAssetsInputs)o).onSprint = @onSprint;
+            ((Application.Runtime.StarterAssetsInputs)o).onSprint = @onSprint;
             return ptr_of_this_method;
         }
 
         static object get_analogMovement_4(ref object o)
         {
-            return ((StarterAssets.StarterAssetsInputs)o).analogMovement;
+            return ((Application.Runtime.StarterAssetsInputs)o).analogMovement;
         }
 
         static StackObject* CopyToStack_analogMovement_4(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = ((StarterAssets.StarterAssetsInputs)o).analogMovement;
+            var result_of_this_method = ((Application.Runtime.StarterAssetsInputs)o).analogMovement;
             __ret->ObjectType = ObjectTypes.Integer;
             __ret->Value = result_of_this_method ? 1 : 0;
             return __ret + 1;
@@ -164,25 +164,25 @@ namespace ILRuntime.Runtime.Generated
 
         static void set_analogMovement_4(ref object o, object v)
         {
-            ((StarterAssets.StarterAssetsInputs)o).analogMovement = (System.Boolean)v;
+            ((Application.Runtime.StarterAssetsInputs)o).analogMovement = (System.Boolean)v;
         }
 
         static StackObject* AssignFromStack_analogMovement_4(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Boolean @analogMovement = ptr_of_this_method->Value == 1;
-            ((StarterAssets.StarterAssetsInputs)o).analogMovement = @analogMovement;
+            ((Application.Runtime.StarterAssetsInputs)o).analogMovement = @analogMovement;
             return ptr_of_this_method;
         }
 
         static object get_move_5(ref object o)
         {
-            return ((StarterAssets.StarterAssetsInputs)o).move;
+            return ((Application.Runtime.StarterAssetsInputs)o).move;
         }
 
         static StackObject* CopyToStack_move_5(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = ((StarterAssets.StarterAssetsInputs)o).move;
+            var result_of_this_method = ((Application.Runtime.StarterAssetsInputs)o).move;
             if (ILRuntime.Runtime.Generated.CLRBindings.s_UnityEngine_Vector2_Binding_Binder != null) {
                 ILRuntime.Runtime.Generated.CLRBindings.s_UnityEngine_Vector2_Binding_Binder.PushValue(ref result_of_this_method, __intp, __ret, __mStack);
                 return __ret + 1;
@@ -193,7 +193,7 @@ namespace ILRuntime.Runtime.Generated
 
         static void set_move_5(ref object o, object v)
         {
-            ((StarterAssets.StarterAssetsInputs)o).move = (UnityEngine.Vector2)v;
+            ((Application.Runtime.StarterAssetsInputs)o).move = (UnityEngine.Vector2)v;
         }
 
         static StackObject* AssignFromStack_move_5(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
@@ -205,7 +205,7 @@ namespace ILRuntime.Runtime.Generated
             } else {
                 @move = (UnityEngine.Vector2)typeof(UnityEngine.Vector2).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)16);
             }
-            ((StarterAssets.StarterAssetsInputs)o).move = @move;
+            ((Application.Runtime.StarterAssetsInputs)o).move = @move;
             return ptr_of_this_method;
         }
 

@@ -45,12 +45,12 @@ namespace ILRuntime.Runtime.Generated
                     lst.Add(m);
                 }
             }
-            args = new Type[]{typeof(StarterAssets.StarterAssetsInputs)};
+            args = new Type[]{typeof(Application.Runtime.StarterAssetsInputs)};
             if (genericMethods.TryGetValue("FindObjectOfType", out lst))
             {
                 foreach(var m in lst)
                 {
-                    if(m.MatchGenericParameters(args, typeof(StarterAssets.StarterAssetsInputs)))
+                    if(m.MatchGenericParameters(args, typeof(Application.Runtime.StarterAssetsInputs)))
                     {
                         method = m.MakeGenericMethod(args);
                         app.RegisterCLRMethodRedirection(method, FindObjectOfType_3);
@@ -161,7 +161,7 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 0);
 
 
-            var result_of_this_method = UnityEngine.Object.FindObjectOfType<StarterAssets.StarterAssetsInputs>();
+            var result_of_this_method = UnityEngine.Object.FindObjectOfType<Application.Runtime.StarterAssetsInputs>();
 
             object obj_result_of_this_method = result_of_this_method;
             if(obj_result_of_this_method is CrossBindingAdaptorType)

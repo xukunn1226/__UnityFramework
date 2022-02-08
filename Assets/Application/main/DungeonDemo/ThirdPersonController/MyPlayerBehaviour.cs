@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace StarterAssets
+namespace Application.Runtime
 {
     [RequireComponent(typeof(CharacterController))]
     public class MyPlayerBehaviour : MonoBehaviour

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
-using StarterAssets;
+using Application.Runtime;
 
 namespace Application.Logic
 {
@@ -10,7 +10,7 @@ namespace Application.Logic
     {
         static public MyPlayerLogic Create(int id)
         {
-            const string assetPath = "assets/starterassets/thirdpersoncontroller/prefabs/playerarmatureex.prefab";
+            const string assetPath = "assets/res/dungeondemo/thirdpersoncontroller/prefabs/playerarmatureex.prefab";
             GameObject go = AssetManager.InstantiatePrefab(assetPath);
             MyPlayerLogic player = new MyPlayerLogic();
 			player.id = id;

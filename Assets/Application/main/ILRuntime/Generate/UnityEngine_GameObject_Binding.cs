@@ -56,12 +56,12 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{typeof(System.Boolean)};
             method = type.GetMethod("SetActive", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, SetActive_2);
-            args = new Type[]{typeof(StarterAssets.MyPlayerBehaviour)};
+            args = new Type[]{typeof(Application.Runtime.MyPlayerBehaviour)};
             if (genericMethods.TryGetValue("GetComponent", out lst))
             {
                 foreach(var m in lst)
                 {
-                    if(m.MatchGenericParameters(args, typeof(StarterAssets.MyPlayerBehaviour)))
+                    if(m.MatchGenericParameters(args, typeof(Application.Runtime.MyPlayerBehaviour)))
                     {
                         method = m.MakeGenericMethod(args);
                         app.RegisterCLRMethodRedirection(method, GetComponent_3);
@@ -141,7 +141,7 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
-            var result_of_this_method = instance_of_this_method.GetComponent<StarterAssets.MyPlayerBehaviour>();
+            var result_of_this_method = instance_of_this_method.GetComponent<Application.Runtime.MyPlayerBehaviour>();
 
             object obj_result_of_this_method = result_of_this_method;
             if(obj_result_of_this_method is CrossBindingAdaptorType)
