@@ -26,6 +26,9 @@ namespace Application.Logic
             return def;
         }
 
+        /// <summary>
+        /// 初始化所有界面的UIDefine
+        /// </summary>
         static public void Init()
         {
             List<Type> types = FindAllDerivedTypes<UIDefines>();
