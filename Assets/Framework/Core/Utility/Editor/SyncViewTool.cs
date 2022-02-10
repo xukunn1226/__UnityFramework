@@ -25,14 +25,10 @@ namespace Framework.Core.Editor
 
             ApplyMenu();
 
-            if (enableSync)
-                EditorApplication.update += UpdateViewSync;
+            // if (enableSync)
+            //     EditorApplication.update += UpdateViewSync;
 
-#if UNITY_2019_1_OR_NEWER
-            SceneView.duringSceneGui += OnSceneGUI;
-#else
-        SceneView.onSceneGUIDelegate += OnSceneGUI;
-#endif
+            // SceneView.duringSceneGui += OnSceneGUI;
         }
 
         //[MenuItem(MenuName_EnableSync, false, 0)]

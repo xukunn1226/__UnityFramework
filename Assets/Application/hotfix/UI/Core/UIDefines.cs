@@ -54,7 +54,6 @@ namespace Application.Logic
 
     public class UILayer
     {
-        static public string    Main        { get; private set; }   = "_Main";
         static public string    Fullscreen  { get; private set; }   = "_Fullscreen";
         static public string    Windowed    { get; private set; }   = "_Windowed";
         static public string    Tips        { get; private set; }   = "_Tips";
@@ -74,7 +73,6 @@ namespace Application.Logic
         // }
         static public IEnumerator<System.Object> LayerToLoad()
         {
-            yield return Main;
             yield return Fullscreen;
             yield return Windowed;
             yield return Tips;
@@ -91,6 +89,12 @@ namespace Application.Logic
         DisableCanvas,
         OutOfViewLayer,
     }
+
+    // public enum EWindowsType
+    // {
+    //     Fullscreen,
+    //     Windowed,
+    // }
     
     public partial class UIPanelID
     {

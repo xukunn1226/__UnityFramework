@@ -12,9 +12,15 @@ namespace Application.Logic
     /// 界面管理器
     ///     * 层级管理：Main, Fullscreen, Windowed, Tips, Loading, Alert
     ///     * UI资源生命周期管理：常驻内存（persistent pool）或lru pool
+    ///     * 全屏界面及没有父窗口的界面需要入栈
     /// 问题：
     ///     * 如何加载父子窗口界面
     ///     * 出栈、入栈的需求，例如打开一个全屏界面有必要把栈中的界面出栈吗
+    ///     * 业务模块的数据管理器能互相访问吗？
+    ///     * 哪些界面类型需要进栈？fullscreen，windowed，pop，tips？
+    ///     * Popup界面类型如何定义？
+    ///     * Tips属于界面吗？需要特殊接口加载？
+    ///     * 哪些情况加载出来的界面需要动态调整位置？tips？
     ////// </summary>
     public class UIManager : Singleton<UIManager>
     {
@@ -83,7 +89,7 @@ namespace Application.Logic
             }
         }
 
-        public void Load(string id, object para = null)
+        public void Open(string id, object para = null)
         {
             UIDefines def = UIDefines.Get(id);
             if(def == null)
@@ -98,17 +104,35 @@ namespace Application.Logic
                 panel.OnShow();
                 CacheResource(def, rect);
             }
-
-            
-            if(rect != null)
-            {
-                m_LRUPool.Cache(id, rect);
-            }
             else
             {
                 // Trigger OnCreate
                 AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, def);
             }
+        }
+
+        public void Close(string id)
+        {}
+
+        private void OnPrefabLoadCompleted(GameObject go, System.Object userData)
+        {
+            UIDefines def = (UIDefines)userData;
+            if(go == null)
+            {
+                GameDebug.LogError($"failed to instantiate ui prefab: {def?.assetPath}");
+                return;
+            }
+
+            UIPanelBase panel = GetOrCreatePanel(def);
+            panel.OnCreate();
+        }
+
+        /// <summary>
+        /// 执行资源加载完成后的流程
+        /// </summary>
+        private void OnPostResourceLoaded()
+        {
+
         }
 
         /// <summary>
@@ -182,9 +206,6 @@ namespace Application.Logic
             }
         }
 
-        public void Unload(string id)
-        {}
-
         protected override void OnDestroy()
         {
             m_LRUPool.OnDiscard -= OnDiscard;
@@ -192,19 +213,6 @@ namespace Application.Logic
 
         private void OnDiscard(string id, RectTransform item)
         {
-        }
-
-        void OnPrefabLoadCompleted(GameObject go, System.Object userData)
-        {
-            UIDefines def = (UIDefines)userData;
-            if(go == null)
-            {
-                GameDebug.LogError($"failed to instantiate ui prefab: {def?.assetPath}");
-                return;
-            }
-
-            UIPanelBase panel = GetOrCreatePanel(def);
-            panel.OnCreate();
         }
 
         protected override void OnUpdate(float deltaTime)

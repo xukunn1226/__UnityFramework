@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3522729812753825718}
   - component: {fileID: -5360855689102614440}
   - component: {fileID: 1492378849}
+  - component: {fileID: 7973256268318020187}
   m_Layer: 0
   m_Name: Main
   m_TagString: Untagged
@@ -74,6 +75,27 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!223 &7973256268318020187
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454739020293718602}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1001 &5286499395089440200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -244,7 +266,7 @@ PrefabInstance:
     - target: {fileID: 9131287749805490276, guid: a8e84e91b9800d245af905eb7f79a31d,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 240
+      value: 740
       objectReference: {fileID: 0}
     - target: {fileID: 9131287749805490276, guid: a8e84e91b9800d245af905eb7f79a31d,
         type: 3}
@@ -289,7 +311,7 @@ PrefabInstance:
     - target: {fileID: 9131287751049638715, guid: a8e84e91b9800d245af905eb7f79a31d,
         type: 3}
       propertyPath: m_Size
-      value: 0.85616446
+      value: 0.8561644
       objectReference: {fileID: 0}
     - target: {fileID: 9131287751049638715, guid: a8e84e91b9800d245af905eb7f79a31d,
         type: 3}
