@@ -10,6 +10,7 @@ namespace Application.Logic
     {
         static private Dictionary<string, UIDefines> s_Defines = new Dictionary<string, UIDefines>();
         public virtual string       id              { get; protected set; }     // see UIPanelID
+        public virtual string       parentId        { get; protected set; }     // parent panel's id
         public virtual string       layer           { get; protected set; }     // see UILayer
         public virtual string       assetPath       { get; protected set; }     // asset path
         public virtual EHideMode    hideMode        { get; protected set; }     // 隐藏时的方式（SetActive（false）、out of screen、disable canvas、set view layer）
