@@ -19,12 +19,12 @@ namespace Application.Logic
         public UIPanelBase(UIDefines defines) { this.defines = defines; }
         private UIPanelBase() {}
 
-        public virtual void OnInit() {}             // UIPanelBase创建时的回调，仅一次
-        public virtual void OnCreate() {}           // UI资源实例化完成时的回调，可执行绑定操作，与OnDestroy对应
-        public virtual void OnShow() {}             // 界面打开回调（资源已实例化）
-        public virtual void OnUpdate() {}           // update the panel
-        public virtual void OnHide() {}             // 界面关闭回调
-        public virtual void OnDestroy() {}          // 界面资源销毁时调用，与OnCreate对应
+        public virtual void OnInit() {}                         // UIPanelBase创建时的回调，仅一次
+        public virtual void OnCreate() {}                       // UI资源实例化完成时的回调，可执行绑定操作，与OnDestroy对应
+        public virtual void OnShow(object userData = null) {}   // 界面打开回调（资源已实例化）
+        public virtual void OnUpdate() {}                       // update the panel
+        public virtual void OnHide() {}                         // 界面关闭回调
+        public virtual void OnDestroy() {}                      // 界面资源销毁时调用，与OnCreate对应
 
         public void Unload()
         {
@@ -37,13 +37,20 @@ namespace Application.Logic
         public void RemoveChild(UIPanelBase child)
         {}
 
+        protected bool HasParent()
+        {
+            return !string.IsNullOrEmpty(parentId);
+        }
+
         /// <summary>
-        /// 是否需要入栈管理，根据所处layer设定
+        /// 是否需要入栈管理
+        /// 全屏界面或没有父窗口的非全屏界面需要入栈
         /// </summary>
         /// <returns></returns>
-        static protected bool NeedStack(UIDefines def)
+        public bool CanStack()
         {
-            if(def.layer == UILayer.Fullscreen || def.layer == UILayer.Windowed)
+            if(defines.layer == UILayer.Fullscreen || 
+            (defines.layer == UILayer.Windowed && !HasParent()))
                 return true;
             return false;
         }

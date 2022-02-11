@@ -25,9 +25,9 @@ namespace Application.Logic
     public class UIManager : Singleton<UIManager>
     {
         private Dictionary<string, UIPanelBase>     m_PanelDict         = new Dictionary<string, UIPanelBase>();                // 逻辑对象队列，一旦创建了将不会销毁
-        private LRUQueue<string, RectTransform>     m_LRUPool           = new LRUQueue<string, RectTransform>(MaxCachedCount);  // 显示对象队列，显示对象可能被销毁
+        private LRUQueue<string, RectTransform>     m_LRUPool           = new LRUQueue<string, RectTransform>(MaxCachedCount);  // 显示对象队列（LRU管理，可被销毁）
         private const int                           MaxCachedCount      = 3;                                                    // 可最大缓存的显示对象数量
-        private Dictionary<string, RectTransform>   m_PersistentPool    = new Dictionary<string, RectTransform>();              // 常驻内存的显示对象
+        private Dictionary<string, RectTransform>   m_PersistentPool    = new Dictionary<string, RectTransform>();              // 显示对象队列（常驻内存）
         private Stack<UIPanelBase>                  m_PanelStack        = new Stack<UIPanelBase>();                             // 操作记录栈
         private Canvas                              m_Root;
         private const string                        m_UIRootName        = "UIRoot";
@@ -89,34 +89,49 @@ namespace Application.Logic
             }
         }
 
-        public void Open(string id, object para = null)
+        /// <summary>
+        /// 打开界面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="state"></param>
+        public void Open(string id, object state = null)
         {
             UIDefines def = UIDefines.Get(id);
             if(def == null)
                 throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
             
             UIPanelBase panel = GetOrCreatePanel(def);          // trigger OnInit
-            Push(panel);                                        // push stack
+
+            // 逻辑上立即入栈
+            if(panel.CanStack())
+                Push(panel);
 
             RectTransform rect = FindResource(def);
             if(rect != null)
-            {
-                panel.OnShow();
+            { // 资源已加载执行后续流程
+                panel.OnShow(state);
                 CacheResource(def, rect);
             }
             else
-            {
-                // Trigger OnCreate
-                AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, def);
+            { // 资源未加载则发起异步加载流程
+                AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, state });
             }
         }
 
         public void Close(string id)
         {}
 
+        /// <summary>
+        /// 资源加载完成的回调
+        /// </summary>
+        /// <param name="go"></param>
+        /// <param name="userData"></param>
         private void OnPrefabLoadCompleted(GameObject go, System.Object userData)
         {
-            UIDefines def = (UIDefines)userData;
+            System.Object[] data = (System.Object[])userData;
+            UIDefines def = (UIDefines)data[0];
+            System.Object state = data[1];
+
             if(go == null)
             {
                 GameDebug.LogError($"failed to instantiate ui prefab: {def?.assetPath}");
@@ -125,6 +140,12 @@ namespace Application.Logic
 
             UIPanelBase panel = GetOrCreatePanel(def);
             panel.OnCreate();
+
+            RectTransform rect = go.GetComponent<RectTransform>();
+            AddResource(panel, rect);
+
+            panel.OnShow(data[1]);
+            CacheResource(def, rect);
         }
 
         /// <summary>
@@ -159,7 +180,6 @@ namespace Application.Logic
         private void Push(UIPanelBase panel)
         {
             m_PanelStack.Push(panel);
-            // panel.OnShow();
         }
 
         /// <summary>
@@ -206,13 +226,40 @@ namespace Application.Logic
             }
         }
 
+        /// <summary>
+        /// 资源加载完成，进入显示对象列表
+        /// </summary>
+        /// <param name="panel"></param>
+        /// <param name="rect"></param>
+        private void AddResource(UIPanelBase panel, RectTransform rect)
+        {
+            if(panel.defines.isPersistent)
+            {
+                m_PersistentPool.Add(panel.defines.id, rect);
+            }
+            else
+            {
+                m_LRUPool.Cache(panel.defines.id, rect);
+            }
+            panel.OnCreate();       // trigger OnCreate
+        }
+
+        /// <summary>
+        /// 剔除出缓存队列
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="item"></param>
+        private void OnDiscard(string id, RectTransform item)
+        {
+            Debug.Log($"UIManager.OnDiscard     id: {id}");
+            UIPanelBase panel = GetOrCreatePanel(UIDefines.Get(id));
+            panel.OnDestroy();
+            UnityEngine.Object.Destroy(item.gameObject);
+        }
+
         protected override void OnDestroy()
         {
             m_LRUPool.OnDiscard -= OnDiscard;
-        }
-
-        private void OnDiscard(string id, RectTransform item)
-        {
         }
 
         protected override void OnUpdate(float deltaTime)

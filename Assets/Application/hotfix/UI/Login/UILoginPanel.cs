@@ -11,7 +11,7 @@ namespace Application.Logic
 
         public override void OnInit() {}
         public override void OnCreate() {}
-        public override void OnShow() {}
+        public override void OnShow(object userData = null) {}
         public override void OnUpdate() {}
         public override void OnHide() {}
         public override void OnDestroy() {}
