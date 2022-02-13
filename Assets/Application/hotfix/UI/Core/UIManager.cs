@@ -24,11 +24,11 @@ namespace Application.Logic
     ////// </summary>
     public class UIManager : Singleton<UIManager>
     {
-        private Dictionary<string, PanelState>      m_PanelDict         = new Dictionary<string, PanelState>();                // 逻辑对象队列，一旦创建了将不会销毁
-        private LRUQueue<string, RectTransform>     m_LRUPool           = new LRUQueue<string, RectTransform>(MaxCachedCount);  // 显示对象队列（LRU管理，可被销毁）
+        private Dictionary<string, PanelState>      m_PanelDict         = new Dictionary<string, PanelState>();                 // 逻辑对象队列，一旦创建了将不会销毁
+        private LRUQueue<string, RectTransform>     m_LRUPool           = new LRUQueue<string, RectTransform>(MaxCachedCount);  // 显示对象队列1（LRU管理，可被销毁）
         private const int                           MaxCachedCount      = 3;                                                    // 可最大缓存的显示对象数量
-        private Dictionary<string, RectTransform>   m_PersistentPool    = new Dictionary<string, RectTransform>();              // 显示对象队列（常驻内存）
-        private LinkedList<PanelState>              m_PanelStack        = new LinkedList<PanelState>();                        // 操作记录栈
+        private Dictionary<string, RectTransform>   m_PersistentPool    = new Dictionary<string, RectTransform>();              // 显示对象队列2（常驻内存）
+        private LinkedList<PanelState>              m_PanelStack        = new LinkedList<PanelState>();                         // 操作记录栈
         private Canvas                              m_Root;
         private const string                        m_UIRootName        = "UIRoot";
         private Dictionary<string, RectTransform>   m_LayerDict         = new Dictionary<string, RectTransform>();              // 层级节点
@@ -36,8 +36,9 @@ namespace Application.Logic
         class PanelState
         {
             public UIPanelBase panel;
-            public bool inStack;
-            public bool isShow;
+            public bool inStack;        // 是否入栈
+            public bool isShow;         // 是否显示
+            public bool isLoading;      // 加载中
         }
 
         // called by TestUIManager.StartLogic for debug 
@@ -100,29 +101,26 @@ namespace Application.Logic
         /// 打开界面
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="state"></param>
-        public void Open(string id, object state = null)
+        /// <param name="userData"></param>
+        public void Open(string id, object userData = null)
         {
             UIDefines def = UIDefines.Get(id);
             if(def == null)
                 throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
             
             PanelState ps = GetOrCreatePanel(def);
-            UIPanelBase panel = ps.panel;
 
             // 逻辑上立即入栈
             if(ps.panel.CanStack())
                 Push(ps);
 
-            RectTransform rect = FindResource(def);
-            if(rect != null)
+            if(FindResource(def) != null)
             { // 资源已加载执行后续流程
-                ps.panel.OnShow(state);
-                CacheResource(def, rect);
+                OnPostResourceLoaded(ps, userData);
             }
             else
             { // 资源未加载则发起异步加载流程
-                AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, state });
+                AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });
             }
         }
 
@@ -132,8 +130,15 @@ namespace Application.Logic
             if(def == null)
                 throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
 
-            UIPanelBase panel = GetOrCreatePanel(def).panel;
-            panel.OnHide();
+            PanelState ps = GetOrCreatePanel(def);
+            if(ps.isShow)
+            { // 因为异步加载，界面可能尚未实例化，只有已打开时才触发OnHide
+                ps.panel.OnHide();
+            }
+            ps.isShow = false;
+
+            if(ps.panel.CanStack())
+                Pop(ps);
         }
 
         /// <summary>
@@ -153,22 +158,23 @@ namespace Application.Logic
                 return;
             }
 
-            UIPanelBase panel = GetOrCreatePanel(def).panel;
-            panel.OnCreate();
+            PanelState ps = GetOrCreatePanel(def);
+            AddResource(ps.panel, go);
 
-            RectTransform rect = go.GetComponent<RectTransform>();
-            AddResource(panel, rect);
-
-            panel.OnShow(data[1]);
-            CacheResource(def, rect);
+            OnPostResourceLoaded(ps, data[1]);
         }
 
         /// <summary>
         /// 执行资源加载完成后的流程
         /// </summary>
-        private void OnPostResourceLoaded()
+        private void OnPostResourceLoaded(PanelState ps, System.Object userData)
         {
+            if(ps.isShow)
+            {
 
+            }
+            ps.panel.OnShow(userData);
+            CacheResource(ps);
         }
 
         /// <summary>
@@ -247,13 +253,12 @@ namespace Application.Logic
         /// <summary>
         /// 缓存UI资源
         /// </summary>
-        /// <param name="def"></param>
-        /// <param name="panel"></param>
-        private void CacheResource(UIDefines def, RectTransform panel)
+        /// <param name="ps"></param>
+        private void CacheResource(PanelState ps)
         {
-            if(!def.isPersistent)
+            if(!ps.panel.defines.isPersistent)
             {
-                m_LRUPool.Cache(def.id, panel);
+                m_LRUPool.Cache(ps.panel.defines.id, ps.panel.transform);
             }
         }
 
@@ -261,9 +266,10 @@ namespace Application.Logic
         /// 资源加载完成，进入显示对象列表
         /// </summary>
         /// <param name="panel"></param>
-        /// <param name="rect"></param>
-        private void AddResource(UIPanelBase panel, RectTransform rect)
+        /// <param name="go"></param>
+        private void AddResource(UIPanelBase panel, GameObject go)
         {
+            RectTransform rect = go.GetComponent<RectTransform>();
             if(panel.defines.isPersistent)
             {
                 m_PersistentPool.Add(panel.defines.id, rect);
@@ -272,7 +278,7 @@ namespace Application.Logic
             {
                 m_LRUPool.Cache(panel.defines.id, rect);
             }
-            panel.OnCreate();       // trigger OnCreate
+            panel.OnCreate(go);       // trigger OnCreate
         }
 
         /// <summary>

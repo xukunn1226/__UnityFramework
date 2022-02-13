@@ -15,12 +15,23 @@ namespace Application.Logic
         public bool                 isOverrideParentId      { get; private set; }
         public string               overrideParentId        { get; private set; }
         public string               parentId                { get { return isOverrideParentId ? overrideParentId : defines.parentId; } }
+        public RectTransform        transform               { get; private set; }
+        public Canvas               canvas                  { get; private set; }
 
         public UIPanelBase(UIDefines defines) { this.defines = defines; }
         private UIPanelBase() {}
 
         public virtual void OnInit() {}                         // UIPanelBase创建时的回调，仅一次
-        public virtual void OnCreate() {}                       // UI资源实例化完成时的回调，可执行绑定操作，与OnDestroy对应
+        public virtual void OnCreate(GameObject go)             // UI资源实例化完成时的回调，可执行绑定操作，与OnDestroy对应
+        {
+            if(go == null)
+                throw new System.ArgumentNullException($"UIManager.OnCreate go == null");
+
+            transform = go.GetComponent<RectTransform>();
+            if(transform == null)
+                throw new System.ArgumentNullException($"UIManager.OnCreate RectTransform == null");
+            canvas = go.GetComponent<Canvas>();
+        }
         public virtual void OnShow(object userData = null) {}   // 界面打开回调（资源已实例化）
         public virtual void OnUpdate() {}                       // update the panel
         public virtual void OnHide() {}                         // 界面关闭回调
