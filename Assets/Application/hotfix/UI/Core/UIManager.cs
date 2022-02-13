@@ -24,16 +24,23 @@ namespace Application.Logic
     ////// </summary>
     public class UIManager : Singleton<UIManager>
     {
-        private Dictionary<string, UIPanelBase>     m_PanelDict         = new Dictionary<string, UIPanelBase>();                // 逻辑对象队列，一旦创建了将不会销毁
+        private Dictionary<string, PanelState>      m_PanelDict         = new Dictionary<string, PanelState>();                // 逻辑对象队列，一旦创建了将不会销毁
         private LRUQueue<string, RectTransform>     m_LRUPool           = new LRUQueue<string, RectTransform>(MaxCachedCount);  // 显示对象队列（LRU管理，可被销毁）
         private const int                           MaxCachedCount      = 3;                                                    // 可最大缓存的显示对象数量
         private Dictionary<string, RectTransform>   m_PersistentPool    = new Dictionary<string, RectTransform>();              // 显示对象队列（常驻内存）
-        private Stack<UIPanelBase>                  m_PanelStack        = new Stack<UIPanelBase>();                             // 操作记录栈
+        private LinkedList<PanelState>              m_PanelStack        = new LinkedList<PanelState>();                        // 操作记录栈
         private Canvas                              m_Root;
         private const string                        m_UIRootName        = "UIRoot";
         private Dictionary<string, RectTransform>   m_LayerDict         = new Dictionary<string, RectTransform>();              // 层级节点
 
-        // called when TestUIManager.StartLogic uses reflection for debug 
+        class PanelState
+        {
+            public UIPanelBase panel;
+            public bool inStack;
+            public bool isShow;
+        }
+
+        // called by TestUIManager.StartLogic for debug 
         static public void StaticInit()
         {
             UIManager.Instance.Init();
@@ -100,16 +107,17 @@ namespace Application.Logic
             if(def == null)
                 throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
             
-            UIPanelBase panel = GetOrCreatePanel(def);          // trigger OnInit
+            PanelState ps = GetOrCreatePanel(def);
+            UIPanelBase panel = ps.panel;
 
             // 逻辑上立即入栈
-            if(panel.CanStack())
-                Push(panel);
+            if(ps.panel.CanStack())
+                Push(ps);
 
             RectTransform rect = FindResource(def);
             if(rect != null)
             { // 资源已加载执行后续流程
-                panel.OnShow(state);
+                ps.panel.OnShow(state);
                 CacheResource(def, rect);
             }
             else
@@ -119,7 +127,14 @@ namespace Application.Logic
         }
 
         public void Close(string id)
-        {}
+        {
+            UIDefines def = UIDefines.Get(id);
+            if(def == null)
+                throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
+
+            UIPanelBase panel = GetOrCreatePanel(def).panel;
+            panel.OnHide();
+        }
 
         /// <summary>
         /// 资源加载完成的回调
@@ -138,7 +153,7 @@ namespace Application.Logic
                 return;
             }
 
-            UIPanelBase panel = GetOrCreatePanel(def);
+            UIPanelBase panel = GetOrCreatePanel(def).panel;
             panel.OnCreate();
 
             RectTransform rect = go.GetComponent<RectTransform>();
@@ -161,37 +176,53 @@ namespace Application.Logic
         /// </summary>
         /// <param name="def"></param>
         /// <returns></returns>
-        private UIPanelBase GetOrCreatePanel(UIDefines def)
+        private PanelState GetOrCreatePanel(UIDefines def)
         {
-            UIPanelBase panel;
-            if(!m_PanelDict.TryGetValue(def.id, out panel))
+            PanelState ps;
+            if(!m_PanelDict.TryGetValue(def.id, out ps))
             {
-                panel = (UIPanelBase)Activator.CreateInstance(def.typeOfPanel, new object[] {def});
+                ps = new PanelState();
+                UIPanelBase panel = (UIPanelBase)Activator.CreateInstance(def.typeOfPanel, new object[] {def});
                 panel.OnInit();
-                m_PanelDict.Add(def.id, panel);
+                ps.panel = panel;
+                m_PanelDict.Add(def.id, ps);
             }
-            return panel;
+            return ps;
         }
 
         /// <summary>
         /// 界面逻辑对象入栈，此时资源可能尚未实例化
         /// </summary>
         /// <param name="panel"></param>
-        private void Push(UIPanelBase panel)
+        private void Push(PanelState ps)
         {
-            m_PanelStack.Push(panel);
+            #if UNITY_EDITOR
+            if(m_PanelStack.Find(ps) != null)
+            {
+                Debug.LogError($"UIManager.Push panel({ps.panel.defines.id}) already in stack");
+                return;
+            }
+            #endif
+
+            ps.inStack = true;
+            m_PanelStack.AddLast(ps);
         }
 
         /// <summary>
         /// 界面逻辑对象出栈，此时资源可能尚未加载
         /// </summary>
-        private void Pop()
+        private void Pop(PanelState ps)
         {
-            UIPanelBase panel;
-            if(!m_PanelStack.TryPop(out panel))
+            #if UNITY_EDITOR
+            if(m_PanelStack.Find(ps) == null)
             {
-                Debug.LogError($"");
+                Debug.LogError($"UIManager.Pop panel({ps.panel.defines.id}) is not in stack");
+                return;
             }
+            #endif
+
+            ps.inStack = false;
+            m_PanelStack.Remove(ps);
         }
 
         /// <summary>
@@ -252,7 +283,7 @@ namespace Application.Logic
         private void OnDiscard(string id, RectTransform item)
         {
             Debug.Log($"UIManager.OnDiscard     id: {id}");
-            UIPanelBase panel = GetOrCreatePanel(UIDefines.Get(id));
+            UIPanelBase panel = GetOrCreatePanel(UIDefines.Get(id)).panel;
             panel.OnDestroy();
             UnityEngine.Object.Destroy(item.gameObject);
         }

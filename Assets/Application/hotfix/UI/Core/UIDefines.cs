@@ -91,12 +91,6 @@ namespace Application.Logic
         OutOfViewLayer,
     }
 
-    // public enum EWindowsType
-    // {
-    //     Fullscreen,
-    //     Windowed,
-    // }
-    
     public partial class UIPanelID
     {
         static public string    Setting         { get; private set; }   = "Setting";
