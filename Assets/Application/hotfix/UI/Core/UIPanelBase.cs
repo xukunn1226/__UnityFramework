@@ -61,13 +61,11 @@ namespace Application.Logic
 
         /// <summary>
         /// 是否需要入栈管理
-        /// 全屏界面或没有父窗口的非全屏界面需要入栈
         /// </summary>
         /// <returns></returns>
         public bool CanStack()
         {
-            if(defines.layer == UILayer.Fullscreen || 
-            (defines.layer == UILayer.Windowed && !HasParent()))
+            if(defines.layer == UILayer.Fullscreen || defines.layer == UILayer.Windowed)
                 return true;
             return false;
         }

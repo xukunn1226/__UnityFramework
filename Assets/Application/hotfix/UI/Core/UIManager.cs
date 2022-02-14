@@ -41,12 +41,11 @@ namespace Application.Logic
             public bool         inStack;        // 是否在栈中
             public bool         isShow;         // 逻辑上是否显示
             public bool         isShowRes;      // UI资源当前的显示状态
-            public bool         needUpdate;     // 是否需要update
             public float        intervalTime;   // update间隔时间，<= 0表示每帧更新
             public float        elapsedTime;
         }
 
-        // called by TestUIManager.StartLogic for debug 
+        // called by TestUIManager.StartLogic for debug
         static public void StaticInit()
         {
             UIManager.Instance.Init();
@@ -63,8 +62,35 @@ namespace Application.Logic
 
         protected override void OnDestroy()
         {
+            ClearResourceList();
             m_LRUPool.OnDiscard -= OnDiscard;
             m_UpdateEnum.Dispose();
+        }
+        
+        /// <summary>
+        /// 剔除出缓存队列
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="item"></param>
+        private void OnDiscard(string id, RectTransform item)
+        {
+            Debug.Log($"UIManager.OnDiscard     id: {id}");
+            UIPanelBase panel = GetOrCreatePanel(UIDefines.Get(id)).panel;
+            panel.OnDestroy();
+            UnityEngine.Object.Destroy(item.gameObject);
+        }
+
+        /// <summary>
+        /// 销毁显示队列
+        /// </summary>
+        private void ClearResourceList()
+        {
+            m_LRUPool.Clear();
+            foreach(var item in m_PersistentPool)
+            {
+                UnityEngine.Object.Destroy(item.Value.gameObject);
+            }
+            m_PersistentPool.Clear();
         }
 
         protected override void OnUpdate(float deltaTime)
@@ -74,7 +100,7 @@ namespace Application.Logic
             while(m_UpdateEnum.MoveNext())
             {
                 PanelState ps = m_UpdateEnum.Current.Value;
-                if(!ps.isShowRes || !ps.needUpdate)
+                if(!ps.isShowRes)
                 {
                     continue;
                 }
@@ -82,7 +108,7 @@ namespace Application.Logic
                 ps.elapsedTime += deltaTime;
                 if(ps.elapsedTime >= ps.intervalTime)
                 {
-                    ps.panel.OnUpdate(deltaTime);
+                    ps.panel.OnUpdate(ps.elapsedTime);
                     ps.elapsedTime = 0;
                 }
             }
@@ -271,26 +297,51 @@ namespace Application.Logic
             if(!ps.panel.CanStack())
                 return;
 
-            #if UNITY_EDITOR
             if(m_PanelStack.Find(ps) == null)
             {
-                Debug.LogError($"UIManager.Pop panel({ps.panel.defines.id}) is not in stack");
+                Debug.LogWarning($"UIManager.Pop panel({ps.panel.defines.id}) is not in stack");
                 return;
             }
-            #endif
+
+            // 检查弹出的PanelState合法性
+            if(ps.panel.IsFullscreen())
+            { // 如果是全屏界面必须是栈中最后一个全屏界面
+                if(FindLastFullscreenPanel() != ps)
+                {
+                    Debug.LogWarning($"can't pop non-last fullscreen panel");
+                    return;
+                }
+            }
+            else
+            { // 如果是非全屏界面必须在最后一个全屏界面之后
+                LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
+                while (lastNode != null)
+                {
+                    if(lastNode.Value.panel.IsFullscreen())
+                    {
+                        Debug.LogWarning($"can't find the pop panel before the last fullscreen panel");
+                        return;
+                    }
+                    if (lastNode.Value == ps)
+                        break;
+                    lastNode = lastNode.Previous;
+                }
+            }            
 
             ps.inStack = false;
             m_PanelStack.Remove(ps);
 
-            // 全屏界面出栈将触发栈中最近的另一个全屏界面OnShow
+            // 全屏界面出栈将触发弹出Panel之后的非全屏界面OnHide，且栈中最近的另一个全屏界面OnShow
+            // Full_A -> NonFull_B -> NonFull_C -> Full_D -> NonFull_E
+            // 如果弹出Full_D，则触发NonFull_E.OnHide & Full_A.OnShow & NonFull_B.OnShow & NonFull_C.OnShow
             if(ps.panel.IsFullscreen())
             {
                 // 倒序遍历直至另一个全屏界面为止的所有界面OnShow
                 LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
-                while(lastNode != null)
+                while(lastNode != null && lastNode.Value != ps)
                 {
                     ShowPanel(lastNode.Value);
-                    if(lastNode.Value.panel.IsFullscreen())
+                    if(lastNode.Value == ps)
                     {
                         break;
                     }
@@ -348,6 +399,9 @@ namespace Application.Logic
         /// <param name="ps"></param>
         private void ActivePanel(PanelState ps)
         {
+            if(ps == null || ps.panel == null)
+                throw new System.ArgumentNullException($"UIManager.ActivePanel");
+
             switch(ps.panel.defines.hideMode)
             {
                 case EHideMode.SetActive:
@@ -376,6 +430,9 @@ namespace Application.Logic
         /// <param name="ps"></param>
         private void DeactivePanel(PanelState ps)
         {
+            if(ps == null || ps.panel == null)
+                throw new System.ArgumentNullException($"UIManager.DeactivePanel");
+
             switch(ps.panel.defines.hideMode)
             {
                 case EHideMode.SetActive:
@@ -451,7 +508,6 @@ namespace Application.Logic
         public void RegisterUpdateEvent(string id, float intervalTime = 0)
         {
             PanelState ps = GetOrCreatePanel(UIDefines.Get(id));
-            ps.needUpdate = true;
             ps.intervalTime = intervalTime;
             ps.elapsedTime = 0;
             m_UpdateDict.Add(id, ps);
@@ -460,21 +516,18 @@ namespace Application.Logic
         public void UnregisterUpdateEvent(string id)
         {
             PanelState ps = GetOrCreatePanel(UIDefines.Get(id));
-            ps.needUpdate = false;
             m_UpdateDict.Remove(id);
         }
-
-        /// <summary>
-        /// 剔除出缓存队列
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="item"></param>
-        private void OnDiscard(string id, RectTransform item)
+        
+        private PanelState FindLastFullscreenPanel()
         {
-            Debug.Log($"UIManager.OnDiscard     id: {id}");
-            UIPanelBase panel = GetOrCreatePanel(UIDefines.Get(id)).panel;
-            panel.OnDestroy();
-            UnityEngine.Object.Destroy(item.gameObject);
+            LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
+            while(lastNode != null)
+            {
+                if(lastNode.Value.panel.IsFullscreen())
+                    return lastNode.Value;
+            }
+            return null;
         }
     }
 }
