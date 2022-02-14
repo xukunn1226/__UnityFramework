@@ -12,7 +12,7 @@ namespace Application.Logic
         public override void OnInit() {}
         public override void OnCreate(GameObject go) { base.OnCreate(go); }
         public override void OnShow(object userData = null) {}
-        public override void OnUpdate() {}
+        public override void OnUpdate(float deltaTime) {}
         public override void OnHide() {}
         public override void OnDestroy() {}
     }

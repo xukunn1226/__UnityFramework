@@ -33,8 +33,14 @@ namespace Application.Logic
             canvas = go.GetComponent<Canvas>();
         }
         public virtual void OnShow(object userData = null) {}   // 界面打开回调（资源已实例化）
-        public virtual void OnUpdate() {}                       // update the panel
-        public virtual void OnHide() {}                         // 界面关闭回调
+        public virtual void OnUpdate(float deltaTime) {}        // 需要主动调用UIManager.RegisterUpdateEvent注册才能触发OnUpdate
+        public virtual void OnHide()                            // 界面关闭回调
+        {
+            for(int i = 0; i < m_Children.Count; ++i)
+            {
+                m_Children[i].OnHide();
+            }
+        }
         public virtual void OnDestroy() {}                      // 界面资源销毁时调用，与OnCreate对应
 
         public void Unload()
@@ -64,6 +70,11 @@ namespace Application.Logic
             (defines.layer == UILayer.Windowed && !HasParent()))
                 return true;
             return false;
+        }
+
+        public bool IsFullscreen()
+        {
+            return defines.layer == UILayer.Fullscreen;
         }
     }
 }
