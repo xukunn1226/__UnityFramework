@@ -21,6 +21,7 @@ namespace Application.Logic
     ///     * Popup界面类型如何定义？
     ///     * Tips属于界面吗？需要特殊接口加载？
     ///     * 哪些情况加载出来的界面需要动态调整位置？tips？
+    ///     * Tips需要归为特殊的一层吗？例如不入栈，
     ////// </summary>
     public class UIManager : Singleton<UIManager>
     {
@@ -38,9 +39,9 @@ namespace Application.Logic
         class PanelState
         {
             public UIPanelBase  panel;
-            public bool         inStack;        // 是否在栈中
             public bool         isShow;         // 逻辑上是否显示
             public bool         isShowRes;      // UI资源当前的显示状态
+            public bool         isLoadRes;      // 资源是否已加载
             public float        intervalTime;   // update间隔时间，<= 0表示每帧更新
             public float        elapsedTime;
         }
@@ -75,8 +76,9 @@ namespace Application.Logic
         private void OnDiscard(string id, RectTransform item)
         {
             Debug.Log($"UIManager.OnDiscard     id: {id}");
-            UIPanelBase panel = GetOrCreatePanel(UIDefines.Get(id)).panel;
-            panel.OnDestroy();
+            PanelState ps = GetOrCreatePanel(UIDefines.Get(id));
+            ps.isLoadRes = false;
+            ps.panel.OnDestroy();
             UnityEngine.Object.Destroy(item.gameObject);
         }
 
@@ -167,8 +169,31 @@ namespace Application.Logic
             if(def == null)
                 throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
             
+            // execute order: push stack -> load resource -> show panel
             PanelState ps = GetOrCreatePanel(def);
             PushPanel(ps);
+            GetOrLoadResource(def, userData);
+        }
+
+        /// <summary>
+        /// 关闭界面
+        /// </summary>
+        /// <param name="id"></param>
+        public void Close(string id)
+        {
+            UIDefines def = UIDefines.Get(id);
+            if(def == null)
+                throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
+
+            // execute order: pop stack -> hide panel
+            PanelState ps = GetOrCreatePanel(def);            
+            PopPanel(ps);
+            HidePanel(ps);
+        }
+
+        private void GetOrLoadResource(UIDefines def, System.Object userData)
+        {
+            PanelState ps = GetOrCreatePanel(def);
             if(FindResource(def) != null)
             { // 资源已加载执行后续流程
                 OnPostResourceLoaded(ps, userData);
@@ -177,17 +202,6 @@ namespace Application.Logic
             { // 资源未加载则发起异步加载流程
                 AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });
             }
-        }
-
-        public void Close(string id)
-        {
-            UIDefines def = UIDefines.Get(id);
-            if(def == null)
-                throw new System.ArgumentNullException($"UIDefines == null  id: {id}");
-
-            PanelState ps = GetOrCreatePanel(def);
-            HidePanel(ps);
-            PopPanel(ps);
         }
 
         /// <summary>
@@ -209,6 +223,7 @@ namespace Application.Logic
 
             PanelState ps = GetOrCreatePanel(def);
             AddResource(ps.panel, go);
+            ps.isLoadRes = true;
 
             OnPostResourceLoaded(ps, data[1]);
         }
@@ -218,16 +233,15 @@ namespace Application.Logic
         /// </summary>
         private void OnPostResourceLoaded(PanelState ps, System.Object userData)
         {
-            if(ps.isShow)
+            // 资源加载完时可能逻辑上已标记为不显示了，则显示上关闭界面
+            if(!ps.isShow)
             {
-                ShowPanel(ps, userData);
-                CacheResource(ps);
-            }
-            else
-            {
-                // 显示上关闭了界面
                 DeactivePanel(ps);
+                return;
             }
+
+            ShowPanel(ps, userData);
+            CacheResource(ps);
         }
 
         /// <summary>
@@ -250,7 +264,7 @@ namespace Application.Logic
         }
 
         /// <summary>
-        /// 界面逻辑对象入栈，此时资源可能尚未实例化
+        /// 界面逻辑对象入栈，可能触发其他界面的OnHide
         /// </summary>
         /// <param name="panel"></param>
         private void PushPanel(PanelState ps)
@@ -258,13 +272,11 @@ namespace Application.Logic
             if(!ps.panel.CanStack())
                 return;
 
-            #if UNITY_EDITOR
             if(m_PanelStack.Find(ps) != null)
             {
                 Debug.LogError($"UIManager.Push panel({ps.panel.defines.id}) already in stack");
                 return;
             }
-            #endif
 
             // 全屏界面进栈将触发已在栈中的其他界面OnHide
             if(ps.panel.IsFullscreen())
@@ -285,12 +297,11 @@ namespace Application.Logic
                 }
             }
 
-            ps.inStack = true;
             m_PanelStack.AddLast(ps);
         }
 
         /// <summary>
-        /// 界面逻辑对象出栈，此时资源可能尚未加载
+        /// 界面逻辑对象出栈，可能触发其他界面的OnHide或OnShow
         /// </summary>
         private void PopPanel(PanelState ps)
         {
@@ -319,64 +330,78 @@ namespace Application.Logic
                 {
                     if(lastNode.Value.panel.IsFullscreen())
                     {
-                        Debug.LogWarning($"can't find the pop panel before the last fullscreen panel");
+                        Debug.LogWarning($"can't find the pending pop panel before the last fullscreen panel");
                         return;
                     }
                     if (lastNode.Value == ps)
                         break;
                     lastNode = lastNode.Previous;
                 }
-            }            
+            }
 
-            ps.inStack = false;
+            // 全屏界面出栈将触发排在自身之后的非全屏界面OnHide
+            if(ps.panel.IsFullscreen())
+            {
+                LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
+                while(lastNode != null && lastNode.Value != ps)
+                {
+                    HidePanel(lastNode.Value);
+                    lastNode = lastNode.Previous;
+                }
+            }
+
             m_PanelStack.Remove(ps);
 
-            // 全屏界面出栈将触发弹出Panel之后的非全屏界面OnHide，且栈中最近的另一个全屏界面OnShow
+            // 全屏界面出栈将触发栈中最近的另一个全屏界面OnShow
             // Full_A -> NonFull_B -> NonFull_C -> Full_D -> NonFull_E
             // 如果弹出Full_D，则触发NonFull_E.OnHide & Full_A.OnShow & NonFull_B.OnShow & NonFull_C.OnShow
             if(ps.panel.IsFullscreen())
             {
                 // 倒序遍历直至另一个全屏界面为止的所有界面OnShow
                 LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
-                while(lastNode != null && lastNode.Value != ps)
+                while(lastNode != null)
                 {
                     ShowPanel(lastNode.Value);
-                    if(lastNode.Value == ps)
-                    {
+                    if(lastNode.Value.panel.IsFullscreen())
                         break;
-                    }
-                    else
-                    {
-                        lastNode = lastNode.Previous;
-                    }
+                    lastNode = lastNode.Previous;
                 }
             }
         }
 
         /// <summary>
-        /// 弹出栈中的所有非全屏界面
+        /// 弹出栈中最上层的所有非全屏界面
         /// </summary>
         private void PopAllWindowedPanel()
         {
-
+            LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
+            while(lastNode != null)
+            {
+                if(lastNode.Value.panel.IsFullscreen())
+                    break;
+                PopPanel(lastNode.Value);
+            }
         }
 
         /// <summary>
-        /// 显示界面（逻辑上）
+        /// 显示界面（逻辑上），可能触发显示上的打开
         /// </summary>
         /// <param name="ps"></param>
         /// <param name="userData"></param>
         private void ShowPanel(PanelState ps, System.Object userData = null)
         {
-            if(ps.isShow)
+            if(!ps.isShow && !ps.isShowRes && ps.isLoadRes)
             {
+                // 显示Panel实例
+                ActivePanel(ps);
+
                 ps.panel.OnShow(userData);
             }
             ps.isShow = true;
         }
 
         /// <summary>
-        /// 关闭界面（逻辑上）
+        /// 关闭界面（逻辑上），可能触发显示上的关闭
         /// </summary>
         /// <param name="ps"></param>
         private void HidePanel(PanelState ps)
@@ -388,7 +413,6 @@ namespace Application.Logic
 
                 // 隐藏Panel实例
                 DeactivePanel(ps);
-                ps.isShowRes = false;
             }
             ps.isShow = false;
         }
@@ -422,6 +446,7 @@ namespace Application.Logic
                 case EHideMode.OutOfViewLayer:
                     break;
             }
+            ps.isShowRes = true;
         }
 
         /// <summary>
@@ -453,6 +478,7 @@ namespace Application.Logic
                 case EHideMode.OutOfViewLayer:
                     break;
             }
+            ps.isShowRes = false;
         }
 
         /// <summary>

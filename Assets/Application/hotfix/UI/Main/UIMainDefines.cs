@@ -10,7 +10,7 @@ namespace Application.Logic
         public override string      id             { get; protected set; }  = UIPanelID.Main;
         public override string      layer          { get; protected set; }  = UILayer.Fullscreen;
         public override string      assetPath      { get; protected set; }  = "assets/res/ui/prefabs/main.prefab";
-        public override EHideMode   hideMode       { get; protected set; }  = EHideMode.SetActive;
+        public override EHideMode   hideMode       { get; protected set; }  = EHideMode.DisableCanvas;
         public override bool        isPersistent   { get; protected set; }  = true;        
         public override Type        typeOfPanel    { get; protected set; }  = typeof(UIMainPanel);
     }
