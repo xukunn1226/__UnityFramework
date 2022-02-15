@@ -46,11 +46,18 @@ namespace Application.Logic
             public float        elapsedTime;
         }
 
+#if UNITY_EDITOR
         // called by TestUIManager.StartLogic for debug
         static public void StaticInit()
         {
             UIManager.Instance.Init();
         }
+
+        static public UIManager Get()
+        {
+            return UIManager.Instance;
+        }
+#endif        
 
         protected override void InternalInit()
         {

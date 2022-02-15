@@ -16,30 +16,30 @@ namespace Application.Runtime
             m_Params = new object[paramCount];
         }
 
-        public void Exec()
+        public System.Object Exec()
         {
-            m_AppDomain.Invoke(m_Method, null, m_Params);
+            return m_AppDomain.Invoke(m_Method, null, m_Params);
         }
 
-        public void Exec(object p)
+        public System.Object Exec(object p)
         {
             m_Params[0] = p;
-            m_AppDomain.Invoke(m_Method, null, m_Params);
+            return m_AppDomain.Invoke(m_Method, null, m_Params);
         }
 
-        public void Exec(object p1, object p2)
+        public System.Object Exec(object p1, object p2)
         {
             m_Params[0] = p1;
             m_Params[1] = p2;
-            m_AppDomain.Invoke(m_Method, null, m_Params);
+            return m_AppDomain.Invoke(m_Method, null, m_Params);
         }
 
-        public void Exec(object p1, object p2, object p3)
+        public System.Object Exec(object p1, object p2, object p3)
         {
             m_Params[0] = p1;
             m_Params[1] = p2;
             m_Params[2] = p3;
-            m_AppDomain.Invoke(m_Method, null, m_Params);
+            return m_AppDomain.Invoke(m_Method, null, m_Params);
         }
     }
 }

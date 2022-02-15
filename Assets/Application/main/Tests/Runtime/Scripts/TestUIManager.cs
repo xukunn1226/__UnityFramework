@@ -12,6 +12,9 @@ namespace Application.Runtime.Tests
     {
         static public string dllFilename = "Application.Logic";		// Assets/Application/hotfix/Application.Logic.asmdef
 
+		private AppDomain m_AppDomain;
+		private Assembly m_Assembly;
+
 		[SerializeField]
         private CodeMode 	m_CodeMode = CodeMode.Mono;
 		public CodeMode 	codeMode
@@ -72,7 +75,7 @@ namespace Application.Runtime.Tests
                     byte[] assemblyBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.dll"));
                     byte[] pdbBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.pdb"));
 
-                    Assembly m_Assembly = Assembly.Load(assemblyBytes, pdbBytes);
+                    m_Assembly = Assembly.Load(assemblyBytes, pdbBytes);
 
                     IStaticMethod start = new MonoStaticMethod(m_Assembly, "Application.Logic.UIManager", "StaticInit");
 					start.Exec();
@@ -80,7 +83,7 @@ namespace Application.Runtime.Tests
                 }
                 case CodeMode.ILRuntime:
                 {
-                    AppDomain m_AppDomain = new ILRuntime.Runtime.Enviorment.AppDomain(ILRuntime.Runtime.ILRuntimeJITFlags.None);
+                    m_AppDomain = new ILRuntime.Runtime.Enviorment.AppDomain(ILRuntime.Runtime.ILRuntimeJITFlags.None);
 
                     byte[] assemblyBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.dll"));
                     byte[] pdbBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.pdb"));
@@ -113,6 +116,29 @@ namespace Application.Runtime.Tests
 		private void OnApplicationFocus(bool isFocus)
 		{
 
+		}
+
+		private void OnGUI()
+		{
+			if(GUI.Button(new Rect(100, 100, 120, 80), "Load Main"))
+			{
+				if(codeMode == CodeMode.ILRuntime)
+				{
+					// m_AppDomain
+				}
+
+				if(codeMode == CodeMode.Mono)
+				{
+					IStaticMethod start = new MonoStaticMethod(m_Assembly, "Application.Logic.UIManager", "Get");
+					System.Object inst = start.Exec();
+
+					MethodInfo mi = m_Assembly.GetType("Application.Logic.UIManager").GetMethod("Open");
+					System.Object[] Params = new object[mi.GetParameters().Length];
+					Params[0] = "Main";
+					Params[1] = null;
+					mi.Invoke(inst, Params);
+				}
+			}
 		}
     }
 }

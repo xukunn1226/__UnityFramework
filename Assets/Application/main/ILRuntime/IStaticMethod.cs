@@ -6,9 +6,9 @@ namespace Application.Runtime
 {
     public interface IStaticMethod
     {
-        void Exec();
-        void Exec(object p);
-        void Exec(object p1, object p2);
-        void Exec(object p1, object p2, object p3);
+        System.Object Exec();
+        System.Object Exec(object p);
+        System.Object Exec(object p1, object p2);
+        System.Object Exec(object p1, object p2, object p3);
     }
 }
