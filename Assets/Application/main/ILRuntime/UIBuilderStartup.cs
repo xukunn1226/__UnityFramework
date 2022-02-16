@@ -6,9 +6,9 @@ using System.IO;
 using System.Reflection;
 using ILRuntime.Runtime.Enviorment;
 
-namespace Application.Runtime.Tests
+namespace Application.Runtime
 {
-    public class TestUIManager : MonoBehaviour
+    public class UIBuilderStartup : MonoBehaviour
     {
         static public string dllFilename = "Application.Logic";		// Assets/Application/hotfix/Application.Logic.asmdef
 

@@ -6,8 +6,7 @@ namespace Application.Logic
 {
     public class UIMainPanel : UIPanelBase
     {
-        public new UIMainDefines defines { get; private set; }
-        public UIMainPanel(UIMainDefines defines) : base(defines) {}
+        public UIMainPanel(UIMainDefines defines) : base(defines) { }
 
         public override void OnInit() {}
         public override void OnCreate(GameObject go) { base.OnCreate(go); }

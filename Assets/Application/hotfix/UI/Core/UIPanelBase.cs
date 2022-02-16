@@ -18,7 +18,11 @@ namespace Application.Logic
         public RectTransform        transform               { get; private set; }
         public Canvas               canvas                  { get; private set; }
 
-        public UIPanelBase(UIDefines defines) { this.defines = defines; }
+        public UIPanelBase(UIDefines defines)
+        {
+            this.defines = defines;
+        }
+
         private UIPanelBase() {}
 
         public virtual void OnInit() {}                         // UIPanelBase创建时的回调，仅一次

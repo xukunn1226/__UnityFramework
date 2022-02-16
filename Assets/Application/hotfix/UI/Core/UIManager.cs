@@ -165,6 +165,16 @@ namespace Application.Logic
             }
         }
 
+        private RectTransform GetLayerNode(string layer)
+        {
+            RectTransform node;
+            if(!m_LayerDict.TryGetValue(layer, out node))
+            {
+                Debug.Log($"UIManager: layer ({layer}) not exists");
+            }
+            return node;
+        }
+
         /// <summary>
         /// 打开界面
         /// </summary>
@@ -241,11 +251,11 @@ namespace Application.Logic
         private void OnPostResourceLoaded(PanelState ps, System.Object userData)
         {
             // 资源加载完时可能逻辑上已标记为不显示了，则显示上关闭界面
-            if(!ps.isShow)
-            {
-                DeactivePanel(ps);
-                return;
-            }
+            //if(!ps.isShow)
+            //{
+            //    DeactivePanel(ps);
+            //    return;
+            //}
 
             ShowPanel(ps, userData);
             CacheResource(ps);
@@ -454,6 +464,8 @@ namespace Application.Logic
                     break;
             }
             ps.isShowRes = true;
+
+            ps.panel.transform.SetParent(GetLayerNode(ps.panel.defines.layer), false);
         }
 
         /// <summary>
