@@ -122,22 +122,28 @@ namespace Application.Runtime
 		{
 			if(GUI.Button(new Rect(100, 100, 120, 80), "Load Main"))
 			{
-				if(codeMode == CodeMode.ILRuntime)
-				{
-					// m_AppDomain
-				}
+				OpenUI("Main");
+			}
+		}
 
-				if(codeMode == CodeMode.Mono)
-				{
-					IStaticMethod start = new MonoStaticMethod(m_Assembly, "Application.Logic.UIManager", "Get");
-					System.Object inst = start.Exec();
+		private void OpenUI(string id)
+        {
+			if (codeMode == CodeMode.Mono)
+			{
+				IStaticMethod start = new MonoStaticMethod(m_Assembly, "Application.Logic.UIManager", "Get");
+				System.Object inst = start.Exec();
 
-					MethodInfo mi = m_Assembly.GetType("Application.Logic.UIManager").GetMethod("Open");
-					System.Object[] Params = new object[mi.GetParameters().Length];
-					Params[0] = "Main";
-					Params[1] = null;
-					mi.Invoke(inst, Params);
-				}
+				MonoMemberMethod method = new MonoMemberMethod(m_Assembly, "Application.Logic.UIManager", "Open");
+				method.Exec(inst, id);
+			}
+
+			if(codeMode == CodeMode.ILRuntime)
+            {
+				IStaticMethod start = new ILStaticMethod(m_AppDomain, "Application.Logic.UIManager", "Get", 0);
+				System.Object inst = start.Exec();
+
+				ILMemberMethod method = new ILMemberMethod(m_AppDomain, "Application.Logic.UIManager", "Open", 2);
+				method.Exec(inst, id, null);
 			}
 		}
     }
