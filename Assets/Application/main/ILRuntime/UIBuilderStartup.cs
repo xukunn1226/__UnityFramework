@@ -5,12 +5,12 @@ using Framework.AssetManagement.Runtime;
 using System.IO;
 using System.Reflection;
 using ILRuntime.Runtime.Enviorment;
-
+using System.Linq;
 namespace Application.Runtime
 {
     public class UIBuilderStartup : MonoBehaviour
     {
-        static public string dllFilename = "Application.Logic";		// Assets/Application/hotfix/Application.Logic.asmdef
+        static public string dllFilename = "Application.Logic";
 
 		private AppDomain m_AppDomain;
 		private Assembly m_Assembly;
@@ -63,44 +63,8 @@ namespace Application.Runtime
 					break;
 				}
 			}
-			StartLogic(dllPath, dllFilename);
+			CodeLoader.Instance.Start(dllPath, dllFilename, "Application.Logic.UIManager", "StaticInit");
 		}
-
-        public void StartLogic(string dllPath, string dllFilename)
-        {
-            switch(codeMode)
-            {
-                case CodeMode.Mono:
-                {
-                    byte[] assemblyBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.dll"));
-                    byte[] pdbBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.pdb"));
-
-                    m_Assembly = Assembly.Load(assemblyBytes, pdbBytes);
-
-                    IStaticMethod start = new MonoStaticMethod(m_Assembly, "Application.Logic.UIManager", "StaticInit");
-					start.Exec();
-                    break;
-                }
-                case CodeMode.ILRuntime:
-                {
-                    m_AppDomain = new ILRuntime.Runtime.Enviorment.AppDomain(ILRuntime.Runtime.ILRuntimeJITFlags.None);
-
-                    byte[] assemblyBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.dll"));
-                    byte[] pdbBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.pdb"));
-                    MemoryStream assemblyStream = new MemoryStream(assemblyBytes);
-                    MemoryStream pdbStream = new MemoryStream(pdbBytes);
-
-                    m_AppDomain.LoadAssembly(assemblyStream, pdbStream, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
-
-                    // binder & register
-                    ILHelper.InitILRuntime(m_AppDomain);
-
-                    IStaticMethod start = new ILStaticMethod(m_AppDomain, "Application.Logic.UIManager", "StaticInit", 0);
-					start.Exec();
-                    break;
-                }
-            }
-        }
 
 		private void Update()
 		{
@@ -128,23 +92,11 @@ namespace Application.Runtime
 
 		private void OpenUI(string id)
         {
-			if (codeMode == CodeMode.Mono)
-			{
-				IStaticMethod start = new MonoStaticMethod(m_Assembly, "Application.Logic.UIManager", "Get");
-				System.Object inst = start.Exec();
+            IStaticMethod start = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "Get", 0);
+            System.Object inst = start.Exec();
 
-				MonoMemberMethod method = new MonoMemberMethod(m_Assembly, "Application.Logic.UIManager", "Open");
-				method.Exec(inst, id);
-			}
-
-			if(codeMode == CodeMode.ILRuntime)
-            {
-				IStaticMethod start = new ILStaticMethod(m_AppDomain, "Application.Logic.UIManager", "Get", 0);
-				System.Object inst = start.Exec();
-
-				ILMemberMethod method = new ILMemberMethod(m_AppDomain, "Application.Logic.UIManager", "Open", 2);
-				method.Exec(inst, id, null);
-			}
-		}
+            IMemberMethod method = CodeLoader.GetMemberMethod("Application.Logic.UIManager", "Open", 2);
+            method.Exec(inst, id, null);
+        }
     }
 }

@@ -35,7 +35,7 @@ namespace Application.Runtime
             m_AppDomain?.Dispose();
         }
 
-        public void Start(string dllPath, string dllFilename)
+        public void Start(string dllPath, string dllFilename, string entryTypename, string entryMethodname)
         {
             switch(codeMode)
             {
@@ -47,7 +47,7 @@ namespace Application.Runtime
                     m_Assembly = Assembly.Load(assemblyBytes, pdbBytes);
                     this.allTypes = m_Assembly.GetTypes();
 
-                    IStaticMethod start = new MonoStaticMethod(m_Assembly, "Application.Logic.Entry", "Start");
+                    IStaticMethod start = new MonoStaticMethod(m_Assembly, entryTypename, entryMethodname);
 					start.Exec();
                     break;
                 }
@@ -66,7 +66,7 @@ namespace Application.Runtime
                     // binder & register
                     ILHelper.InitILRuntime(m_AppDomain);
 
-                    IStaticMethod start = new ILStaticMethod(m_AppDomain, "Application.Logic.Entry", "Start", 0);
+                    IStaticMethod start = new ILStaticMethod(m_AppDomain, entryTypename, entryMethodname, 0);
 					start.Exec();
                     break;
                 }
@@ -90,6 +90,22 @@ namespace Application.Runtime
                 {
                     return new ILStaticMethod(CodeLoader.Instance.m_AppDomain, typename, methodname, paramCount);
                 }                
+            }
+            return null;
+        }
+
+        static public IMemberMethod GetMemberMethod(string typename, string methodname, int paramCount)
+        {
+            switch(CodeLoader.Instance.codeMode)
+            {
+                case CodeMode.Mono:
+                {
+                    return new MonoMemberMethod(CodeLoader.Instance.m_Assembly, typename, methodname);
+                }
+                case CodeMode.ILRuntime:
+                {
+                    return new ILMemberMethod(CodeLoader.Instance.m_AppDomain, typename, methodname, paramCount);
+                }
             }
             return null;
         }

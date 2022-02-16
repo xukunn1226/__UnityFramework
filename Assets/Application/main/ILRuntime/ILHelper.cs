@@ -58,6 +58,8 @@ namespace Application.Runtime
             appdomain.DelegateManager.RegisterMethodDelegate<Framework.Core.DownloadTaskInfo, System.String>();
             appdomain.DelegateManager.RegisterMethodDelegate<System.String, UnityEngine.RectTransform>();
             appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.Vector2>();
+            appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, System.Object>();
+
 
 
 

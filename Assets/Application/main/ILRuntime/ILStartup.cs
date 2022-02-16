@@ -58,7 +58,7 @@ namespace Application.Runtime
 					break;
 				}
 			}
-			CodeLoader.Instance.Start(dllPath, dllFilename);
+			CodeLoader.Instance.Start(dllPath, dllFilename, "Application.Logic.Entry", "Start");
 		}
 
 		private void Update()

@@ -23,12 +23,15 @@ namespace ILRuntime.Runtime.Generated
             FieldInfo field;
             Type[] args;
             Type type = typeof(Framework.Cache.LRUQueue<System.String, UnityEngine.RectTransform>);
+            args = new Type[]{};
+            method = type.GetMethod("Clear", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, Clear_0);
             args = new Type[]{typeof(System.String)};
             method = type.GetMethod("Exist", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, Exist_0);
+            app.RegisterCLRMethodRedirection(method, Exist_1);
             args = new Type[]{typeof(System.String), typeof(UnityEngine.RectTransform)};
             method = type.GetMethod("Cache", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, Cache_1);
+            app.RegisterCLRMethodRedirection(method, Cache_2);
 
             field = type.GetField("OnDiscard", flag);
             app.RegisterCLRFieldGetter(field, get_OnDiscard_0);
@@ -42,7 +45,22 @@ namespace ILRuntime.Runtime.Generated
         }
 
 
-        static StackObject* Exist_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* Clear_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            Framework.Cache.LRUQueue<System.String, UnityEngine.RectTransform> instance_of_this_method = (Framework.Cache.LRUQueue<System.String, UnityEngine.RectTransform>)typeof(Framework.Cache.LRUQueue<System.String, UnityEngine.RectTransform>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+            instance_of_this_method.Clear();
+
+            return __ret;
+        }
+
+        static StackObject* Exist_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -61,7 +79,7 @@ namespace ILRuntime.Runtime.Generated
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
-        static StackObject* Cache_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* Cache_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;

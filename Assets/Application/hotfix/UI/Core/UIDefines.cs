@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Application.Runtime;
 
 namespace Application.Logic
 {
@@ -32,7 +33,7 @@ namespace Application.Logic
         /// </summary>
         static public void Init()
         {
-            List<Type> types = FindAllDerivedTypes<UIDefines>();
+            List<Type> types = FindAllDerivedTypes<UIDefines>(CodeLoader.Instance.GetTypes());
             int count = types.Count;
             for(int i = 0; i < count; ++i)
             {
@@ -41,15 +42,10 @@ namespace Application.Logic
             }
         }
 
-        public static List<Type> FindAllDerivedTypes<T>()
-        {
-            return FindAllDerivedTypes<T>(Assembly.GetAssembly(typeof(T)));
-        }
-
-        public static List<Type> FindAllDerivedTypes<T>(Assembly assembly)
+        public static List<Type> FindAllDerivedTypes<T>(Type[] types)
         {
             var derivedType = typeof(T);
-            return assembly.GetTypes().Where(t => t != derivedType && derivedType.IsAssignableFrom(t)).ToList();
+            return types.Where(t => t != derivedType && t.IsSubclassOf(derivedType)).ToList();
         }
     }
 
