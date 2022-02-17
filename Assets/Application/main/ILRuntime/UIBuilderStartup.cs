@@ -12,9 +12,6 @@ namespace Application.Runtime
     {
         static public string dllFilename = "Application.Logic";
 
-		private AppDomain m_AppDomain;
-		private Assembly m_Assembly;
-
 		[SerializeField]
         private CodeMode 	m_CodeMode = CodeMode.Mono;
 		public CodeMode 	codeMode
