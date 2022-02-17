@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using ILRuntime.Runtime.Enviorment;
 using System.Linq;
+
 namespace Application.Runtime
 {
     public class UIBuilderStartup : MonoBehaviour
@@ -78,22 +79,5 @@ namespace Application.Runtime
 		{
 
 		}
-
-		private void OnGUI()
-		{
-			if(GUI.Button(new Rect(100, 100, 120, 80), "Load Main"))
-			{
-				OpenUI("Main");
-			}
-		}
-
-		private void OpenUI(string id)
-        {
-            IStaticMethod start = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "Get", 0);
-            System.Object inst = start.Exec();
-
-            IMemberMethod method = CodeLoader.GetMemberMethod("Application.Logic.UIManager", "Open", 2);
-            method.Exec(inst, id, null);
-        }
     }
 }

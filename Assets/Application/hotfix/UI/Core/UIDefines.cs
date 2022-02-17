@@ -10,6 +10,7 @@ namespace Application.Logic
     public class UIDefines
     {
         static private Dictionary<string, UIDefines> s_Defines = new Dictionary<string, UIDefines>();
+        static private List<string> s_Ids           = new List<string>();
         public virtual string       id              { get; protected set; }     // see UIPanelID
         public virtual string       parentId        { get; protected set; }     // parent panel's id
         public virtual string       layer           { get; protected set; }     // see UILayer
@@ -28,6 +29,11 @@ namespace Application.Logic
             return def;
         }
 
+        static public List<string> GetIds()
+        {
+            return s_Ids;
+        }
+
         /// <summary>
         /// 初始化所有界面的UIDefine
         /// </summary>
@@ -39,6 +45,7 @@ namespace Application.Logic
             {
                 UIDefines def = (UIDefines)Activator.CreateInstance(types[i]);
                 s_Defines.Add(def.id, def);
+                s_Ids.Add(def.id);
             }
         }
 

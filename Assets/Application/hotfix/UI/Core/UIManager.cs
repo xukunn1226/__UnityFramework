@@ -291,7 +291,7 @@ namespace Application.Logic
 
             if(m_PanelStack.Find(ps) != null)
             {
-                Debug.LogError($"UIManager.Push panel({ps.panel.defines.id}) already in stack");
+                Debug.LogWarning($"UIManager.Push panel({ps.panel.defines.id}) already in stack");
                 return;
             }
 
@@ -412,6 +412,7 @@ namespace Application.Logic
                 // 显示Panel实例
                 ActivePanel(ps);
 
+                Debug.Log($"ShowPanel: {ps.panel.defines.id}");
                 ps.panel.OnShow(userData);
             }
             ps.isShow = true;
@@ -426,6 +427,7 @@ namespace Application.Logic
             if( ps.isShowRes &&         // 因为异步加载，界面可能尚未实例化，只有已打开时才触发OnHide
                 ps.isShow)              // 逻辑的显示状态为true表示需要显示界面
             {
+                Debug.Log($"HidePanel: {ps.panel.defines.id}");
                 ps.panel.OnHide();
 
                 // 隐藏Panel实例
