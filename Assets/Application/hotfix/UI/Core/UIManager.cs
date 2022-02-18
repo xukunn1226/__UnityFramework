@@ -57,6 +57,19 @@ namespace Application.Logic
         {
             return UIManager.Instance;
         }
+
+        static public List<string> GetStackInfo()
+        {
+            List<string> lst = new List<string>();
+            LinkedListNode<PanelState> node = UIManager.Instance.m_PanelStack.Last;
+            while(node != null)
+            {
+                string info = node.Value.panel.IsFullscreen() ? "F" : "W";
+                lst.Add(node.Value.panel.defines.id + string.Format($"({info})"));
+                node = node.Previous;
+            }
+            return lst;
+        }
 #endif        
 
         protected override void InternalInit()
@@ -387,7 +400,7 @@ namespace Application.Logic
         }
 
         /// <summary>
-        /// 弹出栈中最上层的所有非全屏界面
+        /// 弹出栈中最上层的所有没有父窗口的非全屏界面
         /// </summary>
         private void PopAllWindowedPanel()
         {

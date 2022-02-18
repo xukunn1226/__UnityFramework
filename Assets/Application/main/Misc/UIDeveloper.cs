@@ -34,6 +34,13 @@ namespace Application.Runtime
 			List<string> ids = (List<string>)method.Exec();
 			return ids.ToArray();
 		}
+
+        public string[] GetStackInfo()
+        {
+            IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "GetStackInfo", 0);
+            List<string> infos = (List<string>)method.Exec();
+            return infos.ToArray();
+        }
         #endif
     }
 
@@ -89,12 +96,31 @@ namespace Application.Runtime
             }
             EditorGUILayout.EndHorizontal();
 
-            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.Separator();
 
             // 显示栈信息
+            EditorGUILayout.LabelField(string.Format("StackInfo"), EditorStyles.largeLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                if (EditorApplication.isPlaying)
+                {
+                    string[] infos = m_Target.GetStackInfo();
+                    foreach (var info in infos)
+                    {
+                        EditorGUILayout.LabelField(info);
+                    }
+                }
+            }
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Separator();
+
             // 显示接收Update界面信息
             // 显示LRU池信息
             // 显示队列信息
+
+
+            EditorGUI.EndDisabledGroup();
 		}
 	}
     #endif

@@ -53,7 +53,7 @@ namespace Application.Logic
             GameSetting.Init();
             UIManager.Instance.Init();
 
-            GameModeManager.Instance.SwitchTo(GameState.World);
+            GameModeManager.Instance.SwitchTo(GameState.Dungeon);
 
             // ConfigManagerDemo.Start();
         }
