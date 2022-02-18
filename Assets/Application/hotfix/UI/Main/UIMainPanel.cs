@@ -9,10 +9,19 @@ namespace Application.Logic
         public UIMainPanel(UIMainDefines defines) : base(defines) { }
 
         public override void OnInit() { UIManager.Instance.RegisterUpdateEvent(defines.id); }
-        public override void OnCreate(GameObject go) { base.OnCreate(go); }
-        public override void OnShow(object userData = null) {}
+        public override void OnCreate(GameObject go) { }
+        public override void OnShow(object userData = null)
+        {
+            UIManager.Instance.Open(UIPanelID.MainResources);
+            UIManager.Instance.Open(UIPanelID.MainOther);
+        }
+
         public override void OnUpdate(float deltaTime) {}
-        public override void OnHide() {}
+        public override void OnHide()
+        {
+            UIManager.Instance.Close(UIPanelID.MainResources);
+            UIManager.Instance.Close(UIPanelID.MainOther);
+        }
         public override void OnDestroy() {}
     }
 }

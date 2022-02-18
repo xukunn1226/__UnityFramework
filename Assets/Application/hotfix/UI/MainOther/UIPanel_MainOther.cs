@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Application.Logic
 {
-    public class UILoginPanel : UIPanelBase
+    public class UIPanel_MainOther : UIPanelBase
     {
-        public UILoginPanel(UILoginDefines defines) : base(defines) {}
+        public UIPanel_MainOther(UIDefines_MainOther defines) : base(defines) {}
 
         public override void OnInit() { UIManager.Instance.RegisterUpdateEvent(defines.id); }
         public override void OnCreate(GameObject go) { }

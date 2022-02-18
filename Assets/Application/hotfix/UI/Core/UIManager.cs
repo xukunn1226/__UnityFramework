@@ -28,6 +28,7 @@ namespace Application.Logic
     ///     * control binding: https://github.com/Misaka-Mikoto-Tech/UIControlBinding
     ///     * HUD
     ///     * 特效、动画、safeArea、图文混排，TextMeshPro、DrawCall可视化显示、图集打包规则
+    ///     * mesh rebuild monitor
     ////// </summary>
     public class UIManager : Singleton<UIManager>
     {
@@ -618,6 +619,7 @@ namespace Application.Logic
             {
                 m_LRUPool.Cache(panel.defines.id, rect);
             }
+            panel.InternalCreate(go);
             panel.OnCreate(go);       // trigger OnCreate
         }
 
