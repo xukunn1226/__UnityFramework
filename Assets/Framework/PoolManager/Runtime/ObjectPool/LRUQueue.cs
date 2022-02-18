@@ -106,5 +106,25 @@ namespace Framework.Cache
             }
             UnityEngine.Debug.Log(message);
         }
+
+        public IEnumerator<K> IterKey()
+        {
+            LinkedListNode<TNode<K, V>> lastNode = m_Buffer.Last;
+            while(lastNode != null)
+            {
+                yield return lastNode.Value.Key;
+                lastNode = lastNode.Previous;
+            }
+        }
+
+        public IEnumerator<V> IterValue()
+        {
+            LinkedListNode<TNode<K, V>> lastNode = m_Buffer.Last;
+            while(lastNode != null)
+            {
+                yield return lastNode.Value.Value;
+                lastNode = lastNode.Previous;
+            }
+        }
     }
 }

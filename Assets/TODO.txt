@@ -196,32 +196,7 @@
 
 	
 
-*************************************** UI框架设计 ***************************************
-	* 界面的制作、业务开发模式
-	* 隐藏所有业务逻辑不需要关心的加载、卸载，界面流转等逻辑
-    * 界面调度逻辑
-    * 框架支持界面的FadeIn，FadeOut
-	* 完整的业务流程
-	* 提供界面扩展接口
-	* Sprite Atlas流程：SpriteAtlasManager
-	* MVVM，单向、双向数据绑定
-	* 断线重连事件处理
-	* Event是否发生在UI
-	* 支持横竖屏
-	* 支持自定义UI控件位置
-	* 各种UI效果支持（羽化，描边等）
-	* 特效挂载UI流程，资源分离，方便美术预览效果
-	* 多种字体的支持，WGame只支持一种字体大小，且添加其他语种不友好，字体静态生成容易产生冗余，限制策划的使用
-	* ResourceManager添加SpriteAtlas的管理
-	* 如何卸载Atlas？https://github.com/jconstable/SpriteSleeper
-		** 思考：prefab静态使用的散图可以预存为依赖图集，程序动态使用的图集需要用接口来约束
-		** 只要Atlas被注册过，再次被引用到时不会调用RequestAtlas
-		1、彻底卸载atlas ab：AssetBundle.unload（true）
-		2、使用此atlas的gameobject被删除
-	* 搭建美术UI制作环境(特效预览、分辨率适配等)
-	* UIView跳转流程，参照新闻app的用户习惯设计
-	* 特效、模型与UI混排的解决方案   https://zhuanlan.zhihu.com/p/33579005
-	* 特效、动画、safeArea、图文混排，TextMeshPro、DrawCall可视化显示、图集打包规则
+*************************************** UI框架设计 ***************************************	
 	* UI框架功能划分	
 		图集
 		DC可视化组件
@@ -234,7 +209,6 @@
 	https://zhuanlan.zhihu.com/p/102278660   个人对于游戏UI架构的思考与总结
 	https://blog.uwa4d.com/archives/UWA_UITree.html   UI开发与优化知识Tree
 	https://github.com/NVentimiglia/Unity3d-Foundation
-	https://github.com/Misaka-Mikoto-Tech/UIControlBinding  控件绑定方案，UI绑定
 
 	* UI Opt
 	https://learn.unity.com/tutorial/optimizing-unity-ui
@@ -288,9 +262,6 @@
 	* 放入缓存池的最佳操作：disable the gameobject first，then reparent it into pool
 	  取出缓存池的最佳操作：reparent it first, then update your data, then enable it
 	* Animator会每帧dirty ui element，尽量减少使用（待验证）
-
-* 动态打图集方案：
-	https://github.com/DaVikingCode/UnityRuntimeSpriteSheetsGenerator
 
 * 同屏大量HUD的优化方案
 	消耗点：

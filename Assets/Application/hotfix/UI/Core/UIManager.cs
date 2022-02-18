@@ -17,11 +17,17 @@ namespace Application.Logic
     ///     * 如何加载父子窗口界面
     ///     * 出栈、入栈的需求，例如打开一个全屏界面有必要把栈中的界面出栈吗
     ///     * 业务模块的数据管理器能互相访问吗？
-    ///     * 哪些界面类型需要进栈？fullscreen，windowed，pop，tips？
-    ///     * Popup界面类型如何定义？
-    ///     * Tips属于界面吗？需要特殊接口加载？
-    ///     * 哪些情况加载出来的界面需要动态调整位置？tips？
     ///     * Tips需要归为特殊的一层吗？例如不入栈，
+    /// TODO:
+    ///     * 界面的FadeIn，FadeOut
+    ///     * 搭建美术UI特效制作流程，场景、预览等
+    ///     * Font, TextMeshPro
+    ///     * 图集管理（公共图集一次性加载）
+    ///     * GetSprite接口
+    ///     * 各种常用UI控件：图文混排（https://zhuanlan.zhihu.com/p/33579005）
+    ///     * control binding: https://github.com/Misaka-Mikoto-Tech/UIControlBinding
+    ///     * HUD
+    ///     * 特效、动画、safeArea、图文混排，TextMeshPro、DrawCall可视化显示、图集打包规则
     ////// </summary>
     public class UIManager : Singleton<UIManager>
     {
@@ -58,7 +64,7 @@ namespace Application.Logic
             return UIManager.Instance;
         }
 
-        static public List<string> GetStackInfo()
+        static public List<string> GetStackPanelInfo()
         {
             List<string> lst = new List<string>();
             LinkedListNode<PanelState> node = UIManager.Instance.m_PanelStack.Last;
@@ -69,6 +75,47 @@ namespace Application.Logic
                 node = node.Previous;
             }
             return lst;
+        }
+
+        static public List<string> GetUpdatePanelInfo()
+        {
+            List<string> lst = new List<string>();
+            Dictionary<string, PanelState>.Enumerator e = UIManager.Instance.m_UpdateDict.GetEnumerator();
+            while(e.MoveNext())
+            {
+                if(e.Current.Value.isShowRes)
+                {
+                    lst.Add(e.Current.Value.panel.defines.id);
+                }
+            }
+            return lst;
+        }
+
+        static public List<string> GetPersistentPoolInfo()
+        {
+            List<string> lst = new List<string>();
+            Dictionary<string, RectTransform>.Enumerator e = UIManager.Instance.m_PersistentPool.GetEnumerator();
+            while(e.MoveNext())
+            {
+                lst.Add(e.Current.Key);
+            }
+            return lst;
+        }
+
+        static public List<string> GetLRUPoolInfo()
+        {
+            List<string> lst = new List<string>();
+            IEnumerator<string> e = UIManager.Instance.m_LRUPool.IterKey();
+            while(e.MoveNext())
+            {
+                lst.Add(e.Current);
+            }
+            return lst;
+        }
+
+        static public int GetLRUMaxCount()
+        {
+            return UIManager.MaxCachedCount;
         }
 #endif        
 
@@ -221,6 +268,14 @@ namespace Application.Logic
             HidePanel(ps);
         }
 
+        public void CloseTop()
+        {
+            PanelState ps = FindLastFullscreenPanel();
+            if(ps == null)
+                return;
+            Close(ps.panel.defines.id);
+        }
+
         private void GetOrLoadResource(UIDefines def, System.Object userData)
         {
             PanelState ps = GetOrCreatePanel(def);
@@ -285,10 +340,11 @@ namespace Application.Logic
             if(!m_PanelDict.TryGetValue(def.id, out ps))
             {
                 ps = new PanelState();
-                UIPanelBase panel = (UIPanelBase)Activator.CreateInstance(def.typeOfPanel, new object[] {def});
-                panel.OnInit();
+                UIPanelBase panel = (UIPanelBase)Activator.CreateInstance(def.typeOfPanel, new object[] {def});                
                 ps.panel = panel;
                 m_PanelDict.Add(def.id, ps);
+
+                panel.OnInit();
             }
             return ps;
         }
@@ -407,7 +463,7 @@ namespace Application.Logic
             LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
             while(lastNode != null)
             {
-                if(lastNode.Value.panel.IsFullscreen())
+                if(lastNode.Value.panel.IsFullscreen() || lastNode.Value.panel.HasParent())
                     break;
                 PopPanel(lastNode.Value);
             }

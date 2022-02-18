@@ -52,7 +52,7 @@ namespace Application.Logic
         public void RemoveChild(UIPanelBase child)
         {}
 
-        protected bool HasParent()
+        public bool HasParent()
         {
             return !string.IsNullOrEmpty(parentId);
         }
@@ -71,6 +71,11 @@ namespace Application.Logic
         public bool IsFullscreen()
         {
             return defines.layer == UILayer.Fullscreen;
+        }
+
+        public void Close()
+        {
+            UIManager.Instance.Close(defines.id);
         }
     }
 }

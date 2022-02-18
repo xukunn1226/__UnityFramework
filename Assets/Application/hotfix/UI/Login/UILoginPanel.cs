@@ -6,10 +6,9 @@ namespace Application.Logic
 {
     public class UILoginPanel : UIPanelBase
     {
-        public new UILoginDefines defines { get; private set; }
         public UILoginPanel(UILoginDefines defines) : base(defines) {}
 
-        public override void OnInit() {}
+        public override void OnInit() { UIManager.Instance.RegisterUpdateEvent(defines.id); }
         public override void OnCreate(GameObject go) { base.OnCreate(go); }
         public override void OnShow(object userData = null) {}
         public override void OnUpdate(float deltaTime) {}

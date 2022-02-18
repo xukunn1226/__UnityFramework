@@ -28,6 +28,15 @@ namespace Application.Runtime
             method.Exec(inst, id);
         }
 
+        public void CloseTopUI()
+        {
+            IStaticMethod start = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "Get", 0);
+            System.Object inst = start.Exec();
+
+            IMemberMethod method = CodeLoader.GetMemberMethod("Application.Logic.UIManager", "CloseTop", 0);
+            method.Exec(inst);
+        }
+
 		public string[] GetIds()
 		{
 			IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIDefines", "GetIds", 0);
@@ -35,12 +44,41 @@ namespace Application.Runtime
 			return ids.ToArray();
 		}
 
-        public string[] GetStackInfo()
+        public string[] GetStackPanelInfo()
         {
-            IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "GetStackInfo", 0);
+            IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "GetStackPanelInfo", 0);
             List<string> infos = (List<string>)method.Exec();
             return infos.ToArray();
         }
+
+        public string[] GetUpdatePanelInfo()
+        {
+            IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "GetUpdatePanelInfo", 0);
+            List<string> infos = (List<string>)method.Exec();
+            return infos.ToArray();
+        }
+
+        public string[] GetPersistentPoolInfo()
+        {
+            IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "GetPersistentPoolInfo", 0);
+            List<string> infos = (List<string>)method.Exec();
+            return infos.ToArray();
+        }
+
+        public string[] GetLRUPoolInfo()
+        {
+            IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "GetLRUPoolInfo", 0);
+            List<string> infos = (List<string>)method.Exec();
+            return infos.ToArray();
+        }
+
+        public int GetLRUMaxCount()
+        {
+            IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "GetLRUMaxCount", 0);
+            int count = (int)method.Exec();
+            return count;
+        }
+
         #endif
     }
 
@@ -96,6 +134,16 @@ namespace Application.Runtime
             }
             EditorGUILayout.EndHorizontal();
 
+            // CloseTop
+            EditorGUILayout.BeginHorizontal();
+            {
+                if(GUILayout.Button("CloseTop"))
+                {
+                    m_Target.CloseTopUI();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
             EditorGUILayout.Separator();
 
             // 显示栈信息
@@ -104,7 +152,7 @@ namespace Application.Runtime
             {
                 if (EditorApplication.isPlaying)
                 {
-                    string[] infos = m_Target.GetStackInfo();
+                    string[] infos = m_Target.GetStackPanelInfo();
                     foreach (var info in infos)
                     {
                         EditorGUILayout.LabelField(info);
@@ -116,9 +164,54 @@ namespace Application.Runtime
             EditorGUILayout.Separator();
 
             // 显示接收Update界面信息
-            // 显示LRU池信息
-            // 显示队列信息
+            EditorGUILayout.LabelField(string.Format("UpdateInfo"), EditorStyles.largeLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                if (EditorApplication.isPlaying)
+                {
+                    string[] infos = m_Target.GetUpdatePanelInfo();
+                    foreach (var info in infos)
+                    {
+                        EditorGUILayout.LabelField(info);
+                    }
+                }
+            }
+            EditorGUILayout.EndVertical();
 
+            // 显示PersistentPool信息
+            EditorGUILayout.LabelField(string.Format("Persistent Pool"), EditorStyles.largeLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                if (EditorApplication.isPlaying)
+                {
+                    string[] infos = m_Target.GetPersistentPoolInfo();
+                    foreach (var info in infos)
+                    {
+                        EditorGUILayout.LabelField(info);
+                    }
+                }
+            }
+            EditorGUILayout.EndVertical();
+
+            // 显示LRUPool信息
+            string label = string.Format($"LRU Pool (?)");
+            if(EditorApplication.isPlaying)
+            {
+                label = string.Format($"LRU Pool ({m_Target.GetLRUMaxCount()})");
+            }
+            EditorGUILayout.LabelField(label, EditorStyles.largeLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                if (EditorApplication.isPlaying)
+                {
+                    string[] infos = m_Target.GetLRUPoolInfo();
+                    foreach (var info in infos)
+                    {
+                        EditorGUILayout.LabelField(info);
+                    }
+                }
+            }
+            EditorGUILayout.EndVertical();
 
             EditorGUI.EndDisabledGroup();
 		}
