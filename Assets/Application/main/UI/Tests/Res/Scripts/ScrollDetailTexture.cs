@@ -33,7 +33,7 @@ public class ScrollDetailTexture : MonoBehaviour
 		if (mCopy != null)
 		{
 			mSprite.material = mOriginal;
-			if (Application.isEditor)
+			if (UnityEngine.Application.isEditor)
 				UnityEngine.Object.DestroyImmediate(mCopy);
 			else
 				UnityEngine.Object.Destroy(mCopy);
