@@ -26,32 +26,12 @@ namespace Application.Logic
         public virtual void OnUpdate(float deltaTime) {}        // 需要主动调用UIManager.RegisterUpdateEvent注册才能触发OnUpdate
         public virtual void OnHide() {}                         // 界面关闭回调        
         public virtual void OnDestroy() {}                      // 界面资源销毁时调用，与OnCreate对应
+        public virtual bool OnReturnBack() { return false; }    // 响应return back，当前显示的界面才会接收，返回true表示事件被处理不会继续传递，返回false表示不处理，事件继续传递下去
 
         public void Close()
         {
             UIManager.Instance.Close(defines.id);
-        }
-
-        public bool HasParent()
-        {
-            return !string.IsNullOrEmpty(parentId);
-        }
-
-        /// <summary>
-        /// 是否需要入栈管理
-        /// </summary>
-        /// <returns></returns>
-        public bool CanStack()
-        {
-            if(defines.layer == UILayer.Fullscreen || (defines.layer == UILayer.Windowed && !HasParent()))
-                return true;
-            return false;
-        }
-
-        public bool IsFullscreen()
-        {
-            return defines.layer == UILayer.Fullscreen;
-        }
+        }        
 
         internal void InternalCreate(GameObject go)             // UI资源实例化完成时的回调，可执行绑定操作，与OnDestroy对应
         {

@@ -37,6 +37,15 @@ namespace Application.Runtime
             method.Exec(inst);
         }
 
+        public void CloseAllUI()
+        {
+            IStaticMethod start = CodeLoader.GetStaticMethod("Application.Logic.UIManager", "Get", 0);
+            System.Object inst = start.Exec();
+
+            IMemberMethod method = CodeLoader.GetMemberMethod("Application.Logic.UIManager", "CloseAll", 0);
+            method.Exec(inst);
+        }
+
 		public string[] GetIds()
 		{
 			IStaticMethod method = CodeLoader.GetStaticMethod("Application.Logic.UIDefines", "GetIds", 0);
@@ -140,6 +149,16 @@ namespace Application.Runtime
                 if(GUILayout.Button("CloseTop"))
                 {
                     m_Target.CloseTopUI();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            // CloseAll
+            EditorGUILayout.BeginHorizontal();
+            {
+                if(GUILayout.Button("CloseAll"))
+                {
+                    m_Target.CloseAllUI();
                 }
             }
             EditorGUILayout.EndHorizontal();

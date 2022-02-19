@@ -29,6 +29,7 @@ namespace Application.Logic
     ///     * HUD
     ///     * 特效、动画、safeArea、图文混排，TextMeshPro、DrawCall可视化显示、图集打包规则
     ///     * mesh rebuild monitor
+    ///     * MessageBox
     ////// </summary>
     public class UIManager : Singleton<UIManager>
     {
@@ -71,7 +72,7 @@ namespace Application.Logic
             LinkedListNode<PanelState> node = UIManager.Instance.m_PanelStack.Last;
             while(node != null)
             {
-                string info = node.Value.panel.IsFullscreen() ? "F" : "W";
+                string info = UIManager.Instance.IsFullscreen(node.Value.panel) ? "F" : "W";
                 lst.Add(node.Value.panel.defines.id + string.Format($"({info})"));
                 node = node.Previous;
             }
@@ -250,7 +251,10 @@ namespace Application.Logic
             // execute order: push stack -> load resource -> show panel
             PanelState ps = GetOrCreatePanel(def);
             PushPanel(ps);
-            GetOrLoadResource(def, userData);
+            if(GetOrLoadResource(def, userData))
+            { // 资源已加载执行后续流程
+                OnPostResourceLoaded(ps, userData);
+            }
         }
 
         /// <summary>
@@ -269,25 +273,39 @@ namespace Application.Logic
             HidePanel(ps);
         }
 
-        public void CloseTop()
+        public bool CloseTop()
         {
             PanelState ps = FindLastFullscreenPanel();
             if(ps == null)
-                return;
+                return false;
             Close(ps.panel.defines.id);
+            return true;
         }
 
-        private void GetOrLoadResource(UIDefines def, System.Object userData)
+        public void CloseAll()
         {
-            PanelState ps = GetOrCreatePanel(def);
+            while(CloseTop()) { }
+        }
+
+        public void ReturnBack()
+        {
+            LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
+            while(lastNode != null)
+            {
+                if(lastNode.Value.panel.OnReturnBack())
+                    break;
+                lastNode = lastNode.Previous;
+            }
+        }
+
+        private bool GetOrLoadResource(UIDefines def, System.Object userData)
+        {
             if(FindResource(def) != null)
-            { // 资源已加载执行后续流程
-                OnPostResourceLoaded(ps, userData);
-            }
-            else
-            { // 资源未加载则发起异步加载流程
-                AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });
-            }
+                return true;
+            
+            // 资源未加载则发起异步加载流程
+            AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });            
+            return false;
         }
 
         /// <summary>
@@ -356,7 +374,7 @@ namespace Application.Logic
         /// <param name="panel"></param>
         private void PushPanel(PanelState ps)
         {
-            if(!ps.panel.CanStack())
+            if(!CanStack(ps))
                 return;
 
             if(m_PanelStack.Find(ps) != null)
@@ -366,14 +384,14 @@ namespace Application.Logic
             }
 
             // 全屏界面进栈将触发已在栈中的其他界面OnHide
-            if(ps.panel.IsFullscreen())
+            if(IsFullscreen(ps.panel))
             {
                 // 倒序遍历直至另一个全屏界面为止的所有界面OnHide
                 LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
                 while(lastNode != null)
                 {
                     HidePanel(lastNode.Value);
-                    if(lastNode.Value.panel.IsFullscreen())
+                    if(IsFullscreen(lastNode.Value.panel))
                     {
                         break;                        
                     }
@@ -392,7 +410,7 @@ namespace Application.Logic
         /// </summary>
         private void PopPanel(PanelState ps)
         {
-            if(!ps.panel.CanStack())
+            if(!CanStack(ps))
                 return;
 
             if(m_PanelStack.Find(ps) == null)
@@ -402,7 +420,7 @@ namespace Application.Logic
             }
 
             // 检查弹出的PanelState合法性
-            if(ps.panel.IsFullscreen())
+            if(IsFullscreen(ps.panel))
             { // 如果是全屏界面必须是栈中最后一个全屏界面
                 if(FindLastFullscreenPanel() != ps)
                 {
@@ -415,7 +433,7 @@ namespace Application.Logic
                 LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
                 while (lastNode != null)
                 {
-                    if(lastNode.Value.panel.IsFullscreen())
+                    if(IsFullscreen(lastNode.Value.panel))
                     {
                         Debug.LogWarning($"can't find the pending pop panel before the last fullscreen panel");
                         return;
@@ -427,7 +445,7 @@ namespace Application.Logic
             }
 
             // 全屏界面出栈将触发排在自身之后的非全屏界面OnHide
-            if(ps.panel.IsFullscreen())
+            if(IsFullscreen(ps.panel))
             {
                 LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
                 while(lastNode != null && lastNode.Value != ps)
@@ -442,14 +460,14 @@ namespace Application.Logic
             // 全屏界面出栈将触发栈中最近的另一个全屏界面OnShow
             // Full_A -> NonFull_B -> NonFull_C -> Full_D -> NonFull_E
             // 如果弹出Full_D，则触发NonFull_E.OnHide & Full_A.OnShow & NonFull_B.OnShow & NonFull_C.OnShow
-            if(ps.panel.IsFullscreen())
+            if(IsFullscreen(ps.panel))
             {
                 // 倒序遍历直至另一个全屏界面为止的所有界面OnShow
                 LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
                 while(lastNode != null)
                 {
                     ShowPanel(lastNode.Value);
-                    if(lastNode.Value.panel.IsFullscreen())
+                    if(IsFullscreen(lastNode.Value.panel))
                         break;
                     lastNode = lastNode.Previous;
                 }
@@ -464,7 +482,7 @@ namespace Application.Logic
             LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
             while(lastNode != null)
             {
-                if(lastNode.Value.panel.IsFullscreen() || lastNode.Value.panel.HasParent())
+                if(IsFullscreen(lastNode.Value.panel) || HasParent(lastNode.Value.panel))
                     break;
                 PopPanel(lastNode.Value);
             }
@@ -537,7 +555,21 @@ namespace Application.Logic
             }
             ps.isShowRes = true;
 
-            ps.panel.transform.SetParent(GetLayerNode(ps.panel.defines.layer), false);
+            ps.panel.transform.SetParent(GetParentTransform(ps.panel), false);
+        }
+
+        private RectTransform GetParentTransform(UIPanelBase panel)
+        {
+            RectTransform trans = null;
+            if(HasParent(panel))
+            { // 优先以父窗口为挂点
+                trans = FindResource(UIDefines.Get(panel.parentId));
+            }
+            if(trans == null)
+            { // 其次以层级节点为挂点
+                trans = GetLayerNode(panel.defines.layer);
+            }
+            return trans;
         }
 
         /// <summary>
@@ -642,10 +674,31 @@ namespace Application.Logic
             LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
             while(lastNode != null)
             {
-                if(lastNode.Value.panel.IsFullscreen())
+                if(IsFullscreen(lastNode.Value.panel))
                     return lastNode.Value;
             }
             return null;
+        }
+
+        /// <summary>
+        /// 是否需要入栈管理
+        /// </summary>
+        /// <returns></returns>
+        private bool CanStack(PanelState ps)
+        {
+            if(ps.panel.defines.layer == UILayer.Fullscreen || (ps.panel.defines.layer == UILayer.Windowed && !HasParent(ps.panel)))
+                return true;
+            return false;
+        }
+
+        private bool IsFullscreen(UIPanelBase panel)
+        {
+            return panel.defines.layer == UILayer.Fullscreen;
+        }        
+
+        private bool HasParent(UIPanelBase panel)
+        {
+            return !string.IsNullOrEmpty(panel.parentId);
         }
     }
 }
