@@ -116,13 +116,6 @@
 	https://blog.csdn.net/XieNaoban/article/details/53524165?spm=1001.2014.3001.5501  [笔记]A*寻路算法初探
 * Unity CommandBuffer或是Camera重定向RenderTarget的ColorBuffer & DepthBuffer
 	https://blog.csdn.net/linjf520/article/details/104964803
-* XLua开发环境的整合
-	pbc
-	luac
-	lua profiler
-	lua break ponit
-	与C#共享内存 https://github.com/Tencent/xLua/issues/764			
-	常用库的集成 https://github.com/chexiongsheng/build_xlua_with_libs
 * AOI
 	https://mp.weixin.qq.com/s/3srAV6SOW4CCIN57mYDYng
 	https://www.zhihu.com/question/43625409
@@ -196,122 +189,7 @@
 
 	
 
-*************************************** UI框架设计 ***************************************	
-	* UI框架功能划分	
-		图集
-		DC可视化组件
-		修改基础控件的默认参数
-		HUD
-		红点系统
-		新手引导
-	参考：
-	M4u、uFrame Framework、Loxodon Framework、https://github.com/jbruening/ugui-mvvm、https://github.com/push-pop/Unity-MVVM、https://github.com/chexiongsheng/XUUI
-	https://zhuanlan.zhihu.com/p/102278660   个人对于游戏UI架构的思考与总结
-	https://blog.uwa4d.com/archives/UWA_UITree.html   UI开发与优化知识Tree
-	https://github.com/NVentimiglia/Unity3d-Foundation
 
-	* UI Opt
-	https://learn.unity.com/tutorial/optimizing-unity-ui
-    https://create.unity3d.com/Unity-UI-optimization-tips
-	https://gameinstitute.qq.com/community/detail/114203  				重建 是UGUI优化的关键
-	https://zhuanlan.zhihu.com/p/55566751  				  				Unity UGUI 点击性能优化
-	https://blog.csdn.net/VR_iShow/article/details/92850381
-	https://thegamedev.guru/unity-ui/optimization-strategies/
-	https://forum.unity.com/threads/unity-ui-performance-tips-sharing-my-findings.524916/
-	https://blog.uwa4d.com/archives/QA_UGUI-1.html  					关于Unity中的UGUI优化，你可能遇到这些问题
-	https://blog.uwa4d.com/archives/Sparkle_Shader_UI.html  			Unity手游开发札记——使用Shader进行UGUI的优化
-	https://blog.csdn.net/akak2010110/article/details/80953370  		UGUI drawcall合并原理，解释了什么是BottomUI
-	https://www.jianshu.com/p/061e67308e5f  							Unity GUI(uGUI)使用心得与性能总结	
-	https://gameinstitute.qq.com/community/detail/112235  				UGUI优化：批次合并源码分析及工具
-	https://mp.weixin.qq.com/s/tYuEDNDYKlrUn933BWheHw                   Unity性能优化 — UI模块
-	
-
-	一切的优化围绕三个点进行：batch build、mesh build、raycast
-	* batch build: 根据depth排序，检测overlap，material id，worker thread执行
-	* rebuild process：Layout rebuilds & Graphics rebuilds
-
-	* 没有勾选raycastTarget的Graphic从判定列表中移除：GraphicRegistry.UnregisterGraphicForCanvas。显示/隐藏时移除？见GraphicRaycaster.Raycast()
-	* 优化GraphicRaycaster.eventCamera，没有缓存
-	* 考虑当raycast时取消排序，始终返回最上层graphics，优化GraphicsRaycster::Raycast()
-	* Graphics.canvasRenderer的判空操作过多，也有一定耗时，考虑组件各自在Awake中缓存
-	* GraphicRaycaster减少depth获取次数，优化raycast函数
-	* 减少点击事件响应的组件注册（原生Image即使不选择RaycastTarget也会出现在判定列表中），可以重写OnTransformParentChanged，OnCanvasHierarchyChanged
-	* 不在屏幕内的UI不参与raycast，增加判定UI是否在屏幕内的接口，修改raycast函数
-	* Mask2个DC，会打断上下合批，但Mask之间能合批	
-	* 删除不必要的元素，减少层次结构，这样可以减少深度排序耗时
-	* 动态UI元素（频繁改变例如顶点、alpha、position、size）与静态UI元素分离
-	* 谨慎使用UI元素的enable/disable，会触发rebuild，替代方案是enable/disable UI元素的CanvasRender或Canvas
-	* 谨慎使用Text的Best Fit
-	* 谨慎使用Canvas的Pixel Perfect
-	* 对于不需要接收touch事件的元素，禁用Raycast Target
-	* 批处理需要符合以下条件：
-		* 在同一个canvas下。
-		* 使用同一个材质
-		* 在同一时间渲染
-		* RectTransform共面(深度相同),不重叠。
-		* 在同一个父mask下(不同mask下会造成drawcall增加)
-	* 使用Slice时，对于不需要渲染中心的可以uncheck Fill Center
-	* 修改Image自带的Color属性实际上是修改顶点上的属性，会导致网格重建，可以自定义材质，去改变材质的Tint Color
-	* 同一级Canvas之间的渲染顺序：ovreride sorting=false时，以hierarchy顺序渲染;override sorting=true时，以sort order顺序渲染
-	* 隐藏界面的几种方式带来的影响对比
-		1、SetActive				优势：NO CPU、no raycast；劣势：GC，rebuild mesh
-		2、Out of Screen			优势：NO GC；劣势：CPU有开销，raycast有开销，rebuild mesh
-		3、Set Layer（OutUI）		优势：切换无开销，no rebuild mesh；劣势：CPU有开销，raycast
-		4、Disable canvas			据说是最优，不会rebuild mesh，不会rebatch，待验证
-	* overridesorting属性会打断射线，可以降低层级遍历的成本?
-	* 放入缓存池的最佳操作：disable the gameobject first，then reparent it into pool
-	  取出缓存池的最佳操作：reparent it first, then update your data, then enable it
-	* Animator会每帧dirty ui element，尽量减少使用（待验证）
-
-* 同屏大量HUD的优化方案
-	消耗点：
-		元素更新开销
-		网格更新开销
-		渲染开销
-
-	目标：
-	动态字体
-	图文混排（参考Super Text Mesh），一个DC，且可以利用动态合批功能
-	遮挡关系
-	HUD使用UI制作的缺陷：摄像机位置发生变化需要实时修改UI位置，导致网格合并，UI系统本身效率没有3D高
-
-UI的主要消耗点：
-	降低渲染开销（DC）
-	降低更新开销（网格合并）
-		动静分离
-		降低更新频率
-		避免“敏感”操作：避免FillAllDrawCalls
-			添加/删除元素时，穿插了其他UIDrawCall（尽量避免）
-			添加/删除的元素自成一个UIDrawCall（通过scale=0，alpha接近0来隐藏，而不是真正的删除）
-		优化选项
-
-	https://www.xuanyusong.com/archives/4331  SuperTextMesh
-	https://edu.uwa4d.com/lesson-detail/127/487/0?isPreview=false   绕过Unity打造自己的HUD
-	https://edu.uwa4d.com/course-intro/1/109  Unity UI模块优化案例精讲
-	https://blog.uwa4d.com/archives/video_UI.html  
-	简化mesh
-	降低更新频率
-	拆分panel，尽可能将相同更新频率的UI放在一个UIPanel中
-	尽量减少激活的HUD
-	NGUI、UGUI的DC合并规则
-	NGUI.Visible优化大量网格更新时
-	分帧执行SetActive
-	TroopHeadBarName、TroopHeadBarSelected结构复杂度、更新频率不一致，考虑分开处理
-
-## UGUI读书笔记
-RectTransform:
-* anchorMax, anchorMin：组合成四个锚点
-    1、（anchorMin.x，anchorMin.y)  ——左下角
-    2、（anchorMin.x,  anchorMax.y）——左上角    
-    3、（anchorMax.x, anchorMin.y） ——右下角
-    4、（anchorMax.x, anchorMax.y） ——右上角
-* anchoredPosition：pivot相对anchor的位置，（面板上的PosX，PosY）
-* sizeDelta：当anchor全部重合时，等同于size（面板上Width，Height）；当anchor有任意一个是父节点的corners时，它是相对父矩形的delta size
-* RectTransform.rect获得矩形尺寸信息
-* pivot：（0,0）面板左下角，（1,1）面板右上角；以pivot点轴心旋转
-* offsetMin:  The offset of the lower left corner of the rectangle relative to the lower left anchor
-* offsetMax:  The offset of the upper right corner of the rectangle relative to the upper right anchor
-*************************************** UI框架设计 End ***************************************
 
 *************************************** 资源管理 ***************************************
 
