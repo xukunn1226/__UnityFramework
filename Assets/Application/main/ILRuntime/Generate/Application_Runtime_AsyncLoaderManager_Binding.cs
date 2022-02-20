@@ -23,14 +23,14 @@ namespace ILRuntime.Runtime.Generated
             Type[] args;
             Type type = typeof(Application.Runtime.AsyncLoaderManager);
             args = new Type[]{typeof(System.String), typeof(System.Action<UnityEngine.GameObject, System.Object>), typeof(System.Object)};
-            method = type.GetMethod("AsyncLoad", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, AsyncLoad_0);
+            method = type.GetMethod("AsyncLoadPrefab", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, AsyncLoadPrefab_0);
 
 
         }
 
 
-        static StackObject* AsyncLoad_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* AsyncLoadPrefab_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -52,7 +52,7 @@ namespace ILRuntime.Runtime.Generated
             Application.Runtime.AsyncLoaderManager instance_of_this_method = (Application.Runtime.AsyncLoaderManager)typeof(Application.Runtime.AsyncLoaderManager).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
-            instance_of_this_method.AsyncLoad(@assetPath, @cb, @userData);
+            instance_of_this_method.AsyncLoadPrefab(@assetPath, @cb, @userData);
 
             return __ret;
         }

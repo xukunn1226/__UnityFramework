@@ -18,6 +18,7 @@ namespace Application.Logic
             btn_Shop.onClick.AddListener(delegate ()
             {
                 Debug.Log("click button");
+                UIManager.Instance.Open(UIPanelID.Shop);
             });
         }
         public override void OnShow(object userData = null) {}

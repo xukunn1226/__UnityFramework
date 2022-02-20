@@ -111,6 +111,11 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding_Enumerator_Binding.Register(app);
             System_Collections_Generic_LinkedListNode_1_ILTypeInstance_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_String_AssetLoader_1_SpriteAtlas_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_String_AssetLoader_1_SpriteAtlas_Binding_Enumerator_Binding.Register(app);
+            System_Collections_Generic_KeyValuePair_2_String_AssetLoader_1_SpriteAtlas_Binding.Register(app);
+            Framework_AssetManagement_Runtime_AssetLoader_1_SpriteAtlas_Binding.Register(app);
+            UnityEngine_U2D_SpriteAtlas_Binding.Register(app);
             System_Collections_Generic_List_1_Type_Binding.Register(app);
             System_Linq_Enumerable_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_ILTypeInstance_Binding_Enumerator_Binding.Register(app);
@@ -126,6 +131,8 @@ namespace ILRuntime.Runtime.Generated
             Application_Runtime_AsyncLoaderManager_Binding.Register(app);
             Framework_Core_GameDebug_Binding.Register(app);
             UnityEngine_Behaviour_Binding.Register(app);
+            UnityEngine_UI_Button_Binding.Register(app);
+            UnityEngine_Events_UnityEvent_Binding.Register(app);
             Application_Runtime_WorldPlayerController_Binding.Register(app);
             Application_Runtime_PlayerController_Binding.Register(app);
 

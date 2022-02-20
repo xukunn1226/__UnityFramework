@@ -5,6 +5,7 @@ using System;
 using Framework.Cache;
 using Framework.Core;
 using Application.Runtime;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Logic
 {
@@ -19,11 +20,8 @@ namespace Application.Logic
     ///     * 业务模块的数据管理器能互相访问吗？
     ///     * Tips需要归为特殊的一层吗？例如不入栈，
     /// TODO:
-    ///     * 界面的FadeIn，FadeOut
     ///     * 搭建美术UI特效制作流程，场景、预览等
     ///     * Font, TextMeshPro
-    ///     * 图集管理（公共图集一次性加载）
-    ///     * GetSprite接口
     ///     * 各种常用UI控件：图文混排（https://zhuanlan.zhihu.com/p/33579005）
     ///     * control binding: https://github.com/Misaka-Mikoto-Tech/UIControlBinding
     ///     * HUD
@@ -123,6 +121,7 @@ namespace Application.Logic
 
         protected override void InternalInit()
         {
+            AtlasManager.InitPersistentAtlas();
             InitCanvas();
             InitLayer();
             UIDefines.Init();
@@ -135,6 +134,7 @@ namespace Application.Logic
             ClearResourceList();
             m_LRUPool.OnDiscard -= OnDiscard;
             m_UpdateEnum.Dispose();
+            AtlasManager.UninitPersistentAtlas();
         }
         
         /// <summary>
@@ -227,6 +227,11 @@ namespace Application.Logic
             }
         }
 
+        public Sprite GetSprite(string atlasName, string spriteName)
+        {
+            return AtlasManager.GetSprite(atlasName, spriteName);
+        }
+
         private RectTransform GetLayerNode(string layer)
         {
             RectTransform node;
@@ -304,7 +309,7 @@ namespace Application.Logic
                 return true;
             
             // 资源未加载则发起异步加载流程
-            AsyncLoaderManager.Instance.AsyncLoad(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });            
+            AsyncLoaderManager.Instance.AsyncLoadPrefab(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });            
             return false;
         }
 

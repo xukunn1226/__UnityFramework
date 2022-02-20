@@ -170,7 +170,7 @@ namespace Framework.AssetManagement.Runtime
             get { return asset; }
         }
 
-        bool IEnumerator.MoveNext()
+        public bool MoveNext()
         {
 #if UNITY_EDITOR
             return !m_LoadFromEditor && !IsDone();

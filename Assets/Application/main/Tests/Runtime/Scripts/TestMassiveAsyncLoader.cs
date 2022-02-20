@@ -14,7 +14,7 @@ namespace Application.Runtime
             if(GUI.Button(new Rect(100, 100, 300, 100), "Create ZOMBIE_01"))
             {
                 for(int i = 0; i < 1; ++i)
-                    AsyncLoaderManager.Instance.AsyncLoad(s_AssetPathList[0], OnCompleted);
+                    AsyncLoaderManager.Instance.AsyncLoadPrefab(s_AssetPathList[0], OnCompleted);
                 Destroy(gameObject);        // 测试发送异步加载请求的对象，如果在资源加载完成之前被销毁的情况，见OnCompleted
                 Debug.Log($"1. {Time.frameCount}");
             }

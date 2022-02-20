@@ -12,10 +12,12 @@ namespace Application.Runtime
     {
         struct LoaderTrack
         {
-            public string               assetPath;
-            public Action<GameObject, System.Object>   actions;
-            public System.Object        userData;
-            public PrefabLoaderAsync    loader;
+            public string                               assetPath;
+            public PrefabLoaderAsync                    prefabLoader;
+            public AssetLoaderAsync<UnityEngine.Object> assetLoader;
+            public Action<GameObject, System.Object>    actionsForPrefabLoader;
+            public Action<UnityEngine.Object, System.Object> actionsForAssetLoader;
+            public System.Object                        userData;            
         }
         private LinkedList<LoaderTrack> m_Requests      = new LinkedList<LoaderTrack>();
 
@@ -50,11 +52,23 @@ namespace Application.Runtime
                     }
 
                     LoaderTrack track = m_Requests.First.Value;
-                    if(track.loader != null && !track.loader.MoveNext())
+                    if(track.prefabLoader != null && !track.prefabLoader.MoveNext())
                     { // complete
                         try
                         {
-                            track.actions?.Invoke(track.loader.asset, track.userData);      // asset可能为null，当资源加载失败时
+                            track.actionsForPrefabLoader?.Invoke(track.prefabLoader.asset, track.userData);      // asset可能为null，当资源加载失败时
+                        }
+                        catch(Exception e)
+                        {
+                            UnityEngine.Debug.LogError(e.Message);
+                        }
+                        m_Requests.RemoveFirst();
+                    }
+                    if(track.assetLoader != null && !track.assetLoader.MoveNext())
+                    {
+                        try
+                        {
+                            track.actionsForAssetLoader?.Invoke(track.assetLoader.asset, track.userData);
                         }
                         catch(Exception e)
                         {
@@ -67,17 +81,35 @@ namespace Application.Runtime
             }
         }
 
-        public void AsyncLoad(string assetPath, Action<GameObject, System.Object> cb, System.Object userData = null)
+        public void AsyncLoadPrefab(string assetPath, Action<GameObject, System.Object> cb, System.Object userData = null)
         {
             UnityEngine.Debug.Assert(Instance != null);
             UnityEngine.Debug.Assert(cb != null);
 
             LoaderTrack track = new LoaderTrack();
             track.assetPath = assetPath;
-            track.loader = AssetManager.InstantiatePrefabAsync(assetPath);
-            track.actions = cb;
+            track.prefabLoader = AssetManager.InstantiatePrefabAsync(assetPath);
+            track.assetLoader = null;
+            track.actionsForPrefabLoader = cb;
+            track.actionsForAssetLoader = null;
             track.userData = userData;
             m_Requests.AddLast(track);
+        }
+
+        public AssetLoaderAsync<UnityEngine.Object> AsyncLoadAsset(string assetPath, Action<UnityEngine.Object, System.Object> cb, System.Object userData = null)
+        {
+            UnityEngine.Debug.Assert(Instance != null);
+            UnityEngine.Debug.Assert(cb != null);
+
+            LoaderTrack track = new LoaderTrack();
+            track.assetPath = assetPath;
+            track.prefabLoader = null;
+            track.assetLoader = AssetManager.LoadAssetAsync<UnityEngine.Object>(assetPath);
+            track.actionsForPrefabLoader = null;
+            track.actionsForAssetLoader = cb;
+            track.userData = userData;
+            m_Requests.AddLast(track);
+            return track.assetLoader;
         }
     }
 }
