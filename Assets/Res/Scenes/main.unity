@@ -914,7 +914,7 @@ MonoBehaviour:
   Ip: 192.168.2.12
   Port: 11000
   AutoConnect: 0
-  codeMode: 2
+  codeMode: 1
 --- !u!1001 &2139664790
 PrefabInstance:
   m_ObjectHideFlags: 0

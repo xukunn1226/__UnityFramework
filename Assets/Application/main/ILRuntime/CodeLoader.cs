@@ -11,7 +11,8 @@ namespace Application.Runtime
 	public enum CodeMode
 	{
 		Mono = 1,
-		ILRuntime = 2
+		ILRuntime = 2,
+        Mono2 = 3,
 	}
 	
     public class CodeLoader : System.IDisposable
@@ -68,6 +69,10 @@ namespace Application.Runtime
 
                     IStaticMethod start = new ILStaticMethod(m_AppDomain, entryTypename, entryMethodname, 0);
 					start.Exec();
+                    break;
+                }
+                case CodeMode.Mono2:
+                {
                     break;
                 }
             }

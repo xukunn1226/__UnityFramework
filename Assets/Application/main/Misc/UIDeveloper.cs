@@ -13,6 +13,7 @@ namespace Application.Runtime
     {
         IList<ICanvasElement> m_LayoutRebuildQueue;
         IList<ICanvasElement> m_GraphicRebuildQueue;
+        public bool showRebuildInfo;
 
 #if UNITY_EDITOR
         private void Awake()
@@ -26,21 +27,24 @@ namespace Application.Runtime
 
         private void Update()
         {
-            for (int j = 0; j < m_LayoutRebuildQueue.Count; j++)
+            if(showRebuildInfo)
             {
-                var rebuild = m_LayoutRebuildQueue[j];
-                if (ObjectValidForUpdate(rebuild))
+                for (int j = 0; j < m_LayoutRebuildQueue.Count; j++)
                 {
-                    //Debug.LogFormat("{0}引起网格重建", rebuild.transform.name,);
+                    var rebuild = m_LayoutRebuildQueue[j];
+                    if (ObjectValidForUpdate(rebuild))
+                    {
+                        //Debug.LogFormat("{0}引起网格重建", rebuild.transform.name,);
+                    }
                 }
-            }
 
-            for (int j = 0; j < m_GraphicRebuildQueue.Count; j++)
-            {
-                var element = m_GraphicRebuildQueue[j];
-                if (ObjectValidForUpdate(element))
+                for (int j = 0; j < m_GraphicRebuildQueue.Count; j++)
                 {
-                    Debug.LogFormat("{0}引起{1}网格重建", element.transform.name, element.transform.GetComponent<Graphic>().canvas.name);
+                    var element = m_GraphicRebuildQueue[j];
+                    if (ObjectValidForUpdate(element))
+                    {
+                        Debug.LogFormat("{0}引起{1}网格重建", element.transform.name, element.transform.GetComponent<Graphic>().canvas.name);
+                    }
                 }
             }
         }
