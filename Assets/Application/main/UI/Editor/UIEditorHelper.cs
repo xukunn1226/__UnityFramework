@@ -104,25 +104,25 @@ namespace Framework.UI.Editor
         }
     }
 
-    [InitializeOnLoad]
-    public class Factory
-    {
-        static Factory()
-        {
-            ObjectFactory.componentWasAdded += ComponentWasAdded;
-        }
+    //[InitializeOnLoad]
+    //public class Factory
+    //{
+    //    static Factory()
+    //    {
+    //        ObjectFactory.componentWasAdded += ComponentWasAdded;
+    //    }
 
-        private static void ComponentWasAdded(Component component)
-        {
-            Image image = component as Image;
-            if (image != null)
-                image.raycastTarget = false;
-            RawImage rawImage = component as RawImage;
-            if (rawImage != null)
-                rawImage.raycastTarget = false;
-            Text text = component as Text;
-            if (text != null)
-                text.raycastTarget = false;
-        }
-    }
+    //    private static void ComponentWasAdded(Component component)
+    //    {
+    //        Image image = component as Image;
+    //        if (image != null)
+    //            image.raycastTarget = false;
+    //        RawImage rawImage = component as RawImage;
+    //        if (rawImage != null)
+    //            rawImage.raycastTarget = false;
+    //        Text text = component as Text;
+    //        if (text != null)
+    //            text.raycastTarget = false;
+    //    }
+    //}
 }
