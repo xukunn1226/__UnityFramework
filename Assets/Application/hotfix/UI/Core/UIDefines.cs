@@ -95,8 +95,7 @@ namespace Application.Logic
     }
 
     public partial class UIPanelID
-    {
-        static public string    Setting         { get; private set; }   = "Setting";
+    {        
         static public string    Guild           { get; private set; }   = "Guild";
     }
 }

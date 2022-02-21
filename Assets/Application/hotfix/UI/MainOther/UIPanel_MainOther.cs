@@ -8,6 +8,7 @@ namespace Application.Logic
     public class UIPanel_MainOther : UIPanelBase
     {
         private Button btn_Shop;
+        private Button btn_Settings;
 
         public UIPanel_MainOther(UIDefines_MainOther defines) : base(defines) {}
 
@@ -19,6 +20,12 @@ namespace Application.Logic
             {
                 Debug.Log("click button");
                 UIManager.Instance.Open(UIPanelID.Shop);
+            });
+
+            btn_Settings = go.transform.Find("Button_Settings").GetComponent<Button>();
+            btn_Settings.onClick.AddListener(delegate ()
+            {
+                UIManager.Instance.Open(UIPanelID.Setting);
             });
         }
         public override void OnShow(object userData = null) {}
