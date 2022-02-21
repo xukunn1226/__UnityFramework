@@ -87,6 +87,7 @@ namespace Application.Logic
             // ViewLayer layer = ((WorldPlayerController)PlayerController.Instance).cameraViewLayer;
             // float alpha = ((WorldPlayerController)PlayerController.Instance).cameraViewLayerAlpha;
 
+            UnityEngine.Profiling.Profiler.BeginSample("ViewLayerManager.OnUpdate");
             Dictionary<int, ViewLayerComponent> dict;
             if(m_CurLayer != m_CameraViewLayer)
             {
@@ -119,6 +120,7 @@ namespace Application.Logic
                     item.Value.OnViewUpdate(m_CurLayer, m_CameraViewLayerAlpha);
                 }
             }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
     }
 }

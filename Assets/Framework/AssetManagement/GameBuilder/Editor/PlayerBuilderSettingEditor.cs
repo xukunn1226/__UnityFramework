@@ -22,6 +22,7 @@ namespace Framework.AssetManagement.GameBuilder
 
         // SerializedProperty              m_bundleVersionProp;
         SerializedProperty              m_versionChangedModeProp;
+        SerializedProperty              m_releaseNativeProp;
         SerializedProperty              m_useIL2CPPProp;
         SerializedProperty              m_compilerConfiguration;
         SerializedProperty              m_useMTRenderingProp;
@@ -55,6 +56,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             // m_bundleVersionProp         = serializedObject.FindProperty("bundleVersion");
             m_versionChangedModeProp    = serializedObject.FindProperty("versionChangedMode");
+            m_releaseNativeProp         = serializedObject.FindProperty("releaseNative");
             m_useIL2CPPProp             = serializedObject.FindProperty("useIL2CPP");
             m_compilerConfiguration     = serializedObject.FindProperty("il2CppCompilerConfiguration");
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
@@ -276,6 +278,7 @@ namespace Framework.AssetManagement.GameBuilder
                     EditorGUI.EndDisabledGroup();
                 }
 
+                m_releaseNativeProp.boolValue = EditorGUILayout.Toggle("ReleaseNative", m_releaseNativeProp.boolValue);
                 m_useIL2CPPProp.boolValue = EditorGUILayout.Toggle("UseIL2CPP", m_useIL2CPPProp.boolValue);
 
                 EditorGUI.BeginDisabledGroup(!m_useIL2CPPProp.boolValue);

@@ -12,7 +12,6 @@ namespace Application.Runtime
 	{
 		Mono = 1,
 		ILRuntime = 2,
-        Mono2 = 3,
 	}
 	
     public class CodeLoader : System.IDisposable
@@ -42,10 +41,11 @@ namespace Application.Runtime
             {
                 case CodeMode.Mono:
                 {
-                    byte[] assemblyBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.dll"));
-                    byte[] pdbBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.pdb"));
+                    // byte[] assemblyBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.dll"));
+                    // byte[] pdbBytes = File.ReadAllBytes(string.Format($"{dllPath}/{dllFilename}.pdb"));
 
-                    m_Assembly = Assembly.Load(assemblyBytes, pdbBytes);
+                    // m_Assembly = Assembly.Load(assemblyBytes, pdbBytes);
+                    m_Assembly = Assembly.Load(dllFilename);
                     this.allTypes = m_Assembly.GetTypes();
 
                     IStaticMethod start = new MonoStaticMethod(m_Assembly, entryTypename, entryMethodname);
@@ -71,10 +71,6 @@ namespace Application.Runtime
 					start.Exec();
                     break;
                 }
-                case CodeMode.Mono2:
-                {
-                    break;
-                }
             }
         }
 
@@ -94,7 +90,7 @@ namespace Application.Runtime
                 case CodeMode.ILRuntime:
                 {
                     return new ILStaticMethod(CodeLoader.Instance.m_AppDomain, typename, methodname, paramCount);
-                }                
+                }
             }
             return null;
         }

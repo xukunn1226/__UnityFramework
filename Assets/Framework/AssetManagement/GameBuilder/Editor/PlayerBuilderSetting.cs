@@ -46,6 +46,8 @@ namespace Framework.AssetManagement.GameBuilder
         [System.NonSerialized] public int   minorVersion;
         [System.NonSerialized] public int   revision;
 
+        public bool                         releaseNative;                      // 发布原生模式，目前需要手动更改Application.Logic.asmdef支持android&ios平台
+
         public bool                         useIL2CPP;                          // Sets the scripting framework for a BuildTargetPlatformGroup
 
         public Il2CppCompilerConfiguration  il2CppCompilerConfiguration;        // C++ compiler configuration used when compiling IL2CPP generated code.
@@ -103,6 +105,7 @@ namespace Framework.AssetManagement.GameBuilder
             sb.Append(string.Format($"compressWithLz4HC: {compressWithLz4HC}  \n"));
             sb.Append(string.Format($"strictMode: {strictMode}  \n"));
             // sb.Append(string.Format($"bundleVersion: {bundleVersion}  \n"));
+            sb.Append(string.Format($"releaseNative: {releaseNative}    \n"));
             sb.Append(string.Format($"useIL2CPP: {useIL2CPP}  \n"));
             sb.Append(string.Format($"il2CppCompilerConfiguration: {il2CppCompilerConfiguration}  \n"));
             sb.Append(string.Format($"useMTRendering: {useMTRendering}  \n"));

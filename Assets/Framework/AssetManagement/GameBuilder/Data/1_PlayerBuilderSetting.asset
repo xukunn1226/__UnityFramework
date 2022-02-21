@@ -15,15 +15,16 @@ MonoBehaviour:
   outputPath: Deployment/Latest/Player
   projectName: MyProject
   autoRunPlayer: 0
-  development: 0
+  development: 1
   connectWithProfiler: 0
   allowDebugging: 0
   buildScriptsOnly: 0
   compressWithLz4: 1
   compressWithLz4HC: 0
   strictMode: 1
-  useIL2CPP: 0
-  il2CppCompilerConfiguration: 1
+  releaseNative: 0
+  useIL2CPP: 1
+  il2CppCompilerConfiguration: 0
   useMTRendering: 1
   buildAppBundle: 0
   createSymbols: 0

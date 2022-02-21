@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Build;
 using Framework.Core;
+using Framework.AssetManagement.GameBuilder;
 
 namespace Application.Runtime
 {
@@ -14,6 +15,8 @@ namespace Application.Runtime
 
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
             {
+                if(PlayerBuilder.m_Setting.releaseNative)
+                    return;     // 发布原生版本跳过IL相关设置及编译
                 ILRuntimeCLRBinding.GenerateCLRBindingByAnalysis();
                 CopyLogicDLLToStreamingAssets();
             }
@@ -31,14 +34,6 @@ namespace Application.Runtime
             }
 
             AssembyBuilder.BuildAssembly(true, true);
-
-            // string srcPath = string.Format($"{UnityEngine.Application.dataPath}/../Library/ScriptAssemblies");
-            // string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
-
-            // if(!System.IO.Directory.Exists(dstPath))
-            //     System.IO.Directory.CreateDirectory(dstPath);
-            // System.IO.File.Copy(string.Format($"{srcPath}/{ILStartup.dllFilename}.dll"), string.Format($"{dstPath}/{ILStartup.dllFilename}.dll"), true);
-            // System.IO.File.Copy(string.Format($"{srcPath}/{ILStartup.dllFilename}.pdb"), string.Format($"{dstPath}/{ILStartup.dllFilename}.pdb"), true);
         }
     }
 }

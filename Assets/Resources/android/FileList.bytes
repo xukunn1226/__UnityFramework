@@ -1,16 +1,16 @@
 {
   "Count": 82,
-  "TotalSize": 108343746,
+  "TotalSize": 108360409,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "0d11ba8c08a4002594ec096f85e14250",
-      "Size": 65024
+      "FileHash": "7a31b863b9de2afe280ac42fd9c2f57f",
+      "Size": 75776
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "b0786b775befbec6253e954a1c3bbf89",
-      "Size": 42208
+      "FileHash": "a3440ae2563de3a165905d9b10c65e94",
+      "Size": 46968
     },
     {
       "BundleName": "config.db",
@@ -19,8 +19,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "5647c003d83fca7d9d971995fc470e48",
-      "Size": 4371
+      "FileHash": "32ab27d3424312437ab3a05e4d36ef2b",
+      "Size": 4374
     },
     {
       "BundleName": "assets/res.ab",
@@ -84,8 +84,8 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "3422c574f31e57c22e04dd1e125b8dd7",
-      "Size": 351572
+      "FileHash": "2e0f114603e2c0dd20f946c5feb3e69a",
+      "Size": 351743
     },
     {
       "BundleName": "assets/res/dungeondemo/prefabs.ab",
@@ -104,8 +104,8 @@
     },
     {
       "BundleName": "assets/res/ui/prefabs.ab",
-      "FileHash": "4383acefe7ad3737f37918d3a4a1af69",
-      "Size": 69547
+      "FileHash": "cf542bfbea9412d287bdb251ee95fa83",
+      "Size": 70524
     },
     {
       "BundleName": "assets/res/ui/textures.ab",

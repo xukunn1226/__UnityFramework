@@ -127,6 +127,7 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_IEnumerator_1_String_Binding.Register(app);
             System_Collections_IEnumerator_Binding.Register(app);
             UnityEngine_Component_Binding.Register(app);
+            UnityEngine_Profiling_Profiler_Binding.Register(app);
             Framework_Core_SingletonMono_1_AsyncLoaderManager_Binding.Register(app);
             Application_Runtime_AsyncLoaderManager_Binding.Register(app);
             Framework_Core_GameDebug_Binding.Register(app);

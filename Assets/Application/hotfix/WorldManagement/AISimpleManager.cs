@@ -32,10 +32,12 @@ namespace Application.Logic
 
         protected override void OnUpdate(float deltaTime)
         {
+            UnityEngine.Profiling.Profiler.BeginSample("AISimpleManager.OnUpdate");
             foreach(var item in s_AgentList)
             {
                 item.Value.OnUpdate(deltaTime);
             }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
     }
 }

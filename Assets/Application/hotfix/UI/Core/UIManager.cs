@@ -165,6 +165,7 @@ namespace Application.Logic
 
         protected override void OnUpdate(float deltaTime)
         {
+            UnityEngine.Profiling.Profiler.BeginSample("UIManager.OnUpdate");
             // 处于显示状态才触发OnUpdate
             ((IEnumerator)m_UpdateEnum).Reset();
             while(m_UpdateEnum.MoveNext())
@@ -182,6 +183,7 @@ namespace Application.Logic
                     ps.elapsedTime = 0;
                 }
             }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
 
         /// <summary>
