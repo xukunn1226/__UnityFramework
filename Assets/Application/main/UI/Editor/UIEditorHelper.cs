@@ -72,8 +72,8 @@ namespace Framework.UI.Editor
             }
         }
 
-        [MenuItem("GameObject/UI/List Details")]
-        static private void ListDetails()
+        [MenuItem("GameObject/UI/Print RectTransform")]
+        static private void PrintRectTransform()
         {
             if(Selection.activeGameObject == null)
                 return;

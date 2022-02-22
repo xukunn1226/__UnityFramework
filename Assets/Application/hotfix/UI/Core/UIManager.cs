@@ -279,15 +279,29 @@ namespace Application.Logic
             HidePanel(ps);
         }
 
+        /// <summary>
+        /// 关闭最上层的全屏或没有父窗口的非全屏界面
+        /// </summary>
+        /// <returns></returns>
         public bool CloseTop()
         {
-            PanelState ps = FindLastFullscreenPanel();
-            if(ps == null)
+            PanelState pendingClosePanel = null;
+            LinkedListNode<PanelState> lastNode = m_PanelStack.Last;            
+            while(lastNode != null)
+            {
+                if(IsFullscreen(lastNode.Value.panel) || !HasParent(lastNode.Value.panel))
+                {
+                    pendingClosePanel = lastNode.Value;
+                    break;
+                }
+                lastNode = lastNode.Previous;
+            }
+            if(pendingClosePanel == null)
                 return false;
-            Close(ps.panel.defines.id);
+            Close(pendingClosePanel.panel.defines.id);
             return true;
         }
-
+        
         public void CloseAll()
         {
             while(CloseTop()) { }
@@ -483,7 +497,7 @@ namespace Application.Logic
         /// <summary>
         /// 弹出栈中最上层的所有没有父窗口的非全屏界面
         /// </summary>
-        private void PopAllWindowedPanel()
+        public void CloseAllWindowedPanel()
         {
             LinkedListNode<PanelState> lastNode = m_PanelStack.Last;
             while(lastNode != null)
@@ -682,6 +696,7 @@ namespace Application.Logic
             {
                 if(IsFullscreen(lastNode.Value.panel))
                     return lastNode.Value;
+                lastNode = lastNode.Previous;
             }
             return null;
         }
