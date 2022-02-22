@@ -1,16 +1,16 @@
 {
   "Count": 82,
-  "TotalSize": 108360409,
+  "TotalSize": 108362220,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "7a31b863b9de2afe280ac42fd9c2f57f",
-      "Size": 75776
+      "FileHash": "c91423c5b59192eca6a7a65117dc1be7",
+      "Size": 76800
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "a3440ae2563de3a165905d9b10c65e94",
-      "Size": 46968
+      "FileHash": "04141a1c83d347632a77121a1d698221",
+      "Size": 47644
     },
     {
       "BundleName": "config.db",
@@ -19,7 +19,7 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "32ab27d3424312437ab3a05e4d36ef2b",
+      "FileHash": "46709ea9b96ade438feb5102972d668b",
       "Size": 4374
     },
     {
@@ -104,8 +104,8 @@
     },
     {
       "BundleName": "assets/res/ui/prefabs.ab",
-      "FileHash": "cf542bfbea9412d287bdb251ee95fa83",
-      "Size": 70524
+      "FileHash": "ace681516ba3c95dc9bc9563b777d117",
+      "Size": 70635
     },
     {
       "BundleName": "assets/res/ui/textures.ab",
