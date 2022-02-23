@@ -59,6 +59,8 @@ namespace Application.Runtime
             appdomain.DelegateManager.RegisterMethodDelegate<System.String, UnityEngine.RectTransform>();
             appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.Vector2>();
             appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, System.Object>();
+            appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.EventSystems.BaseEventData>();
+
 
 
 
@@ -79,7 +81,8 @@ namespace Application.Runtime
             appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<int, List<int>>, bool>();
             appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<int, int>, KeyValuePair<int, int>, int>();
             appdomain.DelegateManager.RegisterFunctionDelegate<System.Type, System.Boolean>();
-            
+            appdomain.DelegateManager.RegisterFunctionDelegate<UnityEngine.EventSystems.EventTrigger.Entry, System.Boolean>();
+
 
 
 
@@ -104,6 +107,30 @@ namespace Application.Runtime
                     ((Action<System.Boolean>)act)(arg0);
                 });
             });
+            appdomain.DelegateManager.RegisterDelegateConvertor<DG.Tweening.TweenCallback>((act) =>
+            {
+                return new DG.Tweening.TweenCallback(() =>
+                {
+                    ((Action)act)();
+                });
+            });
+            appdomain.DelegateManager.RegisterDelegateConvertor<System.Predicate<UnityEngine.EventSystems.EventTrigger.Entry>>((act) =>
+            {
+                return new System.Predicate<UnityEngine.EventSystems.EventTrigger.Entry>((obj) =>
+                {
+                    return ((Func<UnityEngine.EventSystems.EventTrigger.Entry, System.Boolean>)act)(obj);
+                });
+            });
+            appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<UnityEngine.EventSystems.BaseEventData>>((act) =>
+            {
+                return new UnityEngine.Events.UnityAction<UnityEngine.EventSystems.BaseEventData>((arg0) =>
+                {
+                    ((Action<UnityEngine.EventSystems.BaseEventData>)act)(arg0);
+                });
+            });
+
+
+
 
 
 

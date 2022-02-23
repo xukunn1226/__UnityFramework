@@ -28,9 +28,5 @@ namespace Application.Logic
                 UIManager.Instance.Open(UIPanelID.Setting);
             });
         }
-        public override void OnShow(object userData = null) {}
-        public override void OnUpdate(float deltaTime) {}
-        public override void OnHide() {}
-        public override void OnDestroy() {}
     }
 }

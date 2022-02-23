@@ -118,6 +118,10 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine_U2D_SpriteAtlas_Binding.Register(app);
             System_Collections_Generic_List_1_Type_Binding.Register(app);
             System_Linq_Enumerable_Binding.Register(app);
+            UnityEngine_EventSystems_EventTrigger_Binding.Register(app);
+            System_Collections_Generic_List_1_UnityEngine_EventSystems_EventTrigger_Binding_Entry_Binding.Register(app);
+            UnityEngine_EventSystems_EventTrigger_Binding_Entry_Binding.Register(app);
+            UnityEngine_Events_UnityEvent_1_BaseEventData_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_ILTypeInstance_Binding_Enumerator_Binding.Register(app);
             System_Collections_Generic_KeyValuePair_2_String_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_RectTransform_Binding.Register(app);
@@ -134,6 +138,10 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine_Behaviour_Binding.Register(app);
             UnityEngine_UI_Button_Binding.Register(app);
             UnityEngine_Events_UnityEvent_Binding.Register(app);
+            DG_Tweening_ShortcutExtensions_Binding.Register(app);
+            DG_Tweening_TweenSettingsExtensions_Binding.Register(app);
+            DG_Tweening_TweenExtensions_Binding.Register(app);
+            DG_Tweening_Tween_Binding.Register(app);
             Application_Runtime_WorldPlayerController_Binding.Register(app);
             Application_Runtime_PlayerController_Binding.Register(app);
 

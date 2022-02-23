@@ -301,7 +301,7 @@ namespace Application.Logic
             Close(pendingClosePanel.panel.defines.id);
             return true;
         }
-        
+
         public void CloseAll()
         {
             while(CloseTop()) { }
@@ -518,9 +518,11 @@ namespace Application.Logic
             if(!ps.isShow && !ps.isShowRes && ps.isLoadRes)
             {
                 // 显示Panel实例
-                ActivePanel(ps);
+                ActivePanel(ps.panel);
 
-                Debug.Log($"ShowPanel: {ps.panel.defines.id}");
+                ps.panel.OnShowAction();
+
+                // Debug.Log($"ShowPanel: {ps.panel.defines.id}");
                 ps.panel.OnShow(userData);
             }
             ps.isShow = true;
@@ -535,11 +537,14 @@ namespace Application.Logic
             if( ps.isShowRes &&         // 因为异步加载，界面可能尚未实例化，只有已打开时才触发OnHide
                 ps.isShow)              // 逻辑的显示状态为true表示需要显示界面
             {
-                Debug.Log($"HidePanel: {ps.panel.defines.id}");
-                ps.panel.OnHide();
+                ps.panel.OnHideAction(() => 
+                {
+                    // Debug.Log($"HidePanel: {ps.panel.defines.id}");
+                    ps.panel.OnHide();
 
-                // 隐藏Panel实例
-                DeactivePanel(ps);
+                    // 隐藏Panel实例
+                    DeactivePanel(ps.panel);
+                });                
             }
             ps.isShow = false;
         }
@@ -547,25 +552,29 @@ namespace Application.Logic
         /// <summary>
         /// 打开界面（显示上）
         /// </summary>
-        /// <param name="ps"></param>
-        private void ActivePanel(PanelState ps)
+        /// <param name="panel"></param>
+        private void ActivePanel(UIPanelBase panel)
         {
-            if(ps == null || ps.panel == null)
-                throw new System.ArgumentNullException($"UIManager.ActivePanel");
+            if(panel == null)
+                throw new System.ArgumentNullException($"UIManager.ActivePanel: UIPanelBase == null");
 
-            switch(ps.panel.defines.hideMode)
+            PanelState ps = GetOrCreatePanel(panel.defines);
+            if(ps == null)
+                throw new System.ArgumentNullException($"UIManager.ActivePanel: PanelState == null");
+
+            switch(panel.defines.hideMode)
             {
                 case EHideMode.SetActive:
-                    ps.panel.transform.gameObject.SetActive(true);
+                    panel.transform.gameObject.SetActive(true);
                     break;
                 case EHideMode.DisableCanvas:
-                    if(ps.panel.canvas != null)
+                    if(panel.canvas != null)
                     {
-                        ps.panel.canvas.enabled = true;
+                        panel.canvas.enabled = true;
                     }
                     else
                     {
-                        ps.panel.transform.gameObject.SetActive(true);
+                        panel.transform.gameObject.SetActive(true);
                     }
                     break;
                 case EHideMode.OutOfScreen:                    
@@ -575,7 +584,7 @@ namespace Application.Logic
             }
             ps.isShowRes = true;
 
-            ps.panel.transform.SetParent(GetParentTransform(ps.panel), false);
+            panel.transform.SetParent(GetParentTransform(panel), false);
         }
 
         private RectTransform GetParentTransform(UIPanelBase panel)
@@ -595,25 +604,29 @@ namespace Application.Logic
         /// <summary>
         /// 关闭界面（显示上）
         /// </summary>
-        /// <param name="ps"></param>
-        private void DeactivePanel(PanelState ps)
+        /// <param name="panel"></param>
+        private void DeactivePanel(UIPanelBase panel)
         {
-            if(ps == null || ps.panel == null)
-                throw new System.ArgumentNullException($"UIManager.DeactivePanel");
+            if(panel == null)
+                throw new System.ArgumentNullException($"UIManager.DeactivePanel: UIPanelBase == null");
 
-            switch(ps.panel.defines.hideMode)
+            PanelState ps = GetOrCreatePanel(panel.defines);
+            if(ps == null)
+                throw new System.ArgumentNullException($"UIManager.DeactivePanel: PanelState == null");
+
+            switch(panel.defines.hideMode)
             {
                 case EHideMode.SetActive:
-                    ps.panel.transform.gameObject.SetActive(false);
+                    panel.transform.gameObject.SetActive(false);
                     break;
                 case EHideMode.DisableCanvas:
-                    if(ps.panel.canvas != null)
+                    if(panel.canvas != null)
                     {
-                        ps.panel.canvas.enabled = false;
+                        panel.canvas.enabled = false;
                     }
                     else
                     {
-                        ps.panel.transform.gameObject.SetActive(false);
+                        panel.transform.gameObject.SetActive(false);
                     }
                     break;
                 case EHideMode.OutOfScreen:
