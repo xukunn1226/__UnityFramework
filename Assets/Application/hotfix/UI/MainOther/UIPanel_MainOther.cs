@@ -25,7 +25,7 @@ namespace Application.Logic
             btn_Settings = go.transform.Find("Button_Settings").GetComponent<Button>();
             btn_Settings.onClick.AddListener(delegate ()
             {
-                UIManager.Instance.Open(UIPanelID.Setting);
+                UIManager.Instance.OpenMessageBox("1212", "OK111", "Cancel222", () => {UnityEngine.Debug.Log("=========");}, () => {UnityEngine.Debug.Log("0000000");});
             });
         }
     }

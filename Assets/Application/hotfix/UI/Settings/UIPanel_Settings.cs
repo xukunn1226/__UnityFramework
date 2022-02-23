@@ -36,7 +36,6 @@ namespace Application.Logic
             }
             eventTrigger.AddEventTriggerListener(EventTriggerType.PointerClick, (data) => { this.Close(); });
 
-            // 建议放入OnCreate创建
             m_PanelTweener = m_Transform.DOScale(new Vector3(1, 1, 1), 0.3f).SetEase(Ease.OutBack);
             m_PanelTweener.SetAutoKill(false);
             m_PanelTweener.Pause();

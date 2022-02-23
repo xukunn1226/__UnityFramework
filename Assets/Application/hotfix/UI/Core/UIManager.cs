@@ -734,5 +734,11 @@ namespace Application.Logic
         {
             return !string.IsNullOrEmpty(panel.parentId);
         }
+
+        public void OpenMessageBox(string msg, string confirmMsg, string cancelMsg, System.Action confirmCallback, System.Action cancelCallback)
+        {
+            UIPanel_MessageBox.MessageInfo userData = new UIPanel_MessageBox.MessageInfo() { msg = msg, confirmMsg = confirmMsg, cancelMsg = cancelMsg, confirmCallback = confirmCallback, cancelCallback = cancelCallback };
+            Open(UIPanelID.MessageBox, userData);
+        }
     }
 }
