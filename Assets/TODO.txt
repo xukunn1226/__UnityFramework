@@ -50,7 +50,6 @@
 	https://mp.weixin.qq.com/s/ISwHGpzEyLL4IOLXrHPt6A  《黑暗之潮》中次时代技术的应用经验及技术
 	https://mp.weixin.qq.com/s/WkXT-umcp57XpjFymSWoTA  着色器运行效率和图形质量兼得！技术大佬的 Shader Graph 功能试验
 	https://mp.weixin.qq.com/s/egAWR4HH0D05M9pBqNXQJQ  来自Unity顶级工程师的物理、UI和音频设置小贴士
-	http://www.dreamfairy.cn/blog/2020/03/13/made-by-unity-jobsystem-dynamicbone/  Unity 基于JobSystem一步一步优化骨骼DynamicBone组件
 * RTS中的避障算法
 	VO:
 		https://blog.csdn.net/zhiai315/article/details/113931422  VO避障
@@ -168,7 +167,6 @@
 	扩展Gesture——双击功能，贴边移动
 	Package目录下shader如何打包？https://answer.uwa4d.com/question/5f3d10b19424416784ef1c82
 	ACT技能编辑器的制作经验分享 https://blog.uwa4d.com/archives/USparkle_ACT.html
-	利用IJob优化DynamicBones https://mp.weixin.qq.com/s/WPURBQ8lyg9eCx2bITtKiw
 	网络库在android&ios上网络切换时的响应：4G & WIFI互相切换、网络彻底断开等
 	OBB管理  https://stackoverflow.com/questions/25832334/i-have-mounted-my-obb-file-but-how-to-get-the-final-path-to-my-assets
 		   https://answers.unity.com/questions/1228809/where-to-put-my-obb-file.html
@@ -185,6 +183,7 @@
 	https://zhuanlan.zhihu.com/p/430878486  Unity实现无缝大世界--植被
 	https://mp.weixin.qq.com/s/YlWLVJaHmZUCdXDdFwYz-A 关于优化的二三事：Unity 2020 LTS中的托管代码剥离
 	https://github.com/SihaoLiang/TableFramework  Excel导入二进制
+	Unity性能基准测试  https://mp.weixin.qq.com/s?__biz=MzU5MjQ1NTEwOA==&mid=2247495223&idx=1&sn=47afd7fab3ee4cab2f5dedc1b1e852b3&chksm=fe1dda9cc96a538a2caf0783f67bf3a36dafce20dde2ff5ff0d069661408f6ff3d16b5fa308e&scene=21#wechat_redirect
 	
 
 	
