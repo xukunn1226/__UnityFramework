@@ -47,25 +47,77 @@ public class TestJob : MonoBehaviour
         }
     }
 
-
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
+    }
+
+    private JobHandle handle;
+
+    private void CreateJob()
+    {
+        Profiler.BeginSample("CreateJob");
+
         //Job部分
         MyParallelJob jobData = new MyParallelJob();
         jobData.data = m_JobDatas;
         jobData.result = m_JobResults;
 
         // Schedule the job with one Execute per index in the results array and only 1 item per processing batch
-        JobHandle handle = jobData.Schedule(DataCount, 64);
+        handle = jobData.Schedule(DataCount, 64);
 
-        JobHandle.ScheduleBatchedJobs();
+        Profiler.EndSample();
+    }
 
-
-
-        // Wait for the job to complete
+    private void CompleteJob()
+    {
+        Profiler.BeginSample("CompleteJob");
         handle.Complete();
+        Profiler.EndSample();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            UnityEngine.Debug.Log("start A");
+            
+            CreateJob();
+        }
+
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            UnityEngine.Debug.Log("start B");
+            
+            CreateJob();
+            JobHandle.ScheduleBatchedJobs();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            UnityEngine.Debug.Log("complete");
+            
+            CompleteJob();
+        }
+
+
+
+        // //Job部分
+        // MyParallelJob jobData = new MyParallelJob();
+        // jobData.data = m_JobDatas;
+        // jobData.result = m_JobResults;
+
+        // // Schedule the job with one Execute per index in the results array and only 1 item per processing batch
+        // handle = jobData.Schedule(DataCount, 64);
+
+        // // JobHandle.ScheduleBatchedJobs();
+
+        // // Wait for the job to complete
+        // handle.Complete();
         
+
+
+
         // Profiler.BeginSample("NormalCalculate");
         
         // //正常数据运算
