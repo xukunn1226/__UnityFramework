@@ -35,7 +35,7 @@ namespace Application.Logic
             m_ConfirmMessage = go.transform.Find("Window/Button_Confirm/Text").GetComponent<Text>();
             m_CancelMessage = go.transform.Find("Window/Button_Cancel/Text").GetComponent<Text>();
 
-            btn_Close.onClick.AddListener(() => { this.Close(); });
+            btn_Close.onClick.AddListener(() => { UnityEngine.Debug.Log("msg close"); this.Close(); });
         }
 
         public override void OnShow(object userData = null)
@@ -43,7 +43,7 @@ namespace Application.Logic
             m_UserData = (MessageInfo)userData;
             if(m_UserData == null)
                 return;
-                
+            
             SetMessageBox(m_UserData.msg, m_UserData.confirmMsg, m_UserData.cancelMsg, m_UserData.confirmCallback, m_UserData.cancelCallback);
         }
 
@@ -52,6 +52,8 @@ namespace Application.Logic
             m_Message.text = msg;
             m_ConfirmMessage.text = confirmMsg;
             m_CancelMessage.text = cancelMsg;
+            btn_Confirm.onClick.RemoveAllListeners();
+            btn_Cancel.onClick.RemoveAllListeners();
             btn_Confirm.onClick.AddListener(() => confirmCallback?.Invoke());
             btn_Cancel.onClick.AddListener(() => cancelCallback?.Invoke());
         }
