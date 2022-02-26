@@ -32,10 +32,10 @@ public class TestJob : MonoBehaviour
         }
     }
 
-    private void Awake()
+    private void OnEnable()
     {
-        m_JobDatas = new NativeArray<float3>(DataCount, Allocator.Persistent);
-        m_JobResults = new NativeArray<float>(DataCount,Allocator.Persistent);
+        m_JobDatas = new NativeArray<float3>(DataCount, Allocator.TempJob);
+        m_JobResults = new NativeArray<float>(DataCount,Allocator.TempJob);
         
         m_NormalDatas = new Vector3[DataCount];
         m_NormalResults = new float[DataCount];
@@ -45,10 +45,6 @@ public class TestJob : MonoBehaviour
             m_JobDatas[i] = new float3(1, 1, 1);
             m_NormalDatas[i] = new Vector3(1, 1, 1);
         }
-    }
-
-    private void Start()
-    {
     }
 
     private JobHandle handle;
@@ -71,34 +67,38 @@ public class TestJob : MonoBehaviour
     private void CompleteJob()
     {
         Profiler.BeginSample("CompleteJob");
-        handle.Complete();
+        handle.Complete();        
         Profiler.EndSample();
+        UnityEngine.Debug.Log($"-----   {m_JobResults[0]}");
     }
 
     // Update is called once per frame
     void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            UnityEngine.Debug.Log("start A");
-            
-            CreateJob();
-        }
+    {        
+        // CreateJob();
+        // CompleteJob();
 
-        if(Input.GetKeyDown(KeyCode.B))
-        {
-            UnityEngine.Debug.Log("start B");
+        // if(Input.GetKeyDown(KeyCode.A))
+        // {
+        //     UnityEngine.Debug.Log("start A");
             
-            CreateJob();
-            JobHandle.ScheduleBatchedJobs();
-        }
+        //     CreateJob();
+        // }
 
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            UnityEngine.Debug.Log("complete");
+        // if(Input.GetKeyDown(KeyCode.B))
+        // {
+        //     UnityEngine.Debug.Log("start B");
             
-            CompleteJob();
-        }
+        //     CreateJob();
+        //     JobHandle.ScheduleBatchedJobs();
+        // }
+
+        // if(Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     UnityEngine.Debug.Log("complete");
+            
+        //     CompleteJob();
+        // }
 
 
 
@@ -130,7 +130,7 @@ public class TestJob : MonoBehaviour
         // Profiler.EndSample();
     }
 
-    public void OnDestroy()
+    public void OnDisable()
     {
         m_JobDatas.Dispose();
         m_JobResults.Dispose();
