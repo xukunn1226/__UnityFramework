@@ -41,7 +41,7 @@ namespace Application.Logic
             // m_RenderableProxy = (TestRenderableProfile)AddComponent(typeof(TestRenderableProfile), data);
             m_RenderableProxy = AddComponent<TestRenderableProfile>(data);
 
-            m_AI = AddComponent<AISimple>(data);
+            // m_AI = AddComponent<AISimple>(data);
         }
 
         public override void Start()
@@ -51,7 +51,7 @@ namespace Application.Logic
             m_ViewLayer.Start();
             m_LocomotionAgent.Start();
             m_RenderableProxy.Start();
-            m_AI.Start();
+            // m_AI.Start();
         }
     }
 }

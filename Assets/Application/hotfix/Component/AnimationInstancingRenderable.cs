@@ -43,7 +43,7 @@ namespace Application.Logic
             }
             else
             {
-                PlayAnimation("idle");
+                PlayAnimation("attack03");
             }
         }
 

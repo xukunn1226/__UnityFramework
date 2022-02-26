@@ -10,8 +10,11 @@ namespace Application.Logic
     /// <summary>
     public class TestRenderableProfile : ZComp
     {
-        static private string[] s_AssetPathList = new string[] {"assets/res/players/zombie_01_variant.prefab",
-                                                                "assets/res/players/zombie_02_variant.prefab"};
+        static private string[] s_AssetPathList = new string[] {
+                                                                // "assets/res/players/zombie_01_variant.prefab",
+                                                                // "assets/res/players/zombie_02_variant.prefab",
+                                                                "assets/framework/animationinstancing/art/unity_model/unity_model.prefab"
+                                                                };
 
         public GameObject                       root                { get; private set; }
         public Renderable                       curRenderer         { get; private set; }
