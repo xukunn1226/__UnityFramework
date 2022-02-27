@@ -93,6 +93,7 @@ namespace AnimationInstancingModule.Runtime
                 info.startFrameIndex = reader.ReadInt32();
                 info.totalFrame = reader.ReadInt32();
                 info.fps = reader.ReadInt32();
+                info.recipFps = 1.0f / info.fps;
                 info.wrapMode = (WrapMode)reader.ReadInt32();
                 
                 // event

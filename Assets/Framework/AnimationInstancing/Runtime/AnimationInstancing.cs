@@ -364,18 +364,22 @@ namespace AnimationInstancingModule.Runtime
             }
             m_CurFrameIndex = Mathf.Clamp(m_CurFrameIndex, 0, totalFrame - 1);
 
+            UnityEngine.Profiling.Profiler.BeginSample("UpdateAnimationEvent()");
             UpdateAnimationEvent();
+            UnityEngine.Profiling.Profiler.EndSample();
+
+            UnityEngine.Profiling.Profiler.BeginSample("UpdateAttachment()");
             UpdateAttachment();
+            UnityEngine.Profiling.Profiler.EndSample();
         }
 
         private void UpdateAnimationEvent()
-        {
-            UnityEngine.Profiling.Profiler.BeginSample("UpdateAnimationEvent()");
+        {            
             AnimationInfo info = GetCurrentAnimationInfo();
             if(info == null || info.eventList.Count == 0)
                 return;
 
-            float time = m_CurFrameIndex / info.fps;
+            float time = m_CurFrameIndex * info.recipFps;
             int eventCount = info.eventList.Count;
             int firstEventIndex = m_TriggerEventIndex + 1;
             int lastEventIndex = -1;
@@ -397,9 +401,8 @@ namespace AnimationInstancingModule.Runtime
             {
                 OnAnimationEvent?.Invoke(info.name, info.eventList[i].function, info.eventList[i]);
             }
-            m_TriggerEventIndex = lastEventIndex;
-            UnityEngine.Profiling.Profiler.EndSample();
-        }        
+            m_TriggerEventIndex = lastEventIndex;            
+        }
 
         // 返回index，可用于detach，对性能更友好
         public int Attach(string boneName, IAttachmentToInstancing attachment)
@@ -512,8 +515,7 @@ namespace AnimationInstancingModule.Runtime
         }
 
         private void UpdateAttachment()
-        {
-            UnityEngine.Profiling.Profiler.BeginSample("UpdateAttachment()");
+        {            
             foreach(var item in m_AttachmentInfo)
             {
                 string boneName = item.Key;
@@ -528,8 +530,7 @@ namespace AnimationInstancingModule.Runtime
                     info.attachments[i].SetPosition(worldMatrix.MultiplyPoint3x4(Vector3.zero));
                     info.attachments[i].SetRotation(worldMatrix.rotation);
                 }
-            }
-            UnityEngine.Profiling.Profiler.EndSample();
+            }            
         }
 
         private Matrix4x4 GetFrameMatrix(Matrix4x4[] matrixs, float frameIndex)
