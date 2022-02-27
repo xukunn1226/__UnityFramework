@@ -43,8 +43,7 @@ namespace AnimationInstancingModule.Runtime
         AnimationInstancing     owner           { get; set; }
         string                  extraBoneName   { get; set; }
         void SetParent(Transform parent);
-        void SetPosition(Vector3 pos);
-        void SetRotation(Quaternion rot);
+        void SetPositionAndRotation(Vector3 position, Quaternion rotation);
         void Detach();
         void Attach(AnimationInstancing owner, string extraBoneName);
     }

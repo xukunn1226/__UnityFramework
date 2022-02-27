@@ -13,14 +13,9 @@ namespace AnimationInstancingModule.Runtime
             transform.parent = parent;
         }
 
-        public void SetPosition(Vector3 pos)
+        public void SetPositionAndRotation(Vector3 position, Quaternion rotation)
         {
-            transform.position = pos;
-        }
-
-        public void SetRotation(Quaternion rot)
-        {
-            transform.rotation = rot;
+            transform.SetPositionAndRotation(position, rotation);
         }
         
         public void Detach()

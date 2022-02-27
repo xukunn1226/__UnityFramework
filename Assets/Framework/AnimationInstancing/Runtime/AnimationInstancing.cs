@@ -527,10 +527,9 @@ namespace AnimationInstancingModule.Runtime
 
                     Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
                                                                                          m_CurFrameIndex);
-                    info.attachments[i].SetPosition(worldMatrix.MultiplyPoint3x4(Vector3.zero));
-                    info.attachments[i].SetRotation(worldMatrix.rotation);
+                    info.attachments[i].SetPositionAndRotation(worldMatrix.MultiplyPoint3x4(Vector3.zero), worldMatrix.rotation);
                 }
-            }            
+            }
         }
 
         private Matrix4x4 GetFrameMatrix(Matrix4x4[] matrixs, float frameIndex)
