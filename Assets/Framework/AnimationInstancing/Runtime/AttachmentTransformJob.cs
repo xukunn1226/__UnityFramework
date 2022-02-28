@@ -12,10 +12,10 @@ namespace AnimationInstancingModule.Runtime
     public struct AttachmentTransformJob : IJobParallelFor
     {
         [ReadOnly]
-        public NativeArray<Matrix4x4> localToWorldMatrix;
+        public NativeArray<float4x4> localToWorldMatrix;
         [ReadOnly]
-        public NativeArray<Matrix4x4> frameMatrix;
-        public NativeArray<Matrix4x4> worldMatrix;
+        public NativeArray<float4x4> frameMatrix;
+        public NativeArray<float4x4> worldMatrix;
 
         public void Execute(int index)
         {
@@ -35,13 +35,13 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
-        public void ScheduleJob(Matrix4x4[] localToWorldMatrix, Matrix4x4[] frameMatrix)
+        public void ScheduleJob(float4x4[] localToWorldMatrix, float4x4[] frameMatrix)
         {            
             HandledResult newHandledResult = new HandledResult();
 
-            newHandledResult.localToWorldMatrix = new NativeArray<Matrix4x4>(localToWorldMatrix, Allocator.TempJob);
-            newHandledResult.frameMatrix = new NativeArray<Matrix4x4>(frameMatrix, Allocator.TempJob);
-            newHandledResult.worldMatrix = new NativeArray<Matrix4x4>(localToWorldMatrix.Length, Allocator.TempJob);
+            newHandledResult.localToWorldMatrix = new NativeArray<float4x4>(localToWorldMatrix, Allocator.TempJob);
+            newHandledResult.frameMatrix = new NativeArray<float4x4>(frameMatrix, Allocator.TempJob);
+            newHandledResult.worldMatrix = new NativeArray<float4x4>(localToWorldMatrix.Length, Allocator.TempJob);
 
             AttachmentTransformJob job = new AttachmentTransformJob
             {
@@ -64,8 +64,8 @@ namespace AnimationInstancingModule.Runtime
     public struct HandledResult
     {
         public JobHandle handle;
-        public NativeArray<Matrix4x4> localToWorldMatrix;
-        public NativeArray<Matrix4x4> frameMatrix;
-        public NativeArray<Matrix4x4> worldMatrix;
+        public NativeArray<float4x4> localToWorldMatrix;
+        public NativeArray<float4x4> frameMatrix;
+        public NativeArray<float4x4> worldMatrix;
     }
 }
