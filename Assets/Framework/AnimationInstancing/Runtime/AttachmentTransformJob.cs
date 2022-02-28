@@ -9,7 +9,7 @@ using Unity.Collections;
 namespace AnimationInstancingModule.Runtime
 {
     [BurstCompile]
-    public class AttachmentTransformJob : IJobParallelFor
+    public struct AttachmentTransformJob : IJobParallelFor
     {
         [ReadOnly]
         public NativeArray<Matrix4x4> localToWorldMatrix;
@@ -50,7 +50,7 @@ namespace AnimationInstancingModule.Runtime
                 worldMatrix = newHandledResult.worldMatrix
             };
 
-            JobHandle handle = job.Schedule();
+            JobHandle handle = job.Schedule(1, 1);
             newHandledResult.handle = handle;
             scheduledJobs.Add(newHandledResult);
         }
