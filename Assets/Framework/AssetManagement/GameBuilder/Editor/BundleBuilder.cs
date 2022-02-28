@@ -74,7 +74,7 @@ namespace Framework.AssetManagement.GameBuilder
 
         private class BuildProcessor : IPreprocessBuildWithReport
         {
-            public int callbackOrder { get { return 99; } }     // 确保在BuildPlayer之前最后执行
+            public int callbackOrder { get { return 9999; } }     // 倒数第二步，见PlayerBuilder.BuildProcessor
 
             // 等所有需要打包的资源汇集到了streaming assets再执行
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)

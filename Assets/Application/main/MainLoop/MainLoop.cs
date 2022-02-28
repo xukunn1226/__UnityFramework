@@ -48,7 +48,7 @@ namespace Application.Runtime
             // }
 
             // //GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
-            // //LuaMainLoop.Init();
+            LuaMainLoop.Init();
 
             // if (AutoConnect)
             // {
@@ -61,13 +61,13 @@ namespace Application.Runtime
 
         protected override void OnDestroy()
         {
-            // LuaMainLoop.Uninit();
+            LuaMainLoop.Uninit();
             base.OnDestroy();
         }
 
         void Update()
         {
-            // LuaMainLoop.Tick();
+            LuaMainLoop.Tick();
         }
 
         public void ReturnToLauncher()

@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using Framework.Core;
 
@@ -112,9 +113,9 @@ namespace Framework.AssetManagement.GameBuilder
             return report;
         }
 
-        private class BuildProcessor : UnityEditor.Build.IPreprocessBuildWithReport
+        private class BuildProcessor : IPreprocessBuildWithReport
         {
-            public int callbackOrder { get { return 100; } }     // 在BundleBuilder.BuildProcessor之后执行
+            public int callbackOrder { get { return 10000; } }     // 最后一步，在所有OnPreprocessBuild之后执行
 
             // 等所有需要打包的资源汇集到了streaming assets再执行
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)

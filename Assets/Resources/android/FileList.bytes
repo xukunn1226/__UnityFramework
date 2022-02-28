@@ -1,16 +1,16 @@
 {
   "Count": 82,
-  "TotalSize": 108362220,
+  "TotalSize": 108382795,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "c91423c5b59192eca6a7a65117dc1be7",
-      "Size": 76800
+      "FileHash": "88776cc8831cc69e513bbc915d28ec55",
+      "Size": 82944
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "04141a1c83d347632a77121a1d698221",
-      "Size": 47644
+      "FileHash": "2f72bf198f03652d37b2903a82b8bb5d",
+      "Size": 49356
     },
     {
       "BundleName": "config.db",
@@ -19,8 +19,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "46709ea9b96ade438feb5102972d668b",
-      "Size": 4374
+      "FileHash": "4bb599d3e9993db7c669ddef21bde653",
+      "Size": 4375
     },
     {
       "BundleName": "assets/res.ab",
@@ -84,7 +84,7 @@
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "2e0f114603e2c0dd20f946c5feb3e69a",
+      "FileHash": "a20d6fa6f30ad9a8946f9c6f3dd40d00",
       "Size": 351743
     },
     {
@@ -104,8 +104,8 @@
     },
     {
       "BundleName": "assets/res/ui/prefabs.ab",
-      "FileHash": "ace681516ba3c95dc9bc9563b777d117",
-      "Size": 70635
+      "FileHash": "a658960acd0c69987e00efbce7f27e5f",
+      "Size": 70979
     },
     {
       "BundleName": "assets/res/ui/textures.ab",
@@ -114,8 +114,8 @@
     },
     {
       "BundleName": "assets/application/main/xlua/lua.ab",
-      "FileHash": "8832af1f1bf0e4aaf660a90e0aeb3d7b",
-      "Size": 298
+      "FileHash": "85e395579b32145dd1267d39ce245ca7",
+      "Size": 658
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/animationdata.ab",
@@ -124,8 +124,8 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/mannequin.ab",
-      "FileHash": "57db8214431008bff5e1e1a4a63d4329",
-      "Size": 1282764
+      "FileHash": "c090c6ef5bee8b10ca284caadcfbe958",
+      "Size": 1282788
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/mirrorf2.ab",
@@ -139,8 +139,8 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/unity_model.ab",
-      "FileHash": "96f6fb06fcdefd243f2c14590a024b2e",
-      "Size": 3826684
+      "FileHash": "9b3f6eb300ea44b9066daa929f86f184",
+      "Size": 3826635
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/wgame.ab",
@@ -224,8 +224,8 @@
     },
     {
       "BundleName": "assets/application/main/xlua/lua/core.ab",
-      "FileHash": "ab231dff6f72f69b0971f4586bc3a08e",
-      "Size": 349
+      "FileHash": "a121269a99c9183c7f9b0f29ecf6c411",
+      "Size": 12388
     },
     {
       "BundleName": "assets/res/dungeondemo/art/materials/built-in_rp.ab",

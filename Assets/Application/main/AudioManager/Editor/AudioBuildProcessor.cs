@@ -12,7 +12,6 @@ namespace Application.Editor
     {
         public int callbackOrder { get { return 50; } }     // 在FMOD资源导入StreamingAssets之后再执行，见FMOD.EventManager.CopyToStreamingAssets
 
-        // 等所有需要打包的资源汇集到了streaming assets再执行
         public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
         {
             if(UnityEngine.Application.isBatchMode)

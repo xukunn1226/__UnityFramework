@@ -44,12 +44,13 @@ namespace ILRuntime.Runtime.Generated
             System_Object_Binding.Register(app);
             System_Type_Binding.Register(app);
             AnimationInstancingModule_Runtime_AnimationInstancing_Binding.Register(app);
+            Framework_AssetManagement_Runtime_AssetManager_Binding.Register(app);
+            AnimationInstancingModule_Runtime_Sword_Binding.Register(app);
             System_Threading_Interlocked_Binding.Register(app);
             System_Action_Binding.Register(app);
             UnityEngine_Mathf_Binding.Register(app);
             UnityEngine_Quaternion_Binding.Register(app);
             System_ArgumentNullException_Binding.Register(app);
-            Framework_AssetManagement_Runtime_AssetManager_Binding.Register(app);
             Framework_AssetManagement_Runtime_GameObjectLoader_Binding.Register(app);
             Application_Runtime_SqlData_Binding.Register(app);
             System_Data_Common_DbDataReader_Binding.Register(app);

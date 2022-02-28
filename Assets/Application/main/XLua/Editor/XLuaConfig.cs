@@ -1,83 +1,97 @@
-// using System;
-// using System.IO;
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
-// using UnityEditor;
-// using CSObjectWrapEditor;
-// using XLua;
-// using Framework.AssetManagement.GameBuilder;
-// using System.Reflection;
-// using System.Linq;
+using System;
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using CSObjectWrapEditor;
+using XLua;
+using Framework.AssetManagement.GameBuilder;
+using System.Reflection;
+using System.Linq;
+using UnityEditor.Build;
 
-// [InitializeOnLoad]
-// static public class XLuaConfig
-// {
-//     static public string s_LuaRootPath = "assets/application/xlua/lua";
+[InitializeOnLoad]
+static public class XLuaConfig
+{
+    static public string s_LuaRootPath = "assets/application/main/xlua/lua";        // 所有lua文件的根目录
 
-//     static XLuaConfig()
-//     {
-//         GeneratorConfig.common_path = UnityEngine.Application.dataPath + "/Application/XLua/Gen/";
+    static XLuaConfig()
+    {
+        // GeneratorConfig.common_path = UnityEngine.Application.dataPath + "/Application/XLua/Gen/";
 
-//         BundleBuilder.OnPreprocessBundleBuild += OnPreprocessBundleBuild;
-//         BundleBuilder.OnPostprocessBundleBuild += OnPostprocessBundleBuild;
-//         PlayerBuilder.OnPreprocessPlayerBuild += OnPreprocessPlayerBuild;
-//     }
+        // BundleBuilder.OnPreprocessBundleBuild += OnPreprocessBundleBuild;
+        // BundleBuilder.OnPostprocessBundleBuild += OnPostprocessBundleBuild;
+        // PlayerBuilder.OnPreprocessPlayerBuild += OnPreprocessPlayerBuild;
+    }
 
-//     static private void OnPreprocessBundleBuild()
-//     {
-//         Debug.Log("OnPreprocessBundleBuild");
+    // static private void OnPreprocessBundleBuild()
+    // {
+    //     Debug.Log("OnPreprocessBundleBuild");
 
-//         // BuildLuaAssetBundle();       // 另有更优方案，见LuaAsset, LuaImporter
-//     }
+    //     // BuildLuaAssetBundle();       // 另有更优方案，见LuaAsset, LuaImporter
+    // }
 
-//     static private void BuildLuaAssetBundle()
-//     {
-//         // step 1. 把s_LuaRootPath下lua脚本复制到Temp/Lua，并添加后缀名.bytes
-//         const string targetPath = "Assets/Temp/Lua";
-//         if(Directory.Exists(targetPath))
-//         {
-//             Directory.Delete(targetPath, true);
-//         }
-//         Directory.CreateDirectory(targetPath);
+    // static private void BuildLuaAssetBundle()
+    // {
+    //     // step 1. 把s_LuaRootPath下lua脚本复制到Temp/Lua，并添加后缀名.bytes
+    //     const string targetPath = "Assets/Temp/Lua";
+    //     if(Directory.Exists(targetPath))
+    //     {
+    //         Directory.Delete(targetPath, true);
+    //     }
+    //     Directory.CreateDirectory(targetPath);
 
-//         Framework.Core.Editor.EditorUtility.CopyUnityAsset(s_LuaRootPath, targetPath, ".bytes");
+    //     Framework.Core.Editor.EditorUtility.CopyUnityAsset(s_LuaRootPath, targetPath, ".bytes");
         
-//         // step 2. 设置更名后lua脚本的bundle name
-//         string[] guids = AssetDatabase.FindAssets("", new string[] {targetPath});
-//         List<string> directoryPathList = new List<string>();
-//         directoryPathList.Add(targetPath);
-//         foreach(var guid in guids)
-//         {
-//             string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-//             if(Directory.Exists(assetPath))
-//                 directoryPathList.Add(assetPath);
-//         }
+    //     // step 2. 设置更名后lua脚本的bundle name
+    //     string[] guids = AssetDatabase.FindAssets("", new string[] {targetPath});
+    //     List<string> directoryPathList = new List<string>();
+    //     directoryPathList.Add(targetPath);
+    //     foreach(var guid in guids)
+    //     {
+    //         string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+    //         if(Directory.Exists(assetPath))
+    //             directoryPathList.Add(assetPath);
+    //     }
 
-//         string srcRoot = s_LuaRootPath.Substring(0, s_LuaRootPath.LastIndexOf("/")).ToLower();        // "assets/application/xlua"
-//         string dstRoot = targetPath.Substring(0, targetPath.LastIndexOf("/")).ToLower();              // "assets/temp"
-//         foreach(var dirPath in directoryPathList)
-//         {
-//             AssetImporter ti = AssetImporter.GetAtPath(dirPath);
-//             if(ti != null)
-//             {
-//                 ti.assetBundleName = string.Format($"{srcRoot}/{dirPath.Substring(dstRoot.Length)}.ab");
-//             }
-//         }
-//     }
+    //     string srcRoot = s_LuaRootPath.Substring(0, s_LuaRootPath.LastIndexOf("/")).ToLower();        // "assets/application/xlua"
+    //     string dstRoot = targetPath.Substring(0, targetPath.LastIndexOf("/")).ToLower();              // "assets/temp"
+    //     foreach(var dirPath in directoryPathList)
+    //     {
+    //         AssetImporter ti = AssetImporter.GetAtPath(dirPath);
+    //         if(ti != null)
+    //         {
+    //             ti.assetBundleName = string.Format($"{srcRoot}/{dirPath.Substring(dstRoot.Length)}.ab");
+    //         }
+    //     }
+    // }
 
-//     static private void OnPostprocessBundleBuild()
-//     {
-//         Debug.Log("OnPostprocessBundleBuild");
-//     }
+    // static private void OnPostprocessBundleBuild()
+    // {
+    //     Debug.Log("OnPostprocessBundleBuild");
+    // }
 
-//     static private void OnPreprocessPlayerBuild()
-//     {
-//         // 重新生成代码
-//         DelegateBridge.Gen_Flag = true;
-//         Generator.ClearAll();
-//         Generator.GenAll();
-//     }
+    private class BuildProcessor : IPreprocessBuildWithReport
+    {
+        public int callbackOrder { get { return 50; } }
+
+        public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+        {
+            // 重新生成代码
+            DelegateBridge.Gen_Flag = true;
+            Generator.ClearAll();
+            Generator.GenAll();
+        }
+    }
+
+    // static private void OnPreprocessPlayerBuild()
+    // {
+    //     // 重新生成代码
+    //     DelegateBridge.Gen_Flag = true;
+    //     Generator.ClearAll();
+    //     Generator.GenAll();
+    // }
 
 
 
@@ -364,4 +378,4 @@
 //                 new List<string>(){"System.IO.DirectoryInfo", "Create", "System.Security.AccessControl.DirectorySecurity"},
 //                 new List<string>(){"UnityEngine.MonoBehaviour", "runInEditMode"},
 //             };
-// }
+}
