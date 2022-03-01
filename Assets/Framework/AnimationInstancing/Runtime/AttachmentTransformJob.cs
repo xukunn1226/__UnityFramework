@@ -9,17 +9,17 @@ using Unity.Collections;
 namespace AnimationInstancingModule.Runtime
 {
     [BurstCompile]
-    public struct AttachmentTransformJob : IJobParallelFor
+    public struct AttachmentTransformJob : IJob
     {
         [ReadOnly]
-        public NativeArray<float4x4> localToWorldMatrix;
+        public float4x4 localToWorldMatrix;
         [ReadOnly]
-        public NativeArray<float4x4> frameMatrix;
+        public float4x4 frameMatrix;
         public NativeArray<float4x4> worldMatrix;
 
-        public void Execute(int index)
+        public void Execute()
         {
-            worldMatrix[index] = localToWorldMatrix[index] * frameMatrix[index];
+            worldMatrix[0] = localToWorldMatrix * frameMatrix;
         }
     }
 
@@ -27,45 +27,60 @@ namespace AnimationInstancingModule.Runtime
     {
         private List<HandledResult> scheduledJobs = new List<HandledResult>();
 
-        public void Update()
-        {
-            if(scheduledJobs.Count > 0)
-            {
-
-            }
-        }
-
-        public void ScheduleJob(float4x4[] localToWorldMatrix, float4x4[] frameMatrix)
+        public void ScheduleJob(Matrix4x4 localToWorldMatrix, Matrix4x4 frameMatrix, IAttachmentToInstancing[] attachments)
         {            
-            HandledResult newHandledResult = new HandledResult();
-
-            newHandledResult.localToWorldMatrix = new NativeArray<float4x4>(localToWorldMatrix, Allocator.TempJob);
-            newHandledResult.frameMatrix = new NativeArray<float4x4>(frameMatrix, Allocator.TempJob);
-            newHandledResult.worldMatrix = new NativeArray<float4x4>(localToWorldMatrix.Length, Allocator.TempJob);
+            HandledResult newHandledResult = new HandledResult
+            {
+                worldMatrix = new NativeArray<float4x4>(1, Allocator.TempJob),
+                attachments = attachments
+            };
 
             AttachmentTransformJob job = new AttachmentTransformJob
             {
-                localToWorldMatrix = newHandledResult.localToWorldMatrix,
-                frameMatrix = newHandledResult.frameMatrix,
-                worldMatrix = newHandledResult.worldMatrix
+                localToWorldMatrix = (float4x4)localToWorldMatrix,
+                frameMatrix = (float4x4)frameMatrix,
+                worldMatrix = newHandledResult.worldMatrix,
             };
 
-            JobHandle handle = job.Schedule(1, 1);
-            newHandledResult.handle = handle;
+            JobHandle handle = job.Schedule();
+            newHandledResult.jobHandle = handle;
             scheduledJobs.Add(newHandledResult);
         }
-
-        public void CompleteJob(HandledResult handle)
+        
+        public void CompleteJobs()
         {
+            if(scheduledJobs.Count > 0)
+            {
+                for(int i = 0; i < scheduledJobs.Count; ++i)
+                {
+                    CompleteJob(scheduledJobs[i]);
+                }
+                scheduledJobs.Clear();
+            }
+        }
 
+        private void CompleteJob(HandledResult handle)
+        {
+            handle.jobHandle.Complete();
+
+            // assign value to application
+            Vector3 newPosition = ((Matrix4x4)handle.worldMatrix[0]).MultiplyPoint3x4(Vector3.zero);
+            Quaternion newRotation = ((Matrix4x4)handle.worldMatrix[0]).rotation;
+            for(int i = 0; i < handle.attachments.Length; ++i)
+            {
+                if(handle.attachments[i] == null) continue;
+
+                handle.attachments[i].SetPositionAndRotation(newPosition, newRotation);
+            }
+
+            handle.worldMatrix.Dispose();
         }
     }
 
     public struct HandledResult
     {
-        public JobHandle handle;
-        public NativeArray<float4x4> localToWorldMatrix;
-        public NativeArray<float4x4> frameMatrix;
+        public JobHandle jobHandle;
         public NativeArray<float4x4> worldMatrix;
+        public IAttachmentToInstancing[] attachments;
     }
 }

@@ -422,7 +422,7 @@ namespace AnimationInstancingModule.Runtime
             if(index != -1)
             {
                 attachment.SetParent(transform);
-                UpdateAttachment();                 // update immediately
+                // UpdateAttachment();                 // update immediately
             }
             return index;
         }
@@ -515,21 +515,45 @@ namespace AnimationInstancingModule.Runtime
         }
 
         private void UpdateAttachment()
-        {            
+        {
+            UpdateAttachmentUseJob();
+            return;
+            
             foreach(var item in m_AttachmentInfo)
             {
-                string boneName = item.Key;
                 AttachmentInfo info = item.Value;
+
+                // 计算挂点的世界坐标矩阵
+                Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
+                                                                                         m_CurFrameIndex);
+                Vector3 newPosition = worldMatrix.MultiplyPoint3x4(Vector3.zero);
+                Quaternion newRotation = worldMatrix.rotation;
                 for(int i = 0; i < AttachmentInfo.s_MaxCountAttachment; ++i)
                 {
                     if(info.attachments[i] == null)
-                        continue;
-
-                    Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
-                                                                                         m_CurFrameIndex);
-                    info.attachments[i].SetPositionAndRotation(worldMatrix.MultiplyPoint3x4(Vector3.zero), worldMatrix.rotation);
+                        continue;                    
+                    info.attachments[i].SetPositionAndRotation(newPosition, newRotation);
                 }
             }
+        }
+
+        private AttachmentTransform m_AttachmentTransform = new AttachmentTransform();
+        private void UpdateAttachmentUseJob()
+        {
+            foreach(var item in m_AttachmentInfo)
+            {
+                AttachmentInfo info = item.Value;
+
+                m_AttachmentTransform.ScheduleJob(transform.localToWorldMatrix, 
+                                                  GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex], m_CurFrameIndex),
+                                                  info.attachments);
+
+            }
+        }
+
+        private void LateUpdate()
+        {
+            m_AttachmentTransform?.CompleteJobs();
         }
 
         private Matrix4x4 GetFrameMatrix(Matrix4x4[] matrixs, float frameIndex)
