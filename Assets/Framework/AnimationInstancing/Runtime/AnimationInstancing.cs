@@ -516,23 +516,27 @@ namespace AnimationInstancingModule.Runtime
 
         private void UpdateAttachment()
         {
-            UpdateAttachmentUseJob();
-            return;
-            
-            foreach(var item in m_AttachmentInfo)
+            if(AnimationInstancingManager.Instance.useJobSystem)
             {
-                AttachmentInfo info = item.Value;
-
-                // 计算挂点的世界坐标矩阵
-                Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
-                                                                                         m_CurFrameIndex);
-                Vector3 newPosition = worldMatrix.MultiplyPoint3x4(Vector3.zero);
-                Quaternion newRotation = worldMatrix.rotation;
-                for(int i = 0; i < AttachmentInfo.s_MaxCountAttachment; ++i)
+                UpdateAttachmentUseJob();
+            }
+            else
+            {
+                foreach (var item in m_AttachmentInfo)
                 {
-                    if(info.attachments[i] == null)
-                        continue;                    
-                    info.attachments[i].SetPositionAndRotation(newPosition, newRotation);
+                    AttachmentInfo info = item.Value;
+
+                    // 计算挂点的世界坐标矩阵
+                    Matrix4x4 worldMatrix = transform.localToWorldMatrix * GetFrameMatrix(info.extraBoneInfo.boneMatrix[m_CurAnimationIndex],
+                                                                                             m_CurFrameIndex);
+                    Vector3 newPosition = worldMatrix.MultiplyPoint3x4(Vector3.zero);
+                    Quaternion newRotation = worldMatrix.rotation;
+                    for (int i = 0; i < AttachmentInfo.s_MaxCountAttachment; ++i)
+                    {
+                        if (info.attachments[i] == null)
+                            continue;
+                        info.attachments[i].SetPositionAndRotation(newPosition, newRotation);
+                    }
                 }
             }
         }
@@ -540,6 +544,8 @@ namespace AnimationInstancingModule.Runtime
         private AttachmentTransform m_AttachmentTransform = new AttachmentTransform();
         private void UpdateAttachmentUseJob()
         {
+            m_AttachmentTransform?.CompleteJobs();      // 获取上一帧数据
+
             foreach(var item in m_AttachmentInfo)
             {
                 AttachmentInfo info = item.Value;
@@ -549,12 +555,16 @@ namespace AnimationInstancingModule.Runtime
                                                   info.attachments);
 
             }
+            // Unity.Jobs.JobHandle.ScheduleBatchedJobs();
         }
 
-        private void LateUpdate()
-        {
-            m_AttachmentTransform?.CompleteJobs();
-        }
+        // private void LateUpdate()
+        // {
+        //     UnityEngine.Profiling.Profiler.BeginSample("CompleteJobs");
+        //     if(AnimationInstancingManager.Instance.useJobSystem)
+        //         m_AttachmentTransform?.CompleteJobs();
+        //     UnityEngine.Profiling.Profiler.EndSample();
+        // }
 
         private Matrix4x4 GetFrameMatrix(Matrix4x4[] matrixs, float frameIndex)
         {

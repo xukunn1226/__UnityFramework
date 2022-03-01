@@ -19,7 +19,7 @@ namespace AnimationInstancingModule.Runtime
 
         public void Execute()
         {
-            worldMatrix[0] = localToWorldMatrix * frameMatrix;
+            worldMatrix[0] = (Matrix4x4)localToWorldMatrix * (Matrix4x4)frameMatrix;
         }
     }
 

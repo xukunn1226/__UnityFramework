@@ -44,6 +44,8 @@ namespace AnimationInstancingModule.Runtime
             }
         }
 
+        public bool useJobSystem = false;
+
         protected override void Awake()
         {
             base.Awake();
