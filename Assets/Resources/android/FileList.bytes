@@ -1,16 +1,16 @@
 {
   "Count": 82,
-  "TotalSize": 108382795,
+  "TotalSize": 108382983,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "88776cc8831cc69e513bbc915d28ec55",
+      "FileHash": "8cf37da6193f3e501f1b59cebc39ae44",
       "Size": 82944
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "2f72bf198f03652d37b2903a82b8bb5d",
-      "Size": 49356
+      "FileHash": "2391335a2cc2d6249a39d93c68628e01",
+      "Size": 49544
     },
     {
       "BundleName": "config.db",
