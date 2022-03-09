@@ -81,6 +81,7 @@ namespace Framework.Gesture.Runtime
             m_EventData.StartTime = Time.time;
             m_EventData.PressPosition = m_EventData.GetAveragePressPosition(requiredPointerCount);
             m_EventData.Position = m_EventData.GetAveragePosition(requiredPointerCount);
+            m_EventData.PrevPosition = m_EventData.Position;
         }
 
         protected abstract RecognitionState OnProgress();
