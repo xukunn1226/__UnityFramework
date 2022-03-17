@@ -89,8 +89,8 @@ UserSettings/
 /Assets/Plugins/FMOD/Cache.meta
 fmod.log
 fmod_editor.log
-[Aa]ssets/XLua/Gen/
-[Aa]ssets/XLua/Gen.meta
+[Aa]ssets/Application/main/XLua/Gen/
+[Aa]ssets/Application/main/XLua/Gen.meta
 
 # some plugins
 [Aa]ssets/AssetBundles-Browser-master
