@@ -1,43 +1,53 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 5/Simple Shader" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 5/Simple Shader"
+{
+	Properties
+    {
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 	}
-	SubShader {
-        Pass {
-            CGPROGRAM
+
+	SubShader
+    {
+        Tags { "RenderPipeline"="UniversalRenderPipeline" }
+
+        Pass
+        {
+            HLSLPROGRAM
 
             #pragma vertex vert
             #pragma fragment frag
-            
-            uniform fixed4 _Color;
 
-			struct a2v {
-                float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 texcoord : TEXCOORD0;
-            };
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             
-            struct v2f {
-                float4 pos : SV_POSITION;
-                fixed3 color : COLOR0;
+            uniform half4 _Color;
+
+            struct Attributes
+            {
+                float4 positionOS   : POSITION;
+                float3 normalOS     : NORMAL;
+                float2 uv           : TEXCOORD0;
             };
-            
-            v2f vert(a2v v) {
-            	v2f o;
-            	o.pos = UnityObjectToClipPos(v.vertex);
-            	o.color = v.normal * 0.5 + fixed3(0.5, 0.5, 0.5);
+
+            struct Varyings
+            {
+                float4 positionHCS  : SV_POSITION;
+                half4 color         : COLOR0;
+            };
+
+            Varyings vert(Attributes v)
+            {
+                Varyings o;
+            	o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
+            	o.color = half4(v.normalOS * 0.5 + half3(0.5, 0.5, 0.5), 1);
                 return o;
             }
 
-            fixed4 frag(v2f i) : SV_Target {
-            	fixed3 c = i.color;
+            half4 frag(Varyings i) : SV_Target
+            {
+            	half3 c = i.color.rgb;
             	c *= _Color.rgb;
-                return fixed4(c, 1.0);
+                return half4(c, 1.0);
             }
-
-            ENDCG
+            ENDHLSL
         }
     }
 }

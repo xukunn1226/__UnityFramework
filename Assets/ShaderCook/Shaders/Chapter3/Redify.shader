@@ -1,31 +1,64 @@
-﻿Shader "Unity Shaders Book/Chapter 3/Redify" {
-    Properties {
+﻿// 升级到URP见https://zhuanlan.zhihu.com/p/369525578
+Shader "Unity Shaders Book/Chapter 3/Redify"
+{
+    Properties
+    {
         _MainTex ("Base (RGB)", 2D) = "white" {}
     }
-    SubShader {
-        Tags { "RenderType"="Opaque" }
-        LOD 200
-        
-        CGPROGRAM
-        #pragma surface surf Lambert addshadow
-        #pragma shader_feature REDIFY_ON
+	
+	SubShader
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalRenderPipeline" }
+		LOD 200
 
-        sampler2D _MainTex;
+		Pass
+		{
+			Tags { "LightMode"="UniversalForward" }
 
-        struct Input {
-            float2 uv_MainTex;
-        };
-        
-        void surf (Input IN, inout SurfaceOutput o) {
-            half4 c = tex2D (_MainTex, IN.uv_MainTex);
-            o.Albedo = c.rgb;
-            o.Alpha = c.a;
+			HLSLPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			#pragma shader_feature REDIFY_ON
 
-            #if REDIFY_ON
-            o.Albedo.gb *= 0.5;
-            #endif
-        }
-        ENDCG
-    } 
-    CustomEditor "CustomShaderGUI"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+			struct Attributes
+			{
+				float4 positionOS   : POSITION;
+				float2 uv           : TEXCOORD0;
+			};
+
+			struct Varyings
+			{
+				float2 uv           : TEXCOORD0;
+				float4 positionHCS  : SV_POSITION;
+			};
+
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+
+			CBUFFER_START(UnityPerMaterial)
+				float4 _MainTex_ST;
+			CBUFFER_END
+
+			Varyings vert(Attributes i)
+			{
+				Varyings o;
+				o.positionHCS = TransformObjectToHClip(i.positionOS.xyz);
+				o.uv = TRANSFORM_TEX(i.uv, _MainTex);
+				return o;
+			}
+
+			half4 frag(Varyings i) : SV_TARGET
+			{
+				half4 c = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+				#if REDIFY_ON
+				c.gb *= 0.5;
+				#endif
+				return c;
+			}
+			ENDHLSL
+		}
+	}
+	CustomEditor "CustomShaderGUI"
 }
