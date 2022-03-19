@@ -1,74 +1,81 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 6/Specular Pixel-Level" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 6/Specular Pixel-Level"
+{
+	Properties
+	{
 		_Diffuse ("Diffuse", Color) = (1, 1, 1, 1)
 		_Specular ("Specular", Color) = (1, 1, 1, 1)
 		_Gloss ("Gloss", Range(8.0, 256)) = 20
 	}
-	SubShader {
-		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+
+	SubShader
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+
+		Pass
+		{ 
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
-			
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			fixed4 _Diffuse;
-			fixed4 _Specular;
+			CBUFFER_START(UnityPerMaterial)
+			half4 _Diffuse;
+			half4 _Specular;
 			float _Gloss;
-			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
+			CBUFFER_END
+
+			struct Attributes
+			{
+				float4 positionOS   : POSITION;
+				float3 normalOS     : NORMAL;
+			};
+
+			struct Varyings
+			{
+				float4 positionHCS  : SV_POSITION;
+				float3 normalWS		: TEXCOORD0;
+				float3 positionWS	: TEXCOORD1;
 			};
 			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float3 worldNormal : TEXCOORD0;
-				float3 worldPos : TEXCOORD1;
-			};
-			
-			v2f vert(a2v v) {
-				v2f o;
+			Varyings vert(Attributes v)
+			{
+				Varyings o;
 				// Transform the vertex from object space to projection space
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 				
 				// Transform the normal from object space to world space
-				o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);
+				o.normalWS = TransformObjectToWorldNormal(v.normalOS, true);
+
 				// Transform the vertex from object spacet to world space
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+				o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
 				
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
+			half4 frag(Varyings i) : SV_Target
+			{
 				// Get ambient term
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				
-				fixed3 worldNormal = normalize(i.worldNormal);
-				fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+				half3 worldNormal = normalize(i.normalWS);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz);
 				
 				// Compute diffuse term
-				fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
+				half3 diffuse = _MainLightColor.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
 				
 				// Get the reflect direction in world space
-				fixed3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));
+				half3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));
 				// Get the view direction in world space
-				fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);
+				half3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.positionWS.xyz);
 				// Compute specular term
-				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
+				half3 specular = _MainLightColor.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
 				
-				return fixed4(ambient + diffuse + specular, 1.0);
+				return half4(ambient + diffuse + specular, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
-	} 
-	FallBack "Specular"
+	}
 }

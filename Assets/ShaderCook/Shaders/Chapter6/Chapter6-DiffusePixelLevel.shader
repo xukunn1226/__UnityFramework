@@ -1,63 +1,72 @@
-﻿// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 6/Diffuse Pixel-Level" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 6/Diffuse Pixel-Level"
+{
+	Properties
+	{
 		_Diffuse ("Diffuse", Color) = (1, 1, 1, 1)
 	}
-	SubShader {
-		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+
+	SubShader	
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+
+		Pass
+		{ 
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
-			
+			HLSLPROGRAM			
 			#pragma vertex vert
 			#pragma fragment frag
-			
-			#include "Lighting.cginc"
-			
-			fixed4 _Diffuse;
-			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+			CBUFFER_START(UnityPerMaterial)		
+			half4 _Diffuse;
+			CBUFFER_END
+
+			struct Attributes
+			{
+				float4 positionOS   : POSITION;
+				float3 normalOS     : NORMAL;
+			};
+
+			struct Varyings
+			{
+				float4 positionHCS  : SV_POSITION;
+				float3 normalWS		: TEXCOORD0;
 			};
 			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float3 worldNormal : TEXCOORD0;
-			};
-			
-			v2f vert(a2v v) {
-				v2f o;
+			// 逐像素光照
+			// 相比逐顶点光照，计算法线并没有归一化，插值后在ps阶段归一化
+			Varyings vert(Attributes v)
+			{
+				Varyings o;
 				// Transform the vertex from object space to projection space
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 
 				// Transform the normal from object space to world space
-				o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);
+				o.normalWS = TransformObjectToWorldNormal(v.normalOS, false);
 
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
+			half4 frag(Varyings i) : SV_Target
+			{
 				// Get ambient term
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				
 				// Get the normal in world space
-				fixed3 worldNormal = normalize(i.worldNormal);
+				half3 worldNormal = normalize(i.normalWS);
 				// Get the light direction in world space
-				fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz);
 				
 				// Compute diffuse term
-				fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
+				half3 diffuse = _MainLightColor.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
 				
-				fixed3 color = ambient + diffuse;
+				half3 color = ambient + diffuse;
 				
-				return fixed4(color, 1.0);
+				return half4(color, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
-	} 
-	FallBack "Diffuse"
+	}
 }

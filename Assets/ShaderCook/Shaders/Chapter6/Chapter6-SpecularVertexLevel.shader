@@ -1,73 +1,81 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 6/Specular Vertex-Level" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 6/Specular Vertex-Level"
+{
+	Properties
+	{
 		_Diffuse ("Diffuse", Color) = (1, 1, 1, 1)
 		_Specular ("Specular", Color) = (1, 1, 1, 1)
 		_Gloss ("Gloss", Range(8.0, 256)) = 20
 	}
-	SubShader {
-		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+
+	SubShader
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+
+		Pass
+		{ 
+			Tags { "LightMode"="UniversalForward" }
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
-			#pragma fragment frag
+			#pragma fragment frag			
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			#include "Lighting.cginc"
-			
-			fixed4 _Diffuse;
-			fixed4 _Specular;
+			CBUFFER_START(UnityPerMaterial)
+			half4 _Diffuse;
+			half4 _Specular;
 			float _Gloss;
+			CBUFFER_END
 			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
+			struct Attributes
+			{
+				float4 positionOS   : POSITION;
+				float3 normalOS     : NORMAL;
 			};
-			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				fixed3 color : COLOR;
+
+			struct Varyings
+			{
+				float4 positionHCS  : SV_POSITION;
+				float3 color		: COLOR0;
 			};
-			
-			v2f vert(a2v v) {
-				v2f o;
+
+			Varyings vert(Attributes v)
+			{
+				Varyings o;
 				// Transform the vertex from object space to projection space
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 				
 				// Get ambient term
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				
 				// Transform the normal from object space to world space
-				fixed3 worldNormal = normalize(mul(v.normal, (float3x3)unity_WorldToObject));
+				half3 worldNormal = TransformObjectToWorldNormal(v.normalOS, true);
 				// Get the light direction in world space
-				fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz);
 				
 				// Compute diffuse term
-				fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
+				half3 diffuse = _MainLightColor.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
 				
 				// Get the reflect direction in world space
-				fixed3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));
+				// reflect函数要求是由光源指向交点处
+				half3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));
 				// Get the view direction in world space
-				fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, v.vertex).xyz);
+				half3 viewDir = normalize(_WorldSpaceCameraPos.xyz - TransformObjectToWorld(v.positionOS.xyz));
 				
 				// Compute specular term
-				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
+				half3 specular = _MainLightColor.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
 				
 				o.color = ambient + diffuse + specular;
 							 	
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				return fixed4(i.color, 1.0);
+			half4 frag(Varyings i) : SV_Target
+			{
+				return half4(i.color, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
-	FallBack "Specular"
 }

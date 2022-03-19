@@ -1,4 +1,5 @@
 ﻿// 升级到URP见https://zhuanlan.zhihu.com/p/369525578
+// https://cuihongzhi1991.github.io/blog/2020/05/27/builtinttourp/  Unity Built-in转URP速查表
 Shader "Unity Shaders Book/Chapter 3/Redify"
 {
     Properties
@@ -30,8 +31,8 @@ Shader "Unity Shaders Book/Chapter 3/Redify"
 
 			struct Varyings
 			{
-				float2 uv           : TEXCOORD0;
 				float4 positionHCS  : SV_POSITION;
+				float2 uv           : TEXCOORD0;
 			};
 
 			TEXTURE2D(_MainTex);

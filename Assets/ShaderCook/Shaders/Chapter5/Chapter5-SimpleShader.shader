@@ -17,9 +17,7 @@
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            
-            uniform half4 _Color;
-
+    
             struct Attributes
             {
                 float4 positionOS   : POSITION;
@@ -32,6 +30,10 @@
                 float4 positionHCS  : SV_POSITION;
                 half4 color         : COLOR0;
             };
+
+            CBUFFER_START(UnityPerMaterial)
+                half4 _Color;
+            CBUFFER_END
 
             Varyings vert(Attributes v)
             {
