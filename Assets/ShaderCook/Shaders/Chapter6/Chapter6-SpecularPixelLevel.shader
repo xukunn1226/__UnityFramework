@@ -60,7 +60,7 @@
 				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				
 				half3 worldNormal = normalize(i.normalWS);
-				half3 worldLightDir = normalize(_MainLightPosition.xyz);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz);		// 指向光源的方向，而不是光源射向物体的方向
 				
 				// Compute diffuse term
 				half3 diffuse = _MainLightColor.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));

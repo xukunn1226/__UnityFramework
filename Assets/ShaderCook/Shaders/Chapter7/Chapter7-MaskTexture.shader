@@ -1,7 +1,7 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 7/Mask Texture" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 7/Mask Texture"
+{
+	Properties
+	{
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_MainTex ("Main Tex", 2D) = "white" {}
 		_BumpMap ("Normal Map", 2D) = "bump" {}
@@ -11,79 +11,94 @@ Shader "Unity Shaders Book/Chapter 7/Mask Texture" {
 		_Specular ("Specular", Color) = (1, 1, 1, 1)
 		_Gloss ("Gloss", Range(8.0, 256)) = 20
 	}
-	SubShader {
-		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+
+	SubShader
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+
+		Pass
+		{ 
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
-			
+			HLSLPROGRAM			
 			#pragma vertex vert
-			#pragma fragment frag
+			#pragma fragment frag			
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			#include "Lighting.cginc"
-			
-			fixed4 _Color;
-			sampler2D _MainTex;
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+			TEXTURE2D(_BumpMap);
+			SAMPLER(sampler_BumpMap);
+			TEXTURE2D(_SpecularMask);
+			SAMPLER(sampler_SpecularMask);
+
+			CBUFFER_START(UnityPerMaterial)
+			half4 _Color;
 			float4 _MainTex_ST;
-			sampler2D _BumpMap;
 			float _BumpScale;
-			sampler2D _SpecularMask;
 			float _SpecularScale;
-			fixed4 _Specular;
+			half4 _Specular;
 			float _Gloss;
+			CBUFFER_END
 			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 tangent : TANGENT;
-				float4 texcoord : TEXCOORD0;
+			struct Attributes
+			{
+				float4 positionOS	: POSITION;
+				float3 normalOS		: NORMAL;
+				float4 tangentOS	: TANGENT;
+				float2 texcoord		: TEXCOORD0;
+			};
+
+			struct Varyings
+			{
+				float4 positionHCS	: SV_POSITION;
+				float2 uv			: TEXCOORD0;
+				float3 lightDir		: TEXCOORD1;
+				float3 viewDir		: TEXCOORD2;
 			};
 			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float2 uv : TEXCOORD0;
-				float3 lightDir: TEXCOORD1;
-				float3 viewDir : TEXCOORD2;
-			};
-			
-			v2f vert(a2v v) {
-				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+			Varyings vert(Attributes v) {
+				Varyings o;
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 				
 				o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				
-				TANGENT_SPACE_ROTATION;
-				o.lightDir = mul(rotation, ObjSpaceLightDir(v.vertex)).xyz;
-				o.viewDir = mul(rotation, ObjSpaceViewDir(v.vertex)).xyz;
-				
+				half3 worldNormal = TransformObjectToWorldNormal(v.normalOS, true);
+				half3 worldTangent = TransformObjectToWorldDir(v.tangentOS.xyz);
+				half3 worldBinormal = cross(worldNormal, worldTangent) * v.tangentOS.w;
+				float3x3 worldToTangent = float3x3(worldTangent, worldBinormal, worldNormal);
+
+				o.lightDir = mul(worldToTangent, _MainLightPosition.xyz);
+				o.viewDir = mul(worldToTangent, GetWorldSpaceViewDir(TransformObjectToWorld(v.positionOS.xyz)));
+
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-			 	fixed3 tangentLightDir = normalize(i.lightDir);
-				fixed3 tangentViewDir = normalize(i.viewDir);
+			half4 frag(Varyings i) : SV_Target
+			{
+			 	half3 tangentLightDir = normalize(i.lightDir);
+				half3 tangentViewDir = normalize(i.viewDir);
 
-				fixed3 tangentNormal = UnpackNormal(tex2D(_BumpMap, i.uv));
+				half3 tangentNormal = UnpackNormal(SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, i.uv));
 				tangentNormal.xy *= _BumpScale;
 				tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
 
-				fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
+				half3 albedo = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv).rgb * _Color.rgb;
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				
-				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
+				half3 diffuse = _MainLightColor.rgb * albedo * saturate(dot(tangentNormal, tangentLightDir));
 				
-			 	fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);
+			 	half3 halfDir = normalize(tangentLightDir + tangentViewDir);
 			 	// Get the mask value
-			 	fixed specularMask = tex2D(_SpecularMask, i.uv).r * _SpecularScale;
+			 	half specularMask = SAMPLE_TEXTURE2D(_SpecularMask, sampler_SpecularMask, i.uv).r * _SpecularScale;
 			 	// Compute specular term with the specular mask
-			 	fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss) * specularMask;
+			 	half3 specular = _MainLightColor.rgb * _Specular.rgb * pow(saturate(dot(tangentNormal, halfDir)), _Gloss) * specularMask;
 			
-				return fixed4(ambient + diffuse + specular, 1.0);
+				return half4(ambient + diffuse + specular, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
-	} 
-	FallBack "Specular"
+	}
 }

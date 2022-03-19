@@ -1,6 +1,4 @@
-﻿// 升级到URP见https://zhuanlan.zhihu.com/p/369525578
-// https://cuihongzhi1991.github.io/blog/2020/05/27/builtinttourp/  Unity Built-in转URP速查表
-Shader "Unity Shaders Book/Chapter 3/Redify"
+﻿Shader "Unity Shaders Book/Chapter 3/Redify"
 {
     Properties
     {

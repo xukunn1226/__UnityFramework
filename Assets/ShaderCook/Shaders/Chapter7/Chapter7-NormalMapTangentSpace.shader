@@ -1,7 +1,7 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
-	Properties {
+Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space"
+{
+	Properties
+	{
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_MainTex ("Main Tex", 2D) = "white" {}
 		_BumpMap ("Normal Map", 2D) = "bump" {}
@@ -9,38 +9,48 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 		_Specular ("Specular", Color) = (1, 1, 1, 1)
 		_Gloss ("Gloss", Range(8.0, 256)) = 20
 	}
-	SubShader {
-		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+	
+	SubShader
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+
+		Pass
+		{ 
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
-			
+			HLSLPROGRAM			
 			#pragma vertex vert
 			#pragma fragment frag
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			#include "Lighting.cginc"
-			
-			fixed4 _Color;
-			sampler2D _MainTex;
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+			TEXTURE2D(_BumpMap);
+			SAMPLER(sampler_BumpMap);
+
+			CBUFFER_START(UnityPerMaterial)
+			half4 _Color;
 			float4 _MainTex_ST;
-			sampler2D _BumpMap;
 			float4 _BumpMap_ST;
 			float _BumpScale;
-			fixed4 _Specular;
+			half4 _Specular;
 			float _Gloss;
-			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 tangent : TANGENT;
-				float4 texcoord : TEXCOORD0;
+			CBUFFER_END
+
+			struct Attributes
+			{
+				float4 positionOS	: POSITION;
+				float3 normalOS		: NORMAL;
+				float4 tangentOS	: TANGENT;
+				float4 texcoord		: TEXCOORD0;
 			};
-			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float4 uv : TEXCOORD0;
-				float3 lightDir: TEXCOORD1;
-				float3 viewDir : TEXCOORD2;
+
+			struct Varyings
+			{
+				float4 positionHCS	: SV_POSITION;
+				float4 uv			: TEXCOORD0;
+				float3 lightDir		: TEXCOORD1;
+				float3 viewDir		: TEXCOORD2;
 			};
 
 			// Unity doesn't support the 'inverse' function in native shader
@@ -75,9 +85,10 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				return transpose(cofactors) / determinant(input);
 			}
 
-			v2f vert(a2v v) {
-				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+			Varyings vert(Attributes v)
+			{
+				Varyings o;
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 				
 				o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				o.uv.zw = v.texcoord.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
@@ -87,9 +98,9 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				///
 
 				// Construct a matrix that transforms a point/vector from tangent space to world space
-				fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);  
-				fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);  
-				fixed3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w; 
+				half3 worldNormal = TransformObjectToWorldNormal(v.normalOS, true);
+				half3 worldTangent = TransformObjectToWorldDir(v.tangentOS.xyz);
+				half3 worldBinormal = cross(worldNormal, worldTangent) * v.tangentOS.w;
 
 				/*
 				float4x4 tangentToWorld = float4x4(worldTangent.x, worldBinormal.x, worldNormal.x, 0.0,
@@ -104,8 +115,8 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				float3x3 worldToTangent = float3x3(worldTangent, worldBinormal, worldNormal);
 
 				// Transform the light and view dir from world space to tangent space
-				o.lightDir = mul(worldToTangent, WorldSpaceLightDir(v.vertex));
-				o.viewDir = mul(worldToTangent, WorldSpaceViewDir(v.vertex));
+				o.lightDir = mul(worldToTangent, _MainLightPosition.xyz);
+				o.viewDir = mul(worldToTangent, GetWorldSpaceViewDir(TransformObjectToWorld(v.positionOS.xyz)));
 
 				///
 				/// Note that the code below can only handle uniform scales, not including non-uniform scales
@@ -126,13 +137,14 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {				
-				fixed3 tangentLightDir = normalize(i.lightDir);
-				fixed3 tangentViewDir = normalize(i.viewDir);
+			half4 frag(Varyings i) : SV_Target
+			{
+				half3 tangentLightDir = normalize(i.lightDir);
+				half3 tangentViewDir = normalize(i.viewDir);
 				
 				// Get the texel in the normal map
-				fixed4 packedNormal = tex2D(_BumpMap, i.uv.zw);
-				fixed3 tangentNormal;
+				half4 packedNormal = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, i.uv.zw);
+				half3 tangentNormal;
 				// If the texture is not marked as "Normal map"
 //				tangentNormal.xy = (packedNormal.xy * 2 - 1) * _BumpScale;
 //				tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
@@ -142,20 +154,19 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				tangentNormal.xy *= _BumpScale;
 				tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
 				
-				fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
+				half3 albedo = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv.xy).rgb * _Color.rgb;
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				
-				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
+				half3 diffuse = _MainLightColor.rgb * albedo * saturate(dot(tangentNormal, tangentLightDir));
 
-				fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);
-				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss);
+				half3 halfDir = normalize(tangentLightDir + tangentViewDir);
+				half3 specular = _MainLightColor.rgb * _Specular.rgb * pow(saturate(dot(tangentNormal, halfDir)), _Gloss);
 				
-				return fixed4(ambient + diffuse + specular, 1.0);
+				return half4(ambient + diffuse + specular, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
-	} 
-	FallBack "Specular"
+	}
 }

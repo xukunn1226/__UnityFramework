@@ -1,51 +1,61 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 7/Texture Properties" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 7/Texture Properties"
+{
+	Properties
+	{
 		_MainTex ("Main Tex", 2D) = "white" {}
 	}
-	SubShader {
-		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+
+	SubShader
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+
+		Pass
+		{ 
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
-			
+			HLSLPROGRAM			
 			#pragma vertex vert
 			#pragma fragment frag
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-			#include "Lighting.cginc"
+			struct Attributes
+			{
+				float4 positionOS 	: POSITION;
+				float4 texcoord 	: TEXCOORD0;
+			};
 
-			sampler2D _MainTex;
+			struct Varyings
+			{
+				float4 positionHCS 	: SV_POSITION;
+				float2 uv 			: TEXCOORD0;
+			};
+
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+			
+			CBUFFER_START(UnityPerMaterial)
 			float4 _MainTex_ST;
-
-			struct a2v {
-				float4 vertex : POSITION;
-				float4 texcoord : TEXCOORD0;
-			};
+			CBUFFER_END
 			
-			struct v2f {
-				float4 position : SV_POSITION;
-				float2 uv : TEXCOORD0;
-			};
-			
-			v2f vert(a2v v) {
-			 	v2f o;
+			Varyings vert(Attributes v)
+			{
+			 	Varyings o;
 			 	// Transform the vertex from object space to projection space
-			 	o.position = UnityObjectToClipPos(v.vertex);
+			 	o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 
 			 	o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 			 	
 			 	return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed4 c = tex2D(_MainTex, i.uv);
+			half4 frag(Varyings i) : SV_Target
+			{
+				half4 c = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
 
-				return fixed4(c.rgb, 1.0);
+				return half4(c.rgb, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
-	} 
-	FallBack "Diffuse"
+	}
 }

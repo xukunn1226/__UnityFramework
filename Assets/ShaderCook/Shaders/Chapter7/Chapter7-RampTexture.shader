@@ -1,77 +1,86 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 7/Ramp Texture" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 7/Ramp Texture"
+{
+	Properties
+	{
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_RampTex ("Ramp Tex", 2D) = "white" {}
 		_Specular ("Specular", Color) = (1, 1, 1, 1)
 		_Gloss ("Gloss", Range(8.0, 256)) = 20
 	}
-	SubShader {
-		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+
+	SubShader
+	{
+		Tags { "RenderType" = "Opaque" "RenderPipeline"="UniversalRenderPipeline" }
+
+		Pass
+		{ 
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
-			
+			HLSLPROGRAM			
 			#pragma vertex vert
 			#pragma fragment frag
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			
+			TEXTURE2D(_RampTex);
+			SAMPLER(sampler_RampTex);
 
-			#include "Lighting.cginc"
-			
-			fixed4 _Color;
-			sampler2D _RampTex;
+			CBUFFER_START(UnityPerMaterial)
+			half4 _Color;
 			float4 _RampTex_ST;
-			fixed4 _Specular;
+			half4 _Specular;
 			float _Gloss;
+			CBUFFER_END
 			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 texcoord : TEXCOORD0;
+			struct Attributes
+			{
+				float4 positionOS	: POSITION;
+				float3 normalOS		: NORMAL;
+				float2 texcoord		: TEXCOORD0;
+			};
+
+			struct Varyings
+			{
+				float4 positionHCS	: SV_POSITION;
+				float3 normalWS		: TEXCOORD0;
+				float3 positionWS	: TEXCOORD1;
+				float2 uv			: TEXCOORD2;
 			};
 			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float3 worldNormal : TEXCOORD0;
-				float3 worldPos : TEXCOORD1;
-				float2 uv : TEXCOORD2;
-			};
-			
-			v2f vert(a2v v) {
-				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+			Varyings vert(Attributes v)
+			{
+				Varyings o;
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 				
-				o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.normalWS = TransformObjectToWorldNormal(v.normalOS, true);
 				
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+				o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
 				
 				o.uv = TRANSFORM_TEX(v.texcoord, _RampTex);
 				
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed3 worldNormal = normalize(i.worldNormal);
-				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+			half4 frag(Varyings i) : SV_Target
+			{
+				half3 worldNormal = normalize(i.normalWS);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz);
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				
 				// Use the texture to sample the diffuse color
-				fixed halfLambert  = 0.5 * dot(worldNormal, worldLightDir) + 0.5;
-				fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;
+				half halfLambert  = 0.5 * dot(worldNormal, worldLightDir) + 0.5;
+				half3 diffuseColor = SAMPLE_TEXTURE2D(_RampTex, sampler_RampTex, half2(halfLambert, halfLambert)).rgb * _Color.rgb;
 				
-				fixed3 diffuse = _LightColor0.rgb * diffuseColor;
+				half3 diffuse = _MainLightColor.rgb * diffuseColor;
 				
-				fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
-				fixed3 halfDir = normalize(worldLightDir + viewDir);
-				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+				half3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.positionWS.xyz);
+				half3 halfDir = normalize(worldLightDir + viewDir);
+				half3 specular = _MainLightColor.rgb * _Specular.rgb * pow(saturate(dot(worldNormal, halfDir)), _Gloss);
 				
-				return fixed4(ambient + diffuse + specular, 1.0);
+				return half4(ambient + diffuse + specular, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
-	} 
-	FallBack "Specular"
+	}
 }
