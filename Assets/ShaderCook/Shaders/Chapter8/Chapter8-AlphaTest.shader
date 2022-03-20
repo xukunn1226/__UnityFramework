@@ -1,61 +1,72 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 8/Alpha Test" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 8/Alpha Test"
+{
+	Properties
+	{
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_MainTex ("Main Tex", 2D) = "white" {}
 		_Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.5
 	}
-	SubShader {
-		Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
+
+	SubShader
+	{
+		Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout" "RenderPipeline"="UniversalRenderPipeline"}
 		
-		Pass {
-			Tags { "LightMode"="ForwardBase" }
+		Pass
+		{
+			Tags { "LightMode"="UniversalForward" }
+			ZWrite On		// 打开深度写入
+			ZTest LEqual	// 当前片元深度值小于等于深度缓存值时，才测试通过，否则舍弃
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
-			#pragma fragment frag
+			#pragma fragment frag			
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			#include "Lighting.cginc"
-			
-			fixed4 _Color;
-			sampler2D _MainTex;
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+
+			CBUFFER_START(UnityPerMaterial)
+			half4 _Color;
 			float4 _MainTex_ST;
-			fixed _Cutoff;
+			half _Cutoff;
+			CBUFFER_END
 			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 texcoord : TEXCOORD0;
+			struct Attributes
+			{
+				float4 positionOS	: POSITION;
+				float3 normalOS		: NORMAL;
+				float2 texcoord		: TEXCOORD0;
+			};
+
+			struct Varyings
+			{
+				float4 positionHCS	: SV_POSITION;
+				float3 normalWS		: TEXCOORD0;
+				float3 positionWS	: TEXCOORD1;
+				float2 uv			: TEXCOORD2;
 			};
 			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float3 worldNormal : TEXCOORD0;
-				float3 worldPos : TEXCOORD1;
-				float2 uv : TEXCOORD2;
-			};
-			
-			v2f vert(a2v v) {
-				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+			Varyings vert(Attributes v)
+			{
+				Varyings o;
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 				
-				o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.normalWS = TransformObjectToWorldNormal(v.normalOS, true);
 				
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+				o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
 				
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed3 worldNormal = normalize(i.worldNormal);
-				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+			half4 frag(Varyings i) : SV_Target
+			{
+				half3 worldNormal = normalize(i.normalWS);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz);
 				
-				fixed4 texColor = tex2D(_MainTex, i.uv);
+				half4 texColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
 				
 				// Alpha test
 				clip (texColor.a - _Cutoff);
@@ -64,17 +75,16 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Test" {
 //					discard;
 //				}
 				
-				fixed3 albedo = texColor.rgb * _Color.rgb;
+				half3 albedo = texColor.rgb * _Color.rgb;
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				
-				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+				half3 diffuse = _MainLightColor.rgb * albedo * saturate(dot(worldNormal, worldLightDir));
 				
-				return fixed4(ambient + diffuse, 1.0);
+				return half4(ambient + diffuse, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
-	} 
-	FallBack "Transparent/Cutout/VertexLit"
+	}
 }

@@ -1,87 +1,96 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 8/Blend Operations 1" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 8/Blend Operations 1"
+{
+	Properties
+	{
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_MainTex ("Main Tex", 2D) = "white" {}
 		_AlphaScale ("Alpha Scale", Range(0, 1)) = 1
 	}
-	SubShader {
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+	
+	SubShader
+	{
+		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "RenderPipeline"="UniversalRenderPipeline"}
 		
-		Pass {
-			Tags { "LightMode"="ForwardBase" }
+		Pass
+		{
+			Tags { "LightMode"="UniversalForward" }
 			
 			ZWrite Off
 			
 //			// Normal
-//			Blend SrcAlpha OneMinusSrcAlpha
+			// Blend SrcAlpha OneMinusSrcAlpha
 //			
 //			// Soft Additive
-//			Blend OneMinusDstColor One
+			// Blend OneMinusDstColor One
 //			
 //			// Multiply
-			Blend DstColor Zero
+			// Blend DstColor Zero
 //			
 //			// 2x Multiply
-//			Blend DstColor SrcColor
+			// Blend DstColor SrcColor
 //			
 //			// Darken
-//			BlendOp Min
-//			Blend One One	// When using Min operation, these factors are ignored
+			// BlendOp Min
+			// Blend One One	// When using Min operation, these factors are ignored
 //			
 //			//  Lighten
-//			BlendOp Max
-//			Blend One One // When using Max operation, these factors are ignored
+			// BlendOp Max
+			// Blend One One // When using Max operation, these factors are ignored
 //			
 //			// Screen
-//			Blend OneMinusDstColor One
+			Blend OneMinusDstColor One
 			// Or
-//			Blend One OneMinusSrcColor
+			// Blend One OneMinusSrcColor
 //			
 //			// Linear Dodge
-			Blend One One
+			// Blend One One
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
-			#pragma fragment frag
+			#pragma fragment frag			
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			#include "Lighting.cginc"
-			
-			fixed4 _Color;
-			sampler2D _MainTex;
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+
+			CBUFFER_START(UnityPerMaterial)
+			half4 _Color;
 			float4 _MainTex_ST;
-			fixed _AlphaScale;
+			half _AlphaScale;
+			CBUFFER_END
 			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 texcoord : TEXCOORD0;
+			struct Attributes
+			{
+				float4 positionOS	: POSITION;
+				float3 normalOS		: NORMAL;
+				float2 texcoord		: TEXCOORD0;
+			};
+
+			struct Varyings
+			{
+				float4 positionHCS	: SV_POSITION;
+				float2 uv			: TEXCOORD0;
 			};
 			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float2 uv : TEXCOORD0;
-			};
-			
-			v2f vert(a2v v) {
-			 	v2f o;
-			 	o.pos = UnityObjectToClipPos(v.vertex);
+			Varyings vert(Attributes v)
+			{
+			 	Varyings o;
+			 	o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 
 			 	o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 			 	
 			 	return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {				
-				fixed4 texColor = tex2D(_MainTex, i.uv);
+			half4 frag(Varyings i) : SV_Target
+			{
+				half4 texColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
 			 	
-				return fixed4(texColor.rgb * _Color.rgb, texColor.a * _AlphaScale);
-			}
+				return half4(texColor.rgb * _Color.rgb, texColor.a * _AlphaScale);
+			}		
 			
-			ENDCG
+			ENDHLSL
 		}
-	} 
-	FallBack "Transparent/VertexLit"
+	}
 }
