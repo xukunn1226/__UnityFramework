@@ -25,7 +25,7 @@ namespace Framework.Core.Editor
         }
 
         // Method to open the window
-        [MenuItem("Window/MyEditorWindow")]
+        // [MenuItem("Window/MyEditorWindow")]
         static void OpenWindow()
         {
             GetWindow<MyEditorWindow>();
