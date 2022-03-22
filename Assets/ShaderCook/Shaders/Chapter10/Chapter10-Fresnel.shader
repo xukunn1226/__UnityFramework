@@ -1,85 +1,92 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 10/Fresnel" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 10/Fresnel"
+{
+	Properties
+	{
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_FresnelScale ("Fresnel Scale", Range(0, 1)) = 0.5
 		_Cubemap ("Reflection Cubemap", Cube) = "_Skybox" {}
 	}
-	SubShader {
-		Tags { "RenderType"="Opaque" "Queue"="Geometry"}
+	
+	SubShader
+	{
+		Tags { "RenderType"="Opaque" "Queue"="Geometry" "RenderPipeline"="UniversalRenderPipeline"}
 		
-		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+		Pass
+		{ 
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
-			
-			#pragma multi_compile_fwdbase
-			
+			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			
-			#include "Lighting.cginc"
-			#include "AutoLight.cginc"
-			
-			fixed4 _Color;
-			fixed _FresnelScale;
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/RealtimeLights.hlsl"
+
+			CBUFFER_START(UnityPerMaterial)
+			half4 _Color;
+			half _FresnelScale;
 			samplerCUBE _Cubemap;
+			CBUFFER_END
 			
-			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
+			struct Attributes
+			{
+				float4 positionOS	: POSITION;
+				float3 normalOS		: NORMAL;
+			};
+
+			struct Varyings
+			{
+				float4 positionHCS	: SV_POSITION;
+				float3 positionWS	: TEXCOORD0;
+				half3 normalWS		: TEXCOORD1;
+				half3 viewDirWS		: TEXCOORD2;
+				half3 ReflWS		: TEXCOORD3;
+				float4 shadowCoord	: TEXCOORD4;
 			};
 			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float3 worldPos : TEXCOORD0;
-  				fixed3 worldNormal : TEXCOORD1;
-  				fixed3 worldViewDir : TEXCOORD2;
-  				fixed3 worldRefl : TEXCOORD3;
- 	 			SHADOW_COORDS(4)
-			};
-			
-			v2f vert(a2v v) {
-				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+			Varyings vert(Attributes v)
+			{
+				Varyings o;
 				
-				o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
 				
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+				o.normalWS = TransformObjectToWorldNormal(v.normalOS, true);
 				
-				o.worldViewDir = UnityWorldSpaceViewDir(o.worldPos);
+				o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
 				
-				o.worldRefl = reflect(-o.worldViewDir, o.worldNormal);
+				o.viewDirWS = normalize(_WorldSpaceCameraPos.xyz - o.positionWS.xyz);
 				
-				TRANSFER_SHADOW(o);
+				o.ReflWS = reflect(-o.viewDirWS, o.normalWS);
+				
+				o.shadowCoord = TransformWorldToShadowCoord(o.positionWS);
 				
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed3 worldNormal = normalize(i.worldNormal);
-				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-				fixed3 worldViewDir = normalize(i.worldViewDir);
+			half4 frag(Varyings i) : SV_Target
+			{
+				half3 worldNormal = normalize(i.normalWS);
+				half3 worldLightDir = normalize(GetMainLight().direction);
+				half3 worldViewDir = normalize(i.viewDirWS);	
+
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				// UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
+				half3 atten = half3(1.0, 1.0, 1.0);
 				
-				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
+				half3 reflection = texCUBE(_Cubemap, i.ReflWS).rgb;
 				
-				fixed3 reflection = texCUBE(_Cubemap, i.worldRefl).rgb;
+				half fresnel = _FresnelScale + (1 - _FresnelScale) * pow(1 - dot(worldViewDir, worldNormal), 5);
 				
-				fixed fresnel = _FresnelScale + (1 - _FresnelScale) * pow(1 - dot(worldViewDir, worldNormal), 5);
+				half3 diffuse = _MainLightColor.rgb * _Color.rgb * saturate(dot(worldNormal, worldLightDir));
 				
-				fixed3 diffuse = _LightColor0.rgb * _Color.rgb * max(0, dot(worldNormal, worldLightDir));
+				half3 color = ambient + lerp(diffuse, reflection, saturate(fresnel)) * atten;
 				
-				fixed3 color = ambient + lerp(diffuse, reflection, saturate(fresnel)) * atten;
-				
-				return fixed4(color, 1.0);
+				return half4(color, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
-	FallBack "Reflective/VertexLit"
 }

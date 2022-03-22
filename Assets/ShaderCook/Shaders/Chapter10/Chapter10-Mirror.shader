@@ -1,17 +1,20 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 10/Mirror" {
-	Properties {
+﻿Shader "Unity Shaders Book/Chapter 10/Mirror"
+{
+	Properties
+	{
 		_MainTex ("Main Tex", 2D) = "white" {}
 	}
-	SubShader {
-		Tags { "RenderType"="Opaque" "Queue"="Geometry"}
+	
+	SubShader
+	{
+		Tags { "RenderType"="Opaque" "Queue"="Geometry" "RenderPipeline"="UniversalRenderPipeline" }
 		
-		Pass {
-			CGPROGRAM
-			
+		Pass
+		{
+			HLSLPROGRAM			
 			#pragma vertex vert
 			#pragma fragment frag
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
 			sampler2D _MainTex;
 			
@@ -27,21 +30,20 @@ Shader "Unity Shaders Book/Chapter 10/Mirror" {
 			
 			v2f vert(a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex.xyz);
 				
-				o.uv = v.texcoord;
+				o.uv = v.texcoord.xy;
 				// Mirror needs to filp x
 				o.uv.x = 1 - o.uv.x;
 				
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
+			half4 frag(v2f i) : SV_Target {
 				return tex2D(_MainTex, i.uv);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
- 	FallBack Off
 }
