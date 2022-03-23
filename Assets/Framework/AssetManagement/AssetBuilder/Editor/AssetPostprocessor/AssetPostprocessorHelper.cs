@@ -26,7 +26,7 @@ namespace Framework.AssetManagement.AssetBuilder
         }
         
         // 优化anim数据精度
-        static public void OptimizeAnim(AnimationClip clip)
+        static public void OptimizeAnim2(AnimationClip clip)
         {
             if (clip == null)
                 return;
@@ -127,9 +127,7 @@ namespace Framework.AssetManagement.AssetBuilder
             serializedObject.ApplyModifiedProperties();
         }
 
-
-        
-        static public void OptimizeAnim2(AnimationClip theAnimation, bool clearScaleCurve = true)
+        static public void OptimizeAnim(AnimationClip theAnimation/*, bool clearScaleCurve = false*/)
         {
             bool isDirty = false;
             try
@@ -246,72 +244,72 @@ namespace Framework.AssetManagement.AssetBuilder
                 }
 
                 //去除scale曲线
-                if(clearScaleCurve)
-                {
-                    // method 1. 删除所有scale，不做筛选
-                    // foreach (EditorCurveBinding theCurveBinding in AnimationUtility.GetCurveBindings(theAnimation))
-                    // {
-                    //     string name = theCurveBinding.propertyName.ToLower();
-                    //     if (name.Contains("scale"))
-                    //     {
-                    //         AnimationUtility.SetEditorCurve(theAnimation, theCurveBinding, null);
-                    //     }
-                    // }
+                // if(clearScaleCurve)
+                // {
+                //     // method 1. 删除所有scale，不做筛选
+                //     foreach (EditorCurveBinding theCurveBinding in AnimationUtility.GetCurveBindings(theAnimation))
+                //     {
+                //         string name = theCurveBinding.propertyName.ToLower();
+                //         if (name.Contains("scale"))
+                //         {
+                //             AnimationUtility.SetEditorCurve(theAnimation, theCurveBinding, null);
+                //         }
+                //     }
 
                     // method 2. 删除限定scale
-                    string prevPath = null;
-                    int count = 0;
-                    EditorCurveBinding[] curveBindings = AnimationUtility.GetCurveBindings(theAnimation);
-                    for(int i = 0; i < curves.Length; ++i)
-                    {
-                        AnimationClipCurveData curveData = curves[i];
-                        EditorCurveBinding curveBinding = curveBindings[i];
-                        string name = curveBinding.propertyName.ToLower();
-                        string path = curveBinding.path;
-                        if(path != prevPath)
-                        {
-                            count = 0;
-                            prevPath = path;
-                        }
+                    // string prevPath = null;
+                    // int count = 0;
+                    // EditorCurveBinding[] curveBindings = AnimationUtility.GetCurveBindings(theAnimation);
+                    // for(int i = 0; i < curves.Length; ++i)
+                    // {
+                    //     AnimationClipCurveData curveData = curves[i];
+                    //     EditorCurveBinding curveBinding = curveBindings[i];
+                    //     string name = curveBinding.propertyName.ToLower();
+                    //     string path = curveBinding.path;
+                    //     if(path != prevPath)
+                    //     {
+                    //         count = 0;
+                    //         prevPath = path;
+                    //     }
 
-                        if(name.Contains("scale.x"))
-                        {
-                            keyFrames = curveData.curve.keys;
-                            if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
-                            || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
-                            {
-                                count++;
-                            }
-                        }
-                        else if(name.Contains("scale.y"))
-                        {
-                            keyFrames = curveData.curve.keys;
-                            if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
-                            || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
-                            {
-                                count++;
-                            }
-                        }
-                        else if(name.Contains("scale.z"))
-                        {
-                            keyFrames = curveData.curve.keys;
-                            if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
-                            || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
-                            {
-                                count++;
-                            }
-                        }
+                    //     if(name.Contains("scale.x"))
+                    //     {
+                    //         keyFrames = curveData.curve.keys;
+                    //         if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                    //         || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
+                    //         {
+                    //             count++;
+                    //         }
+                    //     }
+                    //     else if(name.Contains("scale.y"))
+                    //     {
+                    //         keyFrames = curveData.curve.keys;
+                    //         if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                    //         || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
+                    //         {
+                    //             count++;
+                    //         }
+                    //     }
+                    //     else if(name.Contains("scale.z"))
+                    //     {
+                    //         keyFrames = curveData.curve.keys;
+                    //         if((keyFrames.Length == 2 && Mathf.Approximately(keyFrames[0].value, 1) && Mathf.Approximately(keyFrames[1].value, 1))
+                    //         || (keyFrames.Length == 1 && Mathf.Approximately(keyFrames[0].value, 1)))
+                    //         {
+                    //             count++;
+                    //         }
+                    //     }
 
-                        if(count == 3)
-                        {
-                            AnimationUtility.SetEditorCurve(theAnimation, curveBindings[i-2], null);
-                            AnimationUtility.SetEditorCurve(theAnimation, curveBindings[i-1], null);
-                            AnimationUtility.SetEditorCurve(theAnimation, curveBindings[i], null);
+                    //     if(count == 3)
+                    //     {
+                    //         AnimationUtility.SetEditorCurve(theAnimation, curveBindings[i-2], null);
+                    //         AnimationUtility.SetEditorCurve(theAnimation, curveBindings[i-1], null);
+                    //         AnimationUtility.SetEditorCurve(theAnimation, curveBindings[i], null);
 
-                            isDirty |= true;
-                        }
-                    }
-                }
+                    //         isDirty |= true;
+                    //     }
+                    // }
+                // }
             }
             catch (System.Exception e)
             {
@@ -321,7 +319,6 @@ namespace Framework.AssetManagement.AssetBuilder
             if(isDirty)
             {
                 EditorUtility.SetDirty(theAnimation);
-                // Debug.Log($"SetDirty: {theAnimation.name}");
             }
         }
 
