@@ -6,8 +6,13 @@ namespace Application.Editor
 {
     public class TexturePostprocessor : AssetPostprocessor
     {
-        // void OnPreprocessTexture()
-        // {
+        void OnPostprocessTexture(Texture2D texture)
+        {
+
+        }
+        
+        void OnPreprocessTexture()
+        {
         //     if(!AssetBuilderUtil.IsPassByWhiteList(assetPath) || AssetBuilderUtil.IsBlockedByBlackList(assetPath))
         //         return;
 
@@ -53,7 +58,7 @@ namespace Application.Editor
         //     ios_platformSetting.compressionQuality = 50;
         //     ios_platformSetting.maxTextureSize = shouldScale ? Mathf.Max(width, height) >> 1 : 4096;
         //     ti.SetPlatformTextureSettings(ios_platformSetting);
-        // }
+        }
 
         
     }
