@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Reflection;
+
 
 namespace Framework.AssetManagement.AssetBuilder
 {
@@ -55,22 +55,7 @@ namespace Framework.AssetManagement.AssetBuilder
         //     ti.SetPlatformTextureSettings(ios_platformSetting);
         // }
 
-        private static void GetTextureOriginalSize(TextureImporter ti, out int width, out int height)
-        {
-            if (ti == null)
-            {
-                width = 0;
-                height = 0;
-                return;
-            }
-
-            object[] args = new object[2] { 0, 0 };
-            MethodInfo mi = typeof(TextureImporter).GetMethod("GetWidthAndHeight", BindingFlags.NonPublic | BindingFlags.Instance);
-            mi.Invoke(ti, args);
-
-            width = (int)args[0];
-            height = (int)args[1];
-        }
+        
     }
 }
 

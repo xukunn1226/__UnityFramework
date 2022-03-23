@@ -7,7 +7,7 @@ namespace Framework.AssetManagement.AssetBuilder
 {
     public class ParticlePostprocessor : AssetPostprocessor
     {
-        [MenuItem("Tools/Misc/CheckFailParticleCulling", false)]
+        [MenuItem("Assets/美术检查工具/CheckFailParticleCulling", false)]
         static public void CheckFailParticleCulling()
         {
             Assembly ass = typeof(UnityEditor.Editor).Assembly;
