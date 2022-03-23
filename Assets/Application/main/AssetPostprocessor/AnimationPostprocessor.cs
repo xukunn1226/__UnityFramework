@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.IO;
 
-namespace Framework.AssetManagement.AssetBuilder
+namespace Application.Editor
 {
     public class AnimationPostprocessor : AssetPostprocessor
     {

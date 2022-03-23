@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.Collections.Generic;
 
-namespace Framework.AssetManagement.AssetBuilder
+namespace Application.Editor
 {
     public class ModelPostprocessor : AssetPostprocessor
     {

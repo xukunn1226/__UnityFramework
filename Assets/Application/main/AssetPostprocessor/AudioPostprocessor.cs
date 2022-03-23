@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace Framework.AssetManagement.AssetBuilder
+namespace Application.Editor
 {
     public class AudioPostprocessor : AssetPostprocessor
     {

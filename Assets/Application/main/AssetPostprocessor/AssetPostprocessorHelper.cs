@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Reflection;
 
-namespace Framework.AssetManagement.AssetBuilder
+namespace Application.Editor
 {
     static public class AssetPostprocessorHelper
     {

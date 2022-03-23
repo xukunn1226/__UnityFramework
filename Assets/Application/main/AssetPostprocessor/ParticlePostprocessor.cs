@@ -3,7 +3,7 @@ using System.Reflection;
 using System;
 using UnityEngine;
 
-namespace Framework.AssetManagement.AssetBuilder
+namespace Application.Editor
 {
     public class ParticlePostprocessor : AssetPostprocessor
     {
