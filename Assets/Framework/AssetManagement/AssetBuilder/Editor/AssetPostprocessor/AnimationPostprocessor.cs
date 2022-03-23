@@ -39,7 +39,8 @@ namespace Framework.AssetManagement.AssetBuilder
                         UnityEngine.Object clone = UnityEngine.Object.Instantiate(clip);
 
                         // 优化精度
-                        AssetPostprocessorHelper.OptimizeAnim(clone as AnimationClip);
+                        AssetPostprocessorHelper.OptimizeAnim2(clone as AnimationClip, false);
+                        // AssetPostprocessorHelper.OptimizeAnim(clone as AnimationClip);
 
                         AssetDatabase.CreateAsset(clone, filePath);
                         AssetDatabase.ImportAsset(filePath, ImportAssetOptions.ForceUpdate);
