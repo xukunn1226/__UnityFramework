@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Light-exclude
   m_EditorClassIdentifier: 
   preset: {fileID: 2655988077585873504, guid: a41cdb367e88aff41baba90f9e8b8491, type: 2}
-  excludedProperties: []
+  excludedProperties:
+  - m_Color

@@ -6,13 +6,19 @@ namespace Application.Editor
 {
     public class TexturePostprocessor : AssetPostprocessor
     {
+        public override int GetPostprocessOrder()
+        {
+            return 0;
+        }
+
         void OnPostprocessTexture(Texture2D texture)
         {
-
+            // Debug.Log("OnPostprocessTexture: 0");
         }
         
         void OnPreprocessTexture()
         {
+            // Debug.Log("OnPreprocessTexture: 0");
         //     if(!AssetBuilderUtil.IsPassByWhiteList(assetPath) || AssetBuilderUtil.IsBlockedByBlackList(assetPath))
         //         return;
 
