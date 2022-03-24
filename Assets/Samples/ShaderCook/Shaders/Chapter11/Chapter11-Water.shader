@@ -1,7 +1,7 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Unity Shaders Book/Chapter 11/Water" {
-	Properties {
+Shader "Unity Shaders Book/Chapter 11/Water"
+{
+	Properties
+	{
 		_MainTex ("Main Tex", 2D) = "white" {}
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
 		_Magnitude ("Distortion Magnitude", Float) = 1
@@ -9,48 +9,54 @@ Shader "Unity Shaders Book/Chapter 11/Water" {
  		_InvWaveLength ("Distortion Inverse Wave Length", Float) = 10
  		_Speed ("Speed", Float) = 0.5
 	}
+	
 	SubShader {
 		// Need to disable batching because of the vertex animation
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "DisableBatching"="True"}
+		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "DisableBatching"="True" "RenderPipeline"="UniversalRenderPipeline"}
 		
-		Pass {
-			Tags { "LightMode"="ForwardBase" }
+		Pass
+		{
+			Tags { "LightMode"="UniversalForward" }
 			
 			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
 			Cull Off
 			
-			CGPROGRAM  
+			HLSLPROGRAM
 			#pragma vertex vert 
-			#pragma fragment frag
+			#pragma fragment frag			
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			#include "UnityCG.cginc" 
-			
+			CBUFFER_START(UnityPerMaterial)
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			fixed4 _Color;
+			half4 _Color;
 			float _Magnitude;
 			float _Frequency;
 			float _InvWaveLength;
 			float _Speed;
+			CBUFFER_END
 			
-			struct a2v {
-				float4 vertex : POSITION;
-				float4 texcoord : TEXCOORD0;
+			struct Attributes
+			{
+				float4 positionOS	: POSITION;
+				float4 texcoord		: TEXCOORD0;
 			};
+
+			struct Varyings
+			{
+				float4 positionHCS	: SV_POSITION;
+				float2 uv			: TEXCOORD0;
+			};	
 			
-			struct v2f {
-				float4 pos : SV_POSITION;
-				float2 uv : TEXCOORD0;
-			};
-			
-			v2f vert(a2v v) {
-				v2f o;
+			Varyings vert(Attributes v)
+			{
+				Varyings o;
 				
 				float4 offset;
 				offset.yzw = float3(0.0, 0.0, 0.0);
-				offset.x = sin(_Frequency * _Time.y + v.vertex.x * _InvWaveLength + v.vertex.y * _InvWaveLength + v.vertex.z * _InvWaveLength) * _Magnitude;
-				o.pos = UnityObjectToClipPos(v.vertex + offset);
+				offset.x = sin(_Frequency * _Time.y + v.positionOS.x * _InvWaveLength + v.positionOS.y * _InvWaveLength + v.positionOS.z * _InvWaveLength) * _Magnitude;
+				o.positionHCS = TransformObjectToHClip(v.positionOS.xyz + offset.xyz);
 				
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.uv +=  float2(0.0, _Time.y * _Speed);
@@ -58,15 +64,15 @@ Shader "Unity Shaders Book/Chapter 11/Water" {
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed4 c = tex2D(_MainTex, i.uv);
+			half4 frag(Varyings i) : SV_Target
+			{
+				half4 c = tex2D(_MainTex, i.uv);
 				c.rgb *= _Color.rgb;
 				
 				return c;
 			} 
 			
-			ENDCG
+			ENDHLSL
 		}
 	}
-	FallBack "Transparent/VertexLit"
 }
