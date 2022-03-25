@@ -1,0 +1,124 @@
+﻿
+/**
+EXCLUDE_BACKGROUND编译选项表示在生成反射贴图时，是否剔除掉无穷远的像素（例如天空盒）。
+在URP的管线流程中，假如我们在RenderSkyBox这个Pass之前去读CameraColorTexture，会拿到上一帧残留的天空像素
+**/
+
+#pragma kernel Clear
+#pragma kernel DrawReflectionTex1
+#pragma kernel DrawReflectionTex2
+#pragma kernel DrawReflectionTex1 EXCLUDE_BACKGROUND
+#pragma kernel DrawReflectionTex2 EXCLUDE_BACKGROUND
+
+#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+RWTexture2D<float4> _Result;
+
+Texture2D<float4> _CameraColorTexture;
+Texture2D<float> _CameraDepthTexture;
+float4 _MainTex_TexelSize;
+
+float4x4 _MatrixInvVP;
+float4x4 _MatrixVP;
+
+float3 _PlanarPosition;
+float3 _PlanarNormal;
+
+SamplerState PointClampSampler;
+
+
+float3 TransformPositionCSToWS(float3 positionCS){
+    //_MatrixInvVP为VP的逆矩阵
+    float4 positionWS = mul(_MatrixInvVP,float4(positionCS,1));
+    positionWS /= positionWS.w;
+    return positionWS.xyz;
+}
+
+float3 ReconstructPositionWS(float2 uv, float depth){
+    //使用uv和depth，可以得到ClipSpace的坐标
+    float3 positionCS = float3(uv * 2 -1,depth);
+    //然后将坐标从ClipSpace转换到世界坐标
+    float3 positionWS = TransformPositionCSToWS(positionCS);
+    return positionWS;
+}
+
+float3 Reproject(float3 positionWS){
+    float4 positionCS = mul(_MatrixVP,float4(positionWS,1));
+    positionCS /= positionCS.w;
+    positionCS.xy = (positionCS.xy + 1) * 0.5;
+    return positionCS.xyz;
+}
+
+//返回float4的xyz分量为镜像坐标，w为坐标到平面的距离平方
+float4 GetMirrorPositionWS(float3 positionWS){
+    float normalProj = dot(positionWS - _PlanarPosition,_PlanarNormal);
+    return float4(positionWS - normalProj * _PlanarNormal * 2,normalProj);
+}
+
+
+[numthreads(8,8,1)]
+void Clear (uint3 id : SV_DispatchThreadID)
+{
+    _Result[id.xy] = float4(0,0,0,0);
+}
+
+
+float4 GetMirrorPositionWSFromID(uint3 id){
+    float2 pixelCoord = id.xy;
+    float2 uv = id.xy * _MainTex_TexelSize.xy;
+    float depth = _CameraDepthTexture.SampleLevel(PointClampSampler,uv,0);
+    #ifdef EXCLUDE_BACKGROUND
+        #if UNITY_REVERSED_Z
+        //判定无穷远
+        if(depth == 0)
+        #else
+        if(depth == 1)
+        #endif
+        {
+            return float4(0,0,0,0);
+        }
+    #endif
+    float3 positionWS = ReconstructPositionWS(uv,depth);
+    float4 mirrorPositionWS = GetMirrorPositionWS(positionWS);  
+    return mirrorPositionWS;
+}
+
+float3 GetMirrorUVDepthFromID(uint3 id){
+    float4 mirrorPositionWS = GetMirrorPositionWSFromID(id);
+    if(mirrorPositionWS.w > 0.01){
+        float3 uvAndDepth = Reproject(mirrorPositionWS.xyz);
+        return uvAndDepth;
+    }else{
+        return float3(0,0,0);
+    }
+}
+
+
+//Draw Reflection Tex
+[numthreads(8,8,1)]
+void DrawReflectionTex1 (uint3 id : SV_DispatchThreadID){
+    float2 uv = id.xy;
+    float3 mirrorUVAndDepth = GetMirrorUVDepthFromID(id);
+    float2 mirrorPixelCoord = mirrorUVAndDepth.xy * _MainTex_TexelSize.zw;
+    _Result[mirrorPixelCoord] = float4(_CameraColorTexture[uv].rgb,mirrorUVAndDepth.z);
+}
+
+//Draw Reflection Tex Again to fix Depth Issue
+[numthreads(8,8,1)]
+void DrawReflectionTex2 (uint3 id : SV_DispatchThreadID){
+    float2 uv = id.xy;
+    float3 mirrorUVAndDepth = GetMirrorUVDepthFromID(id);
+    float2 toPixelCoord = mirrorUVAndDepth.xy * _MainTex_TexelSize.zw;
+    float4 originalColor = _Result[toPixelCoord];
+
+    #if UNITY_REVERSED_Z
+    bool overwrite = mirrorUVAndDepth.z > originalColor.a;
+    #else
+    bool overwrite = mirrorUVAndDepth.z < originalColor.a;
+    #endif
+    if(overwrite){
+        _Result[toPixelCoord] = float4(_CameraColorTexture[uv].rgb,1);
+    }else{
+        _Result[toPixelCoord] = float4(originalColor.rgb,1);
+    }
+}

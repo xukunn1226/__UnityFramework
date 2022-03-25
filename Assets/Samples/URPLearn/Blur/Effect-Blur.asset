@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82172ce5a293b4cc585100780275d821, type: 3}
+  m_Name: Effect-Blur
+  m_EditorClassIdentifier: 
+  active: 0
+  _boxBlurShader: {fileID: 4800000, guid: 6039f4f4999b64e6e8e7c5ceeff22f71, type: 3}
+  _gaussianBlurShader: {fileID: 4800000, guid: 5bb5a07642cf04d169bb915edd126942, type: 3}
+  _blurType: 2
+  _iteratorCount: 1
+  _downSample: 3
+  _boxKernelSizeHalf: 3
+  _blurScale: 1
