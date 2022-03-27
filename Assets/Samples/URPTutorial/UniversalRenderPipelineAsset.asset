@@ -10,48 +10,48 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf2edee5c58d82540a51f03df9d42094, type: 3}
-  m_Name: UniversalRP-HighQuality
+  m_Name: UniversalRenderPipelineAsset
   m_EditorClassIdentifier: 
   k_AssetVersion: 9
   k_AssetPreviousVersion: 9
   m_RendererType: 1
   m_RendererData: {fileID: 0}
   m_RendererDataList:
-  - {fileID: 11400000, guid: 4a8e21d5c33334b11b34a596161b9360, type: 2}
+  - {fileID: 11400000, guid: 663357359f95bd74c9ed279e07713513, type: 2}
   - {fileID: 11400000, guid: f153c84598bf24b8d8f0116e17cd0e7d, type: 2}
   - {fileID: 11400000, guid: 860c0e2e74d2943ce971c682fb95d6af, type: 2}
   - {fileID: 11400000, guid: 6e9fe485ac79c49ff873e1419429c279, type: 2}
   - {fileID: 11400000, guid: d9334ddb62d654d5593c8c5a36d269d6, type: 2}
   m_DefaultRendererIndex: 0
-  m_RequireDepthTexture: 1
-  m_RequireOpaqueTexture: 1
-  m_OpaqueDownsampling: 2
-  m_SupportsTerrainHoles: 1
+  m_RequireDepthTexture: 0
+  m_RequireOpaqueTexture: 0
+  m_OpaqueDownsampling: 0
+  m_SupportsTerrainHoles: 0
   m_StoreActionsOptimization: 0
   m_SupportsHDR: 1
-  m_MSAA: 2
-  m_RenderScale: 0.6
+  m_MSAA: 4
+  m_RenderScale: 1
   m_MainLightRenderingMode: 1
   m_MainLightShadowsSupported: 1
   m_MainLightShadowmapResolution: 2048
   m_AdditionalLightsRenderingMode: 1
-  m_AdditionalLightsPerObjectLimit: 4
+  m_AdditionalLightsPerObjectLimit: 8
   m_AdditionalLightShadowsSupported: 1
   m_AdditionalLightsShadowmapResolution: 1024
-  m_AdditionalLightsShadowResolutionTierLow: 512
-  m_AdditionalLightsShadowResolutionTierMedium: 1024
-  m_AdditionalLightsShadowResolutionTierHigh: 2048
-  m_ReflectionProbeBlending: 1
+  m_AdditionalLightsShadowResolutionTierLow: 256
+  m_AdditionalLightsShadowResolutionTierMedium: 512
+  m_AdditionalLightsShadowResolutionTierHigh: 1024
+  m_ReflectionProbeBlending: 0
   m_ReflectionProbeBoxProjection: 0
   m_ShadowDistance: 50
-  m_ShadowCascadeCount: 2
+  m_ShadowCascadeCount: 4
   m_Cascade2Split: 0.25
   m_Cascade3Split: {x: 0.1, y: 0.3}
-  m_Cascade4Split: {x: 0.067, y: 0.2, z: 0.467}
+  m_Cascade4Split: {x: 0.262, y: 0.44799998, z: 0.532}
   m_CascadeBorder: 0.1
-  m_ShadowDepthBias: 1
-  m_ShadowNormalBias: 1
-  m_SoftShadowsSupported: 1
+  m_ShadowDepthBias: 2.5
+  m_ShadowNormalBias: 2.5
+  m_SoftShadowsSupported: 0
   m_ConservativeEnclosingSphere: 0
   m_NumIterationsEnclosingSphere: 64
   m_AdditionalLightsCookieResolution: 2048
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_DebugLevel: 0
   m_UseAdaptivePerformance: 1
   m_ColorGradingMode: 0
-  m_ColorGradingLutSize: 32
+  m_ColorGradingLutSize: 16
   m_UseFastSRGBLinearConversion: 0
   m_ShadowType: 1
   m_LocalShadowsSupported: 0
@@ -72,4 +72,4 @@ MonoBehaviour:
   m_ShadowAtlasResolution: 256
   m_ShaderVariantLogLevel: 0
   m_VolumeFrameworkUpdateMode: 0
-  m_ShadowCascades: 1
+  m_ShadowCascades: 0
