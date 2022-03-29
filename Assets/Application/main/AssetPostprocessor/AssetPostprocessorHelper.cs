@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
+using System.IO;
+using System;
 
 namespace Application.Editor
 {
@@ -328,6 +330,130 @@ namespace Application.Editor
             bool changed = dst != src;
             src = dst;
             return changed;
+        }
+        
+        [MenuItem("Assets/美术资源工具/提取动画文件", false, 999)]
+        static public void ExtractAnimClip()
+        {
+            if(Selection.assetGUIDs.Length == 0)
+                return;
+
+            UnityEditor.EditorUtility.DisplayProgressBar("Extract AnimClip", "", 0);
+            for(int i = 0; i < Selection.assetGUIDs.Length; ++i)
+            {
+                ExtractAnimClip(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[i]), true);
+                UnityEditor.EditorUtility.DisplayProgressBar("Extract AnimClip", i + "/" + Selection.assetGUIDs.Length, i / (float)Selection.assetGUIDs.Length);
+            }
+            UnityEditor.EditorUtility.ClearProgressBar();
+            AssetDatabase.SaveAssets();
+        }
+
+        static public void ExtractAnimClip(string assetPath, bool bForceCreate = false)
+        {
+            UnityEngine.Object[] objs = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath);
+            if (objs != null && objs.Length != 0)
+            {
+                foreach (UnityEngine.Object obj in objs)
+                {
+                    AnimationClip clip = obj as AnimationClip;
+                    if(clip == null)
+                        continue;
+                    
+                    //提取 *.anim
+                    string filePath = assetPath.Substring(0, assetPath.LastIndexOf("/") + 1) + Path.GetFileNameWithoutExtension(assetPath) + ".anim";
+                    {
+                        UnityEngine.Object clone = UnityEngine.Object.Instantiate(clip);
+
+                        // 优化精度
+                        AssetPostprocessorHelper.OptimizeAnim(clone as AnimationClip);
+                        // AssetPostprocessorHelper.OptimizeAnim2(clone as AnimationClip);
+
+                        AssetDatabase.CreateAsset(clone, filePath);
+                        AssetDatabase.ImportAsset(filePath, ImportAssetOptions.ForceUpdate);
+                        AssetDatabase.Refresh();
+                        Debug.Log($"提取动画完成：{filePath}");
+                    }
+                }
+            }
+        }
+
+        [MenuItem("Assets/美术资源工具/提取模型文件", false, 999)]
+        static public void ExtractMesh()
+        {
+            if(Selection.assetGUIDs.Length == 0)
+                return;
+
+            UnityEditor.EditorUtility.DisplayProgressBar("Extract Mesh", "", 0);
+            for(int i = 0; i < Selection.assetGUIDs.Length; ++i)
+            {
+                ExtractMesh(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[i]));
+                UnityEditor.EditorUtility.DisplayProgressBar("Extract Mesh", i + "/" + Selection.assetGUIDs.Length, i / (float)Selection.assetGUIDs.Length);
+            }
+            UnityEditor.EditorUtility.ClearProgressBar();
+            AssetDatabase.SaveAssets();
+        }
+
+        static public void ExtractMesh(string assetPath)
+        {
+            UnityEngine.Object[] objs = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath);
+            List<Mesh> meshList = new List<Mesh>();
+            if (objs != null && objs.Length != 0)
+            {
+                foreach (UnityEngine.Object obj in objs)
+                {
+                    Mesh mesh = obj as Mesh;
+                    if(mesh == null)
+                        continue;
+                    meshList.Add(mesh);
+                }
+                
+                for(int i = 0; i < meshList.Count; ++i)
+                {
+                    //提取Mesh
+                    string filename = Path.GetFileNameWithoutExtension(assetPath) + "_" + i.ToString();
+                    string filePath = assetPath.Substring(0, assetPath.LastIndexOf("/") + 1) + filename + ".asset";
+                    {
+                        UnityEngine.Object clone = UnityEngine.Object.Instantiate(meshList[i]);
+
+                        AssetDatabase.CreateAsset(clone, filePath);
+                        AssetDatabase.ImportAsset(filePath, ImportAssetOptions.ForceUpdate);
+                        AssetDatabase.Refresh();
+                        Debug.Log($"提取模型完成：{filePath}");
+                    }
+                }
+            }
+        }
+
+        [MenuItem("Assets/美术检查工具/CheckFailParticleCulling", false)]
+        static public void CheckFailParticleCulling()
+        {
+            Assembly ass = typeof(UnityEditor.Editor).Assembly;
+            Type t = ass.GetType("UnityEditor.ParticleSystemUI");
+            MethodInfo init = t.GetMethod("Init");
+            FieldInfo m_SupportsCullingText = t.GetField("m_SupportsCullingText", BindingFlags.Instance | BindingFlags.NonPublic);
+            object particleSystemUI = ass.CreateInstance("UnityEditor.ParticleSystemUI");
+
+            foreach (var obj in Selection.objects)
+            {
+                if (obj is GameObject)
+                {
+                    ParticleSystem[] particles = (obj as GameObject).GetComponentsInChildren<ParticleSystem>(true);
+                    string result = "";
+                    foreach (ParticleSystem particle in particles)
+                    {
+                        init.Invoke(particleSystemUI, new object[] { null, new ParticleSystem[] { particle } });
+                        string subResult = m_SupportsCullingText.GetValue(particleSystemUI) as string;
+                        if (subResult != null)
+                        {
+                            result += particle.name + " (" + subResult.Replace("\n","") + ")\n";
+                        }
+                    }
+                    if (result != "")
+                    {
+                        Debug.Log(AssetDatabase.GetAssetPath(obj) + "\n" + result,obj);
+                    }
+                }
+            }
         }
     }
 }

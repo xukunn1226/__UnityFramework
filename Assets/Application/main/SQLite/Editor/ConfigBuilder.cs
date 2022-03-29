@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Application.Editor
 {
@@ -395,7 +396,7 @@ namespace Application.Editor
 
             for(int i = 4; i < m_AllLines.Length; ++i)
             {
-                string[] values = m_AllLines[i].Split(',');
+                string[] values = Regex.Split(m_AllLines[i], ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 
                 if(values.Length != m_FlagLine.Length)
                 {
