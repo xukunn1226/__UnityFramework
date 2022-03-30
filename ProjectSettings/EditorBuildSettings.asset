@@ -23,6 +23,8 @@ EditorBuildSettings:
   m_configObjects:
     com.myproject.AssetBuilderSetting: {fileID: 11400000, guid: 97bdc094262e65746b5990a4103c113e,
       type: 2}
+    com.myproject.AssetImporterSetting: {fileID: 11400000, guid: d3bde97cb0470f246a44a93091481acf,
+      type: 2}
     com.myproject.BatchAssetCollection: {fileID: 11400000, guid: 7f044b4ad02473249aa4abda379a2658,
       type: 2}
     com.myproject.GameBuilderSettingCollection: {fileID: 11400000, guid: 841f09953baa39b4a8e1ffd3d4fd5a5e,
