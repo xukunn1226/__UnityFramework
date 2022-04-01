@@ -15,8 +15,9 @@ MonoBehaviour:
   m_Active: 1
   m_Settings:
     RenderPassEvent: 500
-    BlurSize: 1
-    DownSample: 1
+    BlurSize: 3
+    DownSample: 2
+    Iteration: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,4 +73,4 @@ MonoBehaviour:
   m_AccurateGbufferNormals: 0
   m_ClusteredRendering: 0
   m_TileSize: 32
-  m_IntermediateTextureMode: 0
+  m_IntermediateTextureMode: 1

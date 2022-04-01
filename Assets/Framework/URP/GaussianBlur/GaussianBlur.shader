@@ -3,28 +3,34 @@ Shader "Hidden/CRP/GaussianBlur"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _BlurSize ("Blur Size", Float) = 1.0
     }
     SubShader
     {
-		CGINCLUDE
+		HLSLINCLUDE
+		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 		
-		#include "UnityCG.cginc"
-		
-		sampler2D _MainTex;  
+		TEXTURE2D(_MainTex);
+		SAMPLER(sampler_MainTex);
+
 		half4 _MainTex_TexelSize;
 		float _BlurSize;
-		  
-		struct v2f
+		
+		struct Attributes
+		{
+			float4 positionOS 	: POSITION;
+			float2 texcoord		: TEXCOORD;
+		};
+
+		struct Varyings
         {
-			float4 pos : SV_POSITION;
-			half2 uv[5]: TEXCOORD0;
+			float4 positionWS 	: SV_POSITION;
+			half2 uv[5]			: TEXCOORD0;
 		};
         
-		v2f vertBlurVertical(appdata_img v)
+		Varyings vertBlurVertical(Attributes v)
         {
-			v2f o;
-			o.pos = UnityObjectToClipPos(v.vertex);
+			Varyings o;
+			o.positionWS = TransformObjectToHClip(v.positionOS.xyz);
 			
 			half2 uv = v.texcoord;
 			
@@ -37,10 +43,10 @@ Shader "Hidden/CRP/GaussianBlur"
 			return o;
 		}
 		
-		v2f vertBlurHorizontal(appdata_img v)
+		Varyings vertBlurHorizontal(Attributes v)
         {
-			v2f o;
-			o.pos = UnityObjectToClipPos(v.vertex);
+			Varyings o;
+			o.positionWS = TransformObjectToHClip(v.positionOS.xyz);
 			
 			half2 uv = v.texcoord;
 			
@@ -53,42 +59,43 @@ Shader "Hidden/CRP/GaussianBlur"
 			return o;
 		}
 		
-		fixed4 fragBlur(v2f i) : SV_Target
+		half4 fragBlur(Varyings i) : SV_Target
         {
 			float weight[3] = {0.4026, 0.2442, 0.0545};
 			
-			fixed3 sum = tex2D(_MainTex, i.uv[0]).rgb * weight[0];
+			half3 sum = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv[0]).rgb * weight[0];
 			
-			for (int it = 1; it < 3; it++) {
-				sum += tex2D(_MainTex, i.uv[it*2-1]).rgb * weight[it];
-				sum += tex2D(_MainTex, i.uv[it*2]).rgb * weight[it];
+			for (int it = 1; it < 3; it++)
+			{
+				sum += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv[it*2-1]).rgb * weight[it];
+				sum += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv[it*2]).rgb * weight[it];
 			}
 			
-			return fixed4(sum, 1.0);
+			return half4(sum, 1.0);
 		}
         
-		ENDCG
+		ENDHLSL
 		
 		ZTest Always Cull Off ZWrite Off
 		
 		Pass
         {			
-			CGPROGRAM
+			HLSLPROGRAM
 			  
 			#pragma vertex vertBlurVertical
 			#pragma fragment fragBlur
 			  
-			ENDCG
+			ENDHLSL
 		}
 		
 		Pass
         {			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vertBlurHorizontal
 			#pragma fragment fragBlur
 			
-			ENDCG
+			ENDHLSL
 		}
 	}
 }
