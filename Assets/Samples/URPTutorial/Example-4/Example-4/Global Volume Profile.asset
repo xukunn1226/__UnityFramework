@@ -27,12 +27,9 @@ MonoBehaviour:
   m_Name: MyBlur
   m_EditorClassIdentifier: 
   active: 1
-  m_AdvancedMode: 0
   blurAmountX:
     m_OverrideState: 1
-    m_Value: 3.66
-    min: 0
+    m_Value: 4.43
   blurAmountY:
     m_OverrideState: 1
-    m_Value: 3.3
-    min: 0
+    m_Value: 6.61
