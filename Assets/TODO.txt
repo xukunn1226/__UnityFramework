@@ -184,7 +184,10 @@
 	https://mp.weixin.qq.com/s/YlWLVJaHmZUCdXDdFwYz-A 关于优化的二三事：Unity 2020 LTS中的托管代码剥离
 	https://github.com/SihaoLiang/TableFramework  Excel导入二进制
 	Unity性能基准测试  https://mp.weixin.qq.com/s?__biz=MzU5MjQ1NTEwOA==&mid=2247495223&idx=1&sn=47afd7fab3ee4cab2f5dedc1b1e852b3&chksm=fe1dda9cc96a538a2caf0783f67bf3a36dafce20dde2ff5ff0d069661408f6ff3d16b5fa308e&scene=21#wechat_redirect
-	
+* 面经
+	https://mp.weixin.qq.com/s/-WXMJuZ0aLWW_3-lPBTJ1g  字节朝夕光年 游戏引擎开发面经
+	https://mp.weixin.qq.com/s/bx09scna1T2dWDRViJz0VA  图形学基础篇
+	https://mp.weixin.qq.com/s/Dkrj7Z9bJD9im1v0nNHv6Q  计算机基础篇
 
 	
 
