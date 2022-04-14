@@ -8,6 +8,8 @@ Shader "Hidden/CRP/GaussianBlur"
     {
 		HLSLINCLUDE
 		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+		#pragma enable_d3d11_debug_symbols
 		
 		TEXTURE2D(_MainTex);
 		SAMPLER(sampler_MainTex);

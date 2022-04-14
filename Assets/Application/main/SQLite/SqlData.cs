@@ -256,6 +256,42 @@ namespace Application.Runtime
                 Debug.LogError(string.Format($"{tableName}:  {queryString}"));
             }
         }
+        
+        public void BeginTransaction()
+        {
+            m_SqlCommand = m_SqlConnection.CreateCommand();
+            SqliteTransaction transaction = m_SqlConnection.BeginTransaction();
+            m_SqlCommand.Connection = m_SqlConnection;
+            m_SqlCommand.Transaction = transaction;
+        }
+
+        public void EndTransaction()
+        {
+            m_SqlCommand.Transaction.Commit();
+            m_SqlCommand.Dispose();
+        }
+
+        public void InsertValuesWithTransaction(string tableName, string[] values)
+        {
+            // INSERT INTO table_name(column1, column2, column3,...) VALUES(value1, value2, value3,...);
+
+            string queryString = "INSERT INTO " + tableName + " VALUES (" + values[0];
+            for (int i = 1; i < values.Length; i++)
+            {
+                queryString += ", " + values[i];
+            }
+            queryString += " )";
+            try
+            {
+                m_SqlCommand.CommandText = queryString;
+                m_SqlCommand.ExecuteNonQuery();
+            }
+            catch(System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                Debug.LogError(string.Format($"{tableName}:  {queryString}"));
+            }
+        }
 
         /// <summary>
         /// 删除指定数据表内的数据

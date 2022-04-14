@@ -394,6 +394,7 @@ namespace Application.Editor
             string tableName = GetFinalTableName(Path.GetFileNameWithoutExtension(file));
             m_Sql.CreateTable(tableName, m_ColumnLine, ConvertCustomizedValueTypesToSql(m_ValueTypeLine));
 
+            m_Sql.BeginTransaction();
             for(int i = 4; i < m_AllLines.Length; ++i)
             {
                 string[] values = Regex.Split(m_AllLines[i], ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
@@ -412,7 +413,8 @@ namespace Application.Editor
                 }
                 try
                 {
-                    m_Sql.InsertValues(tableName, ConvertToSqlContents(valList.ToArray(), m_ValueTypeLine));
+                    // m_Sql.InsertValues(tableName, ConvertToSqlContents(valList.ToArray(), m_ValueTypeLine));
+                    m_Sql.InsertValuesWithTransaction(tableName, ConvertToSqlContents(valList.ToArray(), m_ValueTypeLine));
                 }
                 catch(Exception e)
                 {
@@ -420,6 +422,7 @@ namespace Application.Editor
                     return e.Message;
                 }
             }
+            m_Sql.EndTransaction();
             return null;
         }
 
