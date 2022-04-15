@@ -469,7 +469,7 @@ namespace Application.Editor
                 case "string":
                     if(string.IsNullOrEmpty(content))
                         return string.Format($"''");
-                    return string.Format($"'{PostprocessContent(content)}'");
+                    return string.Format("'{0}'",PostprocessContent(content));
                 case "float":
                     if(string.IsNullOrEmpty(content))
                         return "0";
