@@ -136,7 +136,7 @@ namespace Application.Editor
                         List<string> allLine = new List<string>();
                         while ((line = sr.ReadLine()) != null)
                         {
-                            allLine.Add(line);
+                            allLine.Add(line.Replace("\\n", "\n"));
                         }
                         m_AllLines = allLine.ToArray();
                     }

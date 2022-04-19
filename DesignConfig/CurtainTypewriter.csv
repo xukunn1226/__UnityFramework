@@ -1,0 +1,7 @@
+打字机id,分页id,标题,正文,负责策划,备注
+typewriter_id,typewriter_page_id,typewriter_title,typewriter_text,designer,design_note
+key,key,client,client,design,design
+string,int,string,string,string,string
+newplayer_1,1,Chatpter1,灾后300年\n灾难席卷了大地···\n我一个人走到了这片小�?景亚�?新手开幕黑�?,,
+newplayer_3,2,,丧尸在嚎叫\n嘀嘀嗒嘀�?景亚�?,,
+newplayer_2,1,,临时占用,景亚�?,

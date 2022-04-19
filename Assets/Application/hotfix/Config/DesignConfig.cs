@@ -43,6 +43,14 @@ namespace Application.Logic
         public float deadbody_recovery_delay;
     }
 
+    public class CurtainTypewriterConfig
+    {
+        public string typewriter_id;
+        public int typewriter_page_id;
+        public string typewriter_title;
+        public string typewriter_text;
+    }
+
     public class dialogueConfig
     {
         public int dialogue_id;

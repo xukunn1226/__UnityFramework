@@ -112,6 +112,64 @@ namespace Application.Logic
             m_characterConfigDict.Remove(key1);
         }
 
+        private Dictionary<string, Dictionary<int, CurtainTypewriterConfig>> m_CurtainTypewriterConfigDict = new Dictionary<string, Dictionary<int, CurtainTypewriterConfig>>();
+        public CurtainTypewriterConfig GetCurtainTypewriterConfigByID(string key1, int key2)
+        {
+            const string tableName = "CurtainTypewriterConfig";
+  
+            CurtainTypewriterConfig desc = null;
+            if(FindCurtainTypewriterConfigData(key1, key2, ref desc))
+                return desc;
+
+            SqliteDataReader reader = m_Sql.ReadTable(tableName, new string[] {"typewriter_id", "typewriter_page_id"}, "=", new string[] {key1.ToString(), key2.ToString()});
+            bool bFind = reader.HasRows;
+            while(reader.Read())
+            {                
+                desc.typewriter_id = reader.GetString(reader.GetOrdinal("typewriter_id"));
+                desc.typewriter_page_id = reader.GetInt32(reader.GetOrdinal("typewriter_page_id"));
+                desc.typewriter_title = reader.GetString(reader.GetOrdinal("typewriter_title"));
+                desc.typewriter_text = reader.GetString(reader.GetOrdinal("typewriter_text"));
+            }
+            if(!bFind)
+            {
+                RemoveCurtainTypewriterConfigData(key1, key2);
+            }
+
+            return bFind ? desc : null;
+        }
+        private bool FindCurtainTypewriterConfigData(string key1, int key2, ref CurtainTypewriterConfig desc)
+        {
+            Dictionary<int, CurtainTypewriterConfig> dict;
+            if(!m_CurtainTypewriterConfigDict.TryGetValue(key1, out dict))
+            {
+                dict = new Dictionary<int, CurtainTypewriterConfig>();
+                m_CurtainTypewriterConfigDict.Add(key1, dict);
+            }
+
+            if(!dict.TryGetValue(key2, out desc))
+            {
+                desc = new CurtainTypewriterConfig();
+                dict.Add(key2, desc);
+                return false;
+            }
+            return true;
+        }      
+        private void RemoveCurtainTypewriterConfigData(string key1, int key2)
+        {
+            Dictionary<int, CurtainTypewriterConfig> dict;
+            if(!m_CurtainTypewriterConfigDict.TryGetValue(key1, out dict))
+            {
+                return;
+            }
+
+            CurtainTypewriterConfig desc;
+            if(!dict.TryGetValue(key2, out desc))
+            {
+                return;
+            }
+            dict.Remove(key2);
+        }
+
         private Dictionary<int, Dictionary<int, dialogueConfig>> m_dialogueConfigDict = new Dictionary<int, Dictionary<int, dialogueConfig>>();
         public dialogueConfig GetdialogueConfigByID(int key1, int key2)
         {
