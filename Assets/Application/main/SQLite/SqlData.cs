@@ -136,7 +136,7 @@ namespace Application.Runtime
             string queryString = "CREATE TABLE IF NOT EXISTS " + tableName + "( " + colNames[0] + " " + colTypes[0] + " PRIMARY KEY";
             for (int i = 1; i < colNames.Length; i++)
             {
-                queryString += ", " + colNames[i] + " " + colTypes[i];
+                queryString += ", " + $"[{colNames[i]}]" + " " + colTypes[i];
             }
             queryString += "  ) ";
             ExecuteNonQuery(queryString);
@@ -175,26 +175,26 @@ namespace Application.Runtime
             {
                 queryString += ", " + items[i];
             }
-            queryString += string.Format($" FROM {tableName} WHERE {colNames[0]}{operations[0]}\"{colValues[0]}\"");
+            queryString += string.Format($" FROM {tableName} WHERE [{colNames[0]}]{operations[0]}\"{colValues[0]}\"");
             for (int i = 1; i < colNames.Length; i++)
             {
-                queryString += string.Format($" AND {colNames[i]}{operations[i]}\"{colValues[i]}\"");
+                queryString += string.Format($" AND [{colNames[i]}]{operations[i]}\"{colValues[i]}\"");
             }
             return ExecuteQuery(queryString);
         }
 
         public SqliteDataReader ReadTable(string tableName, string colName, string op, string colValue)
         {
-            string queryString = string.Format($"SELECT * FROM {tableName} WHERE {colName}{op}\"{colValue}\"");
+            string queryString = string.Format($"SELECT * FROM {tableName} WHERE [{colName}]{op}\"{colValue}\"");
             return ExecuteQuery(queryString);
         }
 
         public SqliteDataReader ReadTable(string tableName, string[] colNames, string op, string[] colValues)
         {
-            string queryString = string.Format($"SELECT * FROM {tableName} WHERE {colNames[0]}{op}\"{colValues[0]}\"");
+            string queryString = string.Format($"SELECT * FROM {tableName} WHERE [{colNames[0]}]{op}\"{colValues[0]}\"");
             for(int i = 1; i < colNames.Length; ++i)
             {
-                queryString += string.Format($" AND {colNames[i]}{op}\"{colValues[i]}\"");
+                queryString += string.Format($" AND [{colNames[i]}]{op}\"{colValues[i]}\"");
             }
             return ExecuteQuery(queryString);
         }
