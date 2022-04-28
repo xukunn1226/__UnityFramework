@@ -1,4 +1,4 @@
-Shader "Hidden/CRP/GaussianBlur"
+Shader "Hidden/MyURP/GaussianBlur"
 {
     Properties
     {

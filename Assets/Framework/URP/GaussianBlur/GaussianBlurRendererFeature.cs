@@ -26,7 +26,7 @@ namespace Framework.Core
         private int                 m_DownSample;
         private float               m_BlurSize;
         private int                 m_Iteration;
-        const string                k_BlurShader    = "Hidden/CRP/GaussianBlur";
+        const string                k_BlurShader    = "Hidden/MyURP/GaussianBlur";
 
         public override void Create()
         {
