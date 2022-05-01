@@ -4,6 +4,7 @@ using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using Framework.Core;
 using Application.Runtime;
+using System.Linq;
 
 namespace Application.Logic
 {
@@ -97,40 +98,34 @@ namespace Application.Logic
         
         private void Parse(ref List<string> ret, string content)
         {
-            string[] list = content.Split(';');
-            for(int i = 0; i < list.Length; ++i)
-            {
-                if(string.IsNullOrEmpty(list[i])) continue;
-                
-                ret.Add(list[i]);
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            for(int i = 0; i < pairs.Length; ++i)
+            {                
+                ret.Add(pairs[i]);
             }
         }
 
         private void Parse(ref List<int> ret, string content)
         {
-            string[] list = content.Split(';');
-            for(int i = 0; i < list.Length; ++i)
-            {
-                if(string.IsNullOrEmpty(list[i])) continue;
-                
-                ret.Add(int.Parse(list[i]));
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            for(int i = 0; i < pairs.Length; ++i)
+            {                
+                ret.Add(int.Parse(pairs[i]));
             }
         }
 
         private void Parse(ref List<float> ret, string content)
         {
-            string[] list = content.Split(';');
-            for(int i = 0; i < list.Length; ++i)
-            {
-                if(string.IsNullOrEmpty(list[i])) continue;
-                
-                ret.Add(float.Parse(list[i]));
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            for(int i = 0; i < pairs.Length; ++i)
+            {                
+                ret.Add(float.Parse(pairs[i]));
             }
         }
 
         private void Parse(ref Dictionary<int, int> ret, string content)
         {
-            string[] pairs = content.Split(';');
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
             for(int i = 0; i < pairs.Length; ++i)
             {
                 string[] items = pairs[i].Split(':');
@@ -141,11 +136,9 @@ namespace Application.Logic
 
         private void Parse(ref Dictionary<int, string> ret, string content)
         {
-            string[] pairs = content.Split(';');
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
             for(int i = 0; i < pairs.Length; ++i)
             {
-                if(string.IsNullOrEmpty(pairs[i])) continue;
-
                 string[] items = pairs[i].Split(':');
                 Debug.Assert(items.Length == 2);
                 ret.Add(int.Parse(items[0]), items[1]);
@@ -154,7 +147,7 @@ namespace Application.Logic
 
         private void Parse(ref Dictionary<int, float> ret, string content)
         {
-            string[] pairs = content.Split(';');
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
             for(int i = 0; i < pairs.Length; ++i)
             {
                 string[] items = pairs[i].Split(':');
@@ -165,7 +158,7 @@ namespace Application.Logic
 
         private void Parse(ref Dictionary<string, int> ret, string content)
         {
-            string[] pairs = content.Split(';');
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
             for(int i = 0; i < pairs.Length; ++i)
             {
                 string[] items = pairs[i].Split(':');
@@ -176,7 +169,7 @@ namespace Application.Logic
 
         private void Parse(ref Dictionary<string, string> ret, string content)
         {
-            string[] pairs = content.Split(';');
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
             for(int i = 0; i < pairs.Length; ++i)
             {
                 string[] items = pairs[i].Split(':');
@@ -187,7 +180,7 @@ namespace Application.Logic
 
         private void Parse(ref Dictionary<string, float> ret, string content)
         {
-            string[] pairs = content.Split(';');
+            string[] pairs = content.Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
             for(int i = 0; i < pairs.Length; ++i)
             {
                 string[] items = pairs[i].Split(':');

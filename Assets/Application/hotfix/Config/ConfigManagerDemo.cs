@@ -5,9 +5,9 @@ using Framework.Core;
 
 namespace Application.Logic
 {
-    public class ConfigManagerDemo
+    public class ConfigManagerDemo : MonoBehaviour
     {
-        static public void Start()
+        public void Start()
         {
             Debug.developerConsoleVisible = false;
 

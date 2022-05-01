@@ -6,7 +6,6 @@ using UnityEngine.Rendering.Universal;
 
 namespace Framework.Core
 {
-    // [ExecuteInEditMode]
     public class GaussianBlurRendererFeature : ScriptableRendererFeature
     {
         [System.Serializable]
@@ -23,19 +22,13 @@ namespace Framework.Core
         public Settings             m_Settings      = new Settings();
         private GaussianBlurPass    m_RenderPass;
         private Material            m_BlurMaterial;
-        private int                 m_DownSample;
-        private float               m_BlurSize;
-        private int                 m_Iteration;
         const string                k_BlurShader    = "Hidden/MyURP/GaussianBlur";
 
         public override void Create()
         {
             m_BlurMaterial = CoreUtils.CreateEngineMaterial(Shader.Find(k_BlurShader));
-            m_DownSample = m_Settings.DownSample;
-            m_BlurSize = m_Settings.BlurSize;
-            m_Iteration = m_Settings.Iteration;
 
-            m_RenderPass = new GaussianBlurPass(m_BlurMaterial, m_DownSample, m_BlurSize, m_Iteration);
+            m_RenderPass = new GaussianBlurPass(m_BlurMaterial, m_Settings);
             m_RenderPass.renderPassEvent = m_Settings.RenderPassEvent;
         }
 
@@ -47,38 +40,20 @@ namespace Framework.Core
                 renderer.EnqueuePass(m_RenderPass);
             }
         }
-
-        // void Update()
-        // {
-        //     if(m_RenderPass != null)
-        //     {
-        //         if(m_DownSample != m_Settings.DownSample || m_BlurSize != m_Settings.BlurSize || m_Iteration != m_Settings.Iteration)
-        //         {
-        //             m_DownSample = m_Settings.DownSample;
-        //             m_BlurSize = m_Settings.BlurSize;
-        //             m_Iteration = m_Settings.Iteration;
-        //             m_RenderPass.UpdateBlurParams(m_DownSample, m_BlurSize, m_Iteration);
-        //         }
-        //     }
-        // }
     }
 
     public class GaussianBlurPass : ScriptableRenderPass
     {
-        private Material                m_BlurMaterial;
-        private int                     m_DownSample;
-        private float                   m_BlurSize;
-        private int                     m_Iteration;
-        private RenderTextureDescriptor m_OpaqueDesc;
-        private RenderTargetIdentifier  m_CameraColorTexture;       // 某阶段的color texture，例如_CameraColorAttachment
+        private Material                                m_BlurMaterial;
+        private GaussianBlurRendererFeature.Settings    m_Settings;
+        private RenderTextureDescriptor                 m_OpaqueDesc;
+        private RenderTargetIdentifier                  m_CameraColorTexture;       // 某阶段的color texture，例如_CameraColorAttachment
 
-        public GaussianBlurPass(Material blurMaterial, int downSample, float blurSize, int iteration)
+        public GaussianBlurPass(Material blurMaterial, GaussianBlurRendererFeature.Settings settings)
         {
             profilingSampler = new ProfilingSampler(nameof(GaussianBlurPass));
             m_BlurMaterial = blurMaterial;
-            m_DownSample = downSample;
-            m_BlurSize = blurSize;
-            m_Iteration = iteration;
+            m_Settings = settings;
         }
 
         public void SetUp(RenderTargetIdentifier destination)
@@ -92,21 +67,14 @@ namespace Framework.Core
             m_OpaqueDesc = cameraTextureDescriptor;
         }
 
-        public void UpdateBlurParams(int downSample, float blurSize, int iteration)
-        {
-            m_DownSample = downSample;
-            m_BlurSize = blurSize;
-            m_Iteration = iteration;
-        }
-
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope (cmd, profilingSampler))
             {
                 // down sample
-                m_OpaqueDesc.width /= m_DownSample;
-                m_OpaqueDesc.height /= m_DownSample;
+                m_OpaqueDesc.width /= m_Settings.DownSample;
+                m_OpaqueDesc.height /= m_Settings.DownSample;
 
                 int blurredRT0 = Shader.PropertyToID("_BlurredRT0");
                 int blurredRT1 = Shader.PropertyToID("_BlurredRT1");
@@ -116,9 +84,9 @@ namespace Framework.Core
                 // color texture blit to rt0
                 cmd.Blit(m_CameraColorTexture, blurredRT0);
 
-                for(int i = 0; i < m_Iteration; ++i)
+                for(int i = 0; i < m_Settings.Iteration; ++i)
                 {
-                    cmd.SetGlobalFloat("_BlurSize", (1.0f + i) * m_BlurSize);
+                    cmd.SetGlobalFloat("_BlurSize", (1.0f + i) * m_Settings.BlurSize);
 
                     // render the vertical pass
                     cmd.Blit(blurredRT0, blurredRT1, m_BlurMaterial, 0);
