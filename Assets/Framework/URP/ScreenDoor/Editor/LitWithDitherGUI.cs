@@ -26,7 +26,8 @@ namespace Framework.Core.Editor
         public override void ValidateMaterial(Material material)
         {
             SetMaterialKeywords(material, SimpleLitGUI.SetMaterialKeywords);
-            material.SetFloat("_Transparency", transparencyProp.floatValue);
+            if(transparencyProp != null)
+                material.SetFloat("_Transparency", transparencyProp.floatValue);
         }
 
         // material main surface options
