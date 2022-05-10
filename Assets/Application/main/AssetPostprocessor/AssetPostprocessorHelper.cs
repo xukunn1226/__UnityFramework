@@ -332,8 +332,8 @@ namespace Application.Editor
             return changed;
         }
         
-        [MenuItem("Assets/美术资源工具/提取动画文件", false, 999)]
-        static public void ExtractAnimClip()
+        [MenuItem("Assets/美术资源工具/提取动画文件至同级目录", false, 996)]
+        static private void ExtractAnimClipToSameDirectory()
         {
             if(Selection.assetGUIDs.Length == 0)
                 return;
@@ -341,16 +341,63 @@ namespace Application.Editor
             UnityEditor.EditorUtility.DisplayProgressBar("Extract AnimClip", "", 0);
             for(int i = 0; i < Selection.assetGUIDs.Length; ++i)
             {
-                ExtractAnimClip(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[i]), true);
+                string curAssetPath = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[i]);
+                string dstDirectory = curAssetPath.Substring(0, curAssetPath.LastIndexOf("/"));
+                ExtractAnimClip(curAssetPath, dstDirectory);
                 UnityEditor.EditorUtility.DisplayProgressBar("Extract AnimClip", i + "/" + Selection.assetGUIDs.Length, i / (float)Selection.assetGUIDs.Length);
             }
             UnityEditor.EditorUtility.ClearProgressBar();
             AssetDatabase.SaveAssets();
         }
 
-        static public void ExtractAnimClip(string assetPath, bool bForceCreate = false)
+        [MenuItem("Assets/美术资源工具/提取动画文件至上级目录", false, 997)]
+        static private void ExtractAnimClipToParentDirectory()
         {
-            UnityEngine.Object[] objs = AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath);
+            if(Selection.assetGUIDs.Length == 0)
+                return;
+
+            UnityEditor.EditorUtility.DisplayProgressBar("Extract AnimClip", "", 0);
+            for(int i = 0; i < Selection.assetGUIDs.Length; ++i)
+            {
+                string curAssetPath = AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[i]);
+                string dstDirectory = curAssetPath.Substring(0, curAssetPath.LastIndexOf("/"));
+                dstDirectory = dstDirectory.Substring(0, dstDirectory.LastIndexOf("/"));
+                ExtractAnimClip(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[i]), dstDirectory);
+                UnityEditor.EditorUtility.DisplayProgressBar("Extract AnimClip", i + "/" + Selection.assetGUIDs.Length, i / (float)Selection.assetGUIDs.Length);
+            }
+            UnityEditor.EditorUtility.ClearProgressBar();
+            AssetDatabase.SaveAssets();
+        }
+
+        [MenuItem("Assets/美术资源工具/提取动画文件至指定目录...", false, 998)]
+        static private void ExtractAnimClipToSpecialDirectory()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
+            ExtractAnimWindow.Init(AssetDatabase.IsValidFolder(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/")));
+        }
+
+        static public void DoExtractAnimClipBatch(string srcDirectory, string dstDirectory)
+        {
+            DirectoryInfo di = new DirectoryInfo(srcDirectory);
+            FileInfo[] fis = di.GetFiles("*.fbx", SearchOption.TopDirectoryOnly);
+            UnityEditor.EditorUtility.DisplayProgressBar("Extract AnimClip", "", 0);
+            for(int i = 0; i < fis.Length; ++i)
+            {
+                string fbxAssetPath = Framework.Core.Utility.GetProjectPath(fis[i].FullName);
+                ExtractAnimClip(fbxAssetPath, dstDirectory);
+                UnityEditor.EditorUtility.DisplayProgressBar("Extract AnimClip", i + "/" + fis.Length, i / (float)fis.Length);
+            }
+            UnityEditor.EditorUtility.ClearProgressBar();
+        }
+
+        /// <summary>
+        /// 提取动画文件
+        /// </summary>
+        /// <param name="fbxAssetPath"></param>
+        /// <param name="dstDirectory">null，表示提取至同层级目录</param>
+        static public void ExtractAnimClip(string fbxAssetPath, string dstDirectory)
+        {
+            UnityEngine.Object[] objs = AssetDatabase.LoadAllAssetRepresentationsAtPath(fbxAssetPath);
             if (objs != null && objs.Length != 0)
             {
                 foreach (UnityEngine.Object obj in objs)
@@ -360,18 +407,19 @@ namespace Application.Editor
                         continue;
                     
                     //提取 *.anim
-                    string filePath = assetPath.Substring(0, assetPath.LastIndexOf("/") + 1) + Path.GetFileNameWithoutExtension(assetPath) + ".anim";
+                    dstDirectory = string.IsNullOrEmpty(dstDirectory) ? fbxAssetPath.Substring(0, fbxAssetPath.LastIndexOf("/")) : dstDirectory.TrimEnd('/');
+                    string filename = Path.GetFileNameWithoutExtension(fbxAssetPath) + ".anim"; 
+                    string dstFilename = dstDirectory + "/" + filename;
                     {
                         UnityEngine.Object clone = UnityEngine.Object.Instantiate(clip);
 
                         // 优化精度
                         AssetPostprocessorHelper.OptimizeAnim(clone as AnimationClip);
-                        // AssetPostprocessorHelper.OptimizeAnim2(clone as AnimationClip);
 
-                        AssetDatabase.CreateAsset(clone, filePath);
-                        AssetDatabase.ImportAsset(filePath, ImportAssetOptions.ForceUpdate);
-                        AssetDatabase.Refresh();
-                        Debug.Log($"提取动画完成：{filePath}");
+                        AssetDatabase.CreateAsset(clone, dstFilename);
+                        AssetDatabase.ImportAsset(dstFilename, ImportAssetOptions.ForceUpdate);
+                        // AssetDatabase.Refresh();
+                        Debug.Log($"提取动画完成：{dstFilename}", AssetDatabase.LoadAssetAtPath<AnimationClip>(dstFilename));
                     }
                 }
             }
