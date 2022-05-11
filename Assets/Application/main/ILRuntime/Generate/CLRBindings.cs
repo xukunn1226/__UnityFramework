@@ -55,10 +55,10 @@ namespace ILRuntime.Runtime.Generated
             Application_Runtime_SqlData_Binding.Register(app);
             System_Data_Common_DbDataReader_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_ILTypeInstance_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_String_Dictionary_2_Int32_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Dictionary_2_Int32_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_Dictionary_2_String_Dictionary_2_String_Dictionary_2_Int32_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_Dictionary_2_String_Dictionary_2_Int32_ILTypeInstance_Binding.Register(app);
-            System_Collections_Generic_Dictionary_2_String_Dictionary_2_Int32_ILTypeInstance_Binding.Register(app);
             Application_Runtime_Launcher_Binding.Register(app);
             Application_Runtime_ConfigBuilderSetting_Binding.Register(app);
             UnityEngine_Application_Binding.Register(app);
@@ -69,6 +69,7 @@ namespace ILRuntime.Runtime.Generated
             Framework_Core_DownloadTask_Binding.Register(app);
             Framework_Core_DownloadTaskInfo_Binding.Register(app);
             System_Uri_Binding.Register(app);
+            System_Linq_Enumerable_Binding.Register(app);
             System_Collections_Generic_List_1_String_Binding.Register(app);
             System_Collections_Generic_List_1_Int32_Binding.Register(app);
             System_Single_Binding.Register(app);
@@ -118,7 +119,6 @@ namespace ILRuntime.Runtime.Generated
             Framework_AssetManagement_Runtime_AssetLoader_1_SpriteAtlas_Binding.Register(app);
             UnityEngine_U2D_SpriteAtlas_Binding.Register(app);
             System_Collections_Generic_List_1_Type_Binding.Register(app);
-            System_Linq_Enumerable_Binding.Register(app);
             UnityEngine_EventSystems_EventTrigger_Binding.Register(app);
             System_Collections_Generic_List_1_UnityEngine_EventSystems_EventTrigger_Binding_Entry_Binding.Register(app);
             UnityEngine_EventSystems_EventTrigger_Binding_Entry_Binding.Register(app);
