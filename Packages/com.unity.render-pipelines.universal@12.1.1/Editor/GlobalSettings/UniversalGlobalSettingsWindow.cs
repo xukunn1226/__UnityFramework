@@ -192,6 +192,30 @@ namespace UnityEditor.Rendering.Universal
                     EditorGUILayout.DelayedTextField(serialized.lightLayerName5, Styles.lightLayerName5);
                     EditorGUILayout.DelayedTextField(serialized.lightLayerName6, Styles.lightLayerName6);
                     EditorGUILayout.DelayedTextField(serialized.lightLayerName7, Styles.lightLayerName7);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName8, Styles.userLayerName8);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName9, Styles.userLayerName9);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName10, Styles.userLayerName10);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName11, Styles.userLayerName11);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName12, Styles.userLayerName12);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName13, Styles.userLayerName13);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName14, Styles.userLayerName14);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName15, Styles.userLayerName15);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName16, Styles.userLayerName16);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName17, Styles.userLayerName17);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName18, Styles.userLayerName18);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName19, Styles.userLayerName19);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName20, Styles.userLayerName20);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName21, Styles.userLayerName21);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName22, Styles.userLayerName22);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName23, Styles.userLayerName23);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName24, Styles.userLayerName24);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName25, Styles.userLayerName25);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName26, Styles.userLayerName26);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName27, Styles.userLayerName27);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName28, Styles.userLayerName28);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName29, Styles.userLayerName29);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName30, Styles.userLayerName30);
+                    EditorGUILayout.DelayedTextField(serialized.userLayerName31, Styles.userLayerName31);
                     if (changed.changed)
                     {
                         serialized.serializedObject?.ApplyModifiedProperties();

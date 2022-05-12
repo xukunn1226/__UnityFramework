@@ -215,12 +215,36 @@ namespace UnityEngine.Rendering.Universal
             m_RenderingLayerNames[index++] = lightLayerName5;
             m_RenderingLayerNames[index++] = lightLayerName6;
             m_RenderingLayerNames[index++] = lightLayerName7;
+            m_RenderingLayerNames[index++] = userLayerName8;
+            m_RenderingLayerNames[index++] = userLayerName9;
+            m_RenderingLayerNames[index++] = userLayerName10;
+            m_RenderingLayerNames[index++] = userLayerName11;
+            m_RenderingLayerNames[index++] = userLayerName12;
+            m_RenderingLayerNames[index++] = userLayerName13;
+            m_RenderingLayerNames[index++] = userLayerName14;
+            m_RenderingLayerNames[index++] = userLayerName15;
+            m_RenderingLayerNames[index++] = userLayerName16;
+            m_RenderingLayerNames[index++] = userLayerName17;
+            m_RenderingLayerNames[index++] = userLayerName18;
+            m_RenderingLayerNames[index++] = userLayerName19;
+            m_RenderingLayerNames[index++] = userLayerName20;
+            m_RenderingLayerNames[index++] = userLayerName21;
+            m_RenderingLayerNames[index++] = userLayerName22;
+            m_RenderingLayerNames[index++] = userLayerName23;
+            m_RenderingLayerNames[index++] = userLayerName24;
+            m_RenderingLayerNames[index++] = userLayerName25;
+            m_RenderingLayerNames[index++] = userLayerName26;
+            m_RenderingLayerNames[index++] = userLayerName27;
+            m_RenderingLayerNames[index++] = userLayerName28;
+            m_RenderingLayerNames[index++] = userLayerName29;
+            m_RenderingLayerNames[index++] = userLayerName30;
+            m_RenderingLayerNames[index++] = userLayerName31;
 
             // Unused
-            for (int i = index; i < m_RenderingLayerNames.Length; ++i)
-            {
-                m_RenderingLayerNames[i] = string.Format("Unused {0}", i);
-            }
+            // for (int i = index; i < m_RenderingLayerNames.Length; ++i)
+            // {
+            //     m_RenderingLayerNames[i] = string.Format("Unused {0}", i);
+            // }
 
             // Update prefixed
             if (m_PrefixedRenderingLayerNames == null)
@@ -271,6 +295,54 @@ namespace UnityEngine.Rendering.Universal
         public string lightLayerName6 = k_DefaultLightLayerNames[6];
         /// <summary>Name for light layer 7.</summary>
         public string lightLayerName7 = k_DefaultLightLayerNames[7];
+        /// <summary>Name for user layer 8.</summary>
+        public string userLayerName8 = string.Format("Unused {0}", 8);
+        /// <summary>Name for user layer 9.</summary>
+        public string userLayerName9 = string.Format("Unused {0}", 9);
+        /// <summary>Name for user layer 10.</summary>
+        public string userLayerName10 = string.Format("Unused {0}", 10);
+        /// <summary>Name for user layer 11.</summary>
+        public string userLayerName11 = string.Format("Unused {0}", 11);
+        /// <summary>Name for user layer 12.</summary>
+        public string userLayerName12 = string.Format("Unused {0}", 12);
+        /// <summary>Name for user layer 13.</summary>
+        public string userLayerName13 = string.Format("Unused {0}", 13);
+        /// <summary>Name for user layer 14.</summary>
+        public string userLayerName14 = string.Format("Unused {0}", 14);
+        /// <summary>Name for user layer 15.</summary>
+        public string userLayerName15 = string.Format("Unused {0}", 15);
+        /// <summary>Name for user layer 16.</summary>
+        public string userLayerName16 = string.Format("Unused {0}", 16);
+        /// <summary>Name for user layer 17.</summary>
+        public string userLayerName17 = string.Format("Unused {0}", 17);
+        /// <summary>Name for user layer 18.</summary>
+        public string userLayerName18 = string.Format("Unused {0}", 18);
+        /// <summary>Name for user layer 19.</summary>
+        public string userLayerName19 = string.Format("Unused {0}", 19);
+        /// <summary>Name for user layer 20.</summary>
+        public string userLayerName20 = string.Format("Unused {0}", 20);
+        /// <summary>Name for user layer 21.</summary>
+        public string userLayerName21 = string.Format("Unused {0}", 21);
+        /// <summary>Name for user layer 22.</summary>
+        public string userLayerName22 = string.Format("Unused {0}", 22);
+        /// <summary>Name for user layer 23.</summary>
+        public string userLayerName23 = string.Format("Unused {0}", 23);
+        /// <summary>Name for user layer 24.</summary>
+        public string userLayerName24 = string.Format("Unused {0}", 24);
+        /// <summary>Name for user layer 25.</summary>
+        public string userLayerName25 = string.Format("Unused {0}", 25);
+        /// <summary>Name for user layer 26.</summary>
+        public string userLayerName26 = string.Format("Unused {0}", 26);
+        /// <summary>Name for user layer 27.</summary>
+        public string userLayerName27 = string.Format("Unused {0}", 27);
+        /// <summary>Name for user layer 28.</summary>
+        public string userLayerName28 = string.Format("Unused {0}", 28);
+        /// <summary>Name for user layer 29.</summary>
+        public string userLayerName29 = string.Format("Unused {0}", 29);
+        /// <summary>Name for user layer 30.</summary>
+        public string userLayerName30 = string.Format("Unused {0}", 30);
+        /// <summary>Name for user layer 31.</summary>
+        public string userLayerName31 = string.Format("Unused {0}", 31);
 
         [System.NonSerialized]
         string[] m_LightLayerNames = null;
