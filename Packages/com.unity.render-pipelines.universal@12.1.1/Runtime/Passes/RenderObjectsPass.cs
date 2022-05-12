@@ -40,7 +40,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
 
         RenderStateBlock m_RenderStateBlock;
 
-        public RenderObjectsPass(string profilerTag, RenderPassEvent renderPassEvent, string[] shaderTags, RenderQueueType renderQueueType, int layerMask, RenderObjects.CustomCameraSettings cameraSettings)
+        public RenderObjectsPass(string profilerTag, RenderPassEvent renderPassEvent, string[] shaderTags, RenderQueueType renderQueueType, int layerMask, uint renderingLayerMask, RenderObjects.CustomCameraSettings cameraSettings)
         {
             base.profilingSampler = new ProfilingSampler(nameof(RenderObjectsPass));
 
@@ -53,7 +53,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
             RenderQueueRange renderQueueRange = (renderQueueType == RenderQueueType.Transparent)
                 ? RenderQueueRange.transparent
                 : RenderQueueRange.opaque;
-            m_FilteringSettings = new FilteringSettings(renderQueueRange, layerMask);
+            m_FilteringSettings = new FilteringSettings(renderQueueRange, layerMask, renderingLayerMask);
 
             if (shaderTags != null && shaderTags.Length > 0)
             {
@@ -71,8 +71,8 @@ namespace UnityEngine.Experimental.Rendering.Universal
             m_CameraSettings = cameraSettings;
         }
 
-        internal RenderObjectsPass(URPProfileId profileId, RenderPassEvent renderPassEvent, string[] shaderTags, RenderQueueType renderQueueType, int layerMask, RenderObjects.CustomCameraSettings cameraSettings)
-            : this(profileId.GetType().Name, renderPassEvent, shaderTags, renderQueueType, layerMask, cameraSettings)
+        internal RenderObjectsPass(URPProfileId profileId, RenderPassEvent renderPassEvent, string[] shaderTags, RenderQueueType renderQueueType, int layerMask, uint renderingLayerMask, RenderObjects.CustomCameraSettings cameraSettings)
+            : this(profileId.GetType().Name, renderPassEvent, shaderTags, renderQueueType, layerMask, renderingLayerMask, cameraSettings)
         {
             m_ProfilingSampler = ProfilingSampler.Get(profileId);
         }
