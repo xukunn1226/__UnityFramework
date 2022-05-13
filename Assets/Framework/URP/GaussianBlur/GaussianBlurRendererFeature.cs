@@ -36,7 +36,6 @@ namespace Framework.Core
         {
             if(!renderingData.cameraData.isSceneViewCamera)
             {
-                m_RenderPass.SetUp(renderer.cameraColorTarget);         // _CameraColorTexture
                 renderer.EnqueuePass(m_RenderPass);
             }
         }
@@ -56,16 +55,55 @@ namespace Framework.Core
             m_Settings = settings;
         }
 
-        public void SetUp(RenderTargetIdentifier destination)
+        // This method is called before executing the render pass.
+        // It can be used to configure render targets and their clear state. Also to create temporary render target textures.
+        // When empty this render pass will render to the active camera render target.
+        // You should never call CommandBuffer.SetRenderTarget. Instead call <c>ConfigureTarget</c> and <c>ConfigureClear</c>.
+        // The render pipeline will ensure target setup and clearing happens in a performant manner.
+        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)
         {
-            m_CameraColorTexture = destination;
+            // _CameraColorAttachmentA
+            m_CameraColorTexture = renderingData.cameraData.renderer.cameraColorTarget;
         }
 
+        /// <summary>
+        /// This method is called by the renderer before executing the render pass.
+        /// Override this method if you need to to configure render targets and their clear state, and to create temporary render target textures.
+        /// If a render pass doesn't override this method, this render pass renders to the active Camera's render target.
+        /// You should never call CommandBuffer.SetRenderTarget. Instead call <c>ConfigureTarget</c> and <c>ConfigureClear</c>.
+        /// </summary>
+        /// <param name="cmd">CommandBuffer to enqueue rendering commands. This will be executed by the pipeline.</param>
+        /// <param name="cameraTextureDescriptor">Render texture descriptor of the camera render target.</param>
+        /// <seealso cref="ConfigureTarget"/>
+        /// <seealso cref="ConfigureClear"/>
         public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)
         {
             cameraTextureDescriptor.msaaSamples = 1;
             m_OpaqueDesc = cameraTextureDescriptor;
+            m_OpaqueDesc.depthStencilFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.None;       // 优化带宽，不需要depth buffer
         }
+
+        /// <summary>
+        /// Called upon finish rendering a camera. You can use this callback to release any resources created
+        /// by this render
+        /// pass that need to be cleanup once camera has finished rendering.
+        /// This method be called for all cameras in a camera stack.
+        /// </summary>
+        /// <param name="cmd">Use this CommandBuffer to cleanup any generated data</param>
+        public override void OnCameraCleanup(CommandBuffer cmd)
+        {
+        }
+
+        /// <summary>
+        /// Called upon finish rendering a camera stack. You can use this callback to release any resources created
+        /// by this render pass that need to be cleanup once all cameras in the stack have finished rendering.
+        /// This method will be called once after rendering the last camera in the camera stack.
+        /// Cameras that don't have an explicit camera stack are also considered stacked rendering.
+        /// In that case the Base camera is the first and last camera in the stack.
+        /// </summary>
+        /// <param name="cmd">Use this CommandBuffer to cleanup any generated data</param>
+        public override void OnFinishCameraStackRendering(CommandBuffer cmd)
+        { }
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
@@ -97,6 +135,8 @@ namespace Framework.Core
 
                 // finally blit to color texture
                 cmd.Blit(blurredRT0, m_CameraColorTexture);
+                cmd.ReleaseTemporaryRT(blurredRT0);
+                cmd.ReleaseTemporaryRT(blurredRT1);
             }
             context.ExecuteCommandBuffer(cmd);
             CommandBufferPool.Release(cmd);

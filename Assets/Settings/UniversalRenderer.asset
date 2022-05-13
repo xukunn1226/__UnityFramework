@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 008692be5cb01f54eb13ce520f179bb9, type: 3}
   m_Name: GaussianBlurRendererFeature
   m_EditorClassIdentifier: 
-  m_Active: 0
+  m_Active: 1
   m_Settings:
-    RenderPassEvent: 500
+    RenderPassEvent: 600
     BlurSize: 2
     DownSample: 2
     Iteration: 2
