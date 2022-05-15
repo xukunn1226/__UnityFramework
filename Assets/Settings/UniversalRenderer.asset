@@ -15,7 +15,7 @@ MonoBehaviour:
   m_Active: 0
   m_Settings:
     RenderPassEvent: 600
-    BlurSize: 2
+    BlurSize: 2.21
     DownSample: 2
     Iteration: 2
 --- !u!114 &11400000
