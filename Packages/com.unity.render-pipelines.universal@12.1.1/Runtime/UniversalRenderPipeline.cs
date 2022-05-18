@@ -532,6 +532,7 @@ namespace UnityEngine.Rendering.Universal
             // Update volumeframework before initializing additional camera data
             UpdateVolumeFramework(baseCamera, baseCameraAdditionalData);
             InitializeCameraData(baseCamera, baseCameraAdditionalData, !isStackedRendering, out var baseCameraData);
+            InitCameraDataEx(ref baseCameraData, baseCamera, baseCamera, cameraStack);
             RenderTextureDescriptor originalTargetDesc = baseCameraData.cameraTargetDescriptor;
 
 #if ENABLE_VR && ENABLE_XR_MODULE
@@ -599,6 +600,7 @@ namespace UnityEngine.Rendering.Universal
 #endif
                         UpdateVolumeFramework(currCamera, currCameraData);
                         InitializeAdditionalCameraData(currCamera, currCameraData, lastCamera, ref overlayCameraData);
+                        InitCameraDataEx(ref overlayCameraData, currCamera, baseCamera, cameraStack);
 #if ENABLE_VR && ENABLE_XR_MODULE
                         if (baseCameraData.xr.enabled)
                             m_XRSystem.UpdateFromCamera(ref overlayCameraData.xr, overlayCameraData);
@@ -633,6 +635,39 @@ namespace UnityEngine.Rendering.Universal
 
         m_XRSystem.ReleaseFrame();
 #endif
+        }
+
+        static void InitCameraDataEx(ref CameraData data, Camera curCamera, Camera baseCamera, List<Camera> cameraStack)
+        {
+            int activeCameraCount = 1;      // base camera always active
+            int index = -1;
+            if (cameraStack != null)
+            {
+                for (int i = 0; i < cameraStack.Count; ++i)
+                {
+                    if (cameraStack[i] == null || !cameraStack[i].isActiveAndEnabled)
+                        continue;
+
+                    ++activeCameraCount;
+                    if (cameraStack[i] == curCamera)
+                    {
+                        index = activeCameraCount - 1;
+                    }
+                }
+            }
+
+            if (curCamera == baseCamera)
+            {
+                data.indexOfCamerasList = 0;
+            }
+            else
+            {                
+                data.indexOfCamerasList = index;        // after base camera
+            }
+            data.activeCameraCount = activeCameraCount;
+            data.enableLastOverlayCameraToFrameBuffer = asset.enableLastOverlayCameraToFrameBuffer;         // default to enable，the parameter will expose to pipeline asset
+            data.enableLastOverlayCameraToFrameBuffer &= !Display.main.requiresSrgbBlitToBackbuffer;        // 硬件支持自动SRGB转换才启动此功能
+            data.enableLastOverlayCameraToFrameBuffer &= ((activeCameraCount - 1) == 0 ? false : true);     // disable it when no camera stack
         }
 
         static void UpdateVolumeFramework(Camera camera, UniversalAdditionalCameraData additionalCameraData)

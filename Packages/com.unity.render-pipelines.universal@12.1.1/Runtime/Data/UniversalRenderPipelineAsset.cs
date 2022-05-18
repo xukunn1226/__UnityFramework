@@ -167,6 +167,7 @@ namespace UnityEngine.Rendering.Universal
         [SerializeField] bool m_SupportsHDR = true;
         [SerializeField] MsaaQuality m_MSAA = MsaaQuality.Disabled;
         [SerializeField] float m_RenderScale = 1.0f;
+        [SerializeField] bool m_EnableLastOverlayCameraToFrameBuffer = true;        // added by xukun
         // TODO: Shader Quality Tiers
 
         // Main directional light Settings
@@ -658,6 +659,12 @@ namespace UnityEngine.Rendering.Universal
         {
             get { return m_RenderScale; }
             set { m_RenderScale = ValidateRenderScale(value); }
+        }
+
+        public bool enableLastOverlayCameraToFrameBuffer
+        {
+            get => m_EnableLastOverlayCameraToFrameBuffer;
+            set => m_EnableLastOverlayCameraToFrameBuffer = value;
         }
 
         public LightRenderingMode mainLightRenderingMode

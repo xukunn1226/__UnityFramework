@@ -550,8 +550,16 @@ namespace UnityEngine.Rendering.Universal
             }
             else
             {
-                m_ActiveCameraColorAttachment = m_ColorBufferSystem.GetBackBuffer();
-                m_ActiveCameraDepthAttachment = m_CameraDepthAttachment;
+                if (renderingData.cameraData.renderingToFrameBuffer)
+                {
+                    m_ActiveCameraColorAttachment = RenderTargetHandle.CameraTarget;
+                    m_ActiveCameraDepthAttachment = RenderTargetHandle.CameraTarget;
+                }
+                else
+                {
+                    m_ActiveCameraColorAttachment = m_ColorBufferSystem.GetBackBuffer();
+                    m_ActiveCameraDepthAttachment = m_CameraDepthAttachment;
+                }
             }
 
             cameraData.renderer.useDepthPriming = useDepthPriming;
@@ -772,19 +780,19 @@ namespace UnityEngine.Rendering.Universal
 
 
             bool hasCaptureActions = renderingData.cameraData.captureActions != null && lastCameraInTheStack;
-            bool applyFinalPostProcessing = anyPostProcessing && lastCameraInTheStack &&
+            bool needFinalPass = renderingData.cameraData.needFinalPass;
+            bool applyFinalPostProcessing = anyPostProcessing && (lastCameraInTheStack || needFinalPass) &&
                 renderingData.cameraData.antialiasing == AntialiasingMode.FastApproximateAntialiasing;
 
             // When post-processing is enabled we can use the stack to resolve rendering to camera target (screen or RT).
             // However when there are render passes executing after post we avoid resolving to screen so rendering continues (before sRGBConvertion etc)
-            bool resolvePostProcessingToCameraTarget = !hasCaptureActions && !hasPassesAfterPostProcessing && !applyFinalPostProcessing;
-
-            if (lastCameraInTheStack)
+            bool resolvePostProcessingToCameraTarget = !hasCaptureActions && !hasPassesAfterPostProcessing && !applyFinalPostProcessing;            
+            if(needFinalPass || lastCameraInTheStack)
             {
                 SetupFinalPassDebug(ref cameraData);
 
                 // Post-processing will resolve to final target. No need for final blit pass.
-                if (applyPostProcessing)
+                if (applyPostProcessing && !renderingData.cameraData.renderingToFrameBuffer)
                 {
                     // if resolving to screen we need to be able to perform sRGBConvertion in post-processing if necessary
                     bool doSRGBConvertion = resolvePostProcessingToCameraTarget;
@@ -795,7 +803,7 @@ namespace UnityEngine.Rendering.Universal
                 var sourceForFinalPass = m_ActiveCameraColorAttachment;
 
                 // Do FXAA or any other final post-processing effect that might need to run after AA.
-                if (applyFinalPostProcessing)
+                if (applyFinalPostProcessing && !renderingData.cameraData.renderingToFrameBuffer)
                 {
                     finalPostProcessPass.SetupFinalPass(sourceForFinalPass, true);
                     EnqueuePass(finalPostProcessPass);
@@ -818,7 +826,7 @@ namespace UnityEngine.Rendering.Universal
                     m_ActiveCameraColorAttachment == RenderTargetHandle.GetCameraTarget(cameraData.xr);
 
                 // We need final blit to resolve to screen
-                if (!cameraTargetResolved)
+                if (!cameraTargetResolved && !renderingData.cameraData.renderingToFrameBuffer)
                 {
                     m_FinalBlitPass.Setup(cameraTargetDescriptor, sourceForFinalPass);
                     EnqueuePass(m_FinalBlitPass);

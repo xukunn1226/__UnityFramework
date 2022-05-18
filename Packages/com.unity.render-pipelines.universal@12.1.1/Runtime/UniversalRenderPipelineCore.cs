@@ -209,6 +209,31 @@ namespace UnityEngine.Rendering.Universal
         public bool resolveFinalTarget;
 
         /// <summary>
+        /// True if the last overlay camera in camera stack will render to the frame buffer
+        /// </summary>
+        public bool enableLastOverlayCameraToFrameBuffer;
+
+        /// <summary>
+        /// index of active cameras list, base camera's index is zero
+        /// </summary>
+        public int indexOfCamerasList;
+
+        /// <summary>
+        /// count of active cameras, base camera always active
+        /// </summary>
+        public int activeCameraCount;
+
+        /// <summary>
+        /// second to last camera need to add final pass
+        /// </summary>
+        public bool needFinalPass { get { return enableLastOverlayCameraToFrameBuffer && indexOfCamerasList == activeCameraCount - 1 - 1; } }
+
+        /// <summary>
+        /// last camera will render to frame buffer
+        /// </summary>
+        public bool renderingToFrameBuffer { get { return enableLastOverlayCameraToFrameBuffer && indexOfCamerasList == activeCameraCount - 1; } }
+
+        /// <summary>
         /// Camera position in world space.
         /// </summary>
         public Vector3 worldSpaceCameraPos;
