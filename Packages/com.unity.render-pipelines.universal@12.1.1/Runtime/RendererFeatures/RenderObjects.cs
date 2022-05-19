@@ -47,7 +47,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
             {
                 RenderQueueType = RenderQueueType.Opaque;
                 LayerMask = 0;
-                RenderingLayerMask = 0;
+                RenderingLayerMask = uint.MaxValue;
             }
         }
 
