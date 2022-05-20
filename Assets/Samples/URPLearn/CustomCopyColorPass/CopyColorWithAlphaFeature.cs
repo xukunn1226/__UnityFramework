@@ -33,7 +33,7 @@ namespace  URPLearn
         private void EnsureMaterialInEditor(){
             #if UNITY_EDITOR
             if(!_material){
-                _material = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>("Assets/URPLearn/CustomCopyColorPass/Materials/CopyColorMat.mat");
+                _material = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>("Assets/Samples/URPLearn/CustomCopyColorPass/Materials/CopyColorMat.mat");
             }
             #endif
         }

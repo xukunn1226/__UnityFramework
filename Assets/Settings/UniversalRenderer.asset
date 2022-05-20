@@ -43,6 +43,8 @@ MonoBehaviour:
   m_TransparentLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_OpaqueRenderingLayerMask: 4294967295
+  m_TransparentRenderingLayerMask: 4294967295
   m_DefaultStencilState:
     overrideStencilState: 0
     stencilReference: 0

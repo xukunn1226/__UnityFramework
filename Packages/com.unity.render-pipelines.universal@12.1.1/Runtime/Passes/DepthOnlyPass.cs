@@ -26,10 +26,10 @@ namespace UnityEngine.Rendering.Universal.Internal
         /// <summary>
         /// Create the DepthOnlyPass
         /// </summary>
-        public DepthOnlyPass(RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask)
+        public DepthOnlyPass(RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask, uint renderingLayerMask)
         {
             base.profilingSampler = new ProfilingSampler(nameof(DepthOnlyPass));
-            m_FilteringSettings = new FilteringSettings(renderQueueRange, layerMask);
+            m_FilteringSettings = new FilteringSettings(renderQueueRange, layerMask, renderingLayerMask);
             renderPassEvent = evt;
         }
 

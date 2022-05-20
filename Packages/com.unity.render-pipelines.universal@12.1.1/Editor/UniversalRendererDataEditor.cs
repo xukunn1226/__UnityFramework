@@ -15,6 +15,8 @@ namespace UnityEditor.Rendering.Universal
             public static readonly GUIContent FilteringSectionLabel = EditorGUIUtility.TrTextContent("Filtering", "Settings that controls and define which layers the renderer draws.");
             public static readonly GUIContent OpaqueMask = EditorGUIUtility.TrTextContent("Opaque Layer Mask", "Controls which opaque layers this renderer draws.");
             public static readonly GUIContent TransparentMask = EditorGUIUtility.TrTextContent("Transparent Layer Mask", "Controls which transparent layers this renderer draws.");
+            public static readonly GUIContent OpaqueRenderingMask = EditorGUIUtility.TrTextContent("Opaque Rendering Layer Mask", "Controls which opaque rendering layers this renderer draws.");
+            public static readonly GUIContent TransparentRenderingMask = EditorGUIUtility.TrTextContent("Transparent Rendering Layer Mask", "Controls which transparent rendering layers this renderer draws.");
 
             public static readonly GUIContent RenderingSectionLabel = EditorGUIUtility.TrTextContent("Rendering", "Settings related to rendering and lighting.");
             public static readonly GUIContent RenderingModeLabel = EditorGUIUtility.TrTextContent("Rendering Path", "Select a rendering path.");
@@ -39,6 +41,8 @@ namespace UnityEditor.Rendering.Universal
 
         SerializedProperty m_OpaqueLayerMask;
         SerializedProperty m_TransparentLayerMask;
+        SerializedProperty m_OpaqueRenderingLayerMask;
+        SerializedProperty m_TransparentRenderingLayerMask;
         SerializedProperty m_RenderingMode;
         SerializedProperty m_DepthPrimingMode;
         SerializedProperty m_AccurateGbufferNormals;
@@ -62,6 +66,8 @@ namespace UnityEditor.Rendering.Universal
         {
             m_OpaqueLayerMask = serializedObject.FindProperty("m_OpaqueLayerMask");
             m_TransparentLayerMask = serializedObject.FindProperty("m_TransparentLayerMask");
+            m_OpaqueRenderingLayerMask = serializedObject.FindProperty("m_OpaqueRenderingLayerMask");
+            m_TransparentRenderingLayerMask = serializedObject.FindProperty("m_TransparentRenderingLayerMask");
             m_RenderingMode = serializedObject.FindProperty("m_RenderingMode");
             m_DepthPrimingMode = serializedObject.FindProperty("m_DepthPrimingMode");
             m_AccurateGbufferNormals = serializedObject.FindProperty("m_AccurateGbufferNormals");
@@ -87,6 +93,15 @@ namespace UnityEditor.Rendering.Universal
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(m_OpaqueLayerMask, Styles.OpaqueMask);
             EditorGUILayout.PropertyField(m_TransparentLayerMask, Styles.TransparentMask);
+
+            // Rendering Layer mask
+            UniversalRenderPipelineGlobalSettings asset = UniversalRenderPipelineGlobalSettings.instance;
+            string[] layerNames = asset != null ? asset.renderingLayerMaskNames : new string[32];
+            var mask = EditorGUILayout.MaskField(Styles.OpaqueRenderingMask, m_OpaqueRenderingLayerMask.intValue, layerNames);
+            m_OpaqueRenderingLayerMask.longValue = (uint)mask;
+            mask = EditorGUILayout.MaskField(Styles.TransparentRenderingMask, m_TransparentRenderingLayerMask.intValue, layerNames);
+            m_TransparentRenderingLayerMask.longValue = (uint)mask;
+
             EditorGUI.indentLevel--;
             EditorGUILayout.Space();
 

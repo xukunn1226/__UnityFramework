@@ -24,10 +24,10 @@ namespace UnityEngine.Rendering.Universal.Internal
         /// <summary>
         /// Create the DepthNormalOnlyPass
         /// </summary>
-        public DepthNormalOnlyPass(RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask)
+        public DepthNormalOnlyPass(RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask, uint renderingLayerMask)
         {
             base.profilingSampler = new ProfilingSampler(nameof(DepthNormalOnlyPass));
-            m_FilteringSettings = new FilteringSettings(renderQueueRange, layerMask);
+            m_FilteringSettings = new FilteringSettings(renderQueueRange, layerMask, renderingLayerMask);
             renderPassEvent = evt;
             useNativeRenderPass = false;
         }

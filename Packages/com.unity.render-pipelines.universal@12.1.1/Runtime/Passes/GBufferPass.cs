@@ -25,13 +25,13 @@ namespace UnityEngine.Rendering.Universal.Internal
         FilteringSettings m_FilteringSettings;
         RenderStateBlock m_RenderStateBlock;
 
-        public GBufferPass(RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask, StencilState stencilState, int stencilReference, DeferredLights deferredLights)
+        public GBufferPass(RenderPassEvent evt, RenderQueueRange renderQueueRange, LayerMask layerMask, uint renderingLayerMask, StencilState stencilState, int stencilReference, DeferredLights deferredLights)
         {
             base.profilingSampler = new ProfilingSampler(nameof(GBufferPass));
             base.renderPassEvent = evt;
 
             m_DeferredLights = deferredLights;
-            m_FilteringSettings = new FilteringSettings(renderQueueRange, layerMask);
+            m_FilteringSettings = new FilteringSettings(renderQueueRange, layerMask, renderingLayerMask);
             m_RenderStateBlock = new RenderStateBlock(RenderStateMask.Nothing);
 
             m_RenderStateBlock.stencilState = stencilState;
