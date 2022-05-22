@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Framework.Core
+namespace Framework.URP
 {
     public class GaussianBlurRendererFeature : ScriptableRendererFeature
     {
