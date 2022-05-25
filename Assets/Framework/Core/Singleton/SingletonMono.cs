@@ -15,42 +15,60 @@ namespace Framework.Core
     {
         private static T _instance;
 
-        public static T Instance
+        public static T Instance => GetInstance();
+
+        static T GetInstance()
         {
-            get
+            if (applicationIsQuitting && (T)FindObjectOfType(typeof(T)) == null)
             {
-                if (applicationIsQuitting)
+                Debug.LogWarning("[Singleton] Instance '" + typeof(T) + "' already destroyed on application quit.  Won't create again - returning null.");
+                return null;
+            }
+
+            if (_instance == null)
+            {
+                _instance = (T)FindObjectOfType(typeof(T));
+
+                if (FindObjectsOfType(typeof(T)).Length > 1)
                 {
-                    Debug.LogWarning("[Singleton] Instance '" + typeof(T) +
-                        "' already destroyed on application quit." +
-                        " Won't create again - returning null.");
-                    return null;
+                    Debug.LogError("[Singleton] Something went really wrong " + " - there should never be more than 1 singleton!" + " Reopening the scene might fix it.");
                 }
 
                 if (_instance == null)
                 {
-                    GameObject singleton = new GameObject(typeof(T).Name);
+                    GameObject singleton = new GameObject();
                     _instance = singleton.AddComponent<T>();
                 }
 
-                return _instance;
+                Debug.Log("[Singleton] An instance of " + typeof(T) +
+                        " is needed in the scene, so '" + _instance.gameObject +
+                        "' was created with DontDestroyOnLoad.");
+
+                _instance.gameObject.name = "[S] " + typeof(T).Name;
+                _instance.gameObject.transform.parent = null;
+                DontDestroyOnLoad(_instance.gameObject);
+            }
+
+            return _instance;
+        }
+
+        private bool isInit = false;
+        public void Init()
+        {
+            if (!isInit)
+            {
+                isInit = true;
+                OnInit();
             }
         }
 
+        protected virtual void OnInit() { }
+
         protected virtual void Awake()
         {
-            if(FindObjectsOfType(typeof(T)).Length > 1)
-            {
-                DestroyImmediate(this);
-                throw new System.Exception("[Singleton] Something went really wrong " +
-                                " - there should never be more than 1 singleton!    " + typeof(T).ToString());
-            }
+            GetInstance();
 
-            _instance = this as T;
-            _instance.gameObject.name = "[S] " + typeof(T).Name;
-            
-            transform.parent = null;
-            DontDestroyOnLoad(_instance.gameObject);
+            Init();
 
             Add(this);
         }

@@ -25,7 +25,7 @@ namespace Application.Runtime
             yield return null;
             yield return null;
 
-            SingletonMonoBase.Work();
+            SingletonMonoBase.Restart();
 
             // 重启launcher流程
             Launcher.Instance.Restart();

@@ -9,16 +9,10 @@ namespace Framework.Core
         static protected bool applicationIsQuitting = false;
         static private List<SingletonMonoBase> s_SingletonMonoList = new List<SingletonMonoBase>();
 
-        static public void Add(SingletonMonoBase singleton)
+        static protected void Add(SingletonMonoBase singleton)
         {
             s_SingletonMonoList.Add(singleton);
         }
-
-        // !!! 特殊处理：不开放删除接口，由DestroyAll统一处理
-        // static public void Remove(SingletonMonoBase singleton)
-        // {
-        //     s_SingletonMonoList.Remove(singleton);
-        // }
 
         static public void DestroyAll()
         {
@@ -30,7 +24,10 @@ namespace Framework.Core
             s_SingletonMonoList.Clear();
         }
 
-        static public void Work()
+        /// <summary>
+        /// 所有单件销毁后，重设标志位才可以重新实例化单件
+        /// </summary>
+        static public void Restart()
         {
             applicationIsQuitting = false;
         }
