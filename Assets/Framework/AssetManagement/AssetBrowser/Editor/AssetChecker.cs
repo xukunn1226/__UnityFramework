@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Unity.EditorCoroutines.Editor;
+using System.Reflection;
 
 namespace Framework.AssetManagement.AssetBrowser
 {
@@ -324,6 +325,7 @@ namespace Framework.AssetManagement.AssetBrowser
         {
             return "Assets" + Path.GetFullPath(path).Replace(Path.GetFullPath(UnityEngine.Application.dataPath), "").Replace('\\', '/');
         }
+        
         [MenuItem("Assets/AssetBrowser/Fix Redundant Mesh of ParticleSystemRender", false, 3)]
         static private void FixRedundantMeshOfParticleSystemRender()
         {
@@ -337,7 +339,7 @@ namespace Framework.AssetManagement.AssetBrowser
             Debug.Log("Fix Redundant Mesh of ParticleSystemRender is Done.  " + assetPaths.Count);
         }
 
-        [MenuItem("Assets/AssetBrowser/Clean Property on All Materials", false, 4)]
+        [MenuItem("Assets/AssetBrowser/Clean All Materials", false, 4)]
         static private void MemuItem_CleanAllMaterials()
         {
             if(!EditorUtility.DisplayDialog("", "耗时操作，预计2分钟", "OK", "Cancel"))
@@ -351,15 +353,13 @@ namespace Framework.AssetManagement.AssetBrowser
 
                 if (mat)
                 {
-                    CleanMaterialProperties(mat);
-
-                    EditorUtility.SetDirty(mat);
+                    CleanMaterial(mat);
                 }
             }
             AssetDatabase.SaveAssets();
         }
 
-        [MenuItem("Assets/AssetBrowser/Clean Property on Selected Material", false, 5)]
+        [MenuItem("Assets/AssetBrowser/Clean Selected Material", false, 5)]
         static private void MemuItem_CleanMaterial()
         {
             List<string> assetPaths = AssetBrowserUtil.GetSelectedAllPaths(".mat");
@@ -368,29 +368,120 @@ namespace Framework.AssetManagement.AssetBrowser
                 Material mat = AssetDatabase.LoadAssetAtPath<Material>(assetPath);
                 if(mat != null)
                 {
-                    CleanMaterialProperties(mat);
+                    CleanMaterial(mat);
                 }
             }
             AssetDatabase.SaveAssets();
+        }
+        
+        //[MenuItem("Assets/AssetBrowser/Clean Materials")]
+        //private static void _CleanProjectMaterials()
+        //{
+        //    var paths =
+        //        AssetDatabase.FindAssets("t:Material")
+        //        .Select(AssetDatabase.GUIDToAssetPath);
+
+        //    foreach (var path in paths)
+        //    {
+        //        CleanUnusedTextures(path);
+        //    }
+
+        //    AssetDatabase.SaveAssets();
+        //    AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        //}
+
+        //public static void CleanUnusedTextures(string materialPath)
+        //{
+        //    var mat = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+
+        //    var so = new SerializedObject(mat);
+
+        //    var shader = mat.shader;
+        //    var activeTextureNames =
+        //        Enumerable.Range(0, ShaderUtil.GetPropertyCount(shader))
+        //        .Where(index => ShaderUtil.GetPropertyType(shader, index) == ShaderUtil.ShaderPropertyType.TexEnv)
+        //        .Select(index => ShaderUtil.GetPropertyName(shader, index));
+
+        //    var activeTextureNameSet = new HashSet<string>(activeTextureNames);
+
+        //    var texEnvsSp = so.FindProperty("m_SavedProperties.m_TexEnvs");
+        //    for (var i = texEnvsSp.arraySize - 1; i >= 0; i--)
+        //    {
+        //        var texSp = texEnvsSp.GetArrayElementAtIndex(i);
+        //        var texName = texSp.FindPropertyRelative("first").stringValue;
+        //        if (!string.IsNullOrEmpty(texName))
+        //        {
+        //            if (!activeTextureNameSet.Contains(texName))
+        //            {
+        //                texEnvsSp.DeleteArrayElementAtIndex(i);
+        //            }
+        //        }
+        //    }
+
+        //    so.ApplyModifiedProperties();
+        //}
+
+        public static bool GetShaderKeywords(Shader target, out string[] global, out string[] local)
+        {
+            try
+            {
+                MethodInfo globalKeywords = typeof(ShaderUtil).GetMethod("GetShaderGlobalKeywords", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                global = (string[])globalKeywords.Invoke(null, new object[] { target });
+                MethodInfo localKeywords = typeof(ShaderUtil).GetMethod("GetShaderLocalKeywords", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                local = (string[])localKeywords.Invoke(null, new object[] { target });
+                return true;
+            }
+            catch
+            {
+                global = local = null;
+                return false;
+            }
+        }
+
+        private static void CleanShaderKeywords(Material mat)
+        {
+            if (GetShaderKeywords(mat.shader, out var global, out var local))
+            {
+                HashSet<string> keywords = new HashSet<string>();
+                foreach (var g in global)
+                {
+                    keywords.Add(g);
+                }
+                foreach (var l in local)
+                {
+                    keywords.Add(l);
+                }
+
+                List<string> resetKeywords = new List<string>(mat.shaderKeywords);
+                foreach (var item in mat.shaderKeywords)
+                {
+                    if (!keywords.Contains(item))
+                        resetKeywords.Remove(item);
+                }
+                mat.shaderKeywords = resetKeywords.ToArray();
+            }
+            UnityEditor.EditorUtility.SetDirty(mat);
         }
 
         private static void CleanMaterialProperties(Material mat)
         {
             SerializedObject source = new SerializedObject(mat);
             SerializedProperty savedProperties = source.FindProperty("m_SavedProperties");
+            SerializedProperty disabledShaderPasses = source.FindProperty("disabledShaderPasses");
             SerializedProperty texEnvs = savedProperties.FindPropertyRelative("m_TexEnvs");
             SerializedProperty floats = savedProperties.FindPropertyRelative("m_Floats");
             SerializedProperty colors = savedProperties.FindPropertyRelative("m_Colors");
 
+            CleanMaterialsSerializedProperty(disabledShaderPasses, mat);
             CleanMaterialsSerializedProperty(texEnvs, mat);
             CleanMaterialsSerializedProperty(floats, mat);
             CleanMaterialsSerializedProperty(colors, mat);
-            source.ApplyModifiedProperties();            
+            source.ApplyModifiedProperties();
         }
 
         private static void CleanMaterialsSerializedProperty(SerializedProperty property, Material mat)
         {
-            for(int i = property.arraySize - 1; i >= 0; --i)
+            for (int i = property.arraySize - 1; i >= 0; --i)
             {
                 string name = property.GetArrayElementAtIndex(i).FindPropertyRelative("first").stringValue;
                 if (!mat.HasProperty(name))
@@ -398,123 +489,86 @@ namespace Framework.AssetManagement.AssetBrowser
             }
         }
 
-        [MenuItem("Assets/AssetBrowser/Clean Materials")]
-        private static void _CleanProjectMaterials()
+        private static void CleanMaterial(Material mat)
         {
-            var paths =
-                AssetDatabase.FindAssets("t:Material")
-                .Select(AssetDatabase.GUIDToAssetPath);
-
-            foreach (var path in paths)
-            {
-                CleanUnusedTextures(path);
-            }
-
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+            CleanShaderKeywords(mat);
+            CleanMaterialProperties(mat);
+            AssetDatabase.SaveAssetIfDirty(mat);
+            Debug.Log($"CleanMaterial Done!     {AssetDatabase.GetAssetPath(mat)}");
         }
 
-        public static void CleanUnusedTextures(string materialPath)
-        {
-            var mat = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+        //[MenuItem("工具/重置着色器")]
+        //static void Test222()
+        //{
+        //    //这里替换成自己的材质，也可以深度遍历整个工程中的材质
+        //    Material m = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]));            
+        //    if (GetShaderKeywords(m.shader, out var global, out var local))
+        //    {
+        //        HashSet<string> keywords = new HashSet<string>();
+        //        foreach (var g in global)
+        //        {
+        //            keywords.Add(g);
+        //        }
+        //        foreach (var l in local)
+        //        {
+        //            keywords.Add(l);
+        //        }
+        //        //重置keywords
+        //        List<string> resetKeywords = new List<string>(m.shaderKeywords);
+        //        foreach (var item in m.shaderKeywords)
+        //        {
+        //            if (!keywords.Contains(item))
+        //                resetKeywords.Remove(item);
+        //        }
+        //        m.shaderKeywords = resetKeywords.ToArray();
+        //    }
+        //    HashSet<string> property = new HashSet<string>();
+        //    int count = m.shader.GetPropertyCount();
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        property.Add(m.shader.GetPropertyName(i));
+        //    }
 
-            var so = new SerializedObject(mat);
+        //    SerializedObject o = new SerializedObject(m);
+        //    SerializedProperty disabledShaderPasses = o.FindProperty("disabledShaderPasses");
+        //    SerializedProperty SavedProperties = o.FindProperty("m_SavedProperties");
+        //    SerializedProperty TexEnvs = SavedProperties.FindPropertyRelative("m_TexEnvs");
+        //    SerializedProperty Floats = SavedProperties.FindPropertyRelative("m_Floats");
+        //    SerializedProperty Colors = SavedProperties.FindPropertyRelative("m_Colors");
+        //    //对比属性删除残留的属性
+        //    for (int i = disabledShaderPasses.arraySize - 1; i >= 0; i--)
+        //    {
+        //        if (!property.Contains(disabledShaderPasses.GetArrayElementAtIndex(i).displayName))
+        //        {
+        //            disabledShaderPasses.DeleteArrayElementAtIndex(i);
+        //        }
+        //    }
+        //    for (int i = TexEnvs.arraySize - 1; i >= 0; i--)
+        //    {
+        //        if (!property.Contains(TexEnvs.GetArrayElementAtIndex(i).displayName))
+        //        {
+        //            TexEnvs.DeleteArrayElementAtIndex(i);
+        //        }
+        //    }
+        //    for (int i = Floats.arraySize - 1; i >= 0; i--)
+        //    {
+        //        if (!property.Contains(Floats.GetArrayElementAtIndex(i).displayName))
+        //        {
+        //            Floats.DeleteArrayElementAtIndex(i);
+        //        }
+        //    }
+        //    for (int i = Colors.arraySize - 1; i >= 0; i--)
+        //    {
+        //        if (!property.Contains(Colors.GetArrayElementAtIndex(i).displayName))
+        //        {
+        //            Colors.DeleteArrayElementAtIndex(i);
+        //        }
+        //    }
+        //    o.ApplyModifiedProperties();
+        //    AssetDatabase.SaveAssetIfDirty(m);
 
-            var shader = mat.shader;
-            var activeTextureNames =
-                Enumerable.Range(0, ShaderUtil.GetPropertyCount(shader))
-                .Where(index => ShaderUtil.GetPropertyType(shader, index) == ShaderUtil.ShaderPropertyType.TexEnv)
-                .Select(index => ShaderUtil.GetPropertyName(shader, index));
-
-            var activeTextureNameSet = new HashSet<string>(activeTextureNames);
-
-            var texEnvsSp = so.FindProperty("m_SavedProperties.m_TexEnvs");
-            for (var i = texEnvsSp.arraySize - 1; i >= 0; i--)
-            {
-                var texSp = texEnvsSp.GetArrayElementAtIndex(i);
-                var texName = texSp.FindPropertyRelative("first").stringValue;
-                if (!string.IsNullOrEmpty(texName))
-                {
-                    if (!activeTextureNameSet.Contains(texName))
-                    {
-                        texEnvsSp.DeleteArrayElementAtIndex(i);
-                    }
-                }
-            }
-
-            so.ApplyModifiedProperties();
-        }
-
-        private static bool CleanMaterialSerializedProperty(SerializedProperty property, Material mat)
-        {
-            bool res = false;
-
-            for (int j = property.arraySize - 1; j >= 0; j--)
-            {
-                string propertyName = property.GetArrayElementAtIndex(j).FindPropertyRelative("first").stringValue;
-
-                if (!mat.HasProperty(propertyName))
-                {
-                    if (propertyName.Equals("_MainTex"))
-                    {
-                        //_MainTex是内建属性，是置空不删除，否则UITexture等控件在获取mat.maintexture的时候会报错
-                        if (property.GetArrayElementAtIndex(j).FindPropertyRelative("second").FindPropertyRelative("m_Texture").objectReferenceValue != null)
-                        {
-                            property.GetArrayElementAtIndex(j).FindPropertyRelative("second").FindPropertyRelative("m_Texture").objectReferenceValue = null;
-                            Debug.Log("Set _MainTex is null");
-                            res = true;
-                        }
-                    }
-                    else
-                    {
-                        property.DeleteArrayElementAtIndex(j);
-                        Debug.Log("Delete property in serialized object : " + propertyName);
-                        res = true;
-                    }
-                }
-            }
-            return res;
-        }
-
-        private static void MenuItem_ClearShaderKeywords()
-        {
-            Material mat = Selection.activeObject as Material;
-            if (mat == null)
-                return;
-            RemoveRedundantMaterialShaderKeywords(mat);
-        }
-
-        // 清理序列化在材质中，但没有使用的keyword
-        public static void RemoveRedundantMaterialShaderKeywords(Material material)
-        {
-            List<string> materialKeywordsLst = new List<string>(material.shaderKeywords);
-            List<string> shaderKeywordsList = new List<string>();
-            var getKeywordsMethod =
-                typeof(ShaderUtil).GetMethod("GetShaderGlobalKeywords", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-            string[] keywords = (string[])getKeywordsMethod.Invoke(null, new object[] { material.shader });
-            shaderKeywordsList.AddRange(keywords);
-
-            getKeywordsMethod =
-                typeof(ShaderUtil).GetMethod("GetShaderLocalKeywords", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-            keywords = (string[])getKeywordsMethod.Invoke(null, new object[] { material.shader });
-            shaderKeywordsList.AddRange(keywords);
-
-            List<string> notExistKeywords = new List<string>();
-            foreach (var each in materialKeywordsLst)
-            {
-                if (!shaderKeywordsList.Contains(each))
-                {
-                    notExistKeywords.Add(each);
-                }
-            }
-
-            foreach (var each in notExistKeywords)
-            {
-                materialKeywordsLst.Remove(each);
-            }
-
-            material.shaderKeywords = materialKeywordsLst.ToArray();
-        }
+        //    Debug.Log("Done!");
+        //}
 
         static private bool DoCleanMotionVectors(GameObject obj)
         {
