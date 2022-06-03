@@ -398,6 +398,92 @@ namespace Framework.AssetManagement.AssetBrowser
             }
         }
 
+        [MenuItem("Assets/AssetBrowser/Clean Materials")]
+        private static void _CleanProjectMaterials()
+        {
+            var paths =
+                AssetDatabase.FindAssets("t:Material")
+                .Select(AssetDatabase.GUIDToAssetPath);
+
+            foreach (var path in paths)
+            {
+                CleanUnusedTextures(path);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+        }
+
+        public static void CleanUnusedTextures(string materialPath)
+        {
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+
+            var so = new SerializedObject(mat);
+
+            var shader = mat.shader;
+            var activeTextureNames =
+                Enumerable.Range(0, ShaderUtil.GetPropertyCount(shader))
+                .Where(index => ShaderUtil.GetPropertyType(shader, index) == ShaderUtil.ShaderPropertyType.TexEnv)
+                .Select(index => ShaderUtil.GetPropertyName(shader, index));
+
+            var activeTextureNameSet = new HashSet<string>(activeTextureNames);
+
+            var texEnvsSp = so.FindProperty("m_SavedProperties.m_TexEnvs");
+            for (var i = texEnvsSp.arraySize - 1; i >= 0; i--)
+            {
+                var texSp = texEnvsSp.GetArrayElementAtIndex(i);
+                var texName = texSp.FindPropertyRelative("first").stringValue;
+                if (!string.IsNullOrEmpty(texName))
+                {
+                    if (!activeTextureNameSet.Contains(texName))
+                    {
+                        texEnvsSp.DeleteArrayElementAtIndex(i);
+                    }
+                }
+            }
+
+            so.ApplyModifiedProperties();
+        }
+
+        private static bool CleanMaterialSerializedProperty(SerializedProperty property, Material mat)
+        {
+            bool res = false;
+
+            for (int j = property.arraySize - 1; j >= 0; j--)
+            {
+                string propertyName = property.GetArrayElementAtIndex(j).FindPropertyRelative("first").stringValue;
+
+                if (!mat.HasProperty(propertyName))
+                {
+                    if (propertyName.Equals("_MainTex"))
+                    {
+                        //_MainTex是内建属性，是置空不删除，否则UITexture等控件在获取mat.maintexture的时候会报错
+                        if (property.GetArrayElementAtIndex(j).FindPropertyRelative("second").FindPropertyRelative("m_Texture").objectReferenceValue != null)
+                        {
+                            property.GetArrayElementAtIndex(j).FindPropertyRelative("second").FindPropertyRelative("m_Texture").objectReferenceValue = null;
+                            Debug.Log("Set _MainTex is null");
+                            res = true;
+                        }
+                    }
+                    else
+                    {
+                        property.DeleteArrayElementAtIndex(j);
+                        Debug.Log("Delete property in serialized object : " + propertyName);
+                        res = true;
+                    }
+                }
+            }
+            return res;
+        }
+
+        private static void MenuItem_ClearShaderKeywords()
+        {
+            Material mat = Selection.activeObject as Material;
+            if (mat == null)
+                return;
+            RemoveRedundantMaterialShaderKeywords(mat);
+        }
+
         // 清理序列化在材质中，但没有使用的keyword
         public static void RemoveRedundantMaterialShaderKeywords(Material material)
         {
