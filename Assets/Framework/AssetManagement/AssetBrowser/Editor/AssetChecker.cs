@@ -25,7 +25,7 @@ namespace Framework.AssetManagement.AssetBrowser
             string assetBundleName = AssetDatabase.GetImplicitAssetBundleName(assetPath);
 
             string[] dependencies = AssetBrowserUtil.GetAllAssetBundleDependencies(assetBundleName, true);
-            if(dependencies == null)
+            if (dependencies == null)
             {
                 return;
             }
@@ -66,7 +66,7 @@ namespace Framework.AssetManagement.AssetBrowser
         {
             string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
             string[] dependencies = AssetBrowserUtil.GetMinimalAllAssetBundleDependencies(assetPath);
-            if(dependencies == null)
+            if (dependencies == null)
             {
                 Debug.LogError("Plz select a asset");
                 return;
@@ -87,7 +87,7 @@ namespace Framework.AssetManagement.AssetBrowser
         public static void MenuItem_GetDependencies()
         {
             string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID);
-            if(AssetDatabase.IsValidFolder(assetPath))
+            if (AssetDatabase.IsValidFolder(assetPath))
             {
                 Debug.LogError("Plz select a asset");
                 return;
@@ -106,7 +106,7 @@ namespace Framework.AssetManagement.AssetBrowser
         static public void MenuItem_CheckAll()
         {
             List<string> paths = new List<string>();
-            for(int i = 0; i < Selection.assetGUIDs.Length; ++i)
+            for (int i = 0; i < Selection.assetGUIDs.Length; ++i)
             {
                 paths.Add(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[i]));
             }
@@ -144,20 +144,20 @@ namespace Framework.AssetManagement.AssetBrowser
             List<int> external = new List<int>();
 
             bool canCheck = AssetBrowserUtil.CheckResource(assetPath, out dependencies, out assetNames, out builtin, out external);
-            if(!canCheck)
+            if (!canCheck)
             {
                 Debug.LogError("资源检查失败，可能原因：1、资源不存在；2、资源没有被打AssetBundle");
                 return;
             }
 
             Debug.LogFormat("------ Begin Check Resource: {0}    Count of dependencies: {1}", assetPath, dependencies.Count);
-            for(int i = 0; i < dependencies.Count; ++i)
+            for (int i = 0; i < dependencies.Count; ++i)
             {
-                if(builtin.Contains(i))
+                if (builtin.Contains(i))
                 {
                     Debug.LogErrorFormat("引用内置资源: {0}     assetPath: {1}", assetNames[i], dependencies[i]);
                 }
-                else if(external.Contains(i))
+                else if (external.Contains(i))
                 {
                     Debug.LogErrorFormat("引用外部资源:  {0}     asset path:{1}", assetNames[i], dependencies[i]);
                 }
@@ -173,14 +173,14 @@ namespace Framework.AssetManagement.AssetBrowser
         static public void MenuItem_FindSelectedAssetMissingReferences()
         {
             string assetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
-            if(AssetDatabase.IsValidFolder(assetPath))
+            if (AssetDatabase.IsValidFolder(assetPath))
             {
                 Debug.LogError("Can't work on Folder");
                 return;
             }
 
             string error;
-            if(AssetBrowserUtil.FindMissingReference(Selection.activeObject, out error) != 0)
+            if (AssetBrowserUtil.FindMissingReference(Selection.activeObject, out error) != 0)
             {
                 Debug.LogError(error);
             }
@@ -190,7 +190,7 @@ namespace Framework.AssetManagement.AssetBrowser
         static public void MenuItem_FindMissingReferencesInScene()
         {
             string error;
-            if(AssetBrowserUtil.FindMissingReferencesInScene(out error) != 0)
+            if (AssetBrowserUtil.FindMissingReferencesInScene(out error) != 0)
             {
                 Debug.LogError(error);
             }
@@ -209,8 +209,8 @@ namespace Framework.AssetManagement.AssetBrowser
                 string path = AssetDatabase.GetAssetPath(obj);
                 if (AssetDatabase.IsValidFolder(path))
                 {
-                    string[] GUIDs = AssetDatabase.FindAssets("", new string[] {path});
-                    foreach(var guid in GUIDs)
+                    string[] GUIDs = AssetDatabase.FindAssets("", new string[] { path });
+                    foreach (var guid in GUIDs)
                     {
                         s_ReferenceFindingCommand.Add(AssetDatabase.GUIDToAssetPath(guid));
                     }
@@ -221,8 +221,8 @@ namespace Framework.AssetManagement.AssetBrowser
                 }
             }
 
-            if(s_ReferenceFindingCommand.Count > 0)
-                StartFindReference(new string[] {".prefab", ".unity", ".mat", ".asset"});
+            if (s_ReferenceFindingCommand.Count > 0)
+                StartFindReference(new string[] { ".prefab", ".unity", ".mat", ".asset" });
         }
 
         // 检查当前选中对象的引用资源是否正确
@@ -237,8 +237,8 @@ namespace Framework.AssetManagement.AssetBrowser
                 string path = AssetDatabase.GetAssetPath(obj);
                 if (AssetDatabase.IsValidFolder(path))
                 {
-                    string[] GUIDs = AssetDatabase.FindAssets("", new string[] {path});
-                    foreach(var guid in GUIDs)
+                    string[] GUIDs = AssetDatabase.FindAssets("", new string[] { path });
+                    foreach (var guid in GUIDs)
                     {
                         s_ReferenceFindingCommand.Add(AssetDatabase.GUIDToAssetPath(guid));
                     }
@@ -249,7 +249,7 @@ namespace Framework.AssetManagement.AssetBrowser
                 }
             }
 
-            if(s_ReferenceFindingCommand.Count > 0)
+            if (s_ReferenceFindingCommand.Count > 0)
                 StartFindReference();
         }
 
@@ -261,7 +261,7 @@ namespace Framework.AssetManagement.AssetBrowser
 
         static private void StopFindReference()
         {
-            if(m_Coroutine != null)
+            if (m_Coroutine != null)
             {
                 EditorCoroutineUtility.StopCoroutine(m_Coroutine);
                 m_Coroutine = null;
@@ -272,10 +272,10 @@ namespace Framework.AssetManagement.AssetBrowser
         {
             string[] files = Directory.GetFiles(UnityEngine.Application.dataPath, "*.*", SearchOption.AllDirectories);
             int startIndex = 0;
-            while(startIndex < s_ReferenceFindingCommand.Count)
+            while (startIndex < s_ReferenceFindingCommand.Count)
             {
                 string path = s_ReferenceFindingCommand[startIndex];
-                if(string.IsNullOrEmpty(path) || AssetDatabase.IsValidFolder(path))
+                if (string.IsNullOrEmpty(path) || AssetDatabase.IsValidFolder(path))
                 {
                     ++startIndex;
                     yield return null;
@@ -283,14 +283,14 @@ namespace Framework.AssetManagement.AssetBrowser
                 else
                 {
                     string[] filesWithFilter = files;
-                    if(extensions != null)
+                    if (extensions != null)
                         filesWithFilter = files.Where(s => extensions.Contains(Path.GetExtension(s).ToLower())).ToArray();
 
                     Debug.Log($"Begin to find reference: {path}");
                     string guid = AssetDatabase.AssetPathToGUID(path);
                     int index = 0;
                     int count = 0;
-                    while(index < filesWithFilter.Length)
+                    while (index < filesWithFilter.Length)
                     {
                         bool isCancel = EditorUtility.DisplayCancelableProgressBar("匹配资源中", filesWithFilter[index], (float)index / (float)filesWithFilter.Length);
 
@@ -305,7 +305,7 @@ namespace Framework.AssetManagement.AssetBrowser
                         {
                             EditorUtility.ClearProgressBar();
 
-                            if(count > 1)
+                            if (count > 1)
                                 Debug.LogWarning($"查找结束 in (*.prefab, *.unity, *.mat, *.asset)      被引用次数: {count}");
                             else
                                 Debug.Log($"查找结束 in (*.prefab, *.unity, *.mat, *.asset)     被引用次数: {count}");
@@ -325,12 +325,12 @@ namespace Framework.AssetManagement.AssetBrowser
         {
             return "Assets" + Path.GetFullPath(path).Replace(Path.GetFullPath(UnityEngine.Application.dataPath), "").Replace('\\', '/');
         }
-        
+
         [MenuItem("Assets/AssetBrowser/Fix Redundant Mesh of ParticleSystemRender", false, 3)]
         static private void FixRedundantMeshOfParticleSystemRender()
         {
             List<string> assetPaths = AssetBrowserUtil.GetSelectedAllPaths(".prefab");
-            foreach(string assetPath in assetPaths)
+            foreach (string assetPath in assetPaths)
             {
                 Debug.Log("Fix ParticleSystemRender: " + assetPath);
                 AssetBrowserUtil.FixRedundantMeshOfParticleSystemRender(assetPath);
@@ -342,7 +342,7 @@ namespace Framework.AssetManagement.AssetBrowser
         [MenuItem("Assets/AssetBrowser/Clean All Materials", false, 4)]
         static private void MemuItem_CleanAllMaterials()
         {
-            if(!EditorUtility.DisplayDialog("", "耗时操作，预计2分钟", "OK", "Cancel"))
+            if (!EditorUtility.DisplayDialog("", "耗时操作，预计2分钟", "OK", "Cancel"))
                 return;
 
             var allMaterials = AssetDatabase.FindAssets("t:Material");
@@ -363,63 +363,16 @@ namespace Framework.AssetManagement.AssetBrowser
         static private void MemuItem_CleanMaterial()
         {
             List<string> assetPaths = AssetBrowserUtil.GetSelectedAllPaths(".mat");
-            foreach(string assetPath in assetPaths)
+            foreach (string assetPath in assetPaths)
             {
                 Material mat = AssetDatabase.LoadAssetAtPath<Material>(assetPath);
-                if(mat != null)
+                if (mat != null)
                 {
                     CleanMaterial(mat);
                 }
             }
             AssetDatabase.SaveAssets();
         }
-        
-        //[MenuItem("Assets/AssetBrowser/Clean Materials")]
-        //private static void _CleanProjectMaterials()
-        //{
-        //    var paths =
-        //        AssetDatabase.FindAssets("t:Material")
-        //        .Select(AssetDatabase.GUIDToAssetPath);
-
-        //    foreach (var path in paths)
-        //    {
-        //        CleanUnusedTextures(path);
-        //    }
-
-        //    AssetDatabase.SaveAssets();
-        //    AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-        //}
-
-        //public static void CleanUnusedTextures(string materialPath)
-        //{
-        //    var mat = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
-
-        //    var so = new SerializedObject(mat);
-
-        //    var shader = mat.shader;
-        //    var activeTextureNames =
-        //        Enumerable.Range(0, ShaderUtil.GetPropertyCount(shader))
-        //        .Where(index => ShaderUtil.GetPropertyType(shader, index) == ShaderUtil.ShaderPropertyType.TexEnv)
-        //        .Select(index => ShaderUtil.GetPropertyName(shader, index));
-
-        //    var activeTextureNameSet = new HashSet<string>(activeTextureNames);
-
-        //    var texEnvsSp = so.FindProperty("m_SavedProperties.m_TexEnvs");
-        //    for (var i = texEnvsSp.arraySize - 1; i >= 0; i--)
-        //    {
-        //        var texSp = texEnvsSp.GetArrayElementAtIndex(i);
-        //        var texName = texSp.FindPropertyRelative("first").stringValue;
-        //        if (!string.IsNullOrEmpty(texName))
-        //        {
-        //            if (!activeTextureNameSet.Contains(texName))
-        //            {
-        //                texEnvsSp.DeleteArrayElementAtIndex(i);
-        //            }
-        //        }
-        //    }
-
-        //    so.ApplyModifiedProperties();
-        //}
 
         public static bool GetShaderKeywords(Shader target, out string[] global, out string[] local)
         {
@@ -452,13 +405,16 @@ namespace Framework.AssetManagement.AssetBrowser
                     keywords.Add(l);
                 }
 
-                List<string> resetKeywords = new List<string>(mat.shaderKeywords);
-                foreach (var item in mat.shaderKeywords)
+                SerializedObject matSO = new SerializedObject(mat);
+                SerializedProperty keywordsProp = matSO.FindProperty("m_ShaderKeywords");
+                List<string> resetKeywords = keywordsProp.stringValue.Split(' ').ToList();
+                for (int i = resetKeywords.Count - 1; i >= 0; --i)
                 {
-                    if (!keywords.Contains(item))
-                        resetKeywords.Remove(item);
+                    if (!keywords.Contains(resetKeywords[i]))
+                        resetKeywords.RemoveAt(i);
                 }
-                mat.shaderKeywords = resetKeywords.ToArray();
+                keywordsProp.stringValue = string.Join(" ", resetKeywords);
+                matSO.ApplyModifiedProperties();
             }
             UnityEditor.EditorUtility.SetDirty(mat);
         }
@@ -501,7 +457,7 @@ namespace Framework.AssetManagement.AssetBrowser
         //static void Test222()
         //{
         //    //这里替换成自己的材质，也可以深度遍历整个工程中的材质
-        //    Material m = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]));            
+        //    Material m = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]));
         //    if (GetShaderKeywords(m.shader, out var global, out var local))
         //    {
         //        HashSet<string> keywords = new HashSet<string>();
@@ -514,13 +470,24 @@ namespace Framework.AssetManagement.AssetBrowser
         //            keywords.Add(l);
         //        }
         //        //重置keywords
-        //        List<string> resetKeywords = new List<string>(m.shaderKeywords);
-        //        foreach (var item in m.shaderKeywords)
+        //        SerializedObject matSO = new SerializedObject(m);
+        //        SerializedProperty keywordsProp = matSO.FindProperty("m_ShaderKeywords");
+        //        List<string> resetKeywords = keywordsProp.stringValue.Split(' ').ToList();
+        //        for (int i = resetKeywords.Count - 1; i >= 0; --i)
         //        {
-        //            if (!keywords.Contains(item))
-        //                resetKeywords.Remove(item);
+        //            if (!keywords.Contains(resetKeywords[i]))
+        //                resetKeywords.RemoveAt(i);
         //        }
-        //        m.shaderKeywords = resetKeywords.ToArray();
+        //        keywordsProp.stringValue = string.Join(" ", resetKeywords);
+        //        matSO.ApplyModifiedProperties();
+
+        //        //List<string> resetKeywords = new List<string>(m.shaderKeywords);
+        //        //foreach (var item in m.shaderKeywords)
+        //        //{
+        //        //    if (!keywords.Contains(item))
+        //        //        resetKeywords.Remove(item);
+        //        //}
+        //        //m.shaderKeywords = resetKeywords.ToArray();
         //    }
         //    HashSet<string> property = new HashSet<string>();
         //    int count = m.shader.GetPropertyCount();
@@ -594,12 +561,12 @@ namespace Framework.AssetManagement.AssetBrowser
         {
             bool isDirty = false;
             List<string> assetPaths = AssetBrowserUtil.GetSelectedAllPaths(".prefab");
-            foreach(var assetPath in assetPaths)
+            foreach (var assetPath in assetPaths)
             {
                 GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
                 isDirty |= DoCleanMotionVectors(obj);
             }
-            if(isDirty)
+            if (isDirty)
             {
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
@@ -611,12 +578,12 @@ namespace Framework.AssetManagement.AssetBrowser
         {
             bool isDirty = false;
             string[] guids = AssetDatabase.FindAssets("t:prefab");
-            foreach(var guid in guids)
+            foreach (var guid in guids)
             {
                 GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid));
                 isDirty |= DoCleanMotionVectors(obj);
             }
-            if(isDirty)
+            if (isDirty)
             {
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
@@ -627,23 +594,23 @@ namespace Framework.AssetManagement.AssetBrowser
         static private void MenuItem_CheckParticleSystem()
         {
             List<string> assetPaths = AssetBrowserUtil.GetSelectedAllPaths(".prefab");
-            foreach(var assetPath in assetPaths)
+            foreach (var assetPath in assetPaths)
             {
                 GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                if(obj == null) continue;
+                if (obj == null) continue;
                 CheckParticleSystem(obj);
             }
         }
 
         static private void CheckParticleSystem(GameObject go)
         {
-            if(go == null)
+            if (go == null)
                 throw new ArgumentNullException();
 
             ParticleSystem[] pss = go.GetComponentsInChildren<ParticleSystem>(true);
-            foreach(var ps in pss)
+            foreach (var ps in pss)
             {
-                if(ps.collision.enabled)
+                if (ps.collision.enabled)
                 {
                     Debug.LogWarning($"collision module enable, plz check [{ps.gameObject.name}]", go);
                 }
