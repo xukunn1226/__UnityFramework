@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Framework.URP
+namespace Application.Runtime
 {
     [CreateAssetMenu(menuName = "Rendering/CustomRenderPipelineAsset")]
     public class CustomRenderPipelineAsset : RenderPipelineAsset

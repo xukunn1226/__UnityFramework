@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-namespace Framework.URP
+namespace Application.Runtime
 {
     public class GaussianBlurRendererFeature : ScriptableRendererFeature
     {
@@ -26,7 +26,7 @@ namespace Framework.URP
 
         public override void Create()
         {
-            m_BlurMaterial = CoreUtils.CreateEngineMaterial(Shader.Find(k_BlurShader));
+            m_BlurMaterial = CoreUtils.CreateEngineMaterial(ShaderManager.Find(k_BlurShader));
 
             m_RenderPass = new GaussianBlurPass(m_BlurMaterial, m_Settings);
             m_RenderPass.renderPassEvent = m_Settings.RenderPassEvent;

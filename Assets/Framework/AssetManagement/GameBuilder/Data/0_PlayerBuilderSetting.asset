@@ -22,6 +22,7 @@ MonoBehaviour:
   compressWithLz4: 0
   compressWithLz4HC: 1
   strictMode: 1
+  releaseNative: 0
   useIL2CPP: 0
   il2CppCompilerConfiguration: 1
   useMTRendering: 1
@@ -32,7 +33,7 @@ MonoBehaviour:
   keystorePass: 
   keyaliasName: 
   keyaliasPass: 
-  macroDefines: LOAD_FROM_PERSISTENT
+  macroDefines: 
   excludedDefines: 
   bOverrideBuildScenes: 0
   overrideBuildScenes: []
