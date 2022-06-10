@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.oddworm.heapexplorer": {
+      "version": "https://github.com/pschraut/UnityHeapExplorer.git#4.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b00fee6b4415cb66cfe1664c47e8aa683b834565"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
