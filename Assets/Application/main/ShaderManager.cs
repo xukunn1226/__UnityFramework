@@ -9,13 +9,13 @@ namespace Application.Runtime
     public class ShaderManager : SingletonMono<ShaderManager>
     {
         [System.Serializable]
-        public class ShaderInfo
+        public class ShaderMappingInfo
         {
             public string shaderName;
             public string assetPath;
         }
         [SerializeField]
-        private List<ShaderInfo>                                m_ShaderInfoList    = new List<ShaderInfo>();
+        private List<ShaderMappingInfo>                         m_ShaderInfoList    = new List<ShaderMappingInfo>();
 
         static private Dictionary<string, string>               m_ShaderNameToPath  = new Dictionary<string, string>();
         static private Dictionary<string, AssetLoader<Shader>>  m_ShaderLoaderDict  = new Dictionary<string, AssetLoader<Shader>>();
@@ -48,7 +48,7 @@ namespace Application.Runtime
                 return Shader.Find(shaderName);
             }
 #endif
-            if (AssetManager.Instance.loaderType == LoaderType.FromEditor)
+            if (AssetManager.Instance.loaderType == LoaderType.FromEditor || m_ShaderNameToPath.Count == 0)
             {
                 return Shader.Find(shaderName);
             }

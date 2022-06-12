@@ -5,23 +5,25 @@ using UnityEngine.Rendering.Universal;
 namespace Application.Runtime
 {
     /// <summary>
-    /// 自动载入管线脚本，可用此方法分离管线与引擎，以便于做管线的热更新
+    /// 鑷姩杞藉叆绠＄嚎鑴氭湰锛屽彲鐢ㄦ鏂规硶鍒嗙绠＄嚎涓庡紩鎿庯紝浠ヤ究浜庡仛绠＄嚎鐨勭儹鏇存柊
     /// </summary>
-    [ExecuteAlways]
+    //[ExecuteAlways]
     public class AutoLoadPipelineAsset : MonoBehaviour
     {
         [SerializeField]
         private UniversalRenderPipelineAsset m_PipelineAsset;
         private RenderPipelineAsset m_PreviousPipelineAsset;
-        private bool m_overrodeQualitySettings;
+        private bool m_overrideQualitySettings;
 
         void OnEnable()
         {
+            //Debug.Log("AutoLoadPipelineAsset::OnEnable");
             UpdatePipeline();
         }
 
         void OnDisable()
         {
+            //Debug.Log("AutoLoadPipelineAsset::OnDisable");
             ResetPipeline();
         }
 
@@ -33,30 +35,32 @@ namespace Application.Runtime
                 {
                     m_PreviousPipelineAsset = QualitySettings.renderPipeline;
                     QualitySettings.renderPipeline = m_PipelineAsset;
-                    m_overrodeQualitySettings = true;
+                    m_overrideQualitySettings = true;
                 }
                 else if (GraphicsSettings.renderPipelineAsset != m_PipelineAsset)
                 {
                     m_PreviousPipelineAsset = GraphicsSettings.renderPipelineAsset;
                     GraphicsSettings.renderPipelineAsset = m_PipelineAsset;
-                    m_overrodeQualitySettings = false;
+                    m_overrideQualitySettings = false;
                 }
             }
+            //Debug.Log($"UpdatePipeline: m_PipelineAsset [{m_PipelineAsset}]\n   m_PreviousPipelineAsset [{m_PreviousPipelineAsset}]\n   m_overrodeQualitySettings [{m_overrideQualitySettings}]");
         }
 
         private void ResetPipeline()
         {
             if (m_PreviousPipelineAsset)
             {
-                if (m_overrodeQualitySettings)
+                if (m_overrideQualitySettings)
                 {
                     QualitySettings.renderPipeline = m_PreviousPipelineAsset;
+                    //Debug.Log($"ResetPipeline: {QualitySettings.renderPipeline}");
                 }
                 else
                 {
                     GraphicsSettings.renderPipelineAsset = m_PreviousPipelineAsset;
+                    //Debug.Log($"ResetPipeline: {GraphicsSettings.renderPipelineAsset}");
                 }
-
             }
         }
     }

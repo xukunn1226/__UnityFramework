@@ -226,6 +226,8 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, para.cachedMacroDefines);
+
+            AssetDatabase.SaveAssets();
         }
 
         static internal BuildPlayerOptions GenerateBuildPlayerOptions(this PlayerBuilderSetting para)

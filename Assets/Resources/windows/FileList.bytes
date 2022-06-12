@@ -1,16 +1,16 @@
 {
   "Count": 83,
-  "TotalSize": 98421619,
+  "TotalSize": 96288860,
   "FileList": [
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "c2c8ff68565297ab9e34cadc660bf820",
+      "FileHash": "26ee63b2fea3bd7b4955910b212f44b2",
       "Size": 84992
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "0d6c2c22071ce0a6f552d7f0171f9e6c",
-      "Size": 51136
+      "FileHash": "d22642ce67e923683047a08f65312e77",
+      "Size": 51256
     },
     {
       "BundleName": "config.db",
@@ -19,13 +19,13 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "bbee7bef94764079b683793ff69011dc",
-      "Size": 4413
+      "FileHash": "4bc42cc04ac6adc5f1a7717b390573c8",
+      "Size": 4419
     },
     {
       "BundleName": "assets/res.ab",
-      "FileHash": "0ef9dd4e0d9b67ca2457f418946c54f4",
-      "Size": 934498
+      "FileHash": "72e762d8fec7baffb2e057d0eb755259",
+      "Size": 856065
     },
     {
       "BundleName": "FMOD/Dialogue_EN.bank",
@@ -64,8 +64,8 @@
     },
     {
       "BundleName": "assets/res/animationclip.ab",
-      "FileHash": "cea3c501e4d1815db8bfa721244a4edd",
-      "Size": 1326929
+      "FileHash": "d831f9b9d103656705a7b3ce92b6a9da",
+      "Size": 1128174
     },
     {
       "BundleName": "assets/res/core.ab",
@@ -79,13 +79,13 @@
     },
     {
       "BundleName": "assets/res/players.ab",
-      "FileHash": "d341ec95952d0372a18ade1bc1ce633f",
-      "Size": 156327
+      "FileHash": "692acc5377029bff968cb6cadb921779",
+      "Size": 79177
     },
     {
       "BundleName": "assets/res/scenes.ab",
-      "FileHash": "84e359c91e6f7cfb44a6f97697bd83b1",
-      "Size": 375991
+      "FileHash": "1cc34c4aa98a760afabac7ad04a9c935",
+      "Size": 468904
     },
     {
       "BundleName": "assets/res/shader.ab",
@@ -129,53 +129,53 @@
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/mannequin.ab",
-      "FileHash": "0e9f72429e4c86f9937dff3b750381a5",
-      "Size": 1321328
+      "FileHash": "1041e01dcff37f6e38ed30d040e3c6f0",
+      "Size": 1287204
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/mirrorf2.ab",
-      "FileHash": "6c169353233ee5ce7e36ddf66e4527a6",
-      "Size": 379718
+      "FileHash": "415d28a7732f4266577bcf11d1dba839",
+      "Size": 337711
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/twinsword.ab",
-      "FileHash": "d4e2a61f1ca8340e5c5dcf563590a127",
-      "Size": 294787
+      "FileHash": "107b886f5c50d017fbabff74b39fb92c",
+      "Size": 217792
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/unity_model.ab",
-      "FileHash": "d82ab250ddf4c3a5f7c3f82d387ae627",
-      "Size": 4319996
+      "FileHash": "730936f69404c083df279ea7b1cdf5fc",
+      "Size": 4294677
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/wgame.ab",
-      "FileHash": "6c933155b538b21ff5fd97633e95409c",
-      "Size": 19156701
+      "FileHash": "c08331994065cdfee534a1ff67621040",
+      "Size": 18838459
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_01.ab",
-      "FileHash": "0b75ca4675b291ae26e1327b90ded832",
-      "Size": 172523
+      "FileHash": "37688ac6f163701d1bdf3da0ce56d155",
+      "Size": 127985
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_01_ref.ab",
-      "FileHash": "a9f928cd984b4a935779dfdee2207346",
-      "Size": 172252
+      "FileHash": "1f6a12f6ab35ea8345ab1794b38b87a0",
+      "Size": 127869
     },
     {
       "BundleName": "assets/framework/animationinstancing/art/zombie_02.ab",
-      "FileHash": "58c6f0b80f92be5f54607ad169bd7ff9",
-      "Size": 488168
+      "FileHash": "b77fc52d30339239fa8d33a3b40fb098",
+      "Size": 368111
     },
     {
       "BundleName": "assets/res/dungeondemo/art/materials.ab",
-      "FileHash": "1fd639bec7115ce74d9faaec85a96ceb",
-      "Size": 306864
+      "FileHash": "e9bcc9f9423bbc17668156239f7a32aa",
+      "Size": 153303
     },
     {
       "BundleName": "assets/res/dungeondemo/art/models.ab",
-      "FileHash": "de54c0e23be98d914b709ddc71946aa4",
-      "Size": 179554
+      "FileHash": "de9bf66c34445896e5c3ad376d188174",
+      "Size": 101972
     },
     {
       "BundleName": "assets/res/dungeondemo/art/skybox.ab",
@@ -189,8 +189,8 @@
     },
     {
       "BundleName": "assets/res/dungeondemo/shaders/built-in_rp.ab",
-      "FileHash": "0b8a860347d122fc9fd3b997665a608c",
-      "Size": 111431
+      "FileHash": "1f9db4680ac1217b6f0a0a845e6e5de9",
+      "Size": 79809
     },
     {
       "BundleName": "assets/res/dungeondemo/thirdpersoncontroller/prefabs.ab",
@@ -234,8 +234,8 @@
     },
     {
       "BundleName": "assets/res/dungeondemo/art/materials/built-in_rp.ab",
-      "FileHash": "65b53295160a95edd868829fcd56884b",
-      "Size": 230679
+      "FileHash": "4efde229fd7e0d22bfb97d1aa61d9ced",
+      "Size": 141210
     },
     {
       "BundleName": "assets/res/dungeondemo/art/materials/urp_hdrp_shadergraph.ab",
@@ -249,13 +249,13 @@
     },
     {
       "BundleName": "assets/res/dungeondemo/thirdpersoncontroller/character/materials.ab",
-      "FileHash": "dd15f061f0baaff899320c3c7ebd88f4",
-      "Size": 293517
+      "FileHash": "b488935d7e2bafa35cb8d95c498b9abd",
+      "Size": 145705
     },
     {
       "BundleName": "assets/res/dungeondemo/thirdpersoncontroller/character/models.ab",
-      "FileHash": "84373d92a0ffe51860e1fe84ac03023d",
-      "Size": 1186584
+      "FileHash": "6f92079e695981cbe1318f6482b6b7b3",
+      "Size": 1109799
     },
     {
       "BundleName": "assets/res/dungeondemo/thirdpersoncontroller/character/textures.ab",
@@ -294,23 +294,23 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/builtinres.ab",
-      "FileHash": "44efcdd86bf6046dc114535cf2287271",
-      "Size": 1283075
+      "FileHash": "f37a347dcc314e0ebded42841fc4b6cd",
+      "Size": 1273095
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/model.ab",
-      "FileHash": "d73973fe428c4f22e6362abb22886fe4",
-      "Size": 242260
+      "FileHash": "a91f8f2abfe3a8dc5475d1cd9696d411",
+      "Size": 154070
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab.ab",
-      "FileHash": "ec8394de33ce0a3aa1df7607bbd08d6b",
-      "Size": 1627638
+      "FileHash": "c5b63cc114ecd4291e4e6e6283cc9900",
+      "Size": 1524727
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab2.ab",
-      "FileHash": "5deea93c6dc55de74b77e1036bdee3c5",
-      "Size": 68370
+      "FileHash": "a0d30bb0984a68080c4beaa5ee846876",
+      "Size": 54843
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/ps.ab",
@@ -334,13 +334,13 @@
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/prefab.ab",
-      "FileHash": "6510ce4135c51ce90010ef3f67fd37ef",
-      "Size": 153287
+      "FileHash": "180ce0037b3c262e9f3d75de2a7577e9",
+      "Size": 77987
     },
     {
       "BundleName": "assets/framework/core/streaminglevelmanager/tests/res/scenes.ab",
-      "FileHash": "d1d7f6b183816052083117c488403492",
-      "Size": 463806
+      "FileHash": "6b599cbe7058c3865d813b9266d7ba40",
+      "Size": 390999
     },
     {
       "BundleName": "assets/res/dungeondemo/thirdpersoncontroller/character/materials/built-in_rp.ab",
@@ -354,8 +354,8 @@
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/misc/materials.ab",
-      "FileHash": "56fd307a8bbc9d8ad10407640f5626dd",
-      "Size": 189702
+      "FileHash": "5439c1db25f7a59e021b137e862c8cfb",
+      "Size": 98951
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/testfx_root/fx.ab",
@@ -369,13 +369,13 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/111.ab",
-      "FileHash": "a84fbaebf36eddb4550ce4f180bfef47",
-      "Size": 56464
+      "FileHash": "1b5408e59758a1d6efb5d69fffb4584e",
+      "Size": 34909
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/material/333.ab",
-      "FileHash": "42fb07020c89b61e85dc41ff260e0c6f",
-      "Size": 56689
+      "FileHash": "98aee269ab53e5e6ac41c88d95ade631",
+      "Size": 35145
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/prefab/1234.ab",
@@ -394,8 +394,8 @@
     },
     {
       "BundleName": "assets/framework/assetmanagement/runtime/tests/res/testdep/tex.ab",
-      "FileHash": "4b5e9742d6ee6c886641515ef607f601",
-      "Size": 1576712
+      "FileHash": "5338456fbc0bf8211fb32666f6337907",
+      "Size": 1484313
     },
     {
       "BundleName": "assets/application/main/tests/runtime/res/ui/atlases/bag.ab",
