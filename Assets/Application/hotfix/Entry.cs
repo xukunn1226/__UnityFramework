@@ -49,8 +49,10 @@ namespace Application.Logic
             CodeLoader.Instance.OnApplicationQuit   += OnApplicationQuit;
             CodeLoader.Instance.OnApplicationFocus  += OnApplicationFocus;
             CodeLoader.Instance.OnDestroy           += OnDestroy;
-            
-            GameSetting.Init();
+
+            GameSettings.Deserialize();
+            GameSettings.SetGameSettingsLevel(5);
+
             UIManager.Instance.Init();
 
             GameModeManager.Instance.SwitchTo(GameState.World);
