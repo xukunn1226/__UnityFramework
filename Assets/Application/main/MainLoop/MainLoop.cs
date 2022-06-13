@@ -23,7 +23,7 @@ namespace Application.Runtime
         public int              Port               = 11000;
         public bool             AutoConnect;
         private float           m_TimeToLostFocus;
-        public CodeMode         codeMode            = CodeMode.Mono;
+        public CodeMode         codeMode           = CodeMode.Mono;
         private ILStartup       codeStartup;
 
         IEnumerator Start()

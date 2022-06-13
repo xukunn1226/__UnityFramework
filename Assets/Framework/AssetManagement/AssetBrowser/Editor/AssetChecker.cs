@@ -670,8 +670,12 @@ namespace Framework.AssetManagement.AssetBrowser
         //[MenuItem("Tools/Switch Quality Level")]
         static private void SwitchQualityLevel()
         {
-            QualitySettings.SetQualityLevel(2);
-            //QualitySettings.renderPipeline = AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>("Assets/Settings/Empty_UniversalRP.asset");
+            RenderPipelineAsset rawPipelineAsset = AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>("assets/settings/empty_universalrp.asset");
+            for (int i = 0; i < QualitySettings.names.Length; ++i)
+            {
+                QualitySettings.SetQualityLevel(i);
+                QualitySettings.renderPipeline = rawPipelineAsset;
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using System.Linq;
 using UnityEditor;
 using Framework.Core;
@@ -91,6 +92,10 @@ namespace Framework.AssetManagement.GameBuilder
 
         public List<string>                 overrideBuildScenes;
 
+        public bool                         clearRenderPipelineAsset;
+        public List<string>                 cachedRenderPipelineAsset           { get; set; }          // cache Quality Settings' Render Pipeline Asset
+        public int                          curQualityLevel                     { get; set; }
+
         public override string ToString()
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -118,6 +123,7 @@ namespace Framework.AssetManagement.GameBuilder
             sb.Append(string.Format($"keyaliasPass: {keyaliasPass}    \n"));
             sb.Append(string.Format($"macroDefines: {macroDefines}  \n"));
             sb.Append(string.Format($"excludedDefines: {excludedDefines}  \n"));
+            sb.Append(string.Format($"clearRenderPipelineAsset: {clearRenderPipelineAsset}  \n"));
             return sb.ToString();
         }
     }
@@ -192,6 +198,8 @@ namespace Framework.AssetManagement.GameBuilder
 
             string finalMacroDefines = string.Join(";", macroSet.ToArray());
             PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, finalMacroDefines.Trim(new char[] {';'}));
+
+            CacheQualityRenderPipelineAsset(para);
         }
 
         static internal void RestorePlayerSettings(this PlayerBuilderSetting para)
@@ -227,7 +235,43 @@ namespace Framework.AssetManagement.GameBuilder
 
             PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, para.cachedMacroDefines);
 
+            RestoreQualityRenderPipelineAsset(para);
+
             AssetDatabase.SaveAssets();
+        }
+
+        static private void CacheQualityRenderPipelineAsset(this PlayerBuilderSetting para)
+        {
+            if (!para.clearRenderPipelineAsset)
+                return;
+
+            para.curQualityLevel = QualitySettings.GetQualityLevel();
+            para.cachedRenderPipelineAsset = new List<string>();
+            for(int i = 0; i < QualitySettings.names.Length; ++i)
+            {
+                RenderPipelineAsset asset = QualitySettings.GetRenderPipelineAssetAt(i);
+                para.cachedRenderPipelineAsset.Add(asset == null ? null : AssetDatabase.GetAssetPath(asset));
+            }
+
+            RenderPipelineAsset rawPipelineAsset = AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>("assets/settings/empty_universalrp.asset");
+            for(int i = 0; i < QualitySettings.names.Length; ++i)
+            {
+                QualitySettings.SetQualityLevel(i);
+                QualitySettings.renderPipeline = rawPipelineAsset;
+            }
+        }
+
+        static private void RestoreQualityRenderPipelineAsset(this PlayerBuilderSetting para)
+        {
+            if (!para.clearRenderPipelineAsset)
+                return;
+
+            for(int i = 0; i < para.cachedRenderPipelineAsset.Count; ++i)
+            {
+                QualitySettings.SetQualityLevel(i);
+                QualitySettings.renderPipeline = string.IsNullOrEmpty(para.cachedRenderPipelineAsset[i]) ? null : AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>(para.cachedRenderPipelineAsset[i]);
+            }
+            QualitySettings.SetQualityLevel(para.curQualityLevel);
         }
 
         static internal BuildPlayerOptions GenerateBuildPlayerOptions(this PlayerBuilderSetting para)

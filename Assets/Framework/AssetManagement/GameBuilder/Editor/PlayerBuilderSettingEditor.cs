@@ -37,6 +37,7 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty              m_excludedDefinesProp;
         SerializedProperty              m_bOverrideBuildScenesProp;
         SerializedProperty              m_overrideBuildScenesProp;
+        SerializedProperty              m_clearRenderPipelineAssetProp;
 
         AppVersion                      m_AppVersion;
         PlayerBuilderSetting.VersionChangedMode m_EnumValueIndex;
@@ -70,6 +71,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             m_macroDefinesProp          = serializedObject.FindProperty("macroDefines");
             m_excludedDefinesProp       = serializedObject.FindProperty("excludedDefines");
+            m_clearRenderPipelineAssetProp = serializedObject.FindProperty("clearRenderPipelineAsset");
 
             m_bOverrideBuildScenesProp  = serializedObject.FindProperty("bOverrideBuildScenes");
             m_overrideBuildScenesProp   = serializedObject.FindProperty("overrideBuildScenes");            
@@ -318,6 +320,8 @@ namespace Framework.AssetManagement.GameBuilder
                 {
                     m_excludedDefinesProp.stringValue = m_excludedDefinesProp.stringValue.Trim(new char[] {';'});
                 }
+
+                m_clearRenderPipelineAssetProp.boolValue = EditorGUILayout.Toggle("ClearRenderPipelineAsset", m_clearRenderPipelineAssetProp.boolValue);
             }
             GUILayout.EndVertical();
         }
