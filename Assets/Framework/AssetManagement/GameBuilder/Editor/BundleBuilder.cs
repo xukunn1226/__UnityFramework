@@ -190,14 +190,13 @@ namespace Framework.AssetManagement.GameBuilder
 
             // step4. build manifest
             string manifestOutput = "Assets/Temp/";          // manifest必须生成在Assets/下才能CreateAsset
-            if(!Directory.Exists(manifestOutput))
+            if (!Directory.Exists(manifestOutput))
             {
                 Directory.CreateDirectory(manifestOutput);
             }
-            var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
-            manifest.SetResults(results.BundleInfos);
-            AssetDatabase.CreateAsset(manifest, manifestOutput + Utility.GetPlatformName() + "_manifest.asset");
-            if(!BuildManifestAsBundle(manifestOutput))
+
+            CreateManifestAsset(results, manifestOutput);
+            if (!BuildManifestAsBundle(manifestOutput))
             {
                 Debug.LogError("Failed to build manifest");
                 // ClearManifestRedundancy(manifestOutput);
@@ -207,31 +206,30 @@ namespace Framework.AssetManagement.GameBuilder
             // step5. copy manifest and clear temp files
             CopyManifestToOutput(manifestOutput, output);
             // ClearManifestRedundancy(manifestOutput);
-
-            // 暂时省略此步
-            // copy Assets/Temp/windows_manifest.asset to Assets/Resources/windows/windows_manifest.asset
-            // string dstPath = "Assets/Resources/" + Utility.GetPlatformName();
-            // if(!Directory.Exists(dstPath))
-            //     Directory.CreateDirectory(dstPath);
-            // File.Copy(manifestOutput + Utility.GetPlatformName() + "_manifest.asset", dstPath + "/" + Utility.GetPlatformName() + "_manifest.asset", true);
-            
             return true;
         }
 
-        static private bool BuildManifestAsBundle(string output)
+        static private void CreateManifestAsset(IBundleBuildResults results, string manifestOutput)
+        {
+            var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
+            manifest.SetResults(results.BundleInfos);
+            AssetDatabase.CreateAsset(manifest, manifestOutput + Utility.GetPlatformName() + "_manifest.asset");
+        }
+
+        static private bool BuildManifestAsBundle(string manifestOutput)
         {
             AssetBundleBuild[] BuildList = new AssetBundleBuild[1];
             AssetBundleBuild abb = new AssetBundleBuild();
             abb.assetBundleName = "manifest";
             abb.assetNames = new string[1];
-            abb.assetNames[0] = output + "/" + Utility.GetPlatformName() + "_manifest.asset";
+            abb.assetNames[0] = manifestOutput + "/" + Utility.GetPlatformName() + "_manifest.asset";
             abb.addressableNames = new string[1];
             abb.addressableNames[0] = "manifest";
             BuildList[0] = abb;
             var buildContent = new BundleBuildContent(BuildList);
             var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
                                                         BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), 
-                                                        output);
+                                                        manifestOutput);
 
             IBundleBuildResults results;
             ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
