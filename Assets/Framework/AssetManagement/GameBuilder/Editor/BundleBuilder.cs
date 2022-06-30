@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 using System.IO;
 using System.Globalization;
 using Framework.Core;
@@ -11,6 +12,7 @@ using UnityEditor.Build.Content;
 using UnityEditor.Build.Player;
 using UnityEngine.Build.Pipeline;
 using Framework.AssetManagement.AssetBuilder;
+using Framework.AssetManagement.Runtime;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -127,6 +129,8 @@ namespace Framework.AssetManagement.GameBuilder
                 if(string.IsNullOrEmpty(bundleName))
                     continue;
 
+                bundleName = bundleName.Replace("/", "_");
+
                 List<string> list;
                 if(!BundleFileList.TryGetValue(bundleName, out list))
                 {
@@ -159,7 +163,8 @@ namespace Framework.AssetManagement.GameBuilder
 
         static private bool BuildBundleWithSBP(string output, BundleBuilderSetting setting)
         {
-            var buildContent = new BundleBuildContent(GenerateAssetBundleBuilds());
+            AssetBundleBuild[] abb = GenerateAssetBundleBuilds();
+            var buildContent = new BundleBuildContent(abb);
 
             // step2. Construct the new parameters class
             var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
@@ -195,8 +200,7 @@ namespace Framework.AssetManagement.GameBuilder
                 Directory.CreateDirectory(manifestOutput);
             }
 
-            CreateManifestAsset(results, manifestOutput);
-            if (!BuildManifestAsBundle(manifestOutput))
+            if (!BuildManifestAsBundle(abb, results, manifestOutput))
             {
                 Debug.LogError("Failed to build manifest");
                 // ClearManifestRedundancy(manifestOutput);
@@ -209,30 +213,66 @@ namespace Framework.AssetManagement.GameBuilder
             return true;
         }
 
-        static private void CreateManifestAsset(IBundleBuildResults results, string manifestOutput)
+        static private string CreateManifestAsset(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput)
         {
-            var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
-            manifest.SetResults(results.BundleInfos);
-            AssetDatabase.CreateAsset(manifest, manifestOutput + Utility.GetPlatformName() + "_manifest.asset");
+            // 方法一：[obsolete]输出仅为debug
+            var unityManifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
+            unityManifest.SetResults(results.BundleInfos);
+            string unityManifestFilepath = manifestOutput + Utility.GetPlatformName() + "_manifest.asset";
+            AssetDatabase.CreateAsset(unityManifest, unityManifestFilepath);
+
+            // 方法二：写入自定义json格式文件
+            CustomManifest manifest = new CustomManifest();
+            foreach(var item in results.BundleInfos)
+            {
+                manifest.m_BundleDetails.Add(item.Key,
+                                             new CustomManifest.BundleDetail()
+                                             {
+                                                 bundleName = item.Key,
+                                                 isUnityBundle = true,
+                                                 isStreamingAsset = true,
+                                                 dependencies = item.Value.Dependencies
+                                             });
+            }
+            foreach(var bb in abb)
+            {
+                for(int i = 0; i < bb.assetNames.Length; ++i)
+                {
+                    manifest.m_FileDetails.Add(bb.assetNames[i],
+                                               new CustomManifest.FileDetail()
+                                               {
+                                                   bundleName = bb.assetBundleName,
+                                                   fileName = bb.addressableNames[i]
+                                               });
+                }
+            }
+
+            string customManifestFilepath = manifestOutput + Utility.GetPlatformName() + "_manifest.zjson";
+            CustomManifest.Serialize(customManifestFilepath, manifest);
+            AssetDatabase.ImportAsset(customManifestFilepath);
+
+            return customManifestFilepath;
         }
 
-        static private bool BuildManifestAsBundle(string manifestOutput)
+        static private bool BuildManifestAsBundle(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput)
         {
+            string manifestFilepath = CreateManifestAsset(abb, results, manifestOutput);
+
             AssetBundleBuild[] BuildList = new AssetBundleBuild[1];
-            AssetBundleBuild abb = new AssetBundleBuild();
-            abb.assetBundleName = "manifest";
-            abb.assetNames = new string[1];
-            abb.assetNames[0] = manifestOutput + "/" + Utility.GetPlatformName() + "_manifest.asset";
-            abb.addressableNames = new string[1];
-            abb.addressableNames[0] = "manifest";
-            BuildList[0] = abb;
+            AssetBundleBuild manifestAbb = new AssetBundleBuild();
+            manifestAbb.assetBundleName = "manifest";
+            manifestAbb.assetNames = new string[1];
+            manifestAbb.assetNames[0] = manifestFilepath;
+            manifestAbb.addressableNames = new string[1];
+            manifestAbb.addressableNames[0] = "manifest";
+            BuildList[0] = manifestAbb;
             var buildContent = new BundleBuildContent(BuildList);
             var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
                                                         BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), 
                                                         manifestOutput);
 
-            IBundleBuildResults results;
-            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
+            IBundleBuildResults manifestResults;
+            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out manifestResults);
             return exitCode >= ReturnCode.Success;
         }
 

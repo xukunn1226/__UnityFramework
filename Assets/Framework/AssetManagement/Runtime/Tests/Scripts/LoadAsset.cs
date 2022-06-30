@@ -49,7 +49,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void StartTask()
         {
-            loader = AssetManager.LoadAsset<UnityEngine.Texture2D>(bundleName, assetName);
+            //loader = AssetManager.LoadAsset<UnityEngine.Texture2D>(bundleName, assetName);
 
             info = loader == null ? "fail to load: " : "sucess to load: ";
             info += assetName;

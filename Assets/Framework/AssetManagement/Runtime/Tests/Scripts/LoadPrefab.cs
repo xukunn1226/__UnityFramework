@@ -59,7 +59,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void StartTask()
         {
-            loader = AssetManager.Instantiate(bundleName, assetName);
+            //loader = AssetManager.Instantiate(bundleName, assetName);
 
             info = inst != null ? "sucess to load: " : "fail to load: ";
             info += assetName;

@@ -44,8 +44,9 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         IEnumerator StartTask()
         {
-            m_Loader = AssetManager.LoadAssetAsync<Material>(bundleName, assetName);
-            yield return m_Loader;
+            //m_Loader = AssetManager.LoadAssetAsync<Material>(bundleName, assetName);
+            //yield return m_Loader;
+            yield break;
 
             // m_Loader.asset
         }

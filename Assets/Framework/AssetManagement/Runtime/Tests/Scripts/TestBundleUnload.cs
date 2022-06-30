@@ -66,7 +66,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void LoadA()
         {
-            loaderA = AssetManager.LoadAsset<UnityEngine.Object>(bundleNameA, assetNameA);
+            //loaderA = AssetManager.LoadAsset<UnityEngine.Object>(bundleNameA, assetNameA);
 
             info = loaderA.asset != null ? "sucess to load: " : "fail to load: ";
             info += assetNameA;
@@ -79,7 +79,7 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         void LoadB()
         {
-            loaderB = AssetManager.LoadAsset<Object>(bundleNameB, assetNameB);
+            //loaderB = AssetManager.LoadAsset<Object>(bundleNameB, assetNameB);
 
             info = loaderB.asset != null ? "sucess to load: " : "fail to load: ";
             info += assetNameB;

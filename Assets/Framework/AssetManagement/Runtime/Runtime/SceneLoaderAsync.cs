@@ -56,37 +56,6 @@ namespace Framework.AssetManagement.Runtime
             return loader;
         }
 
-        /// <summary>
-        /// 从Build Settings加载场景接口
-        /// </summary>
-        /// <param name="sceneName">不带后缀名，小写</param>
-        /// <param name="mode"></param>
-        /// <returns></returns>
-        static internal SceneLoaderAsync Get(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
-        {
-            if (m_Pool == null)
-            {
-                m_Pool = new LinkedObjectPool<SceneLoaderAsync>(k_InitPoolSize);
-            }
-
-            SceneLoaderAsync loader = (SceneLoaderAsync)m_Pool.Get();
-            loader.LoadSceneAsync(sceneName, mode, allowSceneActivation);
-            loader.Pool = m_Pool;
-            loader.sceneName = sceneName;
-            loader.mode = mode;
-            loader.m_bFromBundle = false;
-            return loader;
-        }
-
-        static internal AsyncOperation Release(SceneLoaderAsync loader)
-        {
-            if (m_Pool == null || loader == null)
-                throw new System.ArgumentNullException();
-
-            m_Pool.Return(loader);
-            return loader.unloadAsyncOp;
-        }
-
         private void LoadSceneAsyncFromBundle(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation)
         {
 #if UNITY_EDITOR
@@ -94,7 +63,8 @@ namespace Framework.AssetManagement.Runtime
             {
                 case LoaderType.FromEditor:
                     string assetPath;
-                    AssetManager.ParseBundleAndAssetName(bundlePath, sceneName, out assetPath);
+                    //AssetManager.ParseBundleAndAssetName(bundlePath, sceneName, out assetPath);
+                    assetPath = bundlePath + sceneName;
                     SceneManager.LoadScene(assetPath + ".unity", mode);
                     m_LoadFromEditor = true;
                     break;
@@ -120,6 +90,28 @@ namespace Framework.AssetManagement.Runtime
             loadAsyncOp.allowSceneActivation = allowSceneActivation;
         }
 
+        /// <summary>
+        /// 从Build Settings加载场景接口
+        /// </summary>
+        /// <param name="sceneName">不带后缀名，小写</param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        static internal SceneLoaderAsync Get(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+        {
+            if (m_Pool == null)
+            {
+                m_Pool = new LinkedObjectPool<SceneLoaderAsync>(k_InitPoolSize);
+            }
+
+            SceneLoaderAsync loader = (SceneLoaderAsync)m_Pool.Get();
+            loader.LoadSceneAsync(sceneName, mode, allowSceneActivation);
+            loader.Pool = m_Pool;
+            loader.sceneName = sceneName;
+            loader.mode = mode;
+            loader.m_bFromBundle = false;
+            return loader;
+        }
+
         private void LoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation)
         {
 #if UNITY_EDITOR
@@ -143,6 +135,15 @@ namespace Framework.AssetManagement.Runtime
         {
             loadAsyncOp = SceneManager.LoadSceneAsync(sceneName, mode);
             loadAsyncOp.allowSceneActivation = allowSceneActivation;
+        }
+
+        static internal AsyncOperation Release(SceneLoaderAsync loader)
+        {
+            if (m_Pool == null || loader == null)
+                throw new System.ArgumentNullException();
+
+            m_Pool.Return(loader);
+            return loader.unloadAsyncOp;
         }
 
         private void InternalUnloadScene()

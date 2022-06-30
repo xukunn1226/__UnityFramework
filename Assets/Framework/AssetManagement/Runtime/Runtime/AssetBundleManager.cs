@@ -1,42 +1,31 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Build.Pipeline;
+using Framework.Core;
 
 namespace Framework.AssetManagement.Runtime
 {
     static internal class AssetBundleManager
     {
-        static private string                                               m_RootPath;
-        static private CompatibilityAssetBundleManifest                     m_Manifest;
-        static private Dictionary<string, AssetBundleRef>                   m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
-
-        // CompatibilityAssetBundleManifest.GetAllDependencies()有GC，待官方修正，暂时本地做缓存避免每次获取产生的GC
-        static private Dictionary<string, string[]>                         m_CachedDependencies        = new Dictionary<string, string[]>();
+        static private string                               m_StreamingAssetPath;
+        static private string                               m_PersistentDataPath;
+        static private Dictionary<string, AssetBundleRef>   m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
+        static private bool                                 m_Init;
         
         static private bool bInit
         {
             get
             {
-                return m_Manifest != null;
+                return m_Init;
             }
         }
 
-        static internal void Init(string rootPath)
+        static internal void Init()
         {
-            string platformName = Framework.Core.Utility.GetPlatformName();
-            m_RootPath = string.Format("{0}/{1}/", rootPath, platformName);
-            Debug.LogFormat($"AssetBundleManager: init rootPath      {m_RootPath}");
-
-            // init asset bundle manifest
-            AssetBundle manifest = AssetBundle.LoadFromFile(GetRootPath("manifest"));
-            if (manifest != null)
-            {
-                m_Manifest = manifest.LoadAsset<CompatibilityAssetBundleManifest>("manifest");
-                manifest.Unload(false);
-            }
-
-            if (m_Manifest == null)
-                Debug.LogError("AssetBundleManager init failed becase of asset bundle manifest == null");
+            m_Init = true;
+            m_StreamingAssetPath = string.Format("{0}/{1}/", UnityEngine.Application.streamingAssetsPath, Utility.GetPlatformName());
+            m_PersistentDataPath = string.Format("{0}/{1}/", UnityEngine.Application.persistentDataPath, Utility.GetPlatformName());
+            Debug.LogFormat($"AssetBundleManager: init rootPath      {m_StreamingAssetPath}");
         }
 
         /// <summary>
@@ -51,13 +40,6 @@ namespace Framework.AssetManagement.Runtime
                 AssetBundleRef.Release(kvp.Value);
             }
             m_DictAssetBundleRefs.Clear();
-
-            // unload manifest
-            if (m_Manifest != null)
-            {
-                Resources.UnloadAsset(m_Manifest);        // 卸载Asset-Object
-                m_Manifest = null;
-            }
         }
         
         static internal string[] GetAllDependencies(string InAssetBundleName)
@@ -67,14 +49,7 @@ namespace Framework.AssetManagement.Runtime
                 Debug.LogError("AssetBundleManager::GetAllDependencies -- Please init AssetBundleManager...");
                 return null;
             }
-
-            string[] dependencies;
-            if (!m_CachedDependencies.TryGetValue(InAssetBundleName, out dependencies))
-            {
-                dependencies = m_Manifest.GetAllDependencies(InAssetBundleName);
-                m_CachedDependencies.Add(InAssetBundleName, dependencies);
-            }
-            return dependencies;
+            return AssetManager.GetBundleDetail(InAssetBundleName).dependencies;
         }
 
         static internal AssetBundleRef LoadAssetBundleFromFile(string InAssetBundleName)
@@ -94,7 +69,8 @@ namespace Framework.AssetManagement.Runtime
             }
             else
             {
-                AssetBundle ab = AssetBundle.LoadFromFile(GetRootPath(InAssetBundleName));
+                CustomManifest.BundleDetail bundleDetail = AssetManager.GetBundleDetail(InAssetBundleName);
+                AssetBundle ab = AssetBundle.LoadFromFile(GetRootPath(bundleDetail));
                 if(ab != null)
                 {
                     ABRef = AssetBundleRef.Get(InAssetBundleName, ab);          // reference count equal to 1
@@ -102,7 +78,7 @@ namespace Framework.AssetManagement.Runtime
                 }
                 else
                 {
-                    Debug.LogErrorFormat($"AssetBundleManager::Failed to LoadFromFile {GetRootPath(InAssetBundleName)}");
+                    Debug.LogErrorFormat($"AssetBundleManager::Failed to LoadFromFile {GetRootPath(bundleDetail)}");
                 }
             }
 
@@ -133,9 +109,9 @@ namespace Framework.AssetManagement.Runtime
             }
         }
         
-        static private string GetRootPath(string abName)
+        static private string GetRootPath(CustomManifest.BundleDetail bundleDetail)
         {
-            return m_RootPath + abName;
+            return bundleDetail.isStreamingAsset ? m_StreamingAssetPath + bundleDetail.bundleName : m_PersistentDataPath + bundleDetail.bundleName;
         }    
     }
 }

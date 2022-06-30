@@ -37,20 +37,7 @@ namespace Framework.AssetManagement.Runtime
             loader.LoadAsset(assetPath);
             loader.Pool = m_Pool;
             return loader.asset;
-        }
-        
-        static internal GameObject Get(string assetBundleName, string assetName)
-        {
-            if (m_Pool == null)
-            {
-                m_Pool = new LinkedObjectPool<PrefabLoader>(AssetManager.PreAllocateAssetLoaderPoolSize);
-            }
-
-            PrefabLoader loader = (PrefabLoader)m_Pool.Get();
-            loader.LoadAsset(assetBundleName, assetName);
-            loader.Pool = m_Pool;
-            return loader.asset;
-        }
+        }        
 
         static internal void Release(PrefabLoader loader)
         {
@@ -89,57 +76,18 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        private void LoadAsset(string assetBundleName, string assetName)
-        {
-#if UNITY_EDITOR
-            AssetManager.ParseBundleAndAssetName(assetBundleName, assetName, out assetPath);
-            switch (AssetManager.Instance.loaderType)
-            {
-                case LoaderType.FromEditor:
-                    GameObject prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                    if(prefabAsset != null)
-                    {
-                        asset = Object.Instantiate(prefabAsset);
-                    }
-                    break;
-                case LoaderType.FromStreamingAssets:
-                case LoaderType.FromPersistent:
-                    LoadAssetInternal(assetBundleName, assetName);
-                    break;
-            }
-#else
-            LoadAssetInternal(assetBundleName, assetName);
-#endif
-            if(asset != null)
-            {
-                PrefabDestroyer destroyer = asset.AddComponent<PrefabDestroyer>();
-                destroyer.loader = this;
-            }
-        }
-
         private void LoadAssetInternal(string assetPath)
         {
-            string assetBundleName, assetName;
-            if (!AssetManager.ParseAssetPath(assetPath, out assetBundleName, out assetName))
-            {
-                Debug.LogWarningFormat("AssetLoader -- Failed to reslove assetbundle name: {0} {1}", assetPath, typeof(GameObject));
-                return;
-            }
-
-            LoadAssetInternal(assetBundleName, assetName);
-        }
-
-        private void LoadAssetInternal(string assetBundleName, string assetName)
-        {
             GameObject prefabAsset = null;
+            CustomManifest.FileDetail fd = AssetManager.GetFileDetail(assetPath);
 
-            abLoader = AssetBundleLoader.Get(assetBundleName);
+            abLoader = AssetBundleLoader.Get(fd.bundleName);
             if (abLoader.assetBundle != null)
             {
-                prefabAsset = abLoader.assetBundle.LoadAsset<GameObject>(assetName);
+                prefabAsset = abLoader.assetBundle.LoadAsset<GameObject>(fd.fileName);
             }
 
-            if(prefabAsset != null)
+            if (prefabAsset != null)
             {
                 asset = Object.Instantiate(prefabAsset);
             }

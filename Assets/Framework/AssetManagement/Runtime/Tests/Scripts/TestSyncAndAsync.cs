@@ -68,10 +68,10 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             int f1 = Time.frameCount;
 
-            GameObjectLoaderAsync loaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
-            yield return loaderAsync;
+            //GameObjectLoaderAsync loaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
+            //yield return loaderAsync;
 
-            inst = loaderAsync.asset;
+            //inst = loaderAsync.asset;
 
             // 马上同步加载，将立即结束之前的异步流程
             loader = AssetManager.LoadAssetBundle("prefab.ab");
@@ -80,6 +80,7 @@ namespace Framework.AssetManagement.Runtime.Tests
             info = inst != null ? "sucess to load: " : "fail to load: ";
             info += assetName;
             info += Time.frameCount - f1;
+            yield break;
         }
 
         void EndTask()

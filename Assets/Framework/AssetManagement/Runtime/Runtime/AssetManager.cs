@@ -21,12 +21,6 @@ namespace Framework.AssetManagement.Runtime
     /// </summary>
     public sealed class AssetManager : SingletonMono<AssetManager>
     {
-        public delegate bool AssetPathToBundleAndAsset_EventHandler(string assetPath, out string assetBundleName, out string assetName);
-        static public event AssetPathToBundleAndAsset_EventHandler CustomizedParser_AssetPathToBundleAndAsset;
-
-        public delegate bool BundleAndAssetToAssetPath_EventHandler(string assetBundleName, string assetName, out string assetPath);
-        static public event BundleAndAssetToAssetPath_EventHandler CustomizedParser_BundleAndAssetToAssetPath;
-
         static internal int             PreAllocateAssetBundlePoolSize          = 200;                      // 预分配缓存AssetBundleRef对象池大小
         static internal int             PreAllocateAssetBundleLoaderPoolSize    = 100;                      // 预分配缓存AssetBundleLoader对象池大小
         static internal int             PreAllocateAssetLoaderPoolSize          = 50;                       // 预分配缓存AssetLoader对象池大小
@@ -38,6 +32,7 @@ namespace Framework.AssetManagement.Runtime
 #pragma warning restore CS0649
         static private bool             bOverrideLoaderType;
         static private LoaderType       overrideLoaderType;
+        static private CustomManifest   m_CustomManifest;
 
         public LoaderType               loaderType
         {
@@ -48,7 +43,7 @@ namespace Framework.AssetManagement.Runtime
                 return finalType;
 #else
                 LoaderType finalType = bOverrideLoaderType ? overrideLoaderType : m_LoaderType;
-                return finalType == LoaderType.FromEditor ? LoaderType.FromPersistent : finalType;
+                return finalType == LoaderType.FromEditor ? LoaderType.FromStreamingAssets : finalType;
 #endif
             }
         }
@@ -60,10 +55,12 @@ namespace Framework.AssetManagement.Runtime
             switch(loaderType)
             {
                 case LoaderType.FromStreamingAssets:
-                    AssetBundleManager.Init(Application.streamingAssetsPath);
+                    LoadManifest(Application.streamingAssetsPath);
+                    AssetBundleManager.Init();
                     break;
                 case LoaderType.FromPersistent:
-                    AssetBundleManager.Init(Application.persistentDataPath);
+                    LoadManifest(Application.persistentDataPath);
+                    AssetBundleManager.Init();
                     break;
             }
             // Debug.Log($"AssetManager.loaderType is {loaderType}");
@@ -78,6 +75,21 @@ namespace Framework.AssetManagement.Runtime
             }
 
             base.OnDestroy();
+        }
+
+        private CustomManifest LoadManifest(string rootPath)
+        {
+            string assetPath = string.Format("{0}/{1}/manifest", rootPath, Utility.GetPlatformName());
+            AssetBundle manifest = AssetBundle.LoadFromFile(assetPath);
+            if (manifest != null)
+            {
+                JsonAsset asset = manifest.LoadAsset<JsonAsset>("manifest");
+                m_CustomManifest = asset.Require<CustomManifest>();
+                manifest.Unload(false);
+            }
+            if (m_CustomManifest == null)
+                Debug.LogError("LoadManifest failed becase of asset bundle manifest == null");
+            return m_CustomManifest;
         }
 
         /// <summary>
@@ -103,19 +115,18 @@ namespace Framework.AssetManagement.Runtime
             bOverrideLoaderType = false;
         }
 
-        static public void RegisterCustomizedParser(AssetPathToBundleAndAsset_EventHandler parser1, BundleAndAssetToAssetPath_EventHandler parser2)
+        static public CustomManifest.BundleDetail GetBundleDetail(string assetBundleName)
         {
-            if (parser1 == null)
-                throw new ArgumentNullException("parser1");
+            if (m_CustomManifest == null)
+                throw new System.ArgumentNullException("CustomManifest");
+            return m_CustomManifest.GetBundleDetail(assetBundleName);
+        }
 
-            if (parser2 == null)
-                throw new ArgumentNullException("parser2");
-
-            if (Instance == null)
-                throw new ArgumentNullException("Instance", "AssetManager not init");
-
-            CustomizedParser_AssetPathToBundleAndAsset += parser1;
-            CustomizedParser_BundleAndAssetToAssetPath += parser2;
+        static public CustomManifest.FileDetail GetFileDetail(string assetPath)
+        {
+            if (m_CustomManifest == null)
+                throw new System.ArgumentNullException("CustomManifest");
+            return m_CustomManifest.GetFileDetail(assetPath);
         }
 
         /// <summary>
@@ -130,14 +141,7 @@ namespace Framework.AssetManagement.Runtime
             
             return GameObjectLoader.Get(assetPath);
         }
-        static public GameObjectLoader Instantiate(string bundleName, string assetName)
-        {
-            if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-            return GameObjectLoader.Get(bundleName, assetName);
-        }
-
+        
         static public void ReleaseInst(GameObjectLoader loader)
         {
             if (Instance == null)
@@ -153,14 +157,7 @@ namespace Framework.AssetManagement.Runtime
             
             return GameObjectLoaderAsync.Get(assetPath);
         }
-        static public GameObjectLoaderAsync InstantiateAsync(string bundleName, string assetName)
-        {
-            if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-            return GameObjectLoaderAsync.Get(bundleName, assetName);
-        }
-
+        
         static public void ReleaseInst(GameObjectLoaderAsync loader)
         {
             if (Instance == null)
@@ -176,25 +173,11 @@ namespace Framework.AssetManagement.Runtime
             return PrefabLoader.Get(assetPath);
         }
 
-        static public GameObject InstantiatePrefab(string bundleName, string assetName)
-        {
-            if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            return PrefabLoader.Get(bundleName, assetName);
-        }
-
         static public PrefabLoaderAsync InstantiatePrefabAsync(string assetPath)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             return PrefabLoaderAsync.Get(assetPath);
-        }
-
-        static public PrefabLoaderAsync InstantiatePrefabAsync(string bundleName, string assetName)
-        {
-            if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            return PrefabLoaderAsync.Get(bundleName, assetName);
         }
 
         /// <summary>
@@ -210,13 +193,6 @@ namespace Framework.AssetManagement.Runtime
             
             return AssetLoader<T>.Get(assetPath);
         }
-        static public AssetLoader<T> LoadAsset<T>(string bundleName, string assetName) where T : UnityEngine.Object
-        {
-            if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-            return AssetLoader<T>.Get(bundleName, assetName);
-        }
 
         /// <summary>
         /// 异步加载资源接口
@@ -230,14 +206,7 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             
             return AssetLoaderAsync<T>.Get(assetPath);
-        }
-        static public AssetLoaderAsync<T> LoadAssetAsync<T>(string bundleName, string assetName) where T : UnityEngine.Object
-        {
-            if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-            return AssetLoaderAsync<T>.Get(bundleName, assetName);
-        }
+        }        
 
         static public void UnloadAsset<T>(AssetLoader<T> loader) where T : UnityEngine.Object
         {
@@ -350,99 +319,6 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
 
             return SceneLoaderAsync.Release(loader);
-        }
-
-
-        struct AssetName
-        {
-            public string assetBundleName;
-            public string assetName;
-        }
-        static Dictionary<string, AssetName> s_dic = new Dictionary<string, AssetName>();               // 缓存，减少资源路径的解析；key: assetPath; value: AssetName
-
-        /// <summary>
-        /// 从资源路径解析出其所在的 AssetBundle Name 和 Asset Name
-        /// </summary>
-        /// <param name="assetPath">res/windows/test/cube.prefab</param>
-        /// <param name="assetBundleName">res/windows/test.ab</param>
-        /// <param name="assetName">cube.prefab</param>
-        /// <returns></returns>
-        static public bool ParseAssetPath(string assetPath, out string assetBundleName, out string assetName)
-        {
-            if (string.IsNullOrEmpty(assetPath))
-            {
-                throw new System.ArgumentNullException(assetPath);
-            }            
-
-            AssetName an;
-            if (s_dic.TryGetValue(assetPath, out an))
-            {
-                assetBundleName = an.assetBundleName;
-                assetName = an.assetName;
-                return true;
-            }
-
-            bool bSucess;
-            if (CustomizedParser_AssetPathToBundleAndAsset != null)
-            {
-                bSucess = CustomizedParser_AssetPathToBundleAndAsset(assetPath, out assetBundleName, out assetName);
-            }
-            else
-            {
-                bSucess = DefaultParser_AssetPathToBundleAndAsset(assetPath, out assetBundleName, out assetName);
-            }
-            if (!bSucess)
-                return false;
-
-            an = new AssetName();
-            an.assetBundleName = assetBundleName;
-            an.assetName = assetName;
-            s_dic.Add(assetPath, an);
-
-            return true;
-        }
-
-        static public void ParseBundleAndAssetName(string assetBundleName, string assetName, out string assetPath)
-        {
-            if(CustomizedParser_BundleAndAssetToAssetPath != null)
-            {
-                CustomizedParser_BundleAndAssetToAssetPath(assetBundleName, assetName, out assetPath);
-            }
-            else
-            {
-                DefaultParser_BundleAndAssetToAssetPath(assetBundleName, assetName, out assetPath);
-            }
-        }
-
-        /// <summary>
-        /// 默认解析器——从assetPath解析出bundleName和assetName
-        /// </summary>
-        /// <param name="assetPath">"res/windows/test/cube.prefab"</param>
-        /// <param name="assetBundleName">"res/windows/test.ab"</param>
-        /// <param name="assetName">"cube.prefab"</param>
-        /// <returns></returns>
-        static private bool DefaultParser_AssetPathToBundleAndAsset(string assetPath, out string assetBundleName, out string assetName)
-        {
-            assetBundleName = null;
-            assetName = null;
-
-            int index = assetPath.LastIndexOf(@"/");
-            if (index == -1)
-                return false;
-
-            assetName = assetPath.Substring(index + 1);
-            assetBundleName = assetPath.Substring(0, index) + ".ab";
-
-            return true;
-        }
-
-        static private void DefaultParser_BundleAndAssetToAssetPath(string assetBundleName, string assetName, out string assetPath)
-        {
-            if (assetBundleName.EndsWith(".ab", System.StringComparison.OrdinalIgnoreCase))
-            {
-                assetBundleName = assetBundleName.Substring(0, assetBundleName.Length - 3);
-            }
-            assetPath = assetBundleName + "/" + assetName;
         }
     }
 }

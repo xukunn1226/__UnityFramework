@@ -50,10 +50,12 @@ namespace Framework.AssetManagement.Runtime.Tests
 
         IEnumerator StartTask()
         {
-            m_LoaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
-            yield return m_LoaderAsync;
+            //m_LoaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
+            //yield return m_LoaderAsync;
 
             // m_LoaderAsync.asset
+
+            yield break;
         }
 
         void EndTask()

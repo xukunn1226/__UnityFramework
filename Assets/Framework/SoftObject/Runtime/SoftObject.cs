@@ -32,7 +32,7 @@ namespace Framework.Core
             if (m_PrefabLoader != null)
                 throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-            m_PrefabLoader = AssetManager.Instantiate(bundleName, assetName);
+            //m_PrefabLoader = AssetManager.Instantiate(bundleName, assetName);
             return m_PrefabLoader?.asset;
         }
 
@@ -46,7 +46,7 @@ namespace Framework.Core
             if (m_PrefabLoader != null)
                 throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-            m_PrefabLoaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
+            //m_PrefabLoaderAsync = AssetManager.InstantiateAsync(bundleName, assetName);
             return m_PrefabLoaderAsync;
         }
 
@@ -75,7 +75,7 @@ namespace Framework.Core
             if (m_LoaderAsync != null)
                 throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded async");
 
-            m_Loader = AssetManager.LoadAsset<Object>(bundleName, assetName);
+            //m_Loader = AssetManager.LoadAsset<Object>(bundleName, assetName);
             return m_Loader.asset;
         }
 
@@ -89,7 +89,7 @@ namespace Framework.Core
             if (m_Loader != null)
                 throw new System.InvalidOperationException($"{bundleName}:{assetName} has already loaded, plz unload it");
 
-            m_LoaderAsync = AssetManager.LoadAssetAsync<Object>(bundleName, assetName);
+            //m_LoaderAsync = AssetManager.LoadAssetAsync<Object>(bundleName, assetName);
             return m_LoaderAsync;
         }
 
@@ -122,7 +122,7 @@ namespace Framework.Core
         {
             if (m_ScriptedPool == null)
             {
-                AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_Path);
+                //AssetManager.ParseBundleAndAssetName(bundleName, assetName, out m_Path);
                 #if UNITY_EDITOR
                 Debug.Assert(UnityEditor.AssetDatabase.LoadAssetAtPath<Object>(m_Path) != null);
                 #endif
