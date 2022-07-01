@@ -193,6 +193,8 @@ namespace Framework.AssetManagement.GameBuilder
             }
             ClearBundleRedundancy(output);
 
+            AssetDatabase.Refresh();
+
             // step4. build manifest
             string manifestOutput = "Assets/Temp/";          // manifest必须生成在Assets/下才能CreateAsset
             if (!Directory.Exists(manifestOutput))
@@ -200,11 +202,27 @@ namespace Framework.AssetManagement.GameBuilder
                 Directory.CreateDirectory(manifestOutput);
             }
 
-            if (!BuildManifestAsBundle(abb, results, manifestOutput))
+            bool useHashToBundleName = true;
+            if (!BuildManifestAsBundle(abb, results, manifestOutput, useHashToBundleName))
             {
                 Debug.LogError("Failed to build manifest");
                 // ClearManifestRedundancy(manifestOutput);
                 return false;
+            }
+
+            // 把所有已输出的bundle改名
+            if(useHashToBundleName)
+            {
+                foreach(var item in abb)
+                {
+                    BundleDetails bundleDetails;
+                    results.BundleInfos.TryGetValue(item.assetBundleName, out bundleDetails);
+
+                    string oldPathName = output + "/" + item.assetBundleName;
+                    string newPathName = output + "/" + bundleDetails.Hash.ToString();
+                    string error = AssetDatabase.RenameAsset(oldPathName, bundleDetails.Hash.ToString());
+                    Debug.Log($"===  {error}");
+                }
             }
 
             // step5. copy manifest and clear temp files
@@ -213,7 +231,7 @@ namespace Framework.AssetManagement.GameBuilder
             return true;
         }
 
-        static private string CreateManifestAsset(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput)
+        static private string CreateManifestAsset(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput, bool useHashToBundleName)
         {
             // 方法一：[obsolete]输出仅为debug
             var unityManifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
@@ -225,23 +243,27 @@ namespace Framework.AssetManagement.GameBuilder
             CustomManifest manifest = new CustomManifest();
             foreach(var item in results.BundleInfos)
             {
-                manifest.m_BundleDetails.Add(item.Key,
+                manifest.m_BundleDetails.Add(useHashToBundleName ? item.Value.Hash.ToString() : item.Key,
                                              new CustomManifest.BundleDetail()
                                              {
-                                                 bundleName = item.Key,
+                                                 bundleName = useHashToBundleName ? item.Value.Hash.ToString() : item.Key,
+                                                 bundlePath = item.Key,
                                                  isUnityBundle = true,
                                                  isStreamingAsset = true,
-                                                 dependencies = item.Value.Dependencies
+                                                 dependencies = useHashToBundleName ? ConvertDependenciesToHash(item.Value.Dependencies, results) : item.Value.Dependencies
                                              });
             }
             foreach(var bb in abb)
             {
                 for(int i = 0; i < bb.assetNames.Length; ++i)
                 {
+                    BundleDetails bundleDetails;
+                    results.BundleInfos.TryGetValue(bb.assetBundleName, out bundleDetails);
+
                     manifest.m_FileDetails.Add(bb.assetNames[i],
                                                new CustomManifest.FileDetail()
                                                {
-                                                   bundleName = bb.assetBundleName,
+                                                   bundleName = useHashToBundleName ? bundleDetails.Hash.ToString() : bb.assetBundleName,
                                                    fileName = bb.addressableNames[i]
                                                });
                 }
@@ -254,9 +276,20 @@ namespace Framework.AssetManagement.GameBuilder
             return customManifestFilepath;
         }
 
-        static private bool BuildManifestAsBundle(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput)
+        static private string[] ConvertDependenciesToHash(string[] dependencies, IBundleBuildResults results)
         {
-            string manifestFilepath = CreateManifestAsset(abb, results, manifestOutput);
+            for(int i = 0; i < dependencies.Length; ++i)
+            {
+                BundleDetails bundleDetails;
+                results.BundleInfos.TryGetValue(dependencies[i], out bundleDetails);
+                dependencies[i] = bundleDetails.Hash.ToString();
+            }
+            return dependencies;
+        }
+
+        static private bool BuildManifestAsBundle(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput, bool useHashToBundleName)
+        {
+            string manifestFilepath = CreateManifestAsset(abb, results, manifestOutput, useHashToBundleName);
 
             AssetBundleBuild[] BuildList = new AssetBundleBuild[1];
             AssetBundleBuild manifestAbb = new AssetBundleBuild();

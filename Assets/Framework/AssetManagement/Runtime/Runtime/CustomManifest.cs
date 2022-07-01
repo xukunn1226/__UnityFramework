@@ -15,7 +15,8 @@ namespace Framework.AssetManagement.Runtime
         [Serializable]
         public class BundleDetail
         {
-            public string       bundleName;             // bundle name            
+            public string       bundleName;             // bundle name
+            public string       bundlePath;             // 记录bundle对应的资源路径，仅调试使用
             public bool         isUnityBundle;          // 是否是unity bundle
             public bool         isStreamingAsset;       // true：in streaming asset; false: in persistent data path
             public string[]     dependencies;           // 依赖的bundle name list
