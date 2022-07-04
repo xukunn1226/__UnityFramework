@@ -14,7 +14,6 @@ namespace Framework.AssetManagement.Runtime.Tests
     /// </summary>
     public class TestLoadSceneFromAB : MonoBehaviour
     {
-        private const string        m_SceneBundlePath = "assets/framework/core/assetmanagement/runtime/tests/res/scenes.ab";
         private SceneLoader         m_SceneLoader1;
 
         private SceneLoaderAsync    m_SceneLoaderAsync2;
@@ -51,8 +50,7 @@ namespace Framework.AssetManagement.Runtime.Tests
             /////////////////////// 同步加载场景（From Bundle）
             if (GUI.Button(new Rect(100, 100, 300, 120), "Load Scene1 From Bundle"))
             {
-                // m_SceneLoader1 = LoadSceneFromBundle("assets/framework/core/assetmanagement/runtime/tests/res/scenes/Testscene1.unity", LoadSceneMode.Additive);
-                m_SceneLoader1 = LoadSceneFromBundle("testscene1", LoadSceneMode.Additive);
+                m_SceneLoader1 = LoadSceneFromBundle("assets/framework/assetmanagement/runtime/tests/res/scenes/testscene1.unity", LoadSceneMode.Additive);
             }
 
             if (GUI.Button(new Rect(500, 100, 300, 120), "Unload Scene1"))
@@ -63,7 +61,7 @@ namespace Framework.AssetManagement.Runtime.Tests
             /////////////////////// 异步加载场景（From Bundle）
             if (GUI.Button(new Rect(100, 300, 300, 120), "Load Scene2 Async From Bundle"))
             {
-                m_SceneLoaderAsync2 = LoadSceneAsyncFromBundle("testscene2", LoadSceneMode.Single);
+                m_SceneLoaderAsync2 = LoadSceneAsyncFromBundle("assets/framework/assetmanagement/runtime/tests/res/scenes/testscene2.unity", LoadSceneMode.Additive);
                 StartCoroutine(m_SceneLoaderAsync2);
             }
 
@@ -75,7 +73,7 @@ namespace Framework.AssetManagement.Runtime.Tests
             //////////////////// Async Load Scene allow actived
             if (GUI.Button(new Rect(100, 500, 300, 120), "Load Scene1 Allow Activation"))
             {
-                m_LoaderAsync = LoadSceneAsyncFromBundle("testscene1", LoadSceneMode.Additive, false);
+                m_LoaderAsync = LoadSceneAsyncFromBundle("assets/framework/assetmanagement/runtime/tests/res/scenes/testscene2.unity", LoadSceneMode.Additive, false);
                 StartCoroutine(m_LoaderAsync);
             }
 
@@ -83,13 +81,13 @@ namespace Framework.AssetManagement.Runtime.Tests
             {
                 m_LoaderAsync.loadAsyncOp.allowSceneActivation = true;
             }
-        }        
+        }
 
-        SceneLoaderAsync LoadSceneAsyncFromBundle(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+        SceneLoaderAsync LoadSceneAsyncFromBundle(string assetPath, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             Debug.Log($"----Begin LoadSceneAsync: [{Time.frameCount}]");
             
-            SceneLoaderAsync loader = AssetManager.LoadSceneAsync(m_SceneBundlePath, sceneName, mode, allowSceneActivation);
+            SceneLoaderAsync loader = AssetManager.LoadSceneFromBundleAsync(assetPath, mode, allowSceneActivation);
             
             Debug.Log($"----End LoadSceneAsync: [{Time.frameCount}]");
 
@@ -99,13 +97,12 @@ namespace Framework.AssetManagement.Runtime.Tests
         /// <summary>
         /// 下一帧加载完成，即触发回调OnSceneLoaded
         /// </summary>
-        /// <param name="sceneName"></param>
+        /// <param name="assetPath"></param>
         /// <param name="mode"></param>
-        SceneLoader LoadSceneFromBundle(string sceneName, LoadSceneMode mode)
+        SceneLoader LoadSceneFromBundle(string assetPath, LoadSceneMode mode)
         {
             Debug.Log($"----Begin LoadScene: [{Time.frameCount}]");
-            SceneLoader loader = AssetManager.LoadScene(m_SceneBundlePath, sceneName, mode);
-            // SceneLoader loader = AssetManager.LoadScene(sceneName, mode);
+            SceneLoader loader = AssetManager.LoadSceneFromBundle(assetPath, mode);
             Debug.Log($"----End LoadScene: [{Time.frameCount}]");
 
             return loader;

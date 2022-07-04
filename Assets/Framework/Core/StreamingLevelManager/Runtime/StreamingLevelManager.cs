@@ -36,7 +36,7 @@ namespace Framework.Core
         {
             public string                               sceneName;                  // unique identifier
             public string                               scenePath;                  // 为了兼容“静态场景”与“动态场景”设计接口为scenePath（带后缀名），小写
-            public string                               bundlePath;                 // 有效路径表示从AB包加载；null表示静态方式加载场景，需在Build Setting中预设
+            public bool                                 fromBundle;                 // 有效路径表示从AB包加载；null表示静态方式加载场景，需在Build Setting中预设
             public bool                                 additive;                   // true: add模式加载场景；false：替换之前场景
             private StreamingState                      m_State;
             internal StreamingState                     state
@@ -280,10 +280,9 @@ namespace Framework.Core
             Debug.Assert(context.state == StreamingState.InQueue);
 
             SceneLoaderAsync loader;
-            if (!string.IsNullOrEmpty(context.bundlePath))
+            if (context.fromBundle)
             { // extract Asset Name from scenePath when load scene from bundle
-                string scenePath = System.IO.Path.GetFileNameWithoutExtension(context.scenePath);
-                loader = AssetManager.LoadSceneAsync(context.bundlePath, scenePath, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
+                loader = AssetManager.LoadSceneFromBundleAsync(context.scenePath, context.additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
             }
             else
             {

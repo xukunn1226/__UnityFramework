@@ -65,7 +65,6 @@ namespace Application.Runtime
 
         public string                   SceneName;
         public string                   ScenePath;
-        public string                   BundlePath;
 
         void Awake()
         {
@@ -346,7 +345,7 @@ namespace Application.Runtime
             ctx.sceneName = SceneName;
             ctx.scenePath = ScenePath;
             ctx.additive = false;
-            ctx.bundlePath = BundlePath;
+            ctx.fromBundle = true;
             StreamingLevelManager.Instance.LoadAsync(ctx);
         }
 
@@ -450,7 +449,6 @@ namespace Application.Runtime
         private SerializedProperty  m_CanvasProp;
         private SerializedProperty  m_SceneNameProp;
         private SerializedProperty  m_ScenePathProp;
-        private SerializedProperty  m_BundlePathProp;
         private string              m_ipString      = "202.108.22.5";
         private string              m_pingResult    = "No Information";
 
@@ -464,7 +462,6 @@ namespace Application.Runtime
             m_CanvasProp = serializedObject.FindProperty("Canvas");
             m_SceneNameProp = serializedObject.FindProperty("SceneName");
             m_ScenePathProp = serializedObject.FindProperty("ScenePath");
-            m_BundlePathProp = serializedObject.FindProperty("BundlePath");
         }
 
         async public override void OnInspectorGUI()
@@ -475,7 +472,6 @@ namespace Application.Runtime
             EditorGUILayout.ObjectField(m_CanvasProp, typeof(Canvas));
             EditorGUILayout.PropertyField(m_SceneNameProp);
             EditorGUILayout.PropertyField(m_ScenePathProp);
-            EditorGUILayout.PropertyField(m_BundlePathProp);
             EditorGUILayout.PropertyField(m_useLocalCDNProp, new GUIContent("Use local CDN", @"Local CDN is ""Assets/../Deployment/CDN"""));
             EditorGUILayout.PropertyField(m_CdnURLProp);
             EditorGUILayout.IntSlider(m_WorkerCountOfBundleExtracterProp, 1, 10, "Extracter Worker");

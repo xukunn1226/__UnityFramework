@@ -17,7 +17,6 @@ namespace Application.Runtime
     {
         private const string    kEmptySceneName    = "empty";
         private const string    kEmptyScenePath    = "assets/res/scenes/empty.unity";
-        private const string    kBundlePath        = "assets/res/scenes.ab";
 
         public string           Ip                 = "192.168.2.7";
         public int              Port               = 11000;
@@ -76,7 +75,7 @@ namespace Application.Runtime
             ctx.sceneName = kEmptySceneName;
             ctx.scenePath = kEmptyScenePath;
             ctx.additive = false;
-            ctx.bundlePath = kBundlePath;
+            ctx.fromBundle = true;
             StreamingLevelManager.Instance.LoadAsync(ctx);
         }
         

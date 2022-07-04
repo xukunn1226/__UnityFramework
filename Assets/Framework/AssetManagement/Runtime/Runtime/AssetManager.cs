@@ -206,7 +206,7 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             
             return AssetLoaderAsync<T>.Get(assetPath);
-        }        
+        }
 
         static public void UnloadAsset<T>(AssetLoader<T> loader) where T : UnityEngine.Object
         {
@@ -227,12 +227,12 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
         /// ab加载接口
         /// </summary>
-        static public AssetBundleLoader LoadAssetBundle(string assetBundleName)
+        static public AssetBundleLoader LoadAssetBundle(string assetPath)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
-            return AssetBundleLoader.Get(assetBundleName);
+            CustomManifest.FileDetail fd = AssetManager.GetFileDetail(assetPath);
+            return AssetBundleLoader.Get(fd.bundleName);
         }
 
         /// <summary>
@@ -251,29 +251,28 @@ namespace Framework.AssetManagement.Runtime
         /// load scene that is in Build Settings
         /// 1、场景必须加入Build settings
         /// 2、不可热更
-        /// 3、调用方式：sceneName OR scenePath
-        ///    sceneName：不能带后缀名，大小写不敏感
-        ///    scenePath：完整路径名，必须带后缀名, 大小写不敏感
+        /// 3、调用方式：
+        ///    assetPath：完整路径名，必须带后缀名, 大小写不敏感
         /// </summary>
-        /// <param name="sceneName"></param>
-        static public SceneLoader LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
+        /// <param name="assetPath"></param>
+        static public SceneLoader LoadScene(string assetPath, LoadSceneMode mode = LoadSceneMode.Single)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
 
-            return SceneLoader.Get(sceneName, mode);
+            return SceneLoader.Get(assetPath, mode);
         }
 
         /// <summary>
         /// 同上
         /// </summary>
-        /// <param name="sceneName"></param>
-        static public SceneLoaderAsync LoadSceneAsync(string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+        /// <param name="assetPath"></param>
+        static public SceneLoaderAsync LoadSceneAsync(string assetPath, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
 
-            return SceneLoaderAsync.Get(sceneName, mode, allowSceneActivation);
+            return SceneLoaderAsync.Get(assetPath, mode, allowSceneActivation);
         }
 
         /// <summary>
@@ -286,23 +285,23 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="sceneName"></param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        static public SceneLoader LoadScene(string bundlePath, string sceneName, LoadSceneMode mode)
+        static public SceneLoader LoadSceneFromBundle(string assetPath, LoadSceneMode mode)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
 
-            return SceneLoader.Get(bundlePath, sceneName, mode);
+            return SceneLoader.GetFromBundle(assetPath, mode);
         }
 
         /// <summary>
         /// 同上
         /// </summary>
-        static public SceneLoaderAsync LoadSceneAsync(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+        static public SceneLoaderAsync LoadSceneFromBundleAsync(string assetPath, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
 
-            return SceneLoaderAsync.Get(bundlePath, sceneName, mode, allowSceneActivation);
+            return SceneLoaderAsync.GetFromBundle(assetPath, mode, allowSceneActivation);
         }
 
         static public AsyncOperation UnloadSceneAsync(SceneLoader loader)

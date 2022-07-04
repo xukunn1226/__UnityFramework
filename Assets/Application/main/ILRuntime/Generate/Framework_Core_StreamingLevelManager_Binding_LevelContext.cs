@@ -36,10 +36,10 @@ namespace ILRuntime.Runtime.Generated
             app.RegisterCLRFieldGetter(field, get_additive_2);
             app.RegisterCLRFieldSetter(field, set_additive_2);
             app.RegisterCLRFieldBinding(field, CopyToStack_additive_2, AssignFromStack_additive_2);
-            field = type.GetField("bundlePath", flag);
-            app.RegisterCLRFieldGetter(field, get_bundlePath_3);
-            app.RegisterCLRFieldSetter(field, set_bundlePath_3);
-            app.RegisterCLRFieldBinding(field, CopyToStack_bundlePath_3, AssignFromStack_bundlePath_3);
+            field = type.GetField("fromBundle", flag);
+            app.RegisterCLRFieldGetter(field, get_fromBundle_3);
+            app.RegisterCLRFieldSetter(field, set_fromBundle_3);
+            app.RegisterCLRFieldBinding(field, CopyToStack_fromBundle_3, AssignFromStack_fromBundle_3);
 
             args = new Type[]{};
             method = type.GetConstructor(flag, null, args, null);
@@ -123,27 +123,29 @@ namespace ILRuntime.Runtime.Generated
             return ptr_of_this_method;
         }
 
-        static object get_bundlePath_3(ref object o)
+        static object get_fromBundle_3(ref object o)
         {
-            return ((Framework.Core.StreamingLevelManager.LevelContext)o).bundlePath;
+            return ((Framework.Core.StreamingLevelManager.LevelContext)o).fromBundle;
         }
 
-        static StackObject* CopyToStack_bundlePath_3(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
+        static StackObject* CopyToStack_fromBundle_3(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = ((Framework.Core.StreamingLevelManager.LevelContext)o).bundlePath;
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+            var result_of_this_method = ((Framework.Core.StreamingLevelManager.LevelContext)o).fromBundle;
+            __ret->ObjectType = ObjectTypes.Integer;
+            __ret->Value = result_of_this_method ? 1 : 0;
+            return __ret + 1;
         }
 
-        static void set_bundlePath_3(ref object o, object v)
+        static void set_fromBundle_3(ref object o, object v)
         {
-            ((Framework.Core.StreamingLevelManager.LevelContext)o).bundlePath = (System.String)v;
+            ((Framework.Core.StreamingLevelManager.LevelContext)o).fromBundle = (System.Boolean)v;
         }
 
-        static StackObject* AssignFromStack_bundlePath_3(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
+        static StackObject* AssignFromStack_fromBundle_3(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.String @bundlePath = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
-            ((Framework.Core.StreamingLevelManager.LevelContext)o).bundlePath = @bundlePath;
+            System.Boolean @fromBundle = ptr_of_this_method->Value == 1;
+            ((Framework.Core.StreamingLevelManager.LevelContext)o).fromBundle = @fromBundle;
             return ptr_of_this_method;
         }
 

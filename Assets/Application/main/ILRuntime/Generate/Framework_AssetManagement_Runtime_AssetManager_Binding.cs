@@ -45,6 +45,20 @@ namespace ILRuntime.Runtime.Generated
                     lst.Add(m);
                 }
             }
+            args = new Type[]{typeof(UnityEngine.Rendering.RenderPipelineAsset)};
+            if (genericMethods.TryGetValue("LoadAsset", out lst))
+            {
+                foreach(var m in lst)
+                {
+                    if(m.MatchGenericParameters(args, typeof(Framework.AssetManagement.Runtime.AssetLoader<UnityEngine.Rendering.RenderPipelineAsset>), typeof(System.String)))
+                    {
+                        method = m.MakeGenericMethod(args);
+                        app.RegisterCLRMethodRedirection(method, LoadAsset_3);
+
+                        break;
+                    }
+                }
+            }
             args = new Type[]{typeof(UnityEngine.U2D.SpriteAtlas)};
             if (genericMethods.TryGetValue("UnloadAsset", out lst))
             {
@@ -53,7 +67,7 @@ namespace ILRuntime.Runtime.Generated
                     if(m.MatchGenericParameters(args, typeof(void), typeof(Framework.AssetManagement.Runtime.AssetLoader<UnityEngine.U2D.SpriteAtlas>)))
                     {
                         method = m.MakeGenericMethod(args);
-                        app.RegisterCLRMethodRedirection(method, UnloadAsset_3);
+                        app.RegisterCLRMethodRedirection(method, UnloadAsset_4);
 
                         break;
                     }
@@ -67,7 +81,7 @@ namespace ILRuntime.Runtime.Generated
                     if(m.MatchGenericParameters(args, typeof(Framework.AssetManagement.Runtime.AssetLoader<UnityEngine.U2D.SpriteAtlas>), typeof(System.String)))
                     {
                         method = m.MakeGenericMethod(args);
-                        app.RegisterCLRMethodRedirection(method, LoadAsset_4);
+                        app.RegisterCLRMethodRedirection(method, LoadAsset_5);
 
                         break;
                     }
@@ -126,7 +140,23 @@ namespace ILRuntime.Runtime.Generated
             return __ret;
         }
 
-        static StackObject* UnloadAsset_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* LoadAsset_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.String @assetPath = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = Framework.AssetManagement.Runtime.AssetManager.LoadAsset<UnityEngine.Rendering.RenderPipelineAsset>(@assetPath);
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        static StackObject* UnloadAsset_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -142,7 +172,7 @@ namespace ILRuntime.Runtime.Generated
             return __ret;
         }
 
-        static StackObject* LoadAsset_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* LoadAsset_5(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;

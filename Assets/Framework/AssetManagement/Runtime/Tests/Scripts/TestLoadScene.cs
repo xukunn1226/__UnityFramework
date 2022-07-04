@@ -51,7 +51,7 @@ namespace Framework.AssetManagement.Runtime.Tests
         {
             if (GUI.Button(new Rect(100, 100, 150, 60), "Load Scene1"))
             {
-                m_SceneLoader1 = LoadScene("Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes/TestScene1.unity", LoadSceneMode.Additive);
+                m_SceneLoader1 = LoadScene("assets/framework/assetmanagement/runtime/tests/res/scenes/testscene1.unity", LoadSceneMode.Additive);
             }
 
             if (GUI.Button(new Rect(300, 100, 150, 60), "Unload Scene1"))

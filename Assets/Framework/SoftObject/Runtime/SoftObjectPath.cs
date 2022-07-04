@@ -29,7 +29,8 @@ namespace Framework.Core
                     return;
 
                 m_AssetName = assetPath.Substring(index + 1);
-                m_BundleName = assetPath.Substring(0, index) + ".ab";
+                //m_BundleName = assetPath.Substring(0, index) + ".ab";
+                m_BundleName = assetPath.Substring(0, index);
 
                 m_GUID = AssetDatabase.AssetPathToGUID(m_AssetPath);
             }

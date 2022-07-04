@@ -33,66 +33,10 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
         /// 从Bundle同步加载场景接口
         /// </summary>
-        /// <param name="bundlePath">场景文件所在的Bundle路径</param>
-        /// <param name="sceneName">不带后缀名，小写</param>
+        /// <param name="assetPath">场景文件路径</param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        static internal SceneLoader Get(string bundlePath, string sceneName, LoadSceneMode mode)
-        {
-            if(m_Pool == null)
-            {
-                m_Pool = new LinkedObjectPool<SceneLoader>(k_InitPoolSize);
-            }
-
-            SceneLoader loader = (SceneLoader)m_Pool.Get();
-            loader.LoadSceneFromBundle(bundlePath, sceneName, mode);
-            loader.Pool = m_Pool;
-            loader.sceneName = sceneName;
-            loader.mode = mode;
-            loader.m_bFromBundle = true;
-            return loader;
-        }
-
-        private void LoadSceneFromBundle(string bundlePath, string sceneName, LoadSceneMode mode)
-        {
-#if UNITY_EDITOR
-            switch (AssetManager.Instance.loaderType)
-            {
-                case LoaderType.FromEditor:
-                    string assetPath;
-                    //AssetManager.ParseBundleAndAssetName(bundlePath, sceneName, out assetPath);
-                    assetPath = bundlePath + sceneName;
-                    SceneManager.LoadScene(assetPath + ".unity", mode);
-                    break;
-                case LoaderType.FromStreamingAssets:
-                case LoaderType.FromPersistent:
-                    InternalLoadSceneFromBundle(bundlePath, sceneName, mode);
-                    break;
-            }
-#else
-            InternalLoadSceneFromBundle(bundlePath, sceneName, mode);
-#endif
-        }
-
-        private void InternalLoadSceneFromBundle(string bundlePath, string sceneName, LoadSceneMode mode)
-        {
-            m_BundleLoader = AssetManager.LoadAssetBundle(bundlePath);
-            if (m_BundleLoader.assetBundle == null)
-                throw new System.Exception("failed to load scene bundle");
-            if (!m_BundleLoader.assetBundle.isStreamedSceneAssetBundle)
-                throw new System.Exception($"{bundlePath} is not streamed scene asset bundle");
-
-            SceneManager.LoadScene(sceneName, mode);
-        }
-
-
-        /// <summary>
-        /// 从Build Settings加载场景接口
-        /// </summary>
-        /// <param name="sceneName">不带后缀名，小写</param>
-        /// <param name="mode"></param>
-        /// <returns></returns>
-        static internal SceneLoader Get(string sceneName, LoadSceneMode mode)
+        static internal SceneLoader GetFromBundle(string assetPath, LoadSceneMode mode)
         {
             if (m_Pool == null)
             {
@@ -100,9 +44,60 @@ namespace Framework.AssetManagement.Runtime
             }
 
             SceneLoader loader = (SceneLoader)m_Pool.Get();
-            loader.LoadScene(sceneName, mode);
+            loader.LoadSceneFromBundle(assetPath, mode);
             loader.Pool = m_Pool;
-            loader.sceneName = sceneName;
+            loader.sceneName = System.IO.Path.GetFileNameWithoutExtension(assetPath);
+            loader.mode = mode;
+            loader.m_bFromBundle = true;
+            return loader;
+        }
+
+        private void LoadSceneFromBundle(string assetPath, LoadSceneMode mode)
+        {
+#if UNITY_EDITOR
+            switch (AssetManager.Instance.loaderType)
+            {
+                case LoaderType.FromEditor:
+                    SceneManager.LoadScene(assetPath, mode);
+                    break;
+                case LoaderType.FromStreamingAssets:
+                case LoaderType.FromPersistent:
+                    InternalLoadSceneFromBundle(assetPath, mode);
+                    break;
+            }
+#else
+            InternalLoadSceneFromBundle(assetPath, mode);
+#endif
+        }
+
+        private void InternalLoadSceneFromBundle(string assetPath, LoadSceneMode mode)
+        {
+            m_BundleLoader = AssetManager.LoadAssetBundle(assetPath);
+            if (m_BundleLoader.assetBundle == null)
+                throw new System.Exception("failed to load scene bundle");
+            if (!m_BundleLoader.assetBundle.isStreamedSceneAssetBundle)
+                throw new System.Exception($"{assetPath} is not streamed scene asset bundle");
+
+            SceneManager.LoadScene(System.IO.Path.GetFileNameWithoutExtension(AssetManager.GetFileDetail(assetPath).fileName), mode);
+        }
+
+        /// <summary>
+        /// 从Build Settings加载场景接口
+        /// </summary>
+        /// <param name="assetPath">不带后缀名，小写</param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        static internal SceneLoader Get(string assetPath, LoadSceneMode mode)
+        {
+            if (m_Pool == null)
+            {
+                m_Pool = new LinkedObjectPool<SceneLoader>(k_InitPoolSize);
+            }
+
+            SceneLoader loader = (SceneLoader)m_Pool.Get();
+            loader.LoadScene(assetPath, mode);
+            loader.Pool = m_Pool;
+            loader.sceneName = assetPath;
             loader.mode = mode;
             loader.m_bFromBundle = false;
             return loader;
@@ -111,24 +106,11 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
         /// scene must be add in build settings
         /// </summary>
-        /// <param name="sceneName"></param>
+        /// <param name="assetPath"></param>
         /// <param name="mode"></param>
-        private void LoadScene(string sceneName, LoadSceneMode mode)
+        private void LoadScene(string assetPath, LoadSceneMode mode)
         {
-#if UNITY_EDITOR
-            switch (AssetManager.Instance.loaderType)
-            {
-                case LoaderType.FromEditor:
-                    SceneManager.LoadScene(sceneName + ".unity", mode);
-                    break;
-                case LoaderType.FromStreamingAssets:
-                case LoaderType.FromPersistent:
-                    SceneManager.LoadScene(sceneName, mode);
-                    break;
-            }
-#else
-            SceneManager.LoadScene(sceneName, mode);
-#endif
+            SceneManager.LoadScene(assetPath, mode);
         }
 
         static internal AsyncOperation Release(SceneLoader loader)

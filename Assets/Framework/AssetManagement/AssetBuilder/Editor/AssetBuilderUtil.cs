@@ -40,9 +40,11 @@ namespace Framework.AssetManagement.AssetBuilder
                 if(AssetBuilderUtil.IsSpecialFolderName(folderNames[folderNames.Length - 1]))
                 {
                     string path = assetPath.Substring(0, assetPath.LastIndexOf("/"));
-                    return path.Substring(0, path.LastIndexOf("/")).ToLower() + ".ab";
+                    //return path.Substring(0, path.LastIndexOf("/")).ToLower() + ".ab";
+                    return path.Substring(0, path.LastIndexOf("/")).ToLower();
                 }
-                return assetPath.Substring(0, assetPath.LastIndexOf("/")).ToLower() + ".ab";
+                //return assetPath.Substring(0, assetPath.LastIndexOf("/")).ToLower() + ".ab";
+                return assetPath.Substring(0, assetPath.LastIndexOf("/")).ToLower();
             }
 
             return null;

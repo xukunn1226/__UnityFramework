@@ -43,6 +43,9 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{typeof(System.Single), typeof(System.Single), typeof(System.Single)};
             method = type.GetMethod("Clamp", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, Clamp_6);
+            args = new Type[]{typeof(System.Int32), typeof(System.Int32), typeof(System.Int32)};
+            method = type.GetMethod("Clamp", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, Clamp_7);
 
             app.RegisterCLRCreateDefaultInstance(type, () => new UnityEngine.Mathf());
 
@@ -290,6 +293,29 @@ namespace ILRuntime.Runtime.Generated
 
             __ret->ObjectType = ObjectTypes.Float;
             *(float*)&__ret->Value = result_of_this_method;
+            return __ret + 1;
+        }
+
+        static StackObject* Clamp_7(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Int32 @max = ptr_of_this_method->Value;
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.Int32 @min = ptr_of_this_method->Value;
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            System.Int32 @value = ptr_of_this_method->Value;
+
+
+            var result_of_this_method = UnityEngine.Mathf.Clamp(@value, @min, @max);
+
+            __ret->ObjectType = ObjectTypes.Integer;
+            __ret->Value = result_of_this_method;
             return __ret + 1;
         }
 

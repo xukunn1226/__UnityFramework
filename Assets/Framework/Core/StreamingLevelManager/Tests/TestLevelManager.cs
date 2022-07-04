@@ -3,9 +3,7 @@
 namespace Framework.Core.Tests
 {
     public class TestLevelManager : MonoBehaviour
-    {
-        private const string m_SceneBundlePath = "assets/framework/core/levelmanager/tests/res/scenes.ab";
-        
+    {        
         private StreamingLevelManager.LevelContext m_Ctx1;
         private StreamingLevelManager.LevelContext m_Ctx2;
 
@@ -56,7 +54,7 @@ namespace Framework.Core.Tests
                 m_Ctx1.sceneName = "testscene2";
                 m_Ctx1.scenePath = "assets/framework/core/levelmanager/tests/res/scenes/testscene2.unity";
                 m_Ctx1.additive = true;
-                m_Ctx1.bundlePath = m_SceneBundlePath;
+                m_Ctx1.fromBundle = true;
 
                 StreamingLevelManager.Instance.LoadAsync(m_Ctx1);
             }
@@ -72,7 +70,7 @@ namespace Framework.Core.Tests
                 m_Ctx2.sceneName = "testscene3";
                 m_Ctx2.scenePath = "assets/framework/core/levelmanager/tests/res/scenes/testscene3.unity";
                 m_Ctx2.additive = false;
-                m_Ctx2.bundlePath = m_SceneBundlePath;
+                m_Ctx2.fromBundle = true;
 
                 StreamingLevelManager.Instance.LoadAsync(m_Ctx2);
             }

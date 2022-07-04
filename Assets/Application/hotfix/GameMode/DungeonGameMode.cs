@@ -21,7 +21,7 @@ namespace Application.Logic
             ctx.sceneName = "dungeon";
             ctx.scenePath = "assets/res/scenes/dungeon.unity";
             ctx.additive = false;
-            ctx.bundlePath = "assets/res/scenes.ab";
+            ctx.fromBundle = true;
             StreamingLevelManager.Instance.LoadAsync(ctx);
         }
 

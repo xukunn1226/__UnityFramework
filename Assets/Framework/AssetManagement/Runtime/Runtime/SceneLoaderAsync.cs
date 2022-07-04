@@ -36,11 +36,10 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
         /// 从Bundle异步加载场景接口
         /// </summary>
-        /// <param name="bundlePath">场景文件所在的Bundle路径</param>
-        /// <param name="sceneName">不带后缀名，小写</param>
+        /// <param name="assetPath">场景文件路径</param>
         /// <param name="mode"></param>
         /// <returns></returns>
-        static internal SceneLoaderAsync Get(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+        static internal SceneLoaderAsync GetFromBundle(string assetPath, LoadSceneMode mode, bool allowSceneActivation = true)
         {
             if(m_Pool == null)
             {
@@ -48,45 +47,42 @@ namespace Framework.AssetManagement.Runtime
             }
 
             SceneLoaderAsync loader = (SceneLoaderAsync)m_Pool.Get();
-            loader.LoadSceneAsyncFromBundle(bundlePath, sceneName, mode, allowSceneActivation);
+            loader.LoadSceneAsyncFromBundle(assetPath, mode, allowSceneActivation);
             loader.Pool = m_Pool;
-            loader.sceneName = sceneName;
+            loader.sceneName = System.IO.Path.GetFileNameWithoutExtension(assetPath);
             loader.mode = mode;
             loader.m_bFromBundle = true;
             return loader;
         }
 
-        private void LoadSceneAsyncFromBundle(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation)
+        private void LoadSceneAsyncFromBundle(string assetPath, LoadSceneMode mode, bool allowSceneActivation)
         {
 #if UNITY_EDITOR
             switch (AssetManager.Instance.loaderType)
             {
                 case LoaderType.FromEditor:
-                    string assetPath;
-                    //AssetManager.ParseBundleAndAssetName(bundlePath, sceneName, out assetPath);
-                    assetPath = bundlePath + sceneName;
-                    SceneManager.LoadScene(assetPath + ".unity", mode);
+                    SceneManager.LoadScene(assetPath, mode);
                     m_LoadFromEditor = true;
                     break;
                 case LoaderType.FromStreamingAssets:
                 case LoaderType.FromPersistent:
-                    InternalLoadSceneAsyncFromBundle(bundlePath, sceneName, mode, allowSceneActivation);
+                    InternalLoadSceneAsyncFromBundle(assetPath, mode, allowSceneActivation);
                     break;
             }
 #else
-            InternalLoadSceneAsyncFromBundle(bundlePath, sceneName, mode, allowSceneActivation);
+            InternalLoadSceneAsyncFromBundle(assetPath, mode, allowSceneActivation);
 #endif
         }
 
-        private void InternalLoadSceneAsyncFromBundle(string bundlePath, string sceneName, LoadSceneMode mode, bool allowSceneActivation = true)
+        private void InternalLoadSceneAsyncFromBundle(string assetPath, LoadSceneMode mode, bool allowSceneActivation = true)
         {
-            m_BundleLoader = AssetManager.LoadAssetBundle(bundlePath);
+            m_BundleLoader = AssetManager.LoadAssetBundle(assetPath);
             if (m_BundleLoader.assetBundle == null)
                 throw new System.Exception("failed to load scene bundle");
             if (!m_BundleLoader.assetBundle.isStreamedSceneAssetBundle)
-                throw new System.Exception($"{bundlePath} is not streamed scene asset bundle");
+                throw new System.Exception($"{assetPath} is not streamed scene asset bundle");
 
-            loadAsyncOp = SceneManager.LoadSceneAsync(sceneName, mode);
+            loadAsyncOp = SceneManager.LoadSceneAsync(System.IO.Path.GetFileNameWithoutExtension(AssetManager.GetFileDetail(assetPath).fileName), mode);
             loadAsyncOp.allowSceneActivation = allowSceneActivation;
         }
 
@@ -118,7 +114,7 @@ namespace Framework.AssetManagement.Runtime
             switch (AssetManager.Instance.loaderType)
             {
                 case LoaderType.FromEditor:
-                    SceneManager.LoadScene(sceneName + ".unity", mode);
+                    SceneManager.LoadScene(sceneName, mode);
                     m_LoadFromEditor = true;
                     break;
                 case LoaderType.FromStreamingAssets:

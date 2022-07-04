@@ -110,6 +110,7 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine_Screen_Binding.Register(app);
             UnityEngine_Resolution_Binding.Register(app);
             UnityEngine_Rendering_OnDemandRendering_Binding.Register(app);
+            Framework_AssetManagement_Runtime_AssetLoader_1_RenderPipelineAsset_Binding.Register(app);
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding_Enumerator_Binding.Register(app);
             System_Collections_Generic_LinkedListNode_1_ILTypeInstance_Binding.Register(app);
