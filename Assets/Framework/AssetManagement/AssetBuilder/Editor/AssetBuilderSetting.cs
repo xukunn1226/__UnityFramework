@@ -20,6 +20,23 @@ namespace Framework.AssetManagement.AssetBuilder
         public string[]         Extension               = new string[] { ".meta", ".cs"};
         public string[]         BundleNameWithParent    = new string[] { };
 
+        public enum PackType
+        {
+            Pack_ByFolder,          // 文件夹内资源打成bundle，不包括子文件夹
+            Pack_ByTopFolder,       // 文件夹及所有子文件夹的资源打成bundle
+            Pack_ByFile,            // 每个文件打成单独bundle
+            Pack_BySize,            // 收集一组固定大小的资源，打成bundle
+        }
+        public string[]         PackByFolder_Paths      = new string[] { };
+        public string[]         PackByTopFolder_Paths   = new string[] { };
+        public string[]         PackByFile_Paths        = new string[] { };
+        public string[]         PackBySize_Paths        = new string[] { };
+
+        public string CheckTopFolderPathsValid()
+        {
+            return null;
+        }
+
 #if UNITY_EDITOR
         [MenuItem("Tools/Assets Management/Create AssetBuilder Setting", false, 1)]
         static private void CreateSetting()
@@ -44,6 +61,10 @@ namespace Framework.AssetManagement.AssetBuilder
         SerializedProperty m_BlackListOfPathProp;
         SerializedProperty m_ExtensionProp;
         SerializedProperty m_BundleNameWithParentProp;
+        SerializedProperty m_PackByFolder_PathsProp;
+        SerializedProperty m_PackByTopFolder_PathsProp;
+        SerializedProperty m_PackByFile_PathsProp;
+        SerializedProperty m_PackBySize_PathsProp;
 
         private void OnEnable()
         {
@@ -51,6 +72,10 @@ namespace Framework.AssetManagement.AssetBuilder
             m_BlackListOfPathProp = serializedObject.FindProperty("BlackListOfFolder");
             m_ExtensionProp = serializedObject.FindProperty("Extension");
             m_BundleNameWithParentProp = serializedObject.FindProperty("BundleNameWithParent");
+            m_PackByFolder_PathsProp = serializedObject.FindProperty("PackByFolder_Paths");
+            m_PackByTopFolder_PathsProp = serializedObject.FindProperty("PackByTopFolder_Paths");
+            m_PackByFile_PathsProp = serializedObject.FindProperty("PackByFile_Paths");
+            m_PackBySize_PathsProp = serializedObject.FindProperty("PackBySize_Paths");
         }
 
         public override void OnInspectorGUI()
@@ -64,8 +89,6 @@ namespace Framework.AssetManagement.AssetBuilder
             EditorGUILayout.LabelField("Asset Builder Setting", newStyle);
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                EditorGUILayout.HelpBox("当资源命名不规则时强制对话框提示", MessageType.Info);
-
                 EditorGUILayout.Space();
                 EditorGUILayout.Separator();
                 EditorGUILayout.Separator();
@@ -96,6 +119,12 @@ namespace Framework.AssetManagement.AssetBuilder
                 EditorGUILayout.BeginHorizontal();
                 ++EditorGUI.indentLevel;
                 EditorGUILayout.PropertyField(m_BundleNameWithParentProp, new GUIContent("以下文件夹将保持与父文件夹一致的BundleName"), true);
+                --EditorGUI.indentLevel;
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                ++EditorGUI.indentLevel;
+                EditorGUILayout.PropertyField(m_PackByTopFolder_PathsProp, new GUIContent("Pack By Top Folder: 以下文件夹及其子文件夹内所有资源将打成一个bundle"), true);
                 --EditorGUI.indentLevel;
                 EditorGUILayout.EndHorizontal();
             }
