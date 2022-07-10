@@ -28,9 +28,19 @@ MonoBehaviour:
   - Editor
   - StreamingAssets
   - Examples
-  - Sprites
   Extension:
   - .meta
   - .cs
   BundleNameWithParent:
   - SameToParent
+  PackByTopFolder_Paths:
+  - Assets/Res/UI/Atlases/icon0
+  - Assets/Res/UI/Atlases/icon1
+  - Assets/Res/UI/Atlases/icon2
+  - Assets/Res/UI/Atlases/icon3
+  - Assets/Res/UI/Atlases/Joystick
+  PackByFile_Paths:
+  - Assets/Res/UI/Prefabs
+  PackBySize_Paths:
+  - Assets/Res/DungeonDemo/Prefabs
+  ExpectedBundleSize: 5

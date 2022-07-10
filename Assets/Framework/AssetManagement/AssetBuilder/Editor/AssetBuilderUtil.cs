@@ -56,6 +56,7 @@ namespace Framework.AssetManagement.AssetBuilder
         static internal bool IsPassByWhiteList(string assetPath)
         { // assetPath可能是文件或文件夹的
             string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/") + 1);
+            directory = directory.TrimEnd(new char[] { '/' }) + "/";
             for (int i = 0; i < AssetBuilderSetting.GetDefault().WhiteListOfPath.Length; ++i)
             {
                 string whitePath = AssetBuilderSetting.GetDefault().WhiteListOfPath[i];
@@ -210,6 +211,33 @@ namespace Framework.AssetManagement.AssetBuilder
 
             EditorGUIUtility.systemCopyBuffer = Path.GetFileName(assetPath);
             Debug.Log($"AssetName is: {EditorGUIUtility.systemCopyBuffer}");
+        }
+
+        //[MenuItem("Tools/Print PackType")]
+        static void PrintPackType()
+        {
+            string[] guids = AssetDatabase.FindAssets("*", AssetBuilderSetting.GetDefault().WhiteListOfPath);
+            foreach(var guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid).ToLower();
+                if (AssetBuilderUtil.IsBlockedByBlackList(assetPath))
+                    continue;
+
+                string packPath;
+                AssetBuilderSetting.PackType type = AssetBuilderSetting.GetDefault().GetPackType(assetPath, out packPath);
+                if(type == AssetBuilderSetting.PackType.Pack_ByFile)
+                {
+                    Debug.Log($"ByFile: {assetPath}");
+                }
+                if(type == AssetBuilderSetting.PackType.Pack_BySize)
+                {
+                    Debug.Log($"BySize: {assetPath}");
+                }
+                if(type == AssetBuilderSetting.PackType.Pack_ByTopFolder)
+                {
+                    Debug.Log($"ByTopFolder: {assetPath}");
+                }
+            }
         }
     }
 }

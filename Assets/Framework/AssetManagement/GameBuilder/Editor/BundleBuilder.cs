@@ -161,9 +161,81 @@ namespace Framework.AssetManagement.GameBuilder
             return BuildList;
         }
 
+        // 优化打包策略（by file, by size, by top folder, by folder）
+        static private AssetBundleBuild[] GenerateAssetBundleBuildsStrategically()
+        {
+            // 收集所有需要打包的资源
+            AssetBuilderSetting setting = AssetBuilderSetting.GetDefault();
+            Dictionary<string, List<string>> BundleFileList = new Dictionary<string, List<string>>();       // assetBundleName : List<assetPath>
+            string[] guids = AssetDatabase.FindAssets("*", setting.WhiteListOfPath);
+            foreach (var guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid).ToLower();
+                if (AssetDatabase.IsValidFolder(assetPath))
+                    continue;
+                if (AssetBuilderUtil.IsBlockedByBlackList(assetPath))
+                    continue;
+                if (AssetBuilderUtil.IsBlockedByExtension(assetPath))
+                    continue;
+
+                string bundleName = null;
+                string packPath = null;
+                AssetBuilderSetting.PackType packType = setting.GetPackType(assetPath, out packPath);
+                if(packType == AssetBuilderSetting.PackType.Pack_ByFolder)
+                {
+                    bundleName = packPath.TrimEnd(new char[] { '/' });
+                }
+                else if(packType == AssetBuilderSetting.PackType.Pack_ByFile)
+                {
+                    bundleName = assetPath;
+                }
+                else if(packType == AssetBuilderSetting.PackType.Pack_BySize)
+                {
+                    bundleName = packPath.TrimEnd(new char[] { '/' });
+                }
+                else if(packType == AssetBuilderSetting.PackType.Pack_ByTopFolder)
+                {
+                    bundleName = packPath.TrimEnd(new char[] { '/' });
+                }
+
+                if (string.IsNullOrEmpty(bundleName))
+                    continue;
+
+                bundleName = bundleName.TrimEnd(new char[] { '/' }).Replace("/", "_").ToLower();
+
+                List<string> list;
+                if (!BundleFileList.TryGetValue(bundleName, out list))
+                {
+                    list = new List<string>();
+                    BundleFileList.Add(bundleName, list);
+                }
+                list.Add(assetPath);
+            }
+
+            // generate AssetBundleBuild
+            AssetBundleBuild[] BuildList = new AssetBundleBuild[BundleFileList.Count];
+            int index = 0;
+            foreach (var bundleFile in BundleFileList)
+            {
+                AssetBundleBuild abb = new AssetBundleBuild();
+                abb.assetBundleName = bundleFile.Key;
+
+                abb.assetNames = new string[bundleFile.Value.Count];
+                abb.addressableNames = new string[bundleFile.Value.Count];
+                for (int i = 0; i < bundleFile.Value.Count; ++i)
+                {
+                    abb.assetNames[i] = bundleFile.Value[i];
+                    abb.addressableNames[i] = Path.GetFileName(abb.assetNames[i]);
+                }
+
+                BuildList[index++] = abb;
+            }
+            return BuildList;
+        }
+
         static private bool BuildBundleWithSBP(string output, BundleBuilderSetting setting)
         {
-            AssetBundleBuild[] abb = GenerateAssetBundleBuilds();
+            AssetBundleBuild[] abb = GenerateAssetBundleBuildsStrategically();
             var buildContent = new BundleBuildContent(abb);
 
             // step2. Construct the new parameters class
