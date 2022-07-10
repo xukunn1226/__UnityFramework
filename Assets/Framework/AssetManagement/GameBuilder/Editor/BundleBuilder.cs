@@ -187,7 +187,7 @@ namespace Framework.AssetManagement.GameBuilder
                 }
                 else if(packType == AssetBuilderSetting.PackType.Pack_ByFile)
                 {
-                    bundleName = assetPath;
+                    bundleName = packPath.TrimEnd(new char[] { '/' }) + "/" + Path.GetFileNameWithoutExtension(assetPath);
                 }
                 else if(packType == AssetBuilderSetting.PackType.Pack_BySize)
                 {

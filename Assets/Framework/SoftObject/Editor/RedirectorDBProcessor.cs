@@ -17,6 +17,8 @@ namespace Framework.Core.Editor
     {
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {
+            return;
+
             if (UnityEngine.Application.isBatchMode)
                 return;
 
