@@ -18,7 +18,7 @@ set BUILD_PROFILE=Win64
 echo "	[BUILD TARGET]:"	%BUILD_TARGET%
 echo "	[BUILD PROFILE]:"	%BUILD_PROFILE%
 if "%UNITY_PATH%" == "" (
-	set UNITY_PATH="D:\Program Files\2021.2.3f1\Editor\Unity.exe"
+	set UNITY_PATH=D:\Program Files\2021.3.4f1\Editor\Unity.exe
 )
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

@@ -98,7 +98,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
 
         internal override bool SupportsNativeRenderPass()
         {
-            return true;
+            return settings.Event <= RenderPassEvent.BeforeRenderingPostProcessing;
         }
     }
 }

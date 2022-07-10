@@ -291,9 +291,9 @@ namespace Framework.AssetManagement.GameBuilder
                     results.BundleInfos.TryGetValue(item.assetBundleName, out bundleDetails);
 
                     string oldPathName = output + "/" + item.assetBundleName;
-                    string newPathName = output + "/" + bundleDetails.Hash.ToString();
                     string error = AssetDatabase.RenameAsset(oldPathName, bundleDetails.Hash.ToString());
-                    Debug.Log($"===  {error}");
+                    if(!string.IsNullOrEmpty(error))
+                        Debug.LogError($"RenameAsset:  {error}");
                 }
             }
 
