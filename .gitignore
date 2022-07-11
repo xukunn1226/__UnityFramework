@@ -91,6 +91,8 @@ fmod.log
 fmod_editor.log
 [Aa]ssets/Application/main/XLua/Gen/
 [Aa]ssets/Application/main/XLua/Gen.meta
+[Aa]ssets/HoudiniEngineAssetCache
+[Aa]ssets/HoudiniEngineAssetCache.meta
 
 # some plugins
 [Aa]ssets/AssetBundles-Browser-master

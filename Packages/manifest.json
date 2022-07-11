@@ -1,5 +1,15 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "lunar-maria",
+      "url": "http://10.2.16.35:4873",
+      "scopes": [
+        "com.lilith"
+      ]
+    }
+  ],
   "dependencies": {
+    "com.lilith.lunar-maria": "1.0.5",
     "com.oddworm.heapexplorer": "https://github.com/pschraut/UnityHeapExplorer.git#4.0.0",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.assetbundlebrowser": "1.7.0",
@@ -35,6 +45,7 @@
     "com.unity.modules.screencapture": "1.0.0",
     "com.unity.modules.terrain": "1.0.0",
     "com.unity.modules.terrainphysics": "1.0.0",
+    "com.unity.modules.tilemap": "1.0.0",
     "com.unity.modules.ui": "1.0.0",
     "com.unity.modules.uielements": "1.0.0",
     "com.unity.modules.unityanalytics": "1.0.0",

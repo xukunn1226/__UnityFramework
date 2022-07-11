@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.lilith.lunar-maria": {
+      "version": "1.0.5",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "http://10.2.16.35:4873"
+    },
     "com.oddworm.heapexplorer": {
       "version": "https://github.com/pschraut/UnityHeapExplorer.git#4.0.0",
       "depth": 0,
@@ -295,6 +302,14 @@
       "dependencies": {
         "com.unity.modules.physics": "1.0.0",
         "com.unity.modules.terrain": "1.0.0"
+      }
+    },
+    "com.unity.modules.tilemap": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.physics2d": "1.0.0"
       }
     },
     "com.unity.modules.ui": {
