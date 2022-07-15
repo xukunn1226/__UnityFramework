@@ -677,5 +677,35 @@ namespace Framework.AssetManagement.AssetBrowser
                 QualitySettings.renderPipeline = rawPipelineAsset;
             }
         }
+
+        //[MenuItem("Tools/SetTerrainNeighbors")]
+        static private void SetTerrainNeighbors()
+        {
+            GameObject t1 = GameObject.Find("Terrain_1");
+            GameObject t2 = GameObject.Find("Terrain_2");
+
+            if (t1 == null || t2 == null)
+                return;
+
+            Terrain terrain1 = t1.GetComponent<Terrain>();
+            Terrain terrain2 = t2.GetComponent<Terrain>();
+            terrain1.SetNeighbors(null, terrain2, null, null);
+            terrain2.SetNeighbors(null, null, null, terrain1);
+        }
+
+        //[MenuItem("Tools/Clear Neighbors")]
+        static private void ClearNeighbors()
+        {
+            GameObject t1 = GameObject.Find("Terrain_1");
+            GameObject t2 = GameObject.Find("Terrain_2");
+
+            if (t1 == null || t2 == null)
+                return;
+
+            Terrain terrain1 = t1.GetComponent<Terrain>();
+            Terrain terrain2 = t2.GetComponent<Terrain>();
+            terrain1.SetNeighbors(null, null, null, null);
+            terrain2.SetNeighbors(null, null, null, null);
+        }
     }
 }
