@@ -731,7 +731,7 @@ namespace Framework.AssetManagement.AssetBrowser
             sb.Append(string.Format($"heightmapScale: {td.heightmapScale}   x = size.x / (heightmapResolution-1)    y = size.y  z = size.z / (heightmapResolution-1)\n"));
             sb.Append(string.Format($"heightmapResolution: {td.heightmapResolution}     \n"));
             sb.Append(string.Format($"size: {td.size}   \n"));
-            Debug.Log(sb.ToString());
+            Debug.Log(sb.ToString()); 
         }
     }
 }
