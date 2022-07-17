@@ -707,5 +707,31 @@ namespace Framework.AssetManagement.AssetBrowser
             terrain1.SetNeighbors(null, null, null, null);
             terrain2.SetNeighbors(null, null, null, null);
         }
+
+        [MenuItem("Tools/Print Terrain Info")]
+        static private void PrintTerrainInfo()
+        {
+            Terrain t = Selection.activeGameObject.GetComponent<Terrain>();
+            if (t == null)
+                return;
+
+            TerrainData td = t.terrainData;
+            if (td == null)
+                return;
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.Append(string.Format($"alphamapHeight: {td.alphamapHeight}   \n"));
+            sb.Append(string.Format($"alphamapWidth: {td.alphamapWidth}     \n"));
+            sb.Append(string.Format($"alphamapResolution: {td.alphamapResolution}   \n"));
+            sb.Append(string.Format($"alphamapTextureCount: {td.alphamapTextureCount}   \n"));
+            sb.Append(string.Format($"alphamapLayers: {td.alphamapLayers}   \n"));
+            sb.Append(string.Format($"alphamapTextures: {td.GetAlphamapTexture(0).name}   \n"));
+            float[,,] weight = td.GetAlphamaps(0, 0, 1, 1);
+            sb.Append(string.Format($"alphamapCount: {weight[0, 0, 0]}   \n"));
+            sb.Append(string.Format($"heightmapScale: {td.heightmapScale}   x = size.x / (heightmapResolution-1)    y = size.y  z = size.z / (heightmapResolution-1)\n"));
+            sb.Append(string.Format($"heightmapResolution: {td.heightmapResolution}     \n"));
+            sb.Append(string.Format($"size: {td.size}   \n"));
+            Debug.Log(sb.ToString());
+        }
     }
 }
