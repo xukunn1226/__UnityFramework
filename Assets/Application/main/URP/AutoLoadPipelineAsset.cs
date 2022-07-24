@@ -7,7 +7,7 @@ namespace Application.Runtime
     /// <summary>
     /// 自动载入管线脚本，可用此方法分离管线与引擎，以便于做管线的热更新
     /// </summary>
-    //[ExecuteAlways]
+    [ExecuteAlways]
     public class AutoLoadPipelineAsset : MonoBehaviour
     {
         [SerializeField]
