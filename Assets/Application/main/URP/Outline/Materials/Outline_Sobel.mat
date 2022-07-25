@@ -96,7 +96,7 @@ Material:
     - _BumpScale: 1
     - _Cull: 2
     - _Cutoff: 0.5
-    - _Delta: 0.00158
+    - _Delta: 0.00174
     - _DeltaX: 0.002
     - _DeltaY: 0.002
     - _DstBlend: 0

@@ -1,26 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8526604826491408820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cff3e8b859fc60445b059eb91cf982e4, type: 3}
-  m_Name: DrawFullscreenFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  settings:
-    renderPassEvent: 300
-    blitMaterial: {fileID: 2100000, guid: 355e0dcfddae9ee49a3bd2c909f8afc4, type: 2}
-    blitMaterialPassIndex: 0
-    sourceType: 0
-    destinationType: 0
-    sourceTextureId: _SourceTexture
-    destinationTextureId: _DestinationTexture
 --- !u!114 &-4939556899677739054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,6 +21,22 @@ MonoBehaviour:
     destinationType: 0
     sourceTextureId: _SourceTexture
     destinationTextureId: _DestinationTexture
+--- !u!114 &-1560231134697532086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc32217611441e458034bc26da76004, type: 3}
+  m_Name: OutlineSobelFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    renderPassEvent: 300
+    blitMaterial: {fileID: 2100000, guid: 355e0dcfddae9ee49a3bd2c909f8afc4, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,8 +53,8 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: -8526604826491408820}
-  m_RendererFeatureMap: 4c2ed910166aab89
+  - {fileID: -1560231134697532086}
+  m_RendererFeatureMap: 4a55d9a80cf258ea
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   shaders:
