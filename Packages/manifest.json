@@ -9,7 +9,6 @@
     }
   ],
   "dependencies": {
-    "com.lilith.lunar-maria": "1.0.5",
     "com.oddworm.heapexplorer": "https://github.com/pschraut/UnityHeapExplorer.git#4.0.0",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.assetbundlebrowser": "1.7.0",
