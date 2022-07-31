@@ -60,13 +60,13 @@ namespace Framework.AssetManagement.GameBuilder
 
             success = Backup(srcRootPath, appDirectory);
 
-            if(success)
+            if (success)
                 success = PublishDataToCDN(srcRootPath, appDirectory);
 
-            if(success)
+            if (success)
                 success = GeneratePatch(srcRootPath, appDirectory);
 
-            if(success)
+            if (success)
             {
                 Debug.Log($"Deploy operator is finished successfully");
             }
@@ -131,14 +131,16 @@ namespace Framework.AssetManagement.GameBuilder
         }
 
         /// <summary>
-        /// 发布指定版本至cdn/data
+        /// 发布指定版本的全量资源至cdn/data
         /// </summary>
         /// <param name="rootPath"></param>
         /// <param name="appDirectory"></param>
         /// <returns></returns>
         static private bool PublishDataToCDN(string rootPath, string appDirectory)
         {
+            // deployment/backup/windows/0.0.2/assetbundles
             string appSrcPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{appDirectory}/assetbundles");
+            // deployment/cdn/data/windows/0.0.2
             string appDstPath = string.Format($"{rootPath}/{baseDataPath}/{Utility.GetPlatformName()}/{appDirectory}");
             try
             {
@@ -160,11 +162,11 @@ namespace Framework.AssetManagement.GameBuilder
         /// <summary>
         /// 生成其他版本到当前版本（appDirectory）的差异数据
         /// </summary>
-        /// <param name="rootPath"></param>
-        /// <param name="appDirectory"></param>
+        /// <param name="rootPath">Deployment</param>
+        /// <param name="appDirectory">0.0.2</param>
         static private bool GeneratePatch(string rootPath, string appDirectory)
         {
-            string path = string.Format($"{rootPath}/{s_BackdoorPath}");
+            string path = string.Format($"{rootPath}/{s_BackdoorPath}");        // deployment/cdn/backdoor.json
             Backdoor bd = Backdoor.Deserialize(path);
             if(bd == null)
             {
@@ -172,6 +174,7 @@ namespace Framework.AssetManagement.GameBuilder
                 return false;
             }
 
+            // deployment/cdn/patch/windows/0.0.2
             string targetDirectory = string.Format($"{rootPath}/{patchPath}/{Utility.GetPlatformName()}/{appDirectory}");
             try
             {
@@ -193,7 +196,8 @@ namespace Framework.AssetManagement.GameBuilder
             foreach(var item in bd.VersionHistory)
             {
                 AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
-                historyVer.Set(item.Key);                
+                historyVer.Set(item.Key);
+                // 历史版本小于当前版本或当前版本大于历史版本且历史版本大于等于最小强更版本
                 if ((string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(curVersion) < 0) 
                 || (!string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
                 {

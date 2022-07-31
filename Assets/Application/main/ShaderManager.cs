@@ -48,7 +48,7 @@ namespace Application.Runtime
                 return Shader.Find(shaderName);
             }
 #endif
-            if (AssetManager.Instance.loaderType == LoaderType.FromEditor || m_ShaderNameToPath.Count == 0)
+            if (m_ShaderNameToPath.Count == 0)
             {
                 return Shader.Find(shaderName);
             }

@@ -41,12 +41,6 @@ namespace Application.Runtime
             // TODO:
             // NetModuleManager.Instance.Init();
 
-            // if(Launcher.GetLauncherMode() == LoaderType.FromStreamingAssets)
-            // { // 仅FromStreamingAssets时需要提取db，FromEditor从本地读取，FromPersistent会首次启动时提取
-            //     yield return StartCoroutine(ConfigManager.ExtractDatabase());
-            // }
-
-            // //GlobalConfigManager.Init(AssetManager.Instance.loaderType == LoaderType.FromEditor);
             LuaMainLoop.Init();
 
             // if (AutoConnect)

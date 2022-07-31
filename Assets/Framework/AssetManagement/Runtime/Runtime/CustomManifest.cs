@@ -62,7 +62,6 @@ namespace Framework.AssetManagement.Runtime
             return fd;
         }
 
-#if UNITY_EDITOR
         static public void Serialize(string assetPath, CustomManifest manifest)
         {
             string json = JsonConvert.SerializeObject(manifest, Formatting.Indented);
@@ -73,6 +72,22 @@ namespace Framework.AssetManagement.Runtime
             fs.Close();
             fs.Dispose();
         }
-#endif
+
+        static public CustomManifest Deserialize(string assetPath)
+        {
+            if (!System.IO.File.Exists(assetPath))
+            {
+                Debug.LogError($"{assetPath} is not exists");
+                return null;
+            }
+
+            System.IO.FileStream fs = new System.IO.FileStream(assetPath, System.IO.FileMode.Open);
+            byte[] array = new byte[1024 * 2048];       // 2MB
+            int size = fs.Read(array, 0, 1024 * 2048);
+            fs.Close();
+            fs.Dispose();
+
+            return JsonConvert.DeserializeObject<CustomManifest>(System.Text.Encoding.UTF8.GetString(array, 0, size));
+        }
     }
 }

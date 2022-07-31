@@ -69,7 +69,7 @@ namespace Framework.Core
         {
             get
             {
-                if(m_RemoteVersion == null)
+                if(m_RemoteVersion == null && m_Backdoor != null)
                 {
                     m_RemoteVersion = AppVersion.CreateInstance<AppVersion>();
                     m_RemoteVersion.Set(m_Backdoor.CurVersion);

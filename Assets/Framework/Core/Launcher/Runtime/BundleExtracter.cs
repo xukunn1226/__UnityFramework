@@ -77,17 +77,6 @@ namespace Framework.Core
                 bInit = false;
             }
 
-            // load FileList
-            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(FILELIST_NAME)}"));
-            if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
-            {
-                Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
-                bInit = false;
-            }
-            else
-            {
-                m_BundleFileList = BundleFileList.DeserializeFromJson(m_BundleFileListRawData.text);
-            }
             m_Listener?.OnInit(bInit);
             return bInit;
         }
@@ -150,11 +139,30 @@ namespace Framework.Core
             }
         }
 
+        private bool LoadFileList()
+        {
+            // load FileList
+            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(FILELIST_NAME)}"));
+            if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
+            {
+                Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
+                return false;
+            }
+            else
+            {
+                m_BundleFileList = BundleFileList.DeserializeFromJson(m_BundleFileListRawData.text);
+            }
+            return true;
+        }
+
         /// <summary>
         /// 生成需要提取的文件列表
         /// </summary>
         private void CollectPendingExtractedFileList()
         {
+            if (!LoadFileList())
+                return;
+
             m_PendingExtracedFileIndex = 0;
 
             // 尚不存在或hash不匹配的文件
@@ -321,7 +329,7 @@ namespace Framework.Core
             string baseVersion = PlayerPrefs.GetString(BundleExtracter.BASE_APPVERSION);
             EditorGUILayout.LabelField("Base Version", string.IsNullOrEmpty(baseVersion) ? "None" : baseVersion);
 
-            if (GUILayout.Button("Clear Data"))
+            if (GUILayout.Button("Clear Persistent Data"))
             {
                 if (PlayerPrefs.HasKey(BundleExtracter.BASE_APPVERSION))
                     PlayerPrefs.DeleteKey(BundleExtracter.BASE_APPVERSION);

@@ -11,7 +11,8 @@ namespace Framework.AssetManagement.Runtime
         static private string                               m_PersistentDataPath;
         static private Dictionary<string, AssetBundleRef>   m_DictAssetBundleRefs       = new Dictionary<string, AssetBundleRef>();        // 已加载完成的assetbundle
         static private bool                                 m_Init;
-        
+        static private bool                                 m_isLoadingFromStreamingAssets;
+
         static private bool bInit
         {
             get
@@ -20,9 +21,10 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        static internal void Init()
+        static internal void Init(bool isLoadingFromStreamingAssets)
         {
             m_Init = true;
+            m_isLoadingFromStreamingAssets = isLoadingFromStreamingAssets;
             m_StreamingAssetPath = string.Format("{0}/{1}/", UnityEngine.Application.streamingAssetsPath, Utility.GetPlatformName());
             m_PersistentDataPath = string.Format("{0}/{1}/", UnityEngine.Application.persistentDataPath, Utility.GetPlatformName());
             Debug.LogFormat($"AssetBundleManager: init rootPath      {m_StreamingAssetPath}");
@@ -111,7 +113,8 @@ namespace Framework.AssetManagement.Runtime
         
         static private string GetRootPath(CustomManifest.BundleDetail bundleDetail)
         {
-            return bundleDetail.isStreamingAsset ? m_StreamingAssetPath + bundleDetail.bundleName : m_PersistentDataPath + bundleDetail.bundleName;
+            //return bundleDetail.isStreamingAsset ? m_StreamingAssetPath + bundleDetail.bundleName : m_PersistentDataPath + bundleDetail.bundleName;
+            return m_isLoadingFromStreamingAssets ? m_StreamingAssetPath + bundleDetail.bundleName : m_PersistentDataPath + bundleDetail.bundleName;
         }    
     }
 }

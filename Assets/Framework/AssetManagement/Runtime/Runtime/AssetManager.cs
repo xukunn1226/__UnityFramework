@@ -56,11 +56,11 @@ namespace Framework.AssetManagement.Runtime
             {
                 case LoaderType.FromStreamingAssets:
                     LoadManifest(Application.streamingAssetsPath);
-                    AssetBundleManager.Init();
+                    AssetBundleManager.Init(true);
                     break;
                 case LoaderType.FromPersistent:
                     LoadManifest(Application.persistentDataPath);
-                    AssetBundleManager.Init();
+                    AssetBundleManager.Init(false);
                     break;
             }
             // Debug.Log($"AssetManager.loaderType is {loaderType}");

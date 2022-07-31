@@ -174,12 +174,11 @@ MonoBehaviour:
   WorkerCountOfBundleExtracter: 5
   WorkerCountOfPatcher: 5
   m_CdnURL: http://10.1.8.129
-  useLocalCDN: 0
+  useLocalCDN: 1
   Camera: {fileID: 755209597}
   Canvas: {fileID: 1301741746}
   SceneName: main
   ScenePath: assets/res/scenes/main.unity
-  BundlePath: assets/res/scenes.ab
 --- !u!114 &73561825
 MonoBehaviour:
   m_ObjectHideFlags: 0
