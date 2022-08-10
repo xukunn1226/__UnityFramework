@@ -193,18 +193,22 @@ namespace Framework.AssetManagement.GameBuilder
             // 根据所有历史版本记录，生成最新版本与其他版本的差异数据
             AppVersion curVersion = ScriptableObject.CreateInstance<AppVersion>();
             curVersion.Set(appDirectory);
-            foreach(var item in bd.VersionHistory)
+            Dictionary<string, string> versionHistory = bd.GetVersionHistory();
+            if (versionHistory != null)
             {
-                AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
-                historyVer.Set(item.Key);
-                // 历史版本小于当前版本或当前版本大于历史版本且历史版本大于等于最小强更版本
-                if ((string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(curVersion) < 0) 
-                || (!string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
+                foreach (var item in versionHistory)
                 {
-                    if(Diff(rootPath, item.Key, appDirectory) == null)
+                    AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
+                    historyVer.Set(item.Key);
+                    // 历史版本小于当前版本或当前版本大于历史版本且历史版本大于等于最小强更版本
+                    if ((string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(curVersion) < 0)
+                    || (!string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
                     {
-                        Debug.LogError($"failed to Diff between {item.Key} and {appDirectory}");
-                        return false;
+                        if (Diff(rootPath, item.Key, appDirectory) == null)
+                        {
+                            Debug.LogError($"failed to Diff between {item.Key} and {appDirectory}");
+                            return false;
+                        }
                     }
                 }
             }
@@ -212,20 +216,23 @@ namespace Framework.AssetManagement.GameBuilder
             // generate diffcollection.json
             DiffCollection dc = new DiffCollection();
             dc.BaseVersion = appDirectory;
-            foreach (var item in bd.VersionHistory)
+            if (versionHistory != null)
             {
-                AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
-                historyVer.Set(item.Key);
-                if ((string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(curVersion) < 0)
-                || (!string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
+                foreach (var item in versionHistory)
                 {
-                    string subDirectory = string.Format($"{rootPath}/{patchPath}/{Utility.GetPlatformName()}/{appDirectory}/{item.Key}");
-                    string diffFilename = string.Format($"{subDirectory}/{Patcher.DIFF_FILENAME}");
-
-                    using (FileStream fs = new FileStream(diffFilename, FileMode.Open))
+                    AppVersion historyVer = ScriptableObject.CreateInstance<AppVersion>();
+                    historyVer.Set(item.Key);
+                    if ((string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(curVersion) < 0)
+                    || (!string.IsNullOrEmpty(bd.MinVersion) && historyVer.CompareTo(bd.MinVersion) >= 0 && historyVer.CompareTo(curVersion) < 0))
                     {
-                        string hash = EasyMD5.Hash(fs);
-                        dc.VersionHashMap.Add(item.Key, hash);
+                        string subDirectory = string.Format($"{rootPath}/{patchPath}/{Utility.GetPlatformName()}/{appDirectory}/{item.Key}");
+                        string diffFilename = string.Format($"{subDirectory}/{Patcher.DIFF_FILENAME}");
+
+                        using (FileStream fs = new FileStream(diffFilename, FileMode.Open))
+                        {
+                            string hash = EasyMD5.Hash(fs);
+                            dc.VersionHashMap.Add(item.Key, hash);
+                        }
                     }
                 }
             }
@@ -234,9 +241,13 @@ namespace Framework.AssetManagement.GameBuilder
 
             bd.CurVersion = appDirectory;
             FileStream dc_fs = new FileStream(dcFilename, FileMode.Open);
-            if(!bd.VersionHistory.ContainsKey(dc.BaseVersion))
+            if(!versionHistory.ContainsKey(dc.BaseVersion))
             {
-                bd.VersionHistory.Add(dc.BaseVersion, EasyMD5.Hash(dc_fs));
+                versionHistory.Add(dc.BaseVersion, EasyMD5.Hash(dc_fs));
+            }
+            else
+            {
+                versionHistory[dc.BaseVersion] = EasyMD5.Hash(dc_fs);
             }
             dc_fs.Dispose();
             dc_fs.Close();

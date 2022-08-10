@@ -7,18 +7,66 @@ namespace Framework.Core
 {
     public class Backdoor
     {
+        public enum Platform
+        {
+            PF_Unsupport = -1,
+            PF_Win64,
+            PF_Android,
+            PF_IOS,
+            PF_Count
+        }
         public string                       MinVersion;             // 强更版本号，且不能向下兼容，只能是三位
         public string                       CurVersion;             // 当前版本号，可能是三位或四位
-        public Dictionary<string, string>   VersionHistory;         // [version, diffcollection json's hash]
+        public Dictionary<string, string>   VersionHistory_Win64    = new Dictionary<string, string>();         // [version, diffcollection json's hash]
+        public Dictionary<string, string>   VersionHistory_Android  = new Dictionary<string, string>();
+        public Dictionary<string, string>   VersionHistory_IOS      = new Dictionary<string, string>();
+
+        public Dictionary<string, string> GetVersionHistory()
+        {
+            Platform platform = GetCurrentPlatform();
+            if (platform == Platform.PF_Android)
+                return VersionHistory_Android;
+            if (platform == Platform.PF_IOS)
+                return VersionHistory_IOS;
+            if (platform == Platform.PF_Win64)
+                return VersionHistory_Win64;
+            return null;
+        }
 
         public string GetDiffCollectionFileHash(string version)
         {
-            if (VersionHistory == null)
-                return null;
+            Platform platform = GetCurrentPlatform();
+            Debug.Assert(platform != Platform.PF_Unsupport);
 
-            string hash;
-            VersionHistory.TryGetValue(version, out hash);
+            string hash = null;
+            switch (platform)
+            {
+                case Platform.PF_Android:
+                    VersionHistory_Android.TryGetValue(version, out hash);
+                    break;
+                case Platform.PF_IOS:
+                    VersionHistory_IOS.TryGetValue(version, out hash);
+                    break;
+                case Platform.PF_Win64:
+                    VersionHistory_Win64.TryGetValue(version, out hash);
+                    break;
+            }
             return hash;
+        }
+
+        private Platform GetCurrentPlatform()
+        {
+            string name = Utility.GetPlatformName();
+            switch(name)
+            {
+                case "android":
+                    return Platform.PF_Android;
+                case "ios":
+                    return Platform.PF_IOS;
+                case "windows":
+                    return Platform.PF_Win64;
+            }
+            return Platform.PF_Unsupport;
         }
 
         static public void Serialize(string assetPath, Backdoor bd)
