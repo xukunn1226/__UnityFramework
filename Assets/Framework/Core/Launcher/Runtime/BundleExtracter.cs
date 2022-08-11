@@ -28,13 +28,7 @@ namespace Framework.Core
 
         private float                       m_BeginTime;
         private IExtractListener            m_Listener;
-
-        // 母包版本号
-        public AppVersion GetBaseVersion()
-        {
-            return m_BaseVersion;
-        }
-
+        
         public void StartWork(int workerCount, IExtractListener listener = null)
         {
             m_Listener = listener;

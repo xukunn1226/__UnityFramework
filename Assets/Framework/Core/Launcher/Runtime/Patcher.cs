@@ -93,7 +93,7 @@ namespace Framework.Core
                 string cachedCurVersion = PlayerPrefs.GetString(CUR_APPVERSION);
                 if(string.IsNullOrEmpty(cachedCurVersion))
                 { // 首次安装，尚未下载过会没有CUR_APPVERSION标记，则使用母包的版本号
-                    cachedCurVersion = localAppVersion.ToString();
+                    cachedCurVersion = localBaseVersion.ToString();
                 }
                 m_CurVersion.Set(cachedCurVersion);
                 return m_CurVersion;
@@ -103,7 +103,7 @@ namespace Framework.Core
         /// <summary>
         /// 本地母包的引擎版本号（三位）
         /// </summary>
-        public AppVersion localAppVersion
+        public AppVersion localBaseVersion
         {
             get
             {

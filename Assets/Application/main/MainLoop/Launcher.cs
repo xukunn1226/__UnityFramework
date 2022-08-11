@@ -260,9 +260,9 @@ namespace Application.Runtime
             }
 
             // 判断当前app version是否满足backdoor要求的最小引擎版本
-            if(!string.IsNullOrEmpty(backdoor.MinVersion) && m_Patcher.localAppVersion.AppCompareTo(backdoor.MinVersion) == -1)
+            if(!string.IsNullOrEmpty(backdoor.MinVersion) && m_Patcher.localBaseVersion.AppCompareTo(backdoor.MinVersion) == -1)
             { // 提示去商店下载最新包
-                Debug.LogError($"当前引擎版本号小于要求的最低引擎版本号：{m_Patcher.localAppVersion.ToString()} < {backdoor.MinVersion.ToString()}");
+                Debug.LogError($"当前引擎版本号小于要求的最低引擎版本号：{m_Patcher.localBaseVersion.ToString()} < {backdoor.MinVersion.ToString()}");
                 return false;
             }
             return true;
@@ -403,6 +403,24 @@ namespace Application.Runtime
             }
 #pragma warning restore CS0168            
             return true;
+        }
+
+        // 本地母包的引擎版本号（三位）
+        public AppVersion GetBaseVersion()
+        {
+            return m_Patcher?.localBaseVersion;
+        }
+
+        // 获取本地当前版本号（可能三位或四位）
+        public AppVersion GetLocalCurVersion()
+        {
+            return m_Patcher?.localCurVersion;
+        }
+
+        // 获取远程版本号（可能三位或四位）
+        public AppVersion GetRemoteCurVersion()
+        {
+            return m_Patcher?.remoteCurVersion;
         }
 
 #if UNITY_EDITOR
