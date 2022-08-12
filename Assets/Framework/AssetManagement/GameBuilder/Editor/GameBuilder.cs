@@ -126,6 +126,7 @@ namespace Framework.AssetManagement.GameBuilder
             SetOverridePara(ref setting.playerSetting.macroDefines,                 "MacroDefines");
             SetOverridePara(ref setting.playerSetting.excludedDefines,              "ExcludedDefines");
             SetOverridePara(ref setting.playerSetting.clearRenderPipelineAsset,     "clearRenderPipelineAsset");
+            SetOverridePara(ref setting.playerSetting.changelist,                   "Changelist");
 
             // 版本号修改指令
             bool isVersionNoChanged = false;

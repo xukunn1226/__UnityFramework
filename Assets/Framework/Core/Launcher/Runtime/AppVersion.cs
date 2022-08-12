@@ -23,6 +23,7 @@ namespace Framework.Core
         public int  MinorVersion;       // Y
         public int  Revision;           // Z
         public int  BuildNumber;        // 每次打包自增，对应android.bundleVersionCode & ios.buildNumber
+        public string Changelist;
 
         [NonSerialized]
         private int HotfixNumber;       // W——补丁包序列号

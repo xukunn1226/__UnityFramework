@@ -95,6 +95,7 @@ namespace Framework.AssetManagement.GameBuilder
         public bool                         clearRenderPipelineAsset;
         public List<string>                 cachedRenderPipelineAsset           { get; set; }          // cache Quality Settings' Render Pipeline Asset
         public int                          curQualityLevel                     { get; set; }
+        [System.NonSerialized] public string changelist;
 
         public override string ToString()
         {
@@ -409,6 +410,7 @@ namespace Framework.AssetManagement.GameBuilder
             if(version == null)
                 throw new System.Exception("can't find AppVersion.asset in Assets/Resources");
 
+            version.Changelist = para.changelist;
             switch(para.versionChangedMode)
             {
                 case PlayerBuilderSetting.VersionChangedMode.NoChanged:

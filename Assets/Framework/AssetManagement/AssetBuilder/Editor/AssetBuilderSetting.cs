@@ -29,11 +29,9 @@ namespace Framework.AssetManagement.AssetBuilder
             Pack_ByFile,            // 每个文件打成单独bundle，仅作用于当前文件夹，不包括子文件夹
             Pack_BySize,            // 收集一组固定大小的资源，打成bundle，仅作用于当前文件夹，不包括子文件夹
         }
-        //public string[]         PackByFolder_Paths      = new string[] { };
         public string[]         PackByTopFolder_Paths   = new string[] { };
         public string[]         PackByFile_Paths        = new string[] { };
         public string[]         PackBySize_Paths        = new string[] { };
-        public float            ExpectedBundleSize      = 5;                    // 预估每个bundle的大小，单位M
 
         // 根据路径判断打包策略
         public PackType GetPackType(string assetPath, out string packPath)
@@ -237,7 +235,6 @@ namespace Framework.AssetManagement.AssetBuilder
         SerializedProperty m_PackByTopFolder_PathsProp;
         SerializedProperty m_PackByFile_PathsProp;
         SerializedProperty m_PackBySize_PathsProp;
-        SerializedProperty m_ExpectedBundleSizeProp;
 
         private void OnEnable()
         {
@@ -249,7 +246,6 @@ namespace Framework.AssetManagement.AssetBuilder
             m_PackByTopFolder_PathsProp = serializedObject.FindProperty("PackByTopFolder_Paths");
             m_PackByFile_PathsProp = serializedObject.FindProperty("PackByFile_Paths");
             m_PackBySize_PathsProp = serializedObject.FindProperty("PackBySize_Paths");
-            m_ExpectedBundleSizeProp = serializedObject.FindProperty("ExpectedBundleSize");
         }
 
         public override void OnInspectorGUI()
@@ -329,12 +325,6 @@ namespace Framework.AssetManagement.AssetBuilder
                         break;
                     }
                 }
-                --EditorGUI.indentLevel;
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.BeginHorizontal();
-                ++EditorGUI.indentLevel;
-                EditorGUILayout.PropertyField(m_ExpectedBundleSizeProp, new GUIContent("期望每个Bundle的大小", "当打包策略是BySize时生效"), true);
                 --EditorGUI.indentLevel;
                 EditorGUILayout.EndHorizontal();
 
