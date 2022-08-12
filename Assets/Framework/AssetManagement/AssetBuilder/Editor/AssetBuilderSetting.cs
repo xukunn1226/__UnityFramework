@@ -20,7 +20,6 @@ namespace Framework.AssetManagement.AssetBuilder
         public string[]         BlackListOfFolder       = new string[] { "Resources", "Scenes", "Scripts", "RawData", "Editor", "StreamingAssets", "Examples", "Temp" };   // 文件夹黑名单
 
         public string[]         Extension               = new string[] { ".meta", ".cs"};
-        public string[]         BundleNameWithParent    = new string[] { };
 
         public enum PackType
         {
@@ -230,7 +229,6 @@ namespace Framework.AssetManagement.AssetBuilder
         SerializedProperty m_WhiteListOfPathProp;
         SerializedProperty m_BlackListOfPathProp;
         SerializedProperty m_ExtensionProp;
-        SerializedProperty m_BundleNameWithParentProp;
         //SerializedProperty m_PackByFolder_PathsProp;
         SerializedProperty m_PackByTopFolder_PathsProp;
         SerializedProperty m_PackByFile_PathsProp;
@@ -241,7 +239,6 @@ namespace Framework.AssetManagement.AssetBuilder
             m_WhiteListOfPathProp = serializedObject.FindProperty("WhiteListOfPath");
             m_BlackListOfPathProp = serializedObject.FindProperty("BlackListOfFolder");
             m_ExtensionProp = serializedObject.FindProperty("Extension");
-            m_BundleNameWithParentProp = serializedObject.FindProperty("BundleNameWithParent");
             //m_PackByFolder_PathsProp = serializedObject.FindProperty("PackByFolder_Paths");
             m_PackByTopFolder_PathsProp = serializedObject.FindProperty("PackByTopFolder_Paths");
             m_PackByFile_PathsProp = serializedObject.FindProperty("PackByFile_Paths");
@@ -288,13 +285,6 @@ namespace Framework.AssetManagement.AssetBuilder
 
                 EditorGUILayout.Separator();
                 EditorGUILayout.Separator();
-
-                EditorGUILayout.BeginHorizontal();
-                ++EditorGUI.indentLevel;
-                EditorGUILayout.PropertyField(m_BundleNameWithParentProp, new GUIContent("以下文件夹将保持与父文件夹一致的BundleName"), true);
-                --EditorGUI.indentLevel;
-                EditorGUILayout.EndHorizontal();
-
 
 
 

@@ -37,11 +37,6 @@ namespace Framework.AssetManagement.AssetBuilder
                 string[] folderNames = assetPath.Substring(0, assetPath.LastIndexOf("/")).TrimEnd(new char[] { '/' }).Split('/');
                 UnityEngine.Debug.Assert(folderNames.Length >= 2);
 
-                if(AssetBuilderUtil.IsSpecialFolderName(folderNames[folderNames.Length - 1]))
-                {
-                    string path = assetPath.Substring(0, assetPath.LastIndexOf("/"));
-                    return path.Substring(0, path.LastIndexOf("/")).ToLower();
-                }
                 return assetPath.Substring(0, assetPath.LastIndexOf("/")).ToLower();
             }
 
@@ -92,11 +87,6 @@ namespace Framework.AssetManagement.AssetBuilder
         {
             string ext = Path.GetExtension(assetPath);
             return AssetBuilderSetting.GetDefault().Extension.Count(t => string.Compare(t, ext, true) == 0) > 0;
-        }
-
-        static internal bool IsSpecialFolderName(string folderName)
-        {
-            return AssetBuilderSetting.GetDefault().BundleNameWithParent.Count( t =>  string.Compare(t, folderName, true) == 0 ) > 0;
         }
 
         static public string[] GetAllAssetBundleNames()
