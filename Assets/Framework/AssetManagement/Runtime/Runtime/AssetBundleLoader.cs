@@ -39,45 +39,29 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// 加载AB及其依赖AB，一旦遇到ab加载失败则卸载之前已加载的AB
+        /// 加载AB及其依赖AB
         /// </summary>
         /// <param name="InAssetBundleName"></param>
         private void Load(string InAssetBundleName)
         {
-            bool exception = false;
-
             AssetBundleRef abRef = AssetBundleManager.LoadAssetBundleFromFile(InAssetBundleName);
-            if (abRef != null && abRef.assetBundle != null)
-            {
-                m_MainAssetBundleRef = abRef;
-            }
-            else
-            {
-                exception = true;
+            if(abRef == null || abRef.assetBundle == null)
+            { // 主bundle加载失败，直接返回
+                m_MainAssetBundleRef = null;
+                return;
             }
 
             string[] dependencies = AssetBundleManager.GetAllDependencies(InAssetBundleName);
-            if (!exception && dependencies != null && dependencies.Length > 0)
+            if (dependencies != null && dependencies.Length > 0)
             {
                 for (int i = 0; i < dependencies.Length; ++i)
                 {
                     abRef = AssetBundleManager.LoadAssetBundleFromFile(dependencies[i]);
                     if (abRef != null && abRef.assetBundle != null)
-                    {
+                    { // 依赖bundle加载失败不影响其余的依赖bundle
                         m_DependentAssetBundleRefs.Add(abRef);
                     }
-                    else
-                    {
-                        exception = true;
-                        break;
-                    }
                 }
-            }
-
-            // 一旦遇到ab加载异常，则把之前加载的所有ab卸载
-            if (exception)
-            {
-                Unload();
             }
         }
 
