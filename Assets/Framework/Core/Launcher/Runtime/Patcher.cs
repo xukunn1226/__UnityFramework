@@ -22,7 +22,7 @@ namespace Framework.Core
         static public readonly string       DIFFCOLLECTION_FILENAME     = "diffcollection.json";
         static public readonly string       DIFF_FILENAME               = "diff.json";
         static public readonly string       PATCH_PATH                  = "patch";              // 基于CDN根目录的补丁数据路径
-        static public readonly string       BACKDOOR_FILENAME           = "backdoor.json";
+        static public readonly string       BACKDOOR_FILENAME           = "backdoor.zjson";
 
         private int                         m_WorkerCount;
         private List<DownloadTask>          m_TaskWorkerList;

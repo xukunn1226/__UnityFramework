@@ -1,6 +1,6 @@
 {
-  "MinVersion": "",
-  "CurVersion": "0.0.2.1",
+  "MinVersion": "0.0.1",
+  "CurVersion": "0.0.2",
   "VersionHistory_Win64": {
     "0.0.2": "2c690e1f3b9b60abdd1cc2b6e6d62217",
     "0.0.2.1": "d7fa974d911071ee8af84ad8564444e1"

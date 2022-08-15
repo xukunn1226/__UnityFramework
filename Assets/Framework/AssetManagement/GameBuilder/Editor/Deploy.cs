@@ -16,6 +16,7 @@ namespace Framework.AssetManagement.GameBuilder
         static public string s_CdnRootPath          = "cdn";                            // cdn path, base on s_DefaultRootPath
         static public string s_Cdn_DataPath         = "data";                           // 存储最新版本的资源数据
         static public string s_BackdoorPath         = s_CdnRootPath + "/" + Patcher.BACKDOOR_FILENAME;
+        static private string s_SavedBackdoorPath   = "Assets/Framework/AssetManagement/GameBuilder/Data/" + Patcher.BACKDOOR_FILENAME;
 
         // 全量资源路径
         static public string baseDataPath
@@ -161,12 +162,13 @@ namespace Framework.AssetManagement.GameBuilder
 
         /// <summary>
         /// 生成其他版本到当前版本（appDirectory）的差异数据
+        /// STEP1. 更新本地backdoor.zjon（）
         /// </summary>
         /// <param name="rootPath">Deployment</param>
         /// <param name="appDirectory">0.0.2</param>
         static private bool GeneratePatch(string rootPath, string appDirectory)
-        {
-            string path = string.Format($"{rootPath}/{s_BackdoorPath}");        // deployment/cdn/backdoor.json
+        {            
+            string path = s_SavedBackdoorPath;
             Backdoor bd = Backdoor.Deserialize(path);
             if(bd == null)
             {
@@ -252,6 +254,9 @@ namespace Framework.AssetManagement.GameBuilder
             dc_fs.Dispose();
             dc_fs.Close();
             Backdoor.Serialize(path, bd);
+
+            // copy backdoor.zjson from s_SavedBackdoorPath to cdn
+            File.Copy(s_SavedBackdoorPath, string.Format($"{rootPath}/{s_BackdoorPath}"), true);
 
             return true;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Framework.Core;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -15,6 +16,7 @@ namespace Framework.AssetManagement.GameBuilder
         public BuildTarget          buildTarget;
         public BundleBuilderSetting bundleSetting;
         public PlayerBuilderSetting playerSetting;
+        public JsonAsset            backdoor;
 
         public enum BuildMode
         {
