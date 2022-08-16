@@ -45,9 +45,9 @@ namespace Framework.AssetManagement.Runtime
         private void Load(string InAssetBundleName)
         {
             AssetBundleRef abRef = AssetBundleManager.LoadAssetBundleFromFile(InAssetBundleName);
+            m_MainAssetBundleRef = abRef;
             if(abRef == null || abRef.assetBundle == null)
             { // 主bundle加载失败，直接返回
-                m_MainAssetBundleRef = null;
                 return;
             }
 

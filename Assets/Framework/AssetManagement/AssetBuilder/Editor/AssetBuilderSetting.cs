@@ -32,6 +32,8 @@ namespace Framework.AssetManagement.AssetBuilder
         public string[]         PackByFile_Paths        = new string[] { };
         public string[]         PackBySize_Paths        = new string[] { };
 
+        public string[]         ExtraPackPaths          = new string[] { };
+
         // 根据路径判断打包策略
         public PackType GetPackType(string assetPath, out string packPath)
         {
@@ -233,6 +235,7 @@ namespace Framework.AssetManagement.AssetBuilder
         SerializedProperty m_PackByTopFolder_PathsProp;
         SerializedProperty m_PackByFile_PathsProp;
         SerializedProperty m_PackBySize_PathsProp;
+        SerializedProperty m_ExtraPackPathsProp;
 
         private void OnEnable()
         {
@@ -243,6 +246,7 @@ namespace Framework.AssetManagement.AssetBuilder
             m_PackByTopFolder_PathsProp = serializedObject.FindProperty("PackByTopFolder_Paths");
             m_PackByFile_PathsProp = serializedObject.FindProperty("PackByFile_Paths");
             m_PackBySize_PathsProp = serializedObject.FindProperty("PackBySize_Paths");
+            m_ExtraPackPathsProp = serializedObject.FindProperty("ExtraPackPaths");
         }
 
         public override void OnInspectorGUI()
@@ -332,6 +336,14 @@ namespace Framework.AssetManagement.AssetBuilder
                 }
                 --EditorGUI.indentLevel;
                 EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                ++EditorGUI.indentLevel;
+                EditorGUILayout.PropertyField(m_ExtraPackPathsProp, new GUIContent("Extra pack paths: 二次下载资源路径"), true);
+                
+                --EditorGUI.indentLevel;
+                EditorGUILayout.EndHorizontal();
+
 
                 if (!string.IsNullOrEmpty(error))
                 {

@@ -78,7 +78,7 @@ namespace Framework.AssetManagement.Runtime
         {
             m_BundleLoader = AssetManager.LoadAssetBundle(assetPath);
             if (m_BundleLoader.assetBundle == null)
-                throw new System.Exception("failed to load scene bundle");
+                throw new System.Exception($"failed to load scene bundle: {assetPath}");
             if (!m_BundleLoader.assetBundle.isStreamedSceneAssetBundle)
                 throw new System.Exception($"{assetPath} is not streamed scene asset bundle");
 

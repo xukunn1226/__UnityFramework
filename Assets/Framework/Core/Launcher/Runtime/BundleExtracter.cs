@@ -10,8 +10,8 @@ namespace Framework.Core
 {
     public class BundleExtracter : MonoBehaviour
     {
-        static public string                FILELIST_PATH               = "Assets/Resources";
-        static public string                FILELIST_NAME               = "FileList.bytes";
+        static public string                BASE_FILELIST_PATH          = "Assets/Resources";
+        static public string                BASE_FILELIST_NAME          = "BaseFileList.bytes";         // 首包的FileList
         static public readonly string       BASE_APPVERSION             = "BaseAppVersion_9695e71e3a224b408c39c7a75c0fa376";
 
         private int                         m_WorkerCount               = 5;
@@ -133,13 +133,13 @@ namespace Framework.Core
             }
         }
 
-        private bool LoadFileList()
+        private bool LoadBaseFileList()
         {
             // load FileList
-            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(FILELIST_NAME)}"));
+            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(BASE_FILELIST_NAME)}"));
             if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
             {
-                Debug.LogError($"FileList not found.    {FILELIST_PATH}/{FILELIST_NAME}");
+                Debug.LogError($"FileList not found.    {BASE_FILELIST_PATH}/{BASE_FILELIST_NAME}");
                 return false;
             }
             else
@@ -154,7 +154,7 @@ namespace Framework.Core
         /// </summary>
         private void CollectPendingExtractedFileList()
         {
-            if (!LoadFileList())
+            if (!LoadBaseFileList())
                 return;
 
             m_PendingExtracedFileIndex = 0;

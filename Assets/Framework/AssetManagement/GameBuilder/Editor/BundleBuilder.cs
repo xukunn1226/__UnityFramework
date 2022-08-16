@@ -85,7 +85,9 @@ namespace Framework.AssetManagement.GameBuilder
                 BuildBundleFileList();
 
                 // step 1. create directory
-                string outputPath = "Deployment/Latest/AssetBundles" + "/" + Utility.GetPlatformName();
+                GameBuilderSetting setting = GameBuilderSettingCollection.GetDefault().GetData("Win64");
+
+                string outputPath = setting.bundleSetting.outputPath + "/" + Utility.GetPlatformName();
                 if (Directory.Exists(outputPath))
                     Directory.Delete(outputPath, true);
                 Directory.CreateDirectory(outputPath);
@@ -432,10 +434,12 @@ namespace Framework.AssetManagement.GameBuilder
         
         static private void BuildBundleFileList()
         {
-            BundleFileList.BuildBundleFileList(string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}"), 
-                                               string.Format($"{BundleExtracter.FILELIST_PATH}/{Utility.GetPlatformName()}/{BundleExtracter.FILELIST_NAME}"));
+            // 生成首包FileList到Assets/Resources
+            string directory = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
+            string savedFile = string.Format($"{BundleExtracter.BASE_FILELIST_PATH}/{Utility.GetPlatformName()}/{BundleExtracter.BASE_FILELIST_NAME}");
+            BundleFileList.BuildBundleFileList(directory, savedFile);
 
-            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(savedFile);
         }
     }
 }

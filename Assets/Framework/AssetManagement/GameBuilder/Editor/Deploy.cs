@@ -15,8 +15,10 @@ namespace Framework.AssetManagement.GameBuilder
         static public string s_BackupDirectoryPath  = "backup";                         // 备份各平台下发布的资源（app & bundles）
         static public string s_CdnRootPath          = "cdn";                            // cdn path, base on s_DefaultRootPath
         static public string s_Cdn_DataPath         = "data";                           // 存储最新版本的资源数据
+        static public string s_Cdn_ExtraPath        = "extra";                          // 存储二次下载的路径
         static public string s_BackdoorPath         = s_CdnRootPath + "/" + Patcher.BACKDOOR_FILENAME;
         static private string s_SavedBackdoorPath   = "Assets/Framework/AssetManagement/GameBuilder/Data/" + Patcher.BACKDOOR_FILENAME;
+        static public string FULL_FILELIST_NAME     = "FileList.bytes";                 // 完整包的FileList，用于diff
 
         // 全量资源路径
         static public string baseDataPath
@@ -128,7 +130,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             // 生成所有资源文件相关信息（FileList）
             return BundleFileList.BuildBundleFileList(bundlesDstPath,
-                                                      string.Format($"{bakPath}/{BundleExtracter.FILELIST_NAME}"));
+                                                      string.Format($"{bakPath}/{FULL_FILELIST_NAME}"));
         }
 
         /// <summary>
@@ -283,14 +285,14 @@ namespace Framework.AssetManagement.GameBuilder
                 return null;
             }
 
-            string prevFileListPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{prevApp}/{BundleExtracter.FILELIST_NAME}");
+            string prevFileListPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{prevApp}/{FULL_FILELIST_NAME}");
             if(!File.Exists(prevFileListPath))
             {
                 Debug.LogError($"{prevFileListPath} not found");
                 return null;
             }
             
-            string curFileListPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{curApp}/{BundleExtracter.FILELIST_NAME}");
+            string curFileListPath = string.Format($"{rootPath}/{s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{curApp}/{FULL_FILELIST_NAME}");
             if (!File.Exists(curFileListPath))
             {
                 Debug.LogError($"{curFileListPath} not found");

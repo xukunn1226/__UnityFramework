@@ -31,8 +31,6 @@ MonoBehaviour:
   Extension:
   - .meta
   - .cs
-  BundleNameWithParent:
-  - SameToParent
   PackByTopFolder_Paths:
   - Assets/Res/UI/Atlases/icon0
   - Assets/Res/UI/Atlases/icon1
@@ -43,4 +41,5 @@ MonoBehaviour:
   - Assets/Res/UI/Prefabs
   PackBySize_Paths:
   - Assets/Res/DungeonDemo/Prefabs
-  ExpectedBundleSize: 5
+  ExtraPackPaths:
+  - Assets/Settings
