@@ -223,7 +223,7 @@ namespace Framework.AssetManagement.AssetBuilder
                 {
                     Debug.Log($"BySize: {assetPath}");
                 }
-                if(type == AssetBuilderSetting.PackType.Pack_ByTopFolder)
+                if(type == AssetBuilderSetting.PackType.Pack_ByAllFolder)
                 {
                     Debug.Log($"ByTopFolder: {assetPath}");
                 }

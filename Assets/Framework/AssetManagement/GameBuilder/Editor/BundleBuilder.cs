@@ -24,6 +24,9 @@ namespace Framework.AssetManagement.GameBuilder
         static public event onPreprocessBundleBuild OnPreprocessBundleBuild;
         static public event onPostprocessBundleBuild OnPostprocessBundleBuild;
 
+        static private bool s_useHashToBundleName = true;
+        static private BundleBuilderSetting m_Setting;
+
         /// <summary>
         /// 构建Bundles接口（唯一）
         /// </summary>
@@ -42,6 +45,8 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             Debug.Log("Begin Build AssetBundles");
+
+            m_Setting = para;
 
             OnPreprocessBundleBuild?.Invoke();
 
@@ -81,6 +86,11 @@ namespace Framework.AssetManagement.GameBuilder
             // 等所有需要打包的资源汇集到了streaming assets再执行
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
             {
+                // 所有资源(bundle & raw data)汇集到streaming assets后再进行分包处理
+                SplitBundles("Assets/StreamingAssets" + "/" + Utility.GetPlatformName(), m_Setting);
+
+                // recreate manifest
+
                 // 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
                 BuildBundleFileList();
 
@@ -119,6 +129,7 @@ namespace Framework.AssetManagement.GameBuilder
             }
         }
 
+        [Obsolete("use GenerateAssetBundleBuildsStrategically replace GenerateAssetBundleBuilds")]
         static private AssetBundleBuild[] GenerateAssetBundleBuilds()
         {
             // 收集所有需要打包的资源
@@ -167,8 +178,34 @@ namespace Framework.AssetManagement.GameBuilder
         static private AssetBundleBuild[] GenerateAssetBundleBuildsStrategically()
         {
             // 收集所有需要打包的资源
-            AssetBuilderSetting setting = AssetBuilderSetting.GetDefault();
+            Dictionary<string, List<string>> BundleFileList = GenerateBundleFileList();     // assetBundleName : List<assetPath>
+
+            // generate AssetBundleBuild
+            AssetBundleBuild[] BuildList = new AssetBundleBuild[BundleFileList.Count];
+            int index = 0;
+            foreach (var bundleFile in BundleFileList)
+            {
+                AssetBundleBuild abb = new AssetBundleBuild();
+                abb.assetBundleName = bundleFile.Key;
+                abb.assetNames = new string[bundleFile.Value.Count];
+                abb.addressableNames = new string[bundleFile.Value.Count];
+                for (int i = 0; i < bundleFile.Value.Count; ++i)
+                {
+                    abb.assetNames[i] = bundleFile.Value[i];
+                    abb.addressableNames[i] = Path.GetFileName(abb.assetNames[i]);
+                }
+
+                BuildList[index++] = abb;
+            }
+            return BuildList;
+        }
+
+        // 根据资源路径、打包策略生成bundle file list
+        static private Dictionary<string, List<string>> GenerateBundleFileList()
+        {
+            // 收集所有需要打包的资源            
             Dictionary<string, List<string>> BundleFileList = new Dictionary<string, List<string>>();       // assetBundleName : List<assetPath>
+            AssetBuilderSetting setting = AssetBuilderSetting.GetDefault();
             string[] guids = AssetDatabase.FindAssets("*", setting.WhiteListOfPath);
             foreach (var guid in guids)
             {
@@ -180,22 +217,23 @@ namespace Framework.AssetManagement.GameBuilder
                 if (AssetBuilderUtil.IsBlockedByExtension(assetPath))
                     continue;
 
+                // 根据路径判断打包策略
                 string bundleName = null;
                 string packPath = null;
                 AssetBuilderSetting.PackType packType = setting.GetPackType(assetPath, out packPath);
-                if(packType == AssetBuilderSetting.PackType.Pack_ByFolder)
+                if (packType == AssetBuilderSetting.PackType.Pack_ByFolder)
                 {
                     bundleName = packPath.TrimEnd(new char[] { '/' });
                 }
-                else if(packType == AssetBuilderSetting.PackType.Pack_ByFile)
+                else if (packType == AssetBuilderSetting.PackType.Pack_ByFile)
                 {
                     bundleName = packPath.TrimEnd(new char[] { '/' }) + "/" + Path.GetFileNameWithoutExtension(assetPath);
                 }
-                else if(packType == AssetBuilderSetting.PackType.Pack_BySize)
+                else if (packType == AssetBuilderSetting.PackType.Pack_BySize)
                 {
                     bundleName = packPath.TrimEnd(new char[] { '/' });
                 }
-                else if(packType == AssetBuilderSetting.PackType.Pack_ByTopFolder)
+                else if (packType == AssetBuilderSetting.PackType.Pack_ByAllFolder)
                 {
                     bundleName = packPath.TrimEnd(new char[] { '/' });
                 }
@@ -213,26 +251,7 @@ namespace Framework.AssetManagement.GameBuilder
                 }
                 list.Add(assetPath);
             }
-
-            // generate AssetBundleBuild
-            AssetBundleBuild[] BuildList = new AssetBundleBuild[BundleFileList.Count];
-            int index = 0;
-            foreach (var bundleFile in BundleFileList)
-            {
-                AssetBundleBuild abb = new AssetBundleBuild();
-                abb.assetBundleName = bundleFile.Key;
-
-                abb.assetNames = new string[bundleFile.Value.Count];
-                abb.addressableNames = new string[bundleFile.Value.Count];
-                for (int i = 0; i < bundleFile.Value.Count; ++i)
-                {
-                    abb.assetNames[i] = bundleFile.Value[i];
-                    abb.addressableNames[i] = Path.GetFileName(abb.assetNames[i]);
-                }
-
-                BuildList[index++] = abb;
-            }
-            return BuildList;
+            return BundleFileList;
         }
 
         static private bool BuildBundleWithSBP(string output, BundleBuilderSetting setting)
@@ -240,7 +259,7 @@ namespace Framework.AssetManagement.GameBuilder
             AssetBundleBuild[] abb = GenerateAssetBundleBuildsStrategically();
             var buildContent = new BundleBuildContent(abb);
 
-            // step2. Construct the new parameters class
+            // step1. Construct the new parameters class
             var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
                                                         BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), 
                                                         output);
@@ -256,7 +275,7 @@ namespace Framework.AssetManagement.GameBuilder
             // buildParams.PerBundleCompression.Add("Bundle2", UnityEngine.BuildCompression.LZMA);
             buildParams.OutputFolder = output;
 
-            // step3. build bundles except Manifest
+            // step2. build bundles except Manifest
             IBundleBuildResults results;
             ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
             if (exitCode < ReturnCode.Success)
@@ -267,8 +286,6 @@ namespace Framework.AssetManagement.GameBuilder
             }
             ClearBundleRedundancy(output);
 
-            AssetDatabase.Refresh();
-
             // step4. build manifest
             string manifestOutput = "Assets/Temp/";          // manifest必须生成在Assets/下才能CreateAsset
             if (!Directory.Exists(manifestOutput))
@@ -276,18 +293,19 @@ namespace Framework.AssetManagement.GameBuilder
                 Directory.CreateDirectory(manifestOutput);
             }
 
-            bool useHashToBundleName = true;
-            if (!BuildManifestAsBundle(abb, results, manifestOutput, useHashToBundleName))
+            if (!BuildManifestAsBundle(abb, results, manifestOutput, s_useHashToBundleName))
             {
                 Debug.LogError("Failed to build manifest");
                 // ClearManifestRedundancy(manifestOutput);
                 return false;
             }
+            
+            AssetDatabase.Refresh();        // 改名处理前需要refresh
 
             // 把所有已输出的bundle改名
-            if(useHashToBundleName)
-            {
-                foreach(var item in abb)
+            if (s_useHashToBundleName)
+            {                
+                foreach (var item in abb)
                 {
                     BundleDetails bundleDetails;
                     results.BundleInfos.TryGetValue(item.assetBundleName, out bundleDetails);
@@ -301,8 +319,13 @@ namespace Framework.AssetManagement.GameBuilder
 
             // step5. copy manifest and clear temp files
             CopyManifestToOutput(manifestOutput, output);
-            // ClearManifestRedundancy(manifestOutput);
             return true;
+        }
+
+        // 把streaming assets下的资源进行分包处理（base、extra、pkg。。。）
+        static private void SplitBundles(string srcDirectory, BundleBuilderSetting setting)
+        {
+
         }
 
         static private string CreateManifestAsset(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput, bool useHashToBundleName)

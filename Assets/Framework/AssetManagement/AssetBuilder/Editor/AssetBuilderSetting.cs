@@ -17,14 +17,14 @@ namespace Framework.AssetManagement.AssetBuilder
 
         public string[]         WhiteListOfPath         = new string[] { "Assets/Res/" };       // 路径白名单
 
-        public string[]         BlackListOfFolder       = new string[] { "Resources", "Scenes", "Scripts", "RawData", "Editor", "StreamingAssets", "Examples", "Temp" };   // 文件夹黑名单
+        public string[]         BlackListOfFolder       = new string[] { "Resources", "Scripts", "RawData", "Editor", "StreamingAssets", "Examples", "Temp" };   // 文件夹黑名单
 
         public string[]         Extension               = new string[] { ".meta", ".cs"};
 
         public enum PackType
         {
             Pack_ByFolder,          // 文件夹内资源打成bundle，仅作用于当前文件夹，不包括子文件夹
-            Pack_ByTopFolder,       // 文件夹及所有子文件夹的资源打成bundle
+            Pack_ByAllFolder,       // 文件夹及所有子文件夹的资源打成bundle
             Pack_ByFile,            // 每个文件打成单独bundle，仅作用于当前文件夹，不包括子文件夹
             Pack_BySize,            // 收集一组固定大小的资源，打成bundle，仅作用于当前文件夹，不包括子文件夹
         }
@@ -34,6 +34,7 @@ namespace Framework.AssetManagement.AssetBuilder
 
         public string[]         ExtraPackPaths          = new string[] { };
 
+        //public string Get
         // 根据路径判断打包策略
         public PackType GetPackType(string assetPath, out string packPath)
         {
@@ -62,7 +63,7 @@ namespace Framework.AssetManagement.AssetBuilder
                 if(directory.StartsWith(path.TrimEnd(new char[] { '/' }) + "/", true, System.Globalization.CultureInfo.CurrentCulture))
                 {
                     packPath = path;
-                    return PackType.Pack_ByTopFolder;
+                    return PackType.Pack_ByAllFolder;
                 }
             }
 
