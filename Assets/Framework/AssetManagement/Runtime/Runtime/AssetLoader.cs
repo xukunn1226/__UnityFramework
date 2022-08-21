@@ -70,7 +70,7 @@ namespace Framework.AssetManagement.Runtime
         private void LoadAssetInternal(string assetPath)
         {
             CustomManifest.FileDetail fd = AssetManager.GetFileDetail(assetPath);
-            abLoader = AssetBundleLoader.Get(fd.bundleName);
+            abLoader = AssetBundleLoader.Get(fd.bundleHash);
             if (abLoader.assetBundle != null)
             {
                 asset = abLoader.assetBundle.LoadAsset<T>(fd.fileName);

@@ -129,7 +129,7 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             // 生成所有资源文件相关信息（FileList）
-            return BundleFileList.BuildBundleFileList(bundlesDstPath,
+            return BundleFileList.BuildBundleFileList(bundlesDstPath, "", 
                                                       string.Format($"{bakPath}/{FULL_FILELIST_NAME}"));
         }
 

@@ -24,7 +24,7 @@ namespace Framework.AssetManagement.Runtime
 
         public class FileDetail
         {
-            public string       bundleName;             // 资源所属的bundle name
+            public string       bundleHash;             // 资源所属的bundle name
             public string       fileName;               // file name
             [NonSerialized]
             public BundleDetail bundleDetail;           // 资源所属的bundle，运行时赋值
@@ -33,11 +33,11 @@ namespace Framework.AssetManagement.Runtime
         [SerializeField]
         public Dictionary<string, FileDetail>       m_FileDetails   = new Dictionary<string, FileDetail>();     // 记录资源与bundle的对应关系
                                                                                                                 // key:   identifier，建议使用assetPath
-                                                                                                                // value: bundle name
+                                                                                                                // value: FileDetail
         [SerializeField]
         public Dictionary<string, BundleDetail>     m_BundleDetails = new Dictionary<string, BundleDetail>();   // 记录所有bundle包的详细信息
-                                                                                                                // key:     bundle name
-                                                                                                                // value:   RawBundleDetail
+                                                                                                                // key:     bundle hash
+                                                                                                                // value:   BundleDetail
 
         public BundleDetail GetBundleDetail(string assetBundleName)
         {
@@ -54,7 +54,7 @@ namespace Framework.AssetManagement.Runtime
                 if(fd.bundleDetail == null)
                 {
                     BundleDetail bd;
-                    m_BundleDetails.TryGetValue(fd.bundleName, out bd);
+                    m_BundleDetails.TryGetValue(fd.bundleHash, out bd);
                     fd.bundleDetail = bd;
                 }                
             }

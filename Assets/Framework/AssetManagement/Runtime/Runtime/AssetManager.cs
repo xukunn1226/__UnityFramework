@@ -232,7 +232,7 @@ namespace Framework.AssetManagement.Runtime
             if (Instance == null)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
             CustomManifest.FileDetail fd = AssetManager.GetFileDetail(assetPath);
-            return AssetBundleLoader.Get(fd.bundleName);
+            return AssetBundleLoader.Get(fd.bundleHash);
         }
 
         /// <summary>

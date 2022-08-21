@@ -81,7 +81,7 @@ namespace Framework.AssetManagement.Runtime
             GameObject prefabAsset = null;
             CustomManifest.FileDetail fd = AssetManager.GetFileDetail(assetPath);
 
-            abLoader = AssetBundleLoader.Get(fd.bundleName);
+            abLoader = AssetBundleLoader.Get(fd.bundleHash);
             if (abLoader.assetBundle != null)
             {
                 prefabAsset = abLoader.assetBundle.LoadAsset<GameObject>(fd.fileName);

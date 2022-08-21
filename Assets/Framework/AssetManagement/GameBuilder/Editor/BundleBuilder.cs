@@ -27,6 +27,10 @@ namespace Framework.AssetManagement.GameBuilder
         static private bool s_useHashToBundleName = true;
         static private BundleBuilderSetting m_Setting;
 
+        static private Dictionary<string, string> s_BPInfo = new Dictionary<string, string>();       // KEY: bundle name; VALUE: package name
+        static private AssetBundleBuild[] s_abb;
+        static private IBundleBuildResults s_buildResults;
+
         /// <summary>
         /// 构建Bundles接口（唯一）
         /// </summary>
@@ -86,13 +90,8 @@ namespace Framework.AssetManagement.GameBuilder
             // 等所有需要打包的资源汇集到了streaming assets再执行
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
             {
-                // 所有资源(bundle & raw data)汇集到streaming assets后再进行分包处理
-                SplitBundles("Assets/StreamingAssets" + "/" + Utility.GetPlatformName(), m_Setting);
-
-                // recreate manifest
-
-                // 计算StreamingAssets下所有资源的MD5，存储于Assets/Resources
-                BuildBundleFileList();
+                // 计算base,extra资源的MD5，存储于Assets/Resources
+                BuildBaseAndExtraBundleFileList();
 
                 // step 1. create directory
                 GameBuilderSetting setting = GameBuilderSettingCollection.GetDefault().GetData("Win64");
@@ -107,6 +106,9 @@ namespace Framework.AssetManagement.GameBuilder
                 // 有些资源例如FMOD有自己的发布流程，等其发布完最后再执行
                 Framework.Core.Editor.EditorUtility.CopyDirectory("Assets/StreamingAssets/" + Utility.GetPlatformName(), outputPath);
                 Debug.Log($"        Copy streaming assets to Deployment/Latest/AssetBundles");
+
+                // todo: 最后删除其他资源(extra,pkg_XXX)，只有base发布到母包
+
             }
         }
 
@@ -198,7 +200,7 @@ namespace Framework.AssetManagement.GameBuilder
                 BuildList[index++] = abb;
             }
             return BuildList;
-        }
+        }        
 
         // 根据资源路径、打包策略生成bundle file list
         static private Dictionary<string, List<string>> GenerateBundleFileList()
@@ -256,8 +258,8 @@ namespace Framework.AssetManagement.GameBuilder
 
         static private bool BuildBundleWithSBP(string output, BundleBuilderSetting setting)
         {
-            AssetBundleBuild[] abb = GenerateAssetBundleBuildsStrategically();
-            var buildContent = new BundleBuildContent(abb);
+            s_abb = GenerateAssetBundleBuildsStrategically();
+            var buildContent = new BundleBuildContent(s_abb);
 
             // step1. Construct the new parameters class
             var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget, 
@@ -276,8 +278,7 @@ namespace Framework.AssetManagement.GameBuilder
             buildParams.OutputFolder = output;
 
             // step2. build bundles except Manifest
-            IBundleBuildResults results;
-            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out results);
+            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out s_buildResults);
             if (exitCode < ReturnCode.Success)
             {
                 Debug.LogError($"Failed to build bundles, ReturnCode is {exitCode}");
@@ -293,39 +294,135 @@ namespace Framework.AssetManagement.GameBuilder
                 Directory.CreateDirectory(manifestOutput);
             }
 
-            if (!BuildManifestAsBundle(abb, results, manifestOutput, s_useHashToBundleName))
+            if (!BuildManifestAsBundle(s_abb, s_buildResults, manifestOutput, s_useHashToBundleName))
             {
                 Debug.LogError("Failed to build manifest");
-                // ClearManifestRedundancy(manifestOutput);
                 return false;
             }
-            
-            AssetDatabase.Refresh();        // 改名处理前需要refresh
+
+            AssetDatabase.Refresh();        // 改名处理前需要refresh，生成meta，才能执行rename asset
 
             // 把所有已输出的bundle改名
             if (s_useHashToBundleName)
-            {                
-                foreach (var item in abb)
+            {
+                AssetBuilderSetting assetSetting = AssetBuilderSetting.GetDefault();
+                s_BPInfo.Clear();
+                foreach (var item in s_abb)
                 {
                     BundleDetails bundleDetails;
-                    results.BundleInfos.TryGetValue(item.assetBundleName, out bundleDetails);
+                    s_buildResults.BundleInfos.TryGetValue(item.assetBundleName, out bundleDetails);
 
                     string oldPathName = output + "/" + item.assetBundleName;
-                    string error = AssetDatabase.RenameAsset(oldPathName, bundleDetails.Hash.ToString());
+                    string newBundleName = bundleDetails.Hash.ToString();
+                    string error = AssetDatabase.RenameAsset(oldPathName, newBundleName);
                     if(!string.IsNullOrEmpty(error))
                         Debug.LogError($"RenameAsset:  {error}");
+
+                    // update s_BPInfo
+                    if(!s_BPInfo.ContainsKey(newBundleName))
+                    {
+                        s_BPInfo.Add(newBundleName, assetSetting.WhichPackage(item.assetNames[0]));
+                    }
                 }
+            }
+
+            // 分包处理
+            SplitBundles(output, m_Setting);
+
+            // rebuild manifest
+            if (!RebuildManifestAsBundle(s_abb, s_buildResults, s_BPInfo, manifestOutput, s_useHashToBundleName))
+            {
+                Debug.LogError("Failed to rebuild manifest");
             }
 
             // step5. copy manifest and clear temp files
             CopyManifestToOutput(manifestOutput, output);
+
             return true;
         }
 
         // 把streaming assets下的资源进行分包处理（base、extra、pkg。。。）
         static private void SplitBundles(string srcDirectory, BundleBuilderSetting setting)
         {
+            foreach(var item in s_BPInfo)
+            {
+                string bundleName = item.Key;
+                string pkgName = item.Value;
 
+                string oldPath = srcDirectory.TrimEnd('/') + "/" + bundleName;
+                string newPath = srcDirectory.TrimEnd('/') + "/" + pkgName;
+                if(!AssetDatabase.IsValidFolder(newPath))
+                {
+                    AssetDatabase.CreateFolder(srcDirectory, pkgName);
+                }
+                string err = AssetDatabase.MoveAsset(oldPath, newPath + "/" + bundleName);
+                if(!string.IsNullOrEmpty(err))
+                {
+                    Debug.LogError(err);
+                }
+            }
+            AssetDatabase.Refresh();
+        }
+
+        static private bool RebuildManifestAsBundle(AssetBundleBuild[] abb, IBundleBuildResults results, Dictionary<string, string> BPInfo, string manifestOutput, bool useHashToBundleName)
+        {
+            string manifestFilepath = RecreateManifestAsset(abb, results, BPInfo, manifestOutput, useHashToBundleName);
+
+            AssetBundleBuild[] BuildList = new AssetBundleBuild[1];
+            AssetBundleBuild manifestAbb = new AssetBundleBuild();
+            manifestAbb.assetBundleName = "manifest";
+            manifestAbb.assetNames = new string[1];
+            manifestAbb.assetNames[0] = manifestFilepath;
+            manifestAbb.addressableNames = new string[1];
+            manifestAbb.addressableNames[0] = "manifest";
+            BuildList[0] = manifestAbb;
+            var buildContent = new BundleBuildContent(BuildList);
+            var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget,
+                                                        BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget),
+                                                        manifestOutput);
+
+            IBundleBuildResults manifestResults;
+            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out manifestResults);
+            return exitCode >= ReturnCode.Success;
+        }
+
+        static private string RecreateManifestAsset(AssetBundleBuild[] abb, IBundleBuildResults results, Dictionary<string, string> BPInfo, string manifestOutput, bool useHashToBundleName)
+        {
+            // 方法二：写入自定义json格式文件
+            CustomManifest manifest = new CustomManifest();
+            foreach (var item in results.BundleInfos)
+            {
+                manifest.m_BundleDetails.Add(useHashToBundleName ? item.Value.Hash.ToString() : item.Key,
+                                             new CustomManifest.BundleDetail()
+                                             {
+                                                 bundleName = BPInfo[item.Value.Hash.ToString()] + "/" + (useHashToBundleName ? item.Value.Hash.ToString() : item.Key),
+                                                 bundlePath = item.Key,
+                                                 isUnityBundle = true,
+                                                 isStreamingAsset = true,
+                                                 dependencies = useHashToBundleName ? ConvertDependenciesToHash(item.Value.Dependencies, results) : item.Value.Dependencies
+                                             });
+            }
+            foreach (var bb in abb)
+            {
+                for (int i = 0; i < bb.assetNames.Length; ++i)
+                {
+                    BundleDetails bundleDetails;
+                    results.BundleInfos.TryGetValue(bb.assetBundleName, out bundleDetails);
+
+                    manifest.m_FileDetails.Add(bb.assetNames[i],
+                                               new CustomManifest.FileDetail()
+                                               {
+                                                   bundleHash = useHashToBundleName ? bundleDetails.Hash.ToString() : bb.assetBundleName,
+                                                   fileName = bb.addressableNames[i]
+                                               });
+                }
+            }
+
+            string customManifestFilepath = manifestOutput + Utility.GetPlatformName() + "_manifest.zjson";
+            CustomManifest.Serialize(customManifestFilepath, manifest);
+            AssetDatabase.ImportAsset(customManifestFilepath);
+
+            return customManifestFilepath;
         }
 
         static private string CreateManifestAsset(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput, bool useHashToBundleName)
@@ -360,7 +457,7 @@ namespace Framework.AssetManagement.GameBuilder
                     manifest.m_FileDetails.Add(bb.assetNames[i],
                                                new CustomManifest.FileDetail()
                                                {
-                                                   bundleName = useHashToBundleName ? bundleDetails.Hash.ToString() : bb.assetBundleName,
+                                                   bundleHash = useHashToBundleName ? bundleDetails.Hash.ToString() : bb.assetBundleName,
                                                    fileName = bb.addressableNames[i]
                                                });
                 }
@@ -455,12 +552,17 @@ namespace Framework.AssetManagement.GameBuilder
             AssetDatabase.Refresh();
         }
         
-        static private void BuildBundleFileList()
+        static private void BuildBaseAndExtraBundleFileList()
         {
             // 生成首包FileList到Assets/Resources
             string directory = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
             string savedFile = string.Format($"{BundleExtracter.BASE_FILELIST_PATH}/{Utility.GetPlatformName()}/{BundleExtracter.BASE_FILELIST_NAME}");
-            BundleFileList.BuildBundleFileList(directory, savedFile);
+            BundleFileList.BuildBundleFileList(directory, "base", savedFile);
+
+            // 生成二次下载包FileList到Assets/Resources
+            directory = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
+            savedFile = string.Format($"{ExtraDownloader.EXTRA_FILELIST_PATH}/{Utility.GetPlatformName()}/{ExtraDownloader.EXTRA_FILELIST_NAME}");
+            BundleFileList.BuildBundleFileList(directory, "extra", savedFile);
 
             AssetDatabase.ImportAsset(savedFile);
         }

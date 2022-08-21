@@ -46,12 +46,12 @@ namespace Framework.Core
         /// <param name="directory"></param>
         /// <param name="savedFile"></param>
         /// <returns></returns>
-        static public bool BuildBundleFileList(string directory, string savedFile)
+        static public bool BuildBundleFileList(string directory, string subFolderName, string savedFile)
         {
-            string json = GenerateBundleFileListJson(directory);
+            string json = GenerateBundleFileListJson(directory, subFolderName);
             if (string.IsNullOrEmpty(json))
             {
-                Debug.LogError($"failed to generate json of bundle file list");
+                Debug.LogWarning($"failed to generate json of bundle file list of directory[{directory}]");
                 return false;
             }
 
@@ -75,20 +75,27 @@ namespace Framework.Core
         }
 
         /// <summary>
-        /// 依据文件夹下所有数据生成BundleFileList，并序列化为json
+        /// 生成文件夹（parentFolder/subFolderName）下所有数据的BundleFileList，并序列化为json
         /// </summary>
-        /// <param name="directory"></param>
+        /// <param name="parentFolder">Assets/StreamingAssets/windows</param>
+        /// <param name="subFolderName">base</param>
         /// <returns></returns>
-        static private string GenerateBundleFileListJson(string directory)
+        static private string GenerateBundleFileListJson(string parentFolder, string subFolderName)
         {
-            directory = directory.Replace('\\', '/').TrimEnd(new char[] { '/' });
-            if (!Directory.Exists(directory))
+            parentFolder = parentFolder.Replace('\\', '/').TrimEnd(new char[] { '/' });
+            if (!Directory.Exists(parentFolder))
             {
-                throw new DirectoryNotFoundException($"{directory}");
+                return null;
+            }
+
+            subFolderName = subFolderName.Replace('\\', '/').TrimEnd(new char[] { '/' });
+            if(!Directory.Exists(parentFolder + "/" + subFolderName))
+            {
+                return null;
             }
 
             BundleFileList fileList = new BundleFileList();
-            DirectoryInfo di = new DirectoryInfo(directory);
+            DirectoryInfo di = new DirectoryInfo(string.Format($"{parentFolder}/{subFolderName}").Trim('/'));
             FileInfo[] fis = di.GetFiles("*", SearchOption.AllDirectories);
             foreach (var fi in fis)
             {
@@ -99,7 +106,7 @@ namespace Framework.Core
 
                 string bundleName = fi.FullName.Replace('\\', '/').Substring(di.FullName.Replace('\\', '/').Length + 1);
                 fileList.Add(
-                    new BundleFileInfo() { BundleName = bundleName, FileHash = GetHash(fi), Size = fi.Length }
+                    new BundleFileInfo() { BundleName = string.Format($"{subFolderName}/{bundleName}").Trim('/'), FileHash = GetHash(fi), Size = fi.Length }
                     );
             }
             return SerializeToJson(fileList);

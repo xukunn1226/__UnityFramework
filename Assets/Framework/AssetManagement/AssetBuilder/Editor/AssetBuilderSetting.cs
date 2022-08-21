@@ -34,7 +34,16 @@ namespace Framework.AssetManagement.AssetBuilder
 
         public string[]         ExtraPackPaths          = new string[] { };
 
-        //public string Get
+        public string WhichPackage(string assetPath)
+        {
+            assetPath = assetPath.Substring(0, assetPath.LastIndexOf("/")).ToLower();
+            if(ExtraPackPaths.Count(path => (path.ToLower().StartsWith(assetPath))) > 0)
+            {
+                return "extra";
+            }
+            return "base";
+        }
+
         // 根据路径判断打包策略
         public PackType GetPackType(string assetPath, out string packPath)
         {
