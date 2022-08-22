@@ -294,11 +294,11 @@ namespace Framework.AssetManagement.GameBuilder
                 Directory.CreateDirectory(manifestOutput);
             }
 
-            if (!BuildManifestAsBundle(s_abb, s_buildResults, manifestOutput, s_useHashToBundleName))
-            {
-                Debug.LogError("Failed to build manifest");
-                return false;
-            }
+            // if (!BuildManifestAsBundle(s_abb, s_buildResults, manifestOutput, s_useHashToBundleName))
+            // {
+            //     Debug.LogError("Failed to build manifest");
+            //     return false;
+            // }
 
             AssetDatabase.Refresh();        // 改名处理前需要refresh，生成meta，才能执行rename asset
 

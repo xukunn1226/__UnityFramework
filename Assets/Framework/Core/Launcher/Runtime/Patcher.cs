@@ -355,11 +355,7 @@ namespace Framework.Core
         {
             if(string.IsNullOrEmpty(m_Error))
             {
-                PlayerPrefs.SetString(CUR_APPVERSION, m_Backdoor.CurVersion);
-                PlayerPrefs.Save();
-
-                Debug.Log($"patch completed...{localCurVersion.ToString()}  ->  {m_Backdoor.CurVersion}");
-                localCurVersion.Set(m_Backdoor.CurVersion);
+                MarkLatestVersion();
             }
             else
             {
@@ -367,6 +363,15 @@ namespace Framework.Core
             }
 
             m_Listener?.OnPatchCompleted(m_Error);
+        }
+
+        private void MarkLatestVersion()
+        {
+            PlayerPrefs.SetString(CUR_APPVERSION, m_Backdoor.CurVersion);
+            PlayerPrefs.Save();
+
+            Debug.Log($"patch completed...{localCurVersion.ToString()}  ->  {m_Backdoor.CurVersion}");
+            localCurVersion.Set(m_Backdoor.CurVersion);
         }
 
         private void OnTaskProgress(DownloadTaskInfo taskInfo, ulong downedLength, ulong totalLength, float downloadSpeed)

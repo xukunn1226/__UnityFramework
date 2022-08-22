@@ -121,6 +121,7 @@ namespace Framework.AssetManagement.GameBuilder
 
                 Framework.Core.Editor.EditorUtility.CopyDirectory(appSrcPath, appDstPath);
                 Framework.Core.Editor.EditorUtility.CopyDirectory(bundlesSrcPath, bundlesDstPath);
+                File.Copy(string.Format($"Assets/Temp/{Utility.GetPlatformName()}_manifest.zjson"), string.Format($"{bakPath}/manifest.zjson"), true);
             }
             catch (System.Exception e)
             {
