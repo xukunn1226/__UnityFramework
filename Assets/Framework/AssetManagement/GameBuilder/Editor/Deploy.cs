@@ -71,7 +71,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             if (success)
             {
-                Debug.Log($"Deploy operator is finished successfully");
+                Debug.Log($"Deploy operator is finished successfully: [{appDirectory}]");
             }
             else
             {

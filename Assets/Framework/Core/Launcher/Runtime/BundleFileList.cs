@@ -74,6 +74,56 @@ namespace Framework.Core
             return true;
         }
 
+        // 构建base和raw data数据的FileList，raw data暂时不支持分包功能，默认随base一起发布到母包
+        static public bool BuildBaseAndRawDataBundleFileList(string directory, string subFolderName, string savedFile)
+        {
+            // base data file list
+            string json = GenerateBundleFileListJson(directory, subFolderName);
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogWarning($"failed to generate json of bundle file list of directory[{directory}]");
+                return false;
+            }
+
+            // raw data file list
+            string json2 = GenerateRawDataBundleFileListJson(directory);
+
+            // push raw data into FileList
+            if(!string.IsNullOrEmpty(json2))
+            {
+                BundleFileList bf1 = DeserializeFromJson(json);
+                BundleFileList bf2 = DeserializeFromJson(json2);
+                BundleFileList bf = new BundleFileList();
+                foreach(var item in bf1.FileList)
+                {
+                    bf.Add(item);
+                }
+                foreach(var item in bf2.FileList)
+                {
+                    bf.Add(item);
+                }
+                json = SerializeToJson(bf);
+            }            
+
+            try
+            {
+                string savedDirectory = Path.GetDirectoryName(savedFile);
+                if (!Directory.Exists(savedDirectory))
+                    Directory.CreateDirectory(savedDirectory);
+                using (FileStream fs = new FileStream(savedFile, FileMode.Create))
+                {
+                    byte[] data = System.Text.Encoding.UTF8.GetBytes(json);
+                    fs.Write(data, 0, data.Length);
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// 生成文件夹（parentFolder/subFolderName）下所有数据的BundleFileList，并序列化为json
         /// </summary>
@@ -110,6 +160,53 @@ namespace Framework.Core
                     );
             }
             return SerializeToJson(fileList);
+        }
+
+        /// <summary>
+        /// 构建文件夹下数据的FileList，不包括分包数据
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        static private string GenerateRawDataBundleFileListJson(string directory)
+        {
+            directory = directory.Replace('\\', '/').TrimEnd(new char[] { '/' });
+            if (!Directory.Exists(directory))
+            {
+                return null;
+            }
+
+            BundleFileList fileList = new BundleFileList();
+
+            DirectoryInfo di = new DirectoryInfo(directory);
+            FileInfo[] fis = di.GetFiles("*", SearchOption.AllDirectories);
+            foreach (var fi in fis)
+            {
+                if (!string.IsNullOrEmpty(fi.Extension) && string.Compare(fi.Extension, ".meta", true) == 0)
+                {
+                    continue;
+                }
+
+                if (!IsRawData(directory, fi.FullName.Replace('\\', '/')))
+                    continue;
+
+                string bundleName = fi.FullName.Replace('\\', '/').Substring(di.FullName.Replace('\\', '/').Length + 1);
+                fileList.Add(
+                    new BundleFileInfo() { BundleName = bundleName, FileHash = GetHash(fi), Size = fi.Length }
+                    );
+            }
+
+            return SerializeToJson(fileList);
+        }
+
+        static private bool IsRawData(string directory, string filePath)
+        {
+            if(filePath.Contains(directory + "/base", StringComparison.OrdinalIgnoreCase)
+                || filePath.Contains(directory + "/extra", StringComparison.OrdinalIgnoreCase)
+                || filePath.Contains(directory + "/pkg_", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            return true;
         }
 
         static private string GetHash(FileInfo fi)

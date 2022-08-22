@@ -28,7 +28,7 @@ namespace Framework.AssetManagement.AssetBuilder
             Pack_ByFile,            // 每个文件打成单独bundle，仅作用于当前文件夹，不包括子文件夹
             Pack_BySize,            // 收集一组固定大小的资源，打成bundle，仅作用于当前文件夹，不包括子文件夹
         }
-        public string[]         PackByTopFolder_Paths   = new string[] { };
+        public string[]         PackByAllFolder_Paths   = new string[] { };
         public string[]         PackByFile_Paths        = new string[] { };
         public string[]         PackBySize_Paths        = new string[] { };
 
@@ -47,7 +47,7 @@ namespace Framework.AssetManagement.AssetBuilder
         // 根据路径判断打包策略
         public PackType GetPackType(string assetPath, out string packPath)
         {
-            string directory = assetPath.Substring(0, assetPath.LastIndexOf("/")) + "/";
+            string directory = assetPath.Substring(0, assetPath.LastIndexOf("/")) + "/";        // 加上"/"表示文件夹，与文件区分开
 
             foreach(var path in PackByFile_Paths)
             {
@@ -67,7 +67,7 @@ namespace Framework.AssetManagement.AssetBuilder
                 }
             }
 
-            foreach(var path in PackByTopFolder_Paths)
+            foreach(var path in PackByAllFolder_Paths)
             {
                 if(directory.StartsWith(path.TrimEnd(new char[] { '/' }) + "/", true, System.Globalization.CultureInfo.CurrentCulture))
                 {
@@ -109,7 +109,7 @@ namespace Framework.AssetManagement.AssetBuilder
                 if (string.Compare(newPath, path, true) == 0)
                     return string.Format($"{newPath} has already exists in PackBySize_Paths({path})");
             }
-            foreach (var checkingPath in PackByTopFolder_Paths)
+            foreach (var checkingPath in PackByAllFolder_Paths)
             {
                 string path = checkingPath.TrimEnd(new char[] { '/' }) + "/";
                 if (path.StartsWith(newPath, true, System.Globalization.CultureInfo.CurrentCulture))
@@ -133,7 +133,7 @@ namespace Framework.AssetManagement.AssetBuilder
                 if (string.Compare(newPath, path, true) == 0)
                     return string.Format($"{newPath} has already exists in PackByFile_Paths({path})");
             }
-            foreach (var checkingPath in PackByTopFolder_Paths)
+            foreach (var checkingPath in PackByAllFolder_Paths)
             {
                 string path = checkingPath.TrimEnd(new char[] { '/' }) + "/";
                 if (path.StartsWith(newPath, true, System.Globalization.CultureInfo.CurrentCulture))
@@ -151,7 +151,7 @@ namespace Framework.AssetManagement.AssetBuilder
             newPath = newPath.TrimEnd(new char[] { '/' }) + "/";
 
             // newPath是否被TopFolderPaths的其他路径包含
-            foreach(var checkingPath in PackByTopFolder_Paths)
+            foreach(var checkingPath in PackByAllFolder_Paths)
             {
                 string path = checkingPath.TrimEnd(new char[] { '/' }) + "/";
                 if (string.Compare(newPath, path, true) == 0)
@@ -241,8 +241,7 @@ namespace Framework.AssetManagement.AssetBuilder
         SerializedProperty m_WhiteListOfPathProp;
         SerializedProperty m_BlackListOfPathProp;
         SerializedProperty m_ExtensionProp;
-        //SerializedProperty m_PackByFolder_PathsProp;
-        SerializedProperty m_PackByTopFolder_PathsProp;
+        SerializedProperty m_PackByAllFolder_PathsProp;
         SerializedProperty m_PackByFile_PathsProp;
         SerializedProperty m_PackBySize_PathsProp;
         SerializedProperty m_ExtraPackPathsProp;
@@ -252,8 +251,7 @@ namespace Framework.AssetManagement.AssetBuilder
             m_WhiteListOfPathProp = serializedObject.FindProperty("WhiteListOfPath");
             m_BlackListOfPathProp = serializedObject.FindProperty("BlackListOfFolder");
             m_ExtensionProp = serializedObject.FindProperty("Extension");
-            //m_PackByFolder_PathsProp = serializedObject.FindProperty("PackByFolder_Paths");
-            m_PackByTopFolder_PathsProp = serializedObject.FindProperty("PackByTopFolder_Paths");
+            m_PackByAllFolder_PathsProp = serializedObject.FindProperty("PackByAllFolder_Paths");
             m_PackByFile_PathsProp = serializedObject.FindProperty("PackByFile_Paths");
             m_PackBySize_PathsProp = serializedObject.FindProperty("PackBySize_Paths");
             m_ExtraPackPathsProp = serializedObject.FindProperty("ExtraPackPaths");
@@ -304,10 +302,10 @@ namespace Framework.AssetManagement.AssetBuilder
 
                 EditorGUILayout.BeginHorizontal();
                 ++EditorGUI.indentLevel;
-                EditorGUILayout.PropertyField(m_PackByTopFolder_PathsProp, new GUIContent("Pack By Top Folder: 以下文件夹及其子文件夹内所有资源将打成一个bundle"), true);
-                for(int i = 0; i < m_PackByTopFolder_PathsProp.arraySize; ++i)
+                EditorGUILayout.PropertyField(m_PackByAllFolder_PathsProp, new GUIContent("Pack By Top Folder: 以下文件夹及其子文件夹内所有资源将打成一个bundle"), true);
+                for(int i = 0; i < m_PackByAllFolder_PathsProp.arraySize; ++i)
                 {
-                    string err = setting.CheckNewPathsValid_PackByTopFolder(m_PackByTopFolder_PathsProp.GetArrayElementAtIndex(i).stringValue);
+                    string err = setting.CheckNewPathsValid_PackByTopFolder(m_PackByAllFolder_PathsProp.GetArrayElementAtIndex(i).stringValue);
                     if(!string.IsNullOrEmpty(err))
                     {
                         error = err;
@@ -364,15 +362,7 @@ namespace Framework.AssetManagement.AssetBuilder
                     EditorGUILayout.LabelField(error);
                     EditorGUILayout.EndHorizontal();
                     GUI.color = clr;
-                }
-
-                //EditorGUI.BeginDisabledGroup(true);
-                //EditorGUILayout.BeginHorizontal();
-                //++EditorGUI.indentLevel;
-                //EditorGUILayout.PropertyField(m_PackByFolder_PathsProp, new GUIContent("Pack By Folder: 文件夹中的所有资源打一个bundle"), true);
-                //--EditorGUI.indentLevel;
-                //EditorGUILayout.EndHorizontal();
-                //EditorGUI.EndDisabledGroup();                
+                }            
             }
             GUILayout.EndVertical();
 
@@ -380,7 +370,6 @@ namespace Framework.AssetManagement.AssetBuilder
 
             if(EditorGUI.EndChangeCheck())
             {
-                //setting.UpdatePackByFolderPaths();
                 AssetDatabase.SaveAssets();
             }
         }

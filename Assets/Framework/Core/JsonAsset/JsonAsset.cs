@@ -13,9 +13,9 @@ namespace Framework.Core
 
         private object m_Asset;
 
-        public T Require<T>() where T : class
+        public T Require<T>(bool forceDeserialize = false) where T : class
         {
-            if (m_Asset == null)
+            if (m_Asset == null || forceDeserialize)
             {
                 m_Asset = JsonConvert.DeserializeObject<T>(System.Text.Encoding.UTF8.GetString(data));
             }

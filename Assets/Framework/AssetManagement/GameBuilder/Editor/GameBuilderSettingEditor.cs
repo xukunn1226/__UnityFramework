@@ -30,7 +30,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_buildTargetProp   = serializedObject.FindProperty("buildTarget");
             m_buildModeProp     = serializedObject.FindProperty("buildMode");
             m_backdoorProp      = serializedObject.FindProperty("backdoor");
-            m_backdoor          = ((JsonAsset)m_backdoorProp.objectReferenceValue)?.Require<Backdoor>();
+            m_backdoor          = ((JsonAsset)m_backdoorProp.objectReferenceValue)?.Require<Backdoor>(true);
             m_AppVersion        = AppVersion.EditorLoad();
         }
 

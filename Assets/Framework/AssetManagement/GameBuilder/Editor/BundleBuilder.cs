@@ -91,7 +91,7 @@ namespace Framework.AssetManagement.GameBuilder
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
             {
                 // 计算base,extra资源的MD5，存储于Assets/Resources
-                BuildBaseAndExtraBundleFileList();
+                BuildBundleFileList();
 
                 // step 1. create directory
                 GameBuilderSetting setting = GameBuilderSettingCollection.GetDefault().GetData("Win64");
@@ -552,19 +552,21 @@ namespace Framework.AssetManagement.GameBuilder
             AssetDatabase.Refresh();
         }
         
-        static private void BuildBaseAndExtraBundleFileList()
+        static private void BuildBundleFileList()
         {
             // 生成首包FileList到Assets/Resources
             string directory = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
             string savedFile = string.Format($"{BundleExtracter.BASE_FILELIST_PATH}/{Utility.GetPlatformName()}/{BundleExtracter.BASE_FILELIST_NAME}");
-            BundleFileList.BuildBundleFileList(directory, "base", savedFile);
+            AssetDatabase.DeleteAsset(savedFile);
+            if(BundleFileList.BuildBaseAndRawDataBundleFileList(directory, "base", savedFile))
+                AssetDatabase.ImportAsset(savedFile);
 
             // 生成二次下载包FileList到Assets/Resources
             directory = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
             savedFile = string.Format($"{ExtraDownloader.EXTRA_FILELIST_PATH}/{Utility.GetPlatformName()}/{ExtraDownloader.EXTRA_FILELIST_NAME}");
-            BundleFileList.BuildBundleFileList(directory, "extra", savedFile);
-
-            AssetDatabase.ImportAsset(savedFile);
+            AssetDatabase.DeleteAsset(savedFile);
+            if(BundleFileList.BuildBundleFileList(directory, "extra", savedFile))
+                AssetDatabase.ImportAsset(savedFile);
         }
     }
 }
