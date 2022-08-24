@@ -212,16 +212,16 @@ namespace Framework.AssetManagement.GameBuilder
             }
 
             string directory = string.IsNullOrEmpty(error) ? deployVersion : "X.X.X";
-            string dstPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.s_BackupDirectoryPath}/{Utility.GetPlatformName()}/{directory}");
+            string dstPath = string.Format($"{VersionDefines.DEPLOYMENT_ROOT_PATH}/{VersionDefines.DEPLOYMENT_BACKUP_FOLDER}/{Utility.GetPlatformName()}/{directory}");
             EditorGUILayout.LabelField("备份目录", dstPath);
 
-            string patchPath = string.Format($"{Deployment.s_DefaultRootPath}/{Deployment.patchPath}/{Utility.GetPlatformName()}/{directory}");
+            string patchPath = string.Format($"{VersionDefines.DEPLOYMENT_ROOT_PATH}/{VersionDefines.cdnPatchDataPath}/{Utility.GetPlatformName()}/{directory}");
             EditorGUILayout.LabelField("补丁目录", patchPath);
 
             EditorGUI.BeginDisabledGroup(!string.IsNullOrEmpty(error));
             if (GUILayout.Button("Deploy", EditorStyles.toolbarButton))
             {
-                Deployment.Run(Deployment.s_DefaultRootPath, deployVersion);
+                Deployment.Run(VersionDefines.DEPLOYMENT_ROOT_PATH, deployVersion);
             }
             EditorGUI.EndDisabledGroup();
         }

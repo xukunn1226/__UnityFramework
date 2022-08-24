@@ -18,12 +18,6 @@ namespace Framework.Core
     /// </summary>
     public class Patcher : MonoBehaviour
     {
-        static public readonly string       CUR_APPVERSION              = "CurAppVersion_fe2679cf89a145ccb45b715568e6bc07";
-        static public readonly string       DIFFCOLLECTION_FILENAME     = "diffcollection.json";
-        static public readonly string       DIFF_FILENAME               = "diff.json";
-        static public readonly string       PATCH_PATH                  = "patch";              // 基于CDN根目录的补丁数据路径
-        static public readonly string       BACKDOOR_FILENAME           = "backdoor.zjson";
-
         private int                         m_WorkerCount;
         private List<DownloadTask>          m_TaskWorkerList;
         private List<byte[]>                m_CachedBufferList          = new List<byte[]>();
@@ -49,7 +43,7 @@ namespace Framework.Core
         {
             get
             {
-                return string.Format($"{Application.persistentDataPath}/{BACKDOOR_FILENAME}");
+                return string.Format($"{Application.persistentDataPath}/{VersionDefines.BACKDOOR_FILENAME}");
             }
         }
 
@@ -57,7 +51,7 @@ namespace Framework.Core
         {
             get
             {
-                return string.Format($"{m_CdnURL}/{BACKDOOR_FILENAME}");
+                return string.Format($"{m_CdnURL}/{VersionDefines.BACKDOOR_FILENAME}");
             }
         }
 
@@ -90,9 +84,9 @@ namespace Framework.Core
                 {
                     m_CurVersion = AppVersion.CreateInstance<AppVersion>();
                 }
-                string cachedCurVersion = PlayerPrefs.GetString(CUR_APPVERSION);
+                string cachedCurVersion = PlayerPrefs.GetString(VersionDefines.CUR_APPVERSION);
                 if(string.IsNullOrEmpty(cachedCurVersion))
-                { // 首次安装，尚未下载过会没有CUR_APPVERSION标记，则使用母包的版本号
+                { // 首次安装或尚未下载完，会没有CUR_APPVERSION标记，此时使用母包的版本号
                     cachedCurVersion = localBaseVersion.ToString();
                 }
                 m_CurVersion.Set(cachedCurVersion);
@@ -147,13 +141,15 @@ namespace Framework.Core
                 m_Listener?.OnCheck_IsLatestVersion(true);
                 yield break;
             }
-            m_Listener?.OnCheck_IsLatestVersion(false);
+            else
+            {
+                m_Listener?.OnCheck_IsLatestVersion(false);
+            }
 
             // step3. download the diff collection of the latest version
             yield return StartCoroutine(DownloadDiffCollection());
             if (!string.IsNullOrEmpty(m_Error))
             {
-                // Debug.LogError(m_Error);
                 m_Listener?.OnError_DownloadDiffCollection(m_Error);
                 yield break;
             }
@@ -162,7 +158,6 @@ namespace Framework.Core
             yield return StartCoroutine(DownloadDiff());
             if (!string.IsNullOrEmpty(m_Error))
             {
-                // Debug.LogError(m_Error);
                 m_Listener?.OnError_DownloadDiff(m_Error);
                 yield break;
             }
@@ -219,12 +214,12 @@ namespace Framework.Core
                 yield break;
             }
 
-            string localDiffCollectionURL = string.Format($"{Application.persistentDataPath}/{DIFFCOLLECTION_FILENAME}");
+            string localDiffCollectionURL = string.Format($"{Application.persistentDataPath}/{VersionDefines.DIFFCOLLECTION_FILENAME}");
             if (File.Exists(localDiffCollectionURL))
                 File.Delete(localDiffCollectionURL);
 
             DownloadTaskInfo info = new DownloadTaskInfo();
-            info.srcUri = new Uri(string.Format($"{m_CdnURL}/{PATCH_PATH}/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/{DIFFCOLLECTION_FILENAME}"));
+            info.srcUri = new Uri(string.Format($"{m_CdnURL}/{VersionDefines.PATCH_FOLDER}/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/{VersionDefines.DIFFCOLLECTION_FILENAME}"));
             info.dstURL = localDiffCollectionURL;
             info.verifiedHash = hash;
             info.retryCount = 3;
@@ -250,12 +245,12 @@ namespace Framework.Core
                 yield break;
             }
 
-            string localDiffURL = string.Format($"{Application.persistentDataPath}/{DIFF_FILENAME}");
+            string localDiffURL = string.Format($"{Application.persistentDataPath}/{VersionDefines.DIFF_FILENAME}");
             if (File.Exists(localDiffURL))
                 File.Delete(localDiffURL);
 
             DownloadTaskInfo info = new DownloadTaskInfo();
-            string diffURL = string.Format($"{m_CdnURL}/{PATCH_PATH}/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/{localCurVersion.ToString()}/{DIFF_FILENAME}");
+            string diffURL = string.Format($"{m_CdnURL}/{VersionDefines.PATCH_FOLDER}/{Utility.GetPlatformName()}/{m_Backdoor.CurVersion}/{localCurVersion.ToString()}/{VersionDefines.DIFF_FILENAME}");
             info.srcUri = new Uri(diffURL);
             info.dstURL = localDiffURL;
             info.verifiedHash = hash;
@@ -275,17 +270,17 @@ namespace Framework.Core
 
         private IEnumerator Downloading()
         {
-            string srcUriPrefix = string.Format($"{m_CdnURL}/{PATCH_PATH}/{Utility.GetPlatformName()}/{remoteCurVersion.ToString()}/{localCurVersion.ToString()}");
+            string srcUriPrefix = string.Format($"{m_CdnURL}/{VersionDefines.PATCH_FOLDER}/{Utility.GetPlatformName()}/{remoteCurVersion.ToString()}/{localCurVersion.ToString()}");
             string dstURLPrefix = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}");
             while(true)
             {
                 foreach(var task in m_TaskWorkerList)
                 {
-                    if (task.isRunning)
-                        continue;
-
                     // 遇到error不再执行后续操作，但已执行的操作不中断
                     if (!string.IsNullOrEmpty(m_Error))
+                        break;
+
+                    if (task.isRunning)
                         continue;
 
                     // dispatch the downloading task
@@ -367,7 +362,7 @@ namespace Framework.Core
 
         private void MarkLatestVersion()
         {
-            PlayerPrefs.SetString(CUR_APPVERSION, m_Backdoor.CurVersion);
+            PlayerPrefs.SetString(VersionDefines.CUR_APPVERSION, m_Backdoor.CurVersion);
             PlayerPrefs.Save();
 
             Debug.Log($"patch completed...{localCurVersion.ToString()}  ->  {m_Backdoor.CurVersion}");
@@ -474,13 +469,13 @@ namespace Framework.Core
     {
         public override void OnInspectorGUI()
         {
-            string curVersion = PlayerPrefs.GetString(Patcher.CUR_APPVERSION);
+            string curVersion = PlayerPrefs.GetString(VersionDefines.CUR_APPVERSION);
             EditorGUILayout.LabelField("Cur Version", string.IsNullOrEmpty(curVersion) ? "None" : curVersion);
 
             if(GUILayout.Button("Clear Version"))
             {
-                if (PlayerPrefs.HasKey(Patcher.CUR_APPVERSION))
-                    PlayerPrefs.DeleteKey(Patcher.CUR_APPVERSION);
+                if (PlayerPrefs.HasKey(VersionDefines.CUR_APPVERSION))
+                    PlayerPrefs.DeleteKey(VersionDefines.CUR_APPVERSION);
             }
         }
     }

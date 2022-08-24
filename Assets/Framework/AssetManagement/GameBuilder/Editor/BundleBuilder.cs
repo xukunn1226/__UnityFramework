@@ -104,11 +104,20 @@ namespace Framework.AssetManagement.GameBuilder
 
                 // 最后把所有StreamingAssets中的资源复制到发布目录（Deployment/Latest/AssetBundles）
                 // 有些资源例如FMOD有自己的发布流程，等其发布完最后再执行
-                Framework.Core.Editor.EditorUtility.CopyDirectory("Assets/StreamingAssets/" + Utility.GetPlatformName(), outputPath);
+                string srcPath = "Assets/StreamingAssets/" + Utility.GetPlatformName();
+                Framework.Core.Editor.EditorUtility.CopyDirectory(srcPath, outputPath);
                 Debug.Log($"        Copy streaming assets to Deployment/Latest/AssetBundles");
 
-                // todo: 最后删除其他资源(extra,pkg_XXX)，只有base发布到母包
-
+                // 最后删除其他资源(extra,pkg_XXX)，只有base发布到母包
+                string[] folders = AssetDatabase.GetSubFolders(srcPath);
+                foreach(var folder in folders)
+                {
+                    string dir = folder.Substring(folder.LastIndexOf("/") + 1);
+                    if(string.Compare(dir, VersionDefines.EXTRA_FOLDER, true) == 0 || dir.StartsWith(VersionDefines.PKG_FOLDER_PREFIX, StringComparison.OrdinalIgnoreCase))
+                    {
+                        AssetDatabase.DeleteAsset(folder);
+                    }
+                }
             }
         }
 
@@ -556,16 +565,16 @@ namespace Framework.AssetManagement.GameBuilder
         {
             // 生成首包FileList到Assets/Resources
             string directory = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
-            string savedFile = string.Format($"{BundleExtracter.BASE_FILELIST_PATH}/{Utility.GetPlatformName()}/{BundleExtracter.BASE_FILELIST_NAME}");
+            string savedFile = string.Format($"{VersionDefines.BASE_FILELIST_PATH}/{Utility.GetPlatformName()}/{VersionDefines.BASE_FILELIST_NAME}");
             AssetDatabase.DeleteAsset(savedFile);
-            if(BundleFileList.BuildBaseAndRawDataBundleFileList(directory, "base", savedFile))
+            if(BundleFileList.BuildBaseAndRawDataBundleFileList(directory, VersionDefines.BASE_FOLDER, savedFile))
                 AssetDatabase.ImportAsset(savedFile);
 
             // 生成二次下载包FileList到Assets/Resources
             directory = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
-            savedFile = string.Format($"{ExtraDownloader.EXTRA_FILELIST_PATH}/{Utility.GetPlatformName()}/{ExtraDownloader.EXTRA_FILELIST_NAME}");
+            savedFile = string.Format($"{VersionDefines.EXTRA_FILELIST_PATH}/{Utility.GetPlatformName()}/{VersionDefines.EXTRA_FILELIST_NAME}");
             AssetDatabase.DeleteAsset(savedFile);
-            if(BundleFileList.BuildBundleFileList(directory, "extra", savedFile))
+            if(BundleFileList.BuildBundleFileList(directory, VersionDefines.EXTRA_FOLDER, savedFile))
                 AssetDatabase.ImportAsset(savedFile);
         }
     }

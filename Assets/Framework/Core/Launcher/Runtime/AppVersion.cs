@@ -17,8 +17,7 @@ namespace Framework.Core
     /// W: 热更新版本号（不改变app binary基础上的补丁包序号），每次+1，大于两位数。若X.Y.Z有变动则W清零
     /// </summary>
     public class AppVersion : ScriptableObject, IComparable<AppVersion>
-    {
-        static private string s_AppVersionPath = "Assets/Resources/AppVersion.asset";
+    {        
         public int  MainVersion;        // X
         public int  MinorVersion;       // Y
         public int  Revision;           // Z
@@ -157,7 +156,7 @@ namespace Framework.Core
 #if UNITY_EDITOR
         static public AppVersion EditorLoad()
         {
-            return AssetDatabase.LoadAssetAtPath<AppVersion>(s_AppVersionPath);
+            return AssetDatabase.LoadAssetAtPath<AppVersion>(VersionDefines.APP_VERSION_PATH);
         }
 
         public void Set(int mainVersion, int minorVersion, int revision)

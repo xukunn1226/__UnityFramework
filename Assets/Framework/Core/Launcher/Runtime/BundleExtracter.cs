@@ -10,10 +10,6 @@ namespace Framework.Core
 {
     public class BundleExtracter : MonoBehaviour
     {
-        static public string                BASE_FILELIST_PATH          = "Assets/Resources";
-        static public string                BASE_FILELIST_NAME          = "BaseFileList.bytes";         // 首包的FileList
-        static public readonly string       BASE_APPVERSION             = "BaseAppVersion_9695e71e3a224b408c39c7a75c0fa376";
-
         private int                         m_WorkerCount               = 5;
         private List<DownloadTask>          m_TaskWorkerList;
         private List<byte[]>                m_CachedBufferList          = new List<byte[]>();
@@ -105,14 +101,19 @@ namespace Framework.Core
         /// <summary>
         private bool ShouldExtract()
         {
-            string versionStr = PlayerPrefs.GetString(BASE_APPVERSION);
+            string versionStr = PlayerPrefs.GetString(VersionDefines.BASE_APPVERSION);
             bool bShould = string.IsNullOrEmpty(versionStr) ? true : m_BaseVersion.CompareTo(versionStr) != 0;
             if(bShould)
             { // means that the first install or install app again
-                PlayerPrefs.DeleteKey(Patcher.CUR_APPVERSION);
+                ClearVersionFlags();
             }
             m_Listener?.OnShouldExtract(ref bShould);
             return bShould;
+        }
+
+        private void ClearVersionFlags()
+        {
+            PlayerPrefs.DeleteKey(VersionDefines.CUR_APPVERSION);
         }
 
         private void Prepare()
@@ -136,10 +137,10 @@ namespace Framework.Core
         private bool LoadBaseFileList()
         {
             // load FileList
-            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(BASE_FILELIST_NAME)}"));
+            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(VersionDefines.BASE_FILELIST_NAME)}"));
             if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
             {
-                Debug.LogError($"FileList not found.    {BASE_FILELIST_PATH}/{BASE_FILELIST_NAME}");
+                Debug.LogError($"FileList not found.    {VersionDefines.BASE_FILELIST_PATH}/{VersionDefines.BASE_FILELIST_NAME}");
                 return false;
             }
             else
@@ -189,14 +190,14 @@ namespace Framework.Core
             {
                 foreach (var task in m_TaskWorkerList)
                 {
+                    // 遇到error不再执行后续操作，但已执行的操作不中断
+                    if (!string.IsNullOrEmpty(m_Error))
+                        break;
+
                     if (task.isRunning)
                     {
                         continue;
                     }
-
-                    // 遇到error不再执行后续操作，但已执行的操作不中断
-                    if (!string.IsNullOrEmpty(m_Error))
-                        continue;
 
                     // 获取尚未提取的文件
                     BundleFileInfo fileInfo = GetPendingExtractedFile();
@@ -265,7 +266,7 @@ namespace Framework.Core
             // 提取完成后打上标签
             if (string.IsNullOrEmpty(error))
             {
-                PlayerPrefs.SetString(BASE_APPVERSION, m_BaseVersion.ToString());       // 记录母包版本号（三位）
+                PlayerPrefs.SetString(VersionDefines.BASE_APPVERSION, m_BaseVersion.ToString());       // 记录母包版本号（三位）
                 PlayerPrefs.Save();
                 Debug.Log($"BundleExtracter: asset extracted finished, mark the version {m_BaseVersion.ToString()}");
             }
@@ -320,13 +321,13 @@ namespace Framework.Core
     {
         public override void OnInspectorGUI()
         {
-            string baseVersion = PlayerPrefs.GetString(BundleExtracter.BASE_APPVERSION);
+            string baseVersion = PlayerPrefs.GetString(VersionDefines.BASE_APPVERSION);
             EditorGUILayout.LabelField("Base Version", string.IsNullOrEmpty(baseVersion) ? "None" : baseVersion);
 
             if (GUILayout.Button("Clear Persistent Data"))
             {
-                if (PlayerPrefs.HasKey(BundleExtracter.BASE_APPVERSION))
-                    PlayerPrefs.DeleteKey(BundleExtracter.BASE_APPVERSION);
+                if (PlayerPrefs.HasKey(VersionDefines.BASE_APPVERSION))
+                    PlayerPrefs.DeleteKey(VersionDefines.BASE_APPVERSION);
 
                 string dataPath = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}");
                 if (Directory.Exists(dataPath))

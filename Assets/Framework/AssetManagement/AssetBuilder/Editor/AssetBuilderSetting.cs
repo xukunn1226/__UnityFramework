@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.Linq;
+using Framework.Core;
 
 
 namespace Framework.AssetManagement.AssetBuilder
@@ -39,9 +40,9 @@ namespace Framework.AssetManagement.AssetBuilder
             assetPath = assetPath.Substring(0, assetPath.LastIndexOf("/")).ToLower();
             if(ExtraPackPaths.Count(path => (path.ToLower().StartsWith(assetPath))) > 0)
             {
-                return "extra";
+                return VersionDefines.EXTRA_FOLDER;
             }
-            return "base";
+            return VersionDefines.BASE_FOLDER;
         }
 
         // 根据路径判断打包策略

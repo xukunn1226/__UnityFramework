@@ -200,9 +200,9 @@ namespace Framework.Core
 
         static private bool IsRawData(string directory, string filePath)
         {
-            if(filePath.Contains(directory + "/base", StringComparison.OrdinalIgnoreCase)
-                || filePath.Contains(directory + "/extra", StringComparison.OrdinalIgnoreCase)
-                || filePath.Contains(directory + "/pkg_", StringComparison.OrdinalIgnoreCase))
+            if(filePath.Contains(directory + "/" + VersionDefines.BASE_FOLDER, StringComparison.OrdinalIgnoreCase)
+                || filePath.Contains(directory + "/" + VersionDefines.EXTRA_FOLDER, StringComparison.OrdinalIgnoreCase)
+                || filePath.Contains(directory + "/" + VersionDefines.PKG_FOLDER_PREFIX, StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
