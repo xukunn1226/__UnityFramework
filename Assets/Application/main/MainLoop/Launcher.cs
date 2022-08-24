@@ -249,16 +249,16 @@ namespace Application.Runtime
             Debug.LogError($"Failed to reslove cdn: {GetCDNURL()}");
         }
 
-        // 下载backdoor的事件回调
-        bool IPatcherListener.OnError_DownloadBackdoor(string error, Backdoor backdoor)
-        {            
-            m_Error = error;
-            if(!string.IsNullOrEmpty(m_Error))
-            {
-                Debug.LogError($"IPatcherListener.OnError_DownloadBackdoor:  error({error})");
-                return false;
-            }
+        void IPatcherListener.OnBegin()
+        { }
 
+        void IPatcherListener.OnEnd(string error)
+        { }
+
+        // 下载backdoor的事件回调
+        // return false: 暂停Patcher，流程挂起；return true：恢复Patcher，流程继续
+        bool IPatcherListener.OnBackdoorDownloaded(Backdoor backdoor)
+        {
             // 判断当前app version是否满足backdoor要求的最小引擎版本
             if(!string.IsNullOrEmpty(backdoor.MinVersion) && m_Patcher.localBaseVersion.AppCompareTo(backdoor.MinVersion) == -1)
             { // 提示去商店下载最新包
@@ -278,16 +278,16 @@ namespace Application.Runtime
             }
         }
 
-        void IPatcherListener.OnError_DownloadDiffCollection(string error)
+        void IPatcherListener.OnError_DownloadDiffCollection()
         {
-            Debug.LogError($"IPatcherListener.OnError_DownloadDiffCollection:    error({error})");
-            m_Error = error;
+            //Debug.LogError($"IPatcherListener.OnError_DownloadDiffCollection:    error({error})");
+            //m_Error = error;
         }
 
-        void IPatcherListener.OnError_DownloadDiff(string error)
+        void IPatcherListener.OnError_DownloadDiff()
         {
-            Debug.LogError($"IPatcherListener.OnError_DownloadDiff:    error({error})");
-            m_Error = error;
+            //Debug.LogError($"IPatcherListener.OnError_DownloadDiff:    error({error})");
+            //m_Error = error;
         }
 
         void IPatcherListener.Prepare(int count, long size)
@@ -295,11 +295,11 @@ namespace Application.Runtime
             Debug.Log($"IPatcherListener.OnBeginDownload:   count({count})  size({size})");
         }
 
-        void IPatcherListener.OnPatchCompleted(string error)
+        void IPatcherListener.OnPatchCompleted()
         {
-            Debug.Log($"IPatcherListener.OnEndDownload:     error({error})");
+            //Debug.Log($"IPatcherListener.OnEndDownload:     error({error})");
 
-            m_Error = error;
+            //m_Error = error;
             m_Phase = LaunchPhase.EndPatch;
         }
 

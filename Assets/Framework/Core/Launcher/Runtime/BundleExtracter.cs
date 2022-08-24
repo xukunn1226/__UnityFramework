@@ -94,6 +94,7 @@ namespace Framework.Core
                 }
                 m_TaskWorkerList.Clear();
             }
+            m_CachedBufferList.Clear();
         }
 
         /// <summary>

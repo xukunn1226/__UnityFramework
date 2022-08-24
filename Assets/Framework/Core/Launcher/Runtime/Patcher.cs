@@ -129,7 +129,7 @@ namespace Framework.Core
             // step1. download backdoor config
             yield return StartCoroutine(DownloadBackdoor());
 
-            bool isContinue = m_Listener?.OnError_DownloadBackdoor(m_Error, m_Backdoor) ?? true;
+            bool isContinue = m_Listener?.OnBackdoorDownloaded(m_Backdoor) ?? true;
             if(!string.IsNullOrEmpty(m_Error) || !isContinue)
             {
                 yield break;
@@ -150,7 +150,7 @@ namespace Framework.Core
             yield return StartCoroutine(DownloadDiffCollection());
             if (!string.IsNullOrEmpty(m_Error))
             {
-                m_Listener?.OnError_DownloadDiffCollection(m_Error);
+                m_Listener?.OnError_DownloadDiffCollection();
                 yield break;
             }
 
@@ -158,7 +158,7 @@ namespace Framework.Core
             yield return StartCoroutine(DownloadDiff());
             if (!string.IsNullOrEmpty(m_Error))
             {
-                m_Listener?.OnError_DownloadDiff(m_Error);
+                m_Listener?.OnError_DownloadDiff();
                 yield break;
             }
             
@@ -171,6 +171,77 @@ namespace Framework.Core
                 yield return StartCoroutine(Downloading());
 
             DownloadingFinished();
+        }
+
+        private IEnumerator RunEx()
+        {
+            OnPatchBegin();
+
+            while (true)
+            {
+                // step1. download backdoor config
+                yield return DownloadBackdoor();
+                
+                if (!string.IsNullOrEmpty(m_Error))
+                    break;
+
+                bool isContinue = m_Listener?.OnBackdoorDownloaded(m_Backdoor) ?? true;
+                if (!isContinue)
+                {
+                    yield return null;
+                }
+
+                // step2. check that the current version is up to date
+                if (IsLatestVersion())
+                {
+                    m_Listener?.OnCheck_IsLatestVersion(true);
+                    break;
+                }
+                else
+                {
+                    m_Listener?.OnCheck_IsLatestVersion(false);
+                }
+
+                // step3. download the diff collection of the latest version
+                yield return StartCoroutine(DownloadDiffCollection());
+                if (!string.IsNullOrEmpty(m_Error))
+                {
+                    m_Listener?.OnError_DownloadDiffCollection();
+                    break;
+                }
+
+                // step4. download the diff.json for upgrade from local version to latest version
+                yield return StartCoroutine(DownloadDiff());
+                if (!string.IsNullOrEmpty(m_Error))
+                {
+                    m_Listener?.OnError_DownloadDiff();
+                    break;
+                }
+
+                // prepare for downloading
+                long size = Prepare();
+                m_Listener?.Prepare(m_DownloadFileList.Count, size);
+
+                // step5. downloading...
+                if (size > 0)
+                    yield return StartCoroutine(Downloading());
+
+                DownloadingFinished();
+            }
+
+            OnPatchEnd(m_Error);
+        }
+
+        private void OnPatchBegin()
+        {
+            if (m_SingleFileTask == null)
+                m_SingleFileTask = new DownloadTask(new byte[m_BufferSize]);
+            m_Listener?.OnBegin();
+        }
+
+        private void OnPatchEnd(string error)
+        {
+            m_Listener?.OnEnd(error);
         }
 
         private IEnumerator DownloadBackdoor()
@@ -357,7 +428,7 @@ namespace Framework.Core
                 Debug.LogError($"patch failed...{m_Error}");
             }
 
-            m_Listener?.OnPatchCompleted(m_Error);
+            m_Listener?.OnPatchCompleted();
         }
 
         private void MarkLatestVersion()
@@ -453,12 +524,14 @@ namespace Framework.Core
 
     public interface IPatcherListener
     {
-        bool OnError_DownloadBackdoor(string error, Backdoor backdoor);
+        void OnBegin();
+        void OnEnd(string error);
+        bool OnBackdoorDownloaded(Backdoor backdoor);         // backdoor下载结束,return false: 暂停Patcher，流程挂起；return true：恢复Patcher，流程继续
         void OnCheck_IsLatestVersion(bool isLatestVersion);
-        void OnError_DownloadDiffCollection(string error);
-        void OnError_DownloadDiff(string error);
+        void OnError_DownloadDiffCollection();
+        void OnError_DownloadDiff();
         void Prepare(int count, long size);
-        void OnPatchCompleted(string error);
+        void OnPatchCompleted();
         void OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);
         void OnFileDownloadCompleted(string filename, bool success);
     }
