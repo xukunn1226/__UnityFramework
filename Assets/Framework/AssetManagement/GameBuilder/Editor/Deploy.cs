@@ -117,6 +117,10 @@ namespace Framework.AssetManagement.GameBuilder
             string appSrcPath = string.Format($"{rootPath}/{VersionDefines.DEPLOYMENT_BACKUP_FOLDER}/{Utility.GetPlatformName()}/{appDirectory}/{VersionDefines.DEPLOYMENT_BACKUP_BUNDLE_FOLDER}");
             // deployment/cdn/data/windows/0.0.2
             string appDstPath = string.Format($"{rootPath}/{VersionDefines.cdnExtraDataPath}/{Utility.GetPlatformName()}/{appDirectory}");
+            if(!Directory.Exists(appDstPath))
+            {
+                Directory.CreateDirectory(appDstPath);
+            }
 
             List<string> subFolders = new List<string>();
             if (Directory.Exists(string.Format($"{appSrcPath}/{VersionDefines.EXTRA_FOLDER}")))

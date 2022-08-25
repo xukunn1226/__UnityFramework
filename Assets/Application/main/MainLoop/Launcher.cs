@@ -249,11 +249,13 @@ namespace Application.Runtime
             Debug.LogError($"Failed to reslove cdn: {GetCDNURL()}");
         }
 
-        void IPatcherListener.OnBegin()
+        void IPatcherListener.OnPatchBegin()
         { }
 
-        void IPatcherListener.OnEnd(string error)
-        { }
+        void IPatcherListener.OnPatchEnd(string error)
+        {
+            m_Phase = LaunchPhase.EndPatch;
+        }
 
         // 下载backdoor的事件回调
         // return false: 暂停Patcher，流程挂起；return true：恢复Patcher，流程继续
@@ -278,29 +280,10 @@ namespace Application.Runtime
             }
         }
 
-        void IPatcherListener.OnError_DownloadDiffCollection()
-        {
-            //Debug.LogError($"IPatcherListener.OnError_DownloadDiffCollection:    error({error})");
-            //m_Error = error;
-        }
-
-        void IPatcherListener.OnError_DownloadDiff()
-        {
-            //Debug.LogError($"IPatcherListener.OnError_DownloadDiff:    error({error})");
-            //m_Error = error;
-        }
-
-        void IPatcherListener.Prepare(int count, long size)
+        bool IPatcherListener.Prepare(int count, long size)
         {
             Debug.Log($"IPatcherListener.OnBeginDownload:   count({count})  size({size})");
-        }
-
-        void IPatcherListener.OnPatchCompleted()
-        {
-            //Debug.Log($"IPatcherListener.OnEndDownload:     error({error})");
-
-            //m_Error = error;
-            m_Phase = LaunchPhase.EndPatch;
+            return true;
         }
 
         void IPatcherListener.OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed)

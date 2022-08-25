@@ -102,8 +102,8 @@ namespace Framework.Core
         /// <summary>
         private bool ShouldExtract()
         {
-            string versionStr = PlayerPrefs.GetString(VersionDefines.BASE_APPVERSION);
-            bool bShould = string.IsNullOrEmpty(versionStr) ? true : m_BaseVersion.CompareTo(versionStr) != 0;
+            string flag = PlayerPrefs.GetString(VersionDefines.BASE_APPVERSION);
+            bool bShould = string.IsNullOrEmpty(flag) ? true : m_BaseVersion.CompareTo(flag) != 0;
             if(bShould)
             { // means that the first install or install app again
                 ClearVersionFlags();
@@ -114,7 +114,10 @@ namespace Framework.Core
 
         private void ClearVersionFlags()
         {
+            // 清除当前最新版本的标记
             PlayerPrefs.DeleteKey(VersionDefines.CUR_APPVERSION);
+            // 清除二次下载的标记
+            PlayerPrefs.DeleteKey(VersionDefines.EXTRA_APPVERSION);
         }
 
         private void Prepare()
@@ -141,7 +144,7 @@ namespace Framework.Core
             m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(VersionDefines.BASE_FILELIST_NAME)}"));
             if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
             {
-                Debug.LogError($"FileList not found.    {VersionDefines.BASE_FILELIST_PATH}/{VersionDefines.BASE_FILELIST_NAME}");
+                Debug.LogError($"BaseFileList not found.    {VersionDefines.BASE_FILELIST_PATH}/{VersionDefines.BASE_FILELIST_NAME}");
                 return false;
             }
             else

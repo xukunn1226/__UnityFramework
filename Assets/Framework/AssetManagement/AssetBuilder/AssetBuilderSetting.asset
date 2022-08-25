@@ -36,4 +36,5 @@ MonoBehaviour:
   - Assets/Res/UI/Prefabs
   PackBySize_Paths:
   - Assets/Res/DungeonDemo/Prefabs
-  ExtraPackPaths: []
+  ExtraPackPaths:
+  - Assets/Settings

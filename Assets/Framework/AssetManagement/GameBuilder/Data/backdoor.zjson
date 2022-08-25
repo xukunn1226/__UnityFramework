@@ -1,9 +1,9 @@
 {
   "MinVersion": "",
-  "CurVersion": "0.0.2",
+  "CurVersion": "0.0.2.1",
   "VersionHistory_Win64": {
     "0.0.2": "2c690e1f3b9b60abdd1cc2b6e6d62217",
-    "0.0.2.1": "6063049143ba7b97edbed7d32123c49c"
+    "0.0.2.1": "8b07d305ddbd3fc677c77ae1ab9d497d"
   },
   "VersionHistory_Android": {},
   "VersionHistory_IOS": {}
