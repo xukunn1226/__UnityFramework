@@ -12,28 +12,18 @@ namespace Framework.Core
         private List<byte[]>                m_CachedBufferList          = new List<byte[]>();
         private const int                   m_BufferSize                = 1024 * 1024;
 
-        private AppVersion                  m_BaseVersion;
         private TextAsset                   m_BundleFileListRawData;
         private BundleFileList              m_BundleFileList;
-        private int                         m_PendingExtracedFileIndex;
-        private List<BundleFileInfo>        m_PendingExtractedFileList  = new List<BundleFileInfo>();
+        private int                         m_PendingDownloadedFileIndex;
+        private List<BundleFileInfo>        m_PendingDownloadedFileList = new List<BundleFileInfo>();
         private string                      m_Error;
 
-        private float                       m_BeginTime;
         private IExtraListener              m_Listener;
 
         public void StartWork(int workerCount, IExtraListener listener = null)
         {
             m_Listener = listener;
             m_WorkerCount = workerCount;
-
-            // init
-            //Uninit();
-            //if (!Init())
-            //{
-            //    Uninit();
-            //    return;
-            //}
 
             if (!ShouldDownload())
                 return;
@@ -47,125 +37,15 @@ namespace Framework.Core
         private bool ShouldDownload()
         {
             string flag = PlayerPrefs.GetString(VersionDefines.EXTRA_APPVERSION);
-            bool bShould = !(flag == "true");
+            bool bShould = flag != "true";
             
-            m_Listener?.OnShouldExtract(ref bShould);
+            m_Listener?.OnShouldDownloadExtra(ref bShould);
             return bShould;
-        }
-
-        /// <summary>
-        /// load the appVersion and FileList for bundle extracting
-        /// <summary>
-        private bool Init()
-        {
-            bool bInit = true;
-
-            // load appVersion
-            m_BaseVersion = AppVersion.Load();
-            if (m_BaseVersion == null)
-            {
-                Debug.LogError("Extracter: AppVersion == null");
-                bInit = false;
-            }
-
-            m_Listener?.OnInit(bInit);
-            return bInit;
-        }
-
-        private void Uninit()
-        {
-            //if (m_BaseVersion != null)
-            //{
-            //    AppVersion.Unload(m_BaseVersion);
-            //    m_BaseVersion = null;
-            //}
-
-            if (m_BundleFileListRawData != null)
-            {
-                Resources.UnloadAsset(m_BundleFileListRawData);
-                m_BundleFileListRawData = null;
-            }
-            m_BundleFileList = null;
-
-            if (m_TaskWorkerList != null)
-            {
-                for (int i = 0; i < m_TaskWorkerList.Count; ++i)
-                {
-                    m_TaskWorkerList[i].Dispose();
-                }
-                m_TaskWorkerList.Clear();
-            }
-            m_CachedBufferList.Clear();
-        }        
-
-        private void Prepare()
-        {
-            // generate pending extracted file list
-            CollectPendingExtractedFileList();
-
-            // init task workers and buffer
-            int workerCount = Mathf.Min(m_PendingExtractedFileList.Count, m_WorkerCount);
-            for (int i = m_CachedBufferList.Count; i < workerCount; ++i)
-            {
-                m_CachedBufferList.Add(new byte[m_BufferSize]);
-            }
-            m_TaskWorkerList = new List<DownloadTask>(workerCount);
-            for (int i = 0; i < workerCount; ++i)
-            {
-                m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
-            }
-        }
-
-        private bool LoadExtraFileList()
-        {
-            // load FileList
-            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(VersionDefines.EXTRA_FILELIST_NAME)}"));
-            if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
-            {
-                Debug.LogError($"ExtraFileList not found.    {VersionDefines.EXTRA_FILELIST_PATH}/{VersionDefines.EXTRA_FILELIST_NAME}");
-                return false;
-            }
-            else
-            {
-                m_BundleFileList = BundleFileList.DeserializeFromJson(m_BundleFileListRawData.text);
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// 生成需要提取的文件列表
-        /// </summary>
-        private void CollectPendingExtractedFileList()
-        {
-            if (!LoadExtraFileList())
-                return;
-
-            m_PendingExtracedFileIndex = 0;
-
-            // 尚不存在或hash不匹配的文件
-            m_PendingExtractedFileList.Clear();
-            foreach (var bfi in m_BundleFileList.FileList)
-            {
-                string filePath = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{bfi.BundleName}");
-                if (!File.Exists(filePath))
-                {
-                    m_PendingExtractedFileList.Add(bfi);
-                    continue;
-                }
-
-                using (FileStream fs = new FileStream(filePath, FileMode.Open))
-                {
-                    if (!EasyMD5.Verify(fs, bfi.FileHash))
-                    {
-                        m_PendingExtractedFileList.Add(bfi);
-                    }
-                }
-            }
         }
 
         private IEnumerator Run()
         {
-            OnExtractBegin();
+            OnDownloadExtraBegin();
             string srcUriPrefix = string.Format($"{Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
             string dstURLPrefix = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}");
             while (true)
@@ -187,8 +67,6 @@ namespace Framework.Core
                     {
                         continue;
                     }
-
-                    //Debug.Log($"==========NEW FILE TO BE EXTRACTING: {fileInfo.BundleName}    frame: {Time.frameCount}");
 
                     // begin to extract file
                     DownloadTaskInfo info = new DownloadTaskInfo();
@@ -213,7 +91,123 @@ namespace Framework.Core
                     break;
                 }
             }
-            OnExtractEnd(m_Error);
+            OnDownloadExtraEnd(m_Error);
+        }
+
+        private void OnDownloadExtraBegin()
+        {
+            LoadExtraFileList();
+
+            long size = Prepare();
+            m_Error = null;
+
+            m_Listener?.OnDownloadExtraBegin(m_PendingDownloadedFileList.Count, size);
+        }
+
+        private void OnDownloadExtraEnd(string error)
+        {
+            // 提取完成后打上标签
+            if (string.IsNullOrEmpty(error))
+            {
+                PlayerPrefs.SetString(VersionDefines.EXTRA_APPVERSION, "true");
+                PlayerPrefs.Save();
+                Debug.Log($"Download Extra Data: download completed, mark the flag is true");
+            }
+
+            Uninit();
+            m_Listener?.OnDownloadExtraEnd(error);
+        }
+
+        private bool LoadExtraFileList()
+        {
+            // load FileList
+            m_BundleFileListRawData = Resources.Load<TextAsset>(string.Format($"{Utility.GetPlatformName()}/{Path.GetFileNameWithoutExtension(VersionDefines.EXTRA_FILELIST_NAME)}"));
+            if (m_BundleFileListRawData == null || m_BundleFileListRawData.text == null)
+            { // 没有配置二次下载的数据时，可能加载不到ExtraFileList
+                //Debug.LogError($"ExtraFileList not found.    {VersionDefines.EXTRA_FILELIST_PATH}/{VersionDefines.EXTRA_FILELIST_NAME}");
+                return false;
+            }
+            else
+            {
+                m_BundleFileList = BundleFileList.DeserializeFromJson(m_BundleFileListRawData.text);
+            }
+            return true;
+        }
+
+        private void Uninit()
+        {
+            if (m_BundleFileListRawData != null)
+            {
+                Resources.UnloadAsset(m_BundleFileListRawData);
+                m_BundleFileListRawData = null;
+            }
+            m_BundleFileList = null;
+
+            if (m_TaskWorkerList != null)
+            {
+                for (int i = 0; i < m_TaskWorkerList.Count; ++i)
+                {
+                    m_TaskWorkerList[i].Dispose();
+                }
+                m_TaskWorkerList.Clear();
+            }
+            m_CachedBufferList.Clear();
+        }        
+
+        private long Prepare()
+        {
+            // generate pending extracted file list
+            CollectPendingDownloadedFileList();
+
+            // init task workers and buffer
+            int workerCount = Mathf.Min(m_PendingDownloadedFileList.Count, m_WorkerCount);
+            for (int i = m_CachedBufferList.Count; i < workerCount; ++i)
+            {
+                m_CachedBufferList.Add(new byte[m_BufferSize]);
+            }
+            m_TaskWorkerList = new List<DownloadTask>(workerCount);
+            for (int i = 0; i < workerCount; ++i)
+            {
+                m_TaskWorkerList.Add(new DownloadTask(m_CachedBufferList[i]));
+            }
+
+            long size = 0;
+            foreach(var file in m_PendingDownloadedFileList)
+            {
+                size += file.Size;
+            }
+            return size;
+        }
+
+        /// <summary>
+        /// 生成需要提取的文件列表
+        /// </summary>
+        private void CollectPendingDownloadedFileList()
+        {
+            if (m_BundleFileList == null)
+                return;
+
+            m_PendingDownloadedFileIndex = 0;
+
+            // 尚不存在或hash不匹配的文件
+            m_PendingDownloadedFileList.Clear();
+            foreach (var bfi in m_BundleFileList.FileList)
+            {
+                string filePath = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}/{bfi.BundleName}");
+                if (!File.Exists(filePath))
+                {
+                    m_PendingDownloadedFileList.Add(bfi);
+                    continue;
+                }
+
+                using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                {
+                    if (!EasyMD5.Verify(fs, bfi.FileHash))
+                    {
+                        m_PendingDownloadedFileList.Add(bfi);
+                    }
+                }
+            }
         }
 
         private bool IsStillWorking()
@@ -228,37 +222,9 @@ namespace Framework.Core
 
         private BundleFileInfo GetPendingExtractedFile()
         {
-            if (m_PendingExtracedFileIndex < 0 || m_PendingExtracedFileIndex >= m_PendingExtractedFileList.Count)
+            if (m_PendingDownloadedFileIndex < 0 || m_PendingDownloadedFileIndex >= m_PendingDownloadedFileList.Count)
                 return null;
-            return m_PendingExtractedFileList[m_PendingExtracedFileIndex++];
-        }
-
-        private void OnExtractBegin()
-        {
-            LoadExtraFileList();
-
-            //Debug.Log("Begin to extract bundle file list");
-            Prepare();
-            m_BeginTime = Time.time;
-            m_Error = null;
-
-            m_Listener?.OnBegin(m_PendingExtractedFileList.Count);
-        }
-
-        private void OnExtractEnd(string error)
-        {
-            // 提取完成后打上标签
-            if (string.IsNullOrEmpty(error))
-            {
-                PlayerPrefs.SetString(VersionDefines.BASE_APPVERSION, m_BaseVersion.ToString());       // 记录母包版本号（三位）
-                PlayerPrefs.Save();
-                Debug.Log($"BundleExtracter: asset extracted finished, mark the version {m_BaseVersion.ToString()}");
-            }
-
-            Uninit();
-            m_Listener?.OnEnd(Time.time - m_BeginTime, error);
-
-            //Debug.Log($"End to extract bundle file list: {(string.IsNullOrEmpty(error) ? "success" : "failed")}   {Time.time - m_BeginTime}");
+            return m_PendingDownloadedFileList[m_PendingDownloadedFileIndex++];
         }
 
         private void OnProgress(DownloadTaskInfo taskInfo, ulong downedLength, ulong totalLength, float downloadSpeed)
@@ -291,10 +257,9 @@ namespace Framework.Core
 
     public interface IExtraListener
     {
-        void OnInit(bool success);                                                                          // 提取数据的准备工作是否完成，失败表示有内部致命错误
-        void OnShouldExtract(ref bool shouldExtract);                                                       // 根据标签判断是否需要提取数据
-        void OnBegin(int countOfFiles);                                                                     // 开始提取数据
-        void OnEnd(float elapsedTime, string error);                                                        // 提取结束
+        void OnShouldDownloadExtra(ref bool shouldExtract);                                                 // 是否需要进行二次下载
+        void OnDownloadExtraBegin(int countOfFiles, long size);                                             // 开始下载数据
+        void OnDownloadExtraEnd(string error);                                                              // 下载结束
         void OnFileCompleted(string filename, bool success);                                                // 一个数据提取完成通知（可能成功，也可能失败）
         void OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);   // 每个数据提取进度通知
     }
