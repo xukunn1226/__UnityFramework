@@ -1,0 +1,2685 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 379c7b06d01e53c40b2b8c2f219c79d7, type: 3}
+  m_Name: "\u65B0\u5EFA\u914D\u7F6E3"
+  m_EditorClassIdentifier: 
+  editorAssetPackageSettingItems:
+  - path: Assets/Res
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Buildings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Config/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Design/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Design
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Env
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Road
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Temp/WorldInstance/AdditiveScenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Temp/WorldInstance/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Temp/WorldInstance/MergedRaws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Temp/WorldInstance/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Temp/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Terrain/Exported/mat_00/high
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Terrain/Exported/mat_00/low
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Terrain/Exported/mat_00
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Terrain/Exported
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Terrain/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Buildings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Config/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Design/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Design
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Env
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Road
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Temp/WorldInstance/AdditiveScenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Temp/WorldInstance/MergedRaws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Temp/WorldInstance/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Temp/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Terrain/Exported
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Terrain/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment/TestDungeon02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DG
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/AIGraph
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Controller/Male
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Controller/monster_zombie
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Controller/MotionName
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Controller/Mut_Com01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Controller/Mut_Elite
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Controller/Retinue
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Controller
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Dungeon01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Dungeon02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/InGame
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/L_DGM88
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/Monster
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/OldSkill
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/PL_Male/Consumable
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/PL_Male/Long
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/PL_Male/Rifle
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/PL_Male/Short
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/PL_Male
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/Retinue
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill/TestSkillNode
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/Skill
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/TestDungeon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon/TestDungeon_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Dungeon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/PlayerEffect
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Prefab/Camp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Prefab/Door
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Prefab/Lootboxes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Prefab
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Fonts/DamageFont
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Fonts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Hud
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/MiniMap
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Cell
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Panel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Sample
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Widget/Dungeon/Backpack/Attributes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Widget/Dungeon/Backpack/Parts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Widget/Dungeon/Backpack
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Widget/Dungeon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Widget/ProduceItem
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Widget/TeamStates
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs/Widget
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Buildings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Config/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Design/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Design
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Env
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Road
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Temp/WorldInstance/AdditiveScenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Temp/WorldInstance/MergedRaws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Temp/WorldInstance/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Temp/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Terrain/Exported/mat_00/high
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Terrain/Exported/mat_00/low
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Terrain/Exported/mat_00
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Terrain/Exported
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Terrain/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Desert_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Buildings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Config/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Design/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Design
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Env
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Road
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp/Art/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp/Art/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp/Art
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp/WorldInstance/AdditiveScenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp/WorldInstance/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp/WorldInstance/MergedRaws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp/WorldInstance/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Terrain/Exported/mat_00/high
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Terrain/Exported/mat_00/low
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Terrain/Exported/mat_00
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Terrain/Exported
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Terrain/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_Desert_Test_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Buildings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Config/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Design/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Design
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Env
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Road
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp/Art/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp/Art/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp/Art
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp/WorldInstance/AdditiveScenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp/WorldInstance/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp/WorldInstance/MergedRaws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp/WorldInstance/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Terrain/Exported/mat_00/high
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Terrain/Exported/mat_00/low
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Terrain/Exported/mat_00
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Terrain/Exported
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Terrain/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/L_EarthTerminal_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Test02/Config/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Test02/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Test02/Temp/WorldInstance/AdditiveScenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Test02/Temp/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Test02/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/Test02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Buildings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Config/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Design/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Design
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Env
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Road
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Temp/WorldInstance/AdditiveScenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Temp/WorldInstance/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Temp/WorldInstance/MergedRaws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Temp/WorldInstance/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Temp/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_00/high
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_00/low
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_00
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_01/high
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_01/low
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_02/high
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_02/low
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_03/high
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_03/low
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported/mat_03
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Exported
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/TestWorld1024
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Buildings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Design/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Design
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Env
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Road
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Buildings/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Buildings/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Buildings/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Buildings/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Buildings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Env
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Textures/Farmland
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Textures/Road
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Textures/Tree
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/Art
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/WorldInstance/AdditiveScenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/WorldInstance/MergedRaws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/WorldInstance/Raws
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp/WorldInstance
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Terrain/Exported
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Terrain/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment/WDM01_Art
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/WD
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/Core/Framework
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/Core/Protocol
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/Core/Tools
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/Core
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/Debug
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/BlackPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/BuildingCardPanel/GameData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/BuildingCardPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/ClientTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/CommonCell
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DialoguePanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonAmmoBoxFillingPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonAmmoBoxPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonAmmoReloadPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonBackPackPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonBackPackTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonBattleMainPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonDeadPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonItemCommonTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonProduceMaterialTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonProducePanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonProduceSelfPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonPubStorePanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonPubStoreTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonWeaponRepairAllPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonWeaponRepairPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonWeaponRepairPopUpPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/DungeonWorkbenchRepairPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/FormationSolderSkillTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/FormationSystemPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/FPSPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/GMPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/GmToolsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/GotItemPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/GotItemTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/HomeLandFurnitureOperatePanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/HomeLandObjRemakePanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/HomeLandTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/LoginPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/LSBattleMainMeunPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/LSBattleMainPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/LSBattleMainSkillTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/LSHizMapDebugPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/LSHudPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/MessageBoxPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/NewFormationSystemPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/PickupPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/SelectServerPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/SkillDetailPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/SoldierCardPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/StartTypeWriterPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/SystemTipsPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/TimelinePanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/UILoadingPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI/WorldMapPanel
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/GameUI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/Helper
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/Lib
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/DataSys
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/EventSys
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/HomeLand/GameData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/HomeLand
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/IO
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/LogicSys
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/NetSys
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/TimerSys
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/UI/UIComponent
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/UI/Widget/DungeonBackpack/Attributes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/UI/Widget/DungeonBackpack/Parts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/UI/Widget/DungeonBackpack
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/UI/Widget/LSWorld/TeamHud
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/UI/Widget/LSWorld
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/UI/Widget
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System/UI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/xlua/Lua/System
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Settings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Ark/temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Ark
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Fort/Generalfort/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Fort/Generalfort/Material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Fort/Generalfort/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Fort/Generalfort/Prefab
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Fort/Generalfort/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Fort/Generalfort
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Fort
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/LSWorld
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Building/Models/Constacion/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Building/Models/Constacion
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Building/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Building/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Building/Textures/Constacion
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Building/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Building
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Decals/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Decals/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Decals/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Decals
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Animations/Light
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Animations/Tail
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Boom
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Crack
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Figure
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Fire
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Glow
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Line
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Mask
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Motion
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Noise
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Shockwave
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Smoke
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Trail
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures/Turbulence
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/FX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Rock/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Rock/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Rock/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Rock/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Rock
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Meshes/Desert_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Meshes/Desert_GvG
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Meshes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Textures/Default
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Textures/Heightmaps/Desert_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Textures/Heightmaps/Desert_03
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Textures/Heightmaps/Desert_GvG
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Textures/Heightmaps/Test_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Textures/Heightmaps
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Tree/Models/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Tree/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Tree/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp/Tree
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/IronMonster_01/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/IronMonster_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/IronMonster_01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/IronMonster_01/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/IronMonster_01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/IronMonster_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Soldier_01/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Soldier_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Soldier_01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Soldier_01/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Soldier_01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Soldier_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Zombie_01/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Zombie_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Zombie_01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Zombie_01/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Zombie_01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character/Zombie_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/character
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/BigfootSuvs_01/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/BigfootSuvs_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/BigfootSuvs_01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/BigfootSuvs_01/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/BigfootSuvs_01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/BigfootSuvs_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/FourFoot_01/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/FourFoot_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/FourFoot_01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/FourFoot_01/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/FourFoot_01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/FourFoot_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/TwoFoot_01/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/TwoFoot_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/TwoFoot_01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/TwoFoot_01/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/TwoFoot_01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle/TwoFoot_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced/Vehicle
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap/UnitInstanced
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Bigmap
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Common/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Common/Temp/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Common/Temp/Materials/Brightness
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Common/Temp/Materials/Metallic
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Common/Temp/Materials/Smoothness
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Common/Temp/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Common/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/DGM_88/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/DGM_88
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Bushes/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Bushes/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Bushes/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Bushes/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Bushes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Trees/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Trees/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Trees/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Trees/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Trees
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Vines/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Vines/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Vines/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Vines/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage/Vines
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01/Foliage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM88/Config/Collider
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM88/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM88/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM88
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM89/Config/Collider
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM89/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM89/Temp/L_DGM89
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM89/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM89
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM99/Config/Collider
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM99/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM99/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/DGM99
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/Dungeon02/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/Dungeon02/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/Dungeon02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/TestDungeon/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/TestDungeon/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/TestDungeon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/TestDungeon_01/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/TestDungeon_01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment/TestDungeon_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Temp/Design/LevelAI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Temp/Design/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Temp/Design
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DG
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Players
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN001/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN001/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN001/Models_R
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN001/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN001/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN001/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN001
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN002/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN002/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN002/Temp/Models_G
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN002/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN002/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues/RTN002
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters/Retinues
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Characters
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Common/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Environment/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Environment/DPM01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Forts/Fort0
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Forts/Fort05/Material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Forts/Fort05/Models_R
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Forts/Fort05/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Forts/Fort05/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Forts/Fort05/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Forts/Fort05
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Forts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Vehicles/VehicleA
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP/Vehicles
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/DP
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Maps/Dungeon01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Maps/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Maps
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Decals/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Decals/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Decals/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Decals/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Decals
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dismantle/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dismantle/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dismantle/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dismantle/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dismantle
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Materials/Item
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Models/Item/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Models/Item
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Models/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Prefabs/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Prefabs/Item
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Prefabs/Obj
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Prefabs/RiverBank
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Textures/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Textures/Item
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Textures/Plants
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Textures/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Textures/water
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Dungeon01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Enviroment/DGM88
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Enviroment/Dungeon02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Enviroment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/SkyBox
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Temp/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Temp/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Temp/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Temp/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Tree/Models/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Tree/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Tree/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Tree/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes/Tree
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Character
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/LootBox
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/SceneName01/Temp/Editor
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/SceneName01/Temp/Test01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/SceneName01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/SceneName01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/z01/Temp/z01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/z01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/z01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/z02/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene/z02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Scene
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test/Test
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/Test
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Character_InroomShadow
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Character_monster_zombie/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Character_monster_zombie/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Character_monster_zombie
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Character_monster_zombie_boss/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Character_monster_zombie_boss/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Character_monster_zombie_boss
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Dungeon01_Character_Female_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Dungeon01_Character_Female_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/PrimaryFort
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Soldier_01/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Soldier_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Soldier_01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Soldier_01/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Soldier_01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Soldier_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Zombie_01/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Zombie_01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Zombie_01/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Zombie_01/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Zombie_01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character/Zombie_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Character
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Consumables
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Fort
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com01/Animation/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com01/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com01/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com02/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com02/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com03/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com03/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com03/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com03
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com04/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com04/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Com04
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Elt01/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Elt01/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Elt01/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Elt01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Elt02/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Elt02/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Elt02/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster/Mut_Elt02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Monster
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerF/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerF/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerF/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerF
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM/Animation/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM/Animation/Consumables
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM/Animation/Long
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM/Animation/Rifle
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM/Animation/Short
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM/textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player/PlayerM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Player
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Retinue/DG_Eileen/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Retinue/DG_Eileen/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Retinue/DG_Eileen/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Retinue/DG_Eileen
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Retinue
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Timeline/Shot01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Timeline/Shot02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Timeline/Shot03
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Timeline/Shot04
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Timeline/Shot05
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Timeline
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Vehicle
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Weapon/Eileen_Wpn
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Weapon/LMelee_01_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Weapon/Rifle01_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Weapon/SMelee_01_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Weapon/SMelee_02_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced/Weapon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon/UnitInstanced
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Dungeon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Animations/Light
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Materials/change
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Materials/discard
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Materials/SkillWarning
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Shaders
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Boom
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Circle
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Color
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Figure
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Fire
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Glow
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Lightning
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Mask
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Noise
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Objects
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Smoke
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Textures02/Line02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Textures02/Motion02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Textures02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Trail
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Ui
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures/Wave
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX/Timeline
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/FX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/HomeLand/Map
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/HomeLand/Scene/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/HomeLand/Scene/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/HomeLand/Scene
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/HomeLand
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Character
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/FX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/PostProcessing
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Scripts/Editor
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Scripts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Temp/BuildingDissolve
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Temp/PlayerEffect/RenderPass
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Temp/PlayerEffect
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Temp/textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders/UI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Shaders
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/G_DP_RTN001/Material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/G_DP_RTN001/Model
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/G_DP_RTN001/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/G_DP_RTN001
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/Rooster/material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/Rooster/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/Rooster/model
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/Rooster/texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/Rooster
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character/SC_CandyFist_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Character
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Environment/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Fort/M_DefenseFort_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Fort/New Folder
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Fort/New Folder 1
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Fort
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Reflections
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Scripts/Editor
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Scripts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Showcase01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/Showcase_Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/TimeLine
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01/UI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp/Showcase01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase/temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Showcase
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Tech/Core
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Tech/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Tech
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Temp/ShowcaseByLeyu_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Temp/SPToUnity
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/Atlas
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/CommonFx/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/CommonFx/MAT
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/CommonFx/TEX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/CommonFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DeadFx/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DeadFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonBackPackPanelFx/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonBackPackPanelFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonBattleMainFx/anim
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonBattleMainFx/mat
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonBattleMainFx/tex
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonBattleMainFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonProducePanelFX/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonProducePanelFX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonPubStorePanelFx/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/DungeonPubStorePanelFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/GotItemPanelFx/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/GotItemPanelFx/MAT
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/GotItemPanelFx/TEX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/GotItemPanelFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/Hud/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/Hud
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/LoadingFx/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/LoadingFx/TEX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/LoadingFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/LSBattleMainPanelFX/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/LSBattleMainPanelFX/MAT
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/LSBattleMainPanelFX/TEX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/LSBattleMainPanelFX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/NewFormationSystemPanelFX/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/NewFormationSystemPanelFX/Mat
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/NewFormationSystemPanelFX/TEX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/NewFormationSystemPanelFX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/SystemTipsFx/ANIM
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/SystemTipsFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx/TimelineFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UIFx
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/Dead
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/DungeonArmsIcon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/DungeonCamp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/DungeonCommon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/DungeonItem
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/DungeonItemBig
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/DungeonSkillIcon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/Gmtools
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/HomelandBuild
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/HomelandItem
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/Loading
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/Login
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/LSBattleMain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/LSPrecastparts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/LSSkillIcon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/LSTroops
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/PlayerHead
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/SandtableIcon
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites/Timeline
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UISprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UITexture/LoadingBg
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UITexture/LSPrecastparts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UITexture/PlayerCar
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UITexture/PlayerHalf
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UITexture/PlayerPain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UITexture/SystemBg
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI/UITexture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/UI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Common/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Environment/WDM01/Config
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Environment/WDM01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort0
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort05/Animation/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort05/Animation
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort05/Material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort05/Models_R
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort05/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort05/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort05/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts/Fort05
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Forts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleA/RTN003_Vehicle01/Material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleA/RTN003_Vehicle01/Models_R
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleA/RTN003_Vehicle01/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleA/RTN003_Vehicle01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleA/RTN003_Vehicle01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleA/RTN003_Vehicle01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleA
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleD/Material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleD/Models_R
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleD/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleD/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleD/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleD
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleE/RTN007_Vehicle01/Material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleE/RTN007_Vehicle01/Models_R
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleE/RTN007_Vehicle01/Perfabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleE/RTN007_Vehicle01/Temp
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleE/RTN007_Vehicle01/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleE/RTN007_Vehicle01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles/VehicleE
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Vehicles
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD/Zombies
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Art/WD
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/BuildingPartsAssets/FloorEdgeObjectSO
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/BuildingPartsAssets/GridBasedObjectSO
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/BuildingPartsAssets/LooseObjectSO
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/BuildingPartsAssets
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Prefabs/Objects
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Prefabs/Placeholders
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Prefabs/Visuals
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BaseObjects
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildCondition
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildingComponents/ContainerComponent
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildingComponents/Core
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildingComponents/GridComponent
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildingComponents/GridEdgeComponent
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildingComponents/SlotComponent
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildingComponents/SnapComponent
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildingComponents/TagComponent
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/BuildingComponents
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/Ghost
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/Grid
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/ScriptableObjects
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts/Utils
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem/Scripts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingSystem
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/BuildingUIManager
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/Environment/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/Environment/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/Environment/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Homeland/Runtime/Environment
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/VastLandEditor/Editor/LSWorlds/Template
+    packageID: base
+    buildBundleType: 0

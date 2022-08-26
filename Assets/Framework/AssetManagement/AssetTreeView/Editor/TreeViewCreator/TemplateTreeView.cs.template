@@ -1,0 +1,75 @@
+using System.Collections;
+using System.Collections.Generic;
+using Framework.AssetManagement.AssetTreeView;
+using UnityEditor.IMGUI.Controls;
+using UnityEngine;
+
+/// <summary>
+/// Auto Gen From TreeView Creator
+/// </summary>
+
+namespace #nameSpace#
+{
+    public class #TemplateTreeViewItem# : BaseTreeViewItem
+    {
+        public #TemplateTreeViewItem#()
+        {
+        }
+        public #TemplateTreeViewItem#(int id, int depth, string name):base(id,depth,name)
+        {
+        }
+        public override MultiColumnHeaderState GetMutiColumnHeader(float width)
+        {
+            var colums = new[]
+            {
+                #StartColumnStatLoop#
+                new MultiColumnHeaderState.Column
+                {
+                    headerContent = new GUIContent("#ColumnName#"),
+                    headerTextAlignment = TextAlignment.Left,
+                    sortedAscending = true,
+                    sortingArrowAlignment = TextAlignment.Center,
+                    width = 70,
+                    minWidth = 60,
+                    autoResize = true,
+                    allowToggleVisibility = false
+                },
+                #EndColumnStatLoop#
+                
+            };
+            var state = new MultiColumnHeaderState(colums);
+            return state;
+        }
+    }
+    
+    public class #TemplateTreeView# : BaseAssetTreeView<#TemplateTreeViewItem#>
+    {
+        public #TemplateTreeView#(TreeViewState treeViewState, MultiColumnHeader multiColumnHeader) : base(treeViewState, multiColumnHeader)
+        {
+    
+        }
+    
+        public override void GetData(List<#TemplateTreeViewItem#> datas)
+        {
+            m_itemData = new List<TreeViewItem<#TemplateTreeViewItem#>>();
+            foreach(var item in datas)
+            {
+                TreeViewItem<#TemplateTreeViewItem#> tv = new TreeViewItem<#TemplateTreeViewItem#>(item.mId, item.depth, item.DisPlayName, item);
+                m_itemData.Add(tv);
+            }
+            Reload();
+        }
+    
+        protected override void DrawRow(Rect cellRect, TreeViewItem<#TemplateTreeViewItem#> item, int column, ref RowGUIArgs args)
+        {
+            switch (column)
+            {
+                #StartColumnGUILoop#
+                case #LoopNum#:
+                    GUI.Label(cellRect, "column" );
+                    break;
+                #EndColumnGUILoop#
+            }
+        }
+    }
+}
