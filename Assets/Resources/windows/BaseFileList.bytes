@@ -1,6 +1,6 @@
 {
-  "Count": 128,
-  "TotalSize": 353680640,
+  "Count": 127,
+  "TotalSize": 351853597,
   "FileList": [
     {
       "BundleName": "base/00a9b80a1eda8f9e367439120e09d265",
@@ -191,11 +191,6 @@
       "BundleName": "base/58fc4e5e6b18d46381eafc2c486f9a53",
       "FileHash": "e5b0b6f099d23abd8f0fc20e7a809468",
       "Size": 79808
-    },
-    {
-      "BundleName": "base/597f32baa46d7631bcb13fbdd08ae2f0",
-      "FileHash": "13a8b4c7c4971c9f3d1b9a92cc20b138",
-      "Size": 1827051
     },
     {
       "BundleName": "base/59fac027aac89b47fdb2c929684421b0",
@@ -604,8 +599,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "39380cd1905cbca52acb2b95f3d999a8",
-      "Size": 17766
+      "FileHash": "9718ff74571fb6d9d76dabdb78591d44",
+      "Size": 17774
     },
     {
       "BundleName": "FMOD/Dialogue_EN.bank",

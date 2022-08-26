@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Framework.Core
 {
@@ -17,11 +20,28 @@ namespace Framework.Core
         private int                         m_PendingDownloadedFileIndex;
         private List<BundleFileInfo>        m_PendingDownloadedFileList = new List<BundleFileInfo>();
         private string                      m_Error;
-
+        private string                      m_CdnURL;
         private IExtraListener              m_Listener;
+        private AppVersion                  m_AppVersion;               // 当前引擎版本号，记录在Resources/
 
-        public void StartWork(int workerCount, IExtraListener listener = null)
+        public AppVersion localBaseVersion
         {
+            get
+            {
+                if (m_AppVersion == null)
+                {
+                    m_AppVersion = AppVersion.CreateInstance<AppVersion>();
+                    AppVersion version = AppVersion.Load();
+                    m_AppVersion.Set(version.ToString());
+                    AppVersion.Unload(version);
+                }
+                return m_AppVersion;
+            }
+        }
+
+        public void StartWork(string cdnURL, int workerCount, IExtraListener listener = null)
+        {
+            m_CdnURL = cdnURL;
             m_Listener = listener;
             m_WorkerCount = workerCount;
 
@@ -46,7 +66,7 @@ namespace Framework.Core
         private IEnumerator Run()
         {
             OnDownloadExtraBegin();
-            string srcUriPrefix = string.Format($"{Application.streamingAssetsPath}/{Utility.GetPlatformName()}");
+            string srcUriPrefix = string.Format($"{m_CdnURL}/{VersionDefines.DEPLOYMENT_EXTRA_DATA_FOLDER}/{Utility.GetPlatformName()}/{localBaseVersion.ToString()}");
             string dstURLPrefix = string.Format($"{Application.persistentDataPath}/{Utility.GetPlatformName()}");
             while (true)
             {
@@ -156,7 +176,7 @@ namespace Framework.Core
 
         private long Prepare()
         {
-            // generate pending extracted file list
+            // generate pending downloaded file list
             CollectPendingDownloadedFileList();
 
             // init task workers and buffer
@@ -257,10 +277,28 @@ namespace Framework.Core
 
     public interface IExtraListener
     {
-        void OnShouldDownloadExtra(ref bool shouldExtract);                                                 // 是否需要进行二次下载
+        void OnShouldDownloadExtra(ref bool shouldDownload);                                                // 是否需要进行二次下载
         void OnDownloadExtraBegin(int countOfFiles, long size);                                             // 开始下载数据
         void OnDownloadExtraEnd(string error);                                                              // 下载结束
         void OnFileCompleted(string filename, bool success);                                                // 一个数据提取完成通知（可能成功，也可能失败）
         void OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed);   // 每个数据提取进度通知
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(ExtraDownloader))]
+    public class ExtraDownloader_Inspector : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            string flag = PlayerPrefs.GetString(VersionDefines.EXTRA_APPVERSION);
+            EditorGUILayout.LabelField("Extra Flag", string.IsNullOrEmpty(flag) ? "None" : flag);
+
+            if (GUILayout.Button("Clear Flag"))
+            {
+                if (PlayerPrefs.HasKey(VersionDefines.EXTRA_APPVERSION))
+                    PlayerPrefs.DeleteKey(VersionDefines.EXTRA_APPVERSION);
+            }
+        }
+    }
+#endif
 }

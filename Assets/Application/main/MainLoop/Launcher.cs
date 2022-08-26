@@ -28,7 +28,7 @@ namespace Application.Runtime
     ///     LOAD_FROM_PERSISTENT:从persistent data path下加载资源（意味着执行版控流程）
     /// </summary>
     [RequireComponent(typeof(BundleExtracter), typeof(Patcher))]
-    public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener
+    public class Launcher : MonoBehaviour, IExtractListener, IPatcherListener, IExtraListener
     {
         static public Launcher          Instance { get; private set; }
 
@@ -38,6 +38,9 @@ namespace Application.Runtime
             BeginExtract,
             Extracting,
             EndExtract,
+            BeginExtraDownload,
+            ExtraDownloading,
+            EndExtraDownload,
             BeginPatch,
             Patching,
             EndPatch,
@@ -45,6 +48,7 @@ namespace Application.Runtime
         private LaunchPhase             m_Phase = LaunchPhase.None;
 
         private BundleExtracter         m_BundleExtracter;
+        private ExtraDownloader         m_ExtraDownloader;
         private Patcher                 m_Patcher;
 
         public int                      WorkerCountOfBundleExtracter = 5;
@@ -71,10 +75,11 @@ namespace Application.Runtime
             Instance = this;
 
             m_BundleExtracter = GetComponent<BundleExtracter>();
+            m_ExtraDownloader = GetComponent<ExtraDownloader>();
             m_Patcher = GetComponent<Patcher>();
 
-            if (m_BundleExtracter == null || m_Patcher == null)
-                throw new System.ArgumentNullException("m_BundleExtracter == null || m_Patcher == null");
+            if (m_BundleExtracter == null || m_Patcher == null || m_ExtraDownloader == null)
+                throw new System.ArgumentNullException("m_BundleExtracter == null || m_Patcher == null || m_ExtraDownloader == null");
 
             if (Camera == null)
                 throw new ArgumentNullException("camera");
@@ -105,27 +110,26 @@ namespace Application.Runtime
                 case LaunchPhase.Extracting:
                     break;
                 case LaunchPhase.EndExtract:
+                    m_Phase = LaunchPhase.BeginExtraDownload;
+                    break;
+                case LaunchPhase.BeginExtraDownload:
+                    StartExtraDownload();
+                    break;
+                case LaunchPhase.ExtraDownloading:
+                    break;
+                case LaunchPhase.EndExtraDownload:
                     m_Phase = LaunchPhase.BeginPatch;
-                    // m_Phase = LaunchPhase.EndPatch;
                     break;
                 case LaunchPhase.BeginPatch:
-                    // if(!ResloveCDN())
-                    // {
-                    //     m_Phase = LaunchPhase.None;                        
-                    //     OnFailedResloveCDN();
-                    // }
-                    // else
-                    {
-                        m_Phase = LaunchPhase.Patching;
-                        StartPatch();
-                    }
+                    m_Phase = LaunchPhase.Patching;
+                    StartPatch();                    
                     break;
                 case LaunchPhase.Patching:
-                    if(!IsNetworkReachability())
-                    {
-                        m_Phase = LaunchPhase.None;                        
-                        OnPatchingNetworkNotReachable();
-                    }
+                    //if(!IsNetworkReachability())
+                    //{
+                    //    m_Phase = LaunchPhase.None;                        
+                    //    OnPatchingNetworkNotReachable();
+                    //}
                     break;
                 case LaunchPhase.EndPatch:
                     m_Phase = LaunchPhase.None;
@@ -190,6 +194,11 @@ namespace Application.Runtime
             m_Patcher.StartWork(GetCDNURL(), WorkerCountOfPatcher, this);
         }
 
+        private void StartExtraDownload()
+        {
+            m_ExtraDownloader.StartWork(GetCDNURL(), WorkerCountOfPatcher, this);
+        }
+
         private string GetCDNURL()
         {
 #if UNITY_EDITOR
@@ -236,18 +245,34 @@ namespace Application.Runtime
 
         void IExtractListener.OnFileCompleted(string filename, bool success)
         {
-            Debug.Log($"IExtractListener.OnFileCompleted:   filename({filename})    success({success})");
+            //Debug.Log($"IExtractListener.OnFileCompleted:   filename({filename})    success({success})");
         }
 
         void IExtractListener.OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed)
         {
-            Debug.Log($"IExtractListener.OnFileProgress:    filename({filename})    downedLength({downedLength})    totalLength({totalLength})      downloadSpeed({downloadSpeed})");
+            //Debug.Log($"IExtractListener.OnFileProgress:    filename({filename})    downedLength({downedLength})    totalLength({totalLength})      downloadSpeed({downloadSpeed})");
         }
 
-        void OnFailedResloveCDN()
+        void IExtraListener.OnShouldDownloadExtra(ref bool shouldDownload)
         {
-            Debug.LogError($"Failed to reslove cdn: {GetCDNURL()}");
+            Debug.Log($"IExtraListener.OnShouldDownloadExtra:   {shouldDownload}");
+
+            m_Phase = shouldDownload ? LaunchPhase.ExtraDownloading : LaunchPhase.EndExtraDownload;
         }
+
+        void IExtraListener.OnDownloadExtraBegin(int countOfFiles, long size)
+        { }
+
+        void IExtraListener.OnDownloadExtraEnd(string error)
+        {
+            m_Phase = LaunchPhase.EndExtraDownload;
+        }
+
+        void IExtraListener.OnFileProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed)
+        { }
+
+        void IExtraListener.OnFileCompleted(string filename, bool success)
+        { }
 
         void IPatcherListener.OnPatchBegin()
         { }
@@ -288,12 +313,12 @@ namespace Application.Runtime
 
         void IPatcherListener.OnFileDownloadProgress(string filename, ulong downedLength, ulong totalLength, float downloadSpeed)
         {
-            Debug.Log($"IPatcherListener.OnFileDownloadProgress:    filename({filename})    downedLength({downedLength})    totalLength({totalLength})      downloadSpeed({downloadSpeed})");
+            //Debug.Log($"IPatcherListener.OnFileDownloadProgress:    filename({filename})    downedLength({downedLength})    totalLength({totalLength})      downloadSpeed({downloadSpeed})");
         }
 
         void IPatcherListener.OnFileDownloadCompleted(string filename, bool success)
         {
-            Debug.Log($"IPatcherListener.OnFileDownloadCompleted:   filename({filename})    success({success})");
+            //Debug.Log($"IPatcherListener.OnFileDownloadCompleted:   filename({filename})    success({success})");
         }
 
         // 下载补丁时网络异常
