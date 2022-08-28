@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Framework.AssetManagement.AssetPackageEditor.Editor;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -29,6 +30,7 @@ namespace Framework.AssetManagement.GameBuilder
         public bool             DisableWriteTypeTree;
         public bool             DevelopmentBuild;
         public string           OverrideResourcePath;         // 非空表示仅此目录下的资源输出，留空表示所有设置了bundle name的资源都将输出
+        public AssetPackageEditorSetting packageEditorSetting;
 
         public override string ToString()
         {
@@ -42,7 +44,6 @@ namespace Framework.AssetManagement.GameBuilder
             sb.Append(string.Format($"OverrideResourcePath: {OverrideResourcePath}  \n"));
             return sb.ToString();
         }
-    }
 
     // static public class BundleBuilderSettingExtension
     // {
@@ -75,5 +76,5 @@ namespace Framework.AssetManagement.GameBuilder
 
     //         return opt;
     //     }
-    // }
+    }
 }

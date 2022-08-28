@@ -13,6 +13,7 @@ using UnityEditor.Build.Player;
 using UnityEngine.Build.Pipeline;
 using Framework.AssetManagement.AssetBuilder;
 using Framework.AssetManagement.Runtime;
+using Framework.AssetManagement.AssetPackageEditor.Editor;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -230,23 +231,14 @@ namespace Framework.AssetManagement.GameBuilder
 
                 // 根据路径判断打包策略
                 string bundleName = null;
-                string packPath = null;
-                AssetBuilderSetting.PackType packType = setting.GetPackType(assetPath, out packPath);
-                if (packType == AssetBuilderSetting.PackType.Pack_ByFolder)
+                AssetPackageSettingItem pkgItem = m_Setting.packageEditorSetting.GetBuildBundleType(assetPath);
+                if (pkgItem.buildBundleType == AssetPackageBuildBundleType.ByFile)
                 {
-                    bundleName = packPath.TrimEnd(new char[] { '/' });
+                    bundleName = pkgItem.path.TrimEnd(new char[] { '/' }) + "/" + Path.GetFileNameWithoutExtension(assetPath);
                 }
-                else if (packType == AssetBuilderSetting.PackType.Pack_ByFile)
+                else
                 {
-                    bundleName = packPath.TrimEnd(new char[] { '/' }) + "/" + Path.GetFileNameWithoutExtension(assetPath);
-                }
-                else if (packType == AssetBuilderSetting.PackType.Pack_BySize)
-                {
-                    bundleName = packPath.TrimEnd(new char[] { '/' });
-                }
-                else if (packType == AssetBuilderSetting.PackType.Pack_ByAllFolder)
-                {
-                    bundleName = packPath.TrimEnd(new char[] { '/' });
+                    bundleName = pkgItem.path.TrimEnd(new char[] { '/' });
                 }
 
                 if (string.IsNullOrEmpty(bundleName))
@@ -330,7 +322,7 @@ namespace Framework.AssetManagement.GameBuilder
                     // update s_BPInfo
                     if(!s_BPInfo.ContainsKey(newBundleName))
                     {
-                        s_BPInfo.Add(newBundleName, assetSetting.WhichPackage(item.assetNames[0]));
+                        s_BPInfo.Add(newBundleName, m_Setting.packageEditorSetting.GetPackageID(item.assetNames[0]));
                     }
                 }
             }

@@ -16,6 +16,8 @@ MonoBehaviour:
   buildTarget: 19
   bundleSetting: {fileID: 11400000, guid: bc39a789828ae184d9c403134feda49b, type: 2}
   playerSetting: {fileID: 11400000, guid: ee628fffbff308641a6b4a2d3c1eb844, type: 2}
+  packageEditorSetting: {fileID: 11400000, guid: d19732752cc180e40858a622c59849be,
+    type: 2}
   backdoor: {fileID: 5022602860645237092, guid: 58f21327734fcd34abbbb2d909a9ccb3,
     type: 3}
   buildMode: 0

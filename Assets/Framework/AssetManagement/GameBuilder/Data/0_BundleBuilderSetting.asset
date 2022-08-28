@@ -19,3 +19,5 @@ MonoBehaviour:
   DisableWriteTypeTree: 0
   DevelopmentBuild: 0
   OverrideResourcePath: 
+  packageEditorSetting: {fileID: 11400000, guid: d19732752cc180e40858a622c59849be,
+    type: 2}

@@ -1,0 +1,477 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 379c7b06d01e53c40b2b8c2f219c79d7, type: 3}
+  m_Name: NewPackageSetting
+  m_EditorClassIdentifier: 
+  editorAssetPackageSettingItems:
+  - path: Assets/Res/
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/AnimationClip
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Archer/Animations/Controller
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Archer/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Archer/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Archer/Model
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Archer/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Archer
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Mage/Animations/Controller
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Mage/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Mage/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Mage/Model
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Mage/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Mage
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Warrior/Animations/Controller
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Warrior/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Warrior/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Warrior/Model
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Warrior/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters/Warrior
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Characters
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Core
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Art/Materials/Built-in_RP
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Art/Materials/URP_HDRP_ShaderGraph
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Art/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Art/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Art/Skybox
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Art/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Art
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Shaders/Built-in_RP
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/Shaders
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Character/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Character/Materials/Built-in_RP
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Character/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Character/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Character/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Character
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Scenes/Playground
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo/ThirdPersonController
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/DungeonDemo
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/GlobalConfig
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Players
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Shader
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Terrain/Ground/Albedo
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Terrain/Ground/Displacement
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Terrain/Ground/Normal
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Terrain/Ground
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Terrain/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Terrain/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Terrain
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/icon0/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/icon0
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/icon1/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/icon1
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/icon2/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/icon2
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/icon3/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/icon3
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/Joystick/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases/Joystick
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Atlases
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Controls
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Editor
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Fonts
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI/Prefabs
+    packageID: base
+    buildBundleType: 2
+  - path: Assets/Res/UI/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/UI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/Atlas
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/Atlas2
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/Misc/111
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/Misc/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/Misc
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/TestFX_Root/FX
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/TestFX_Root
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases/Bag/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases/Bag
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases/Common/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases/Common
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases/Mail/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases/Mail
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases/Misc/Sprites
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases/Misc
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Atlases
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI/Prefabs
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/Tests/Runtime/Res/UI
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Audio
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/BuiltinRes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Material/111
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Material/333
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Material
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Model
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Prefab/1234
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Prefab
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Prefab2
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/ps
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/TestDep/555555555
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/TestDep/Mat
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/TestDep/Tex
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/TestDep
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/TestUnload
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Texture
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/Core/StreamingLevelManager/Tests/Res
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/Core/StreamingLevelManager/Tests/Res/Prefab
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/Core/StreamingLevelManager/Tests/Res/Scenes
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/XLua/Lua
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Application/main/XLua/Lua/core
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/AnimationData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Mannequin/RawData/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Mannequin/RawData/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Mannequin/RawData/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Mannequin/RawData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Mannequin
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2/RawData/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2/RawData/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2/RawData/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2/RawData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/TwinSword
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Animations/InPlace
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Animations/RootMotion
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/wgame
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01/RawData/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01/RawData/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01/RawData/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01/RawData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref/RawData/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref/RawData/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref/RawData/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref/RawData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData/Animations
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData/Models
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData/Textures
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Settings
+    packageID: extra
+    buildBundleType: 0

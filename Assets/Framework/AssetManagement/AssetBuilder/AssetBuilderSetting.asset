@@ -31,10 +31,3 @@ MonoBehaviour:
   Extension:
   - .meta
   - .cs
-  PackByAllFolder_Paths: []
-  PackByFile_Paths:
-  - Assets/Res/UI/Prefabs
-  PackBySize_Paths:
-  - Assets/Res/DungeonDemo/Prefabs
-  ExtraPackPaths:
-  - Assets/Settings
