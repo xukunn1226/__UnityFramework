@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
@@ -70,18 +72,21 @@ namespace Framework.AssetManagement.AssetBuilder
         /// <returns>true: 在黑名单内</returns>
         static internal bool IsBlockedByBlackList(string assetPath)
         {
-            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/") + 1);
-            string[] folderNames = directory.TrimEnd(new char[] { '/' }).Split('/');
+            string dirPath = assetPath;
+            if (!Directory.Exists(assetPath))
+            {
+                dirPath = assetPath.Substring(0, assetPath.LastIndexOf('/'));
+            }
             foreach (string path in AssetBuilderSetting.GetDefault().BlackListOfFolder)
             {
-                for (int i = 0; i < folderNames.Length; ++i)
+                if (dirPath.Contains(path, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (string.Compare(path, folderNames[i], true) == 0)
-                        return true;
+                    return true;
                 }
             }
             return false;
         }
+
 
         static internal bool IsBlockedByExtension(string assetPath)
         {
