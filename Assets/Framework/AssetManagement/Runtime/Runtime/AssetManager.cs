@@ -160,7 +160,7 @@ namespace Framework.AssetManagement.Runtime
         
         static public void ReleaseInst(GameObjectLoaderAsync loader)
         {
-            if (Instance == null)
+            if (Instance == null && !applicationIsQuitting)
                 throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
                 
             GameObjectLoaderAsync.Release(loader);
@@ -211,7 +211,12 @@ namespace Framework.AssetManagement.Runtime
         static public void UnloadAsset<T>(AssetLoader<T> loader) where T : UnityEngine.Object
         {
             if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            {
+                if (!applicationIsQuitting)
+                {
+                    throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+                }
+            }
             
             AssetLoader<T>.Release(loader);
         }
@@ -219,8 +224,12 @@ namespace Framework.AssetManagement.Runtime
         static public void UnloadAsset<T>(AssetLoaderAsync<T> loader) where T : UnityEngine.Object
         {
             if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
-            
+            {
+                if (!applicationIsQuitting)
+                {
+                    throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+                }
+            }
             AssetLoaderAsync<T>.Release(loader);
         }
 
@@ -242,7 +251,13 @@ namespace Framework.AssetManagement.Runtime
         static public void UnloadAssetBundle(AssetBundleLoader abLoader)
         {
             if (Instance == null)
-                throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+            {
+                if (!applicationIsQuitting)
+                {
+                    throw new System.ArgumentNullException("Instance", "AssetManager not initialized.");
+
+                }
+            }
             
             AssetBundleLoader.Release(abLoader);
         }

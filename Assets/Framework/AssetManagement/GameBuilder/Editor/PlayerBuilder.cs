@@ -5,6 +5,11 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using Framework.Core;
+using UnityEditor.Callbacks;
+#if UNITY_IOS
+using UnityEditor.iOS.Xcode;
+#endif
+
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -43,6 +48,7 @@ namespace Framework.AssetManagement.GameBuilder
                 Directory.Delete(outputPath, true);
             Directory.CreateDirectory(outputPath);
             Debug.Log($"        Player Output: {outputPath}");
+            Debug.Log($"{para.ToString()}");
 
             OnPreprocessPlayerBuild?.Invoke();
 
@@ -155,5 +161,24 @@ assetPack {
 
             AssetDatabase.Refresh();
         }
+
+#if UNITY_IOS
+            [PostProcessBuildAttribute(1)]
+            public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+            {
+                //为ios xcode工程增加编译选项-lz，-w
+                if (target == BuildTarget.iOS)
+                {
+                    PBXProject project = new PBXProject();
+                    string sPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+                    project.ReadFromFile(sPath);
+                    var frameworkGUID = project.GetUnityFrameworkTargetGuid();
+                    project.AddBuildProperty(frameworkGUID, "OTHER_LDFLAGS", "-lz");
+                    project.AddBuildProperty(frameworkGUID, "OTHER_LDFLAGS", "-w");
+                    File.WriteAllText(sPath, project.WriteToString());
+                }
+            }
+#endif
+
     }
 }
