@@ -54,13 +54,13 @@ namespace Framework.AssetManagement.AssetPackageEditor.Editor
             string directory = assetPath.Substring(0, assetPath.LastIndexOf("/"));
 
             var item = editorAssetPackageSettingItems.Find(s => string.Compare(s.path.TrimEnd(new char[] { '/' }), directory, true) == 0);
-            if(item == null)
+            if (item == null)
             {
                 Debug.LogError($"GetBuildBundleType: 分包配置未包含路径 {assetPath}");
                 return new AssetPackageSettingItem(directory);
             }
 
-            if(item.buildBundleType == AssetPackageBuildBundleType.ByFollowParent)
+            if (item.buildBundleType == AssetPackageBuildBundleType.ByFollowParent)
             { // 打包策略由上级文件夹决定，往上追溯
                 return GetBuildBundleType(directory);
             }

@@ -138,7 +138,7 @@ namespace Framework.AssetManagement.AssetPackageEditor.Editor
         }
         
         private float X1 = 250f;
-        private float X2 = 600f;
+        private float X2 = 1000f;
         private float y1 = 8 * EditorGUIUtility.singleLineHeight;
         private MouseCursor currentCursor;
         private float posToHandle;
@@ -619,6 +619,11 @@ namespace Framework.AssetManagement.AssetPackageEditor.Editor
             //string abspath = UnityEngine.Application.dataPath + Path.DirectorySeparatorChar + path;
             
             string pathName = Path.GetFileName(path);
+            if (Directory.Exists(path))
+            {
+                string newPath = path.TrimEnd('/');
+                pathName = Path.GetFileName(newPath);
+            }
             
             AssetPackageEditorTreeViewItem root = new AssetPackageEditorTreeViewItem(id,0,pathName,path);
             id++;

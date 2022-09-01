@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: AssetBuilderSetting
   m_EditorClassIdentifier: 
   WhiteListOfPath:
-  - Assets/Res/
+  - Assets/Res
   - Assets/Application/main/Tests/Runtime/Res
-  - Assets/Framework/AssetManagement/Runtime/Tests/Res/
+  - Assets/Framework/AssetManagement/Runtime/Tests/Res
   - Assets/Framework/Core/StreamingLevelManager/Tests/Res
   - Assets/Application/main/XLua/Lua
   - Assets/Framework/AnimationInstancing/Art
