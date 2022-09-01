@@ -72,16 +72,15 @@ namespace Framework.AssetManagement.AssetBuilder
         /// <returns>true: 在黑名单内</returns>
         static internal bool IsBlockedByBlackList(string assetPath)
         {
-            string dirPath = assetPath;
-            if (!Directory.Exists(assetPath))
-            {
-                dirPath = assetPath.Substring(0, assetPath.LastIndexOf('/'));
-            }
+            assetPath = assetPath.Replace('\\', '/').TrimEnd(new char[] { '/' });
+            string directory = Directory.Exists(assetPath) ? assetPath : assetPath.Substring(0, assetPath.LastIndexOf("/") + 1);
+            string[] folderNames = directory.TrimEnd(new char[] { '/' }).Split('/');
             foreach (string path in AssetBuilderSetting.GetDefault().BlackListOfFolder)
             {
-                if (dirPath.Contains(path, StringComparison.OrdinalIgnoreCase))
+                for (int i = 0; i < folderNames.Length; ++i)
                 {
-                    return true;
+                    if (string.Compare(path, folderNames[i], true) == 0)
+                        return true;
                 }
             }
             return false;

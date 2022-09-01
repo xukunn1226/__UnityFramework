@@ -188,7 +188,10 @@
 	https://mp.weixin.qq.com/s/-WXMJuZ0aLWW_3-lPBTJ1g  字节朝夕光年 游戏引擎开发面经
 	https://mp.weixin.qq.com/s/bx09scna1T2dWDRViJz0VA  图形学基础篇
 	https://mp.weixin.qq.com/s/Dkrj7Z9bJD9im1v0nNHv6Q  计算机基础篇
-
+* 动态分辨率
+	https://mp.weixin.qq.com/s/HvcSaEk2n4GgFZboK5Hkfw
+	https://docs.unity3d.com/Manual/DynamicResolution.html
+	https://github.com/Unity-Technologies/DynamicResolutionSample
 	
 
 

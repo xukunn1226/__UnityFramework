@@ -597,10 +597,10 @@ namespace Framework.AssetManagement.AssetPackageEditor.Editor
             {
                 foreach (var dir in directories)
                 {
-                    if (!AssetBuilderUtil.IsBlockedByBlackList(dir))
+                    string newPath = dir.Replace('\\', '/').TrimEnd(new char[] { '/' });
+                    if (!AssetBuilderUtil.IsBlockedByBlackList(newPath))
                     {
-                        string newPath = dir.Replace('\\', '/').TrimEnd(new char[] { '/' });
-                        var node = new AssetPackageEditorTreeViewItem(id, depth, Path.GetFileName(dir), newPath);
+                        var node = new AssetPackageEditorTreeViewItem(id, depth, Path.GetFileName(newPath), newPath);
                         node.PathType = pathType.dir;
                         id++;
                         node.Children = GetPathNodesReverso(ref id, dir, depth + 1, node, ref AllItems);

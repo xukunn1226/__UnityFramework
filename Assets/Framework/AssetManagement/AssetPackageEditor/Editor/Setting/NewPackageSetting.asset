@@ -211,9 +211,6 @@ MonoBehaviour:
   - path: Assets/Res/UI/Controls
     packageID: base
     buildBundleType: 0
-  - path: Assets/Res/UI/Editor
-    packageID: base
-    buildBundleType: 0
   - path: Assets/Res/UI/Fonts
     packageID: base
     buildBundleType: 0
@@ -364,31 +361,7 @@ MonoBehaviour:
   - path: Assets/Framework/AnimationInstancing/Art/AnimationData
     packageID: base
     buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Mannequin/RawData/Animations
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Mannequin/RawData/Materials
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Mannequin/RawData/Models
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Mannequin/RawData
-    packageID: base
-    buildBundleType: 0
   - path: Assets/Framework/AnimationInstancing/Art/Mannequin
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2/RawData/Animations
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2/RawData/Materials
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2/RawData/Models
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/MirrorF2/RawData
     packageID: base
     buildBundleType: 0
   - path: Assets/Framework/AnimationInstancing/Art/MirrorF2
@@ -397,81 +370,21 @@ MonoBehaviour:
   - path: Assets/Framework/AnimationInstancing/Art/TwinSword
     packageID: base
     buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Animations/InPlace
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Animations/RootMotion
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Animations
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Materials
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Models
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData/Textures
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Unity_Model/RawData
-    packageID: base
-    buildBundleType: 0
   - path: Assets/Framework/AnimationInstancing/Art/Unity_Model
     packageID: base
     buildBundleType: 0
   - path: Assets/Framework/AnimationInstancing/Art/wgame
     packageID: base
     buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01/RawData/Animations
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01/RawData/Materials
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01/RawData/Models
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01/RawData
-    packageID: base
-    buildBundleType: 0
   - path: Assets/Framework/AnimationInstancing/Art/Zombie_01
     packageID: base
     buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref/RawData/Animations
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref/RawData/Materials
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref/RawData/Models
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref/RawData
-    packageID: base
-    buildBundleType: 0
   - path: Assets/Framework/AnimationInstancing/Art/Zombie_01_ref
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData/Animations
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData/Materials
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData/Models
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData/Textures
-    packageID: base
-    buildBundleType: 0
-  - path: Assets/Framework/AnimationInstancing/Art/Zombie_02/RawData
     packageID: base
     buildBundleType: 0
   - path: Assets/Framework/AnimationInstancing/Art/Zombie_02
     packageID: base
     buildBundleType: 0
   - path: Assets/Settings
-    packageID: extra
+    packageID: base
     buildBundleType: 0
