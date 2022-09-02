@@ -114,7 +114,7 @@ namespace Framework.Core
             {
                 var mTex2DArray = m_Test.CreateTexture2DArray(m_Test.linear);
                 UnityEngine.SceneManagement.Scene scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();                
-                UnityEditor.AssetDatabase.CreateAsset(mTex2DArray, scene.path.Substring(0, scene.path.LastIndexOf("/")) + "/NewTexture2DArray.asset");
+                UnityEditor.AssetDatabase.CreateAsset(mTex2DArray, scene.path.Substring(0, scene.path.LastIndexOf("/")) + "/New Texture2DArray.asset");
             }
         }
     }

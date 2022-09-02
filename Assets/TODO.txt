@@ -195,12 +195,11 @@
 	
 * Texture2DArray
 	https://zhuanlan.zhihu.com/p/405843561
-	https://www.jianshu.com/p/c5f3cf6625d3
 	Asset Store: MegaSplat
 	祖龙在虚幻引擎4地形渲染技术上的改进-地形混合技术简介
 		https://www.bilibili.com/video/BV1b54y1679D?is_story_h5=false&p=1&share_from=ugc&share_medium=android&share_plat=android&share_session_id=58d299b4-cd07-434f-8e52-7dc6220e00e4&share_source=GENERIC&share_tag=s_i&timestamp=1661920899&unique_k=0qmgz9W
 	https://github.com/pschraut/UnityTexture2DArrayImportPipeline
-	
+
 
 *************************************** 资源管理 ***************************************
 
