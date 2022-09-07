@@ -157,8 +157,21 @@ namespace Application.Editor
                 m_Info += info + "\n";
                 return false;
             }
+            // Trim value type column \" 
+            string tempstr = "";
+            for (int i = 0; i < 4; i++)
+            {
+                tempstr = new string(m_AllLines[i].Replace("\"", "").Trim());
+                m_AllLines[i] = tempstr;
+            }
 
             m_ColumnLine = m_AllLines[1].Split(',');
+            // Trim Key 行 空格
+            for (int i = 0; i < m_ColumnLine.Length; i++)
+            {
+                m_ColumnLine[i] = m_ColumnLine[i].Trim(' ');
+            }
+
             m_FlagLine = m_AllLines[2].Split(',');
             m_ValueTypeLine = m_AllLines[3].Split(',');
             if(m_ColumnLine.Length != m_ValueTypeLine.Length || m_ColumnLine.Length != m_FlagLine.Length)
