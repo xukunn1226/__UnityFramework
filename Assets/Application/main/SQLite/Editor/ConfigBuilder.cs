@@ -473,11 +473,15 @@ namespace Application.Editor
         // csv数据格式转化为sql数据格式
         static private string ConvertToSqlContent(string content, string valueType)
         {
-            switch(valueType.ToLower())
+            string tempstr;
+            switch (valueType.ToLower())
             {
                 case "int":
                     if(string.IsNullOrEmpty(content))
                         return "0";
+
+                    tempstr = new string(content.Replace("\"", "").Trim());
+                    content = tempstr;
                     return string.Format($"{content}");         // 不带''可以检查数据正确性
                 case "string":
                     if(string.IsNullOrEmpty(content))
@@ -486,6 +490,8 @@ namespace Application.Editor
                 case "float":
                     if(string.IsNullOrEmpty(content))
                         return "0";
+                    tempstr = new string(content.Replace("\"", "").Trim());
+                    content = tempstr;
                     return string.Format($"{content}");         // 同int
                 case "bool":
                     if(content.ToLower() == "yes")
@@ -493,7 +499,9 @@ namespace Application.Editor
                     return "false";
             }
 
-            if(string.IsNullOrEmpty(content))
+            tempstr = new string(content.Replace("\"", "").Trim());
+            content = tempstr;
+            if (string.IsNullOrEmpty(content))
                 return string.Format($"''");
             return string.Format($"'{content}'");
         }
