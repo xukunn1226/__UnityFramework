@@ -16,7 +16,7 @@ namespace Framework.Core
     /// </summary>
     public sealed unsafe class FastBinaryWriter : IDisposable
     {
-        readonly Encoding   _encoding;
+        private Encoding    _encoding;
         private Stream      _stream;
         private byte[]      _ioBuffer;          // temp space for writing to
         private byte*       _ioBufferPtr;
@@ -39,7 +39,7 @@ namespace Framework.Core
 
             _stream = output;
             _encoding = encoding;
-            _ioBuffer = new byte[256];
+            _ioBuffer = System.Buffers.ArrayPool<byte>.Shared.Rent(256);
             _ioBufferPtr = (byte*)UnsafeUtility.PinGCArrayAndGetDataAddress(_ioBuffer, out _bufferGCHandler);
             _ioIndex = 0;
             _position = 0;
@@ -57,6 +57,7 @@ namespace Framework.Core
         public void Dispose()
         {
             Flush();
+            System.Buffers.ArrayPool<byte>.Shared.Return(_ioBuffer);
             _ioBuffer = null;
             UnsafeUtility.ReleaseGCObject(_bufferGCHandler);
             _bufferGCHandler = 0;
@@ -67,7 +68,6 @@ namespace Framework.Core
             if (_ioIndex != 0)
             {
                 _stream.Write(_ioBuffer, 0, _ioIndex);
-                //_stream.Flush();
                 _ioIndex = 0;
             }
         }
@@ -82,8 +82,7 @@ namespace Framework.Core
                     return;
                 }
                 Debug.LogWarning($"Demand Space超过默认iobuffer长度，会引发重新分配。");
-                int newSize = (int)(required * 1.2f / _ioBuffer.Length * _ioBuffer.Length);
-                _ioBuffer = new byte[newSize];
+                _ioBuffer = new byte[(int)(required * 1.2f)];
             }
         }
 
@@ -96,17 +95,8 @@ namespace Framework.Core
         public long GetSeekPosition()
         {
             Flush();
-
             return _stream.Position;
         }
-
-        //public int Reserve(int count)
-        //{
-        //    Flush();
-        //    int position = (int)_stream.Position;
-        //    _stream.Seek(count, SeekOrigin.Current);
-        //    return position;
-        //}
 
         public int StreamPosition
         {
@@ -123,7 +113,45 @@ namespace Framework.Core
             return (uint)((value << 1) ^ (value >> 31));
         }
 
+        internal ulong Zigzag_encoding(long value)
+        {
+            return (ulong)((value << 1) ^ (value >> 63));
+        }
+
+        public int Write(uint value)
+        {
+            DemandSpace(5);
+            int count = 0;
+            do
+            {
+                _ioBuffer[_ioIndex++] = (byte)((value & 0x7F) | 0x80);
+                count++;
+            } while ((value >>= 7) != 0);
+            _ioBuffer[_ioIndex - 1] &= 0x7F;
+            _position += count;
+            return count;
+        }
+        
+        public int Write(ulong value)
+        {
+            DemandSpace(10);
+            int count = 0;
+            do
+            {
+                _ioBuffer[_ioIndex++] = (byte)((value & 0x7F) | 0x80);
+                count++;
+            } while ((value >>= 7) != 0);
+            _ioBuffer[_ioIndex - 1] &= 0x7F;
+            _position += count;
+            return count;
+        }
+
         public int Write(int value)
+        {
+            return Write(Zigzag_encoding(value));
+        }
+
+        public int Write(long value)
         {
             return Write(Zigzag_encoding(value));
         }
@@ -146,46 +174,7 @@ namespace Framework.Core
         public int Write(sbyte value)
         {
             return Write((int)value);
-        }
-
-        public int Write(uint value)
-        {
-            DemandSpace(5);
-            int count = 0;
-            do
-            {
-                _ioBuffer[_ioIndex++] = (byte)((value & 0x7F) | 0x80);
-                count++;
-            } while ((value >>= 7) != 0);
-            _ioBuffer[_ioIndex - 1] &= 0x7F;
-            _position += count;
-            return count;
-        }
-
-        internal ulong Zig(long value)
-        {
-            return (ulong)((value << 1) ^ (value >> 63));
-        }
-
-        public int Write(long value)
-        {
-            return Write(Zig(value));
-        }
-
-        private int Write(ulong value)
-        {
-            DemandSpace(10);
-            int count = 0;
-            do
-            {
-                _ioBuffer[_ioIndex++] = (byte)((value & 0x7F) | 0x80);
-                count++;
-            } while ((value >>= 7) != 0);
-            _ioBuffer[_ioIndex - 1] &= 0x7F;
-            _position += count;
-
-            return count;
-        }
+        }     
 
         public int Write(string value)
         {
@@ -216,15 +205,7 @@ namespace Framework.Core
         public unsafe int Write(double value)
         {
             return Write(*(ulong*)(&value));
-        }
-
-        public int WriteBufferWithLength(byte[] buffer)
-        {
-            int count = Write(buffer.Length);
-            Flush();
-            count += Write(buffer);
-            return count;
-        }
+        }               
 
         public unsafe int WriteArrayNative<T>(Array arr,int length) where T : unmanaged
         {
@@ -238,6 +219,7 @@ namespace Framework.Core
             byte* endPtr = ptrArr + allocateSize;
             while (ptrArr != endPtr)
             {
+                // todo: 逐byte写入，能提高写入性能吗？
                 _stream.WriteByte(*ptrArr++);
             }
             UnsafeUtility.ReleaseGCObject(gcHandle);
@@ -262,7 +244,28 @@ namespace Framework.Core
             return WriteArrayNative<T>((Array)arr, arr.Length);
         }
 
-        public unsafe int WriteListNative<T>(List<T> list) where T: unmanaged
+        public unsafe int WriteListNative<T>(List<T> list) where T : unmanaged
+        {
+            int size = 0;
+            size += Write(list.Count);
+            for (int i = 0; i < list.Count; i++)
+            {
+                var data = list[i];
+                size += WriteNative<T>(ref data);
+            }
+            return size;
+        }
+
+        public unsafe int WriteNative<T>(ref T value) where T : unmanaged
+        {
+            int size = UnsafeUtility.SizeOf<T>();
+            DemandSpace(size);
+            UnsafeUtility.MemCpy(_ioBufferPtr + _ioIndex, UnsafeUtility.AddressOf(ref value), size);
+            _ioIndex += size;
+            return size;
+        }
+
+        public unsafe int WriteListNativeDirectly<T>(List<T> list) where T: unmanaged
         {
             list.Capacity = list.Count;
             var ptrList = GetUnderlyingArray(list);
@@ -290,6 +293,13 @@ namespace Framework.Core
             return (T[])field.GetValue(list);
         }
 
+        public int WriteBufferWithLength(byte[] buffer)
+        {
+            int count = Write(buffer.Length);
+            count += Write(buffer);
+            return count;
+        }
+
         public int WriteBufferWithLength(byte[] buffer,int offset,int count)
         {
             if (!BitConverter.IsLittleEndian)
@@ -297,8 +307,7 @@ namespace Framework.Core
                 throw new Exception("该平台字节序是【大端】!");
             }
 
-            int wcount = Write(count);
-            
+            int wcount = Write(count);            
             wcount += Write(buffer, offset, count);
             return wcount;
         }
@@ -315,16 +324,7 @@ namespace Framework.Core
             Flush();
             _stream.Write(buffer, offset, count);
             return count;
-        }
-
-        public unsafe int WriteNative<T>(ref T value) where T : unmanaged
-        {
-            int size = UnsafeUtility.SizeOf<T>();
-            DemandSpace(size);
-            UnsafeUtility.MemCpy(_ioBufferPtr + _ioIndex, UnsafeUtility.AddressOf(ref value), size);
-            _ioIndex += size;
-            return size;
-        }
+        }        
 
         public int Write(Vector2 value)
         {
@@ -341,7 +341,6 @@ namespace Framework.Core
             wcount += Write(value.y);
             wcount += Write(value.z);
             return wcount;
-
         }
 
         public int Write(Vector4 value)
@@ -352,7 +351,6 @@ namespace Framework.Core
             wcount += Write(value.z);
             wcount += Write(value.w);
             return wcount;
-
         }
 
         public int Write(Quaternion value)
@@ -363,7 +361,6 @@ namespace Framework.Core
             wcount += Write(value.z);
             wcount += Write(value.w);
             return wcount;
-
         }
 
         public int Write(Bounds value)
@@ -372,29 +369,9 @@ namespace Framework.Core
             wcount += Write(value.min);
             wcount += Write(value.max);
             return wcount;
-
         }
 
-#if UNITY_EDITOR
-        // static private uint Zig_encoding(int value)
-        // {
-        //     return (uint)((value << 1) ^ (value >> 31));
-        // }
-
-        // private const int Int32Msb = ((int)1) << 31;
-        // static private int Zag_decoding(uint ziggedValue)
-        // {
-        //     int value = (int)ziggedValue;
-        //     return (-(value & 0x01)) ^ ((value >> 1) & ~Int32Msb);
-        // }
-
-        // [UnityEditor.MenuItem("Test/Foo")]
-        // public static void Test2()
-        // {
-        //     uint zz = Zig_encoding(-2);
-        //     int zzz = Zag_decoding(zz);
-        // }
-
+#if UNITY_EDITOR        
         [UnityEditor.MenuItem("Test/Foo")]
         public static void Test()
         {
@@ -404,11 +381,11 @@ namespace Framework.Core
             string v4 = "hello world";
             int v5 = -1000;
             uint v6 = 1000;
-            float v7 = 100.0f;
+            float v7 = -100.0f;
             bool v8 = true;
             ulong v9 = 0;
             long v10 = -1000;
-            byte[] vbuff = new byte[5] { 1, 2,3,4,5 };
+            byte[] vbuff = new byte[5] { 1,2,3,4,5 };
             int buffRepeatCount = 10;
             byte[] vlbuff = new byte[300];
             vlbuff[2] = 9;
@@ -419,25 +396,20 @@ namespace Framework.Core
             string v15 = "++hello world";
             int[] arr1 = new int[] { 5, 6, 7 };
             int[,] arr2 = new int[,] { { 8, 9 },{ 10, 11 }, { 12, 13 } };
+            List<int> list = new List<int>() { 1, 2, 4, -1, -3, -5 };
 
             var stream = new MemoryStream(1024);
             var writer = new FastBinaryWriter(stream);
             writer.Write(v1);
-
-            //writer.Flush();
-            //stream.Position = 0;
-            //var reader1 = new FastBinaryReader();
-            //reader1.Init(stream);
-            //byte tnv1 = reader1.ReadByte();
-            //return;
-
-
-
             writer.Write(v2); 
             writer.Write(v3); 
             writer.Write(v4);
-            writer.Write(v5); writer.Write(v6); writer.Write(v7); writer.Write(v8);
-            writer.Write(v9); writer.Write(v10);
+            writer.Write(v5);
+            writer.Write(v6);
+            writer.Write(v7);
+            writer.Write(v8);
+            writer.Write(v9);
+            writer.Write(v10);
             for (int i = 0; i < buffRepeatCount; i++)
             {
                 writer.WriteBufferWithLength(vbuff);
@@ -450,16 +422,22 @@ namespace Framework.Core
             writer.Write(v15);
             writer.WriteArrayNative(arr1);
             writer.WriteArrayNative(arr2);
+            writer.WriteListNative(list);
 
             writer.Flush();
 
             stream.Position = 0;
-            var reader = new FastBinaryReader();
-            reader.Init(stream);
+            var reader = new FastBinaryReader(stream);
 
-            byte nv1 = reader.ReadByte(); short nv2 = reader.ReadInt16(); ushort nv3 = reader.ReadUInt16();
-            string nv4 = reader.ReadString(); int nv5 = reader.ReadInt32(); uint nv6 = reader.ReadUInt32();
-            float nv7 = reader.ReadFloat(); bool nv8 = reader.ReadBoolean(); ulong nv9 = reader.ReadUInt64();
+            byte nv1 = reader.ReadByte();
+            short nv2 = reader.ReadInt16();
+            ushort nv3 = reader.ReadUInt16();
+            string nv4 = reader.ReadString();
+            int nv5 = reader.ReadInt32();
+            uint nv6 = reader.ReadUInt32();
+            float nv7 = reader.ReadFloat();
+            bool nv8 = reader.ReadBoolean();
+            ulong nv9 = reader.ReadUInt64();
             long nv10 = reader.ReadInt64();
             for (int i = 0; i < buffRepeatCount; i++)
             {
@@ -484,10 +462,13 @@ namespace Framework.Core
             }
             sbyte nv11 = reader.ReadSByte();
             short nv12 = reader.ReadInt16();
-            int nv13 = reader.ReadInt32(); uint nv14 = reader.ReadUInt32();
+            int nv13 = reader.ReadInt32();
+            uint nv14 = reader.ReadUInt32();
             string nv15 = reader.ReadString();
             var narr1 = reader.ReadArrayNative<int>();
             var narr2 = reader.ReadArrayNative2D<int>(2);
+            List<int> nlist = new List<int>();
+            reader.ReadListNative<int>(nlist);
 
 
             Debug.Assert(v1 == nv1); Debug.Assert(v2 == nv2); Debug.Assert(v3 == nv3); Debug.Assert(v4 == nv4);

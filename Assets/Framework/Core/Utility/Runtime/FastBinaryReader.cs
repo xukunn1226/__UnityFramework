@@ -11,49 +11,58 @@ namespace Framework.Core
     /// <summary>
     /// 速度更快的二进制读写，并减少使用的byte空间，参考protobuf改来
     /// 参考文档 https://stackoverflow.com/questions/2036718/fastest-way-of-reading-and-writing-binary
-    ///  https://jacksondunstan.com/articles/3318
+    ///          https://jacksondunstan.com/articles/3318
+    ///          https://zhuanlan.zhihu.com/p/39478710
     ///  参考自知乎
     /// </summary>
     public class FastBinaryReader : IDisposable
     {
-        readonly UTF8Encoding encoding = new UTF8Encoding();
+        protected Stream    _source;
+        protected Encoding  _encoding;
+        protected byte[]    _ioBuffer;
+        protected int       _ioIndex;
+        protected int       _position;
+        protected int       _available;
 
-        protected Stream _source;
-        protected byte[] _ioBuffer;
-        protected int _ioIndex;
-        protected int _position;
-        protected int _available;
+        protected FastBinaryReader()
+        { }
 
-        public FastBinaryReader()
+        public FastBinaryReader(Stream input, Encoding encoding)
         {
-            _ioBuffer = new byte[256];
-        }
+            if (input == null)
+                throw new ArgumentNullException("input");
+            if (encoding == null)
+                throw new ArgumentNullException("encoding");
 
-        public FastBinaryReader(Stream s): this()
-        {
-            Init(s);
-        }
-
-        public void Init(Stream s)
-        {
-            _source = s;
-
+            _source = input;
+            _encoding = encoding;
+            _ioBuffer = System.Buffers.ArrayPool<byte>.Shared.Rent(256);
             _ioIndex = 0;
             _available = 0;
             _position = 0;
         }
 
-        public uint ReadUInt32()
+        public FastBinaryReader(Stream input) : this(input, new UTF8Encoding(false, true))
         {
-            return ReadUInt32Variant(false);
         }
 
-        // zigzag encoding, ref https://gist.github.com/mfuerstenau/ba870a29e16536fdbaba
         private const int Int32Msb = ((int)1) << 31;
         private int Zigzag_decoding(uint ziggedValue)
         {
             int value = (int)ziggedValue;
             return (-(value & 0x01)) ^ ((value >> 1) & ~Int32Msb);
+        }
+
+        private const long Int64Msb = ((long)1) << 63;
+        private long Zigzag_decoding(ulong ziggedValue)
+        {
+            long value = (long)ziggedValue;
+            return (-(value & 0x01L)) ^ ((value >> 1) & ~Int64Msb);
+        }
+
+        public uint ReadUInt32()
+        {
+            return ReadUInt32Variant(false);
         }
 
         public int ReadInt32()
@@ -66,38 +75,23 @@ namespace Framework.Core
             return ReadUInt64Variant();
         }
 
-        private const long Int64Msb = ((long)1) << 63;
-        private long Zag(ulong ziggedValue)
-        {
-            long value = (long)ziggedValue;
-            return (-(value & 0x01L)) ^ ((value >> 1) & ~Int64Msb);
-        }
-
         public long ReadInt64()
         {
-            return Zag(ReadUInt64Variant());
+            return Zigzag_decoding(ReadUInt64Variant());
         }
 
-        public string ReadString()
+        private uint ReadUInt32Variant(bool trimNegative)
         {
-            int bytes = (int)ReadUInt32Variant(false);
-            if (bytes == 0) return "";
-            if (_available < bytes) Ensure(bytes, true);
-            string s = encoding.GetString(_ioBuffer, _ioIndex, bytes);
-            _available -= bytes;
-            _position += bytes;
-            _ioIndex += bytes;
-            return s;
-        }
-
-        public bool ReadBoolean()
-        {
-            switch (ReadUInt32())
+            uint value;
+            int read = TryReadUInt32VariantWithoutMoving(trimNegative, out value);
+            if (read > 0)
             {
-                case 0: return false;
-                case 1: return true;
-                default: throw CreateException("Unexpected boolean value");
+                _ioIndex += read;
+                _available -= read;
+                _position += read;
+                return value;
             }
+            throw EoF();
         }
 
         internal int TryReadUInt32VariantWithoutMoving(bool trimNegative, out uint value)
@@ -147,10 +141,10 @@ namespace Framework.Core
             throw CreateException("OverflowException");
         }
 
-        private uint ReadUInt32Variant(bool trimNegative)
+        private ulong ReadUInt64Variant()
         {
-            uint value;
-            int read = TryReadUInt32VariantWithoutMoving(trimNegative, out value);
+            ulong value;
+            int read = TryReadUInt64VariantWithoutMoving(out value);
             if (read > 0)
             {
                 _ioIndex += read;
@@ -223,20 +217,6 @@ namespace Framework.Core
             return 10;
         }
 
-        private ulong ReadUInt64Variant()
-        {
-            ulong value;
-            int read = TryReadUInt64VariantWithoutMoving(out value);
-            if (read > 0)
-            {
-                _ioIndex += read;
-                _available -= read;
-                _position += read;
-                return value;
-            }
-            throw EoF();
-        }
-
         internal void Ensure(int count, bool strict)
         {
             if (count > _ioBuffer.Length)
@@ -265,10 +245,32 @@ namespace Framework.Core
             }
         }
 
+        public string ReadString()
+        {
+            int bytes = (int)ReadUInt32Variant(false);
+            if (bytes == 0) return "";
+            if (_available < bytes) Ensure(bytes, true);
+            string s = _encoding.GetString(_ioBuffer, _ioIndex, bytes);
+            _available -= bytes;
+            _position += bytes;
+            _ioIndex += bytes;
+            return s;
+        }
+
+        public bool ReadBoolean()
+        {
+            switch (ReadUInt32())
+            {
+                case 0: return false;
+                case 1: return true;
+                default: throw CreateException("Unexpected boolean value");
+            }
+        }
+
         public void Seek(int offset, SeekOrigin origin)
         {
             // reset buff index
-            if(origin == SeekOrigin.Current)
+            if (origin == SeekOrigin.Current)
             {
                 _source.Position -= _available;
             }
@@ -316,10 +318,10 @@ namespace Framework.Core
             return (sbyte)ReadInt32();
         }
 
-        public byte[] ReadBuffer(int length,byte[] inbuff = null)
+        public byte[] ReadBuffer(int length, byte[] inbuff = null)
         {
-            byte[] buff = inbuff??new byte[length];
-            if(buff.Length < length)
+            byte[] buff = inbuff ?? new byte[length];
+            if (buff.Length < length)
             {
                 throw new Exception($"buff长度不足!");
             }
@@ -367,13 +369,13 @@ namespace Framework.Core
             for (; i < length - kNativeBufferSize; i += kNativeBufferSize)
             {
                 ReadBuffer(kNativeBufferSize, sNativeBuffer);
-                fixed(void* ptr = sNativeBuffer)
+                fixed (void* ptr = sNativeBuffer)
                 {
                     UnsafeUtility.MemCpy(inbuff + i, (byte*)ptr, kNativeBufferSize);
                 }
             }
             int left = length - i;
-            if(left > 0)
+            if (left > 0)
             {
                 ReadBuffer(left, sNativeBuffer);
                 fixed (void* ptr = sNativeBuffer)
@@ -414,7 +416,6 @@ namespace Framework.Core
             ReadBufferNative(count, ptrArr);
             UnsafeUtility.ReleaseGCObject(gcHandle);
             return arr;
-
         }
 
         public unsafe T[,] ReadArrayNative2D<T>(int dimCol) where T : unmanaged
@@ -433,20 +434,17 @@ namespace Framework.Core
             ReadBufferNative(count, ptrArr);
             UnsafeUtility.ReleaseGCObject(gcHandle);
             return arr;
-
         }
 
         public unsafe void ReadListNative<T>(List<T> list) where T : unmanaged
         {
             int count = ReadInt32();
-            int objSize = UnsafeUtility.SizeOf<T>();
-            int elementCount = count / objSize;
-            list.Capacity = elementCount;
-            var ptrList = FastBinaryWriter.GetUnderlyingArray(list);
-
-            byte* ptrArr = (byte*)UnsafeUtility.PinGCArrayAndGetDataAddress(ptrList, out ulong gcHandle);
-            ReadBufferNative(count, ptrArr);
-            UnsafeUtility.ReleaseGCObject(gcHandle);
+            T temp = new T();
+            for (int i = 0; i < count; i++)
+            {
+                ReadStructNative<T>(ref temp);
+                list.Add(temp);
+            }
         }
 
         public Vector2 ReadVector2()
@@ -505,18 +503,21 @@ namespace Framework.Core
             return new EndOfStreamException();
         }
 
-        public void Clear()
+        public void Close()
         {
-            _source = null;
+            Dispose();
         }
 
         public void Dispose()
         {
+            var arrayPool = System.Buffers.ArrayPool<byte>.Shared;
+            arrayPool.Return(_ioBuffer);
             _ioBuffer = null;
+            _source = null;
         }
     }
 
-    public class FastBinaryReaderExtend :  FastBinaryReader
+    public class FastBinaryReaderExtend : FastBinaryReader
     {
         public byte[] buff;
 
@@ -524,7 +525,7 @@ namespace Framework.Core
         {
             this.buff = buff;
             var stream = new MemoryStream(buff);
-            base.Init(stream);
+            //base.Init(stream);
         }
 
         /// <summary>
