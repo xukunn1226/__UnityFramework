@@ -303,9 +303,7 @@ namespace Framework.Core
 
         public int WriteBufferWithLength(byte[] buffer)
         {
-            int count = Write(buffer.Length);
-            count += Write(buffer);
-            return count;
+            return WriteBufferWithLength(buffer, 0, buffer.Length);
         }
 
         public int WriteBufferWithLength(byte[] buffer,int offset,int count)
@@ -402,32 +400,32 @@ namespace Framework.Core
             string v15 = "++hello world";
             int[] arr1 = new int[] { 5, 6, 7 };
             int[,] arr2 = new int[,] { { 8, 9 },{ 10, 11 }, { 12, 13 } };
-            List<int> list = new List<int>() { 1, 2, 4, -1, -3, -5 };
+            List<int> list = new List<int>() { 0, 2, 4, -1, -3, -5 };
 
             var stream = new MemoryStream(1024);
             var writer = new FastBinaryWriter(stream);
             writer.Write(v1);
-            //writer.Write(v2); 
-            //writer.Write(v3); 
-            //writer.Write(v4);
-            //writer.Write(v5);
-            //writer.Write(v6);
-            //writer.Write(v7);
-            //writer.Write(v8);
-            //writer.Write(v9);
-            //writer.Write(v10);
-            //for (int i = 0; i < buffRepeatCount; i++)
-            //{
-            //    writer.WriteBufferWithLength(vbuff);
-            //    writer.WriteBufferWithLength(vlbuff);
-            //}
-            //writer.Write(v11); 
-            //writer.Write(v12);
-            //writer.Write(v13);
-            //writer.Write(v14);
-            //writer.Write(v15);
-            //writer.WriteArrayNative(arr1);
-            //writer.WriteArrayNative(arr2);
+            writer.Write(v2);
+            writer.Write(v3);
+            writer.Write(v4);
+            writer.Write(v5);
+            writer.Write(v6);
+            writer.Write(v7);
+            writer.Write(v8);
+            writer.Write(v9);
+            writer.Write(v10);
+            for (int i = 0; i < buffRepeatCount; i++)
+            {
+                writer.WriteBufferWithLength(vbuff);
+                writer.WriteBufferWithLength(vlbuff);
+            }
+            writer.Write(v11);
+            writer.Write(v12);
+            writer.Write(v13);
+            writer.Write(v14);
+            writer.Write(v15);
+            writer.WriteArrayNative(arr1);
+            writer.WriteArrayNative(arr2);
             writer.WriteListNative(list);
             writer.Write("");
 
@@ -437,15 +435,15 @@ namespace Framework.Core
             var reader = new FastBinaryReader(stream);
 
             byte nv1 = reader.ReadByte();
-            //short nv2 = reader.ReadInt16();
-            //ushort nv3 = reader.ReadUInt16();
-            //string nv4 = reader.ReadString();
-            //int nv5 = reader.ReadInt32();
-            //uint nv6 = reader.ReadUInt32();
-            //float nv7 = reader.ReadFloat();
-            //bool nv8 = reader.ReadBoolean();
-            //ulong nv9 = reader.ReadUInt64();
-            //long nv10 = reader.ReadInt64();
+            short nv2 = reader.ReadInt16();
+            ushort nv3 = reader.ReadUInt16();
+            string nv4 = reader.ReadString();
+            int nv5 = reader.ReadInt32();
+            uint nv6 = reader.ReadUInt32();
+            float nv7 = reader.ReadFloat();
+            bool nv8 = reader.ReadBoolean();
+            ulong nv9 = reader.ReadUInt64();
+            long nv10 = reader.ReadInt64();
             for (int i = 0; i < buffRepeatCount; i++)
             {
                 byte[] nvbuff = reader.ReadBufferWithLength();
@@ -468,25 +466,25 @@ namespace Framework.Core
                 }
             }
             sbyte nv11 = reader.ReadSByte();
-            //short nv12 = reader.ReadInt16();
-            //int nv13 = reader.ReadInt32();
-            //uint nv14 = reader.ReadUInt32();
-            //string nv15 = reader.ReadString();
-            //var narr1 = reader.ReadArrayNative<int>();
-            //var narr2 = reader.ReadArrayNative2D<int>(2);
+            short nv12 = reader.ReadInt16();
+            int nv13 = reader.ReadInt32();
+            uint nv14 = reader.ReadUInt32();
+            string nv15 = reader.ReadString();
+            var narr1 = reader.ReadArrayNative<int>();
+            var narr2 = reader.ReadArrayNative2D<int>(2);
             List<int> nlist = new List<int>();
             reader.ReadListNative<int>(nlist);
             var emptyStr = reader.ReadString();
 
 
-            //Debug.Assert(v1 == nv1); Debug.Assert(v2 == nv2); Debug.Assert(v3 == nv3); Debug.Assert(v4 == nv4);
-            //Debug.Assert(v5 == nv5); Debug.Assert(v6 == nv6); Debug.Assert(v7 == nv7); Debug.Assert(v8 == nv8);
-            //Debug.Assert(v9 == nv9); Debug.Assert(v10 == nv10);
+            Debug.Assert(v1 == nv1); Debug.Assert(v2 == nv2); Debug.Assert(v3 == nv3); Debug.Assert(v4 == nv4);
+            Debug.Assert(v5 == nv5); Debug.Assert(v6 == nv6); Debug.Assert(v7 == nv7); Debug.Assert(v8 == nv8);
+            Debug.Assert(v9 == nv9); Debug.Assert(v10 == nv10);
 
-            //Debug.Assert(v11 == nv11); Debug.Assert(v12 == nv12);
-            //Debug.Assert(v13 == nv13); Debug.Assert(v14 == nv14); Debug.Assert(v15 == nv15);
-            //Debug.Assert(System.Linq.Enumerable.SequenceEqual(narr1,arr1));
-            //Debug.Assert(SequenceEquals<int>(narr2, arr2));
+            Debug.Assert(v11 == nv11); Debug.Assert(v12 == nv12);
+            Debug.Assert(v13 == nv13); Debug.Assert(v14 == nv14); Debug.Assert(v15 == nv15);
+            Debug.Assert(System.Linq.Enumerable.SequenceEqual(narr1, arr1));
+            Debug.Assert(SequenceEquals<int>(narr2, arr2));
 
             Debug.Log($"比较完毕.");
         }

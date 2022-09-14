@@ -17,12 +17,13 @@ namespace Framework.Core
     /// </summary>
     public class FastBinaryReader : IDisposable
     {
-        protected Stream    _source;
-        protected Encoding  _encoding;
-        protected byte[]    _ioBuffer;
-        protected int       _ioIndex;
-        protected int       _position;
-        protected int       _available;
+        private Stream      _source;
+        private Encoding    _encoding;
+        private byte[]      _ioBuffer;
+        private int         _ioIndex;
+        private int         _position;
+        private int         _available;
+        private bool        m_isMemoryStream;
 
         protected FastBinaryReader()
         { }
@@ -40,6 +41,7 @@ namespace Framework.Core
             _ioIndex = 0;
             _available = 0;
             _position = 0;
+            m_isMemoryStream = _source.GetType() == typeof(MemoryStream);
         }
 
         public FastBinaryReader(Stream input) : this(input, new UTF8Encoding(false, true))
@@ -267,25 +269,6 @@ namespace Framework.Core
             }
         }
 
-        public void Seek(int offset, SeekOrigin origin)
-        {
-            // reset buff index
-            if (origin == SeekOrigin.Current)
-            {
-                _source.Position -= _available;
-            }
-            _available = 0;
-            _position = 0;
-            _ioIndex = 0;
-
-            _source.Seek(offset, origin);
-        }
-
-        public long GetSeekPosition()
-        {
-            return _source.Position - _available;
-        }
-
         public unsafe float ReadFloat()
         {
             var value = ReadUInt32();
@@ -339,12 +322,14 @@ namespace Framework.Core
                 _source.Position = _source.Position - _available;
 
                 int bytesRead = 0, offset = 0;
-                int canRead = length;
                 while (length > 0 && (bytesRead = _source.Read(buff, offset, length)) > 0)
                 {
                     length -= bytesRead;
                     offset += bytesRead;
                 }
+
+                if (length > 0)
+                    throw new Exception($"仍有{length}长度数据未读取");
 
                 // reset buff index
                 _available = 0;
@@ -447,6 +432,52 @@ namespace Framework.Core
             }
         }
 
+        /// <summary>
+        /// 不同于ReadBuffer,这里不从流中读出到缓冲区，而是直接指针指向流缓冲区，少了一次缓冲区拷贝
+        /// !! 注意，流必须是【拥有完整缓冲区】的MemoryStream!!不能是FileStream，构造函数保证了这一点
+        /// </summary>
+        /// <param name="func"></param>
+        public void PinBufferWithLength(Action<byte[], int> func)
+        {
+            int length = ReadInt32();
+            PinBuffer(length, func);
+        }
+
+        public void PinBuffer(int length, Action<byte[], int> func)
+        {
+            if (!m_isMemoryStream)
+                throw new InvalidOperationException($"该操作只能作用于memory stream");
+
+            MemoryStream stream = _source as MemoryStream;
+
+            if (!BitConverter.IsLittleEndian)
+            {
+                throw new Exception("该平台字节序是【大端】!");
+            }
+
+            if (_available > length)
+            {
+                func(_ioBuffer, _ioIndex);
+                _available -= length;
+                _position += length;
+                _ioIndex += length;
+            }
+            else
+            {
+                _source.Position = _source.Position - _available;
+
+                func(stream.GetBuffer(), (int)_source.Position);
+
+                // reset stream to proper position
+                _source.Position = _source.Position + length;
+
+                // reset buff index
+                _available = 0;
+                _position = 0;
+                _ioIndex = 0;
+            }
+        }
+
         public Vector2 ReadVector2()
         {
             Vector2 vec = new Vector2();
@@ -528,45 +559,6 @@ namespace Framework.Core
             //base.Init(stream);
         }
 
-        /// <summary>
-        /// 不同于ReadBuffer,这里不从流中读出到缓冲区，而是直接指针指向流缓冲区，少了一次缓冲区拷贝
-        /// !! 注意，流必须是【拥有完整缓冲区】的MemoryStream!!不能是FileStream，构造函数保证了这一点
-        /// </summary>
-        /// <param name="func"></param>
-        public void PinBufferWithLength(Action<byte[], int> func)
-        {
-            int length = ReadInt32();
-            PinBuffer(length, func);
-        }
-
-        public void PinBuffer(int length, Action<byte[], int> func)
-        {
-            if (!BitConverter.IsLittleEndian)
-            {
-                throw new Exception("该平台字节序是【大端】!");
-            }
-
-            if (_available > length)
-            {
-                func(_ioBuffer, _ioIndex);
-                _available -= length;
-                _position += length;
-                _ioIndex += length;
-            }
-            else
-            {
-                _source.Position = _source.Position - _available;
-
-                func(buff, (int)_source.Position);
-
-                // reset stream to proper position
-                _source.Position = _source.Position + length;
-
-                // reset buff index
-                _available = 0;
-                _position = 0;
-                _ioIndex = 0;
-            }
-        }
+        
     }
 }
