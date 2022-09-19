@@ -752,7 +752,7 @@ namespace AnimationInstancingModule.Runtime
             // method 1. extract mesh
             Mesh meshInst = UnityEngine.Object.Instantiate(smr.sharedMesh);
             meshInst.colors = GetBoneWeights(meshInst, lodLevel == 0 ? 4 : (lodLevel == 1 ? 2 : 1));
-            meshInst.SetUVs(2, GetBoneIndices(meshInst, smr, m_BoneTransform));
+            meshInst.SetUVs(2, GetBoneIndices(meshInst, smr, enableReference ? referenceTo.m_BoneTransform : m_BoneTransform));
             meshInst.UploadMeshData(true);      // isReadable = false
             AssetDatabase.CreateAsset(meshInst, GetMeshFilename(gameObject, smr));
 
