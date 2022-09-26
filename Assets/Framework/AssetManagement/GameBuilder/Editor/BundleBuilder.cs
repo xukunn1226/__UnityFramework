@@ -569,5 +569,33 @@ namespace Framework.AssetManagement.GameBuilder
             if(BundleFileList.BuildBundleFileList(directory, VersionDefines.EXTRA_FOLDER, savedFile))
                 AssetDatabase.ImportAsset(savedFile);
         }
+
+        [MenuItem("Tools/Check scripts compilation &r")]
+        static public void BuildMinorBundle()
+        {
+            var options = BuildAssetBundleOptions.None;
+            string outputPath = "Assets/Temp";
+            if(!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
+            File.Delete(outputPath + "/test_script");
+            File.Delete(outputPath + "/test_script.manifest");
+            AssetBundleBuild[] abbs = new AssetBundleBuild[1];
+            AssetBundleBuild abb = new AssetBundleBuild();
+            abb.assetBundleName = "test_script";
+            abb.assetNames = new string[1];
+            abb.assetNames[0] = "Assets/Res/Core/PoolManager.prefab";
+            abbs[0] = abb;
+            var manifest = BuildPipeline.BuildAssetBundles(outputPath, abbs, options, EditorUserBuildSettings.activeBuildTarget);
+            if(manifest != null)
+            {
+                Debug.Log($"Success to compile scripts");
+            }
+            else
+            {
+                Debug.LogError($"Failed to compile scripts");
+            }
+        }
     }
 }
