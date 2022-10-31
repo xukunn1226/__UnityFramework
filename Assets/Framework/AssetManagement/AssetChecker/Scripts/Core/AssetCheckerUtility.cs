@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using Newtonsoft;
+using Newtonsoft.Json;
+using Sirenix.OdinInspector.Editor;
+//using Google.Protobuf.WellKnownTypes;
 
 namespace Framework.AssetManagement.AssetChecker
-{
+{    
     static public class AssetCheckerUtility
     {
         static public string TrimProjectFolder(string path)
@@ -16,75 +20,16 @@ namespace Framework.AssetManagement.AssetChecker
             }
             return path;
         }
-
-        public enum UnityType
-        {
-            Invalid,
-            Object,
-            AnimationClip,
-            AudioClip,
-            ComputerShader,
-            Font,
-            GUISkin,
-            Material,
-            Mesh,
-            Model,
-            PhysicMaterial,
-            Prefab,
-            Shader,
-            Sprite,
-            Texture,
-            VideoClip,
-        }
-
-        static public UnityType GetUnityType(string value)
-        {
-            UnityType result;
-            if(!Enum.TryParse<UnityType>(value, true, out result))
-            {
-                return UnityType.Invalid;
-            }
-            return result;
-        }
-
-        static public Type GetUnityObjectType(UnityType type)
-        {
-            switch(type)
-            {
-                case UnityType.Object:
-                    return typeof(UnityEngine.Object);
-                case UnityType.AnimationClip:
-                    return typeof(UnityEngine.AnimationClip);
-                case UnityType.AudioClip:
-                    return typeof(UnityEngine.AudioClip);
-                case UnityType.ComputerShader:
-                    return typeof(UnityEngine.ComputeShader);
-                case UnityType.Font:
-                    return typeof(UnityEngine.Font);
-                case UnityType.GUISkin:
-                    return typeof(UnityEngine.GUISkin);
-                case UnityType.Material:
-                    return typeof(UnityEngine.Material);
-                case UnityType.Mesh:
-                    return typeof(UnityEngine.Mesh);
-                case UnityType.Model:
-                    return typeof(UnityEngine.GameObject);
-                case UnityType.PhysicMaterial:
-                    return typeof(UnityEngine.PhysicMaterial);
-                case UnityType.Prefab:
-                    return typeof(UnityEngine.GameObject);
-                case UnityType.Shader:
-                    return typeof(UnityEngine.Shader);
-                case UnityType.Sprite:
-                    return typeof(UnityEngine.Sprite);
-                case UnityType.Texture:
-                    return typeof(UnityEngine.Texture);
-                case UnityType.VideoClip:
-                    return typeof(UnityEngine.Video.VideoClip);
-            }   
-            return null;
-        }
     }
+
+
+
+
+
+
+
+
+
 
     public class BaseFuncComponentParam
     {
@@ -133,7 +78,73 @@ namespace Framework.AssetManagement.AssetChecker
             var param = new BaseFuncComponentParam();
             param.ComponentTypeName = component.GetType().Name;
             param.ComponentParamJson = EditorJsonUtility.ToJson(component);
+            param.ComponentParamJson = Newtonsoft.Json.JsonConvert.SerializeObject(component);
             return param;
+        }
+    }
+
+
+    static public class AssetChecker_Test
+    {
+        [UnityEditor.MenuItem("Tools/AssetChecker_Test/Foo")]
+        static private void Foo()
+        {
+            AssetFilter_Path filter = new AssetFilter_Path();
+            filter.input = new List<string> { "Assets/Resources" };
+            filter.pattern = @"s/Wind";
+            List<string> ret = filter.DoFilter();
+
+            int count = 0;
+            foreach (string s in ret)
+            {
+                Debug.Log(string.Format($"{count++}: {s}"));
+            }
+        }
+
+        [UnityEditor.MenuItem("Tools/AssetChecker_Test/Foo2")]
+        static private void Foo2()
+        {
+            AssetFilter_Filename filter = new AssetFilter_Filename();
+            filter.input = new List<string> { "Assets/Resources" };
+            filter.nameFilter = @"a*(?!(meta)$)";
+            filter.typeFilter = AssetFilter_Filename.UnityType.Object;
+            List<string> ret = filter.DoFilter();
+
+            int count = 0;
+            foreach (string s in ret)
+            {
+                Debug.Log(string.Format($"{count++}: {s}"));
+            }
+        }
+
+        [UnityEditor.MenuItem("Tools/AssetChecker_Test/TestSerialize")]
+        static private void TestSerialize()
+        {
+            AssetProcessor_Mesh processor = new AssetProcessor_Mesh();
+            processor.threshold = 312;
+
+            BaseFuncComponentParam param = BaseFuncComponentParam<AssetProcessor_Mesh>.CreateParam(processor);
+            Debug.Log($"{param.ComponentParamJson}");
+
+            AssetProcessor_Mesh p = (AssetProcessor_Mesh)BaseFuncComponentParam<IAssetProcessor>.CreateComponent(param);
+            Debug.Log($"p: {p.threshold}");
+        }
+
+        [UnityEditor.MenuItem("Tools/AssetChecker_Test/Test Checker Serialize")]
+        static private void TestCheckerSerialize()
+        {
+            AssetCheckerOverview overview = new AssetCheckerOverview();
+
+            AssetChecker checker = new AssetChecker();
+            ((AssetFilter_Path)checker.PathFilter.filter).input = new List<string>() { "Assets/Resources" };
+            checker.Processor = new AssetProcessor_Mesh();
+            ((AssetProcessor_Mesh)checker.Processor).threshold = 111;
+
+            overview.AllCheckers.Add(checker);
+
+            AssetCheckerOverview.Serialize(overview);
+
+            AssetCheckerOverview ov = AssetCheckerOverview.Deserialize();
         }
     }
 }

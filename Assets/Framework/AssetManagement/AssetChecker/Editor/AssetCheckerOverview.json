@@ -1,0 +1,40 @@
+{
+  "$type": "Framework.AssetManagement.AssetChecker.AssetCheckerOverview, Framework.Core.Editor",
+  "AllCheckers": {
+    "$type": "System.Collections.Generic.List`1[[Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor]], mscorlib",
+    "$values": [
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": null,
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Resources"
+              ]
+            },
+            "pattern": null
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": null,
+            "nameFilter": null,
+            "typeFilter": 0
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 111
+        }
+      }
+    ]
+  }
+}

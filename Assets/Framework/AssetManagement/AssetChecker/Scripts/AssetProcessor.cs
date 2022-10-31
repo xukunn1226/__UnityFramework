@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Newtonsoft.Json;
 
 namespace Framework.AssetManagement.AssetChecker
 {
@@ -12,7 +13,7 @@ namespace Framework.AssetManagement.AssetChecker
 
     public class AssetProcessor_Mesh : IAssetProcessor
     {
-        public int threshold;   // { get; set; }
+        public int threshold { get; set; }
 
         public string DoProcess(string assetPath)
         {

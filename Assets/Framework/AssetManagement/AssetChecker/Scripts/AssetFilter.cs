@@ -10,33 +10,36 @@ namespace Framework.AssetManagement.AssetChecker
 {
     public interface IAssetFilter
     {
-        List<string>    input   { get; set; }
-        string          pattern { get; set; }
-        List<string> DoMatch();
+        List<string> DoFilter();
     }
 
     /// <summary>
     /// 路径过滤器
     /// </summary>
-    public class AssetChecker_PathFilter : IAssetFilter
+    public class AssetFilter_Path : IAssetFilter
     {
         public List<string> input   { get; set; }               // 需要筛选的根目录
         public string       pattern { get; set; }               // 正则表达式
 
-        // 所有符合正则的路径，去除了工程目录前缀
-        public List<string> DoMatch()
+        /// <summary>
+        /// 筛选出符合条件的目录列表，输入是目录列表，输出也是目录列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        public List<string> DoFilter()
         {
             if (input == null || input.Count != 1)
                 throw new System.ArgumentNullException(@"PathFilter: unsupport EMPTY directory or input directories count > 1");
-
-            DirectoryInfo di = new DirectoryInfo(input[0]);
-            DirectoryInfo[] dis = di.GetDirectories("*", SearchOption.AllDirectories);
 
             List<string> result = new List<string>();
             try
             {
                 Regex regex = new Regex(pattern);
 
+                DirectoryInfo di = new DirectoryInfo(input[0]);
+                DirectoryInfo[] dis = di.GetDirectories("*", SearchOption.AllDirectories);
                 foreach (var dir in dis)
                 {
                     string path = dir.FullName.Replace(@"\", @"/");
@@ -52,22 +55,42 @@ namespace Framework.AssetManagement.AssetChecker
         }
     }
 
-    public class AssetChecker_FilenameFilter : IAssetFilter
+    public class AssetFilter_Filename : IAssetFilter
     {
-        public List<string> input   { get; set; }               // 需要筛选的根目录
-        public string       pattern { get; set; }               // 正则表达式
+        public enum UnityType
+        {
+            Object,
+            AnimationClip,
+            AudioClip,
+            ComputerShader,
+            Font,
+            GUISkin,
+            Material,
+            Mesh,
+            Model,
+            PhysicMaterial,
+            Prefab,
+            Shader,
+            Sprite,
+            Texture,
+            VideoClip,
+        }
+
+        public List<string> input       { get; set; }               // 需要筛选的根目录
+        public string       nameFilter  { get; set; }               // 文件名正则表达式
+        public UnityType    typeFilter  { get; set; }               // 类型过滤器
 
         /// <summary>
-        /// 
+        /// 筛选出符合条件的文件列表，输入是目录列表，输出是文件列表
         /// </summary>
         /// <returns>返回符合正则的文件路径，去除了工程目录前缀</returns>
-        public List<string> DoMatch()
+        public List<string> DoFilter()
         {
             List<string> result = new List<string>();
 
             try
             {
-                Regex regex = new Regex(pattern);
+                Regex regex = new Regex(nameFilter);
                 foreach (var dir in input)
                 {
                     DirectoryInfo di = new DirectoryInfo(dir);
@@ -76,8 +99,9 @@ namespace Framework.AssetManagement.AssetChecker
                     {
                         if (regex.IsMatch(fi.Name))
                         {
-                            string assetPath = fi.FullName.Replace(@"\", @"/");
-                            result.Add(AssetCheckerUtility.TrimProjectFolder(assetPath));
+                            string assetPath = AssetCheckerUtility.TrimProjectFolder(fi.FullName.Replace(@"\", @"/"));
+                            if (IsMatchUnityType(assetPath, typeFilter))
+                                result.Add(assetPath);
                         }                            
                     }
                 }
@@ -89,110 +113,73 @@ namespace Framework.AssetManagement.AssetChecker
 
             return result;
         }
-    }
 
-    public class AssetChecker_ExtensionFilter : IAssetFilter
-    {
-        public List<string> input   { get; set; }               // 需要筛选的文件路径
-        public string       pattern { get; set; }               // 正则表达式
-
-        public List<string> DoMatch()
+        private Type GetUnityObjectType(UnityType type)
         {
-            List<string> result = new List<string>();
-            foreach (var assetPath in input)
+            switch (type)
             {
-                if(IsMatch(assetPath, pattern))
-                {
-                    result.Add(AssetCheckerUtility.TrimProjectFolder(assetPath));
-                }
+                case UnityType.Object:
+                    return typeof(UnityEngine.Object);
+                case UnityType.AnimationClip:
+                    return typeof(UnityEngine.AnimationClip);
+                case UnityType.AudioClip:
+                    return typeof(UnityEngine.AudioClip);
+                case UnityType.ComputerShader:
+                    return typeof(UnityEngine.ComputeShader);
+                case UnityType.Font:
+                    return typeof(UnityEngine.Font);
+                case UnityType.GUISkin:
+                    return typeof(UnityEngine.GUISkin);
+                case UnityType.Material:
+                    return typeof(UnityEngine.Material);
+                case UnityType.Mesh:
+                    return typeof(UnityEngine.Mesh);
+                case UnityType.Model:
+                    return typeof(UnityEngine.GameObject);
+                case UnityType.PhysicMaterial:
+                    return typeof(UnityEngine.PhysicMaterial);
+                case UnityType.Prefab:
+                    return typeof(UnityEngine.GameObject);
+                case UnityType.Shader:
+                    return typeof(UnityEngine.Shader);
+                case UnityType.Sprite:
+                    return typeof(UnityEngine.Sprite);
+                case UnityType.Texture:
+                    return typeof(UnityEngine.Texture);
+                case UnityType.VideoClip:
+                    return typeof(UnityEngine.Video.VideoClip);
             }
-            return result;
+            return null;
         }
 
-        static private bool IsMatch(string assetPath, string type)
+        private bool IsMatchUnityType(string assetPath, UnityType unityType)
         {
-            AssetCheckerUtility.UnityType unityType = AssetCheckerUtility.GetUnityType(type);
-            Type t = AssetCheckerUtility.GetUnityObjectType(unityType);
-            if(t == null)
-                throw new System.Exception($"unsupported unity type: {type}");
+            Type t = GetUnityObjectType(unityType);
+            if (t == null)
+                throw new System.Exception($"unsupported unity type: {unityType}");
 
             UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath(assetPath, t);
             if (obj == null)
                 return false;
 
-            if (unityType == AssetCheckerUtility.UnityType.Object)
+            if (unityType == UnityType.Object)
             {
                 return true;
             }
 
-            if(unityType == AssetCheckerUtility.UnityType.Prefab)
+            if (unityType == UnityType.Prefab)
             {
                 AssetImporter importer = AssetImporter.GetAtPath(assetPath);
                 return importer.GetType().Name == "PrefabImporter";
             }
 
-            if(unityType == AssetCheckerUtility.UnityType.Model)
+            if (unityType == UnityType.Model)
             {
                 AssetImporter importer = AssetImporter.GetAtPath(assetPath);
                 return importer.GetType().Name == "ModelImporter";
-            }            
+            }
 
             return true;
-        }
-    }
-
-    static public class AssetChecker_Test
-    {
-        [UnityEditor.MenuItem("Tools/AssetChecker_Test/Foo")]
-        static private void Foo()
-        {
-            IAssetFilter filter = new AssetChecker_PathFilter();
-            filter.input = new List<string> { "Assets/Resources" };
-            filter.pattern = @"s/Wind";
-            List<string> ret = filter.DoMatch();
-
-            int count = 0;
-            foreach(string s in ret)
-            {
-                Debug.Log(string.Format($"{count++}: {s}"));
-            }
-        }
-
-        [UnityEditor.MenuItem("Tools/AssetChecker_Test/Foo2")]
-        static private void Foo2()
-        {
-            IAssetFilter filter = new AssetChecker_FilenameFilter();
-            filter.input = new List<string> { "Assets/Resources" };
-            filter.pattern = @"a*(?!(meta)$)";
-            List<string> ret = filter.DoMatch();
-
-            int count = 0;
-            foreach (string s in ret)
-            {
-                Debug.Log(string.Format($"{count++}: {s}"));
-            }
-        }
-
-        [UnityEditor.MenuItem("Tools/AssetChecker_Test/PrintType")]
-        static private void PrintType()
-        {
-            AssetImporter ai = AssetImporter.GetAtPath(AssetDatabase.GUIDToAssetPath(Selection.assetGUIDs[0]));
-            Debug.Log(ai.GetType().Name);
-
-            //AssetImporter.SourceAssetIdentifier identifier = new AssetImporter.SourceAssetIdentifier(Selection.activeObject);
-            //Debug.Log(identifier.type);
-        }
-
-        [UnityEditor.MenuItem("Tools/AssetChecker_Test/TestSerialize")]
-        static private void TestSerialize()
-        {
-            AssetProcessor_Mesh processor = new AssetProcessor_Mesh();
-            processor.threshold = 312;
-
-            BaseFuncComponentParam param = BaseFuncComponentParam<AssetProcessor_Mesh>.CreateParam(processor);
-
-            AssetProcessor_Mesh p = (AssetProcessor_Mesh)BaseFuncComponentParam<IAssetProcessor>.CreateComponent(param);
-            Debug.Log($"p: {p.threshold}");
         }
     }
 }
