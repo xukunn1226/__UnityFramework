@@ -12,9 +12,36 @@ namespace Framework.AssetManagement.AssetChecker
     {
         public const string kJsonAssetPath = "Assets/Framework/AssetManagement/AssetChecker/Editor/AssetCheckerOverview.json";
 
-        public List<AssetChecker> AllCheckers { get; set; } = new List<AssetChecker>();
+        [SerializeField]
+        private List<AssetChecker> AllCheckers { get; set; } = new List<AssetChecker>();
 
-        static public void Serialize(AssetCheckerOverview overview)
+        public void Add(AssetChecker item)
+        {
+            AllCheckers.Add(item);
+        }
+
+        public void Remove(AssetChecker item)
+        {
+            AllCheckers.Remove(item);
+        }
+
+        static public AssetCheckerOverview GetOrCreate()
+        {
+            if(File.Exists(kJsonAssetPath))
+            {
+                return Deserialize();
+            }
+            AssetCheckerOverview overview = new AssetCheckerOverview();
+            Serialize(overview);
+            return overview;
+        }
+
+        static public void Save(AssetCheckerOverview overview)
+        {
+            Serialize(overview);
+        }
+
+        static private void Serialize(AssetCheckerOverview overview)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.TypeNameHandling = TypeNameHandling.All;
@@ -28,7 +55,7 @@ namespace Framework.AssetManagement.AssetChecker
             AssetDatabase.ImportAsset(kJsonAssetPath);
         }
 
-        static public AssetCheckerOverview Deserialize()
+        static private AssetCheckerOverview Deserialize()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.TypeNameHandling = TypeNameHandling.All;

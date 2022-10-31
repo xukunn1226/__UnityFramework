@@ -140,11 +140,11 @@ namespace Framework.AssetManagement.AssetChecker
             checker.Processor = new AssetProcessor_Mesh();
             ((AssetProcessor_Mesh)checker.Processor).threshold = 111;
 
-            overview.AllCheckers.Add(checker);
+            overview.Add(checker);
 
-            AssetCheckerOverview.Serialize(overview);
+            AssetCheckerOverview.Save(overview);
 
-            AssetCheckerOverview ov = AssetCheckerOverview.Deserialize();
+            AssetCheckerOverview ov = AssetCheckerOverview.GetOrCreate();
         }
     }
 }
