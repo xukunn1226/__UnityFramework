@@ -136,6 +136,7 @@ namespace Framework.AssetManagement.AssetChecker
             AssetCheckerOverview overview = new AssetCheckerOverview();
 
             AssetChecker checker = new AssetChecker();
+            checker.Desc = "≤‚ ‘Checker";
             ((AssetFilter_Path)checker.PathFilter.filter).input = new List<string>() { "Assets/Resources" };
             checker.Processor = new AssetProcessor_Mesh();
             ((AssetProcessor_Mesh)checker.Processor).threshold = 111;

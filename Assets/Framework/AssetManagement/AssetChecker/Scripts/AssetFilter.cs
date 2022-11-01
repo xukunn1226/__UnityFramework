@@ -5,6 +5,7 @@ using UnityEditor;
 using System.Text.RegularExpressions;
 using System.IO;
 using System;
+using Sirenix.OdinInspector;
 
 namespace Framework.AssetManagement.AssetChecker
 {
@@ -16,10 +17,18 @@ namespace Framework.AssetManagement.AssetChecker
     /// <summary>
     /// 路径过滤器
     /// </summary>
+    [Serializable]
     public class AssetFilter_Path : IAssetFilter
     {
-        public List<string> input   { get; set; }               // 需要筛选的根目录
-        public string       pattern { get; set; }               // 正则表达式
+        //[BoxGroup("【路径过滤器】")]
+        [ShowInInspector]
+        [LabelText("筛选路径")]
+        public List<string> input = new List<string>();             // 需要筛选的根目录
+
+        //[BoxGroup("【路径过滤器】")]
+        [ShowInInspector]
+        [LabelText("路径正则")]
+        public string       pattern;                                // 正则表达式
 
         /// <summary>
         /// 筛选出符合条件的目录列表，输入是目录列表，输出也是目录列表
@@ -76,9 +85,20 @@ namespace Framework.AssetManagement.AssetChecker
             VideoClip,
         }
 
-        public List<string> input       { get; set; }               // 需要筛选的根目录
-        public string       nameFilter  { get; set; }               // 文件名正则表达式
-        public UnityType    typeFilter  { get; set; }               // 类型过滤器
+        //[BoxGroup("【文件名过滤器】")]
+        [ShowInInspector]
+        [LabelText("筛选路径")]
+        public List<string> input = new List<string>();                 // 需要筛选的根目录
+
+        //[BoxGroup("【文件名过滤器】")]
+        [ShowInInspector]
+        [LabelText("文件名正则")]
+        public string       nameFilter;                                 // 文件名正则表达式
+
+        //[BoxGroup("【文件名过滤器】")]
+        [ShowInInspector]
+        [LabelText("类型")]
+        public UnityType    typeFilter = UnityType.Object;              // 类型过滤器
 
         /// <summary>
         /// 筛选出符合条件的文件列表，输入是目录列表，输出是文件列表

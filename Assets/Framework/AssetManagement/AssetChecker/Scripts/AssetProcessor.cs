@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Newtonsoft.Json;
+using Sirenix.OdinInspector;
 
 namespace Framework.AssetManagement.AssetChecker
 {
@@ -13,7 +14,9 @@ namespace Framework.AssetManagement.AssetChecker
 
     public class AssetProcessor_Mesh : IAssetProcessor
     {
-        public int threshold { get; set; }
+        [ShowInInspector]
+        [LabelText("¶¥µãÊýãÐÖµ")]
+        public int threshold;
 
         public string DoProcess(string assetPath)
         {

@@ -13,7 +13,7 @@ namespace Framework.AssetManagement.AssetChecker
         public const string kJsonAssetPath = "Assets/Framework/AssetManagement/AssetChecker/Editor/AssetCheckerOverview.json";
 
         [SerializeField]
-        private List<AssetChecker> AllCheckers { get; set; } = new List<AssetChecker>();
+        public List<AssetChecker> AllCheckers { get; private set; } = new List<AssetChecker>();
 
         public void Add(AssetChecker item)
         {

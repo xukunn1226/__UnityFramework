@@ -5,7 +5,7 @@
     "$values": [
       {
         "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
-        "Desc": null,
+        "Desc": "测试Checker",
         "PathFilter": {
           "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
           "enabled": true,
@@ -25,9 +25,12 @@
           "enabled": true,
           "filter": {
             "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
-            "input": null,
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
             "nameFilter": null,
-            "typeFilter": 0
+            "typeFilter": 1
           }
         },
         "Processor": {
