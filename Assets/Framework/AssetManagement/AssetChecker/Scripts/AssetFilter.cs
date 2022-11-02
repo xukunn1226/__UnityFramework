@@ -20,12 +20,10 @@ namespace Framework.AssetManagement.AssetChecker
     [Serializable]
     public class AssetFilter_Path : IAssetFilter
     {
-        //[BoxGroup("【路径过滤器】")]
         [ShowInInspector]
         [LabelText("筛选路径")]
         public List<string> input = new List<string>();             // 需要筛选的根目录
 
-        //[BoxGroup("【路径过滤器】")]
         [ShowInInspector]
         [LabelText("路径正则")]
         public string       pattern;                                // 正则表达式
@@ -45,14 +43,21 @@ namespace Framework.AssetManagement.AssetChecker
             List<string> result = new List<string>();
             try
             {
-                Regex regex = new Regex(pattern);
-
                 DirectoryInfo di = new DirectoryInfo(input[0]);
                 DirectoryInfo[] dis = di.GetDirectories("*", SearchOption.AllDirectories);
+
+                bool needRegex = !string.IsNullOrEmpty(pattern);
+
+                Regex regex = needRegex ? new Regex(pattern) : null;
                 foreach (var dir in dis)
                 {
                     string path = dir.FullName.Replace(@"\", @"/");
-                    if (regex.IsMatch(path))
+                    if (needRegex)
+                    {
+                        if(regex.IsMatch(path))
+                            result.Add(AssetCheckerUtility.TrimProjectFolder(path));
+                    }
+                    else
                         result.Add(AssetCheckerUtility.TrimProjectFolder(path));
                 }
             }
@@ -62,6 +67,14 @@ namespace Framework.AssetManagement.AssetChecker
             }
             return result;
         }
+
+        //private bool IsMatch(string path, string pattern)
+        //{
+        //    if (string.IsNullOrEmpty(pattern))
+        //        return true;
+
+        //    Regex regex = new Regex(pattern);
+        //}
     }
 
     public class AssetFilter_Filename : IAssetFilter

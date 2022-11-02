@@ -8,6 +8,8 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Sirenix.Utilities.Editor;
+using System.Linq;
+using UnityEditor.Build.Pipeline;
 
 namespace Framework.AssetManagement.AssetChecker
 {
@@ -28,112 +30,13 @@ namespace Framework.AssetManagement.AssetChecker
             }
         }
         [LabelText("描述")]
-        public string               Desc;
+        public string           Desc;
         [HideInInspector]
-        public AssetFilterInfo      PathFilter;
+        public AssetFilterInfo  PathFilter;
         [HideInInspector]
-        public AssetFilterInfo      FilenameFilter;
+        public AssetFilterInfo  FilenameFilter;
         [HideInInspector]
-        public IAssetProcessor      Processor;
-
-        private PropertyTree        m_PathFilterPropertyTree;
-        private PropertyTree        m_FilenameFilterPropertyTree;
-        private PropertyTree        m_ProcessorPropertyTree;
-        private bool                m_Visible;
-
-        [OnInspectorGUI]
-        private void OnDrawFilters()
-        {
-            EditorGUILayout.Space();
-
-            // draw Path Filter
-            if(m_PathFilterPropertyTree == null)
-            {
-                m_PathFilterPropertyTree = PropertyTree.Create(PathFilter.filter);
-            }
-            SirenixEditorGUI.BeginToggleGroup(PathFilter, ref PathFilter.enabled, ref m_Visible, "【路径过滤器】");
-            m_PathFilterPropertyTree.Draw(false);
-            SirenixEditorGUI.EndToggleGroup();
-
-            EditorGUILayout.Space();
-            
-            // draw Filename Filter
-            if(m_FilenameFilterPropertyTree == null)
-            {
-                m_FilenameFilterPropertyTree = PropertyTree.Create(FilenameFilter.filter);
-            }
-            SirenixEditorGUI.BeginToggleGroup(FilenameFilter, ref FilenameFilter.enabled, ref m_Visible, "【文件名过滤器】");
-            m_FilenameFilterPropertyTree.Draw(false);
-            SirenixEditorGUI.EndToggleGroup();
-        }
-
-        [OnInspectorGUI]
-        [PropertyOrder(11)]
-        private void OnDrawProcessor()
-        {
-            if(m_ProcessorPropertyTree == null && Processor != null)
-            {
-                m_ProcessorPropertyTree = PropertyTree.Create(Processor);
-            }
-
-            if (Processor != null)
-            {
-                m_ProcessorPropertyTree?.Draw(false);
-            }
-        }
-
-        [BoxGroup("【处理器】")]
-        [HorizontalGroup("【处理器】/LayerHor", 0.3f)]
-        [GUIColor(0, 1, 0)]
-        [Button("添加处理器")]
-        private void AddProcessor()
-        {
-            Processor = Activator.CreateInstance(Type.GetType(m_SelectedComponentName)) as IAssetProcessor;
-            m_ProcessorPropertyTree = null;
-        }
-
-        [BoxGroup("【处理器】")]
-        [HorizontalGroup("【处理器】/LayerHor", 0.6f)]
-        [SerializeField]
-        [ValueDropdown("ComponentNameList")]
-        [LabelText("选择处理器")]
-        [PropertyOrder(10)]
-        private string m_SelectedComponentName = ComponentNameList[0];
-
-        private static string[] ComponentNameList
-        {
-            get
-            {
-                var list = new List<string>();
-                foreach (var type in TypeCache.GetTypesDerivedFrom<IAssetProcessor>())
-                {
-                    list.Add(type.FullName);
-                }
-                return list.ToArray();
-            }
-        }
-
-        private static string[] DisplayNameList
-        {
-            get
-            {
-                var list = new List<string>();
-                string[] fullName = ComponentNameList;
-                foreach(var name in fullName)
-                {
-                    int index = name.LastIndexOf(".");
-                    if(index != -1)
-                    {
-                        list.Add(name.Substring(index));
-                    }
-                    else
-                    {
-                        list.Add(name);
-                    }
-                }
-                return list.ToArray();
-            }
-        }
+        public IAssetProcessor  Processor;
 
         public AssetChecker()
         {
@@ -203,6 +106,132 @@ namespace Framework.AssetManagement.AssetChecker
             settings.TypeNameHandling = TypeNameHandling.All;
             return JsonConvert.DeserializeObject<AssetChecker>(json, settings);
         }
+
+
+
+        #region ///////////////////////////// GUI
+
+        private PropertyTree m_PathFilterPropertyTree;
+        private PropertyTree m_FilenameFilterPropertyTree;
+        private PropertyTree m_ProcessorPropertyTree;
+        private bool m_Visible;        
+
+        [OnInspectorGUI]
+        [PropertyOrder(0)]
+        private void OnDrawFilters()
+        {
+            EditorGUILayout.Space();
+
+            // draw Path Filter
+            if (m_PathFilterPropertyTree == null)
+            {
+                m_PathFilterPropertyTree = PropertyTree.Create(PathFilter.filter);
+            }
+            SirenixEditorGUI.BeginToggleGroup(PathFilter, ref PathFilter.enabled, ref m_Visible, "【路径过滤器】");
+            m_PathFilterPropertyTree.Draw(false);
+            SirenixEditorGUI.EndToggleGroup();
+
+            EditorGUILayout.Space();
+
+            // draw Filename Filter
+            if (m_FilenameFilterPropertyTree == null)
+            {
+                m_FilenameFilterPropertyTree = PropertyTree.Create(FilenameFilter.filter);
+            }
+            SirenixEditorGUI.BeginToggleGroup(FilenameFilter, ref FilenameFilter.enabled, ref m_Visible, "【文件名过滤器】");
+            m_FilenameFilterPropertyTree.Draw(false);
+            SirenixEditorGUI.EndToggleGroup();
+        }
+
+        [OnInspectorGUI]
+        [PropertyOrder(2)]
+        private void OnDrawProcessor()
+        {
+            EditorGUILayout.Space();
+
+            if (m_ProcessorPropertyTree == null && Processor != null)
+            {
+                m_ProcessorPropertyTree = PropertyTree.Create(Processor);
+            }
+
+            if (Processor != null)
+            {
+                m_ProcessorPropertyTree?.Draw(false);
+            }
+        }
+
+        [PropertyOrder(1)]
+        [BoxGroup("【处理器】")]
+        [HorizontalGroup("【处理器】/LayerHor", 0.3f)]
+        [GUIColor(0, 1, 0)]
+        [Button("添加处理器")]
+        private void AddProcessor()
+        {
+            Processor = Activator.CreateInstance(Type.GetType(m_SelectedComponentName)) as IAssetProcessor;
+            m_ProcessorPropertyTree = null;
+        }
+
+        [PropertyOrder(1)]
+        [BoxGroup("【处理器】")]
+        [HorizontalGroup("【处理器】/LayerHor", 0.6f)]
+        [SerializeField]
+        [ValueDropdown("DisplayNameList")]
+        [LabelText("选择处理器")]
+        [JsonProperty]
+        private string m_SelectedComponentName = "UnSelected Processor";
+
+        static private IEnumerable DisplayNameList()
+        {
+            return ComponentNameList.Select(x => new ValueDropdownItem(GetDisplayName(x), x) );
+        }
+        
+        private static string[] ComponentNameList
+        {
+            get
+            {
+                var list = new List<string>();
+                foreach (var type in TypeCache.GetTypesDerivedFrom<IAssetProcessor>())
+                {
+                    list.Add(type.FullName);
+                }
+                return list.ToArray();
+            }
+        }
+
+        static private string GetDisplayName(string str)
+        {
+            int idx = str.LastIndexOf(".");
+            string name = str;
+
+            if (idx != -1)
+            {
+                name = str.Substring(idx + 1);
+            }
+            return name;
+        }
+
+        [ShowInInspector]
+        [PropertyOrder(5)]
+        [LabelText("显示结果：")]
+        [ListDrawerSettings(IsReadOnly = true)]
+        public List<string> m_Results = new List<string> { "1111111111", "22222222222" };
+
+        [Button("执行过滤器")]
+        [PropertyOrder(3)]
+        [HorizontalGroup("ButtonLayer")]
+        private void btnDoFilter()
+        {
+            m_Results = DoFilter();
+        }
+
+        [Button("执行处理器")]
+        [PropertyOrder(3)]
+        [HorizontalGroup("ButtonLayer")]
+        private void btnDoProcessor()
+        {
+            m_Results = DoProcessor();
+        }
+        #endregion
     }
 
     public class AssetCheckerProcessor : OdinAttributeProcessor<AssetChecker>
