@@ -36,7 +36,8 @@ namespace Framework.AssetManagement.AssetChecker
         private ToolBarPanel m_ToolBarPanel;
         private PropertyTree m_ToolBarPropertyTree;
 
-        public string ttttt;
+        private AssetChecker Template = new AssetChecker() { Desc = "new Checker" };
+        private PropertyTree m_CheckerTemplatePropertyTree;
 
         protected override void OnEnable()
         {
@@ -111,11 +112,24 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         [OnInspectorGUI]
+        private void OnShowTemplate()
+        {
+            if (m_CheckerTemplatePropertyTree == null)
+            {
+                m_CheckerTemplatePropertyTree = PropertyTree.Create(Template);
+            }
+            SirenixEditorGUI.BeginBox("Template");
+            m_CheckerTemplatePropertyTree?.Draw(false);
+            SirenixEditorGUI.EndBox();
+        }
+
+        [OnInspectorGUI]
+        [GUIColor(1, 0, 0)]
         private void OnShowAdd()
         {
             if(GUILayout.Button("Add"))
             {
-                AddChecker(new AssetChecker() { Desc = "new Checker" });
+                AddChecker(AssetChecker.Create(Template));
             }
         }
 
@@ -148,21 +162,6 @@ namespace Framework.AssetManagement.AssetChecker
                 AssetCheckEditorWindow.instance.Save();
             }
             //SirenixEditorGUI.EndHorizontalToolbar();
-        }
-    }
-
-    public class AssetCheckerPanel
-    {
-        private AssetChecker m_AssetChecker;
-
-        public AssetCheckerPanel(AssetChecker instance)
-        {
-            m_AssetChecker = instance;
-        }
-
-        void OnShowDesc()
-        {
-
         }
     }
 }

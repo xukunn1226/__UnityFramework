@@ -44,6 +44,17 @@ namespace Framework.AssetManagement.AssetChecker
             FilenameFilter = AssetFilterInfo.Create<AssetFilter_Filename>();
         }
 
+        static public AssetChecker Create(AssetChecker other)
+        {
+            AssetChecker checker = new AssetChecker();
+            checker.Desc = other.Desc;            
+            checker.PathFilter.enabled = other.PathFilter.enabled;
+            checker.PathFilter.filter = AssetFilter_Path.Create((AssetFilter_Path)other.PathFilter.filter);
+            checker.FilenameFilter.enabled = other.FilenameFilter.enabled;
+            checker.FilenameFilter.filter = AssetFilter_Filename.Create((AssetFilter_Filename)other.FilenameFilter.filter);
+            return checker;
+        }
+
         /// <summary>
         /// 执行过滤器
         /// </summary>
@@ -59,12 +70,14 @@ namespace Framework.AssetManagement.AssetChecker
             if (FilenameFilter != null && FilenameFilter.enabled)
             {
                 AssetFilter_Filename filter_Filename = (AssetFilter_Filename)FilenameFilter.filter;
+                List<string> prevInput = filter_Filename.input;
                 if (filter_Filename.input != null && filter_Filename.input.Count == 0)
                 {
                     // 优先使用filter设置的input参数
                     filter_Filename.input = paths;
                 }
                 paths = filter_Filename.DoFilter();
+                filter_Filename.input = prevInput;
             }
             return paths;
         }
@@ -213,8 +226,15 @@ namespace Framework.AssetManagement.AssetChecker
         [ShowInInspector]
         [PropertyOrder(5)]
         [LabelText("显示结果：")]
-        [ListDrawerSettings(IsReadOnly = true)]
-        public List<string> m_Results = new List<string> { "1111111111", "22222222222" };
+        [ListDrawerSettings(IsReadOnly = true, ShowIndexLabels = true, ShowItemCount = true, ShowPaging = false)]
+        private List<string> m_Results = new List<string>();
+
+        [PropertyOrder(6)]
+        [Button("导出")]
+        private void btnExport()
+        {
+
+        }
 
         [Button("执行过滤器")]
         [PropertyOrder(3)]
@@ -238,7 +258,7 @@ namespace Framework.AssetManagement.AssetChecker
     {
         public override void ProcessChildMemberAttributes(InspectorProperty parentProperty, MemberInfo member, List<Attribute> attributes)
         {
-
+            //Debug.Log($"{member.Name}   {parentProperty.Name}   {parentProperty.ParentType}");
         }
     }
 }

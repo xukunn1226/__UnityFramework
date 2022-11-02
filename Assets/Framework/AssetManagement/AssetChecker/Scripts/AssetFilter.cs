@@ -28,6 +28,14 @@ namespace Framework.AssetManagement.AssetChecker
         [LabelText("路径正则")]
         public string       pattern;                                // 正则表达式
 
+        static public AssetFilter_Path Create(AssetFilter_Path other)
+        {
+            AssetFilter_Path result = new AssetFilter_Path();
+            result.input.AddRange(other.input);
+            result.pattern = other.pattern;
+            return result;
+        }
+
         /// <summary>
         /// 筛选出符合条件的目录列表，输入是目录列表，输出也是目录列表
         /// </summary>
@@ -45,21 +53,13 @@ namespace Framework.AssetManagement.AssetChecker
             {
                 DirectoryInfo di = new DirectoryInfo(input[0]);
                 DirectoryInfo[] dis = di.GetDirectories("*", SearchOption.AllDirectories);
-
-                bool needRegex = !string.IsNullOrEmpty(pattern);
-
-                Regex regex = needRegex ? new Regex(pattern) : null;
                 foreach (var dir in dis)
                 {
                     string path = dir.FullName.Replace(@"\", @"/");
-                    if (needRegex)
-                    {
-                        if(regex.IsMatch(path))
-                            result.Add(AssetCheckerUtility.TrimProjectFolder(path));
-                    }
-                    else
+                    if(IsMatch(path, pattern))
                         result.Add(AssetCheckerUtility.TrimProjectFolder(path));
                 }
+                result.Add(AssetCheckerUtility.TrimProjectFolder(input[0]));    // 始终包括输入的文件目录
             }
             catch(System.Exception e)
             {
@@ -68,13 +68,14 @@ namespace Framework.AssetManagement.AssetChecker
             return result;
         }
 
-        //private bool IsMatch(string path, string pattern)
-        //{
-        //    if (string.IsNullOrEmpty(pattern))
-        //        return true;
+        private bool IsMatch(string path, string pattern)
+        {
+            if (string.IsNullOrEmpty(pattern))
+                return true;
 
-        //    Regex regex = new Regex(pattern);
-        //}
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(path);                
+        }
     }
 
     public class AssetFilter_Filename : IAssetFilter
@@ -98,20 +99,26 @@ namespace Framework.AssetManagement.AssetChecker
             VideoClip,
         }
 
-        //[BoxGroup("【文件名过滤器】")]
         [ShowInInspector]
         [LabelText("筛选路径")]
         public List<string> input = new List<string>();                 // 需要筛选的根目录
 
-        //[BoxGroup("【文件名过滤器】")]
         [ShowInInspector]
         [LabelText("文件名正则")]
         public string       nameFilter;                                 // 文件名正则表达式
 
-        //[BoxGroup("【文件名过滤器】")]
         [ShowInInspector]
         [LabelText("类型")]
         public UnityType    typeFilter = UnityType.Object;              // 类型过滤器
+
+        static public AssetFilter_Filename Create(AssetFilter_Filename other)
+        {
+            AssetFilter_Filename result = new AssetFilter_Filename();
+            result.input.AddRange(other.input);
+            result.nameFilter = other.nameFilter;
+            result.typeFilter = other.typeFilter;
+            return result;
+        }
 
         /// <summary>
         /// 筛选出符合条件的文件列表，输入是目录列表，输出是文件列表
@@ -123,19 +130,18 @@ namespace Framework.AssetManagement.AssetChecker
 
             try
             {
-                Regex regex = new Regex(nameFilter);
                 foreach (var dir in input)
                 {
                     DirectoryInfo di = new DirectoryInfo(dir);
                     FileInfo[] fis = di.GetFiles();
                     foreach (var fi in fis)
                     {
-                        if (regex.IsMatch(fi.Name))
+                        if(IsMatchFilename(fi.Name, nameFilter))
                         {
                             string assetPath = AssetCheckerUtility.TrimProjectFolder(fi.FullName.Replace(@"\", @"/"));
                             if (IsMatchUnityType(assetPath, typeFilter))
                                 result.Add(assetPath);
-                        }                            
+                        }
                     }
                 }
             }
@@ -145,6 +151,15 @@ namespace Framework.AssetManagement.AssetChecker
             }
 
             return result;
+        }
+
+        private bool IsMatchFilename(string filename, string pattern)
+        {
+            if (string.IsNullOrEmpty(pattern))
+                return true;
+
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(filename);
         }
 
         private Type GetUnityObjectType(UnityType type)

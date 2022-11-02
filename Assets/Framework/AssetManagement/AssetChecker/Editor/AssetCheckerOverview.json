@@ -5,7 +5,7 @@
     "$values": [
       {
         "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
-        "Desc": "测试Checker",
+        "Desc": "new Checker",
         "PathFilter": {
           "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
           "enabled": true,
@@ -14,7 +14,7 @@
             "input": {
               "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
               "$values": [
-                "Assets/Resources"
+                "Assets/Framework/AssetManagement/Runtime/Tests/Res/Model"
               ]
             },
             "pattern": null
@@ -30,14 +30,45 @@
               "$values": []
             },
             "nameFilter": null,
-            "typeFilter": 1
+            "typeFilter": 0
           }
         },
         "Processor": {
           "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
-          "threshold": 111
+          "threshold": 500
         },
         "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "new Checker11",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "pattern": null
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": null,
+            "typeFilter": 0
+          }
+        },
+        "Processor": null,
+        "m_SelectedComponentName": "UnSelected Processor"
       },
       {
         "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
@@ -67,11 +98,8 @@
             "typeFilter": 0
           }
         },
-        "Processor": {
-          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
-          "threshold": 1233
-        },
-        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+        "Processor": null,
+        "m_SelectedComponentName": "UnSelected Processor"
       }
     ]
   }

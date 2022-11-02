@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
-using Newtonsoft;
-using Newtonsoft.Json;
-using Sirenix.OdinInspector.Editor;
-//using Google.Protobuf.WellKnownTypes;
 
 namespace Framework.AssetManagement.AssetChecker
 {    
@@ -84,68 +80,68 @@ namespace Framework.AssetManagement.AssetChecker
     }
 
 
-    static public class AssetChecker_Test
-    {
-        [UnityEditor.MenuItem("Tools/AssetChecker_Test/Foo")]
-        static private void Foo()
-        {
-            AssetFilter_Path filter = new AssetFilter_Path();
-            filter.input = new List<string> { "Assets/Resources" };
-            filter.pattern = @"s/Wind";
-            List<string> ret = filter.DoFilter();
+    //static public class AssetChecker_Test
+    //{
+    //    [UnityEditor.MenuItem("Tools/AssetChecker_Test/Foo")]
+    //    static private void Foo()
+    //    {
+    //        AssetFilter_Path filter = new AssetFilter_Path();
+    //        filter.input = new List<string> { "Assets/Resources" };
+    //        filter.pattern = @"s/Wind";
+    //        List<string> ret = filter.DoFilter();
 
-            int count = 0;
-            foreach (string s in ret)
-            {
-                Debug.Log(string.Format($"{count++}: {s}"));
-            }
-        }
+    //        int count = 0;
+    //        foreach (string s in ret)
+    //        {
+    //            Debug.Log(string.Format($"{count++}: {s}"));
+    //        }
+    //    }
 
-        [UnityEditor.MenuItem("Tools/AssetChecker_Test/Foo2")]
-        static private void Foo2()
-        {
-            AssetFilter_Filename filter = new AssetFilter_Filename();
-            filter.input = new List<string> { "Assets/Resources" };
-            filter.nameFilter = @"a*(?!(meta)$)";
-            filter.typeFilter = AssetFilter_Filename.UnityType.Object;
-            List<string> ret = filter.DoFilter();
+    //    [UnityEditor.MenuItem("Tools/AssetChecker_Test/Foo2")]
+    //    static private void Foo2()
+    //    {
+    //        AssetFilter_Filename filter = new AssetFilter_Filename();
+    //        filter.input = new List<string> { "Assets/Resources" };
+    //        filter.nameFilter = @"a*(?!(meta)$)";
+    //        filter.typeFilter = AssetFilter_Filename.UnityType.Object;
+    //        List<string> ret = filter.DoFilter();
 
-            int count = 0;
-            foreach (string s in ret)
-            {
-                Debug.Log(string.Format($"{count++}: {s}"));
-            }
-        }
+    //        int count = 0;
+    //        foreach (string s in ret)
+    //        {
+    //            Debug.Log(string.Format($"{count++}: {s}"));
+    //        }
+    //    }
 
-        [UnityEditor.MenuItem("Tools/AssetChecker_Test/TestSerialize")]
-        static private void TestSerialize()
-        {
-            AssetProcessor_Mesh processor = new AssetProcessor_Mesh();
-            processor.threshold = 312;
+    //    [UnityEditor.MenuItem("Tools/AssetChecker_Test/TestSerialize")]
+    //    static private void TestSerialize()
+    //    {
+    //        AssetProcessor_Mesh processor = new AssetProcessor_Mesh();
+    //        processor.threshold = 312;
 
-            BaseFuncComponentParam param = BaseFuncComponentParam<AssetProcessor_Mesh>.CreateParam(processor);
-            Debug.Log($"{param.ComponentParamJson}");
+    //        BaseFuncComponentParam param = BaseFuncComponentParam<AssetProcessor_Mesh>.CreateParam(processor);
+    //        Debug.Log($"{param.ComponentParamJson}");
 
-            AssetProcessor_Mesh p = (AssetProcessor_Mesh)BaseFuncComponentParam<IAssetProcessor>.CreateComponent(param);
-            Debug.Log($"p: {p.threshold}");
-        }
+    //        AssetProcessor_Mesh p = (AssetProcessor_Mesh)BaseFuncComponentParam<IAssetProcessor>.CreateComponent(param);
+    //        Debug.Log($"p: {p.threshold}");
+    //    }
 
-        [UnityEditor.MenuItem("Tools/AssetChecker_Test/Test Checker Serialize")]
-        static private void TestCheckerSerialize()
-        {
-            AssetCheckerOverview overview = new AssetCheckerOverview();
+    //    [UnityEditor.MenuItem("Tools/AssetChecker_Test/Test Checker Serialize")]
+    //    static private void TestCheckerSerialize()
+    //    {
+    //        AssetCheckerOverview overview = new AssetCheckerOverview();
 
-            AssetChecker checker = new AssetChecker();
-            checker.Desc = "≤‚ ‘Checker";
-            ((AssetFilter_Path)checker.PathFilter.filter).input = new List<string>() { "Assets/Resources" };
-            checker.Processor = new AssetProcessor_Mesh();
-            ((AssetProcessor_Mesh)checker.Processor).threshold = 111;
+    //        AssetChecker checker = new AssetChecker();
+    //        checker.Desc = "≤‚ ‘Checker";
+    //        ((AssetFilter_Path)checker.PathFilter.filter).input = new List<string>() { "Assets/Resources" };
+    //        checker.Processor = new AssetProcessor_Mesh();
+    //        ((AssetProcessor_Mesh)checker.Processor).threshold = 111;
 
-            overview.Add(checker);
+    //        overview.Add(checker);
 
-            AssetCheckerOverview.Save(overview);
+    //        AssetCheckerOverview.Save(overview);
 
-            AssetCheckerOverview ov = AssetCheckerOverview.GetOrCreate();
-        }
-    }
+    //        AssetCheckerOverview ov = AssetCheckerOverview.GetOrCreate();
+    //    }
+    //}
 }

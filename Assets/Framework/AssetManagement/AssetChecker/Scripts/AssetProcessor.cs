@@ -22,11 +22,11 @@ namespace Framework.AssetManagement.AssetChecker
         {
             Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(assetPath);
             if (mesh == null)
-                throw new System.Exception($"can't load mesh object from {assetPath}");
-
+                return string.Format($"{assetPath}: 非Mesh资源");
+                
             if (mesh.vertexCount < threshold)
                 return null;
-            return string.Format($"模型顶点数量大于预设值: {mesh.vertexCount} > {threshold}");
+            return string.Format($"{assetPath}: 模型顶点数量大于预设值: {mesh.vertexCount} > {threshold}");
         }
     }
 }
