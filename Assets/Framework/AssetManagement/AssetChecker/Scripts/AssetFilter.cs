@@ -133,7 +133,7 @@ namespace Framework.AssetManagement.AssetChecker
                 foreach (var dir in input)
                 {
                     DirectoryInfo di = new DirectoryInfo(dir);
-                    FileInfo[] fis = di.GetFiles();
+                    FileInfo[] fis = di.GetFiles("*", SearchOption.AllDirectories);
                     foreach (var fi in fis)
                     {
                         if(IsMatchFilename(fi.Name, nameFilter))

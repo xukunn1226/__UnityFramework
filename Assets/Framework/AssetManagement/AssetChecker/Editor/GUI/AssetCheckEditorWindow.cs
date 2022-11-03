@@ -41,7 +41,6 @@ namespace Framework.AssetManagement.AssetChecker
 
         protected override void OnEnable()
         {
-            Debug.Log("AssetCheckerWindow.OnEnable");
             base.OnEnable();
 
             m_ToolBarPanel = new ToolBarPanel();
@@ -82,7 +81,6 @@ namespace Framework.AssetManagement.AssetChecker
 
         protected override OdinMenuTree BuildMenuTree()
         {
-            Debug.Log("AssetCheckerWindow.BuildMenuTree");
             OdinMenuTree tree = new OdinMenuTree(false);
 
             // MenuTree config
@@ -138,6 +136,11 @@ namespace Framework.AssetManagement.AssetChecker
             AssetCheckerOverview.Save(m_AssetCheckerOverview);
         }
 
+        public void DoProcessorAndExportAll()
+        {
+            AssetCheckerOverview.DoProcessorAndExportAll(m_AssetCheckerOverview);
+        }
+
         public void AddChecker(AssetChecker item)
         {
             m_AssetCheckerOverview?.Add(item);
@@ -156,12 +159,16 @@ namespace Framework.AssetManagement.AssetChecker
         [OnInspectorGUI]
         void OnShow()
         {
-            //SirenixEditorGUI.BeginHorizontalToolbar(26);
+            EditorGUILayout.BeginHorizontal();
             if(GUILayout.Button(new GUIContent("保存"), GUILayoutOptions.Width(120)))
             {
                 AssetCheckEditorWindow.instance.Save();
             }
-            //SirenixEditorGUI.EndHorizontalToolbar();
+            if(GUILayout.Button(new GUIContent("执行所有检测并导出"), GUILayoutOptions.Width(150)))
+            {
+                AssetCheckEditorWindow.instance.DoProcessorAndExportAll();
+            }
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

@@ -66,5 +66,20 @@ namespace Framework.AssetManagement.AssetChecker
                 return JsonConvert.DeserializeObject<AssetCheckerOverview>(System.Text.Encoding.UTF8.GetString(array, 0, size), settings);
             }
         }
+
+        static public void DoProcessorAndExportAll(AssetCheckerOverview overview)
+        {
+            foreach(var item in overview.AllCheckers)
+            {
+                item.DoProcessorAndExport();
+            }
+        }
+
+        // CI½Ó¿Ú
+        static public void cmdDoProcessorAndExportAll()
+        {
+            AssetCheckerOverview overview = GetOrCreate();
+            DoProcessorAndExportAll(overview);
+        }
     }
 }

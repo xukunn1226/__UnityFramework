@@ -10,6 +10,9 @@ using UnityEngine;
 using Sirenix.Utilities.Editor;
 using System.Linq;
 using UnityEditor.Build.Pipeline;
+using System.Text;
+using UnityEngine.Windows;
+using System.IO;
 
 namespace Framework.AssetManagement.AssetChecker
 {
@@ -104,6 +107,42 @@ namespace Framework.AssetManagement.AssetChecker
                 }
             }
             return results;
+        }
+
+        public string Export()
+        {
+            if (m_Results.Count == 0)
+                return null;
+
+            var csv = new StringBuilder();
+            foreach (var ret in m_Results)
+            {
+                csv.AppendLine(ret);
+            }
+
+            string directory = "Assets/Temp";
+            if (!System.IO.Directory.Exists(directory))
+                System.IO.Directory.CreateDirectory(directory);
+
+            string error = null;
+            string assetPath = string.Format($"{directory}/{Desc}_{DateTime.Now.ToString("yyyy-MM-dd_HH-mm")}.csv");
+            try
+            {
+                System.IO.File.WriteAllText(assetPath, csv.ToString(), Encoding.UTF8);
+                AssetDatabase.ImportAsset(assetPath);
+            }
+            catch (Exception e)
+            {
+                error = string.Format($"{e.Message}  {assetPath}");
+            }
+
+            return error;
+        }
+
+        public void DoProcessorAndExport()
+        {
+            m_Results = DoProcessor();
+            Export();
         }
 
         static public string Serialize(AssetChecker checker)
@@ -229,11 +268,31 @@ namespace Framework.AssetManagement.AssetChecker
         [ListDrawerSettings(IsReadOnly = true, ShowIndexLabels = true, ShowItemCount = true, ShowPaging = false)]
         private List<string> m_Results = new List<string>();
 
+        private string m_Info;
+
+
         [PropertyOrder(6)]
+        [OnInspectorGUI]
+        private void OnShowInfo()
+        {
+            EditorGUILayout.HelpBox(m_Info, MessageType.Info);
+        }
+
+        [PropertyOrder(7)]
         [Button("导出")]
         private void btnExport()
         {
-
+            string error = Export();
+            if (string.IsNullOrEmpty(error))
+            {
+                m_Info = $"资源检测结果导出完成：Assets/Temp/{Desc}_{DateTime.Now.ToString("yyyy-MM-dd_HH-mm")}.csv";
+                Debug.Log(m_Info);
+            }                
+            else
+            {
+                m_Info = error;
+                Debug.LogError(error);
+            }                
         }
 
         [Button("执行过滤器")]
@@ -256,6 +315,12 @@ namespace Framework.AssetManagement.AssetChecker
 
     public class AssetCheckerProcessor : OdinAttributeProcessor<AssetChecker>
     {
+        public override bool CanProcessSelfAttributes(InspectorProperty property)
+        {
+            //Debug.Log($"{property.Name}");
+            return true;
+        }
+
         public override void ProcessChildMemberAttributes(InspectorProperty parentProperty, MemberInfo member, List<Attribute> attributes)
         {
             //Debug.Log($"{member.Name}   {parentProperty.Name}   {parentProperty.ParentType}");
