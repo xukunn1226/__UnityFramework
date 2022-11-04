@@ -17,5 +17,7 @@ MonoBehaviour:
   rebuildBundles: 0
   appendHash: 0
   DisableWriteTypeTree: 1
-  DevelopmentBuild: 0
+  DevelopmentBuild: 1
   OverrideResourcePath: 
+  packageEditorSetting: {fileID: 11400000, guid: d19732752cc180e40858a622c59849be,
+    type: 2}

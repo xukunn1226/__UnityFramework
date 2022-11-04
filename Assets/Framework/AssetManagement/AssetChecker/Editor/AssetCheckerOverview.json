@@ -87,7 +87,9 @@
             "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
             "input": {
               "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
-              "$values": []
+              "$values": [
+                "Assets/Res/Characters/Warrior"
+              ]
             },
             "pattern": null
           }
@@ -102,7 +104,7 @@
               "$values": []
             },
             "nameFilter": null,
-            "typeFilter": 0
+            "typeFilter": 13
           }
         },
         "Processor": null,

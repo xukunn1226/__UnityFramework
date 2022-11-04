@@ -1,0 +1,86 @@
+{
+  "Count": 16,
+  "TotalSize": 64777850,
+  "FileList": [
+    {
+      "BundleName": "base/1a12b7d33d4b09f73ee3efbb1ad01569",
+      "FileHash": "c6ef4641a1cfdab9d7411b3ad68757bc",
+      "Size": 2989344
+    },
+    {
+      "BundleName": "base/94bee059d8c68e7962dc06d422cfa2f0",
+      "FileHash": "0e9e08736d03a12724907c75f017082b",
+      "Size": 13648
+    },
+    {
+      "BundleName": "base/d574a6c8e34ab7b7a3465ca1c8239c96",
+      "FileHash": "4e69b92409c2852a08db8c5ef471d1d2",
+      "Size": 3898528
+    },
+    {
+      "BundleName": "base/dd0ebc11643f2ce9fbf84235fbc57444",
+      "FileHash": "2dc9d74ad8d83e1fa8621454150bfd2f",
+      "Size": 13552
+    },
+    {
+      "BundleName": "base/e9a507a23751b012fc43b9f39215f540",
+      "FileHash": "4162d490743c4a29e3717b8b426797b6",
+      "Size": 41248
+    },
+    {
+      "BundleName": "Application.Logic.dll",
+      "FileHash": "3f88fcdc4666d3bebad0815f358fcee7",
+      "Size": 86528
+    },
+    {
+      "BundleName": "Application.Logic.pdb",
+      "FileHash": "4d8717bd387ad041b70562ee6405106e",
+      "Size": 52428
+    },
+    {
+      "BundleName": "config.db",
+      "FileHash": "940e7f09f1a17e7ba9b57e18b4153c31",
+      "Size": 61440
+    },
+    {
+      "BundleName": "manifest",
+      "FileHash": "ee818fc55c0501db3b9d523a6ec6bc2f",
+      "Size": 2936
+    },
+    {
+      "BundleName": "FMOD/Dialogue_EN.bank",
+      "FileHash": "6e971d24166d0df5fa17f6d4e01d3d08",
+      "Size": 163168
+    },
+    {
+      "BundleName": "FMOD/Master.bank",
+      "FileHash": "63fb5c91a78dc9e0da08de2122f384c2",
+      "Size": 15592
+    },
+    {
+      "BundleName": "FMOD/Master.strings.bank",
+      "FileHash": "ba43c6125880a9d4b47ac79ccec92b14",
+      "Size": 4014
+    },
+    {
+      "BundleName": "FMOD/Music.bank",
+      "FileHash": "e54c13dfd64f54c0f465027fa013684e",
+      "Size": 20747584
+    },
+    {
+      "BundleName": "FMOD/SFX.bank",
+      "FileHash": "7514a5b12205c3c4c0827ea533da0fc5",
+      "Size": 36303552
+    },
+    {
+      "BundleName": "FMOD/Vehicles.bank",
+      "FileHash": "9e25feb0f2a682446e413ec6b69ff4cf",
+      "Size": 328352
+    },
+    {
+      "BundleName": "FMOD/VO.bank",
+      "FileHash": "0c6ae4e7894efb650ab5e3ba1ee1bee0",
+      "Size": 55936
+    }
+  ]
+}

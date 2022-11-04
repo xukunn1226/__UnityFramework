@@ -14,6 +14,7 @@ using UnityEngine.Build.Pipeline;
 using Framework.AssetManagement.AssetBuilder;
 using Framework.AssetManagement.Runtime;
 using Framework.AssetManagement.AssetPackageEditor.Editor;
+using System.Linq;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -209,7 +210,14 @@ namespace Framework.AssetManagement.GameBuilder
 
                 BuildList[index++] = abb;
             }
-            return BuildList;
+
+            // build URP bundle build list
+            AssetBundleBuild[] BuildList_URP = GenerateURPBuiltinBundleBuild();
+
+            List<AssetBundleBuild> result = new List<AssetBundleBuild>();
+            result.AddRange(BuildList);
+            result.AddRange(BuildList_URP);
+            return result.ToArray();
         }        
 
         // 根据资源路径、打包策略生成bundle file list
@@ -267,7 +275,7 @@ namespace Framework.AssetManagement.GameBuilder
                                                         BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), 
                                                         output);
             
-            buildParams.BundleCompression = setting.useLZ4Compress ? UnityEngine.BuildCompression.LZ4 : UnityEngine.BuildCompression.LZMA;
+            buildParams.BundleCompression = setting.useLZ4Compress ? UnityEngine.BuildCompression.LZ4 : UnityEngine.BuildCompression.Uncompressed;
             buildParams.UseCache = !setting.rebuildBundles;
             if(setting.DisableWriteTypeTree)
                 buildParams.ContentBuildFlags |= ContentBuildFlags.DisableWriteTypeTree;
@@ -596,6 +604,33 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 Debug.LogError($"Failed to compile scripts");
             }
+        }
+
+        static private AssetBundleBuild[] GenerateURPBuiltinBundleBuild()
+        {
+            AssetBundleBuild[] abbs = new AssetBundleBuild[3];
+
+            // build urp resources
+            abbs[0] = GenerateBundleBuild("assets_urp_builtin_materials", "t:Material", new string[] { "Packages/com.unity.render-pipelines.universal/Runtime/Materials" });
+            abbs[1] = GenerateBundleBuild("assets_urp_builtin_textures", "t:Texture", new string[] { "Packages/com.unity.render-pipelines.universal/Textures" });
+            abbs[2] = GenerateBundleBuild("assets_urp_builtin_shaders", "t:Shader", new string[] { "Packages/com.unity.render-pipelines.universal/Shaders" });
+
+            return abbs;
+        }
+
+        static private AssetBundleBuild GenerateBundleBuild(string bundleName, string filter, string[] searchInFolders)
+        {
+            AssetBundleBuild abb = new AssetBundleBuild();
+            abb.assetBundleName = bundleName;
+            string[] guids = AssetDatabase.FindAssets(filter, searchInFolders);
+            abb.assetNames = new string[guids.Length];
+            abb.addressableNames = new string[guids.Length];
+            for (int i = 0; i < guids.Length; i++)
+            {
+                abb.assetNames[i] = AssetDatabase.GUIDToAssetPath(guids[i]);
+                abb.addressableNames[i] = Path.GetFileName(abb.assetNames[i]);
+            }
+            return abb;
         }
     }
 }
