@@ -14,7 +14,7 @@ using UnityEngine.Build.Pipeline;
 using Framework.AssetManagement.AssetBuilder;
 using Framework.AssetManagement.Runtime;
 using Framework.AssetManagement.AssetPackageEditor.Editor;
-using System.Linq;
+using UnityEditor.Build.Pipeline.Tasks;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -287,7 +287,8 @@ namespace Framework.AssetManagement.GameBuilder
             buildParams.OutputFolder = output;
 
             // step2. build bundles except Manifest
-            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out s_buildResults);
+            var taskList = AssetBundleCompatible(true);
+            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, buildContent, out s_buildResults, taskList);
             if (exitCode < ReturnCode.Success)
             {
                 Debug.LogError($"Failed to build bundles, ReturnCode is {exitCode}");
@@ -333,6 +334,30 @@ namespace Framework.AssetManagement.GameBuilder
                         s_BPInfo.Add(newBundleName, m_Setting.packageEditorSetting.GetPackageID(item.assetNames[0]));
                     }
                 }
+
+                // s_abb没有内置资源的打包信息，故这里额外记录
+                BundleDetails builtinBundleDetails;
+                s_buildResults.BundleInfos.TryGetValue("builtin_shaders", out builtinBundleDetails);
+                string oldPathName2 = output + "/" + "builtin_shaders";
+                string newBundleName2 = builtinBundleDetails.Hash.ToString();
+                string err = AssetDatabase.RenameAsset(oldPathName2, newBundleName2);
+                if (!string.IsNullOrEmpty(err))
+                    Debug.LogError($"RenameAsset:  {err}");
+                if(!s_BPInfo.ContainsKey(newBundleName2))
+                {
+                    s_BPInfo.Add(newBundleName2, "base");   // 内置资源放入base
+                }
+
+                s_buildResults.BundleInfos.TryGetValue("builtin_resources", out builtinBundleDetails);
+                oldPathName2 = output + "/" + "builtin_resources";
+                newBundleName2 = builtinBundleDetails.Hash.ToString();
+                err = AssetDatabase.RenameAsset(oldPathName2, newBundleName2);
+                if (!string.IsNullOrEmpty(err))
+                    Debug.LogError($"RenameAsset:  {err}");
+                if (!s_BPInfo.ContainsKey(newBundleName2))
+                {
+                    s_BPInfo.Add(newBundleName2, "base");   // 内置资源放入base
+                }
             }
 
             // 分包处理
@@ -348,6 +373,48 @@ namespace Framework.AssetManagement.GameBuilder
             CopyManifestToOutput(manifestOutput, output);
 
             return true;
+        }
+
+        static IList<IBuildTask> AssetBundleCompatible(bool builtinTask)
+        {
+            var buildTasks = new List<IBuildTask>();
+
+            // Setup
+            buildTasks.Add(new SwitchToBuildPlatform());
+            buildTasks.Add(new RebuildSpriteAtlasCache());
+
+            // Player Scripts
+            buildTasks.Add(new BuildPlayerScripts());
+            buildTasks.Add(new PostScriptsCallback());
+
+            // Dependency
+            buildTasks.Add(new CalculateSceneDependencyData());
+#if UNITY_2019_3_OR_NEWER
+            buildTasks.Add(new CalculateCustomDependencyData());
+#endif
+            buildTasks.Add(new CalculateAssetDependencyData());
+            buildTasks.Add(new StripUnusedSpriteSources());
+            if (builtinTask)
+                buildTasks.Add(new CreateBuiltInResourceBundle("builtin_shaders", "builtin_resources"));
+            buildTasks.Add(new PostDependencyCallback());
+
+            // Packing
+            buildTasks.Add(new GenerateBundlePacking());
+            if (builtinTask)
+                buildTasks.Add(new UpdateBundleObjectLayout());
+            buildTasks.Add(new GenerateBundleCommands());
+            buildTasks.Add(new GenerateSubAssetPathMaps());
+            buildTasks.Add(new GenerateBundleMaps());
+            buildTasks.Add(new PostPackingCallback());
+
+            // Writing
+            buildTasks.Add(new WriteSerializedFiles());
+            buildTasks.Add(new ArchiveAndCompressBundles());
+            buildTasks.Add(new AppendBundleHash());
+            buildTasks.Add(new GenerateLinkXml());
+            buildTasks.Add(new PostWritingCallback());
+
+            return buildTasks;
         }
 
         // 把streaming assets下的资源进行分包处理（base、extra、pkg。。。）
