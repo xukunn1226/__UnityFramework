@@ -105,7 +105,6 @@ namespace Application.Runtime
             QualitySettings.vSyncCount = 0;
         }
 
-        static AssetLoader<RenderPipelineAsset> sPreRPLoader = null;
         static AssetLoader<RenderPipelineAsset> sCurRPLoader = null;
 
         static private void InternalChangeSettings(int curIndex, int prevIndex)
@@ -126,7 +125,14 @@ namespace Application.Runtime
             //sCurRPLoader = rpLoader;
 
             QualitySettings.SetQualityLevel(curIndex);
-            QualitySettings.renderPipeline = AssetManager.LoadAsset<RenderPipelineAsset>(s_GameSettings[curIndex].m_RenderPipelineAsset).asset;
+            AssetLoader<RenderPipelineAsset> loader = AssetManager.LoadAsset<RenderPipelineAsset>(s_GameSettings[curIndex].m_RenderPipelineAsset);
+            QualitySettings.renderPipeline = loader.asset;
+
+            if(sCurRPLoader != null)
+            {
+                AssetManager.UnloadAsset(sCurRPLoader);
+            }
+            sCurRPLoader = loader;
 
             onChangeGameSetting?.Invoke(s_CurIndex, s_PrevIndex);
         }
