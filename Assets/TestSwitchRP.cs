@@ -124,14 +124,20 @@ namespace Application.Runtime
             //}
             //sCurRPLoader = rpLoader;
 
+            
             QualitySettings.SetQualityLevel(curIndex);
-            AssetLoader<RenderPipelineAsset> loader = AssetManager.LoadAsset<RenderPipelineAsset>(s_GameSettings[curIndex].m_RenderPipelineAsset);
+
+            // load new RP Asset
+            RenderPipelineAsset prevAsset = QualitySettings.renderPipeline;
+            AssetLoader<RenderPipelineAsset> loader = AssetManager.LoadAsset<RenderPipelineAsset>(s_GameSettings[curIndex].m_RenderPipelineAsset);            
             QualitySettings.renderPipeline = loader.asset;
 
-            if(sCurRPLoader != null)
-            {
+            // unload prev RP Asset
+            if (prevAsset != null)
+                Resources.UnloadAsset(prevAsset);
+            if (sCurRPLoader != null)
                 AssetManager.UnloadAsset(sCurRPLoader);
-            }
+
             sCurRPLoader = loader;
 
             onChangeGameSetting?.Invoke(s_CurIndex, s_PrevIndex);
