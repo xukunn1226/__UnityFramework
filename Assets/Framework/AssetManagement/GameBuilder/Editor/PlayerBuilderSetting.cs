@@ -95,6 +95,7 @@ namespace Framework.AssetManagement.GameBuilder
         public bool                         clearRenderPipelineAsset;
         public List<string>                 cachedRenderPipelineAsset           { get; set; }          // cache Quality Settings' Render Pipeline Asset
         public int                          curQualityLevel                     { get; set; }
+        public RenderPipelineAsset          cachedGraphicsRenderPipelineAsset   { get; set; }
         [System.NonSerialized] public string changelist;
 
         public override string ToString()
@@ -246,6 +247,7 @@ namespace Framework.AssetManagement.GameBuilder
             if (!para.clearRenderPipelineAsset)
                 return;
 
+            para.cachedGraphicsRenderPipelineAsset = GraphicsSettings.defaultRenderPipeline;
             para.curQualityLevel = QualitySettings.GetQualityLevel();
             para.cachedRenderPipelineAsset = new List<string>();
             for(int i = 0; i < QualitySettings.names.Length; ++i)
@@ -254,6 +256,7 @@ namespace Framework.AssetManagement.GameBuilder
                 para.cachedRenderPipelineAsset.Add(asset == null ? null : AssetDatabase.GetAssetPath(asset));
             }
 
+            GraphicsSettings.defaultRenderPipeline = null;
             RenderPipelineAsset rawPipelineAsset = AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>("assets/settings/empty_universalrp.asset");
             for(int i = 0; i < QualitySettings.names.Length; ++i)
             {
@@ -267,7 +270,8 @@ namespace Framework.AssetManagement.GameBuilder
             if (!para.clearRenderPipelineAsset)
                 return;
 
-            for(int i = 0; i < para.cachedRenderPipelineAsset.Count; ++i)
+            GraphicsSettings.defaultRenderPipeline = para.cachedGraphicsRenderPipelineAsset;
+            for (int i = 0; i < para.cachedRenderPipelineAsset.Count; ++i)
             {
                 QualitySettings.SetQualityLevel(i);
                 QualitySettings.renderPipeline = string.IsNullOrEmpty(para.cachedRenderPipelineAsset[i]) ? null : AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>(para.cachedRenderPipelineAsset[i]);

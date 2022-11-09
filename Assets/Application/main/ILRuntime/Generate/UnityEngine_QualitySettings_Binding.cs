@@ -31,9 +31,12 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{typeof(System.Int32)};
             method = type.GetMethod("SetQualityLevel", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, SetQualityLevel_2);
+            args = new Type[]{};
+            method = type.GetMethod("get_renderPipeline", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, get_renderPipeline_3);
             args = new Type[]{typeof(UnityEngine.Rendering.RenderPipelineAsset)};
             method = type.GetMethod("set_renderPipeline", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, set_renderPipeline_3);
+            app.RegisterCLRMethodRedirection(method, set_renderPipeline_4);
 
 
         }
@@ -82,7 +85,18 @@ namespace ILRuntime.Runtime.Generated
             return __ret;
         }
 
-        static StackObject* set_renderPipeline_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* get_renderPipeline_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 0);
+
+
+            var result_of_this_method = UnityEngine.QualitySettings.renderPipeline;
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        static StackObject* set_renderPipeline_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;

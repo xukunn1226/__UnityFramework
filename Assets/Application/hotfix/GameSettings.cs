@@ -79,10 +79,26 @@ namespace Application.Logic
             UnityEngine.Application.targetFrameRate = 300;
         }
 
+        static AssetLoader<RenderPipelineAsset> sCurRPLoader = null;
         static private void InternalChangeSettings(int curIndex, int prevIndex)
         {
             QualitySettings.SetQualityLevel(curIndex);
-            QualitySettings.renderPipeline = AssetManager.LoadAsset<RenderPipelineAsset>(s_GameSettings[curIndex].m_RenderPipelineAsset).asset;
+
+            // load new RP Asset
+            RenderPipelineAsset prevAsset = QualitySettings.renderPipeline;
+            AssetLoader<RenderPipelineAsset> loader = AssetManager.LoadAsset<RenderPipelineAsset>(s_GameSettings[curIndex].m_RenderPipelineAsset);
+            QualitySettings.renderPipeline = loader.asset;
+
+            // unload prev RP Asset
+            if (prevAsset != null)
+                Resources.UnloadAsset(prevAsset);
+            if (sCurRPLoader != null)
+                AssetManager.UnloadAsset(sCurRPLoader);
+
+            sCurRPLoader = loader;
+
+            Resources.UnloadUnusedAssets();
+            System.GC.Collect();
 
             onChangeGameSetting?.Invoke(s_CurIndex, s_PrevIndex);
         }
