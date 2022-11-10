@@ -7,6 +7,7 @@ using System.Linq;
 using System.Diagnostics;
 using UnityEditor.Animations;
 using Unity.EditorCoroutines.Editor;
+using System.Text;
 
 namespace AnimationInstancingModule.Editor
 {
@@ -374,6 +375,65 @@ namespace AnimationInstancingModule.Editor
                 EditorCoroutineUtility.StopCoroutine(m_Coroutine);
                 m_Coroutine = null;
             }
+        }
+    }
+
+    static public class AnimationInstancingDebug
+    {
+        [MenuItem("Tools/Print SkinnedMeshRenderer Info")]
+        static private void Print()
+        {
+            SkinnedMeshRenderer[] rdrs = Selection.activeGameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+            if (rdrs.Length == 0)
+                return;
+
+            UnityEngine.Debug.Log($"输出SkinnedMeshRenderer信息：{rdrs[0].name}");
+            //foreach(var rdr in rdrs)
+            //{
+            //    UnityEngine.Debug.Log(rdr.name);
+            //}
+            List<Matrix4x4> bindPose = new List<Matrix4x4>();
+            List<Transform> boneTransform = new List<Transform>();
+            AnimationInstancingModule.Runtime.AnimationUtility.MergeBone(rdrs, ref bindPose, ref boneTransform);
+
+            UnityEngine.Debug.Log($"--- Mesh:");
+            StringBuilder sb = new StringBuilder();
+            Transform root = rdrs[0].transform;
+            for(int i = 0; i < boneTransform.Count; i++)
+            {
+                sb.AppendLine($"{i} {boneTransform[i].name}");
+                sb.AppendLine($"{(boneTransform[i].worldToLocalMatrix * root.localToWorldMatrix).ToString()}");     // 也是bindposes
+            }
+            UnityEngine.Debug.Log(sb.ToString());
+
+            //UnityEngine.Debug.Log($"--- BoneWeight:");
+            //sb.Clear();
+            //BoneWeight[] weights = rdrs[0].sharedMesh.boneWeights;
+            //for(int i = 0; i < weights.Length; ++i)
+            //{
+            //    BoneWeight weight = weights[i];
+            //    sb.AppendLine(string.Format($"  "));
+            //}
+
+
+            UnityEngine.Debug.Log("=================== bone names:");
+            sb.Clear();
+            for(int i = 0; i < rdrs[0].bones.Length; i++)
+            {
+                sb.AppendLine($"{i} {rdrs[0].bones[i].name}");
+            }
+            UnityEngine.Debug.Log(sb.ToString());
+
+
+            UnityEngine.Debug.Log("=================== bindposes: 模型空间到骨骼空间");
+            Matrix4x4[] bindposes = rdrs[0].sharedMesh.bindposes;
+            sb.Clear();
+            for(int i = 0; i < bindposes.Length; i++)
+            {
+                sb.AppendLine($"{i} {rdrs[0].bones[i].name}");
+                sb.AppendLine($"{bindposes[i].ToString()}");
+            }
+            UnityEngine.Debug.Log(sb.ToString());
         }
     }
 }

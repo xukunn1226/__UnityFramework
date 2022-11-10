@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028335, g: 0.22571331, b: 0.30692235, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028381, g: 0.22571406, b: 0.30692294, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -696,7 +696,7 @@ PrefabInstance:
       objectReference: {fileID: 695999946}
     - target: {fileID: 1387694017, guid: 702cf7781e9ec2a42949b7b95ae2328c, type: 3}
       propertyPath: enableReference
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1387694017, guid: 702cf7781e9ec2a42949b7b95ae2328c, type: 3}
       propertyPath: m_BoneTransform.Array.size
