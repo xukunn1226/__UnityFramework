@@ -708,7 +708,7 @@ namespace Framework.AssetManagement.AssetBrowser
             terrain2.SetNeighbors(null, null, null, null);
         }
 
-        [MenuItem("Tools/Print Terrain Info")]
+        //[MenuItem("Tools/Print Terrain Info")]
         static private void PrintTerrainInfo()
         {
             Terrain t = Selection.activeGameObject.GetComponent<Terrain>();

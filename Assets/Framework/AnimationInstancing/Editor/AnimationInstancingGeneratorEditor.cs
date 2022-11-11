@@ -380,7 +380,7 @@ namespace AnimationInstancingModule.Editor
 
     static public class AnimationInstancingDebug
     {
-        [MenuItem("Tools/Print SkinnedMeshRenderer Info")]
+        //[MenuItem("Tools/Print SkinnedMeshRenderer Info")]
         static private void Print()
         {
             SkinnedMeshRenderer[] rdrs = Selection.activeGameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
