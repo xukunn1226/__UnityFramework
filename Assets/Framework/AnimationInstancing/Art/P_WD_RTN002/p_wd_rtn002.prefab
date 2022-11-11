@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715835d028d77244cb41cc6f091de094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Prototype: {fileID: 494572492869277401, guid: 0d6a635d26b84f14588fde9025efb8dd,
+  m_Prototype: {fileID: 366941630909814686, guid: 151bb3a2e5cd1da428f828eb0bb9df5f,
     type: 3}
   lodInfos:
   - lodLevel: 0
@@ -53,7 +53,7 @@ MonoBehaviour:
       materials:
       - {fileID: 2100000, guid: 993916536b26ba648b63852f13036914, type: 2}
       bonePerVertex: 4
-  m_Radius: 14.66
+  m_Radius: 11.56
   shadowCastingMode: 1
   receiveShadows: 0
   defaultAnim: 

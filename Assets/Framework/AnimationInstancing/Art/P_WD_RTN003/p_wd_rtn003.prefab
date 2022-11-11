@@ -53,7 +53,7 @@ MonoBehaviour:
       materials:
       - {fileID: 2100000, guid: 8a394537df41ebe4895374fd0d7ebb52, type: 2}
       bonePerVertex: 4
-  m_Radius: 14.7
+  m_Radius: 12.17
   shadowCastingMode: 1
   receiveShadows: 0
   defaultAnim: 
