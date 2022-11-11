@@ -540,7 +540,7 @@ namespace AnimationInstancingModule.Runtime
             for(int i = 0; i < m_BakeInfo.Count; ++i)
             {
                 m_BakeInfo[i].info.startFrameIndex = pixelx / m_TextureBlockWidth + pixely / m_TextureBlockHeight * (m_BakedBoneTexture.width / m_TextureBlockWidth);
-                int frameCount = m_BakeInfo[i].boneMatrix.Count;    // 动画帧数，一个Matrix4x4记录了一帧的数据
+                int frameCount = m_BakeInfo[i].boneMatrix.Count;    // 动画帧数，一个Matrix4x4[]记录了一帧的数据
                 for(int j = 0; j < frameCount; ++j)
                 {
                     // Debug.Log($"{j}  {pixelx}  {pixely}");
