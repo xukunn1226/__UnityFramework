@@ -85,6 +85,8 @@ UserSettings/
 [Aa]ssets/RedirectorCache.meta
 [Aa]ssets/Assets.index
 [Aa]ssets/Assets.index.meta
+[Aa]ssets/FR2_Cache.asset
+[Aa]ssets/FR2_Cache.asset.meta
 /Assets/Plugins/FMOD/Cache/*
 /Assets/Plugins/FMOD/Cache.meta
 fmod.log
