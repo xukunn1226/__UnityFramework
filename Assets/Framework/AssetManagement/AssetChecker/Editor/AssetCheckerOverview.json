@@ -5,7 +5,7 @@
     "$values": [
       {
         "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
-        "Desc": "Mesh",
+        "Desc": "PlayerTextureChecking",
         "PathFilter": {
           "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
           "enabled": true,
@@ -14,45 +14,7 @@
             "input": {
               "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
               "$values": [
-                "Assets/Framework/AssetManagement/Runtime/Tests/Res/TestUnload"
-              ]
-            },
-            "pattern": null
-          }
-        },
-        "FilenameFilter": {
-          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
-          "enabled": true,
-          "filter": {
-            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
-            "input": {
-              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
-              "$values": [
-                "Assets/Framework/AssetManagement/Runtime/Tests/Res/TestUnload"
-              ]
-            },
-            "nameFilter": "",
-            "typeFilter": 0
-          }
-        },
-        "Processor": {
-          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
-          "threshold": 500
-        },
-        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
-      },
-      {
-        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
-        "Desc": "Mesh_builtin",
-        "PathFilter": {
-          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
-          "enabled": true,
-          "filter": {
-            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
-            "input": {
-              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
-              "$values": [
-                "Assets/Framework/AssetManagement/Runtime/Tests/Res/BuiltinRes"
+                "Assets/Res/DG/Characters/Players"
               ]
             },
             "pattern": null
@@ -67,19 +29,20 @@
               "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
               "$values": []
             },
-            "nameFilter": null,
-            "typeFilter": 7
+            "nameFilter": "^T_Player",
+            "typeFilter": 13
           }
         },
         "Processor": {
-          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
-          "threshold": 20
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 512,
+          "texHight": 512
         },
-        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
       },
       {
         "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
-        "Desc": "new Checker",
+        "Desc": "PlayerWeaponTextureChecking",
         "PathFilter": {
           "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
           "enabled": true,
@@ -88,7 +51,7 @@
             "input": {
               "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
               "$values": [
-                "Assets/Res/Characters/Warrior"
+                "Assets/Res/DG/Characters/Players/Weapons"
               ]
             },
             "pattern": null
@@ -107,8 +70,1169 @@
             "typeFilter": 13
           }
         },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 256,
+          "texHight": 256
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "RetinuesTextureChecking(LackOutWeapon)",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Retinues/"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": null,
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 512,
+          "texHight": 512
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "RetinuesTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Retinues/"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "Wpn",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 256,
+          "texHight": 256
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "MutTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Mutants/Basic/"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "T_Bas",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 512,
+          "texHight": 512
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "ELTMutTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Mutants/Elite"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "T_ELT",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 1024,
+          "texHight": 512
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "BossMutTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Mutants/Boss"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 1024,
+          "texHight": 512
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "TreeTextureWeaponsChecking(JustAScene)",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Foliage/Trees/Textures"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 512,
+          "texHight": 512
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "GrassTextureWeaponsChecking(^)",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Foliage/Grasses/Textures"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 256,
+          "texHight": 256
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "BushesTextureWeaponsChecking(^)",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Foliage/Bushes/Textures"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 256,
+          "texHight": 256
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "BulidingTextureWeaponsChecking(^)",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Buildings/Textures/Common"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 1024,
+          "texHight": 1024
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "VehicleTextureWeaponsChecking(^max)",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Block/Vehicle/Textures"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 1024,
+          "texHight": 1024
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "BlockwithoutVehicleTextureWeaponsChecking(out)",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Block"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 512,
+          "texHight": 512
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "DPHairTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DP/Characters/Retinues"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "Hair",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 256,
+          "texHight": 256
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "DPFaceTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DP/Characters/Retinues"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "Face",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 256,
+          "texHight": 256
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "DPWeaponTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DP/Characters/Retinues"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "Wpn",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 512,
+          "texHight": 512
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "DPBodyTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DP/Characters/Retinues"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "Body",
+            "typeFilter": 13
+          }
+        },
         "Processor": null,
         "m_SelectedComponentName": "UnSelected Processor"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "FortsTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/WD/Forts"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 1024,
+          "texHight": 1024
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "VehiclesTextureWeaponsChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/WD/Animlnstance"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "",
+            "typeFilter": 13
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture, Framework.Core.Editor",
+          "texWidth": 512,
+          "texHight": 512
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Texture"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "PlayerWeaponsMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Players/Weapons"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 800
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "ELTMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Mutants/Elite"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 4000
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "MutMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Mutants/Basic"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 2500
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "RetinuesMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Retinues"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 3000
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "BossMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Characters/Mutants/Boss"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 6000
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "TreeMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Foliage/Trees/Models"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 3000
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "GrassesMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Foliage/Grasses/Models"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 300
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "BushesMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Foliage/Bushes/Models"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 1000
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "BuildingMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Buildings/Models/Common"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 4000
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "VehicleMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Block/Vehicle/Models"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 6000
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "BlockMeshChecking(withoutBlock)",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DG/Environment/DGM01/Block"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": null,
+        "m_SelectedComponentName": "UnSelected Processor"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "SLGVehiclesMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/WD/Animlnstance"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh, Framework.Core.Editor",
+          "threshold": 1200
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Mesh"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "DPMeshChecking",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res/DP/Characters/Retinues"
+              ]
+            },
+            "pattern": ""
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": "(^G_)|(^R_)",
+            "typeFilter": 7
+          }
+        },
+        "Processor": null,
+        "m_SelectedComponentName": "UnSelected Processor"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "[Debug] FindDependcy",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res"
+              ]
+            },
+            "pattern": "^((?!\\\\temp\\\\|\\\\Temp\\\\|/temp/|/Temp/).)*$"
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": null,
+            "typeFilter": 10
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_AssetDependecy, Framework.Core.Editor"
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_AssetDependecy"
+      },
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "PrefabMissingAssetsChecker",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Res"
+              ]
+            },
+            "pattern": null
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": null,
+            "typeFilter": 10
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_AssetMissingComponent, Framework.Core.Editor"
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_AssetMissingComponent"
       }
     ]
   }

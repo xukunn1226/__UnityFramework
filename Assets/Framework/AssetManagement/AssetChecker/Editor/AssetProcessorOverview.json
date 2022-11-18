@@ -1,0 +1,75 @@
+{
+  "$type": "Framework.AssetManagement.AssetChecker.AssetProcessorOverview, Framework.Core.Editor",
+  "AllCheckers": {
+    "$type": "System.Collections.Generic.List`1[[Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor]], mscorlib",
+    "$values": [
+      {
+        "$type": "Framework.AssetManagement.AssetChecker.AssetChecker, Framework.Core.Editor",
+        "Desc": "new Checker",
+        "PathFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Path, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": [
+                "Assets/Framework/AssetManagement/AssetChecker/Editor/Test/TestRes/"
+              ]
+            },
+            "pattern": null
+          }
+        },
+        "FilenameFilter": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetChecker+AssetFilterInfo, Framework.Core.Editor",
+          "enabled": true,
+          "filter": {
+            "$type": "Framework.AssetManagement.AssetChecker.AssetFilter_Filename, Framework.Core.Editor",
+            "input": {
+              "$type": "System.Collections.Generic.List`1[[System.String, mscorlib]], mscorlib",
+              "$values": []
+            },
+            "nameFilter": null,
+            "typeFilter": 0
+          }
+        },
+        "Processor": {
+          "$type": "Framework.AssetManagement.AssetChecker.AssetProcessor_Preset, Framework.Core.Editor",
+          "AnimationClipPreset": {
+            "$type": "Framework.AssetManagement.AssetChecker.PresetReference, Framework.Core.Editor",
+            "presetGUID": "f61a47ddf8dc6924bbae6bed9c254891"
+          },
+          "AudioClipPreset": {
+            "$type": "Framework.AssetManagement.AssetChecker.PresetReference, Framework.Core.Editor",
+            "presetGUID": "4773eab9f9e275a439bafda74feb37db"
+          },
+          "FontPreset": {
+            "$type": "Framework.AssetManagement.AssetChecker.PresetReference, Framework.Core.Editor",
+            "presetGUID": "fe2d994251c8cb24f9ae44f1497cb065"
+          },
+          "MaterialPreset": {
+            "$type": "Framework.AssetManagement.AssetChecker.PresetReference, Framework.Core.Editor",
+            "presetGUID": "e4fe2213f2ab03841bd40f058769308e"
+          },
+          "PhysicMaterialPreset": {
+            "$type": "Framework.AssetManagement.AssetChecker.PresetReference, Framework.Core.Editor",
+            "presetGUID": "c1eb9dc2270cc7845b1e188959337ba8"
+          },
+          "VideoClipPreset": {
+            "$type": "Framework.AssetManagement.AssetChecker.PresetReference, Framework.Core.Editor",
+            "presetGUID": null
+          },
+          "TexturePreset": {
+            "$type": "Framework.AssetManagement.AssetChecker.PresetReference, Framework.Core.Editor",
+            "presetGUID": "b3ae98b53eb02db488b5141501e27a1c"
+          },
+          "ModelPreset": {
+            "$type": "Framework.AssetManagement.AssetChecker.PresetReference, Framework.Core.Editor",
+            "presetGUID": "8fbd2f5acfd9ca24ba96d4ddcc13cb7c"
+          }
+        },
+        "m_SelectedComponentName": "Framework.AssetManagement.AssetChecker.AssetProcessor_Preset"
+      }
+    ]
+  }
+}

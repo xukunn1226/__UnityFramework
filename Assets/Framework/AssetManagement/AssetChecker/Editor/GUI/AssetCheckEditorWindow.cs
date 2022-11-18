@@ -29,13 +29,14 @@ namespace Framework.AssetManagement.AssetChecker
         {
             var window = GetWindow<AssetCheckEditorWindow>();
             window.position = GUIHelper.GetEditorWindowRect().AlignCenter(800, 600);
-            window.titleContent = new GUIContent("◊ ‘¥≈‰÷√/ºÏ≤Èπ§æﬂ");
+            window.titleContent = new GUIContent("ËµÑÊ∫êÈÖçÁΩÆ/Ê£ÄÊü•Â∑•ÂÖ∑");
         }
 
         private AssetCheckerOverview m_AssetCheckerOverview;
+        private AssetProcessorOverview m_AssetProcessorOverview;
         private ToolBarPanel m_ToolBarPanel;
         private PropertyTree m_ToolBarPropertyTree;
-
+        private OdinMenuTree tree;
         private AssetChecker Template = new AssetChecker() { Desc = "new Checker" };
         private PropertyTree m_CheckerTemplatePropertyTree;
 
@@ -47,6 +48,7 @@ namespace Framework.AssetManagement.AssetChecker
             m_ToolBarPropertyTree = PropertyTree.Create(m_ToolBarPanel);
 
             m_AssetCheckerOverview = AssetCheckerOverview.GetOrCreate();
+            m_AssetProcessorOverview = AssetProcessorOverview.GetOrCreate();
         }
 
         protected override void OnGUI()
@@ -70,7 +72,7 @@ namespace Framework.AssetManagement.AssetChecker
             protected override void OnDrawMenuItem(Rect rect, Rect labelRect)
             {
                 labelRect.x -= 8;
-                if(GUI.Button(labelRect.AlignMiddle(18).AlignRight(50), new GUIContent("…æ≥˝")))
+                if(GUI.Button(labelRect.AlignMiddle(18).AlignRight(50), new GUIContent("Âà†Èô§")))
                 {
                     AssetCheckEditorWindow.instance.RemoveChecker(instance);
                 }
@@ -81,7 +83,7 @@ namespace Framework.AssetManagement.AssetChecker
 
         protected override OdinMenuTree BuildMenuTree()
         {
-            OdinMenuTree tree = new OdinMenuTree(false);
+            tree = new OdinMenuTree(false);
 
             // MenuTree config
             var customMenuStyle = new OdinMenuStyle
@@ -105,7 +107,14 @@ namespace Framework.AssetManagement.AssetChecker
                 var customMenuItem = new CustomCheckerMenuItem(tree, item, i);
                 tree.AddMenuItemAtPath(string.Format($"Checker Overview"), customMenuItem);
             }
-
+            tree.AddObjectAtPath("Processor Overview", this);
+            for(int i = 0; i < m_AssetProcessorOverview.AllCheckers.Count; i++)
+            {
+                var item = m_AssetProcessorOverview.AllCheckers[i];
+                var customMenuItem = new CustomCheckerMenuItem(tree, item, i);
+                tree.AddMenuItemAtPath(string.Format($"Processor Overview"), customMenuItem);
+            }           
+            
             return tree;
         }
 
@@ -125,7 +134,7 @@ namespace Framework.AssetManagement.AssetChecker
         [GUIColor(1, 0, 0)]
         private void OnShowAdd()
         {
-            if(GUILayout.Button("Add"))
+            if (GUILayout.Button("ADD"))
             {
                 AddChecker(AssetChecker.Create(Template));
             }
@@ -134,22 +143,38 @@ namespace Framework.AssetManagement.AssetChecker
         public void Save()
         {
             AssetCheckerOverview.Save(m_AssetCheckerOverview);
+            AssetProcessorOverview.Save(m_AssetProcessorOverview);
         }
 
         public void DoProcessorAndExportAll()
         {
             AssetCheckerOverview.DoProcessorAndExportAll(m_AssetCheckerOverview);
+            AssetProcessorOverview.DoProcessorAndExportAll(m_AssetProcessorOverview);
         }
-
+        
         public void AddChecker(AssetChecker item)
         {
-            m_AssetCheckerOverview?.Add(item);
+            if (tree.Selection[0].Name == "Processor Overview")
+            {
+                m_AssetProcessorOverview?.Add(item);
+                
+            }else if (tree.Selection[0].Name == "Checker Overview")
+            {
+                m_AssetCheckerOverview?.Add(item);
+            }
+
             ForceMenuTreeRebuild();
         }
-
         public void RemoveChecker(AssetChecker item)
         {
-            m_AssetCheckerOverview?.Remove(item);
+            if(m_AssetCheckerOverview != null && m_AssetCheckerOverview.AllCheckers.Contains(item))
+            {
+                m_AssetCheckerOverview.Remove(item);
+            }
+            else if (m_AssetProcessorOverview != null && m_AssetProcessorOverview.AllCheckers.Contains(item))
+            {
+                m_AssetProcessorOverview.Remove(item);
+            }
             ForceMenuTreeRebuild();
         }
     }
@@ -160,11 +185,11 @@ namespace Framework.AssetManagement.AssetChecker
         void OnShow()
         {
             EditorGUILayout.BeginHorizontal();
-            if(GUILayout.Button(new GUIContent("±£¥Ê"), GUILayoutOptions.Width(120)))
+            if(GUILayout.Button(new GUIContent("‰øùÂ≠ò"), GUILayoutOptions.Width(120)))
             {
                 AssetCheckEditorWindow.instance.Save();
             }
-            if(GUILayout.Button(new GUIContent("÷¥––À˘”–ºÏ≤‚≤¢µº≥ˆ"), GUILayoutOptions.Width(150)))
+            if(GUILayout.Button(new GUIContent("ÊâßË°åÊâÄÊúâÊ£ÄÊµãÂπ∂ÂØºÂá∫"), GUILayoutOptions.Width(150)))
             {
                 AssetCheckEditorWindow.instance.DoProcessorAndExportAll();
             }

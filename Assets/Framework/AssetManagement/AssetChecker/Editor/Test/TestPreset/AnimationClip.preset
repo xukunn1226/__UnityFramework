@@ -1,0 +1,3111 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AnimationClip
+  m_TargetType:
+    m_NativeTypeID: 74
+    m_ManagedTypePPtr: {fileID: 0}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Legacy
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Compressed
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_UseHighQualityCurve
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_RotationCurves.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_CompressedRotationCurves.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EulerCurves.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_PositionCurves.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].time
+    value: 0.15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].value.x
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].value.y
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].value.z
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].inSlope.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].inSlope.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].inSlope.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].outSlope.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].outSlope.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].outSlope.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].inWeight.x
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].inWeight.y
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].inWeight.z
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].outWeight.x
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].outWeight.y
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[0].outWeight.z
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].time
+    value: 0.23333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].value.x
+    value: 1.2756469
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].value.y
+    value: 1.2756469
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].value.z
+    value: 1.2756469
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].inSlope.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].inSlope.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].inSlope.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].outSlope.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].outSlope.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].outSlope.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].inWeight.x
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].inWeight.y
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].inWeight.z
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].outWeight.x
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].outWeight.y
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[1].outWeight.z
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].time
+    value: 0.3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].value.x
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].value.y
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].value.z
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].inSlope.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].inSlope.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].inSlope.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].outSlope.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].outSlope.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].outSlope.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].inWeight.x
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].inWeight.y
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].inWeight.z
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].outWeight.x
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].outWeight.y
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_Curve.Array.data[2].outWeight.z
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ScaleCurves.Array.data[0].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.size
+    value: 11
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[1].time
+    value: 0.28333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].attribute
+    value: m_Color.r
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[0].script
+    value: 
+    objectReference: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[1].time
+    value: 0.28333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].attribute
+    value: m_Color.g
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[1].script
+    value: 
+    objectReference: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[1].time
+    value: 0.28333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].attribute
+    value: m_Color.b
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[2].script
+    value: 
+    objectReference: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[0].time
+    value: 0.18333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[1].time
+    value: 0.36666667
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].attribute
+    value: m_Color.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].path
+    value: FullLeftDown/EnterGroup_Rect/ChatEnter_Button/Text1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[3].script
+    value: 
+    objectReference: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[0].time
+    value: 0.18333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[1].time
+    value: 0.36666667
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].attribute
+    value: m_Color.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].path
+    value: FullLeftDown/EnterGroup_Rect/ChatEnter_Button/Text2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[4].script
+    value: 
+    objectReference: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[0].time
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[0].value
+    value: 0.5019608
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[1].time
+    value: 0.21666667
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[1].value
+    value: 0.4745098
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].attribute
+    value: m_Colors.m_DisabledColor.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[5].script
+    value: 
+    objectReference: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[0].value
+    value: -108
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[0].inSlope
+    value: 1886.7742
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[0].outSlope
+    value: 1886.7742
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[0].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[0].outWeight
+    value: 0.040769804
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[1].time
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[1].value
+    value: 40
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[2].time
+    value: 0.4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[2].value
+    value: 19
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].attribute
+    value: m_AnchoredPosition.x
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/Text
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[6].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[1].time
+    value: 0.4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[1].value
+    value: 0.8352941
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].attribute
+    value: m_Color.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/Text
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[7].script
+    value: 
+    objectReference: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[0].time
+    value: 0.083333336
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[0].value
+    value: -396
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[1].time
+    value: 0.23333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[1].value
+    value: -21
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[2].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[2].value
+    value: -78.10009
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].attribute
+    value: m_AnchoredPosition.x
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[8].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[0].time
+    value: 0.083333336
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[0].value
+    value: -200
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[1].time
+    value: 0.23333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[1].value
+    value: -37
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[2].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[2].value
+    value: -61.800102
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].attribute
+    value: m_AnchoredPosition.y
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[9].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[0].time
+    value: 0.15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[1].time
+    value: 0.3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[1].value
+    value: 0.89411765
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].attribute
+    value: m_Color.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].path
+    value: FullLeftDown/EnterGroup_Rect/ChatEnter_Button
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_FloatCurves.Array.data[10].script
+    value: 
+    objectReference: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_PPtrCurves.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_SampleRate
+    value: 60
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_WrapMode
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Bounds.m_Center.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Bounds.m_Center.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Bounds.m_Center.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Bounds.m_Extent.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Bounds.m_Extent.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Bounds.m_Extent.z
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ClipBindingConstant.genericBindings.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_ClipBindingConstant.pptrCurveMapping.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_AdditiveReferencePoseClip
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_AdditiveReferencePoseTime
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_StartTime
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_StopTime
+    value: 0.4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_OrientationOffsetY
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_Level
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_CycleOffset
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_HasAdditiveReferencePose
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_LoopTime
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_LoopBlend
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_LoopBlendOrientation
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_LoopBlendPositionY
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_LoopBlendPositionXZ
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_KeepOriginalOrientation
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_KeepOriginalPositionY
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_KeepOriginalPositionXZ
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_HeightFromFeet
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_AnimationClipSettings.m_Mirror
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.size
+    value: 14
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[1].time
+    value: 0.28333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].attribute
+    value: m_Color.r
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[0].script
+    value: 
+    objectReference: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[1].time
+    value: 0.28333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].attribute
+    value: m_Color.g
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[1].script
+    value: 
+    objectReference: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[1].time
+    value: 0.28333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].attribute
+    value: m_Color.b
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[2].script
+    value: 
+    objectReference: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[0].time
+    value: 0.18333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[1].time
+    value: 0.36666667
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].attribute
+    value: m_Color.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].path
+    value: FullLeftDown/EnterGroup_Rect/ChatEnter_Button/Text1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[3].script
+    value: 
+    objectReference: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[0].time
+    value: 0.18333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[1].time
+    value: 0.36666667
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].attribute
+    value: m_Color.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].path
+    value: FullLeftDown/EnterGroup_Rect/ChatEnter_Button/Text2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[4].script
+    value: 
+    objectReference: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[0].time
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[0].value
+    value: 0.5019608
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[1].time
+    value: 0.21666667
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[1].value
+    value: 0.4745098
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].attribute
+    value: m_Colors.m_DisabledColor.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[5].script
+    value: 
+    objectReference: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[0].value
+    value: -108
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[0].inSlope
+    value: 1886.7742
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[0].outSlope
+    value: 1886.7742
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[0].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[0].outWeight
+    value: 0.040769804
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[1].time
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[1].value
+    value: 40
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[2].time
+    value: 0.4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[2].value
+    value: 19
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].attribute
+    value: m_AnchoredPosition.x
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/Text
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[6].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[0].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[1].time
+    value: 0.4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[1].value
+    value: 0.8352941
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].attribute
+    value: m_Color.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/Text
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[7].script
+    value: 
+    objectReference: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[0].time
+    value: 0.083333336
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[0].value
+    value: -396
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[1].time
+    value: 0.23333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[1].value
+    value: -21
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[2].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[2].value
+    value: -78.10009
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].attribute
+    value: m_AnchoredPosition.x
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[8].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[0].time
+    value: 0.083333336
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[0].value
+    value: -200
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[1].time
+    value: 0.23333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[1].value
+    value: -37
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[2].time
+    value: 0.26666668
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[2].value
+    value: -61.800102
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].attribute
+    value: m_AnchoredPosition.y
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[9].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[0].time
+    value: 0.15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[0].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[1].time
+    value: 0.23333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[1].value
+    value: 1.2756469
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[2].time
+    value: 0.3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[2].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].attribute
+    value: m_LocalScale.x
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[10].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[0].time
+    value: 0.15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[0].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[1].time
+    value: 0.23333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[1].value
+    value: 1.2756469
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[2].time
+    value: 0.3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[2].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].attribute
+    value: m_LocalScale.y
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[11].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.size
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[0].time
+    value: 0.15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[0].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[1].time
+    value: 0.23333333
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[1].value
+    value: 1.2756469
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[2].time
+    value: 0.3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[2].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[2].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[2].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[2].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[2].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[2].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_Curve.Array.data[2].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].attribute
+    value: m_LocalScale.z
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].path
+    value: FullLeftDown/EnterGroup_Rect/DungeonEnter_btn/DungeonIcon
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].classID
+    value: 224
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[12].script
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[0].time
+    value: 0.15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[0].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[0].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[0].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[1].time
+    value: 0.3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[1].value
+    value: 0.89411765
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[1].tangentMode
+    value: 136
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[1].inWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_Curve.Array.data[1].outWeight
+    value: 0.33333334
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_PreInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_PostInfinity
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].curve.m_RotationOrder
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].attribute
+    value: m_Color.a
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].path
+    value: FullLeftDown/EnterGroup_Rect/ChatEnter_Button
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].classID
+    value: 114
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorCurves.Array.data[13].script
+    value: 
+    objectReference: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  - target: {fileID: 0}
+    propertyPath: m_EulerEditorCurves.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_HasGenericRootTransform
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_HasMotionFloatCurves
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_Events.Array.size
+    value: 0
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []

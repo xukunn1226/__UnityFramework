@@ -8,9 +8,9 @@ using UnityEditor;
 
 namespace Framework.AssetManagement.AssetChecker
 {
-    public class AssetCheckerOverview
+    public class AssetProcessorOverview
     {
-        public const string kJsonAssetPath = "Assets/Framework/AssetManagement/AssetChecker/Editor/AssetCheckerOverview.json";
+        public const string kJsonAssetPath = "Assets/Framework/AssetManagement/AssetChecker/Editor/AssetProcessorOverview.json";
 
         [SerializeField]
         public List<AssetChecker> AllCheckers { get; private set; } = new List<AssetChecker>();
@@ -25,23 +25,23 @@ namespace Framework.AssetManagement.AssetChecker
             AllCheckers.Remove(item);
         }
 
-        static public AssetCheckerOverview GetOrCreate()
+        static public AssetProcessorOverview GetOrCreate()
         {
             if(File.Exists(kJsonAssetPath))
             {
                 return Deserialize();
             }
-            AssetCheckerOverview overview = new AssetCheckerOverview();
+            AssetProcessorOverview overview = new AssetProcessorOverview();
             Serialize(overview);
             return overview;
         }
 
-        static public void Save(AssetCheckerOverview overview)
+        static public void Save(AssetProcessorOverview overview)
         {
             Serialize(overview);
         }
 
-        static private void Serialize(AssetCheckerOverview overview)
+        static private void Serialize(AssetProcessorOverview overview)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.TypeNameHandling = TypeNameHandling.All;
@@ -55,7 +55,7 @@ namespace Framework.AssetManagement.AssetChecker
             AssetDatabase.ImportAsset(kJsonAssetPath);
         }
 
-        static private AssetCheckerOverview Deserialize()
+        static private AssetProcessorOverview Deserialize()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();
             settings.TypeNameHandling = TypeNameHandling.All;
@@ -63,11 +63,11 @@ namespace Framework.AssetManagement.AssetChecker
             {
                 byte[] array = new byte[1024 * 256];
                 int size = fs.Read(array, 0, 1024 * 256);
-                return JsonConvert.DeserializeObject<AssetCheckerOverview>(System.Text.Encoding.UTF8.GetString(array, 0, size), settings);
+                return JsonConvert.DeserializeObject<AssetProcessorOverview>(System.Text.Encoding.UTF8.GetString(array, 0, size), settings);
             }
         }
 
-        static public void DoProcessorAndExportAll(AssetCheckerOverview overview)
+        static public void DoProcessorAndExportAll(AssetProcessorOverview overview)
         {
             foreach(var item in overview.AllCheckers)
             {
@@ -78,7 +78,7 @@ namespace Framework.AssetManagement.AssetChecker
         // CI½Ó¿Ú
         static public void cmdDoProcessorAndExportAll()
         {
-            AssetCheckerOverview overview = GetOrCreate();
+            AssetProcessorOverview overview = GetOrCreate();
             DoProcessorAndExportAll(overview);
         }
     }

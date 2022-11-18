@@ -15,18 +15,18 @@ namespace Framework.AssetManagement.AssetChecker
     }
 
     /// <summary>
-    /// Â·¾¶¹ıÂËÆ÷
+    /// è·¯å¾„è¿‡æ»¤å™¨
     /// </summary>
     [Serializable]
     public class AssetFilter_Path : IAssetFilter
     {
         [ShowInInspector]
-        [LabelText("É¸Ñ¡Â·¾¶")]
-        public List<string> input = new List<string>();             // ĞèÒªÉ¸Ñ¡µÄ¸ùÄ¿Â¼
+        [LabelText("ç­›é€‰è·¯å¾„")]
+        public List<string> input = new List<string>();             // éœ€è¦ç­›é€‰çš„æ ¹ç›®å½•
 
         [ShowInInspector]
-        [LabelText("Â·¾¶ÕıÔò")]
-        public string       pattern;                                // ÕıÔò±í´ïÊ½
+        [LabelText("è·¯å¾„æ­£åˆ™")]
+        public string pattern;                                // æ­£åˆ™è¡¨è¾¾å¼
 
         static public AssetFilter_Path Create(AssetFilter_Path other)
         {
@@ -37,7 +37,7 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         /// <summary>
-        /// É¸Ñ¡³ö·ûºÏÌõ¼şµÄÄ¿Â¼ÁĞ±í£¬ÊäÈëÊÇÄ¿Â¼ÁĞ±í£¬Êä³öÒ²ÊÇÄ¿Â¼ÁĞ±í
+        /// ç­›é€‰å‡ºç¬¦åˆæ¡ä»¶çš„ç›®å½•åˆ—è¡¨ï¼Œè¾“å…¥æ˜¯ç›®å½•åˆ—è¡¨ï¼Œè¾“å‡ºä¹Ÿæ˜¯ç›®å½•åˆ—è¡¨
         /// </summary>
         /// <param name="input"></param>
         /// <param name="pattern"></param>
@@ -45,21 +45,30 @@ namespace Framework.AssetManagement.AssetChecker
         /// <exception cref="System.ArgumentNullException"></exception>
         public List<string> DoFilter()
         {
-            if (input == null || input.Count != 1)
-                throw new System.ArgumentNullException(@"PathFilter: unsupport EMPTY directory or input directories count > 1");
+            if (input == null || input.Count == 0)
+                throw new System.ArgumentNullException(@"PathFilter: unsupport EMPTY directory");
 
             List<string> result = new List<string>();
             try
             {
-                DirectoryInfo di = new DirectoryInfo(input[0]);
-                DirectoryInfo[] dis = di.GetDirectories("*", SearchOption.AllDirectories);
-                foreach (var dir in dis)
+                HashSet<string> dirs = new HashSet<string>();
+                foreach(var i in input)
                 {
-                    string path = dir.FullName.Replace(@"\", @"/");
+                    DirectoryInfo di = new DirectoryInfo(i);
+                    DirectoryInfo[] dis = di.GetDirectories("*", SearchOption.AllDirectories);
+                    foreach(var dir in dis)
+                    {
+                        dirs.Add(dir.FullName);
+                    }
+                    dirs.Add(i);
+                }
+
+                foreach (var dir in dirs)
+                {
+                    string path = dir.Replace(@"\", @"/");
                     if(IsMatch(path, pattern))
                         result.Add(AssetCheckerUtility.TrimProjectFolder(path));
                 }
-                result.Add(AssetCheckerUtility.TrimProjectFolder(input[0]));    // Ê¼ÖÕ°üÀ¨ÊäÈëµÄÎÄ¼şÄ¿Â¼
             }
             catch(System.Exception e)
             {
@@ -100,16 +109,16 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         [ShowInInspector]
-        [LabelText("É¸Ñ¡Â·¾¶")]
-        public List<string> input = new List<string>();                 // ĞèÒªÉ¸Ñ¡µÄ¸ùÄ¿Â¼
+        [LabelText("ç­›é€‰è·¯å¾„")]
+        public List<string> input = new List<string>();                 // éœ€è¦ç­›é€‰çš„æ ¹ç›®å½•
 
         [ShowInInspector]
-        [LabelText("ÎÄ¼şÃûÕıÔò")]
-        public string       nameFilter;                                 // ÎÄ¼şÃûÕıÔò±í´ïÊ½
+        [LabelText("æ–‡ä»¶åæ­£åˆ™")]
+        public string       nameFilter;                                 // æ–‡ä»¶åæ­£åˆ™è¡¨è¾¾å¼
 
         [ShowInInspector]
-        [LabelText("ÀàĞÍ")]
-        public UnityType    typeFilter = UnityType.Object;              // ÀàĞÍ¹ıÂËÆ÷
+        [LabelText("ç±»å‹")]
+        public UnityType    typeFilter = UnityType.Object;              // ç±»å‹è¿‡æ»¤å™¨
 
         static public AssetFilter_Filename Create(AssetFilter_Filename other)
         {
@@ -121,9 +130,9 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         /// <summary>
-        /// É¸Ñ¡³ö·ûºÏÌõ¼şµÄÎÄ¼şÁĞ±í£¬ÊäÈëÊÇÄ¿Â¼ÁĞ±í£¬Êä³öÊÇÎÄ¼şÁĞ±í
+        /// ç­›é€‰å‡ºç¬¦åˆæ¡ä»¶çš„æ–‡ä»¶åˆ—è¡¨ï¼Œè¾“å…¥æ˜¯ç›®å½•åˆ—è¡¨ï¼Œè¾“å‡ºæ˜¯æ–‡ä»¶åˆ—è¡¨
         /// </summary>
-        /// <returns>·µ»Ø·ûºÏÕıÔòµÄÎÄ¼şÂ·¾¶£¬È¥³ıÁË¹¤³ÌÄ¿Â¼Ç°×º</returns>
+        /// <returns>è¿”å›ç¬¦åˆæ­£åˆ™çš„æ–‡ä»¶è·¯å¾„ï¼Œå»é™¤äº†å·¥ç¨‹ç›®å½•å‰ç¼€</returns>
         public List<string> DoFilter()
         {
             List<string> result = new List<string>();

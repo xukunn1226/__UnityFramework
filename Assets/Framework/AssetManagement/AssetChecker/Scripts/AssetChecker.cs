@@ -32,7 +32,7 @@ namespace Framework.AssetManagement.AssetChecker
                 return info;
             }
         }
-        [LabelText("ÃèÊö")]
+        [LabelText("æè¿°")]
         public string           Desc;
         [HideInInspector]
         public AssetFilterInfo  PathFilter;
@@ -59,9 +59,9 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         /// <summary>
-        /// Ö´ĞĞ¹ıÂËÆ÷
+        /// æ‰§è¡Œè¿‡æ»¤å™¨
         /// </summary>
-        /// <returns>·µ»ØÖ´ĞĞ¹ıÂËÆ÷ºóµÄ½á¹ûĞÅÏ¢</returns>
+        /// <returns>è¿”å›æ‰§è¡Œè¿‡æ»¤å™¨åçš„ç»“æœä¿¡æ¯</returns>
         public List<string> DoFilter()
         {
             List<string> paths = new List<string>();
@@ -76,7 +76,7 @@ namespace Framework.AssetManagement.AssetChecker
                 List<string> prevInput = filter_Filename.input;
                 if (filter_Filename.input != null && filter_Filename.input.Count == 0)
                 {
-                    // ÓÅÏÈÊ¹ÓÃfilterÉèÖÃµÄinput²ÎÊı
+                    // ä¼˜å…ˆä½¿ç”¨filterè®¾ç½®çš„inputå‚æ•°
                     filter_Filename.input = paths;
                 }
                 paths = filter_Filename.DoFilter();
@@ -86,9 +86,9 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         /// <summary>
-        /// Ö´ĞĞ´¦ÀíÆ÷
+        /// æ‰§è¡Œå¤„ç†å™¨
         /// </summary>
-        /// <returns>·µ»ØÖ´ĞĞ´¦ÀíÆ÷ºóµÄĞÅÏ¢</returns>
+        /// <returns>è¿”å›æ‰§è¡Œå¤„ç†å™¨åçš„ä¿¡æ¯</returns>
         /// <exception cref="Exception"></exception>
         public List<string> DoProcessor()
         {
@@ -179,7 +179,7 @@ namespace Framework.AssetManagement.AssetChecker
             {
                 m_PathFilterPropertyTree = PropertyTree.Create(PathFilter.filter);
             }
-            SirenixEditorGUI.BeginToggleGroup(PathFilter, ref PathFilter.enabled, ref m_Visible, "¡¾Â·¾¶¹ıÂËÆ÷¡¿");
+            SirenixEditorGUI.BeginToggleGroup(PathFilter, ref PathFilter.enabled, ref m_Visible, "ã€è·¯å¾„è¿‡æ»¤å™¨ã€‘");
             m_PathFilterPropertyTree.Draw(false);
             SirenixEditorGUI.EndToggleGroup();
 
@@ -190,7 +190,7 @@ namespace Framework.AssetManagement.AssetChecker
             {
                 m_FilenameFilterPropertyTree = PropertyTree.Create(FilenameFilter.filter);
             }
-            SirenixEditorGUI.BeginToggleGroup(FilenameFilter, ref FilenameFilter.enabled, ref m_Visible, "¡¾ÎÄ¼şÃû¹ıÂËÆ÷¡¿");
+            SirenixEditorGUI.BeginToggleGroup(FilenameFilter, ref FilenameFilter.enabled, ref m_Visible, "ã€æ–‡ä»¶åè¿‡æ»¤å™¨ã€‘");
             m_FilenameFilterPropertyTree.Draw(false);
             SirenixEditorGUI.EndToggleGroup();
         }
@@ -213,10 +213,10 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         [PropertyOrder(1)]
-        [BoxGroup("¡¾´¦ÀíÆ÷¡¿")]
-        [HorizontalGroup("¡¾´¦ÀíÆ÷¡¿/LayerHor", 0.3f)]
+        [BoxGroup("ã€å¤„ç†å™¨ã€‘")]
+        [HorizontalGroup("ã€å¤„ç†å™¨ã€‘/LayerHor", 0.3f)]
         [GUIColor(0, 1, 0)]
-        [Button("Ìí¼Ó´¦ÀíÆ÷")]
+        [Button("æ·»åŠ å¤„ç†å™¨")]
         private void AddProcessor()
         {
             Processor = Activator.CreateInstance(Type.GetType(m_SelectedComponentName)) as IAssetProcessor;
@@ -224,11 +224,11 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         [PropertyOrder(1)]
-        [BoxGroup("¡¾´¦ÀíÆ÷¡¿")]
-        [HorizontalGroup("¡¾´¦ÀíÆ÷¡¿/LayerHor", 0.6f)]
+        [BoxGroup("ã€å¤„ç†å™¨ã€‘")]
+        [HorizontalGroup("ã€å¤„ç†å™¨ã€‘/LayerHor", 0.6f)]
         [SerializeField]
         [ValueDropdown("DisplayNameList")]
-        [LabelText("Ñ¡Ôñ´¦ÀíÆ÷")]
+        [LabelText("é€‰æ‹©å¤„ç†å™¨")]
         [JsonProperty]
         private string m_SelectedComponentName = "UnSelected Processor";
 
@@ -264,7 +264,7 @@ namespace Framework.AssetManagement.AssetChecker
 
         [ShowInInspector]
         [PropertyOrder(5)]
-        [LabelText("ÏÔÊ¾½á¹û£º")]
+        [LabelText("æ˜¾ç¤ºç»“æœï¼š")]
         [ListDrawerSettings(IsReadOnly = true, ShowIndexLabels = true, ShowItemCount = true, ShowPaging = false)]
         private List<string> m_Results = new List<string>();
 
@@ -279,13 +279,13 @@ namespace Framework.AssetManagement.AssetChecker
         }
 
         [PropertyOrder(7)]
-        [Button("µ¼³ö")]
+        [Button("å¯¼å‡º")]
         private void btnExport()
         {
             string error = Export();
             if (string.IsNullOrEmpty(error))
             {
-                m_Info = $"×ÊÔ´¼ì²â½á¹ûµ¼³öÍê³É£ºAssets/Temp/{Desc}_{DateTime.Now.ToString("yyyy-MM-dd_HH-mm")}.csv";
+                m_Info = $"èµ„æºæ£€æµ‹ç»“æœå¯¼å‡ºå®Œæˆï¼šAssets/Temp/{Desc}_{DateTime.Now.ToString("yyyy-MM-dd_HH-mm")}.csv";
                 Debug.Log(m_Info);
             }                
             else
@@ -295,7 +295,7 @@ namespace Framework.AssetManagement.AssetChecker
             }                
         }
 
-        [Button("Ö´ĞĞ¹ıÂËÆ÷")]
+        [Button("æ‰§è¡Œè¿‡æ»¤å™¨")]
         [PropertyOrder(3)]
         [HorizontalGroup("ButtonLayer")]
         private void btnDoFilter()
@@ -303,7 +303,7 @@ namespace Framework.AssetManagement.AssetChecker
             m_Results = DoFilter();
         }
 
-        [Button("Ö´ĞĞ´¦ÀíÆ÷")]
+        [Button("æ‰§è¡Œå¤„ç†å™¨")]
         [PropertyOrder(3)]
         [HorizontalGroup("ButtonLayer")]
         private void btnDoProcessor()
