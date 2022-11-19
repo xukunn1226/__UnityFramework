@@ -12,6 +12,15 @@ namespace Framework.AssetManagement.AssetChecker
         string DoProcess(string assetPath);
     }
 
+    public interface ICheckReport
+    {
+        float threshold1    { get; set; }
+        float threshold2    { get; set; }
+        float value1        { get; set; }
+        float value2        { get; set; }
+        string summary      { get; set; }
+    }
+
     public class AssetProcessor_Mesh : IAssetProcessor
     {
         [ShowInInspector]
@@ -29,26 +38,6 @@ namespace Framework.AssetManagement.AssetChecker
             return string.Format($"{assetPath}: 模型顶点数量大于预设值: {mesh.vertexCount} > {threshold}");
         }
     }
-
-    public class AssetProcessor_Bone : IAssetProcessor
-    {
-        [ShowInInspector]
-        [LabelText("顶点数阈值")]
-        public int threshold;
-
-        public string DoProcess(string assetPath)
-        {
-            Mesh mesh = AssetDatabase.LoadAssetAtPath<Mesh>(assetPath);
-            if (mesh == null)
-                return string.Format($"{assetPath}: 非Mesh资源");
-
-            if (mesh.vertexCount < threshold)
-                return null;
-           
-            return string.Format($"{assetPath}: 模型顶点数量大于预设值: {mesh.vertexCount} > {threshold}");
-        }
-    }
-
 
     public class AssetProcessor_Texture : IAssetProcessor
     {
