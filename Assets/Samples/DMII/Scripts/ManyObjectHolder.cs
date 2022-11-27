@@ -73,7 +73,7 @@ public class ManyObjectHolder : MonoBehaviour {
         pb = new MaterialPropertyBlock();
         layerRender = LayerMask.NameToLayer(layerRenderName);
         ri = RenderInfo.FromSprite(baseMaterial, sprite);
-        Camera.onPreCull += RenderMe;
+        //Camera.onPreCull += RenderMe;
         objects = new FObject[instanceCount];
         for (int ii = 0; ii < instanceCount; ++ii) {
             objects[ii] = new FObject();
@@ -112,8 +112,8 @@ public class ManyObjectHolder : MonoBehaviour {
             }
             pb.SetVectorArray(posDirPropertyId, posDirArr);
             pb.SetFloatArray(timePropertyId, timeArr);
-            //CallRender(c, run);
-            CallLegacyRender(c, run);
+            CallRender(c, run);
+            //CallLegacyRender(c, run);
         }
     }
     
