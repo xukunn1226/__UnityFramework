@@ -45,13 +45,15 @@ public class DrawMeshInstancedIndirectDemo : MonoBehaviour {
         // Argument buffer used by DrawMeshInstancedIndirect.
         uint[] args = new uint[5] { 0, 0, 0, 0, 0 };
         // Arguments for drawing mesh.
-        // 0 == number of triangle indices, 1 == population, others are only relevant if drawing submeshes.
+        // 0 == number of triangle indices, 1 == population, others are only relevant if drawing submeshes.        
         args[0] = (uint)mesh.GetIndexCount(0);
-        args[1] = (uint)population;
+        args[1] = (uint)100;
         args[2] = (uint)mesh.GetIndexStart(0);
         args[3] = (uint)mesh.GetBaseVertex(0);
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
         argsBuffer.SetData(args);
+
+        //population = population / 50;
 
         // Initialize buffer with the given population.
         MeshProperties[] properties = new MeshProperties[population];
@@ -126,6 +128,14 @@ public class DrawMeshInstancedIndirectDemo : MonoBehaviour {
         // We used to just be able to use `population` here, but it looks like a Unity update imposed a thread limit (65535) on my device.
         // This is probably for the best, but we have to do some more calculation.  Divide population by numthreads.x in the compute shader.
         compute.Dispatch(kernel, Mathf.CeilToInt(population / 64f), 1, 1);
+        //if(Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    var countBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.IndirectArguments);
+        //    ComputeBuffer.CopyCount(meshPropertiesBuffer, countBuffer, 0);
+        //    int[] counter = new int[1] { 0 };
+        //    countBuffer.GetData(counter);
+        //    Debug.Log($"count: {counter[0]}");
+        //}
         Graphics.DrawMeshInstancedIndirect(mesh, 0, material, bounds, argsBuffer);
     }
 

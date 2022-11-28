@@ -1,0 +1,19 @@
+#pragma kernel CSMain
+
+AppendStructuredBuffer<int> appendBuffer;
+ConsumeStructuredBuffer<int> consumeBuffer;
+
+[numthreads(8,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x == 2)
+    {
+        int value = consumeBuffer.Consume();
+        appendBuffer.Append(value);
+    }
+
+    if (id.x > 2)
+    {
+        appendBuffer.Append(id.x);
+    }
+}
