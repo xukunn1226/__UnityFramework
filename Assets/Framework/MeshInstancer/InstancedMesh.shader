@@ -18,33 +18,36 @@ Shader "Unlit/InstancedMesh"
             {
                 float4 vertex   : POSITION;
                 float4 color    : COLOR;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
                 float4 vertex   : SV_POSITION;
                 fixed4 color    : COLOR;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             }; 
 
+#ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
             struct MeshProperties
             {
                 float4x4 mat;
             };
-
-#ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
             StructuredBuffer<MeshProperties> _Properties;
 #endif
 
 #ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
 			void setup()
             {
-				unity_ObjectToWorld = _Properties[unity_InstanceID];
+				unity_ObjectToWorld = _Properties[unity_InstanceID].mat;
 			}
 #endif
 
-            v2f vert(appdata_t i, uint instanceID: SV_InstanceID)
+            v2f vert(appdata_t i)
             {
                 v2f o;
+                UNITY_SETUP_INSTANCE_ID(i);
+
 //#ifdef UNITY_PROCEDURAL_INSTANCING_ENABLED
 //                float4 pos = mul(_Properties[instanceID].mat, i.vertex);
 //#else

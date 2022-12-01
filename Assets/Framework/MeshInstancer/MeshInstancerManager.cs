@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-using static UnityEditor.Rendering.CameraUI;
 
 namespace Framework.Core
 {
@@ -13,19 +12,36 @@ namespace Framework.Core
     /// </summary>
     public class MeshInstancerManager : MonoBehaviour
     {
+        private Camera          m_Camera;
         public MeshInstancer    instancer;
 
-        private void OnEnable()
+        private void Start()
         {
+            m_Camera = Camera.main;
         }
 
-        private void OnDisable()
-        {
-        }
-        
         void Update()
         {
-            instancer?.Render(Camera.main);
+#if UNITY_EDITOR
+            Camera finalCam = null;
+#else
+            Camera finalCam = m_Camera;
+#endif
+
+            instancer.Render(finalCam);
+        }
+
+        [ContextMenu("Fake AddInstance")]
+        private void FakeAddInstance()
+        {
+            instancer.AddInstance(UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(0.1f, 5), UnityEngine.Random.rotation, Vector3.one);
+            instancer.Start();
+        }
+
+        [ContextMenu("Fake ClearInstances")]
+        private void FakeClearInstances()
+        {
+            instancer.ClearInstances();
         }
     }
 
@@ -36,7 +52,6 @@ namespace Framework.Core
         public Material                 material;
         public ShadowCastingMode        shadowCastingMode   = ShadowCastingMode.On;
         public bool                     receiveShadows      = true;
-        public LayerMask                layer;
         public ComputeShader            cullingShader;
 
         private int                     m_CachedInstanceCount;
@@ -44,7 +59,9 @@ namespace Framework.Core
         private uint[]                  m_Args              = new uint[5] { 0, 0, 0, 0, 0 };
         private ComputeBuffer           m_MeshPropertiesBuffer;
         private List<MeshProperties>    m_CachedProperties  = new List<MeshProperties>();
+        private ComputeBuffer           m_VisibleInstances;
         private int                     m_cullingKernel     = -1;
+        private Bounds                  m_Bounds;
         private bool                    m_bStarted;
 
         private struct MeshProperties
@@ -71,16 +88,22 @@ namespace Framework.Core
 
             m_bStarted = true;
             m_ArgsBuffer = new ComputeBuffer(1, m_Args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
-            m_cullingKernel = cullingShader?.FindKernel("CSMain") ?? -1;
+            m_cullingKernel = cullingShader != null ? cullingShader.FindKernel("CSMain") : -1;
             UpdateBuffer();
         }
 
         public void Dispose()
         {
-            m_ArgsBuffer?.Release();
+            if(m_ArgsBuffer != null)
+                m_ArgsBuffer.Release();
             m_ArgsBuffer = null;
 
-            m_MeshPropertiesBuffer?.Release();
+            if (m_VisibleInstances != null)
+                m_VisibleInstances.Release();
+            m_VisibleInstances = null;
+
+            if (m_MeshPropertiesBuffer != null)
+                m_MeshPropertiesBuffer.Release();
             m_MeshPropertiesBuffer = null;
         }
 
@@ -93,28 +116,32 @@ namespace Framework.Core
 
             ExecCullingShader();
 
-            Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(), m_ArgsBuffer, 0, null, shadowCastingMode, receiveShadows, layer.value, camera);
+            Graphics.DrawMeshInstancedIndirect(mesh, 0, material, m_Bounds, m_ArgsBuffer, 0, null, shadowCastingMode, receiveShadows, 0, camera);
         }
 
         public void AddInstance(Vector3 pos, Quaternion rot, Vector3 scale)
         {
             m_CachedProperties.Add(new MeshProperties() { matrix = Matrix4x4.TRS(pos, rot, scale) });
+
+            m_Bounds.Encapsulate(pos);
         }
 
-        // todo
-        public void RemoveInstance()
-        { }
+        public void ClearInstances()
+        {
+            m_CachedProperties.Clear();
+        }
 
         private void UpdateBuffer()
         {
-            if(m_CachedInstanceCount != m_CachedProperties.Count && m_MeshPropertiesBuffer.count > 0)
+            if(m_CachedInstanceCount != m_CachedProperties.Count)
             {
                 m_CachedInstanceCount = m_CachedProperties.Count;
 
+                // update Args buffer
                 if (mesh != null)
                 {
                     m_Args[0] = (uint)mesh.GetIndexCount(0);
-                    m_Args[1] = (uint)m_MeshPropertiesBuffer.count;
+                    m_Args[1] = (uint)m_CachedProperties.Count;
                     m_Args[2] = (uint)mesh.GetIndexStart(0);
                     m_Args[3] = (uint)mesh.GetBaseVertex(0);
                 }
@@ -124,19 +151,41 @@ namespace Framework.Core
                 }
                 m_ArgsBuffer.SetData(m_Args);
 
-                m_MeshPropertiesBuffer?.Release();
-                m_MeshPropertiesBuffer = new ComputeBuffer(m_MeshPropertiesBuffer.count, MeshProperties.size);
+                // update MeshProperties buffer
+                if (m_MeshPropertiesBuffer != null)
+                {
+                    m_MeshPropertiesBuffer.Release();
+                }
+                m_MeshPropertiesBuffer = new ComputeBuffer(Mathf.Max(1, m_CachedProperties.Count), MeshProperties.size);
                 m_MeshPropertiesBuffer.SetData(m_CachedProperties);
 
+                // update VisibleInstances buffer
+                if (cullingShader != null)
+                {
+                    if(m_VisibleInstances != null)
+                        m_VisibleInstances.Release();
+                    m_VisibleInstances = new ComputeBuffer(Mathf.Max(1, m_CachedProperties.Count), sizeof(uint), ComputeBufferType.Append);
+                }
+
                 // bind buffer to compute shader and material
-                cullingShader?.SetBuffer(m_cullingKernel, "_Properties", m_MeshPropertiesBuffer);
+                if (cullingShader != null)
+                {
+                    cullingShader.SetBuffer(m_cullingKernel, "_Properties", m_MeshPropertiesBuffer);
+                    cullingShader.SetBuffer(m_cullingKernel, "_VisibleInstances", m_VisibleInstances);
+                }
+
                 material.SetBuffer("_Properties", m_MeshPropertiesBuffer);
             }
         }
 
         private void ExecCullingShader()
         {
-            cullingShader?.Dispatch(m_cullingKernel, Mathf.CeilToInt(m_CachedInstanceCount/64), 1, 1);
+            if (cullingShader == null)
+                return;
+
+            m_VisibleInstances.SetCounterValue(0);
+            cullingShader.Dispatch(m_cullingKernel, Mathf.CeilToInt((m_CachedInstanceCount * 1.0f)/64), 1, 1);
+            ComputeBuffer.CopyCount(m_VisibleInstances, m_ArgsBuffer, 4);
         }
     }
 }

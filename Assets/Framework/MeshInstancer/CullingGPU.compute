@@ -6,11 +6,12 @@ struct MeshProperties
     float4x4 mat;
 };
 
-#if defined(UNITY_PROCEDURAL_INSTANCING_ENABLED)
-	RWStructuredBuffer<MeshProperties> _Properties;
-#endif
+StructuredBuffer<MeshProperties> _Properties;
+AppendStructuredBuffer<uint> _VisibleInstances;
 
 [numthreads(64,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
+    if(id.x < 3)
+        _VisibleInstances.Append(id.x);
 }

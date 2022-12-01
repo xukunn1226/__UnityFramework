@@ -59,13 +59,13 @@ public class DrawMeshInstancedIndirectDemo : MonoBehaviour {
         MeshProperties[] properties = new MeshProperties[population];
         for (int i = 0; i < population; i++) {
             MeshProperties props = new MeshProperties();
-            //Vector3 position = new Vector3(Random.Range(-range, range), Random.Range(-range, range), Random.Range(-range, range));
-            Vector3 position = new Vector3(3, 0, 0);
+            Vector3 position = new Vector3(Random.Range(-range, range), Random.Range(-range, range), Random.Range(-range, range));
+            //Vector3 position = new Vector3(3, 0, 0);
             Quaternion rotation = Quaternion.Euler(Random.Range(-180, 180), Random.Range(-180, 180), Random.Range(-180, 180));
             Vector3 scale = Vector3.one;
 
             props.mat = Matrix4x4.TRS(position, rotation, scale);
-            props.color = Color.cyan;    // Color.Lerp(Color.red, Color.blue, Random.value);
+            props.color = Color.Lerp(Color.red, Color.blue, Random.value);
 
             properties[i] = props;
         }
