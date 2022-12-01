@@ -10,14 +10,21 @@ namespace Framework.Core
     /// 1. 静态物体
     /// 2. 仅含一个submesh
     /// </summary>
+    [ExecuteAlways]
     public class MeshInstancerManager : MonoBehaviour
     {
         private Camera          m_Camera;
         public MeshInstancer    instancer;
 
-        private void Start()
+        private void OnEnable()
         {
             m_Camera = Camera.main;
+            instancer.Start();
+        }
+
+        private void OnDisable()
+        {
+            instancer.Dispose();
         }
 
         void Update()
@@ -35,7 +42,6 @@ namespace Framework.Core
         private void FakeAddInstance()
         {
             instancer.AddInstance(UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(0.1f, 5), UnityEngine.Random.rotation, Vector3.one);
-            instancer.Start();
         }
 
         [ContextMenu("Fake ClearInstances")]
@@ -87,14 +93,14 @@ namespace Framework.Core
                 return;
 
             m_bStarted = true;
-            m_ArgsBuffer = new ComputeBuffer(1, m_Args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
             m_cullingKernel = cullingShader != null ? cullingShader.FindKernel("CSMain") : -1;
+            m_ArgsBuffer = new ComputeBuffer(1, m_Args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
             UpdateBuffer();
         }
 
         public void Dispose()
         {
-            if(m_ArgsBuffer != null)
+            if (m_ArgsBuffer != null)
                 m_ArgsBuffer.Release();
             m_ArgsBuffer = null;
 
@@ -137,7 +143,7 @@ namespace Framework.Core
             {
                 m_CachedInstanceCount = m_CachedProperties.Count;
 
-                // update Args buffer
+                // update Args buffer                
                 if (mesh != null)
                 {
                     m_Args[0] = (uint)mesh.GetIndexCount(0);
@@ -180,11 +186,11 @@ namespace Framework.Core
 
         private void ExecCullingShader()
         {
-            if (cullingShader == null)
+            if (cullingShader == null || m_VisibleInstances == null)
                 return;
 
             m_VisibleInstances.SetCounterValue(0);
-            cullingShader.Dispatch(m_cullingKernel, Mathf.CeilToInt((m_CachedInstanceCount * 1.0f)/64), 1, 1);
+            cullingShader.Dispatch(m_cullingKernel, Mathf.Max(1, Mathf.CeilToInt((m_CachedInstanceCount * 1.0f)/64)), 1, 1);
             ComputeBuffer.CopyCount(m_VisibleInstances, m_ArgsBuffer, 4);
         }
     }
