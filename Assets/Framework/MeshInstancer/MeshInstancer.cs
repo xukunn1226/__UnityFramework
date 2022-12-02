@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 
 namespace Framework.Core
 {
-    //[ExecuteAlways]
+    [ExecuteAlways]
     public class MeshInstancer : MonoBehaviour
     {
         public Mesh                     mesh;
@@ -15,7 +15,7 @@ namespace Framework.Core
         public bool                     receiveShadows      = true;
         public ComputeShader            cullingShader;
 
-        private int                     m_CachedInstanceCount = -1;
+        private int                     m_CachedInstanceCount;
         private ComputeBuffer           m_ArgsBuffer;
         private uint[]                  m_Args              = new uint[5] { 0, 0, 0, 0, 0 };
         private ComputeBuffer           m_MeshPropertiesBuffer;
@@ -34,8 +34,8 @@ namespace Framework.Core
         void OnEnable()
         {
             m_Camera = Camera.main;
-            m_cullingKernel = cullingShader != null ? cullingShader.FindKernel("CSMain") : -1;            
-            //UpdateBuffer();
+            m_cullingKernel = cullingShader != null ? cullingShader.FindKernel("CSMain") : -1;
+            UpdateBuffer(true);
         }
 
         void OnDisable()
@@ -67,17 +67,11 @@ namespace Framework.Core
 
         void Update()
         {
-#if UNITY_EDITOR
-            Camera finalCam = null;
-#else
-            Camera finalCam = m_Camera;
-#endif
-
             UpdateBuffer();
 
             ExecCullingShader();
 
-            Graphics.DrawMeshInstancedIndirect(mesh, 0, material, m_Bounds, m_ArgsBuffer, 0, null, shadowCastingMode, receiveShadows, 0, finalCam);
+            Render();
         }
 
         public void AddInstance(Vector3 pos, Quaternion rot, Vector3 scale)
@@ -92,9 +86,12 @@ namespace Framework.Core
             m_CachedProperties.Clear();
         }
 
-        private void UpdateBuffer()
+        private void UpdateBuffer(bool forceUpdate = false)
         {
-            if(m_CachedInstanceCount != m_CachedProperties.Count)
+            if (mesh == null || material == null)
+                return;
+
+            if(m_CachedInstanceCount != m_CachedProperties.Count || forceUpdate)
             {
                 m_CachedInstanceCount = m_CachedProperties.Count;
 
@@ -142,17 +139,29 @@ namespace Framework.Core
 
         private void ExecCullingShader()
         {
-            if (cullingShader == null || m_VisibleInstances == null)
+            if (cullingShader == null || m_VisibleInstances == null || m_CachedInstanceCount == 0)
                 return;
 
             m_VisibleInstances.SetCounterValue(0);
-            cullingShader.Dispatch(m_cullingKernel, Mathf.Max(1, Mathf.CeilToInt((m_CachedInstanceCount * 1.0f)/64)), 1, 1);
+            cullingShader.Dispatch(m_cullingKernel, Mathf.CeilToInt((m_CachedInstanceCount * 1.0f)/64), 1, 1);
             ComputeBuffer.CopyCount(m_VisibleInstances, m_ArgsBuffer, 4);
 
             //int[] counter = new int[5] { 0, 0, 0, 0, 0 };
             //m_ArgsBuffer.GetData(counter);
 
             //Debug.Log($"========: {counter[1]}");
+        }
+
+        private void Render()
+        {
+#if UNITY_EDITOR
+            Camera finalCam = null;
+#else
+            Camera finalCam = m_Camera;
+#endif
+
+            if (mesh != null && material != null && m_CachedInstanceCount > 0)
+                Graphics.DrawMeshInstancedIndirect(mesh, 0, material, m_Bounds, m_ArgsBuffer, 0, null, shadowCastingMode, receiveShadows, 0, finalCam);
         }
     }
 }

@@ -18,7 +18,7 @@ Shader "Unlit/InstancedMesh"
             {
                 float4 vertex   : POSITION;
                 float4 color    : COLOR;
-                //float2 uv       : TEXCOORD0;
+                float2 uv       : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
@@ -26,7 +26,7 @@ Shader "Unlit/InstancedMesh"
             {
                 float4 vertex   : SV_POSITION;
                 fixed4 color    : COLOR;
-                //float2 uv       : TEXCOORD0;
+                float2 uv       : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             }; 
 
@@ -57,15 +57,15 @@ Shader "Unlit/InstancedMesh"
 //#endif
                 o.vertex = UnityObjectToClipPos(i.vertex);
                 o.color = i.color;
-                //o.uv = i.uv;
+                o.uv = i.uv;
 
                 return o;
             }
             
             fixed4 frag(v2f i) : SV_Target
             {
-                //return fixed4(i.uv.xy, 0, 1);
-                return i.color;
+                return fixed4(i.uv.xy, 0, 1);
+                //return i.color;
             }
             
             ENDCG
