@@ -12,6 +12,9 @@ AppendStructuredBuffer<uint> _VisibleInstances;
 [numthreads(64,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
+    //uint numStructs;
+    //uint stride;
+    //_Properties.GetDimensions(numStructs, stride);
     if(id.x < 3)
         _VisibleInstances.Append(id.x);
 }

@@ -6,53 +6,8 @@ using UnityEngine.Rendering;
 
 namespace Framework.Core
 {
-    /// <summary>
-    /// 1. 静态物体
-    /// 2. 仅含一个submesh
-    /// </summary>
-    [ExecuteAlways]
-    public class MeshInstancerManager : MonoBehaviour
-    {
-        private Camera          m_Camera;
-        public MeshInstancer    instancer;
-
-        private void OnEnable()
-        {
-            m_Camera = Camera.main;
-            instancer.Start();
-        }
-
-        private void OnDisable()
-        {
-            instancer.Dispose();
-        }
-
-        void Update()
-        {
-#if UNITY_EDITOR
-            Camera finalCam = null;
-#else
-            Camera finalCam = m_Camera;
-#endif
-
-            instancer.Render(finalCam);
-        }
-
-        [ContextMenu("Fake AddInstance")]
-        private void FakeAddInstance()
-        {
-            instancer.AddInstance(UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(0.1f, 5), UnityEngine.Random.rotation, Vector3.one);
-        }
-
-        [ContextMenu("Fake ClearInstances")]
-        private void FakeClearInstances()
-        {
-            instancer.ClearInstances();
-        }
-    }
-
-    [Serializable]
-    public class MeshInstancer : IDisposable
+    //[ExecuteAlways]
+    public class MeshInstancer : MonoBehaviour
     {
         public Mesh                     mesh;
         public Material                 material;
@@ -60,7 +15,7 @@ namespace Framework.Core
         public bool                     receiveShadows      = true;
         public ComputeShader            cullingShader;
 
-        private int                     m_CachedInstanceCount;
+        private int                     m_CachedInstanceCount = -1;
         private ComputeBuffer           m_ArgsBuffer;
         private uint[]                  m_Args              = new uint[5] { 0, 0, 0, 0, 0 };
         private ComputeBuffer           m_MeshPropertiesBuffer;
@@ -68,7 +23,7 @@ namespace Framework.Core
         private ComputeBuffer           m_VisibleInstances;
         private int                     m_cullingKernel     = -1;
         private Bounds                  m_Bounds;
-        private bool                    m_bStarted;
+        private Camera                  m_Camera;
 
         private struct MeshProperties
         {
@@ -76,29 +31,14 @@ namespace Framework.Core
             static public int size { get { return sizeof(float) * 16; } }
         }
 
-        private MeshInstancer() { }
-
-        public MeshInstancer(Mesh mesh, Material material, ComputeShader cullingShader = null)
+        void OnEnable()
         {
-            this.mesh = mesh;
-            this.material = material;
-            this.cullingShader = cullingShader;
-
-            Start();
+            m_Camera = Camera.main;
+            m_cullingKernel = cullingShader != null ? cullingShader.FindKernel("CSMain") : -1;            
+            //UpdateBuffer();
         }
 
-        public void Start()
-        {
-            if (m_bStarted)
-                return;
-
-            m_bStarted = true;
-            m_cullingKernel = cullingShader != null ? cullingShader.FindKernel("CSMain") : -1;
-            m_ArgsBuffer = new ComputeBuffer(1, m_Args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
-            UpdateBuffer();
-        }
-
-        public void Dispose()
+        void OnDisable()
         {
             if (m_ArgsBuffer != null)
                 m_ArgsBuffer.Release();
@@ -113,16 +53,31 @@ namespace Framework.Core
             m_MeshPropertiesBuffer = null;
         }
 
-        public void Render(Camera camera)
+        [ContextMenu("Fake AddInstance")]
+        private void FakeAddInstance()
         {
-            if (!m_bStarted)
-                return;
+            AddInstance(UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(0.1f, 5), UnityEngine.Random.rotation, Vector3.one);
+        }
+
+        [ContextMenu("Fake ClearInstances")]
+        private void FakeClearInstances()
+        {
+            ClearInstances();
+        }
+
+        void Update()
+        {
+#if UNITY_EDITOR
+            Camera finalCam = null;
+#else
+            Camera finalCam = m_Camera;
+#endif
 
             UpdateBuffer();
 
             ExecCullingShader();
 
-            Graphics.DrawMeshInstancedIndirect(mesh, 0, material, m_Bounds, m_ArgsBuffer, 0, null, shadowCastingMode, receiveShadows, 0, camera);
+            Graphics.DrawMeshInstancedIndirect(mesh, 0, material, m_Bounds, m_ArgsBuffer, 0, null, shadowCastingMode, receiveShadows, 0, finalCam);
         }
 
         public void AddInstance(Vector3 pos, Quaternion rot, Vector3 scale)
@@ -155,13 +110,14 @@ namespace Framework.Core
                 {
                     m_Args[0] = m_Args[1] = m_Args[2] = m_Args[3] = 0;
                 }
+                if (m_ArgsBuffer != null)
+                    m_ArgsBuffer.Release();
+                m_ArgsBuffer = new ComputeBuffer(1, m_Args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
                 m_ArgsBuffer.SetData(m_Args);
 
                 // update MeshProperties buffer
                 if (m_MeshPropertiesBuffer != null)
-                {
                     m_MeshPropertiesBuffer.Release();
-                }
                 m_MeshPropertiesBuffer = new ComputeBuffer(Mathf.Max(1, m_CachedProperties.Count), MeshProperties.size);
                 m_MeshPropertiesBuffer.SetData(m_CachedProperties);
 
@@ -192,6 +148,11 @@ namespace Framework.Core
             m_VisibleInstances.SetCounterValue(0);
             cullingShader.Dispatch(m_cullingKernel, Mathf.Max(1, Mathf.CeilToInt((m_CachedInstanceCount * 1.0f)/64)), 1, 1);
             ComputeBuffer.CopyCount(m_VisibleInstances, m_ArgsBuffer, 4);
+
+            //int[] counter = new int[5] { 0, 0, 0, 0, 0 };
+            //m_ArgsBuffer.GetData(counter);
+
+            //Debug.Log($"========: {counter[1]}");
         }
     }
 }

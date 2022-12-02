@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -464,7 +464,7 @@ GameObject:
   - component: {fileID: 2008716787}
   - component: {fileID: 2008716788}
   m_Layer: 0
-  m_Name: MeshInstancerManager
+  m_Name: MeshInstancer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -497,9 +497,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd7694adc6b6794196ca332c48037e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instancer:
-    mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-    material: {fileID: 2100000, guid: ad0933ba507f30f4a8297b3e56f7ff67, type: 2}
-    shadowCastingMode: 1
-    receiveShadows: 1
-    cullingShader: {fileID: 7200000, guid: 6d247b3ff7a146d44b1c488098a6dc54, type: 3}
+  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  material: {fileID: 2100000, guid: ad0933ba507f30f4a8297b3e56f7ff67, type: 2}
+  shadowCastingMode: 1
+  receiveShadows: 1
+  cullingShader: {fileID: 7200000, guid: 6d247b3ff7a146d44b1c488098a6dc54, type: 3}
