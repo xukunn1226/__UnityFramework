@@ -4,41 +4,52 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
-    static public class Defines
+    public enum EPlayMode
     {
-        public enum EPlayMode
-        {
-            /// <summary>
-            /// 编辑器下模拟模式
-            /// </summary>
-            FromEditor,
+        /// <summary>
+        /// 编辑器下模拟模式
+        /// </summary>
+        FromEditor,
 
-            /// <summary>
-            /// 单机模式
-            /// </summary>
-            FromStreamingAsset,
+        /// <summary>
+        /// 单机模式
+        /// </summary>
+        FromStreaming,
 
-            /// <summary>
-            /// 联机模式
-            /// </summary>
-            FromHost,
-        }
+        /// <summary>
+        /// 联机模式
+        /// </summary>
+        FromHost,
+    }
 
-        public enum EPackageLoadMethod
-        {
-            None,
-            FromStreaming,
-            FromCache,
-            FromEditor,
-        }
+    /// <summary>
+    /// Bundle文件的加载方式，见AssetBundle.LoadFromFile, AssetBundle.LoadFromMemory
+    /// </summary>
+    public enum EBundleLoadMethod
+    {
+        LoadFromFile        = 0,
+        LoadFromFileOffset  = 1,
+        LoadFromMemory      = 2,
+    }
 
-        public enum ELoadStatus
-        {
-            None = 0,
-            Succeed = 1,
-            Failed = 2,
-        }
+    /// <summary>
+    /// Bundle从何处加载资源
+    /// </summary>
+    public enum ELoadMethod
+    {
+        LoadFromStreaming   = 0,        // 内置资源
+        LoadFromCache       = 1,        // 补丁资源
+        LoadFromRemote      = 2,        // 边玩边下
+        LoadFromEditor      = 3,        // 编辑器模式下
+    }
 
-        //public enum EB
+    /// <summary>
+    /// 资源包的加载状态
+    /// </summary>
+    public enum EBundleLoadStatus
+    {
+        None                = 0,        // 未定状态
+        Succeed             = 1,        // 加载成功
+        Failed              = 2,        // 加载失败
     }
 }

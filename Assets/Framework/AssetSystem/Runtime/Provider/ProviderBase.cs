@@ -10,7 +10,7 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
 		/// 当前的加载状态
 		/// </summary>
-		public Defines.ELoadStatus Status { protected set; get; } = Defines.ELoadStatus.None;
+		public EBundleLoadStatus Status { protected set; get; } = EBundleLoadStatus.None;
 
         /// <summary>
 		/// 是否完毕（成功或失败）
@@ -19,7 +19,7 @@ namespace Framework.AssetManagement.Runtime
         {
             get
             {
-                return Status == Defines.ELoadStatus.Succeed || Status == Defines.ELoadStatus.Failed;
+                return Status == EBundleLoadStatus.Succeed || Status == EBundleLoadStatus.Failed;
             }
         }
 

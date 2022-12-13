@@ -4,8 +4,7 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
-    internal abstract class PackageLoaderBase
+    internal static class PathHelper
     {
-        
     }
 }
