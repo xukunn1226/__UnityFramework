@@ -12,16 +12,16 @@ namespace Framework.AssetManagement.Runtime
         public BundleInfo           bundleInfo          { get; private set; }
         public AssetSystem          assetSystem         { get; private set; }
         public int                  refCount            { get; private set; }
-        public EBundleLoadStatus    status              { get; private set; }
-        public string               lastError           { get; private set; }
-        public AssetBundle          cachedBundle        { get; private set; }
-        public string               bundlePath          { get; private set; }
+        public EBundleLoadStatus    status              { get; protected set; }
+        public string               lastError           { get; protected set; }
+        public AssetBundle          cachedBundle        { get; protected set; }
+        public string               bundlePath          { get; protected set; }
         public float                downloadProgress    { get; set; }
         public ulong                downloadBytes       { get; set; }
         public bool                 isDone              { get { return status == EBundleLoadStatus.Succeed || status == EBundleLoadStatus.Failed; } }
         public bool                 canDestroy          { get { return isDone ? refCount <= 0 : false; } }
 
-        private BundleLoaderBase() { }
+        protected BundleLoaderBase() { }
         public BundleLoaderBase(AssetSystem assetSystem, BundleInfo bundleInfo)
         {
             if (assetSystem == null || bundleInfo == null)

@@ -9,8 +9,8 @@ namespace Framework.AssetManagement.Runtime
     /// </summary>
     internal class BundleInfo
     {
-        public readonly BundleDescriptor        descriptor;
-        public readonly ELoadMethod     loadMethod;
+        public readonly BundleDescriptor    descriptor;
+        public readonly ELoadMethod         loadMethod;
 
         private BundleInfo() { }
 

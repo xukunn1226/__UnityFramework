@@ -41,6 +41,32 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         public byte     loadMethod;
 
+        private string  m_StreamingFilePath;
+        public string streamingFilePath
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(m_StreamingFilePath))
+                    return m_StreamingFilePath;
+
+                m_StreamingFilePath = string.Empty;
+                return m_StreamingFilePath;
+            }
+        }
+
+        private string  m_CachedFilePath;
+        public string cachedFilePath
+        {
+            get
+            {
+                if(!string.IsNullOrEmpty(m_CachedFilePath))
+                    return m_CachedFilePath;
+
+                m_CachedFilePath = string.Empty;
+                return m_CachedFilePath;
+            }
+        }
+
         public BundleDescriptor()
         { }
 
