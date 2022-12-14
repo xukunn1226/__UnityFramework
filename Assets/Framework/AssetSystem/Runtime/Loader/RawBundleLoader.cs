@@ -21,7 +21,7 @@ namespace Framework.AssetManagement.Runtime
         public RawBundleLoader(AssetSystem assetSystem, BundleInfo bundleInfo) : base(assetSystem, bundleInfo)
         { }
 
-        // 这里需要再好好想想，不是所有原生资源都需要提取出来，例如FMOD就支持直接加载streaming下的原生资源
+        // TODO: 这里需要再好好想想，不是所有原生资源都需要提取出来，例如FMOD就支持直接加载streaming下的原生资源
         public override void Update()
         {
             if (m_Step == EStep.Done)

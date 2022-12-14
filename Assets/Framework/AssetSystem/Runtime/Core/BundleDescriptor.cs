@@ -32,7 +32,7 @@ namespace Framework.AssetManagement.Runtime
         public long     fileSize;
 
         /// <summary>
-        /// 是否是原生文件（第三库有自己的二进制数据格式，例如config.db，FMOD等）
+        /// 是否是原生文件（第三方库有自己的二进制数据格式，例如config.db，FMOD等）
         /// </summary>
         public bool     isRawFile;
 

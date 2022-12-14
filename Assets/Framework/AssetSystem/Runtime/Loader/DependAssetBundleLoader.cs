@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
+    /// <summary>
+    /// 依赖的资源包加载器
+    /// </summary>
     internal class DependAssetBundleLoader
     {
         private readonly List<BundleLoaderBase> m_DependBundleLoaders;

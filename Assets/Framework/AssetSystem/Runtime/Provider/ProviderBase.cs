@@ -25,7 +25,7 @@ namespace Framework.AssetManagement.Runtime
         public bool             canDestroy      { get { return isDone ? refCount <= 0 : false; } }
 
         protected bool          m_RequestAsyncComplete;
-        private readonly List<OperationHandleBase> m_Handlers = new List<OperationHandleBase>();
+        private Dictionary<int, OperationHandleBase> m_Handlers = new Dictionary<int, OperationHandleBase>();
 
         private ProviderBase() { }
         public ProviderBase(AssetSystem assetSystem, string providerGUID, AssetInfo assetInfo)
@@ -61,7 +61,7 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.NotImplementedException();
             }
 
-            m_Handlers.Add(handle);
+            m_Handlers.Add(handle.id, handle);
             return (T)handle;
         }
 
@@ -70,7 +70,7 @@ namespace Framework.AssetManagement.Runtime
             if (refCount <= 0)
                 Debug.LogWarning($"Asset provider ref count is already less than zero.");
 
-            if (!m_Handlers.Remove(handle))
+            if (!m_Handlers.Remove(handle.id))
                 throw new System.Exception($"How to get here!");
 
             --refCount;
@@ -92,9 +92,9 @@ namespace Framework.AssetManagement.Runtime
 
             foreach(var handler in m_Handlers)
             {
-                if (handler.isValid)
+                if (handler.Value.isValid)
                 {
-                    handler.InvokeCallback();
+                    handler.Value.InvokeCallback();
                 }
             }
         }
