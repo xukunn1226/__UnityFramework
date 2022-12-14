@@ -7,7 +7,7 @@ namespace Framework.AssetManagement.Runtime
     /// <summary>
     /// 资源包的运行时信息
     /// </summary>
-    internal class BundleInfo
+    public class BundleInfo
     {
         public readonly BundleDescriptor    descriptor;
         public readonly ELoadMethod         loadMethod;

@@ -9,7 +9,7 @@ namespace Framework.AssetManagement.Runtime
     /// 资源包描述信息
     /// </summary>
     [Serializable]
-    internal class BundleDescriptor
+    public class BundleDescriptor
     {
         /// <summary>
         /// 资源包名称，包括AssetBundle及RawFile

@@ -1,25 +1,53 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
-    public class OperationHandleBase : IEnumerator
+    public abstract class OperationHandleBase : IEnumerator
     {
-        internal ProviderBase provider { get; private set; }
+        public bool isValid
+        {
+            get
+            {
+                if (provider != null && !provider.isDestroyed)
+                {
+                    return true;
+                }
+                else
+                {
+                    if (provider == null)
+                    {
+                        Debug.LogWarning($"Operation handle is release: {assetInfo.assetPath}");
+                    }
+                    else if (provider.isDestroyed)
+                    {
+                        Debug.LogWarning($"Provider is destroyed: {assetInfo.assetPath}");
+                    }
+                    return false;
+                }
+            }
+        }
+
+        internal ProviderBase   provider    { get; private set; }
+        public AssetInfo        assetInfo   { get; private set; }
+        public bool             isDone      { get { return isValid ? provider.isDone : false; } }
+        public float            progress    { get { return isValid ? provider.progress : 0; } }
+        public string           lastError   { get { return isValid ? provider.lastError : string.Empty; } }
 
         internal OperationHandleBase(ProviderBase provider)
         {
             this.provider = provider;
+            assetInfo = provider.assetInfo;
         }
 
-        public bool isDone
+        public abstract void InvokeCallback();
+
+        protected void ReleaseInternal()
         {
-            get
-            {
-                return true;
-            }
+            if (!isValid)
+                return;
+            provider.ReleaseHandle(this);
+            provider = null;
         }
 
         #region 异步操作相关

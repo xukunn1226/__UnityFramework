@@ -9,7 +9,7 @@ namespace Framework.AssetManagement.Runtime
     /// 资源文件描述信息
     /// </summary>
     [Serializable]
-    internal class AssetDescriptor
+    public class AssetDescriptor
     {
         /// <summary>
         /// 资源路径

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
+    /// <summary>
+    /// AssetBundle加载器
+    /// </summary>
     internal class AssetBundleLoader : BundleLoaderBase
     {
         private enum ESteps
@@ -67,8 +70,17 @@ namespace Framework.AssetManagement.Runtime
                     }
                 }
                 else
-                {
+                { // 其他加载模式需要解密
+                    if(assetSystem.decryptionServices == null)
+                    {
+                        m_Step = ESteps.Done;
+                        status = EBundleLoadStatus.Failed;
+                        lastError = $"IDecryptionServices is null";
+                        Debug.LogError(lastError);
+                        return;
+                    }
 
+                    // TODO: 以后再做
                 }
                 m_Step = ESteps.WaitLoadFile;
             }
@@ -78,7 +90,7 @@ namespace Framework.AssetManagement.Runtime
                 if(m_BundleRequest != null)
                 {
                     if(m_RequestAsyncComplete)
-                    {
+                    { // 初始是异步请求，加载结束前执行WaitForAsyncComplete，将执行到这里
                         Debug.LogWarning($"Suspend the main thread to load asset bundle.");
                         cachedBundle = m_BundleRequest.assetBundle;
                     }
@@ -107,10 +119,11 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
+        // TODO: 要不要有超时机制做保护？
         public override void WaitForAsyncComplete()
         {
             m_RequestAsyncComplete = true;
-            while(true)
+            while(true)     // 因为可能有下载，所以需要while(true)
             {
                 Update();
                 if (isDone)

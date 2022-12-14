@@ -8,7 +8,7 @@ namespace Framework.AssetManagement.Runtime
     /// <summary>
     /// 资源运行时信息
     /// </summary>
-    internal class AssetInfo
+    public class AssetInfo
     {
         private readonly AssetDescriptor    m_AssetDescriptor;
         private string                      m_GUID;

@@ -52,4 +52,24 @@ namespace Framework.AssetManagement.Runtime
         Succeed             = 1,        // 加载成功
         Failed              = 2,        // 加载失败
     }
+
+    /// <summary>
+    /// 资源提供者的状态
+    /// </summary>
+    public enum EProviderStatus
+    {
+        None                = 0,
+        CheckBundle         = 1,
+        Loading             = 2,
+        Checking            = 3,
+        Succeed             = 4,
+        Failed              = 5,
+    }
+
+    public enum EOperationStatus
+    {
+        None,
+        Succeed,
+        Failed,
+    }
 }
