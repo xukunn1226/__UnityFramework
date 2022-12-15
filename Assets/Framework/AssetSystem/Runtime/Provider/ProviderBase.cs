@@ -23,11 +23,12 @@ namespace Framework.AssetManagement.Runtime
         public bool             isDestroyed     { get; private set; }
         public bool             isDone          { get { return status == EProviderStatus.Succeed || status == EProviderStatus.Failed; } }
         public bool             canDestroy      { get { return isDone ? refCount <= 0 : false; } }
+        public string           bundlePath      { get; protected set; }     // 不同的provider，bundlePath对应的含义不一样
 
         protected bool          m_RequestAsyncComplete;
         private Dictionary<int, OperationHandleBase> m_Handlers = new Dictionary<int, OperationHandleBase>();
 
-        private ProviderBase() { }
+        protected ProviderBase() { }
         public ProviderBase(AssetSystem assetSystem, string providerGUID, AssetInfo assetInfo)
         {
             this.assetSystem = assetSystem;
@@ -90,6 +91,7 @@ namespace Framework.AssetManagement.Runtime
         {
             progress = 1;
 
+            // TODO: 思考如何防止外部逻辑在回调中创建或释放资源句柄
             foreach(var handler in m_Handlers)
             {
                 if (handler.Value.isValid)
@@ -97,22 +99,27 @@ namespace Framework.AssetManagement.Runtime
                     handler.Value.InvokeCallback();
                 }
             }
+
+            if(m_TaskCompletionSource != null)
+            {
+                m_TaskCompletionSource.TrySetResult(null);
+            }
         }
 
         public Task Task
         {
             get
             {
-                if (_taskCompletionSource == null)
+                if (m_TaskCompletionSource == null)
                 {
-                    _taskCompletionSource = new TaskCompletionSource<object>();
+                    m_TaskCompletionSource = new TaskCompletionSource<object>();
                     if (isDone)
-                        _taskCompletionSource.SetResult(null);
+                        m_TaskCompletionSource.SetResult(null);
                 }
-                return _taskCompletionSource.Task;
+                return m_TaskCompletionSource.Task;
             }
         }
 
-        private TaskCompletionSource<object> _taskCompletionSource;
+        private TaskCompletionSource<object> m_TaskCompletionSource;
     }
 }

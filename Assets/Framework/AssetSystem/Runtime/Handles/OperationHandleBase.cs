@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Framework.AssetManagement.Runtime
 {
@@ -34,6 +35,8 @@ namespace Framework.AssetManagement.Runtime
         public bool             isDone      { get { return isValid ? provider.isDone : false; } }
         public float            progress    { get { return isValid ? provider.progress : 0; } }
         public string           lastError   { get { return isValid ? provider.lastError : string.Empty; } }
+        public Object           assetObject { get { return isValid ? provider.assetObject : null; } }
+        public Scene            sceneObject { get { return isValid ? provider.sceneObject : default(Scene); } }
         public EOperationStatus status
         { 
             get 

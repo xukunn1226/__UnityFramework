@@ -43,16 +43,6 @@ namespace Framework.AssetManagement.Runtime
             provider.WaitForAsyncComplete();
         }
 
-        public UnityEngine.Object assetObject
-        {
-            get
-            {
-                if (!isValid)
-                    return null;
-                return provider.assetObject;
-            }
-        }
-
         public GameObject Instantiate(Transform parent = null)
         {
             return InstantiateSyncInternal(Vector3.zero, Quaternion.identity, parent);
