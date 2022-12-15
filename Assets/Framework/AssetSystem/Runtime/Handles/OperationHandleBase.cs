@@ -34,6 +34,20 @@ namespace Framework.AssetManagement.Runtime
         public bool             isDone      { get { return isValid ? provider.isDone : false; } }
         public float            progress    { get { return isValid ? provider.progress : 0; } }
         public string           lastError   { get { return isValid ? provider.lastError : string.Empty; } }
+        public EOperationStatus status
+        { 
+            get 
+            {
+                if (!isValid)
+                    return EOperationStatus.None;
+                if (provider.status == EProviderStatus.Succeed)
+                    return EOperationStatus.Succeed;
+                else if (provider.status == EProviderStatus.Failed)
+                    return EOperationStatus.Failed;
+                else
+                    return EOperationStatus.None;
+            } 
+        }
 
         internal OperationHandleBase(ProviderBase provider)
         {
@@ -50,7 +64,7 @@ namespace Framework.AssetManagement.Runtime
             return s_HanderID++;
         }
 
-        protected void ReleaseInternal()
+        public void Release()
         {
             if (!isValid)
                 return;
@@ -70,7 +84,11 @@ namespace Framework.AssetManagement.Runtime
         // 协程相关
         bool IEnumerator.MoveNext()
         {
-            return !isDone;
+#if UNITY_EDITOR
+            return !isDone;                                     // 异步结束前如果执行了provider.Destroy，将导致协程无法退出
+#else
+            return provider != null && !provider.isDone;        // 真机模式下更安全
+#endif
         }
         void IEnumerator.Reset()
         {
@@ -79,6 +97,6 @@ namespace Framework.AssetManagement.Runtime
         {
             get { return provider; }
         }
-        #endregion
+#endregion
     }
 }

@@ -44,11 +44,11 @@ namespace Framework.AssetManagement.Runtime
                 }
                 else if(bundleInfo.loadMethod == ELoadMethod.LoadFromRemote)
                 { // todo: 暂不支持
-
+                    throw new System.Exception($"Unsupport load bundle from remote: {bundleInfo.loadMethod}");
                 }
                 else
                 {
-                    throw new System.NotImplementedException($"{bundleInfo.loadMethod.ToString()}");
+                    throw new System.NotImplementedException($"{bundleInfo.loadMethod}");
                 }
             }
 
@@ -90,7 +90,7 @@ namespace Framework.AssetManagement.Runtime
                 if(m_BundleRequest != null)
                 {
                     if(m_RequestAsyncComplete)
-                    { // 初始是异步请求，加载结束前执行WaitForAsyncComplete，将执行到这里
+                    { // 初始是异步请求，加载结束前执行WaitForAsyncComplete，将执行到这里，强制把异步转为同步
                         Debug.LogWarning($"Suspend the main thread to load asset bundle.");
                         cachedBundle = m_BundleRequest.assetBundle;
                     }
@@ -115,6 +115,12 @@ namespace Framework.AssetManagement.Runtime
 
                     lastError = $"Failed to load asset bundle: {bundleInfo.descriptor.bundleName}";
                     Debug.LogError(lastError);
+
+                    // TODO: 如果是从cache加载资源失败，可能是资源损坏，需要重新下载
+                    if(bundleInfo.loadMethod == ELoadMethod.LoadFromCache)
+                    {
+
+                    }
                 }
             }
         }

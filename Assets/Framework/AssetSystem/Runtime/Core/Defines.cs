@@ -23,13 +23,13 @@ namespace Framework.AssetManagement.Runtime
     }
 
     /// <summary>
-    /// Bundle文件的加载方式，见AssetBundle.LoadFromFile, AssetBundle.LoadFromMemory
+    /// Bundle文件的加载方式，见AssetBundle.LoadFromFile
     /// </summary>
     public enum EBundleLoadMethod
     {
         LoadFromFile        = 0,
-        LoadFromFileOffset  = 1,
-        LoadFromMemory      = 2,
+        LoadFromFileOffset  = 1,            // 加解密用此方式
+        //LoadFromMemory      = 2,            // 暂不支持，此方式的最大作用是加解密，但安卓平台下需要解压至persistent data path，不实用，故废弃
     }
 
     /// <summary>

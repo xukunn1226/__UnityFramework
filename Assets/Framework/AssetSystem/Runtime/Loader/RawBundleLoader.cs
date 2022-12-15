@@ -51,7 +51,7 @@ namespace Framework.AssetManagement.Runtime
                 }
                 else
                 {
-                    throw new System.NotImplementedException($"{bundleInfo.loadMethod.ToString()}");
+                    throw new System.NotImplementedException($"{bundleInfo.loadMethod}");
                 }
             }
 
