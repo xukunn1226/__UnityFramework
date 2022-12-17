@@ -14,10 +14,10 @@ namespace Framework.AssetManagement.Runtime
         public AssetSystem      assetSystem     { get; private set; }
         public string           providerGUID    { get; private set; }
         public AssetInfo        assetInfo       { get; private set; }
-        public Object           assetObject     { get; private set; }
-        public Scene            sceneObject     { get; private set; }
+        public Object           assetObject     { get; protected set; }
+        public Scene            sceneObject     { get; protected set; }
         public EProviderStatus  status          { get; protected set; } = EProviderStatus.None;
-        public string           lastError       { get; private set; }
+        public string           lastError       { get; protected set; }
         public float            progress        { get; protected set; }
         public int              refCount        { get; protected set; }
         public bool             isDestroyed     { get; private set; }
@@ -77,7 +77,7 @@ namespace Framework.AssetManagement.Runtime
             --refCount;
         }
 
-        public void WaitForAsyncComplete()
+        public virtual void WaitForAsyncComplete()
         {
             m_RequestAsyncComplete = true;
 

@@ -9,5 +9,7 @@ namespace Framework.AssetManagement.Runtime
         BundleInfo GetBundleInfo(AssetInfo assetInfo);
 
         BundleInfo[] GetAllDependBundleInfos(AssetInfo assetInfo);
+
+        AssetDescriptor TryGetAssetDesc(string assetPath);
     }
 }

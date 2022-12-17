@@ -66,9 +66,47 @@ namespace Framework.AssetManagement.Runtime
                 return m_CachedFilePath;
             }
         }
+        
+        /// <summary>
+         /// 文件名称
+         /// </summary>
+        private string m_FileName;
+        public string FileName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_FileName))
+                    throw new Exception("Should never get here !");
+                return m_FileName;
+            }
+        }
+
+        /// <summary>
+        /// 缓存查询Key
+        /// </summary>
+        private string m_CacheKey;
+        public string CacheKey
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_CacheKey))
+                    throw new Exception("Should never get here !");
+                return m_CacheKey;
+            }
+        }
 
         public BundleDescriptor()
         { }
+
+        /// <summary>
+		/// 解析资源包
+		/// </summary>
+		public void ParseBundle(string packageName, int nameStype)
+        {
+            //_packageName = packageName;
+            m_CacheKey = $"{packageName}-{fileHash}";
+            m_FileName = AssetManifest.CreateBundleFileName(nameStype, bundleName, fileHash);
+        }
 
         public bool Equals(BundleDescriptor other)
         {

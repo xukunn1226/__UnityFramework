@@ -58,10 +58,10 @@ namespace Framework.AssetManagement.Runtime
     /// </summary>
     public enum EProviderStatus
     {
-        None                = 0,
-        CheckBundle         = 1,
-        Loading             = 2,
-        Checking            = 3,
+        None                = 0,        // 未开始
+        CheckBundle         = 1,        // 检测bundle的完成状态
+        Loading             = 2,        // 加载资源
+        Checking            = 3,        // 检测加载结果
         Succeed             = 4,
         Failed              = 5,
     }

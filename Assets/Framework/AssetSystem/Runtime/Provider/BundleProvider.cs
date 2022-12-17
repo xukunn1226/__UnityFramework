@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
-    internal class BundleProvider : ProviderBase
+    internal abstract class BundleProvider : ProviderBase
     {
         protected BundleLoaderBase          mainBundleLoader    { get; private set; }
         protected DependAssetBundleLoader   dependBundleLoader  { get; private set; }
@@ -38,8 +38,5 @@ namespace Framework.AssetManagement.Runtime
                 dependBundleLoader = null;
             }
         }
-
-        public override void Update()
-        { }
     }
 }

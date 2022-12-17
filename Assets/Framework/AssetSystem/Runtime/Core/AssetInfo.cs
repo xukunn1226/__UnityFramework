@@ -29,8 +29,9 @@ namespace Framework.AssetManagement.Runtime
         }
 
         public bool     isValid     { get { return m_AssetDescriptor != null; } }
-        public string   assetPath   { private set; get; }
-        public Type     assetType   { private set; get; }
+        public string   assetPath   { get; private set; }
+        public Type     assetType   { get; private set; }
+        public string   lastError   { get; private set; }
 
         private AssetInfo() { }
 
@@ -42,6 +43,14 @@ namespace Framework.AssetManagement.Runtime
             this.m_AssetDescriptor  = assetDescriptor;
             this.assetType          = assetType;
             this.assetPath          = assetDescriptor.assetPath;
+        }
+
+        internal AssetInfo(string error)
+        {
+            m_AssetDescriptor = null;
+            assetType = null;
+            assetPath = string.Empty;
+            lastError = error;
         }
     }
 }
