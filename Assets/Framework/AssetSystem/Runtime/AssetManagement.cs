@@ -8,6 +8,7 @@ namespace Framework.AssetManagement.Runtime
     {
         static private bool         s_Init;
         static private GameObject   s_Driver;
+        static private AssetSystem  s_AssetSystem;
 
         static public void Initialize()
         {
@@ -20,8 +21,8 @@ namespace Framework.AssetManagement.Runtime
             UnityEngine.Object.DontDestroyOnLoad(s_Driver);
             Debug.Log("AssetManagement initialize!");
 
-            // init other system
             AsyncOperationSystem.Initialize();
+            s_AssetSystem = AssetSystem.Initialize(null);
         }
 
         static public void Destroy()
@@ -33,6 +34,7 @@ namespace Framework.AssetManagement.Runtime
 
             // destroy other system
             AsyncOperationSystem.Destroy();
+            s_AssetSystem?.Destroy();
 
             if (s_Driver != null)
                 UnityEngine.Object.Destroy(s_Driver);
@@ -45,6 +47,7 @@ namespace Framework.AssetManagement.Runtime
                 return;
 
             AsyncOperationSystem.Update();
+            s_AssetSystem?.Update();
         }
     }
 }

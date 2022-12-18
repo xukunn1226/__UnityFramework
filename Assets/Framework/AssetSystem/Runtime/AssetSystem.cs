@@ -2,19 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Diagnostics;
+using UnityEngine.SceneManagement;
 
 namespace Framework.AssetManagement.Runtime
 {
     public class AssetSystem
     {
+
         private Dictionary<string, BundleLoaderBase>    m_BundleLoaderDict  = new Dictionary<string, BundleLoaderBase>();
         private Dictionary<string, ProviderBase>        m_ProviderDict      = new Dictionary<string, ProviderBase>();
-        
+        private readonly static Dictionary<string, SceneOperationHandle> _sceneHandles = new Dictionary<string, SceneOperationHandle>(100);
+        private static long _sceneCreateCount = 0;
+
         private EPlayMode           m_PlayMode;
         public IDecryptionServices  decryptionServices  { get; private set; }
         public IBundleServices      bundleServices      { get; private set; }
 
-        public void Init(EPlayMode playMode, IDecryptionServices decryptionServices, IBundleServices bundleServices)
+        static public AssetSystem Initialize(InitializeParameters parameters)
+        {
+            AssetSystem assetSystem = new AssetSystem();
+            assetSystem.Initialize(parameters.PlayMode, parameters.DecryptionServices, parameters.BundleServices);
+            return assetSystem;
+        }
+
+        public void Initialize(EPlayMode playMode, IDecryptionServices decryptionServices, IBundleServices bundleServices)
         {
             m_PlayMode = playMode;
             this.decryptionServices = decryptionServices;
@@ -48,7 +59,7 @@ namespace Framework.AssetManagement.Runtime
             if (bundleInfo.descriptor.isRawFile)
                 loader = new RawBundleLoader(this, bundleInfo);
             else
-                loader = new AssetBundleLoader(this, bundleInfo);
+                loader = new AssetBundleLoaderEx(this, bundleInfo);
 
             m_BundleLoaderDict.Add(loader.bundleInfo.descriptor.bundleName, loader);
             return loader;
@@ -105,8 +116,7 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        #region 资源加载接口
-
+        #region 原生资源加载接口
         public RawFileOperationHandle LoadRawFile(string assetPath)
         {
             //DebugCheckInitialize();
@@ -160,12 +170,210 @@ namespace Framework.AssetManagement.Runtime
             }
             return provider.CreateHandle<RawFileOperationHandle>();
         }
+        #endregion      // 原生资源加载接口
 
+        #region 资源加载接口（同步&异步）
+        /// <summary>
+		/// 同步加载资源对象
+		/// </summary>
+		/// <typeparam name="TObject">资源类型</typeparam>
+		/// <param name="assetPath">资源的定位地址</param>
+		public AssetOperationHandle LoadAsset<TObject>(string assetPath) where TObject : UnityEngine.Object
+        {
+            //DebugCheckInitialize();
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
+            return LoadAssetInternal(assetInfo, true);
+        }
 
+        /// <summary>
+        /// 同步加载资源对象
+        /// </summary>
+        /// <param name="assetPath">资源的定位地址</param>
+        /// <param name="type">资源类型</param>
+        public AssetOperationHandle LoadAsset(string assetPath, System.Type type)
+        {
+            //DebugCheckInitialize();
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
+            return LoadAssetInternal(assetInfo, true);
+        }
 
-        #endregion      // 资源加载接口
+        /// <summary>
+		/// 异步加载资源对象
+		/// </summary>
+		/// <typeparam name="TObject">资源类型</typeparam>
+		/// <param name="assetPath">资源的定位地址</param>
+		public AssetOperationHandle LoadAssetAsync<TObject>(string assetPath) where TObject : UnityEngine.Object
+        {
+            //DebugCheckInitialize();
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
+            return LoadAssetInternal(assetInfo, false);
+        }
+
+        /// <summary>
+        /// 异步加载资源对象
+        /// </summary>
+        /// <param name="assetPath">资源的定位地址</param>
+        /// <param name="type">资源类型</param>
+        public AssetOperationHandle LoadAssetAsync(string assetPath, System.Type type)
+        {
+            //DebugCheckInitialize();
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
+            return LoadAssetInternal(assetInfo, false);
+        }
+
+        private AssetOperationHandle LoadAssetInternal(AssetInfo assetInfo, bool waitForAsyncComplete)
+        {
+#if UNITY_EDITOR
+            if (!assetInfo.isValid)
+            {
+                BundleInfo bundleInfo = bundleServices.GetBundleInfo(assetInfo);
+                if (bundleInfo.descriptor.isRawFile)
+                    throw new System.Exception($"Cannot load raw file using {nameof(LoadAssetAsync)} method !");
+            }
+#endif
+
+            var handle = LoadAssetAsync(assetInfo);
+            if (waitForAsyncComplete)
+                handle.WaitForAsyncComplete();
+            return handle;
+        }
+
+        private AssetOperationHandle LoadAssetAsync(AssetInfo assetInfo)
+        {
+            if (!assetInfo.isValid)
+            {
+                UnityEngine.Debug.LogError($"Failed to load asset ! {assetInfo.lastError}");
+                CompletedProvider completedProvider = new CompletedProvider(assetInfo);
+                completedProvider.SetCompleted(assetInfo.lastError);
+                return completedProvider.CreateHandle<AssetOperationHandle>();
+            }
+
+            string providerGUID = assetInfo.guid;
+            ProviderBase provider = TryGetProvider(providerGUID);
+            if (provider == null)
+            {
+                if (m_PlayMode == EPlayMode.FromEditor)
+                    provider = new DatabaseAssetProvider(this, providerGUID, assetInfo);
+                else
+                    provider = new BundleAssetProvider(this, providerGUID, assetInfo);
+                m_ProviderDict.Add(providerGUID, provider);
+            }
+            return provider.CreateHandle<AssetOperationHandle>();
+        }
+        #endregion  // 资源加载接口（同步&异步）
+
+        #region 场景加载接口
+        /// <summary>
+		/// 异步加载场景
+		/// </summary>
+		/// <param name="location">场景的定位地址</param>
+		/// <param name="sceneMode">场景加载模式</param>
+		/// <param name="activateOnLoad">加载完毕时是否主动激活</param>
+		/// <param name="priority">优先级</param>
+		public SceneOperationHandle LoadSceneAsync(string location, LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100)
+        {
+            //DebugCheckInitialize();
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(location, null);
+            var handle = LoadSceneAsync(assetInfo, sceneMode, activateOnLoad, priority);
+            return handle;
+        }
+
+        /// <summary>
+        /// 异步加载场景
+        /// </summary>
+        /// <param name="assetInfo">场景的资源信息</param>
+        /// <param name="sceneMode">场景加载模式</param>
+        /// <param name="activateOnLoad">加载完毕时是否主动激活</param>
+        /// <param name="priority">优先级</param>        
+		private SceneOperationHandle LoadSceneAsync(AssetInfo assetInfo, LoadSceneMode sceneMode, bool activateOnLoad, int priority)
+        {
+            if (!assetInfo.isValid)
+            {
+                UnityEngine.Debug.LogError($"Failed to load scene ! {assetInfo.lastError}");
+                CompletedProvider completedProvider = new CompletedProvider(assetInfo);
+                completedProvider.SetCompleted(assetInfo.lastError);
+                return completedProvider.CreateHandle<SceneOperationHandle>();
+            }
+
+            // 如果加载的是主场景，则卸载所有缓存的场景
+            if (sceneMode == LoadSceneMode.Single)
+            {
+                UnloadAllScene();
+            }
+
+            // 注意：同一个场景的ProviderGUID每次加载都会变化
+            string providerGUID = $"{assetInfo.guid}-{++_sceneCreateCount}";
+            ProviderBase provider;
+            {
+                if (m_PlayMode == EPlayMode.FromEditor)
+                    provider = new DatabaseSceneProvider(this, providerGUID, assetInfo, sceneMode, activateOnLoad, priority);
+                else
+                    provider = new BundleSceneProvider(this, providerGUID, assetInfo, sceneMode, activateOnLoad, priority);
+                m_ProviderDict.Add(providerGUID, provider);
+            }
+
+            var handle = provider.CreateHandle<SceneOperationHandle>();
+            //handle.PackageName = BundleServices.GetPackageName();
+            _sceneHandles.Add(providerGUID, handle);
+            return handle;
+        }
+
+        private void UnloadSubScene(ProviderBase provider)
+        {
+            string providerGUID = provider.providerGUID;
+            if (_sceneHandles.ContainsKey(providerGUID) == false)
+                throw new System.Exception("Should never get here !");
+
+            // 释放子场景句柄
+            _sceneHandles[providerGUID].Release();
+            _sceneHandles.Remove(providerGUID);
+
+            // 卸载未被使用的资源（包括场景）
+            //UnloadUnusedAssets();
+        }
+
+        private void UnloadAllScene()
+        {
+            // 释放所有场景句柄
+            foreach (var valuePair in _sceneHandles)
+            {
+                valuePair.Value.Release();
+            }
+            _sceneHandles.Clear();
+
+            // 卸载未被使用的资源（包括场景）
+            //UnloadUnusedAssets();
+        }
+
+        internal void ClearSceneHandle()
+        {
+            // 释放资源包下的所有场景
+            //if (BundleServices.IsServicesValid())
+            //{
+            //    string packageName = BundleServices.GetPackageName();
+            //    List<string> removeList = new List<string>();
+            //    foreach (var valuePair in _sceneHandles)
+            //    {
+            //        if (valuePair.Value.PackageName == packageName)
+            //        {
+            //            removeList.Add(valuePair.Key);
+            //        }
+            //    }
+            //    foreach (var key in removeList)
+            //    {
+            //        _sceneHandles.Remove(key);
+            //    }
+            //}
+        }
+
+        #endregion  // 场景加载接口
 
         public void Update()
+        {
+
+        }
+
+        public void Destroy()
         {
 
         }
