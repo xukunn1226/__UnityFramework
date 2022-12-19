@@ -11,6 +11,7 @@ namespace Framework.AssetManagement.Runtime
 
         private Dictionary<string, BundleLoaderBase>    m_BundleLoaderDict  = new Dictionary<string, BundleLoaderBase>();
         private Dictionary<string, ProviderBase>        m_ProviderDict      = new Dictionary<string, ProviderBase>();
+        private List<string>                            m_PendingDestroy    = new List<string>(10);
         private readonly static Dictionary<string, SceneOperationHandle> _sceneHandles = new Dictionary<string, SceneOperationHandle>(100);
         private static long _sceneCreateCount = 0;
 
@@ -18,14 +19,18 @@ namespace Framework.AssetManagement.Runtime
         public IDecryptionServices  decryptionServices  { get; private set; }
         public IBundleServices      bundleServices      { get; private set; }
 
-        static public AssetSystem Initialize(InitializeParameters parameters)
+        public InitializationOperation InitializeAsync(InitializeParameters parameters)
         {
-            AssetSystem assetSystem = new AssetSystem();
-            assetSystem.Initialize(parameters.PlayMode, parameters.DecryptionServices, parameters.BundleServices);
-            return assetSystem;
+            InitializationOperation initializeOperation = new InitializationOperation();
+            if (parameters.PlayMode == EPlayMode.FromEditor)
+                parameters.BundleServices = new EditorSimulateModeImpl();
+            else
+                parameters.BundleServices = new OfflinePlayModeImpl();
+            Initialize(parameters.PlayMode, parameters.DecryptionServices, parameters.BundleServices);
+            return initializeOperation;
         }
 
-        public void Initialize(EPlayMode playMode, IDecryptionServices decryptionServices, IBundleServices bundleServices)
+        private void Initialize(EPlayMode playMode, IDecryptionServices decryptionServices, IBundleServices bundleServices)
         {
             m_PlayMode = playMode;
             this.decryptionServices = decryptionServices;
@@ -370,12 +375,86 @@ namespace Framework.AssetManagement.Runtime
 
         public void Update()
         {
+            foreach(var loader in m_BundleLoaderDict.Values)
+            {
+                loader.Update();
+            }
 
+            foreach(var provider in m_ProviderDict.Values)
+            {
+                provider.Update();
+            }
+
+            // for debug
+            UnloadUnusedAssets();
         }
 
         public void Destroy()
         {
+            foreach(var provider in m_ProviderDict.Values)
+            {
+                provider.Destroy();
+            }
+            m_ProviderDict.Clear();
 
+            foreach(var loader in m_BundleLoaderDict.Values)
+            {
+                loader.Destroy(true);
+            }
+            m_BundleLoaderDict.Clear();
+        }
+
+        /// <summary>
+        /// 卸载引用计数为0的资源
+        /// </summary>
+        public void UnloadUnusedAssets()
+        {
+            m_PendingDestroy.Clear();
+            foreach (var provider in m_ProviderDict)
+            {
+                if (provider.Value.canDestroy)
+                {
+                    provider.Value.Destroy();
+                    m_PendingDestroy.Add(provider.Key);
+                }
+            }
+            foreach (var key in m_PendingDestroy)
+            {
+                m_ProviderDict.Remove(key);
+            }
+
+            if (m_PlayMode != EPlayMode.FromEditor)
+            { // 编辑器模拟模式不会产生BundleLoader
+                m_PendingDestroy.Clear();
+                foreach(var loader in m_BundleLoaderDict)
+                {
+                    if(loader.Value.canDestroy)
+                    {
+                        loader.Value.Destroy(false);
+                        m_PendingDestroy.Add(loader.Key);
+                    }
+                }
+                foreach(var key in m_PendingDestroy)
+                {
+                    m_BundleLoaderDict.Remove(key);
+                }
+            }
+        }
+
+        public void ForceUnloadAllAssets()
+        {
+            foreach(var provider in m_ProviderDict.Values)
+            {
+                provider.Destroy();
+            }
+            foreach(var loader in m_BundleLoaderDict.Values)
+            {
+                loader.Destroy(true);
+            }
+            m_ProviderDict.Clear();
+            m_BundleLoaderDict.Clear();
+
+            Resources.UnloadUnusedAssets();
         }
     }
 }

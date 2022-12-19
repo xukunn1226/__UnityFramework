@@ -8,7 +8,7 @@ namespace Framework.AssetManagement.Runtime
     {
         private void Update()
         {
-            AssetManagement.Update();
+            AssetManagerEx.Update();
         }
     }
 }

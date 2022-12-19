@@ -7,12 +7,12 @@ public class AM_Startup : MonoBehaviour
 {
     private void OnEnable()
     {
-        AssetManagement.Initialize();
+        StartCoroutine(AssetManagerEx.Initialize());
     }
 
     private void OnDisable()
     {
-        AssetManagement.Destroy();
+        AssetManagerEx.Destroy();
     }
 
     // Update is called once per frame

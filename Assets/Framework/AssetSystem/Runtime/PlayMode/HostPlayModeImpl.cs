@@ -6,17 +6,17 @@ namespace Framework.AssetManagement.Runtime
 {
     public class HostPlayModeImpl : IBundleServices
     {
-        public BundleInfo GetBundleInfo(AssetInfo assetInfo)
+        BundleInfo IBundleServices.GetBundleInfo(AssetInfo assetInfo)
         {
             return null;
         }
 
-        public BundleInfo[] GetAllDependBundleInfos(AssetInfo assetInfo)
+        BundleInfo[] IBundleServices.GetAllDependBundleInfos(AssetInfo assetInfo)
         {
             return null;
         }
 
-        public AssetDescriptor TryGetAssetDesc(string assetPath)
+        AssetDescriptor IBundleServices.TryGetAssetDesc(string assetPath)
         {
             return null;
         }

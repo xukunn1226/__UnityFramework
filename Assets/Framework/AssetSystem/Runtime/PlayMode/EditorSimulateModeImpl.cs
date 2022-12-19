@@ -1,24 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Framework.AssetManagement.Runtime
 {
     public class EditorSimulateModeImpl : IBundleServices
     {
-        public BundleInfo GetBundleInfo(AssetInfo assetInfo)
+        BundleInfo IBundleServices.GetBundleInfo(AssetInfo assetInfo)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public BundleInfo[] GetAllDependBundleInfos(AssetInfo assetInfo)
+        BundleInfo[] IBundleServices.GetAllDependBundleInfos(AssetInfo assetInfo)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
-        public AssetDescriptor TryGetAssetDesc(string assetPath)
+        AssetDescriptor IBundleServices.TryGetAssetDesc(string assetPath)
         {
-            return null;
+            AssetDescriptor desc = new AssetDescriptor() { assetPath = assetPath };
+
+            return desc;
         }
     }
 }

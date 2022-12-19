@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
-    static public class AssetManagement
+    static public partial class AssetManagerEx
     {
-        static private bool         s_Init;
-        static private GameObject   s_Driver;
-        static private AssetSystem  s_AssetSystem;
+        static private bool s_Init;
+        static private GameObject s_Driver;
+        static private AssetSystem s_AssetSystem;
 
-        static public void Initialize()
+        static public InitializationOperation Initialize()
         {
             if (s_Init)
                 throw new System.Exception($"AssetManagement has already init..");
@@ -22,7 +22,15 @@ namespace Framework.AssetManagement.Runtime
             Debug.Log("AssetManagement initialize!");
 
             AsyncOperationSystem.Initialize();
-            s_AssetSystem = AssetSystem.Initialize(null);
+            s_AssetSystem = new AssetSystem();
+
+            InitializeParameters initializeParameters = new InitializeParameters();
+            initializeParameters.PlayMode = EPlayMode.FromEditor;
+            initializeParameters.AssetLoadingMaxNumber = 10;
+            initializeParameters.DecryptionServices = null;
+            var op = s_AssetSystem.InitializeAsync(initializeParameters);
+            AsyncOperationSystem.StartOperation(op);
+            return op;
         }
 
         static public void Destroy()
