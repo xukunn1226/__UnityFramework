@@ -41,6 +41,8 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         public byte     loadMethod;
 
+        private string  m_PackageName;
+
         private string  m_StreamingFilePath;
         public string streamingFilePath
         {
@@ -49,7 +51,7 @@ namespace Framework.AssetManagement.Runtime
                 if (!string.IsNullOrEmpty(m_StreamingFilePath))
                     return m_StreamingFilePath;
 
-                m_StreamingFilePath = string.Empty;
+                m_StreamingFilePath = PathHelper.MakeStreamingLoadPath(fileName);
                 return m_StreamingFilePath;
             }
         }
@@ -62,7 +64,8 @@ namespace Framework.AssetManagement.Runtime
                 if(!string.IsNullOrEmpty(m_CachedFilePath))
                     return m_CachedFilePath;
 
-                m_CachedFilePath = string.Empty;
+                string cacheRoot = PathHelper.GetCacheFolderPath(m_PackageName);
+                m_CachedFilePath = $"{cacheRoot}/{fileName}";
                 return m_CachedFilePath;
             }
         }
@@ -71,7 +74,7 @@ namespace Framework.AssetManagement.Runtime
          /// ÎÄ¼þÃû³Æ
          /// </summary>
         private string m_FileName;
-        public string FileName
+        public string fileName
         {
             get
             {
@@ -103,7 +106,7 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public void ParseBundle(string packageName, int nameStype)
         {
-            //_packageName = packageName;
+            m_PackageName = packageName;
             m_CacheKey = $"{packageName}-{fileHash}";
             m_FileName = AssetManifest.CreateBundleFileName(nameStype, bundleName, fileHash);
         }

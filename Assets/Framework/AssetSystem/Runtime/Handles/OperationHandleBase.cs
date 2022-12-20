@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 
 namespace Framework.AssetManagement.Runtime
 {
+    /// <summary>
+    /// 操作句柄
+    /// 功能：获取各种加载状态及数据，对Provider的封装，隐藏上层对Provider的感知
+    /// </summary>
     public abstract class OperationHandleBase : IEnumerator
     {
         public bool isValid
@@ -35,8 +39,7 @@ namespace Framework.AssetManagement.Runtime
         public bool             isDone      { get { return isValid ? provider.isDone : false; } }
         public float            progress    { get { return isValid ? provider.progress : 0; } }
         public string           lastError   { get { return isValid ? provider.lastError : string.Empty; } }
-        public Object           assetObject { get { return isValid ? provider.assetObject : null; } }
-        public Scene            sceneObject { get { return isValid ? provider.sceneObject : default(Scene); } }
+        
         public EOperationStatus status
         { 
             get 
@@ -59,7 +62,7 @@ namespace Framework.AssetManagement.Runtime
             assetInfo = provider.assetInfo;
         }
 
-        public abstract void InvokeCallback();
+        internal abstract void InvokeCallback();
 
         static private int s_HanderID = 0;
         static private int MakeUniqueID()

@@ -11,7 +11,7 @@ namespace Framework.AssetManagement.Runtime
         {
             None        = 0,
             Unpack      = 1,
-            WaitUnpack  = 2,
+            CheckUnpack = 2,
             CheckFile   = 3,
             Done        = 4,
         }
@@ -59,10 +59,10 @@ namespace Framework.AssetManagement.Runtime
             {
                 // TODO: 解压文件
 
-                m_Step = EStep.WaitUnpack;
+                m_Step = EStep.CheckUnpack;
             }
 
-            if(m_Step == EStep.WaitUnpack)
+            if(m_Step == EStep.CheckUnpack)
             {
                 // TODO: 等待解压结果
 

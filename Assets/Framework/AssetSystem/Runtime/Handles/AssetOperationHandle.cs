@@ -8,13 +8,15 @@ namespace Framework.AssetManagement.Runtime
     {
         private System.Action<AssetOperationHandle> m_Callback;
 
-        public AssetOperationHandle(ProviderBase provider) : base(provider)
+        internal AssetOperationHandle(ProviderBase provider) : base(provider)
         { }
 
-        public override void InvokeCallback()
+        internal override void InvokeCallback()
         {
             m_Callback?.Invoke(this);
         }
+
+        public Object assetObject { get { return isValid ? provider.assetObject : null; } }
 
         public event System.Action<AssetOperationHandle> Completed
         {

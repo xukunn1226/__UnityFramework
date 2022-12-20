@@ -9,17 +9,19 @@ namespace Framework.AssetManagement.Runtime
         static private bool s_Init;
         static private GameObject s_Driver;
         static private AssetSystem s_AssetSystem;
+        static EOperationStatus s_OperationStatus;
+        static string s_Error;
 
         static public InitializationOperation Initialize()
         {
             if (s_Init)
-                throw new System.Exception($"AssetManagement has already init..");
+                throw new System.Exception($"AssetManager has already init..");
 
             s_Init = true;
-            s_Driver = new GameObject($"AssetManagement");
+            s_Driver = new GameObject($"AssetManager");
             s_Driver.AddComponent<AssetDriver>();
             UnityEngine.Object.DontDestroyOnLoad(s_Driver);
-            Debug.Log("AssetManagement initialize!");
+            Debug.Log("AssetManager initialize!");
 
             AsyncOperationSystem.Initialize();
             s_AssetSystem = new AssetSystem();
@@ -29,8 +31,15 @@ namespace Framework.AssetManagement.Runtime
             initializeParameters.AssetLoadingMaxNumber = 10;
             initializeParameters.DecryptionServices = null;
             var op = s_AssetSystem.InitializeAsync(initializeParameters);
+            op.Completed += InitializeOperation_Completed;
             AsyncOperationSystem.StartOperation(op);
             return op;
+        }
+
+        static private void InitializeOperation_Completed(AsyncOperationBase op)
+        {
+            s_OperationStatus = op.status;
+            s_Error = op.lastError;
         }
 
         static public void Destroy()

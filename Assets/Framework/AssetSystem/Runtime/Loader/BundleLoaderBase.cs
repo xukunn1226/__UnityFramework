@@ -15,7 +15,7 @@ namespace Framework.AssetManagement.Runtime
         public EBundleLoadStatus    status              { get; protected set; }
         public string               lastError           { get; protected set; }
         public AssetBundle          cachedBundle        { get; protected set; }
-        public string               bundlePath          { get; protected set; }
+        public string               bundlePath          { get; protected set; }     // Bundle资源包加载路径
         public float                downloadProgress    { get; set; }
         public ulong                downloadBytes       { get; set; }
         public bool                 isDone              { get { return status == EBundleLoadStatus.Succeed || status == EBundleLoadStatus.Failed; } }

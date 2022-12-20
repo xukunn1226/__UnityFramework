@@ -27,7 +27,7 @@ namespace Framework.AssetManagement.Runtime
             // 检测资源包的完成状态
             if(status == EProviderStatus.CheckBundle)
             {
-                if(m_RequestAsyncComplete)
+                if(requestAsyncComplete)
                 {
                     mainBundleLoader.WaitForAsyncComplete();
                     if (dependBundleLoader != null)
@@ -62,7 +62,7 @@ namespace Framework.AssetManagement.Runtime
             // 加载资源
             if(status == EProviderStatus.Loading)
             {
-                if(m_RequestAsyncComplete)
+                if(requestAsyncComplete)
                 { // 同步
                     if(assetInfo.assetType == null)
                     {
@@ -92,7 +92,7 @@ namespace Framework.AssetManagement.Runtime
             { // 执行到这里一定是异步
                 progress = m_AssetBundleRequest.progress;
 
-                if(m_RequestAsyncComplete)
+                if(requestAsyncComplete)
                 {
                     // 异步转同步将强制挂起主线程
                     Debug.LogWarning($"Suspend main thread to load unity asset");

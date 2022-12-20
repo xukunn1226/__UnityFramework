@@ -32,13 +32,13 @@ namespace Framework.AssetManagement.Runtime
 				status = EProviderStatus.Checking;
 
 				// 注意：模拟异步加载效果提前返回（延迟一帧）
-				if (!m_RequestAsyncComplete)
+				if (!requestAsyncComplete)
 					return;
 			}
 
 			if (status == EProviderStatus.Checking)
 			{
-				bundlePath = assetInfo.assetPath;
+				rawFilePath = assetInfo.assetPath;
 				status = EProviderStatus.Succeed;
 				InvokeCompletion();
 			}

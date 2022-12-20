@@ -43,6 +43,7 @@ namespace Framework.AssetManagement.Runtime
             this.m_AssetDescriptor  = assetDescriptor;
             this.assetType          = assetType;
             this.assetPath          = assetDescriptor.assetPath;
+            this.lastError          = String.Empty;
         }
 
         internal AssetInfo(string error)

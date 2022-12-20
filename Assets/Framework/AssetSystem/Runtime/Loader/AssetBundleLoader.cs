@@ -13,14 +13,14 @@ namespace Framework.AssetManagement.Runtime
         {
             None            = 0,
             LoadFile        = 1,
-            WaitLoadFile    = 2,
+            CheckLoadFile    = 2,
             Done            = 3,
         }
         private ESteps                      m_Step = ESteps.None;
         private bool                        m_RequestAsyncComplete;
         private AssetBundleCreateRequest    m_BundleRequest;
 
-        protected AssetBundleLoaderEx() : base() { }
+        private AssetBundleLoaderEx() { }
 
         public AssetBundleLoaderEx(AssetSystem assetSystem, BundleInfo bundleInfo) : base(assetSystem, bundleInfo)
         { }
@@ -82,10 +82,11 @@ namespace Framework.AssetManagement.Runtime
 
                     // TODO: 以后再做
                 }
-                m_Step = ESteps.WaitLoadFile;
+                m_Step = ESteps.CheckLoadFile;
             }
 
-            if(m_Step == ESteps.WaitLoadFile)
+            // 检测AssetBundle加载结果
+            if(m_Step == ESteps.CheckLoadFile)
             {
                 if(m_BundleRequest != null)
                 {

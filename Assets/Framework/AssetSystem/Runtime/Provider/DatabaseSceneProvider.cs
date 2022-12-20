@@ -7,16 +7,16 @@ namespace Framework.AssetManagement.Runtime
 {
 	internal sealed class DatabaseSceneProvider : ProviderBase
 	{
-		public readonly LoadSceneMode SceneMode;
-		private readonly bool _activateOnLoad;
-		private readonly int _priority;
-		private AsyncOperation _asyncOp;
+		public LoadSceneMode    sceneMode       { get; private set; }
+        public bool             activateOnLoad  { get; private set; }
+        public int              priority        { get; private set; }
+		private AsyncOperation	m_AsyncOp;
 
 		public DatabaseSceneProvider(AssetSystem assetSystem, string providerGUID, AssetInfo assetInfo, LoadSceneMode sceneMode, bool activateOnLoad, int priority) : base(assetSystem, providerGUID, assetInfo)
 		{
-			SceneMode = sceneMode;
-			_activateOnLoad = activateOnLoad;
-			_priority = priority;
+			this.sceneMode = sceneMode;
+			this.activateOnLoad = activateOnLoad;
+			this.priority = priority;
 		}
 		
 		public override void Update()
@@ -34,12 +34,12 @@ namespace Framework.AssetManagement.Runtime
 			if (status == EProviderStatus.Loading)
 			{
 				LoadSceneParameters loadSceneParameters = new LoadSceneParameters();
-				loadSceneParameters.loadSceneMode = SceneMode;
-				_asyncOp = UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(assetInfo.assetPath, loadSceneParameters);
-				if (_asyncOp != null)
+				loadSceneParameters.loadSceneMode = sceneMode;
+				m_AsyncOp = UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(assetInfo.assetPath, loadSceneParameters);
+				if (m_AsyncOp != null)
 				{
-					_asyncOp.allowSceneActivation = true;
-					_asyncOp.priority = _priority;
+					m_AsyncOp.allowSceneActivation = true;
+					m_AsyncOp.priority = priority;
 					sceneObject = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
 					status = EProviderStatus.Checking;
 				}
@@ -55,10 +55,10 @@ namespace Framework.AssetManagement.Runtime
 			// 2. ¼ì²â¼ÓÔØ½á¹û
 			if (status == EProviderStatus.Checking)
 			{
-				progress = _asyncOp.progress;
-				if (_asyncOp.isDone)
+				progress = m_AsyncOp.progress;
+				if (m_AsyncOp.isDone)
 				{
-					if (sceneObject.IsValid() && _activateOnLoad)
+					if (sceneObject.IsValid() && activateOnLoad)
 						SceneManager.SetActiveScene(sceneObject);
 
 					status = sceneObject.IsValid() ? EProviderStatus.Succeed : EProviderStatus.Failed;

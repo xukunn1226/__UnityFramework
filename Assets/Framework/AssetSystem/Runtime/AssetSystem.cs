@@ -323,7 +323,7 @@ namespace Framework.AssetManagement.Runtime
             return handle;
         }
 
-        private void UnloadSubScene(ProviderBase provider)
+        internal void UnloadSubScene(ProviderBase provider)
         {
             string providerGUID = provider.providerGUID;
             if (_sceneHandles.ContainsKey(providerGUID) == false)

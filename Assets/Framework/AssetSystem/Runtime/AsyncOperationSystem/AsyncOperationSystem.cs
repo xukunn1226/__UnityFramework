@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Framework.AssetManagement.Runtime
 {
-	internal class AsyncOperationSystem
+	public class AsyncOperationSystem
 	{
 		private static readonly List<AsyncOperationBase> s_Operations = new List<AsyncOperationBase>(100);
 
@@ -67,6 +67,13 @@ namespace Framework.AssetManagement.Runtime
 
 		public static void StartOperation(AsyncOperationBase operationBase)
 		{
+#if UNITY_EDITOR
+			if(s_Operations.IndexOf(operationBase) != -1)
+            {
+				UnityEngine.Debug.LogError($"StartOperation: operationBase has already exist!");
+				return;
+            }
+#endif
 			s_Operations.Add(operationBase);
 			operationBase.Start();
 		}

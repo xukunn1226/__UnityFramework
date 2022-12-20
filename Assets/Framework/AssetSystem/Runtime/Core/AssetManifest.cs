@@ -18,6 +18,8 @@ namespace Framework.AssetManagement.Runtime
         /// 版本号
         /// </summary>
         public string                   PackageVersion;
+
+		public string					PackageName			{ get { return $"v{PackageVersion}"; } }
 		
 		/// <summary>
 		/// 文件名称样式
@@ -47,7 +49,7 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         [NonSerialized]
         public readonly Dictionary<string, BundleDescriptor>    BundleDict = new Dictionary<string, BundleDescriptor>();
-
+				
         public BundleDescriptor GetMainBundleDesc(string assetPath)
         {
             if(AssetDict.TryGetValue(assetPath, out AssetDescriptor descriptor))
@@ -123,10 +125,10 @@ namespace Framework.AssetManagement.Runtime
 			using (FileStream fs = new FileStream(savePath, FileMode.Create))
 			{
 				// 创建缓存器
-				BufferWriter buffer = new BufferWriter(AssetManagementSettings.PatchManifestFileMaxSize);
+				BufferWriter buffer = new BufferWriter(AssetManagerSettings.PatchManifestFileMaxSize);
 
 				// 写入文件标记
-				buffer.WriteUInt32(AssetManagementSettings.PatchManifestFileSign);
+				buffer.WriteUInt32(AssetManagerSettings.PatchManifestFileSign);
 
 				// 写入文件版本
 				buffer.WriteInt32(assetManifest.SerializedVersion);
@@ -174,15 +176,15 @@ namespace Framework.AssetManagement.Runtime
 
 			// 读取文件标记
 			uint fileSign = buffer.ReadUInt32();
-			if (fileSign != AssetManagementSettings.PatchManifestFileSign)
+			if (fileSign != AssetManagerSettings.PatchManifestFileSign)
 				throw new Exception("Invalid manifest file !");
 
 			AssetManifest manifest = new AssetManifest();
 			{
 				// 读取文件版本
 				manifest.SerializedVersion = buffer.ReadInt32();
-				if (manifest.SerializedVersion != AssetManagementSettings.ManifestSerializationVersion)
-					throw new Exception($"The manifest file version are not compatible : {manifest.SerializedVersion} != {AssetManagementSettings.ManifestSerializationVersion}");
+				if (manifest.SerializedVersion != AssetManagerSettings.ManifestSerializationVersion)
+					throw new Exception($"The manifest file version are not compatible : {manifest.SerializedVersion} != {AssetManagerSettings.ManifestSerializationVersion}");
 
 				// 读取文件头信息
 				manifest.OutputNameStyle = buffer.ReadInt32();

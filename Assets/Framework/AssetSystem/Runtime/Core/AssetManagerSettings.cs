@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
-	[CreateAssetMenu(fileName = "AssetManagementSettings", menuName = "AssetManagement Settings/Create Settings")]
-	public class AssetManagementSettings : ScriptableObject
+	[CreateAssetMenu(fileName = "AssetManagerSettings", menuName = "AssetManager Settings/Create Settings")]
+	public class AssetManagerSettings : ScriptableObject
 	{
 		/// <summary>
 		/// AssetBundle文件的后缀名
@@ -20,7 +20,7 @@ namespace Framework.AssetManagement.Runtime
 		/// <summary>
 		/// 清单文件名称
 		/// </summary>
-		public string PatchManifestFileName = "PatchManifest";
+		public string PatchManifestFileName = "AssetManifest";
 
 
 		/// <summary>

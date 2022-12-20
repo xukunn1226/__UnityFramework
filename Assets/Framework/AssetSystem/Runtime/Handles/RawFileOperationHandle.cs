@@ -12,7 +12,7 @@ namespace Framework.AssetManagement.Runtime
 		{
 		}
 
-		public override void InvokeCallback()
+		internal override void InvokeCallback()
 		{
 			m_Callback?.Invoke(this);
 		}
@@ -50,7 +50,7 @@ namespace Framework.AssetManagement.Runtime
 		{
 			if (!isValid)
 				return null;
-			string filePath = provider.bundlePath;
+			string filePath = provider.rawFilePath;
 			if (File.Exists(filePath) == false)
 				return null;
 			return File.ReadAllBytes(filePath);
@@ -63,7 +63,7 @@ namespace Framework.AssetManagement.Runtime
 		{
 			if (!isValid)
 				return null;
-			string filePath = provider.bundlePath;
+			string filePath = provider.rawFilePath;
 			if (File.Exists(filePath) == false)
 				return null;
 			return File.ReadAllText(filePath, Encoding.UTF8);
@@ -76,7 +76,7 @@ namespace Framework.AssetManagement.Runtime
 		{
 			if (!isValid)
 				return string.Empty;
-			return provider.bundlePath;
+			return provider.rawFilePath;
 		}
 	}
 }

@@ -23,7 +23,7 @@ namespace Framework.AssetManagement.Runtime
 
             if(status == EProviderStatus.CheckBundle)
             {
-                if(m_RequestAsyncComplete)
+                if(requestAsyncComplete)
                 {
                     mainBundleLoader.WaitForAsyncComplete();
                 }
@@ -43,7 +43,7 @@ namespace Framework.AssetManagement.Runtime
 
             if(status == EProviderStatus.Checking)
             {
-                bundlePath = mainBundleLoader.bundlePath;
+                rawFilePath = mainBundleLoader.bundlePath;
                 status = EProviderStatus.Succeed;
                 InvokeCompletion();
             }
