@@ -6,14 +6,17 @@ using UnityEngine.SceneManagement;
 
 namespace Framework.AssetManagement.Runtime
 {
-    public class AssetSystem
+    internal class AssetSystem
     {
+        private IndexedSet<BundleLoaderBase>            m_BundleLoaderSet   = new IndexedSet<BundleLoaderBase>();
+        private Dictionary<string, BundleLoaderBase>    m_BundleLoaderDict  = new Dictionary<string, BundleLoaderBase>(1000);
+        private IndexedSet<ProviderBase>                m_ProviderSet       = new IndexedSet<ProviderBase>();
+        private Dictionary<string, ProviderBase>        m_ProviderDict      = new Dictionary<string, ProviderBase>(1000);
 
-        private Dictionary<string, BundleLoaderBase>    m_BundleLoaderDict  = new Dictionary<string, BundleLoaderBase>();
-        private Dictionary<string, ProviderBase>        m_ProviderDict      = new Dictionary<string, ProviderBase>();
-        private List<string>                            m_PendingDestroy    = new List<string>(10);
         private readonly static Dictionary<string, SceneOperationHandle> _sceneHandles = new Dictionary<string, SceneOperationHandle>(100);
         private static long _sceneCreateCount = 0;
+
+
 
         private EPlayMode           m_PlayMode;
         public IDecryptionServices  decryptionServices  { get; private set; }
@@ -35,6 +38,96 @@ namespace Framework.AssetManagement.Runtime
             m_PlayMode = playMode;
             this.decryptionServices = decryptionServices;
             this.bundleServices = bundleServices;
+        }
+
+        public void Update()
+        {
+            for(int i = 0; i < m_BundleLoaderSet.Count; ++i)
+            {
+                m_BundleLoaderSet[i].Update();
+            }
+
+            for(int i = 0; i < m_ProviderSet.Count; ++i)
+            {
+                m_ProviderSet[i].Update();
+            }
+
+            // for debug
+            UnloadUnusedAssets();
+        }
+
+        public void Destroy()
+        {
+            for (int i = 0; i < m_ProviderSet.Count; ++i)
+            {
+                m_ProviderSet[i].Destroy();
+            }
+            m_ProviderSet.Clear();
+            m_ProviderDict.Clear();
+
+            for(int i = 0; i < m_BundleLoaderSet.Count; ++i)
+            {
+                m_BundleLoaderSet[i].Destroy(true);
+            }
+            m_BundleLoaderSet.Clear();
+            m_BundleLoaderDict.Clear();
+
+            decryptionServices = null;
+            bundleServices = null;
+        }
+
+        /// <summary>
+        /// 卸载引用计数为0的资源
+        /// </summary>
+        public void UnloadUnusedAssets()
+        {
+            // 遍历资源提供者，引用计数为0的销毁
+            for(int i = m_ProviderSet.Count - 1; i >= 0; --i)
+            {
+                ProviderBase provider = m_ProviderSet[i];
+                if (provider.canDestroy)
+                {
+                    provider.Destroy();
+
+                    m_ProviderDict.Remove(provider.providerGUID);
+                    m_ProviderSet.RemoveAt(i);
+                }
+            }
+
+            // 编辑器模拟模式不会产生BundleLoader
+            if (m_PlayMode != EPlayMode.FromEditor)
+            {
+                for(int i = m_BundleLoaderSet.Count - 1; i >= 0; --i)
+                {
+                    var loader = m_BundleLoaderSet[i];
+                    if(loader.canDestroy)
+                    {
+                        loader.Destroy(false);
+
+                        m_BundleLoaderDict.Remove(loader.bundleInfo.descriptor.bundleName);
+                        m_BundleLoaderSet.RemoveAt(i);
+                    }
+                }
+            }
+        }
+
+        public void ForceUnloadAllAssets()
+        {
+            for (int i = m_ProviderSet.Count - 1; i >= 0; --i)
+            {
+                m_ProviderSet[i].Destroy();
+            }
+            m_ProviderSet.Clear();
+            m_ProviderDict.Clear();
+
+            for(int i = 0; i < m_BundleLoaderSet.Count; ++i)
+            {
+                m_BundleLoaderSet[i].Destroy(true);
+            }
+            m_BundleLoaderSet.Clear();
+            m_BundleLoaderDict.Clear();
+
+            Resources.UnloadUnusedAssets();
         }
 
         internal BundleLoaderBase CreateMainAssetBundleLoader(AssetInfo assetInfo)
@@ -67,6 +160,7 @@ namespace Framework.AssetManagement.Runtime
                 loader = new AssetBundleLoaderEx(this, bundleInfo);
 
             m_BundleLoaderDict.Add(loader.bundleInfo.descriptor.bundleName, loader);
+            m_BundleLoaderSet.AddUnique(loader);
             return loader;
         }
 
@@ -124,14 +218,12 @@ namespace Framework.AssetManagement.Runtime
         #region 原生资源加载接口
         public RawFileOperationHandle LoadRawFile(string assetPath)
         {
-            //DebugCheckInitialize();
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, null);
             return LoadRawFileInternal(assetInfo, true);
         }
 
         public RawFileOperationHandle LoadRawFileAsync(string location)
         {
-            //DebugCheckInitialize();
             AssetInfo assetInfo = ConvertLocationToAssetInfo(location, null);
             return LoadRawFileInternal(assetInfo, false);
         }
@@ -172,6 +264,7 @@ namespace Framework.AssetManagement.Runtime
                 else
                     provider = new BundleRawFileProvider(this, providerGUID, assetInfo);
                 m_ProviderDict.Add(providerGUID, provider);
+                m_ProviderSet.AddUnique(provider);
             }
             return provider.CreateHandle<RawFileOperationHandle>();
         }
@@ -185,7 +278,6 @@ namespace Framework.AssetManagement.Runtime
 		/// <param name="assetPath">资源的定位地址</param>
 		public AssetOperationHandle LoadAsset<TObject>(string assetPath) where TObject : UnityEngine.Object
         {
-            //DebugCheckInitialize();
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
             return LoadAssetInternal(assetInfo, true);
         }
@@ -197,7 +289,6 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="type">资源类型</param>
         public AssetOperationHandle LoadAsset(string assetPath, System.Type type)
         {
-            //DebugCheckInitialize();
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
             return LoadAssetInternal(assetInfo, true);
         }
@@ -209,7 +300,6 @@ namespace Framework.AssetManagement.Runtime
 		/// <param name="assetPath">资源的定位地址</param>
 		public AssetOperationHandle LoadAssetAsync<TObject>(string assetPath) where TObject : UnityEngine.Object
         {
-            //DebugCheckInitialize();
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
             return LoadAssetInternal(assetInfo, false);
         }
@@ -221,7 +311,6 @@ namespace Framework.AssetManagement.Runtime
         /// <param name="type">资源类型</param>
         public AssetOperationHandle LoadAssetAsync(string assetPath, System.Type type)
         {
-            //DebugCheckInitialize();
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
             return LoadAssetInternal(assetInfo, false);
         }
@@ -262,6 +351,7 @@ namespace Framework.AssetManagement.Runtime
                 else
                     provider = new BundleAssetProvider(this, providerGUID, assetInfo);
                 m_ProviderDict.Add(providerGUID, provider);
+                m_ProviderSet.AddUnique(provider);
             }
             return provider.CreateHandle<AssetOperationHandle>();
         }
@@ -277,7 +367,6 @@ namespace Framework.AssetManagement.Runtime
 		/// <param name="priority">优先级</param>
 		public SceneOperationHandle LoadSceneAsync(string location, LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100)
         {
-            //DebugCheckInitialize();
             AssetInfo assetInfo = ConvertLocationToAssetInfo(location, null);
             var handle = LoadSceneAsync(assetInfo, sceneMode, activateOnLoad, priority);
             return handle;
@@ -315,6 +404,7 @@ namespace Framework.AssetManagement.Runtime
                 else
                     provider = new BundleSceneProvider(this, providerGUID, assetInfo, sceneMode, activateOnLoad, priority);
                 m_ProviderDict.Add(providerGUID, provider);
+                m_ProviderSet.AddUnique(provider);
             }
 
             var handle = provider.CreateHandle<SceneOperationHandle>();
@@ -371,90 +461,6 @@ namespace Framework.AssetManagement.Runtime
             //}
         }
 
-        #endregion  // 场景加载接口
-
-        public void Update()
-        {
-            foreach(var loader in m_BundleLoaderDict.Values)
-            {
-                loader.Update();
-            }
-
-            foreach(var provider in m_ProviderDict.Values)
-            {
-                provider.Update();
-            }
-
-            // for debug
-            UnloadUnusedAssets();
-        }
-
-        public void Destroy()
-        {
-            foreach(var provider in m_ProviderDict.Values)
-            {
-                provider.Destroy();
-            }
-            m_ProviderDict.Clear();
-
-            foreach(var loader in m_BundleLoaderDict.Values)
-            {
-                loader.Destroy(true);
-            }
-            m_BundleLoaderDict.Clear();
-        }
-
-        /// <summary>
-        /// 卸载引用计数为0的资源
-        /// </summary>
-        public void UnloadUnusedAssets()
-        {
-            m_PendingDestroy.Clear();
-            foreach (var provider in m_ProviderDict)
-            {
-                if (provider.Value.canDestroy)
-                {
-                    provider.Value.Destroy();
-                    m_PendingDestroy.Add(provider.Key);
-                }
-            }
-            foreach (var key in m_PendingDestroy)
-            {
-                m_ProviderDict.Remove(key);
-            }
-
-            if (m_PlayMode != EPlayMode.FromEditor)
-            { // 编辑器模拟模式不会产生BundleLoader
-                m_PendingDestroy.Clear();
-                foreach(var loader in m_BundleLoaderDict)
-                {
-                    if(loader.Value.canDestroy)
-                    {
-                        loader.Value.Destroy(false);
-                        m_PendingDestroy.Add(loader.Key);
-                    }
-                }
-                foreach(var key in m_PendingDestroy)
-                {
-                    m_BundleLoaderDict.Remove(key);
-                }
-            }
-        }
-
-        public void ForceUnloadAllAssets()
-        {
-            foreach(var provider in m_ProviderDict.Values)
-            {
-                provider.Destroy();
-            }
-            foreach(var loader in m_BundleLoaderDict.Values)
-            {
-                loader.Destroy(true);
-            }
-            m_ProviderDict.Clear();
-            m_BundleLoaderDict.Clear();
-
-            Resources.UnloadUnusedAssets();
-        }
+        #endregion  // 场景加载接口               
     }
 }

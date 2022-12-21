@@ -25,7 +25,7 @@ namespace Framework.AssetManagement.Runtime
         public bool             canDestroy              { get { return isDone ? refCount <= 0 : false; } }
         public string           rawFilePath             { get; protected set; }     // 原生文件路径
         protected bool          requestAsyncComplete    { get; private set; }
-        static private bool     s_Guarded;                                          // 防止外部逻辑在回调中创建或释放句柄
+        private bool            m_Guarded;                                          // 防止外部逻辑在回调中创建或释放句柄
 
         private Dictionary<int, OperationHandleBase> m_Handlers = new Dictionary<int, OperationHandleBase>();
 
@@ -54,7 +54,7 @@ namespace Framework.AssetManagement.Runtime
 
         public T CreateHandle<T>() where T : OperationHandleBase
         {
-            if (s_Guarded)
+            if (m_Guarded)
                 throw new System.Exception($"Should never get here, can't CreateHandle from InvokeCallback");
 
             ++refCount;
@@ -75,7 +75,7 @@ namespace Framework.AssetManagement.Runtime
 
         public void ReleaseHandle(OperationHandleBase handle)
         {
-            if (s_Guarded)
+            if (m_Guarded)
                 throw new System.Exception($"Should never get here, can't ReleaseHandle from InvokeCallback");
 
             if (refCount <= 0)
@@ -105,9 +105,19 @@ namespace Framework.AssetManagement.Runtime
             {
                 if (handler.Value.isValid)
                 {
-                    s_Guarded = true;
-                    handler.Value.InvokeCallback();
-                    s_Guarded = false;
+                    try
+                    {
+                        m_Guarded = true;       // 防止外部逻辑在回调函数中创建或释放句柄
+                        handler.Value.InvokeCallback();
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
+                    finally
+                    {
+                        m_Guarded = false;
+                    }
                 }
             }
 
