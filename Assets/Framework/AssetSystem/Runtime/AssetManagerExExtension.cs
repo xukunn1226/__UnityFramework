@@ -50,9 +50,8 @@ namespace Framework.AssetManagement.Runtime
 		/// <param name="priority">”≈œ»º∂</param>
 		public static SceneOperationHandle LoadSceneAsync(string location, LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100)
         {
-            //DebugCheckDefaultPackageValid();
-            //return _defaultPackage.LoadSceneAsync(location, sceneMode, activateOnLoad, priority);
-            return null;
+            DebugCheckInitialize();
+            return s_AssetSystem.LoadSceneAsync(location, sceneMode, activateOnLoad, priority);
         }
 
         static public void UnloadUnusedAssets()

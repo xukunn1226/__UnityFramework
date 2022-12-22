@@ -102,18 +102,13 @@ namespace Framework.AssetManagement.Runtime
             }
 
             // 卸载子场景
+            Scene sceneObj = sceneObject;       // 这里复制一份数据，UnloadSubScene将进行数据清理，使得sceneObject失效
             provider.assetSystem.UnloadSubScene(provider);
-            {
-                Scene sceneObj = sceneObject;
+            {                
                 var operation = new UnloadSceneOperation(sceneObj);
                 AsyncOperationSystem.StartOperation(operation);
                 return operation;
             }
-        }
-
-        new public void Release()
-        {
-            throw new System.InvalidOperationException($"Can't use \"Release\", plz use \"UnloadAsync\" replace it");
         }
     }
 }

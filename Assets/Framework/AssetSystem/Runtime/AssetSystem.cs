@@ -13,10 +13,8 @@ namespace Framework.AssetManagement.Runtime
         private IndexedSet<ProviderBase>                m_ProviderSet       = new IndexedSet<ProviderBase>();
         private Dictionary<string, ProviderBase>        m_ProviderDict      = new Dictionary<string, ProviderBase>(1000);
 
-        private readonly static Dictionary<string, SceneOperationHandle> _sceneHandles = new Dictionary<string, SceneOperationHandle>(100);
-        private static long _sceneCreateCount = 0;
-
-
+        private readonly Dictionary<string, SceneOperationHandle> m_SceneHandlesDict = new Dictionary<string, SceneOperationHandle>(100);
+        private long s_SceneCreateCount = 0;
 
         private EPlayMode           m_PlayMode;
         public IDecryptionServices  decryptionServices  { get; private set; }
@@ -49,7 +47,14 @@ namespace Framework.AssetManagement.Runtime
 
             for(int i = 0; i < m_ProviderSet.Count; ++i)
             {
-                m_ProviderSet[i].Update();
+                if (m_ProviderSet[i].IsSceneProvider())
+                { // 不能阻塞场景的加载
+                    m_ProviderSet[i].Update();
+                }
+                else
+                {
+                    m_ProviderSet[i].Update();
+                }
             }
 
             // for debug
@@ -71,6 +76,8 @@ namespace Framework.AssetManagement.Runtime
             }
             m_BundleLoaderSet.Clear();
             m_BundleLoaderDict.Clear();
+
+            ClearSceneHandle();
 
             decryptionServices = null;
             bundleServices = null;
@@ -126,6 +133,7 @@ namespace Framework.AssetManagement.Runtime
             }
             m_BundleLoaderSet.Clear();
             m_BundleLoaderDict.Clear();
+            ClearSceneHandle();
 
             Resources.UnloadUnusedAssets();
         }
@@ -395,8 +403,8 @@ namespace Framework.AssetManagement.Runtime
                 UnloadAllScene();
             }
 
-            // 注意：同一个场景的ProviderGUID每次加载都会变化
-            string providerGUID = $"{assetInfo.guid}-{++_sceneCreateCount}";
+            // 注意：同一个场景的ProviderGUID每次加载都会变化，因为同一个场景可以以Additive方式多次加载，guid不足以表示唯一
+            string providerGUID = $"{assetInfo.guid}-{++s_SceneCreateCount}";
             ProviderBase provider;
             {
                 if (m_PlayMode == EPlayMode.FromEditor)
@@ -409,56 +417,41 @@ namespace Framework.AssetManagement.Runtime
 
             var handle = provider.CreateHandle<SceneOperationHandle>();
             //handle.PackageName = BundleServices.GetPackageName();
-            _sceneHandles.Add(providerGUID, handle);
+            m_SceneHandlesDict.Add(providerGUID, handle);
             return handle;
         }
 
         internal void UnloadSubScene(ProviderBase provider)
         {
             string providerGUID = provider.providerGUID;
-            if (_sceneHandles.ContainsKey(providerGUID) == false)
+            if (m_SceneHandlesDict.ContainsKey(providerGUID) == false)
                 throw new System.Exception("Should never get here !");
 
             // 释放子场景句柄
-            _sceneHandles[providerGUID].Release();
-            _sceneHandles.Remove(providerGUID);
+            m_SceneHandlesDict[providerGUID].Release();
+            m_SceneHandlesDict.Remove(providerGUID);
 
             // 卸载未被使用的资源（包括场景）
-            //UnloadUnusedAssets();
+            UnloadUnusedAssets();
         }
 
         private void UnloadAllScene()
         {
             // 释放所有场景句柄
-            foreach (var valuePair in _sceneHandles)
+            foreach (var valuePair in m_SceneHandlesDict)
             {
                 valuePair.Value.Release();
             }
-            _sceneHandles.Clear();
+            m_SceneHandlesDict.Clear();
 
             // 卸载未被使用的资源（包括场景）
-            //UnloadUnusedAssets();
+            UnloadUnusedAssets();
         }
 
         internal void ClearSceneHandle()
         {
             // 释放资源包下的所有场景
-            //if (BundleServices.IsServicesValid())
-            //{
-            //    string packageName = BundleServices.GetPackageName();
-            //    List<string> removeList = new List<string>();
-            //    foreach (var valuePair in _sceneHandles)
-            //    {
-            //        if (valuePair.Value.PackageName == packageName)
-            //        {
-            //            removeList.Add(valuePair.Key);
-            //        }
-            //    }
-            //    foreach (var key in removeList)
-            //    {
-            //        _sceneHandles.Remove(key);
-            //    }
-            //}
+            m_SceneHandlesDict.Clear();
         }
 
         #endregion  // 场景加载接口               
