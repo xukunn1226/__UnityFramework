@@ -27,12 +27,13 @@ namespace Framework.AssetManagement.Runtime
             s_AssetSystem = new AssetSystem();
 
             InitializeParameters initializeParameters = new InitializeParameters();
-            initializeParameters.PlayMode = EPlayMode.FromEditor;
+            initializeParameters.PlayMode = EPlayMode.FromStreaming;
             initializeParameters.AssetLoadingMaxNumber = 10;
             initializeParameters.DecryptionServices = null;
+            initializeParameters.DefaultHostServer = "";
+            initializeParameters.FallbackHostServer = "";
             var op = s_AssetSystem.InitializeAsync(initializeParameters);
             op.Completed += InitializeOperation_Completed;
-            AsyncOperationSystem.StartOperation(op);
             return op;
         }
 

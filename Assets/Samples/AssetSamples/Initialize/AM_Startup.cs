@@ -84,7 +84,7 @@ public class AM_Startup : MonoBehaviour
     /// /////////////////////////////////////// 测试同步、异步加载
     private void TestCase1_LoadAssetAsync()
     {
-        m_Op1 = AssetManagerEx.LoadAssetAsync<Texture2D>("Assets/Res/Checker.png");
+        m_Op1 = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/checker.png");
         m_Op1.WaitForAsyncComplete();   // 测试异步变同步
         m_Op1.Completed += OnCompleted_TestCase1;
     }

@@ -22,12 +22,21 @@ namespace Framework.AssetManagement.Runtime
 
         public InitializationOperation InitializeAsync(InitializeParameters parameters)
         {
-            InitializationOperation initializeOperation = new InitializationOperation();
+            InitializationOperation initializeOperation = null;
             if (parameters.PlayMode == EPlayMode.FromEditor)
-                parameters.BundleServices = new EditorSimulateModeImpl();
+            {
+                var impl = new EditorSimulateModeImpl();
+                parameters.BundleServices = impl;
+                initializeOperation = impl.InitializeAsync(false);
+            }
             else
-                parameters.BundleServices = new OfflinePlayModeImpl();
+            {
+                var impl = new OfflinePlayModeImpl();
+                parameters.BundleServices = impl;
+                initializeOperation = impl.InitializeAsync(false);
+            }
             Initialize(parameters.PlayMode, parameters.DecryptionServices, parameters.BundleServices);
+
             return initializeOperation;
         }
 

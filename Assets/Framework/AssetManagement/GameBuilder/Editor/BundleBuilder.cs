@@ -498,7 +498,67 @@ namespace Framework.AssetManagement.GameBuilder
             CustomManifest.Serialize(customManifestFilepath, manifest);
             AssetDatabase.ImportAsset(customManifestFilepath);
 
+            // 临时方案，把CustomManifest translate to AssetManifest
+            SerializeAssetManifest(manifest);
+
             return customManifestFilepath;
+        }
+
+        static private void SerializeAssetManifest(CustomManifest cusManifest)
+        {
+            AssetManifest manifest = new AssetManifest();
+
+            manifest.SerializedVersion = 1;
+            manifest.PackageVersion = "0.0.1";
+            manifest.OutputNameStyle = 1;
+
+            foreach(var valuePair in cusManifest.m_BundleDetails)
+            {
+                BundleDescriptor desc = new BundleDescriptor();
+                desc.bundleName = valuePair.Value.bundleName;
+                desc.fileHash = "";
+                desc.fileCRC = "";
+                desc.fileSize = 1;
+                desc.isRawFile = false;
+                desc.loadMethod = 0;
+                manifest.BundleList.Add(desc);
+            }
+
+            foreach(var valuePair in cusManifest.m_FileDetails)
+            {
+                var desc = new AssetDescriptor();
+                desc.assetPath = valuePair.Key;
+
+                // main bundle
+                if (!cusManifest.m_BundleDetails.TryGetValue(valuePair.Value.bundleHash, out var bundleDetail))
+                    throw new Exception($"can't find bundle hash {valuePair.Value.bundleHash} from m_BundleDetails");
+
+                int index = manifest.BundleList.FindIndex(item => item.bundleName == bundleDetail.bundleName);
+                if (index == -1)
+                    throw new Exception($"can't find bundle {bundleDetail.bundleName} from BundleList");
+
+                desc.bundleID = index;
+                List<int> dependIDs = new List<int>();
+                foreach(var depend in bundleDetail.dependencies)
+                {
+                    if (!cusManifest.m_BundleDetails.TryGetValue(depend, out var bd))
+                        throw new Exception($"can't find bundle hash {depend} from m_BundleDetails");
+
+                    index = manifest.BundleList.FindIndex(item => item.bundleName == bd.bundleName);
+                    if(index == -1)
+                        throw new Exception($"can't find bundle {bd.bundleName} from BundleList");
+
+                    dependIDs.Add(index);
+                }
+                desc.dependIDs = dependIDs.ToArray();
+
+                manifest.AssetList.Add(desc);
+            }
+
+            AssetManifest.SerializeToBinary($"Assets/StreamingAssets/{Utility.GetPlatformName()}/AssetManifest.bytes", manifest);
+            AssetManifest.SerializeToJson($"Assets/Temp/AssetManifest.json", manifest);
+            AssetDatabase.ImportAsset($"Assets/StreamingAssets/{Utility.GetPlatformName()}/AssetManifest.bytes");
+            AssetDatabase.ImportAsset($"Assets/Temp/AssetManifest.json");
         }
 
         static private string CreateManifestAsset(AssetBundleBuild[] abb, IBundleBuildResults results, string manifestOutput, bool useHashToBundleName)

@@ -7,6 +7,14 @@ namespace Framework.AssetManagement.Runtime
     public class OfflinePlayModeImpl : IBundleServices
     {
         private AssetManifest m_Manifest;
+        
+        public InitializationOperation InitializeAsync(bool locationToLower)
+        {
+            var operation = new OfflinePlayModeInitializationOperation(this);
+            AsyncOperationSystem.StartOperation(operation);
+            return operation;
+        }
+
         internal void SetAppPatchManifest(AssetManifest patchManifest)
         {
             m_Manifest = patchManifest;

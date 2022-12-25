@@ -1,7 +1,12 @@
 {
-  "Count": 138,
-  "TotalSize": 353305016,
+  "Count": 140,
+  "TotalSize": 342710565,
   "FileList": [
+    {
+      "BundleName": "base/00d853c4d0583f7d10b07846208091b9",
+      "FileHash": "a710b8c63261c4ab898b0d63e4420b5a",
+      "Size": 108819
+    },
     {
       "BundleName": "base/010bc1b8c8bda449b524f1c03cad0500",
       "FileHash": "da0614d1238f45b6fad260ee0050aaab",
@@ -16,21 +21,6 @@
       "BundleName": "base/033f2be3ecef5f57cc8ce3a90fb51d6c",
       "FileHash": "2569385effbd0aacd8112c46dcb4916a",
       "Size": 13194
-    },
-    {
-      "BundleName": "base/04042d1290ec324956f4a342161d29c1",
-      "FileHash": "b0d095510be1510519642be39b6d92f6",
-      "Size": 3130
-    },
-    {
-      "BundleName": "base/052c2330fa9631b83108701ce932f502",
-      "FileHash": "3a76be2fadc191812009f0ecf3804dc1",
-      "Size": 90653
-    },
-    {
-      "BundleName": "base/0615d6c8d2943fbe8680a49206151909",
-      "FileHash": "5ca22016fc457e6c2731400df762bca8",
-      "Size": 1660
     },
     {
       "BundleName": "base/06357c5e7e97587918af3ebba2adf043",
@@ -53,14 +43,9 @@
       "Size": 1756
     },
     {
-      "BundleName": "base/0e3d45b0d73a25cddade097e04f23679",
-      "FileHash": "e0226b32b61cda990e32468d423ef995",
-      "Size": 17743359
-    },
-    {
-      "BundleName": "base/0ea568412f17549c669eb37e41f40a2d",
-      "FileHash": "3792f03c0d18be0418ad3a6db7bb85a9",
-      "Size": 1450
+      "BundleName": "base/105f118cf916691049b5e79f449e958f",
+      "FileHash": "3026a51c690cb726aead35e0a4e35990",
+      "Size": 18897
     },
     {
       "BundleName": "base/1593f0533078f7b0f8805a679a7bd30a",
@@ -71,11 +56,6 @@
       "BundleName": "base/164f5b790346c006ac157344817d588a",
       "FileHash": "7df886cb658c469fc61121b2f07aa4aa",
       "Size": 2649
-    },
-    {
-      "BundleName": "base/18382ef8a47db18f7ed4500cafade337",
-      "FileHash": "0ef9436cd5550e66e593b8fe33fceddd",
-      "Size": 3069
     },
     {
       "BundleName": "base/19a085845deac7e9dc3411dbfe5631e5",
@@ -98,14 +78,29 @@
       "Size": 311896
     },
     {
-      "BundleName": "base/1cc31e6e47140cbe21bcba31a2cbde5a",
-      "FileHash": "e774d67687cd7a8d3802b8ca8498ed6e",
-      "Size": 33201
+      "BundleName": "base/1c23a035c829cbd5fa2aee01bc2a400a",
+      "FileHash": "12d215e46ae06633c7eda3b16450bc71",
+      "Size": 1388575
+    },
+    {
+      "BundleName": "base/1d35430fdc3c6c84280476aac4c9b289",
+      "FileHash": "327a30e1221cd11a89c1c9a577b31802",
+      "Size": 504599
+    },
+    {
+      "BundleName": "base/1ec9d4a93add4e21bb218621b396bc88",
+      "FileHash": "f960072e2c56258d45a56b461cae3f28",
+      "Size": 3062
     },
     {
       "BundleName": "base/1f9178a6e2569b814e5cd23b2cc700f6",
       "FileHash": "9f87ae6bc3b1f09bac934618386012a4",
       "Size": 618588
+    },
+    {
+      "BundleName": "base/202b2ebf1779948fc7bb5e79e23ead07",
+      "FileHash": "70e6b5d81ee9622a5d63ab4e069d0fdd",
+      "Size": 1526
     },
     {
       "BundleName": "base/219bc17dfd1310dc4edc9b7cfb95638e",
@@ -123,14 +118,14 @@
       "Size": 1638
     },
     {
-      "BundleName": "base/24d7c9ea9b39b84dc02e1edac40df5e3",
-      "FileHash": "9c26aadf2eb457b9a18463e37cc2fefd",
-      "Size": 774272
-    },
-    {
       "BundleName": "base/25dd24eda081b41762218bc10c7aef4e",
       "FileHash": "af7cd0c24e67799c3c80fedb819b4ed0",
       "Size": 208392
+    },
+    {
+      "BundleName": "base/28849c10e885f46c3c7a09585a703cae",
+      "FileHash": "95f2a8a608b7a94eb93ca1dcc5beba13",
+      "Size": 786867
     },
     {
       "BundleName": "base/29f7290d56d75827ef969c211570a13e",
@@ -153,16 +148,6 @@
       "Size": 3404
     },
     {
-      "BundleName": "base/328cde59048b187842898a949d073617",
-      "FileHash": "2709ab06571d9c3d0e9c93fcdf642748",
-      "Size": 1454
-    },
-    {
-      "BundleName": "base/34d5bdb28dbc87b07a133e25d92dfe3d",
-      "FileHash": "1cfc8db1087e68d57e8aeed01897a937",
-      "Size": 789075
-    },
-    {
       "BundleName": "base/39ed6e06402d2407dee9e498d298e3aa",
       "FileHash": "0416430491ea7ce6ff908c5147a5bb82",
       "Size": 204721
@@ -178,9 +163,14 @@
       "Size": 111471
     },
     {
-      "BundleName": "base/3dbf31d46e5a7de2ff267de51a346783",
-      "FileHash": "a758b647e9d7c594944811eec000256f",
-      "Size": 1385
+      "BundleName": "base/3e8b22d263b57e5303be863bfd11593e",
+      "FileHash": "fc3b94575419b0c8c2b663602503fb93",
+      "Size": 240262
+    },
+    {
+      "BundleName": "base/3f1694d310d3bc229fc5e4acf095dc02",
+      "FileHash": "36155e35afc16c1cb3a719780de93db6",
+      "Size": 5926080
     },
     {
       "BundleName": "base/3f7fb4d19628f19dd81e6a99c8bbb93d",
@@ -213,19 +203,9 @@
       "Size": 214829642
     },
     {
-      "BundleName": "base/44438dd485d09cfc54203c05053947cc",
-      "FileHash": "20180930e9a3ae3d749d79f0d9e73f58",
-      "Size": 108067
-    },
-    {
       "BundleName": "base/4562943f0437e3e822aca79ba08b3b7b",
       "FileHash": "7837030d5619a0a2bed211705a37c0bd",
       "Size": 148653
-    },
-    {
-      "BundleName": "base/4732901ad7508d1eb043f0e798a7ea3e",
-      "FileHash": "1ab91415c01808aafdfe6a493fdae682",
-      "Size": 18902
     },
     {
       "BundleName": "base/49dd6cb331a8e2adcf423718150370c5",
@@ -236,11 +216,6 @@
       "BundleName": "base/4a6a684ad21fe5fcdca3e0194159c8d1",
       "FileHash": "9a2fa526ec1421a9011a5b4ec60d3a04",
       "Size": 247767
-    },
-    {
-      "BundleName": "base/4baf7e60e6fd7bcb98053effbdb7dfe8",
-      "FileHash": "de6ce7ea06a6b968c1ce9c30bdfe3b7b",
-      "Size": 1255
     },
     {
       "BundleName": "base/4cd042804126167ccc671a4149bfa075",
@@ -268,34 +243,24 @@
       "Size": 1941416
     },
     {
+      "BundleName": "base/567b8d2dcecc2d649a729b9641b680db",
+      "FileHash": "dc22bf734fc93a050147beadb12f5577",
+      "Size": 774267
+    },
+    {
       "BundleName": "base/56ad43fba1a961b2c4682349b796439c",
       "FileHash": "ba7852c31a67d55573b595338e6e3acc",
       "Size": 20748
     },
     {
-      "BundleName": "base/56e314cb79982ce6bfb4d54ad657bab8",
-      "FileHash": "2181373e2bdaec0afe6a6624bdf6fec5",
-      "Size": 449861
+      "BundleName": "base/5859fef0dcbfec0883f2414ad6da7a8a",
+      "FileHash": "6b0821c44921eea798c6013c895f10a0",
+      "Size": 1389122
     },
     {
-      "BundleName": "base/57a9f59f4d4f3ee5b5676d1db54a2ee5",
-      "FileHash": "b886d21498c98f3356c5bf6e7797ea09",
-      "Size": 514539
-    },
-    {
-      "BundleName": "base/57ac6053f91a49be4f8606e39687042a",
-      "FileHash": "323c67c1a66d6188c962a211bfca52fe",
-      "Size": 334543
-    },
-    {
-      "BundleName": "base/5807705f929b16c76b7a24c04e777e2d",
-      "FileHash": "790ad8a47eab92cfe94b497fa5d7df6b",
-      "Size": 22534
-    },
-    {
-      "BundleName": "base/5c32bc8866b739524c66d8fadba13d4c",
-      "FileHash": "0df0fce8143497448643eec8813d7120",
-      "Size": 92303
+      "BundleName": "base/5b2e97281be901ac14248bd05a8b2a6c",
+      "FileHash": "da014cf542ce0e3bdbf12c7f57555013",
+      "Size": 1672
     },
     {
       "BundleName": "base/5c4111a2265a2fe1fb96a089890e596f",
@@ -306,6 +271,16 @@
       "BundleName": "base/5d8a81c2e5a440037363b6d22db4a51b",
       "FileHash": "49b83aecc5a7d37daf3b2f16ca8fe71e",
       "Size": 487957
+    },
+    {
+      "BundleName": "base/5e732ab4a78352c0c9082f6571a9014d",
+      "FileHash": "61b6fec0d0d409abf5f5d4b23c18d937",
+      "Size": 175976
+    },
+    {
+      "BundleName": "base/5f3818c4226d3b7e57d4bc3023b7b156",
+      "FileHash": "a7418487949f75b356605e3787452987",
+      "Size": 1380
     },
     {
       "BundleName": "base/61c9d1feb7c2f2bccafb473827d61730",
@@ -323,14 +298,34 @@
       "Size": 8369
     },
     {
-      "BundleName": "base/652951aca82ffe6473962ca5dd963ec4",
-      "FileHash": "b15dc8d24f842041d9a34aacc72796fb",
-      "Size": 179998
+      "BundleName": "base/6428621ef53f8dd75804f8e4eabaa16b",
+      "FileHash": "0f031a2c42b0108188087c6034fe3189",
+      "Size": 1396
+    },
+    {
+      "BundleName": "base/66644f0ea6769b930258d0be47aa7ac7",
+      "FileHash": "78f39c18fab6a180d48b6cbf0a77d11f",
+      "Size": 1159
     },
     {
       "BundleName": "base/67e323e2d642872cfddd8be517df76b9",
       "FileHash": "547ff529852d4ff578b5d653e8652013",
       "Size": 85964
+    },
+    {
+      "BundleName": "base/69816d64b58b48da934f6ee778238e09",
+      "FileHash": "77573fab4a48f42872d7dcd2ea9ee53e",
+      "Size": 1269
+    },
+    {
+      "BundleName": "base/6a24f395b06403712be4245171486b17",
+      "FileHash": "794fed0d0fffc0c89cf99974e8380a10",
+      "Size": 1016461
+    },
+    {
+      "BundleName": "base/6a5135d9b88ae419c38a91525816cd5c",
+      "FileHash": "9ddcd6bcddad7609f8c1a50ebb1fc143",
+      "Size": 1463
     },
     {
       "BundleName": "base/6d25844b0db6d45eb500c56c1dc91096",
@@ -348,9 +343,9 @@
       "Size": 1387346
     },
     {
-      "BundleName": "base/78ce0371125a90d7c3c55ea610b06a2f",
-      "FileHash": "2fb2ad1c5419e28ae8702b9ebb086002",
-      "Size": 31729
+      "BundleName": "base/795f99166255f684476a55bb9a87ae6d",
+      "FileHash": "5eebed7236a3198441439953b23db2a4",
+      "Size": 33271
     },
     {
       "BundleName": "base/7a230b61685d2c1953b419f28c05a418",
@@ -383,14 +378,14 @@
       "Size": 322182
     },
     {
+      "BundleName": "base/8d993355c43e7d367aa38f0909dd5ff1",
+      "FileHash": "1b7ef1527b8971de7a93137743ae0f54",
+      "Size": 7776937
+    },
+    {
       "BundleName": "base/946db8a36bf54553869f5d2cd5787c63",
       "FileHash": "f678694e9464ad49e623019ad0be706f",
       "Size": 1275
-    },
-    {
-      "BundleName": "base/9a66f1b4856e0b2704d9fa94f54834ed",
-      "FileHash": "a9f34850545b3510142ca14667b5a84d",
-      "Size": 1388560
     },
     {
       "BundleName": "base/9ec9750871bf67c259958299d3a2d87e",
@@ -398,9 +393,19 @@
       "Size": 926907
     },
     {
+      "BundleName": "base/a192ffab635d496681d934c8df4970cd",
+      "FileHash": "e7bc9666becf83d20ca3bda109fc2989",
+      "Size": 834
+    },
+    {
       "BundleName": "base/a1eb4411f5d27bd465714b481dda0097",
       "FileHash": "b7b366eace3f3d5a6f68e8073eec598f",
       "Size": 1629718
+    },
+    {
+      "BundleName": "base/a46032b8e04daf9370679f0213c2e94b",
+      "FileHash": "6c007341ea06b4da6285e5292aa7da87",
+      "Size": 45110
     },
     {
       "BundleName": "base/a528ca83edaf56e6327601c02642582f",
@@ -413,11 +418,6 @@
       "Size": 149743
     },
     {
-      "BundleName": "base/a92c073d20c5b037f23f037c4d809ea3",
-      "FileHash": "22a8b1be7c591f4c79924819e714caf4",
-      "Size": 1016357
-    },
-    {
       "BundleName": "base/aaca55b02ab2966c92247ee199b3b040",
       "FileHash": "343bbacfa1512acc77e1420938bbdb18",
       "Size": 2532913
@@ -426,11 +426,6 @@
       "BundleName": "base/ac8c757e58f142ab9aab1e8ec369e7c6",
       "FileHash": "12929fb626314c48f4a451bb8f5c59a0",
       "Size": 2044
-    },
-    {
-      "BundleName": "base/ad7cf745f30a2097c4ec09853da6790f",
-      "FileHash": "728e4a1c087b03741212b109ccd8369f",
-      "Size": 6961465
     },
     {
       "BundleName": "base/b14a40420b9457109f6fb8a7e9f75967",
@@ -448,16 +443,6 @@
       "Size": 1768
     },
     {
-      "BundleName": "base/b4c6cdff9f297d28c2c18bd15d81c974",
-      "FileHash": "ac565f227a13babc95081035b6aa2f02",
-      "Size": 1389117
-    },
-    {
-      "BundleName": "base/b67731d749809c2c27f218bf6aa25d6b",
-      "FileHash": "6e9b61d63f153b862a4ffe6419edbad1",
-      "Size": 240254
-    },
-    {
       "BundleName": "base/b68373cbf43511023b395162941c3b2b",
       "FileHash": "bf2629ee0f37e06725fbb108459424d1",
       "Size": 248242
@@ -471,11 +456,6 @@
       "BundleName": "base/bb16ffc841939bfd597612d5b8b8f571",
       "FileHash": "4166a16abcd9b2e8360c5d4e3f468f78",
       "Size": 1176
-    },
-    {
-      "BundleName": "base/bc4674058df44da093cfc6d8b0fb1676",
-      "FileHash": "fa0e606c4dc61049efe939ede31217b8",
-      "Size": 108807
     },
     {
       "BundleName": "base/bc8c854537a1b0cc75899db5022a207b",
@@ -498,6 +478,11 @@
       "Size": 9267
     },
     {
+      "BundleName": "base/c3434af4e9c323197d8cab6cd9441df2",
+      "FileHash": "b37477a8bde0277fc99f1eceb6ed8bde",
+      "Size": 43382
+    },
+    {
       "BundleName": "base/c622cf0f2c7960b3c98077af68b01686",
       "FileHash": "cdcb998aee3a5aedb2951dfab012ff22",
       "Size": 7104
@@ -513,9 +498,14 @@
       "Size": 7952
     },
     {
-      "BundleName": "base/cb121721b539897a01d91c6dc909c8d4",
-      "FileHash": "664e8e50e25ef4e8a4a32bc558c6f056",
-      "Size": 1533
+      "BundleName": "base/cd3292b604787a779dd0cc26814a293e",
+      "FileHash": "bb60c4ed4a68ef7546bb66c681bed6fb",
+      "Size": 22553
+    },
+    {
+      "BundleName": "base/d178db30665e6b3c134b53cda8217024",
+      "FileHash": "6ef0293a04f90bb102bd3795622ce7ac",
+      "Size": 3450
     },
     {
       "BundleName": "base/d1ad07e94425a8083bbfc8200777f449",
@@ -548,14 +538,14 @@
       "Size": 3231
     },
     {
-      "BundleName": "base/dd249eb69a730143ec72a701864819e7",
-      "FileHash": "1de0f143fbe20e4414f270935faae2da",
-      "Size": 762
+      "BundleName": "base/dcb03bb0af6bdc1fd0c26705cdf52291",
+      "FileHash": "6008bffbc7613c91a3b9eadb13b51e64",
+      "Size": 1308
     },
     {
-      "BundleName": "base/dfc9e5d8a052c6176196d772a7c8de64",
-      "FileHash": "b7e7abce4b1f374bc5edf4a321d4cd8e",
-      "Size": 1302
+      "BundleName": "base/de6643fddd70abf36e4d888d28d28a53",
+      "FileHash": "344929c69b8cce0a10d05267c1debb92",
+      "Size": 930927
     },
     {
       "BundleName": "base/e01c6416b2f0a17fdbb610f32d5217cb",
@@ -566,11 +556,6 @@
       "BundleName": "base/e153a5decd03b466b6fe22990c3bf3e1",
       "FileHash": "32362f15bc61c89965df8807e5878ba9",
       "Size": 1443374
-    },
-    {
-      "BundleName": "base/e31bc413285e72195f71b3649ba8a610",
-      "FileHash": "4fdde7571845e31443fe39cdac223372",
-      "Size": 1369
     },
     {
       "BundleName": "base/e337db138da042e9a7bf747a1b827e85",
@@ -588,6 +573,11 @@
       "Size": 1411
     },
     {
+      "BundleName": "base/e60e7bf0bed5b934a685ae686a2932f9",
+      "FileHash": "d21c560a96a82212e543f20d642e191a",
+      "Size": 383228
+    },
+    {
       "BundleName": "base/e94fbd54e693e4f733d1b34a4fe6b5cc",
       "FileHash": "d962153534024d95b5fb9d0f02117c94",
       "Size": 496
@@ -596,6 +586,11 @@
       "BundleName": "base/e95bea028b2a7c759728e0b7a9a0b96e",
       "FileHash": "caafe5febb717ae79be9eab78969cf79",
       "Size": 1353745
+    },
+    {
+      "BundleName": "base/e9afaf7c7cc505eab6ac108e0411a78e",
+      "FileHash": "c81fb3b7d885b8d177dc92f542c5fc4d",
+      "Size": 108060
     },
     {
       "BundleName": "base/ea0534c75c76c2d03e36606b2ccaad01",
@@ -608,14 +603,14 @@
       "Size": 568903
     },
     {
-      "BundleName": "base/f2df50631831ea437b1f89c7b402d234",
-      "FileHash": "cc4b30123c0f578fedec54f4a8074eba",
-      "Size": 180323
+      "BundleName": "base/f15a205cb0168e26c5d1bff3f6bc4fd7",
+      "FileHash": "2eaf41356aad3408779100bfb3cd5d12",
+      "Size": 15975
     },
     {
-      "BundleName": "base/f6e9672ae776f322ac722de8c16b7a4a",
-      "FileHash": "670c70fbebf7aade88f7e8715b3212ce",
-      "Size": 930933
+      "BundleName": "base/f3c6ffd3cda776e23a11f367370e4c1b",
+      "FileHash": "c8f592799af7eae0c00f6ae92619a357",
+      "Size": 161402
     },
     {
       "BundleName": "base/f7af5429f5acc4c3f4793b45ff715165",
@@ -623,9 +618,19 @@
       "Size": 277886
     },
     {
+      "BundleName": "base/fa5adfd68cb3c4b49e08646c5966b1e0",
+      "FileHash": "eb2fcf311e2c168bec00049624a02aff",
+      "Size": 1549
+    },
+    {
       "BundleName": "base/fb48f83dd2a6c136f52797b5e5353ae8",
       "FileHash": "edf5efa713b55b290de171e148943304",
       "Size": 2243960
+    },
+    {
+      "BundleName": "base/fbee8c31320e1899952e144eb380122f",
+      "FileHash": "c6a1bfe4f1f9ba43c9424f4a7855e407",
+      "Size": 822562
     },
     {
       "BundleName": "base/fcdf1b1497d8f5a6ba557eb80b935988",
@@ -639,13 +644,18 @@
     },
     {
       "BundleName": "Application.Logic.dll",
-      "FileHash": "98985ad90197b987c71a66d45b815bc6",
+      "FileHash": "37910de66703ec757197c094f97db536",
       "Size": 87040
     },
     {
       "BundleName": "Application.Logic.pdb",
-      "FileHash": "77e4f05b0c94af0602459f085c516f13",
-      "Size": 52500
+      "FileHash": "08e238a1afcda9fe8e1e0cb78e17b130",
+      "Size": 53468
+    },
+    {
+      "BundleName": "AssetManifest.bytes",
+      "FileHash": "bfc70c2d95414164466a02d0918b9e6a",
+      "Size": 128318
     },
     {
       "BundleName": "config.db",
@@ -654,8 +664,8 @@
     },
     {
       "BundleName": "manifest",
-      "FileHash": "1199532d47845afa537ac523c6e4b160",
-      "Size": 19657
+      "FileHash": "3976d4b7a497e2bf797fa12368497ed6",
+      "Size": 19741
     },
     {
       "BundleName": "FMOD/Dialogue_EN.bank",
