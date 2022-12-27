@@ -12,10 +12,33 @@ public class AM_Startup : MonoBehaviour
     AssetOperationHandle m_Op32;
     AssetOperationHandle m_Op4;
     AssetOperationHandle m_Op5;
+    AssetOperationHandle m_Op61;
+    AssetOperationHandle m_Op62;
+    AssetOperationHandle m_Op71;
+    AssetOperationHandle m_Op72;
+    GameObject m_Instance1;
+    GameObject m_Instance2;
+
+    private EPlayMode GetPlayMode()
+    {
+        Application.Runtime.LauncherMode mode = Application.Runtime.EditorLauncherMode.Mode();
+        if (mode == Application.Runtime.LauncherMode.FromEditor)
+            return EPlayMode.FromEditor;
+        else if (mode == Application.Runtime.LauncherMode.FromStreamingAssets)
+            return EPlayMode.FromStreaming;
+        else
+            return EPlayMode.FromHost;
+    }
 
     IEnumerator Start()
     {
-        yield return AssetManagerEx.Initialize();
+        InitializeParameters initializeParameters = new InitializeParameters()
+        {
+            PlayMode = GetPlayMode(),
+            LocationToLower = false,
+            AssetLoadingMaxNumber = int.MaxValue
+        };
+        yield return AssetManagerEx.Initialize(initializeParameters);
     }
 
     private void OnDestroy()
@@ -79,13 +102,45 @@ public class AM_Startup : MonoBehaviour
         {
             TestCase5_Release();
         }
+
+        // test case6
+        y += 100;
+        if (GUI.Button(new Rect(100, y, 120, 60), "TestCase6_1"))
+        {
+            TestCase6_MultiLoad_1();
+        }
+        if (GUI.Button(new Rect(300, y, 120, 60), "Release_1"))
+        {
+            TestCase6_Release_1();
+        }
+
+        y += 100;
+        if (GUI.Button(new Rect(100, y, 120, 60), "TestCase6_2"))
+        {
+            TestCase6_MultiLoad_2();
+        }
+        if (GUI.Button(new Rect(300, y, 120, 60), "Release_2"))
+        {
+            TestCase6_Release_2();
+        }
+
+        // test case7
+        y += 100;
+        if (GUI.Button(new Rect(100, y, 120, 60), "TestCase7"))
+        {
+            TestCase7_LoadTheSameBundle();
+        }
+        if (GUI.Button(new Rect(300, y, 120, 60), "Release"))
+        {
+            TestCase7_Release();
+        }
     }
 
     /// /////////////////////////////////////// 测试同步、异步加载
     private void TestCase1_LoadAssetAsync()
     {
         m_Op1 = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/checker.png");
-        m_Op1.WaitForAsyncComplete();   // 测试异步变同步
+        //m_Op1.WaitForAsyncComplete();   // 测试异步变同步
         m_Op1.Completed += OnCompleted_TestCase1;
     }
 
@@ -112,7 +167,7 @@ public class AM_Startup : MonoBehaviour
     /// /////////////////////////////////////// 测试回调中创建或销毁句柄
     private void TestCase2_InvokeException()
     {
-        m_Op2 = AssetManagerEx.LoadAssetAsync<Texture2D>("Assets/Res/M_Building_Bar_01_01.prefab");
+        m_Op2 = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/m_building_bar_01_01.prefab");
         m_Op2.Completed += OnCompleted_TestCase2;
     }
 
@@ -124,11 +179,11 @@ public class AM_Startup : MonoBehaviour
 
     private void OnCompleted_TestCase2(AssetOperationHandle op)
     {
-        // 回调中再次加载自己，EXCEPTION
-        //AssetManagerEx.LoadAssetAsync<Texture2D>("Assets/Res/M_Building_Bar_01_01.prefab");
+        // 回调中再次加载自己，PASS
+        AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/m_building_bar_01_01.prefab");
 
-        // 回调中释放自己，EXCEPTION
-        op.Release();
+        // 回调中释放自己，PASS
+        //op.Release();
 
         // 回调中加载其他资源，PASS
         //AssetManagerEx.LoadAssetAsync<Texture2D>("Assets/Res/T_Building_Bar_01_01_D.tga");
@@ -150,10 +205,10 @@ public class AM_Startup : MonoBehaviour
     /// /////////////////////////////////////// 测试同一帧同时同步及异步加载资源
     private void TestCase3_SyncAndAsyncOneFrame()
     {
-        m_Op31 = AssetManagerEx.LoadAssetAsync<GameObject>("Assets/Res/M_Building_Bar_01_01.prefab");
+        m_Op31 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");
         m_Op31.Completed += OnCompleted_TestCase3;
 
-        m_Op32 = AssetManagerEx.LoadAsset<GameObject>("Assets/Res/M_Building_Bar_01_01.prefab");
+        m_Op32 = AssetManagerEx.LoadAsset<GameObject>("assets/res/m_building_bar_01_01.prefab");
         m_Op32.Completed += OnCompleted_TestCase3;
     }
 
@@ -203,10 +258,10 @@ public class AM_Startup : MonoBehaviour
 
 
 
-    /// /////////////////////////////////////// 测试连续异步加载后立即释放
+    /// /////////////////////////////////////// 测试异步加载后立即释放
     private void TestCase5_ReleaseImmediately()
     {
-        m_Op5 = AssetManagerEx.LoadAssetAsync<Texture2D>("Assets/Res/Checker.png");        
+        m_Op5 = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/checker.png");
         m_Op5.Completed += OnCompleted_TestCase5;
 
         // 尚未加载完就释放，实际上会等资源加载完后再释放，且注册的回调已释放了，不会触发
@@ -232,5 +287,100 @@ public class AM_Startup : MonoBehaviour
 
 
 
+    /// /////////////////////////////////////// 测试：先后加载两个资源，他们有部分共同依赖的bundle
+    private void TestCase6_MultiLoad_1()
+    {
+        m_Op61 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/111/cube.prefab");
+        m_Op61.Completed += OnCompleted_TestCase61;
+    }
+
+    private void TestCase6_Release_1()
+    {
+        Destroy(m_Instance1);
+        m_Op61.Release();
+    }
+
+    private void OnCompleted_TestCase61(AssetOperationHandle op)
+    {
+        if (op.assetObject != null)
+        {
+            Debug.Log($"Succeed to load {op.assetObject.name}");
+            m_Instance1 = op.Instantiate(Vector3.one, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogError($"Failed to load {op.assetInfo.assetPath}");
+        }
+    }
+
+    private void TestCase6_MultiLoad_2()
+    {
+        m_Op62 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/222/sphere.prefab");
+        m_Op62.Completed += OnCompleted_TestCase62;
+    }
+
+    private void TestCase6_Release_2()
+    {
+        Destroy(m_Instance2);
+        m_Op62.Release();
+    }
+
+    private void OnCompleted_TestCase62(AssetOperationHandle op)
+    {
+        if (op.assetObject != null)
+        {
+            Debug.Log($"Succeed to load {op.assetObject.name}");
+            m_Instance2 = op.Instantiate();
+        }
+        else
+        {
+            Debug.LogError($"Failed to load {op.assetInfo.assetPath}");
+        }
+    }
+
+
+
     /// /////////////////////////////////////// 测试同一帧对同一个Bundle加载
+    private void TestCase7_LoadTheSameBundle()
+    {
+        m_Op71 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/222/sphere.prefab");
+        m_Op71.Completed += OnCompleted_TestCase71;
+
+        m_Op72 = AssetManagerEx.LoadAsset<GameObject>("assets/res/111/cube.prefab");
+        m_Op72.Completed += OnCompleted_TestCase72;
+    }
+
+    private void TestCase7_Release()
+    {
+        Destroy(m_Instance1);
+        Destroy(m_Instance2);
+        m_Op71.Release();
+        m_Op72.Release();
+    }
+
+    private void OnCompleted_TestCase71(AssetOperationHandle op)
+    {
+        if (op.assetObject != null)
+        {
+            Debug.Log($"Succeed to load {op.assetObject.name}");
+            m_Instance1 = op.Instantiate(Vector3.one, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogError($"Failed to load {op.assetInfo.assetPath}");
+        }
+    }
+
+    private void OnCompleted_TestCase72(AssetOperationHandle op)
+    {
+        if (op.assetObject != null)
+        {
+            Debug.Log($"Succeed to load {op.assetObject.name}");
+            m_Instance2 = op.Instantiate();
+        }
+        else
+        {
+            Debug.LogError($"Failed to load {op.assetInfo.assetPath}");
+        }
+    }
 }

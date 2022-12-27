@@ -70,7 +70,7 @@ namespace Framework.AssetManagement.Runtime
             if(status == EProviderStatus.Loading)
             {
                 // 场景不存在返回NULL
-                m_AsyncOp = SceneManager.LoadSceneAsync(assetInfo.assetPath, sceneMode);
+                m_AsyncOp = SceneManager.LoadSceneAsync(sceneName, sceneMode);
                 if(m_AsyncOp != null)
                 {
                     m_AsyncOp.allowSceneActivation = true;

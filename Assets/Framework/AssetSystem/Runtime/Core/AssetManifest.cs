@@ -49,9 +49,19 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         [NonSerialized]
         public readonly Dictionary<string, BundleDescriptor>    BundleDict = new Dictionary<string, BundleDescriptor>();
-				
+
+		private bool m_EnableToLower;
+
+		public void Init(bool enableToLower)
+        {
+			m_EnableToLower = enableToLower;
+        }
+
         public BundleDescriptor GetMainBundleDesc(string assetPath)
         {
+			if(m_EnableToLower)
+				assetPath = assetPath.ToLower();
+
             if(AssetDict.TryGetValue(assetPath, out AssetDescriptor descriptor))
             {
                 int bundleID = descriptor.bundleID;
@@ -72,7 +82,10 @@ namespace Framework.AssetManagement.Runtime
 
         public BundleDescriptor[] GetAllDependencies(string assetPath)
         {
-            if(AssetDict.TryGetValue(assetPath, out AssetDescriptor descriptor))
+			if (m_EnableToLower)
+				assetPath = assetPath.ToLower();
+
+			if (AssetDict.TryGetValue(assetPath, out AssetDescriptor descriptor))
             {
                 List<BundleDescriptor> result = new List<BundleDescriptor>(descriptor.dependIDs.Length);
                 foreach (var dependID in descriptor.dependIDs)
@@ -100,7 +113,10 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         public bool TryGetAssetDesc(string assetPath, out AssetDescriptor result)
         {
-            return AssetDict.TryGetValue(assetPath, out result);
+			if (m_EnableToLower)
+				assetPath = assetPath.ToLower();
+
+			return AssetDict.TryGetValue(assetPath, out result);
         }
 
         /// <summary>
@@ -246,7 +262,8 @@ namespace Framework.AssetManagement.Runtime
 		{
 			if (nameStype == 1)
 			{
-				return fileHash;
+				//return fileHash;
+				return bundleName;		// TODO: ‘› ±”√bundleName
 			}
 			else if (nameStype == 2)
 			{

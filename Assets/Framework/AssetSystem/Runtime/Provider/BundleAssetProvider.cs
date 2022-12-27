@@ -66,22 +66,22 @@ namespace Framework.AssetManagement.Runtime
                 { // 同步
                     if(assetInfo.assetType == null)
                     {
-                        assetObject = mainBundleLoader.cachedBundle.LoadAsset(assetInfo.assetPath);
+                        assetObject = mainBundleLoader.cachedBundle.LoadAsset(assetInfo.addressableName);
                     }
                     else
                     {
-                        assetObject = mainBundleLoader.cachedBundle.LoadAsset(assetInfo.assetPath, assetInfo.assetType);
+                        assetObject = mainBundleLoader.cachedBundle.LoadAsset(assetInfo.addressableName, assetInfo.assetType);
                     }
                 }
                 else
                 { // 异步
                     if(assetInfo.assetType == null)
                     {
-                        m_AssetBundleRequest = mainBundleLoader.cachedBundle.LoadAssetAsync(assetInfo.assetPath);
+                        m_AssetBundleRequest = mainBundleLoader.cachedBundle.LoadAssetAsync(assetInfo.addressableName);
                     }
                     else
                     {
-                        m_AssetBundleRequest = mainBundleLoader.cachedBundle.LoadAssetAsync(assetInfo.assetPath, assetInfo.assetType);
+                        m_AssetBundleRequest = mainBundleLoader.cachedBundle.LoadAssetAsync(assetInfo.addressableName, assetInfo.assetType);
                     }
                 }
                 status = EProviderStatus.Checking;
@@ -89,26 +89,29 @@ namespace Framework.AssetManagement.Runtime
 
             // 检测加载结果
             if(status == EProviderStatus.Checking)
-            { // 执行到这里一定是异步
-                progress = m_AssetBundleRequest.progress;
+            {
+                progress = m_AssetBundleRequest?.progress ?? 1;
 
-                if(requestAsyncComplete)
+                if (m_AssetBundleRequest != null)
                 {
-                    // 异步转同步将强制挂起主线程
-                    Debug.LogWarning($"Suspend main thread to load unity asset");
-                    assetObject = m_AssetBundleRequest.asset;
-                }
-                else
-                {
-                    if (!m_AssetBundleRequest.isDone)
-                        return;
-                    assetObject = m_AssetBundleRequest.asset;
+                    if (requestAsyncComplete)
+                    {
+                        // 异步转同步将强制挂起主线程
+                        Debug.LogWarning($"Suspend main thread to load unity asset");
+                        assetObject = m_AssetBundleRequest.asset;
+                    }
+                    else
+                    {
+                        if (!m_AssetBundleRequest.isDone)
+                            return;
+                        assetObject = m_AssetBundleRequest.asset;
+                    }
                 }
 
                 status = assetObject != null ? EProviderStatus.Succeed : EProviderStatus.Failed;
                 if(status == EProviderStatus.Failed)
                 {
-                    lastError = $"Failed to load asset: {assetInfo.assetPath} from AssetBundle: {mainBundleLoader.bundlePath}";
+                    lastError = $"Failed to load asset: {assetInfo.assetPath} AssetType : {assetInfo.assetType} from AssetBundle: {mainBundleLoader.bundlePath}";
                     Debug.LogError(lastError);
                 }
                 InvokeCompletion();

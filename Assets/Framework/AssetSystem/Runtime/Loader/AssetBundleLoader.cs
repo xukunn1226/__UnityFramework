@@ -13,7 +13,7 @@ namespace Framework.AssetManagement.Runtime
         {
             None            = 0,
             LoadFile        = 1,
-            CheckLoadFile    = 2,
+            CheckLoadFile   = 2,
             Done            = 3,
         }
         private ESteps                      m_Step = ESteps.None;

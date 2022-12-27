@@ -70,7 +70,7 @@ namespace Framework.AssetManagement.Runtime
             return s_HanderID++;
         }
 
-        public void Release()
+        internal void ReleaseInternal()
         {
             if (!isValid)
                 return;

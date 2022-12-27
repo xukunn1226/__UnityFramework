@@ -12,7 +12,7 @@ namespace Framework.AssetManagement.Runtime
         static EOperationStatus s_OperationStatus;
         static string s_Error;
 
-        static public InitializationOperation Initialize()
+        static public InitializationOperation Initialize(InitializeParameters para)
         {
             if (s_Init)
                 throw new System.Exception($"AssetManager has already init..");
@@ -26,13 +26,7 @@ namespace Framework.AssetManagement.Runtime
             AsyncOperationSystem.Initialize();
             s_AssetSystem = new AssetSystem();
 
-            InitializeParameters initializeParameters = new InitializeParameters();
-            initializeParameters.PlayMode = EPlayMode.FromStreaming;
-            initializeParameters.AssetLoadingMaxNumber = 10;
-            initializeParameters.DecryptionServices = null;
-            initializeParameters.DefaultHostServer = "";
-            initializeParameters.FallbackHostServer = "";
-            var op = s_AssetSystem.InitializeAsync(initializeParameters);
+            var op = s_AssetSystem.InitializeAsync(para);
             op.Completed += InitializeOperation_Completed;
             return op;
         }

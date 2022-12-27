@@ -85,7 +85,7 @@ namespace Framework.AssetManagement.Runtime
 				{					
 					m_Steps = ESteps.Done;
 					status = EOperationStatus.Succeed;
-					m_Impl.SetAppPatchManifest(manifest);
+					m_Impl.SetAppAssetManifest(manifest);
 				}
 			}
         }

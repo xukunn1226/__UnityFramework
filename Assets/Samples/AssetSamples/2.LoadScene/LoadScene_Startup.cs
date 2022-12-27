@@ -11,10 +11,28 @@ public class LoadScene_Startup : MonoBehaviour
     private UnloadSceneOperation m_UnloadOp1;
     private UnloadSceneOperation m_UnloadOp2;
 
+    private EPlayMode GetPlayMode()
+    {
+        Application.Runtime.LauncherMode mode = Application.Runtime.EditorLauncherMode.Mode();
+        if (mode == Application.Runtime.LauncherMode.FromEditor)
+            return EPlayMode.FromEditor;
+        else if (mode == Application.Runtime.LauncherMode.FromStreamingAssets)
+            return EPlayMode.FromStreaming;
+        else
+            return EPlayMode.FromHost;
+    }
+
     IEnumerator Start()
     {
         Object.DontDestroyOnLoad(gameObject);
-        yield return AssetManagerEx.Initialize();
+
+        InitializeParameters initializeParameters = new InitializeParameters()
+        {
+            PlayMode = GetPlayMode(),
+            LocationToLower = false,
+            AssetLoadingMaxNumber = int.MaxValue
+        };
+        yield return AssetManagerEx.Initialize(initializeParameters);
     }
 
     private void OnDestroy()
@@ -45,13 +63,12 @@ public class LoadScene_Startup : MonoBehaviour
         {
             StartCoroutine(TestCase2_Release());
         }
-
     }
 
     /// /////////////////////////////////////// ≤‚ ‘≥°æ∞µƒº”‘ÿ°¢–∂‘ÿ(Single)
     private void TestCase1_LoadSceneAsync()
     {
-        m_Op1 = AssetManagerEx.LoadSceneAsync("Assets/Samples/AssetSamples/2.LoadScene/TestScene1.unity", LoadSceneMode.Single, true);
+        m_Op1 = AssetManagerEx.LoadSceneAsync("assets/samples/assetsamples/2.loadscene/testscene1.unity", LoadSceneMode.Single, true);
         m_Op1.Completed += OnCompleted_TestCase1;
     }
 
@@ -77,7 +94,7 @@ public class LoadScene_Startup : MonoBehaviour
     /// /////////////////////////////////////// ≤‚ ‘≥°æ∞µƒº”‘ÿ°¢–∂‘ÿ(Additive)
     private void TestCase2_LoadSceneAsync()
     {
-        m_Op2 = AssetManagerEx.LoadSceneAsync("Assets/Samples/AssetSamples/2.LoadScene/TestScene2.unity", LoadSceneMode.Additive, true);
+        m_Op2 = AssetManagerEx.LoadSceneAsync("assets/samples/assetsamples/2.loadscene/testscene2.unity", LoadSceneMode.Additive, true);
         m_Op2.Completed += OnCompleted_TestCase2;
     }
 

@@ -6,18 +6,21 @@ namespace Framework.AssetManagement.Runtime
 {
     public class OfflinePlayModeImpl : IBundleServices
     {
-        private AssetManifest m_Manifest;
+        private AssetManifest   m_Manifest;
+        private bool            m_EnableToLower;
         
         public InitializationOperation InitializeAsync(bool locationToLower)
         {
+            m_EnableToLower = locationToLower;
             var operation = new OfflinePlayModeInitializationOperation(this);
             AsyncOperationSystem.StartOperation(operation);
             return operation;
         }
 
-        internal void SetAppPatchManifest(AssetManifest patchManifest)
+        internal void SetAppAssetManifest(AssetManifest manifest)
         {
-            m_Manifest = patchManifest;
+            m_Manifest = manifest;
+            m_Manifest.Init(m_EnableToLower);
         }
 
         private BundleInfo CreateBundleInfo(BundleDescriptor patchBundle)

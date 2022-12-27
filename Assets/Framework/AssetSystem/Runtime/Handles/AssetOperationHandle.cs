@@ -11,6 +11,11 @@ namespace Framework.AssetManagement.Runtime
         internal AssetOperationHandle(ProviderBase provider) : base(provider)
         { }
 
+        public void Release()
+        {
+            this.ReleaseInternal();
+        }
+
         internal override void InvokeCallback()
         {
             m_Callback?.Invoke(this);

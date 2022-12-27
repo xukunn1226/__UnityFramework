@@ -25,9 +25,8 @@ namespace Framework.AssetManagement.Runtime
         public bool             canDestroy              { get { return isDone ? refCount <= 0 : false; } }
         public string           rawFilePath             { get; protected set; }     // 原生文件路径
         protected bool          requestAsyncComplete    { get; private set; }
-        private bool            m_Guarded;                                          // 防止外部逻辑在回调中创建或释放句柄
 
-        private Dictionary<int, OperationHandleBase> m_Handlers = new Dictionary<int, OperationHandleBase>();
+        private IndexedSet<OperationHandleBase> m_Handlers = new IndexedSet<OperationHandleBase>();
 
         protected ProviderBase() { }
         public ProviderBase(AssetSystem assetSystem, string providerGUID, AssetInfo assetInfo)
@@ -54,9 +53,6 @@ namespace Framework.AssetManagement.Runtime
 
         public T CreateHandle<T>() where T : OperationHandleBase
         {
-            if (m_Guarded)
-                throw new System.Exception($"Should never get here, can't CreateHandle from InvokeCallback");
-
             ++refCount;
 
             OperationHandleBase handle = null;            
@@ -69,19 +65,16 @@ namespace Framework.AssetManagement.Runtime
             else
                 throw new System.NotImplementedException();
 
-            m_Handlers.Add(handle.id, handle);
+            m_Handlers.AddUnique(handle);
             return (T)handle;
         }
 
         public void ReleaseHandle(OperationHandleBase handle)
         {
-            if (m_Guarded)
-                throw new System.Exception($"Should never get here, can't ReleaseHandle from InvokeCallback");
-
             if (refCount <= 0)
                 Debug.LogWarning($"Asset provider ref count is already less than zero.");
 
-            if (!m_Handlers.Remove(handle.id))
+            if(!m_Handlers.Remove(handle))
                 throw new System.Exception($"How to get here!");
 
             --refCount;
@@ -101,22 +94,18 @@ namespace Framework.AssetManagement.Runtime
         {
             progress = 1;
 
-            foreach(var handler in m_Handlers)
+            for(int i = m_Handlers.Count - 1; i >= 0; --i)
             {
-                if (handler.Value.isValid)
+                OperationHandleBase handle = m_Handlers[i];
+                if(handle.isValid)
                 {
                     try
                     {
-                        m_Guarded = true;       // 防止外部逻辑在回调函数中创建或释放句柄
-                        handler.Value.InvokeCallback();
+                        handle.InvokeCallback();
                     }
-                    catch (System.Exception e)
+                    catch(System.Exception e)
                     {
                         Debug.LogException(e);
-                    }
-                    finally
-                    {
-                        m_Guarded = false;
                     }
                 }
             }

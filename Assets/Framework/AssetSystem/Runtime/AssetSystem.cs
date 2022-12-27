@@ -19,6 +19,7 @@ namespace Framework.AssetManagement.Runtime
         private EPlayMode           m_PlayMode;
         public IDecryptionServices  decryptionServices  { get; private set; }
         public IBundleServices      bundleServices      { get; private set; }
+        private int                 m_AssetLoadingMaxNumber;
 
         public InitializationOperation InitializeAsync(InitializeParameters parameters)
         {
@@ -27,24 +28,21 @@ namespace Framework.AssetManagement.Runtime
             {
                 var impl = new EditorSimulateModeImpl();
                 parameters.BundleServices = impl;
-                initializeOperation = impl.InitializeAsync(false);
+                initializeOperation = impl.InitializeAsync(parameters.LocationToLower);
             }
             else
             {
                 var impl = new OfflinePlayModeImpl();
                 parameters.BundleServices = impl;
-                initializeOperation = impl.InitializeAsync(false);
+                initializeOperation = impl.InitializeAsync(parameters.LocationToLower);
             }
-            Initialize(parameters.PlayMode, parameters.DecryptionServices, parameters.BundleServices);
+
+            m_PlayMode              = parameters.PlayMode;
+            decryptionServices      = parameters.DecryptionServices;
+            bundleServices          = parameters.BundleServices;
+            m_AssetLoadingMaxNumber = parameters.AssetLoadingMaxNumber;
 
             return initializeOperation;
-        }
-
-        private void Initialize(EPlayMode playMode, IDecryptionServices decryptionServices, IBundleServices bundleServices)
-        {
-            m_PlayMode = playMode;
-            this.decryptionServices = decryptionServices;
-            this.bundleServices = bundleServices;
         }
 
         public void Update()
@@ -54,6 +52,7 @@ namespace Framework.AssetManagement.Runtime
                 m_BundleLoaderSet[i].Update();
             }
 
+            int loadingCount = 0;
             for(int i = 0; i < m_ProviderSet.Count; ++i)
             {
                 if (m_ProviderSet[i].IsSceneProvider())
@@ -62,7 +61,11 @@ namespace Framework.AssetManagement.Runtime
                 }
                 else
                 {
-                    m_ProviderSet[i].Update();
+                    if(loadingCount < m_AssetLoadingMaxNumber)
+                        m_ProviderSet[i].Update();
+
+                    if (!m_ProviderSet[i].isDone)
+                        ++loadingCount;
                 }
             }
 
@@ -98,6 +101,7 @@ namespace Framework.AssetManagement.Runtime
         public void UnloadUnusedAssets()
         {
             // 遍历资源提供者，引用计数为0的销毁
+            bool hasProviderDestroy = false;
             for(int i = m_ProviderSet.Count - 1; i >= 0; --i)
             {
                 ProviderBase provider = m_ProviderSet[i];
@@ -107,21 +111,26 @@ namespace Framework.AssetManagement.Runtime
 
                     m_ProviderDict.Remove(provider.providerGUID);
                     m_ProviderSet.RemoveAt(i);
+
+                    hasProviderDestroy = true;
                 }
             }
 
             // 编辑器模拟模式不会产生BundleLoader
             if (m_PlayMode != EPlayMode.FromEditor)
             {
-                for(int i = m_BundleLoaderSet.Count - 1; i >= 0; --i)
-                {
-                    var loader = m_BundleLoaderSet[i];
-                    if(loader.canDestroy)
+                if (hasProviderDestroy)
+                { // 仅当有Provider被销毁了，才可能需要销毁Bundle Loader
+                    for (int i = m_BundleLoaderSet.Count - 1; i >= 0; --i)
                     {
-                        loader.Destroy(false);
+                        var loader = m_BundleLoaderSet[i];
+                        if (loader.canDestroy)
+                        {
+                            loader.Destroy(false);
 
-                        m_BundleLoaderDict.Remove(loader.bundleInfo.descriptor.bundleName);
-                        m_BundleLoaderSet.RemoveAt(i);
+                            m_BundleLoaderDict.Remove(loader.bundleInfo.descriptor.bundleName);
+                            m_BundleLoaderSet.RemoveAt(i);
+                        }
                     }
                 }
             }
@@ -248,7 +257,7 @@ namespace Framework.AssetManagement.Runtime
         private RawFileOperationHandle LoadRawFileInternal(AssetInfo assetInfo, bool waitForAsyncComplete)
         {
 #if UNITY_EDITOR
-            if (!assetInfo.isValid)
+            if (assetInfo.isValid && m_PlayMode != EPlayMode.FromEditor)
             {
                 BundleInfo bundleInfo = bundleServices.GetBundleInfo(assetInfo);
                 if (bundleInfo.descriptor.isRawFile == false)
@@ -335,7 +344,7 @@ namespace Framework.AssetManagement.Runtime
         private AssetOperationHandle LoadAssetInternal(AssetInfo assetInfo, bool waitForAsyncComplete)
         {
 #if UNITY_EDITOR
-            if (!assetInfo.isValid)
+            if (assetInfo.isValid && m_PlayMode != EPlayMode.FromEditor)
             {
                 BundleInfo bundleInfo = bundleServices.GetBundleInfo(assetInfo);
                 if (bundleInfo.descriptor.isRawFile)
@@ -437,7 +446,7 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.Exception("Should never get here !");
 
             // 释放子场景句柄
-            m_SceneHandlesDict[providerGUID].Release();
+            m_SceneHandlesDict[providerGUID].ReleaseInternal();
             m_SceneHandlesDict.Remove(providerGUID);
 
             // 卸载未被使用的资源（包括场景）
@@ -449,7 +458,7 @@ namespace Framework.AssetManagement.Runtime
             // 释放所有场景句柄
             foreach (var valuePair in m_SceneHandlesDict)
             {
-                valuePair.Value.Release();
+                valuePair.Value.ReleaseInternal();
             }
             m_SceneHandlesDict.Clear();
 

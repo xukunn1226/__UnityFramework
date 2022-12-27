@@ -28,10 +28,11 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        public bool     isValid     { get { return m_AssetDescriptor != null; } }
-        public string   assetPath   { get; private set; }
-        public Type     assetType   { get; private set; }
-        public string   lastError   { get; private set; }
+        public bool     isValid         { get { return m_AssetDescriptor != null; } }
+        public string   assetPath       { get; private set; }
+        public Type     assetType       { get; private set; }
+        public string   lastError       { get; private set; }
+        public string   addressableName { get { return isValid ? m_AssetDescriptor.addressableName : null; } }
 
         private AssetInfo() { }
 

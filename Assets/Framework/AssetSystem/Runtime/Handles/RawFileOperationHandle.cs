@@ -12,6 +12,11 @@ namespace Framework.AssetManagement.Runtime
 		{
 		}
 
+		public void Release()
+		{
+			this.ReleaseInternal();
+		}
+
 		internal override void InvokeCallback()
 		{
 			m_Callback?.Invoke(this);

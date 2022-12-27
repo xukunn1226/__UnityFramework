@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: NewPackageSetting
   m_EditorClassIdentifier: 
   editorAssetPackageSettingItems:
-  - path: Assets/Res/
-    packageID: base
-    buildBundleType: 0
   - path: Assets/Res/AnimationClip
     packageID: base
     buildBundleType: 0
@@ -286,9 +283,6 @@ MonoBehaviour:
   - path: Assets/Application/main/Tests/Runtime/Res/UI
     packageID: base
     buildBundleType: 0
-  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/
-    packageID: base
-    buildBundleType: 0
   - path: Assets/Framework/AssetManagement/Runtime/Tests/Res/Audio
     packageID: base
     buildBundleType: 0
@@ -386,5 +380,38 @@ MonoBehaviour:
     packageID: base
     buildBundleType: 0
   - path: Assets/Settings
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/111
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/222
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Res/Materials
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AssetManagement/Runtime/Tests/Res
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/P_WD_RTN002
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/P_WD_RTN003
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Framework/AnimationInstancing/Art/RTN_LOD
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Samples/AssetSamples
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Samples/AssetSamples/2.LoadScene
+    packageID: base
+    buildBundleType: 0
+  - path: Assets/Samples/AssetSamples/Initialize
     packageID: base
     buildBundleType: 0
