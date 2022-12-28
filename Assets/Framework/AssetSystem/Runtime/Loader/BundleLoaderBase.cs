@@ -60,6 +60,14 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
+        [System.Diagnostics.Conditional("DEBUG")]
+        internal void GetBundleDebugInfo(ref DebugBundleInfo info)
+        {
+            info.BundleName = bundleInfo.descriptor.bundleName;
+            info.RefCount   = refCount;
+            info.Status     = status.ToString();
+        }
+
         public abstract void Update();
         public abstract void WaitForAsyncComplete();
     }

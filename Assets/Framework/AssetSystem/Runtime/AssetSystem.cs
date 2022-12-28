@@ -289,6 +289,7 @@ namespace Framework.AssetManagement.Runtime
                     provider = new DatabaseRawFileProvider(this, providerGUID, assetInfo);
                 else
                     provider = new BundleRawFileProvider(this, providerGUID, assetInfo);
+                provider.InitSpawnDebugInfo();
                 m_ProviderDict.Add(providerGUID, provider);
                 m_ProviderSet.AddUnique(provider);
             }
@@ -376,6 +377,7 @@ namespace Framework.AssetManagement.Runtime
                     provider = new DatabaseAssetProvider(this, providerGUID, assetInfo);
                 else
                     provider = new BundleAssetProvider(this, providerGUID, assetInfo);
+                provider.InitSpawnDebugInfo();
                 m_ProviderDict.Add(providerGUID, provider);
                 m_ProviderSet.AddUnique(provider);
             }
@@ -429,6 +431,7 @@ namespace Framework.AssetManagement.Runtime
                     provider = new DatabaseSceneProvider(this, providerGUID, assetInfo, sceneMode, activateOnLoad, priority);
                 else
                     provider = new BundleSceneProvider(this, providerGUID, assetInfo, sceneMode, activateOnLoad, priority);
+                provider.InitSpawnDebugInfo();
                 m_ProviderDict.Add(providerGUID, provider);
                 m_ProviderSet.AddUnique(provider);
             }
@@ -472,6 +475,19 @@ namespace Framework.AssetManagement.Runtime
             m_SceneHandlesDict.Clear();
         }
 
-        #endregion  // 场景加载接口               
+        #endregion  // 场景加载接口
+
+        /////////////////////////////////// 调式信息
+        public List<DebugProviderInfo> GetDebugProviderInfos()
+        {
+            List<DebugProviderInfo> infos = new List<DebugProviderInfo>(m_ProviderSet.Count);
+            foreach(var provider in m_ProviderSet)
+            {
+                DebugProviderInfo info = new DebugProviderInfo();
+                provider.GetProviderDebugInfo(ref info);
+                infos.Add(info);
+            }
+            return infos;
+        }
     }
 }

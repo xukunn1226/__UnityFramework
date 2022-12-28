@@ -61,5 +61,13 @@ namespace Framework.AssetManagement.Runtime
             AsyncOperationSystem.Update();
             s_AssetSystem?.Update();
         }
+
+        static internal DebugReport GetDebugReport()
+        {
+            DebugReport report = new DebugReport();
+            report.FrameCount = Time.frameCount;
+            report.DebugProviderInfos = s_AssetSystem.GetDebugProviderInfos();
+            return report;
+        }
     }
 }

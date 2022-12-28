@@ -31,6 +31,8 @@ namespace Framework.AssetManagement.Runtime
 
         public override void Update()
         {
+            DebugLoadingTime();
+
             if (isDone)
                 return;
 

@@ -131,5 +131,65 @@ namespace Framework.AssetManagement.Runtime
         }
 
         private TaskCompletionSource<object> m_TaskCompletionSource;
+
+
+
+        public string   spawnScene;
+        public string   spawnTime;
+        public long     loadingTime;
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        public void InitSpawnDebugInfo()
+        {
+            spawnScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            spawnTime = SpawnTimeToString(UnityEngine.Time.realtimeSinceStartup);
+        }
+
+        private string SpawnTimeToString(float spawnTime)
+        {
+            float h = UnityEngine.Mathf.FloorToInt(spawnTime / 3600f);
+            float m = UnityEngine.Mathf.FloorToInt(spawnTime / 60f - h * 60f);
+            float s = UnityEngine.Mathf.FloorToInt(spawnTime - m * 60f - h * 3600f);
+            return h.ToString("00") + ":" + m.ToString("00") + ":" + s.ToString("00");
+        }
+
+        private bool                            m_isRecording;
+        private System.Diagnostics.Stopwatch    m_LoadingTimeWatch;
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        protected void DebugLoadingTime()
+        {
+            if (m_isRecording == false)
+            {
+                m_isRecording = true;
+                m_LoadingTimeWatch = System.Diagnostics.Stopwatch.StartNew();
+            }
+
+            if (m_LoadingTimeWatch != null)
+            {
+                if (isDone)
+                {
+                    loadingTime = m_LoadingTimeWatch.ElapsedMilliseconds;
+                    m_LoadingTimeWatch = null;
+                }
+            }
+        }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        public void GetProviderDebugInfo(ref DebugProviderInfo info)
+        {
+            info.AssetPath          = assetInfo.assetPath;
+            info.SpawnScene         = spawnScene;
+            info.SpawnTime          = spawnTime;
+            info.LoadingTime        = loadingTime;
+            info.RefCount           = refCount;
+            info.Status             = status.ToString();
+            info.DependBundleInfos  = new List<DebugBundleInfo>();
+
+            if(this is BundleProvider)
+            {
+                ((BundleProvider)this).GetBundleDebugInfos(info.DependBundleInfos);
+            }
+        }
     }
 }

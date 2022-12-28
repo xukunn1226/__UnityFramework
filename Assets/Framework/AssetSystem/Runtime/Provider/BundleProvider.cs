@@ -38,5 +38,18 @@ namespace Framework.AssetManagement.Runtime
                 dependBundleLoader = null;
             }
         }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        public void GetBundleDebugInfos(List<DebugBundleInfo> output)
+        {
+            DebugBundleInfo info = new DebugBundleInfo();
+            mainBundleLoader.GetBundleDebugInfo(ref info);
+            output.Add(info);
+
+            if(dependBundleLoader != null)
+            {
+                dependBundleLoader.GetBundleDebugInfos(output);
+            }
+        }
     }
 }

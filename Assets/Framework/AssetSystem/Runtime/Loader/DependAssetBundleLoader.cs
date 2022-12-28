@@ -74,5 +74,16 @@ namespace Framework.AssetManagement.Runtime
                 loader.WaitForAsyncComplete();
             }
         }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        internal void GetBundleDebugInfos(List<DebugBundleInfo> output)
+        {
+            foreach (var loader in m_DependBundleLoaders)
+            {
+                var bundleInfo = new DebugBundleInfo();
+                loader.GetBundleDebugInfo(ref bundleInfo);
+                output.Add(bundleInfo);
+            }
+        }
     }
 }
