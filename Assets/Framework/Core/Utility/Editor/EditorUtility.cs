@@ -272,5 +272,39 @@ namespace Framework.Core.Editor
             process.Close();
             return exit_code;
         }
+
+
+        /// <summary>
+        /// 取得当前源码的哪一行
+        /// </summary>
+        /// <returns></returns>
+        [MenuItem("Tools/GetLineNum")]
+        public static void TestGetLineNum()
+        {
+            Debug.Log($"line: {GetLineNum()}");
+        }
+
+        public static int GetLineNum()
+        {
+            System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(1, true);
+            return st.GetFrame(0).GetFileLineNumber();
+        }
+
+        /// <summary>
+        /// 取当前源码的源文件名
+        /// </summary>
+        /// <returns></returns>
+        [MenuItem("Tools/GetCurSourceFileName")]
+        public static void TestGetSourceFileName()
+        {
+            Debug.Log($"file: {GetCurSourceFileName()}");
+        }
+
+        public static string GetCurSourceFileName()
+        {
+            System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(1, true);
+
+            return st.GetFrame(0).GetFileName();
+        }
     }
 }

@@ -53,12 +53,12 @@ namespace Framework.AssetManagement.AssetBundleDebugger
             if (EditorApplication.isPlaying)
             {
                 m_DebugReport = AssetManagerEx.GetDebugReport();
-                int count = m_DebugReport.DebugProviderInfos.Count;
-                if(count != m_CachedCount)
-                {
-                    ForceMenuTreeRebuild();
-                    m_CachedCount = count;
-                }
+                //int count = m_DebugReport.DebugProviderInfos.Count;
+                //if(count != m_CachedCount)
+                //{
+                //    ForceMenuTreeRebuild();
+                //    m_CachedCount = count;
+                //}
             }
             else
             {
@@ -109,7 +109,7 @@ namespace Framework.AssetManagement.AssetBundleDebugger
         {
             private readonly DebugProviderInfo instance;
 
-            public CustomCheckerMenuItem(OdinMenuTree tree, AssetViewPanel viewData) : base(tree, string.Format($""), viewData)
+            public CustomCheckerMenuItem(OdinMenuTree tree, AssetViewPanel viewData) : base(tree, viewData.providerInfo.AssetPath, viewData)
             {
                 this.instance = viewData.providerInfo;
             }
