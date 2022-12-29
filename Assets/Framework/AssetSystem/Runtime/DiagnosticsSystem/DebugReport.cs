@@ -7,7 +7,7 @@ using System.Text;
 namespace Framework.AssetManagement.Runtime
 {
 	[Serializable]
-	internal class DebugReport
+	public class DebugReport
 	{
 		/// <summary>
 		/// сно╥ж║

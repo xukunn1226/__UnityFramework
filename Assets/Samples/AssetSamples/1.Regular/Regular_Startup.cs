@@ -7,6 +7,7 @@ public class Regular_Startup : MonoBehaviour
 {
     private EPlayMode GetPlayMode()
     {
+#if UNITY_EDITOR
         Application.Runtime.LauncherMode mode = Application.Runtime.EditorLauncherMode.Mode();
         if (mode == Application.Runtime.LauncherMode.FromEditor)
             return EPlayMode.FromEditor;
@@ -14,6 +15,9 @@ public class Regular_Startup : MonoBehaviour
             return EPlayMode.FromStreaming;
         else
             return EPlayMode.FromHost;
+#else
+        return EPlayMode.FromStreaming;
+#endif
     }
 
     IEnumerator Start()
@@ -63,7 +67,7 @@ public class Regular_Startup : MonoBehaviour
         }
     }
 
-    // 委托方式
+    // 濮旀墭鏂瑰紡
     private void TestCase1_LoadAssetAsync()
     {
         var op = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/checker.png");
@@ -85,7 +89,7 @@ public class Regular_Startup : MonoBehaviour
         }
     }
 
-    // 协程方式
+    // 鍗忕▼鏂瑰紡
     private IEnumerator TestCase2_LoadAssetAsync()
     {
         var op = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/checker.png");
@@ -95,7 +99,7 @@ public class Regular_Startup : MonoBehaviour
         //op.Release();
     }
 
-    // 加载Prefab
+    // 鍔犺浇Prefab
     private IEnumerator TestCase3_InstancePrefabAsync()
     {
         var op = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");
@@ -107,7 +111,7 @@ public class Regular_Startup : MonoBehaviour
         //op.Release();
     }
 
-    // Task加载方式
+    // Task鍔犺浇鏂瑰紡
     async void TestCase4_InstancePrefabAsync()
     {
         var op = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");

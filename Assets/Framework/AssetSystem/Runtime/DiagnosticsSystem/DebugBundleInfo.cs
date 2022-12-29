@@ -5,7 +5,7 @@ using System;
 namespace Framework.AssetManagement.Runtime
 {
 	[Serializable]
-	internal class DebugBundleInfo : IComparer<DebugBundleInfo>, IComparable<DebugBundleInfo>
+	public class DebugBundleInfo : IComparer<DebugBundleInfo>, IComparable<DebugBundleInfo>
 	{
 		/// <summary>
 		/// 资源包名称

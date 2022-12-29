@@ -5,7 +5,7 @@ using System;
 namespace Framework.AssetManagement.Runtime
 {
 	[Serializable]
-	internal class DebugProviderInfo : IComparer<DebugProviderInfo>, IComparable<DebugProviderInfo>
+	public class DebugProviderInfo : IComparer<DebugProviderInfo>, IComparable<DebugProviderInfo>
 	{
 		/// <summary>
 		/// 资源对象路径

@@ -13,6 +13,7 @@ public class LoadScene_Startup : MonoBehaviour
 
     private EPlayMode GetPlayMode()
     {
+#if UNITY_EDITOR
         Application.Runtime.LauncherMode mode = Application.Runtime.EditorLauncherMode.Mode();
         if (mode == Application.Runtime.LauncherMode.FromEditor)
             return EPlayMode.FromEditor;
@@ -20,6 +21,9 @@ public class LoadScene_Startup : MonoBehaviour
             return EPlayMode.FromStreaming;
         else
             return EPlayMode.FromHost;
+#else
+        return EPlayMode.FromStreaming;
+#endif
     }
 
     IEnumerator Start()

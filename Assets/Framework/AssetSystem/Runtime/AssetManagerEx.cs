@@ -62,8 +62,11 @@ namespace Framework.AssetManagement.Runtime
             s_AssetSystem?.Update();
         }
 
-        static internal DebugReport GetDebugReport()
+        static public DebugReport GetDebugReport()
         {
+            if (!s_Init)
+                return null;
+
             DebugReport report = new DebugReport();
             report.FrameCount = Time.frameCount;
             report.DebugProviderInfos = s_AssetSystem.GetDebugProviderInfos();

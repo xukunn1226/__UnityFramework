@@ -481,10 +481,10 @@ namespace Framework.AssetManagement.Runtime
         public List<DebugProviderInfo> GetDebugProviderInfos()
         {
             List<DebugProviderInfo> infos = new List<DebugProviderInfo>(m_ProviderSet.Count);
-            foreach(var provider in m_ProviderSet)
+            for(int i = 0; i < m_ProviderSet.Count; ++i)
             {
                 DebugProviderInfo info = new DebugProviderInfo();
-                provider.GetProviderDebugInfo(ref info);
+                m_ProviderSet[i].GetProviderDebugInfo(ref info);
                 infos.Add(info);
             }
             return infos;
