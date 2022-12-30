@@ -5,6 +5,7 @@ using UnityEditor;
 using System.IO;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace Framework.Core.Editor
 {
@@ -14,7 +15,7 @@ namespace Framework.Core.Editor
         static internal List<string> GetSelectedAllPaths(string extension)
         {
             List<string> paths = new List<string>();
-            bool bAll = string.Compare(extension, "*.*", System.StringComparison.OrdinalIgnoreCase) == 0 ? true : false;
+            bool bAll = string.Compare(extension, "*.*", StringComparison.OrdinalIgnoreCase) == 0 ? true : false;
 
             UnityEngine.Object[] objs = Selection.objects;
             foreach (UnityEngine.Object obj in objs)
@@ -36,7 +37,7 @@ namespace Framework.Core.Editor
                 }
                 else
                 {
-                    if (bAll || path.IndexOf(extension, System.StringComparison.OrdinalIgnoreCase) != -1)
+                    if (bAll || path.IndexOf(extension, StringComparison.OrdinalIgnoreCase) != -1)
                     {
                         if (ValidExtension(path))
                         {
@@ -51,7 +52,7 @@ namespace Framework.Core.Editor
 
         static private bool ValidExtension(string filePath)
         {
-            if (filePath.EndsWith(".meta", System.StringComparison.OrdinalIgnoreCase) || filePath.EndsWith(".cs", System.StringComparison.OrdinalIgnoreCase))
+            if (filePath.EndsWith(".meta", StringComparison.OrdinalIgnoreCase) || filePath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
                 return false;
             return true;
         }
@@ -282,6 +283,18 @@ namespace Framework.Core.Editor
         public static void TestGetLineNum()
         {
             Debug.Log($"line: {GetLineNum()}");
+            Foo1();
+        }
+
+        static public void Foo1()
+        {
+            Foo2();
+        }
+
+        static public void Foo2()
+        {
+            // Debug.Log($"line: {GetStackTraceModelName()}");
+            Debug.Log(GetStackTrace());
         }
 
         public static int GetLineNum()
@@ -305,6 +318,52 @@ namespace Framework.Core.Editor
             System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace(1, true);
 
             return st.GetFrame(0).GetFileName();
+        }
+        
+        static public string GetStackTraceModelName()
+        {
+            //当前堆栈信息
+            System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace();
+            System.Diagnostics.StackFrame[] sfs = st.GetFrames();
+            //过虑的方法名称,以下方法将不会出现在返回的方法调用列表中
+            string _filterdName = "ResponseWrite,ResponseWriteError,";
+            string _fullName = string.Empty, _methodName = string.Empty;
+            for (int i = 1; i < sfs.Length; ++i)
+            {
+                //非用户代码,系统方法及后面的都是系统调用，不获取用户代码调用结束
+                if (System.Diagnostics.StackFrame.OFFSET_UNKNOWN == sfs[i].GetILOffset()) break;
+                _methodName = sfs[i].GetMethod().Name;//方法名称
+                //sfs[i].GetFileLineNumber();//没有PDB文件的情况下将始终返回0
+                if (_filterdName.Contains(_methodName)) continue;
+                _fullName = _methodName + "()->" + _fullName;
+            }
+            st = null;
+            sfs = null;
+            _filterdName = _methodName = null;
+            return _fullName.TrimEnd('-','>');
+        }
+
+        static public string GetStackTrace()
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            var stackTrace = new System.Diagnostics.StackTrace(true);
+            string filterdName = "ResponseWrite,ResponseWriteError,";
+            for(int i = stackTrace.GetFrames().Length - 1; i >= 1; --i)
+            {
+                var frame = stackTrace.GetFrame(i);
+                if (System.Diagnostics.StackFrame.OFFSET_UNKNOWN == frame.GetILOffset())
+                    break;
+                
+                string methodName = frame.GetMethod().Name;
+                if (filterdName.Contains(methodName))
+                    continue;
+
+                sb.AppendLine($"{methodName} (at file: {frame.GetFileName()} line: {frame.GetFileLineNumber()} column: {frame.GetFileColumnNumber()})");
+                // Debug.LogFormat($"Filename: {r.GetFileName()} Method: {r.GetMethod()} Line: {r.GetFileLineNumber()} Column: {r.GetFileColumnNumber()}  ");
+            }
+
+            return sb.ToString();
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
@@ -8,39 +9,41 @@ namespace Framework.AssetManagement.Runtime
 	public class DebugProviderInfo : IComparer<DebugProviderInfo>, IComparable<DebugProviderInfo>
 	{
 		/// <summary>
-		/// ×ÊÔ´¶ÔÏóÂ·¾¶
+		/// èµ„æºå¯¹è±¡è·¯å¾„
 		/// </summary>
 		public string AssetPath;
 
 		/// <summary>
-		/// ×ÊÔ´³öÉúµÄ³¡¾°
+		/// èµ„æºå‡ºç”Ÿçš„åœºæ™¯
 		/// </summary>
 		public string SpawnScene;
 
 		/// <summary>
-		/// ×ÊÔ´³öÉúµÄÊ±¼ä
+		/// èµ„æºå‡ºç”Ÿçš„æ—¶é—´
 		/// </summary>
 		public string SpawnTime;
 
 		/// <summary>
-		/// ¼ÓÔØºÄÊ±£¨µ¥Î»£ººÁÃë£©
+		/// åŠ è½½è€—æ—¶ï¼ˆå•ä½ï¼šæ¯«ç§’ï¼‰
 		/// </summary>
 		public long LoadingTime;
 
 		/// <summary>
-		/// ÒıÓÃ¼ÆÊı
+		/// å¼•ç”¨è®¡æ•°
 		/// </summary>
 		public int RefCount;
 
 		/// <summary>
-		/// ¼ÓÔØ×´Ì¬
+		/// åŠ è½½çŠ¶æ€
 		/// </summary>
 		public string Status;
 
 		/// <summary>
-		/// ÒÀÀµµÄ×ÊÔ´°üÁĞ±í
+		/// ä¾èµ–çš„èµ„æºåŒ…åˆ—è¡¨
 		/// </summary>
 		public List<DebugBundleInfo> DependBundleInfos;
+
+		public List<string> StackTraces;
 
 		public int CompareTo(DebugProviderInfo other)
 		{

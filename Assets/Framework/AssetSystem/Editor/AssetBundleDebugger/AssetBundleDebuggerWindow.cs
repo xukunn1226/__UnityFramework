@@ -7,8 +7,7 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities.Editor;
 using Sirenix.Utilities;
 using Sirenix.OdinInspector;
-using Framework.AssetManagement.AssetChecker;
-using Unity.Plastic.Antlr3.Runtime.Tree;
+using UnityEditor.UIElements;
 
 namespace Framework.AssetManagement.AssetBundleDebugger
 {
@@ -136,12 +135,18 @@ namespace Framework.AssetManagement.AssetBundleDebugger
             {
                 AssetBundleDebuggerWindow.instance.ForceTreeRebuild();
             }
+
+            // if (GUILayout.Button(new GUIContent(""), GUILayoutOptions.Width(120)))
+            // {
+            //     
+            // }
             EditorGUILayout.EndHorizontal();
         }
     }
 
     public class AssetViewPanel
     {
+        [HideInInspector]
         public DebugProviderInfo providerInfo;
 
         public AssetViewPanel(DebugProviderInfo providerInfo)
@@ -149,34 +154,36 @@ namespace Framework.AssetManagement.AssetBundleDebugger
             this.providerInfo = providerInfo;
         }
 
-        //[ShowInInspector]
-        //[TableList(AlwaysExpanded = true, HideToolbar = true, IsReadOnly = true), HideLabel]
-        //public List<AssetViewItem> assetViews
-        //{
-        //    get
-        //    {
-        //        if(m_DebugReport == null)
-        //        {
-        //            return new List<AssetViewItem>() { new AssetViewItem() { index = 1, assetPath = "����" } };
-        //        }
-        //        else
-        //        {
-        //            List<AssetViewItem> list = new List<AssetViewItem>();
-        //            for(int i = 0; i < m_DebugReport.DebugProviderInfos.Count; ++i)
-        //            {
-        //                AssetViewItem item = new AssetViewItem();
-        //                item.index = i;
-        //                item.assetPath = m_DebugReport.DebugProviderInfos[i].AssetPath;
-        //                item.refCount = m_DebugReport.DebugProviderInfos[i].RefCount;
-        //                item.status = m_DebugReport.DebugProviderInfos[i].Status;
-        //                item.spawnScene = m_DebugReport.DebugProviderInfos[i].SpawnScene;
-        //                item.spawnTime = m_DebugReport.DebugProviderInfos[i].SpawnTime;
-        //                item.loadingTime = m_DebugReport.DebugProviderInfos[i].LoadingTime;
-        //                list.Add(item);
-        //            }
-        //            return list;
-        //        }                
-        //    }
-        //}
+        [OnInspectorGUI]
+        void OnGUI()
+        {
+            EditorGUILayout.LabelField("AssetPath", providerInfo.AssetPath);
+            EditorGUILayout.LabelField("SpawnScene", providerInfo.SpawnScene);
+            EditorGUILayout.LabelField("SpawnTime", providerInfo.SpawnTime);
+            EditorGUILayout.LabelField("LoadingTime", $"{providerInfo.LoadingTime}ms");
+            EditorGUILayout.LabelField("RefCount", providerInfo.RefCount.ToString());
+            EditorGUILayout.LabelField("Status", providerInfo.Status);
+
+            EditorGUILayout.BeginFoldoutHeaderGroup(true, "Depend Bundles");
+            for (int i = 0; providerInfo.DependBundleInfos != null && i < providerInfo.DependBundleInfos.Count; ++i)
+            {
+                EditorGUI.indentLevel++;
+                DebugBundleInfo bundleInfo = providerInfo.DependBundleInfos[i];
+                EditorGUILayout.LabelField("BundleName", bundleInfo.BundleName);
+                EditorGUILayout.LabelField("RefCount", bundleInfo.RefCount.ToString());
+                EditorGUILayout.LabelField("Status", bundleInfo.Status);
+                EditorGUI.indentLevel--;
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
+
+            EditorGUILayout.BeginFoldoutHeaderGroup(true, "Stack Traces");
+            for (int i = 0; providerInfo.StackTraces != null && i < providerInfo.StackTraces.Count; ++i)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.TextField("Stack Trace", providerInfo.StackTraces[i], GUILayout.MinHeight(120));
+                EditorGUI.indentLevel--;
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
+        }
     }
 }

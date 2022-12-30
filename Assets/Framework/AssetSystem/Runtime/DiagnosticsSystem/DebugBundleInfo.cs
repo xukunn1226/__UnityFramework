@@ -8,17 +8,17 @@ namespace Framework.AssetManagement.Runtime
 	public class DebugBundleInfo : IComparer<DebugBundleInfo>, IComparable<DebugBundleInfo>
 	{
 		/// <summary>
-		/// ×ÊÔ´°üÃû³Æ
+		/// èµ„æºåŒ…åç§°
 		/// </summary>
 		public string BundleName;
 
 		/// <summary>
-		/// ÒıÓÃ¼ÆÊı
+		/// å¼•ç”¨è®¡æ•°
 		/// </summary>
 		public int RefCount;
 
 		/// <summary>
-		/// ¼ÓÔØ×´Ì¬
+		/// åŠ è½½çŠ¶æ€
 		/// </summary>
 		public string Status;
 

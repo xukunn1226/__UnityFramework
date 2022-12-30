@@ -7,12 +7,12 @@ using UnityEngine.SceneManagement;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// ◊ ‘¥Ã·π©’ﬂ
+    /// ËµÑÊ∫êÊèê‰æõËÄÖ
     /// </summary>
     internal abstract class ProviderBase
     {
         public AssetSystem      assetSystem             { get; private set; }
-        public string           providerGUID            { get; private set; }       // ◊ ‘¥Ã·π©’ﬂŒ®“ª±Í ∂∑˚
+        public string           providerGUID            { get; private set; }       // ËµÑÊ∫êÊèê‰æõËÄÖÂîØ‰∏ÄÊ†áËØÜÁ¨¶
         public AssetInfo        assetInfo               { get; private set; }
         public Object           assetObject             { get; protected set; }
         public Scene            sceneObject             { get; protected set; }
@@ -23,7 +23,7 @@ namespace Framework.AssetManagement.Runtime
         public bool             isDestroyed             { get; private set; }
         public bool             isDone                  { get { return status == EProviderStatus.Succeed || status == EProviderStatus.Failed; } }
         public bool             canDestroy              { get { return isDone ? refCount <= 0 : false; } }
-        public string           rawFilePath             { get; protected set; }     // ‘≠…˙Œƒº˛¬∑æ∂
+        public string           rawFilePath             { get; protected set; }     // ÂéüÁîüÊñá‰ª∂Ë∑ØÂæÑ
         protected bool          requestAsyncComplete    { get; private set; }
 
         private IndexedSet<OperationHandleBase> m_Handlers = new IndexedSet<OperationHandleBase>();
@@ -66,6 +66,7 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.NotImplementedException();
 
             m_Handlers.AddUnique(handle);
+            DebugStackTrace();
             return (T)handle;
         }
 
@@ -175,6 +176,38 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
+        private List<string> m_StackTraces;
+        
+        [System.Diagnostics.Conditional("DEBUG")]
+        protected void DebugStackTrace()
+        {
+            if (m_StackTraces == null)
+                m_StackTraces = new List<string>();
+            m_StackTraces.Add(GetStackTrace());
+        }
+
+        static public string GetStackTrace()
+        {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            
+            var stackTrace = new System.Diagnostics.StackTrace(true);
+            string filterdName = "ResponseWrite,ResponseWriteError,";
+            for(int i = stackTrace.GetFrames().Length - 1; i >= 1; --i)
+            {
+                var frame = stackTrace.GetFrame(i);
+                if (System.Diagnostics.StackFrame.OFFSET_UNKNOWN == frame.GetILOffset())
+                    break;
+                
+                string methodName = frame.GetMethod().Name;
+                if (filterdName.Contains(methodName))
+                    continue;
+
+                sb.AppendLine($"{methodName} (at file: {frame.GetFileName()} line: {frame.GetFileLineNumber()} column: {frame.GetFileColumnNumber()})");
+            }
+
+            return sb.ToString();
+        }
+        
         [System.Diagnostics.Conditional("DEBUG")]
         public void GetProviderDebugInfo(ref DebugProviderInfo info)
         {
@@ -185,6 +218,7 @@ namespace Framework.AssetManagement.Runtime
             info.RefCount           = refCount;
             info.Status             = status.ToString();
             info.DependBundleInfos  = new List<DebugBundleInfo>();
+            info.StackTraces = m_StackTraces;
 
             if(this is BundleProvider)
             {

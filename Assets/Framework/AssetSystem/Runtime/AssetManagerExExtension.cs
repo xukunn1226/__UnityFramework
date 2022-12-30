@@ -42,12 +42,12 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-		/// Òì²½¼ÓÔØ³¡¾°
+		/// å¼‚æ­¥åŠ è½½åœºæ™¯
 		/// </summary>
-		/// <param name="location">³¡¾°µÄ¶¨Î»µØÖ·</param>
-		/// <param name="sceneMode">³¡¾°¼ÓÔØÄ£Ê½</param>
-		/// <param name="activateOnLoad">¼ÓÔØÍê±ÏÊ±ÊÇ·ñÖ÷¶¯¼¤»î</param>
-		/// <param name="priority">ÓÅÏÈ¼¶</param>
+		/// <param name="location">åœºæ™¯çš„å®šä½åœ°å€</param>
+		/// <param name="sceneMode">åœºæ™¯åŠ è½½æ¨¡å¼</param>
+		/// <param name="activateOnLoad">åŠ è½½å®Œæ¯•æ—¶æ˜¯å¦ä¸»åŠ¨æ¿€æ´»</param>
+		/// <param name="priority">ä¼˜å…ˆçº§</param>
 		public static SceneOperationHandle LoadSceneAsync(string location, LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100)
         {
             DebugCheckInitialize();

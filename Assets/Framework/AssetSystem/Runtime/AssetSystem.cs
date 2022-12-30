@@ -56,7 +56,7 @@ namespace Framework.AssetManagement.Runtime
             for(int i = 0; i < m_ProviderSet.Count; ++i)
             {
                 if (m_ProviderSet[i].IsSceneProvider())
-                { // ²»ÄÜ×èÈû³¡¾°µÄ¼ÓÔØ
+                { // ä¸èƒ½é˜»å¡åœºæ™¯çš„åŠ è½½
                     m_ProviderSet[i].Update();
                 }
                 else
@@ -96,11 +96,11 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// Ğ¶ÔØÒıÓÃ¼ÆÊıÎª0µÄ×ÊÔ´
+        /// å¸è½½å¼•ç”¨è®¡æ•°ä¸º0çš„èµ„æº
         /// </summary>
         public void UnloadUnusedAssets()
         {
-            // ±éÀú×ÊÔ´Ìá¹©Õß£¬ÒıÓÃ¼ÆÊıÎª0µÄÏú»Ù
+            // éå†èµ„æºæä¾›è€…ï¼Œå¼•ç”¨è®¡æ•°ä¸º0çš„é”€æ¯
             bool hasProviderDestroy = false;
             for(int i = m_ProviderSet.Count - 1; i >= 0; --i)
             {
@@ -116,11 +116,11 @@ namespace Framework.AssetManagement.Runtime
                 }
             }
 
-            // ±à¼­Æ÷Ä£ÄâÄ£Ê½²»»á²úÉúBundleLoader
+            // ç¼–è¾‘å™¨æ¨¡æ‹Ÿæ¨¡å¼ä¸ä¼šäº§ç”ŸBundleLoader
             if (m_PlayMode != EPlayMode.FromEditor)
             {
                 if (hasProviderDestroy)
-                { // ½öµ±ÓĞProvider±»Ïú»ÙÁË£¬²Å¿ÉÄÜĞèÒªÏú»ÙBundle Loader
+                { // ä»…å½“æœ‰Providerè¢«é”€æ¯äº†ï¼Œæ‰å¯èƒ½éœ€è¦é”€æ¯Bundle Loader
                     for (int i = m_BundleLoaderSet.Count - 1; i >= 0; --i)
                     {
                         var loader = m_BundleLoaderSet[i];
@@ -228,7 +228,7 @@ namespace Framework.AssetManagement.Runtime
         {
             if (string.IsNullOrEmpty(assetPath) == false)
             {
-                // ¼ì²éÂ·¾¶Ä©Î²ÊÇ·ñÓĞ¿Õ¸ñ
+                // æ£€æŸ¥è·¯å¾„æœ«å°¾æ˜¯å¦æœ‰ç©ºæ ¼
                 int index = assetPath.LastIndexOf(" ");
                 if (index != -1)
                 {
@@ -241,7 +241,7 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        #region Ô­Éú×ÊÔ´¼ÓÔØ½Ó¿Ú
+        #region åŸç”Ÿèµ„æºåŠ è½½æ¥å£
         public RawFileOperationHandle LoadRawFile(string assetPath)
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, null);
@@ -295,14 +295,14 @@ namespace Framework.AssetManagement.Runtime
             }
             return provider.CreateHandle<RawFileOperationHandle>();
         }
-        #endregion      // Ô­Éú×ÊÔ´¼ÓÔØ½Ó¿Ú
+        #endregion      // åŸç”Ÿèµ„æºåŠ è½½æ¥å£
 
-        #region ×ÊÔ´¼ÓÔØ½Ó¿Ú£¨Í¬²½&Òì²½£©
+        #region èµ„æºåŠ è½½æ¥å£ï¼ˆåŒæ­¥&å¼‚æ­¥ï¼‰
         /// <summary>
-		/// Í¬²½¼ÓÔØ×ÊÔ´¶ÔÏó
+		/// åŒæ­¥åŠ è½½èµ„æºå¯¹è±¡
 		/// </summary>
-		/// <typeparam name="TObject">×ÊÔ´ÀàĞÍ</typeparam>
-		/// <param name="assetPath">×ÊÔ´µÄ¶¨Î»µØÖ·</param>
+		/// <typeparam name="TObject">èµ„æºç±»å‹</typeparam>
+		/// <param name="assetPath">èµ„æºçš„å®šä½åœ°å€</param>
 		public AssetOperationHandle LoadAsset<TObject>(string assetPath) where TObject : UnityEngine.Object
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
@@ -310,10 +310,10 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// Í¬²½¼ÓÔØ×ÊÔ´¶ÔÏó
+        /// åŒæ­¥åŠ è½½èµ„æºå¯¹è±¡
         /// </summary>
-        /// <param name="assetPath">×ÊÔ´µÄ¶¨Î»µØÖ·</param>
-        /// <param name="type">×ÊÔ´ÀàĞÍ</param>
+        /// <param name="assetPath">èµ„æºçš„å®šä½åœ°å€</param>
+        /// <param name="type">èµ„æºç±»å‹</param>
         public AssetOperationHandle LoadAsset(string assetPath, System.Type type)
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
@@ -321,10 +321,10 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-		/// Òì²½¼ÓÔØ×ÊÔ´¶ÔÏó
+		/// å¼‚æ­¥åŠ è½½èµ„æºå¯¹è±¡
 		/// </summary>
-		/// <typeparam name="TObject">×ÊÔ´ÀàĞÍ</typeparam>
-		/// <param name="assetPath">×ÊÔ´µÄ¶¨Î»µØÖ·</param>
+		/// <typeparam name="TObject">èµ„æºç±»å‹</typeparam>
+		/// <param name="assetPath">èµ„æºçš„å®šä½åœ°å€</param>
 		public AssetOperationHandle LoadAssetAsync<TObject>(string assetPath) where TObject : UnityEngine.Object
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
@@ -332,10 +332,10 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// Òì²½¼ÓÔØ×ÊÔ´¶ÔÏó
+        /// å¼‚æ­¥åŠ è½½èµ„æºå¯¹è±¡
         /// </summary>
-        /// <param name="assetPath">×ÊÔ´µÄ¶¨Î»µØÖ·</param>
-        /// <param name="type">×ÊÔ´ÀàĞÍ</param>
+        /// <param name="assetPath">èµ„æºçš„å®šä½åœ°å€</param>
+        /// <param name="type">èµ„æºç±»å‹</param>
         public AssetOperationHandle LoadAssetAsync(string assetPath, System.Type type)
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
@@ -383,16 +383,16 @@ namespace Framework.AssetManagement.Runtime
             }
             return provider.CreateHandle<AssetOperationHandle>();
         }
-        #endregion  // ×ÊÔ´¼ÓÔØ½Ó¿Ú£¨Í¬²½&Òì²½£©
+        #endregion  // èµ„æºåŠ è½½æ¥å£ï¼ˆåŒæ­¥&å¼‚æ­¥ï¼‰
 
-        #region ³¡¾°¼ÓÔØ½Ó¿Ú
+        #region åœºæ™¯åŠ è½½æ¥å£
         /// <summary>
-		/// Òì²½¼ÓÔØ³¡¾°
+		/// å¼‚æ­¥åŠ è½½åœºæ™¯
 		/// </summary>
-		/// <param name="location">³¡¾°µÄ¶¨Î»µØÖ·</param>
-		/// <param name="sceneMode">³¡¾°¼ÓÔØÄ£Ê½</param>
-		/// <param name="activateOnLoad">¼ÓÔØÍê±ÏÊ±ÊÇ·ñÖ÷¶¯¼¤»î</param>
-		/// <param name="priority">ÓÅÏÈ¼¶</param>
+		/// <param name="location">åœºæ™¯çš„å®šä½åœ°å€</param>
+		/// <param name="sceneMode">åœºæ™¯åŠ è½½æ¨¡å¼</param>
+		/// <param name="activateOnLoad">åŠ è½½å®Œæ¯•æ—¶æ˜¯å¦ä¸»åŠ¨æ¿€æ´»</param>
+		/// <param name="priority">ä¼˜å…ˆçº§</param>
 		public SceneOperationHandle LoadSceneAsync(string location, LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true, int priority = 100)
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(location, null);
@@ -401,12 +401,12 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// Òì²½¼ÓÔØ³¡¾°
+        /// å¼‚æ­¥åŠ è½½åœºæ™¯
         /// </summary>
-        /// <param name="assetInfo">³¡¾°µÄ×ÊÔ´ĞÅÏ¢</param>
-        /// <param name="sceneMode">³¡¾°¼ÓÔØÄ£Ê½</param>
-        /// <param name="activateOnLoad">¼ÓÔØÍê±ÏÊ±ÊÇ·ñÖ÷¶¯¼¤»î</param>
-        /// <param name="priority">ÓÅÏÈ¼¶</param>        
+        /// <param name="assetInfo">åœºæ™¯çš„èµ„æºä¿¡æ¯</param>
+        /// <param name="sceneMode">åœºæ™¯åŠ è½½æ¨¡å¼</param>
+        /// <param name="activateOnLoad">åŠ è½½å®Œæ¯•æ—¶æ˜¯å¦ä¸»åŠ¨æ¿€æ´»</param>
+        /// <param name="priority">ä¼˜å…ˆçº§</param>        
 		private SceneOperationHandle LoadSceneAsync(AssetInfo assetInfo, LoadSceneMode sceneMode, bool activateOnLoad, int priority)
         {
             if (!assetInfo.isValid)
@@ -417,13 +417,13 @@ namespace Framework.AssetManagement.Runtime
                 return completedProvider.CreateHandle<SceneOperationHandle>();
             }
 
-            // Èç¹û¼ÓÔØµÄÊÇÖ÷³¡¾°£¬ÔòĞ¶ÔØËùÓĞ»º´æµÄ³¡¾°
+            // å¦‚æœåŠ è½½çš„æ˜¯ä¸»åœºæ™¯ï¼Œåˆ™å¸è½½æ‰€æœ‰ç¼“å­˜çš„åœºæ™¯
             if (sceneMode == LoadSceneMode.Single)
             {
                 UnloadAllScene();
             }
 
-            // ×¢Òâ£ºÍ¬Ò»¸ö³¡¾°µÄProviderGUIDÃ¿´Î¼ÓÔØ¶¼»á±ä»¯£¬ÒòÎªÍ¬Ò»¸ö³¡¾°¿ÉÒÔÒÔAdditive·½Ê½¶à´Î¼ÓÔØ£¬guid²»×ãÒÔ±íÊ¾Î¨Ò»
+            // æ³¨æ„ï¼šåŒä¸€ä¸ªåœºæ™¯çš„ProviderGUIDæ¯æ¬¡åŠ è½½éƒ½ä¼šå˜åŒ–ï¼Œå› ä¸ºåŒä¸€ä¸ªåœºæ™¯å¯ä»¥ä»¥Additiveæ–¹å¼å¤šæ¬¡åŠ è½½ï¼Œguidä¸è¶³ä»¥è¡¨ç¤ºå”¯ä¸€
             string providerGUID = $"{assetInfo.guid}-{++s_SceneCreateCount}";
             ProviderBase provider;
             {
@@ -448,36 +448,36 @@ namespace Framework.AssetManagement.Runtime
             if (m_SceneHandlesDict.ContainsKey(providerGUID) == false)
                 throw new System.Exception("Should never get here !");
 
-            // ÊÍ·Å×Ó³¡¾°¾ä±ú
+            // é‡Šæ”¾å­åœºæ™¯å¥æŸ„
             m_SceneHandlesDict[providerGUID].ReleaseInternal();
             m_SceneHandlesDict.Remove(providerGUID);
 
-            // Ğ¶ÔØÎ´±»Ê¹ÓÃµÄ×ÊÔ´£¨°üÀ¨³¡¾°£©
+            // å¸è½½æœªè¢«ä½¿ç”¨çš„èµ„æºï¼ˆåŒ…æ‹¬åœºæ™¯ï¼‰
             UnloadUnusedAssets();
         }
 
         private void UnloadAllScene()
         {
-            // ÊÍ·ÅËùÓĞ³¡¾°¾ä±ú
+            // é‡Šæ”¾æ‰€æœ‰åœºæ™¯å¥æŸ„
             foreach (var valuePair in m_SceneHandlesDict)
             {
                 valuePair.Value.ReleaseInternal();
             }
             m_SceneHandlesDict.Clear();
 
-            // Ğ¶ÔØÎ´±»Ê¹ÓÃµÄ×ÊÔ´£¨°üÀ¨³¡¾°£©
+            // å¸è½½æœªè¢«ä½¿ç”¨çš„èµ„æºï¼ˆåŒ…æ‹¬åœºæ™¯ï¼‰
             UnloadUnusedAssets();
         }
 
         internal void ClearSceneHandle()
         {
-            // ÊÍ·Å×ÊÔ´°üÏÂµÄËùÓĞ³¡¾°
+            // é‡Šæ”¾èµ„æºåŒ…ä¸‹çš„æ‰€æœ‰åœºæ™¯
             m_SceneHandlesDict.Clear();
         }
 
-        #endregion  // ³¡¾°¼ÓÔØ½Ó¿Ú
+        #endregion  // åœºæ™¯åŠ è½½æ¥å£
 
-        /////////////////////////////////// µ÷Ê½ĞÅÏ¢
+        /////////////////////////////////// è°ƒå¼ä¿¡æ¯
         public List<DebugProviderInfo> GetDebugProviderInfos()
         {
             List<DebugProviderInfo> infos = new List<DebugProviderInfo>(m_ProviderSet.Count);
