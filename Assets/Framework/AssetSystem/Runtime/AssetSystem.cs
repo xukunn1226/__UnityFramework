@@ -383,6 +383,72 @@ namespace Framework.AssetManagement.Runtime
             }
             return provider.CreateHandle<AssetOperationHandle>();
         }
+
+        public SubAssetsOperationHandle LoadSubAssets<TObject>(string assetPath) where TObject : UnityEngine.Object
+        {
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
+            return LoadSubAssetsInternal(assetInfo, true);
+        }
+
+        public SubAssetsOperationHandle LoadSubAssets(string assetPath, System.Type type)
+        {
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
+            return LoadSubAssetsInternal(assetInfo, true);
+        }
+
+        public SubAssetsOperationHandle LoadSubAssetsAsync<TObject>(string assetPath) where TObject : UnityEngine.Object
+        {
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
+            return LoadSubAssetsInternal(assetInfo, false);
+        }
+
+        public SubAssetsOperationHandle LoadSubAssetsAsync(string assetPath, System.Type type)
+        {
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
+            return LoadSubAssetsInternal(assetInfo, false);
+        }
+
+        private SubAssetsOperationHandle LoadSubAssetsInternal(AssetInfo assetInfo, bool waitForAsyncComplete)
+        {
+#if UNITY_EDITOR
+            if (assetInfo.isValid && m_PlayMode != EPlayMode.FromEditor)
+            {
+                BundleInfo bundleInfo = bundleServices.GetBundleInfo(assetInfo);
+                if (bundleInfo.descriptor.isRawFile)
+                    throw new System.Exception($"Cannot load raw file using {nameof(LoadSubAssetsAsync)} method !");
+            }
+#endif
+
+            var handle = LoadSubAssetsAsync(assetInfo);
+            if (waitForAsyncComplete)
+                handle.WaitForAsyncComplete();
+            return handle;
+        }
+
+        private SubAssetsOperationHandle LoadSubAssetsAsync(AssetInfo assetInfo)
+        {
+            if (!assetInfo.isValid)
+            {
+                UnityEngine.Debug.LogError($"Failed to load sub assets ! {assetInfo.lastError}");
+                CompletedProvider completedProvider = new CompletedProvider(assetInfo);
+                completedProvider.SetCompleted(assetInfo.lastError);
+                return completedProvider.CreateHandle<SubAssetsOperationHandle>();
+            }
+
+            string providerGUID = assetInfo.guid;
+            ProviderBase provider = TryGetProvider(providerGUID);
+            if (provider == null)
+            {
+                if (m_PlayMode == EPlayMode.FromEditor)
+                    provider = new DatabaseSubAssetsProvider(this, providerGUID, assetInfo);
+                else
+                    provider = new BundleSubAssetsProvider(this, providerGUID, assetInfo);
+                provider.InitSpawnDebugInfo();
+                m_ProviderDict.Add(providerGUID, provider);
+                m_ProviderSet.AddUnique(provider);
+            }
+            return provider.CreateHandle<SubAssetsOperationHandle>();
+        }
         #endregion  // 资源加载接口（同步&异步）
 
         #region 场景加载接口

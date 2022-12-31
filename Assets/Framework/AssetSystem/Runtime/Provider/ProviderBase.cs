@@ -15,6 +15,7 @@ namespace Framework.AssetManagement.Runtime
         public string           providerGUID            { get; private set; }       // 资源提供者唯一标识符
         public AssetInfo        assetInfo               { get; private set; }
         public Object           assetObject             { get; protected set; }
+        public Object[]         allAssetObjects         { get; protected set; }
         public Scene            sceneObject             { get; protected set; }
         public EProviderStatus  status                  { get; protected set; } = EProviderStatus.None;
         public string           lastError               { get; protected set; }
@@ -62,6 +63,8 @@ namespace Framework.AssetManagement.Runtime
                 handle = new SceneOperationHandle(this);
             else if (typeof(T) == typeof(RawFileOperationHandle))
                 handle = new RawFileOperationHandle(this);
+            else if(typeof(T) == typeof(SubAssetsOperationHandle))
+                handle = new SubAssetsOperationHandle(this);
             else
                 throw new System.NotImplementedException();
 

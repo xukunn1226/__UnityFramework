@@ -65,6 +65,13 @@ public class Regular_Startup : MonoBehaviour
         {
             TestCase4_InstancePrefabAsync();
         }
+
+        // test case5
+        y += 100;
+        if (GUI.Button(new Rect(100, y, 120, 60), "TestCase5"))
+        {
+            TestCase5_LoadSubAssetsAsync();
+        }
     }
 
     // 委托方式
@@ -117,6 +124,18 @@ public class Regular_Startup : MonoBehaviour
         var op = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");
         await op.Task;
         GameObject go = op.Instantiate(Vector3.zero, Quaternion.identity, null);
+
+
+        //Object.Destroy(go);
+        //op.Release();
+    }
+
+    async void TestCase5_LoadSubAssetsAsync()
+    {
+        var op = AssetManagerEx.LoadSubAssetsAsync<Sprite>("assets/res/ui/atlases/icon0/sprites/ui_banner_wood.png");
+        await op.Task;
+        Sprite s = op.GetSubAssetObject<Sprite>("UI_Banner_Wood");
+        Debug.Log($"{s.name}");
 
 
         //Object.Destroy(go);
