@@ -28,10 +28,10 @@ namespace Application.Runtime
             Debug.Log("CopyLogicDLLToStreamingAssets======");
             // 启动游戏会重新编译脚本，dll将编译并复制至streamingAsset，这在FromPersistent模式下会导致打版本时的dll’s hash与streamingAsset下的dll’hash不一致，从而下载失败
             // 故禁用
-            if(Launcher.GetLauncherMode() == Framework.AssetManagement.Runtime.LoaderType.FromPersistent)
-            {
-                return;
-            }
+            //if(Launcher.GetLauncherMode() == Framework.AssetManagement.Runtime.LoaderType.FromPersistent)
+            //{
+            //    return;
+            //}
 
             AssembyBuilder.BuildAssembly(true, true);
         }

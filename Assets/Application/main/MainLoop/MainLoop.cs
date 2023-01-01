@@ -4,6 +4,7 @@ using UnityEngine;
 using Framework.Core;
 using System;
 using System.Threading.Tasks;
+using Framework.AssetManagement.Runtime;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -15,7 +16,6 @@ namespace Application.Runtime
     /// <summary>
     public class MainLoop : SingletonMono<MainLoop>, INetManagerListener<NetMsgData>
     {
-        private const string    kEmptySceneName    = "empty";
         private const string    kEmptyScenePath    = "assets/res/scenes/empty.unity";
 
         public string           Ip                 = "192.168.2.7";
@@ -65,12 +65,7 @@ namespace Application.Runtime
 
         public void ReturnToLauncher()
         {
-            StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
-            ctx.sceneName = kEmptySceneName;
-            ctx.scenePath = kEmptyScenePath;
-            ctx.additive = false;
-            ctx.fromBundle = true;
-            StreamingLevelManager.Instance.LoadAsync(ctx);
+            AssetManagerEx.LoadSceneAsync(kEmptyScenePath);
         }
         
         async public Task Connect()

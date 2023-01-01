@@ -450,25 +450,25 @@ namespace Framework.Cache
         #region ////////////////////// Prefabed Pool管理接口
         internal class BuiltinAssetLoader
         {
-            private AssetLoader<GameObject> m_Loader;
+            private AssetOperationHandle m_Handle;
 
             public GameObject asset
             {
                 get
                 {
-                    return m_Loader?.asset;
+                    return m_Handle?.assetObject as GameObject;
                 }
             }
 
             public GameObject Load(string assetPath)
             {
-                m_Loader = AssetManager.LoadAsset<GameObject>(assetPath);
-                return m_Loader?.asset;
+                m_Handle = AssetManagerEx.LoadAsset<GameObject>(assetPath);
+                return m_Handle.assetObject as GameObject;
             }
 
             public void Unload()
             {
-                AssetManager.UnloadAsset(m_Loader);
+                m_Handle?.Release();
             }
         }
 

@@ -14,7 +14,7 @@ namespace Application.Logic
                                                                             "icon0", 
                                                                             "icon1" 
                                                                         };
-        static private Dictionary<string, AssetLoader<SpriteAtlas>>  m_AtlasLoaderDict = new Dictionary<string, AssetLoader<SpriteAtlas>>();   // 图集loader
+        static private Dictionary<string, AssetOperationHandle> m_AtlasLoaderDict = new Dictionary<string, AssetOperationHandle>();
 
         static public void InitPersistentAtlas()
         {
@@ -27,33 +27,33 @@ namespace Application.Logic
 
         static public void UninitPersistentAtlas()
         {
-            foreach(var item in m_AtlasLoaderDict)
+            foreach(var pair in m_AtlasLoaderDict)
             {
-                AssetManager.UnloadAsset(item.Value);
+                pair.Value.Release();
             }
             m_AtlasLoaderDict.Clear();
         }
 
-        static private AssetLoader<SpriteAtlas> GetOrLoadSpriteAtlas(string atlasName)
+        static private AssetOperationHandle GetOrLoadSpriteAtlas(string atlasName)
         {
-            AssetLoader<SpriteAtlas> loader;
-            if(!m_AtlasLoaderDict.TryGetValue(atlasName, out loader))
+            AssetOperationHandle handle;
+            if(m_AtlasLoaderDict.TryGetValue(atlasName, out handle) == false)
             {
                 string assetPath = string.Format($"{AtlasRootPath}/{atlasName}/{atlasName}.spriteatlas");
-                loader = AssetManager.LoadAsset<SpriteAtlas>(assetPath);
-                m_AtlasLoaderDict.Add(atlasName, loader);
-                if(loader.asset == null)
+                handle = AssetManagerEx.LoadAsset<SpriteAtlas>(assetPath);
+                m_AtlasLoaderDict.Add(atlasName, handle);
+                if (handle.assetObject == null)
                 {
                     UnityEngine.Debug.LogError($"GetOrLoadSpriteAtlas: failed to load sprite atlas from asset path [{assetPath}]");
                 }
             }
-            return loader;
+            return handle;
         }
 
         static public Sprite GetSprite(string atlasName, string spriteName)
         {
-            AssetLoader<SpriteAtlas> loader = GetOrLoadSpriteAtlas(atlasName);
-            return loader.asset?.GetSprite(spriteName);
+            var loader = GetOrLoadSpriteAtlas(atlasName);
+            return ((SpriteAtlas)loader.assetObject)?.GetSprite(spriteName);
         }                                                                                    
     }
 }

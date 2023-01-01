@@ -24,7 +24,7 @@ namespace Application.Logic
         }
 
         private string              m_AssetPath;
-        private GameObjectLoader    m_Loader;
+        private AssetOperationHandle m_Handle;
 
         public Renderable() {}
         public Renderable(ZActor actor) : base(actor) {}
@@ -41,11 +41,11 @@ namespace Application.Logic
             if(string.IsNullOrEmpty(assetPath))
                 throw new System.ArgumentNullException("Renderable.Load");
 #endif
-            if(m_Loader == null && string.IsNullOrEmpty(m_AssetPath))
+            if(m_Handle == null && string.IsNullOrEmpty(m_AssetPath))
             {
                 m_AssetPath = assetPath;
-                m_Loader = AssetManager.Instantiate(m_AssetPath);
-                renderer = m_Loader.asset;
+                m_Handle = AssetManagerEx.LoadAsset<GameObject>(m_AssetPath);
+                renderer = m_Handle.Instantiate();
             }
             else
             {
@@ -55,10 +55,10 @@ namespace Application.Logic
 
         public virtual void Unload()
         {
-            if(m_Loader != null)
+            if(m_Handle != null)
             {
-                AssetManager.ReleaseInst(m_Loader);
-                m_Loader = null;
+                m_Handle.Release();
+                m_Handle = null;
             }
         }
     }

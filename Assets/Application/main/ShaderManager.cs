@@ -18,7 +18,7 @@ namespace Application.Runtime
         private List<ShaderMappingInfo>                         m_ShaderInfoList    = new List<ShaderMappingInfo>();
 
         static private Dictionary<string, string>               m_ShaderNameToPath  = new Dictionary<string, string>();
-        static private Dictionary<string, AssetLoader<Shader>>  m_ShaderLoaderDict  = new Dictionary<string, AssetLoader<Shader>>();
+        static private Dictionary<string, AssetOperationHandle> m_ShaderLoaderDict  = new Dictionary<string, AssetOperationHandle>();
 
         protected override void Awake()
         {
@@ -32,11 +32,12 @@ namespace Application.Runtime
 
         protected override void OnDestroy()
         {
-            foreach(var item in m_ShaderLoaderDict)
+            foreach(var pair in m_ShaderLoaderDict)
             {
-                AssetManager.UnloadAsset(item.Value);
+                pair.Value.Release();
             }
             m_ShaderLoaderDict.Clear();
+
             base.OnDestroy();
         }
 
@@ -59,15 +60,13 @@ namespace Application.Runtime
                 Debug.LogError($"can't find config match to {shaderName}, plz check ShaderManager");
                 return null;
             }
-            
-            AssetLoader<Shader> loader;
-            if (!m_ShaderLoaderDict.TryGetValue(shaderName, out loader))
-            {
-                loader = AssetManager.LoadAsset<Shader>(assetPath);
-                m_ShaderLoaderDict.Add(shaderName, loader);
-            }
 
-            return loader.asset;
+            if (m_ShaderLoaderDict.TryGetValue(shaderName, out var handle) == false)
+            {
+                handle = AssetManagerEx.LoadAsset<Shader>(assetPath);
+                m_ShaderLoaderDict.Add(shaderName, handle);
+            }
+            return handle.assetObject as Shader;            
         }
     }
 }

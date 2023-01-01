@@ -322,35 +322,61 @@ namespace Application.Logic
         {
             if(FindResource(def) != null)
                 return true;
-            
+
             // 资源未加载则发起异步加载流程
-            AsyncLoaderManager.Instance.AsyncLoadPrefab(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });            
+            //AsyncLoaderManager.Instance.AsyncLoadPrefab(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });
+
+            m_UserData = new System.Object[] { def, userData };
+            var op = AssetManagerEx.LoadAssetAsync<GameObject>(def.assetPath);
+            op.Completed += OnUIPrefabCompleted;
             return false;
         }
 
+        private System.Object[] m_UserData;
         /// <summary>
         /// 资源加载完成的回调
         /// </summary>
-        /// <param name="go"></param>
-        /// <param name="userData"></param>
-        private void OnPrefabLoadCompleted(GameObject go, System.Object userData)
+        private void OnUIPrefabCompleted(AssetOperationHandle op)
         {
-            System.Object[] data = (System.Object[])userData;
-            UIDefines def = (UIDefines)data[0];
-            System.Object state = data[1];
-
-            if(go == null)
+            if(op.status == EOperationStatus.Failed)
             {
-                GameDebug.LogError($"failed to instantiate ui prefab: {def?.assetPath}");
                 return;
             }
 
+            System.Object[] data = (System.Object[])m_UserData;
+            UIDefines def = (UIDefines)data[0];
+            System.Object state = data[1];
+
             PanelState ps = GetOrCreatePanel(def);
-            AddResource(ps.panel, go);
+            AddResource(ps.panel, op.Instantiate());
             ps.isLoadRes = true;
 
             OnPostResourceLoaded(ps, data[1]);
         }
+
+        ///// <summary>
+        ///// 资源加载完成的回调
+        ///// </summary>
+        ///// <param name="go"></param>
+        ///// <param name="userData"></param>
+        //private void OnPrefabLoadCompleted(GameObject go, System.Object userData)
+        //{
+        //    System.Object[] data = (System.Object[])userData;
+        //    UIDefines def = (UIDefines)data[0];
+        //    System.Object state = data[1];
+
+        //    if(go == null)
+        //    {
+        //        GameDebug.LogError($"failed to instantiate ui prefab: {def?.assetPath}");
+        //        return;
+        //    }
+
+        //    PanelState ps = GetOrCreatePanel(def);
+        //    AddResource(ps.panel, go);
+        //    ps.isLoadRes = true;
+
+        //    OnPostResourceLoaded(ps, data[1]);
+        //}
 
         /// <summary>
         /// 执行资源加载完成后的流程

@@ -14,67 +14,67 @@ namespace Tests
     /// </summary>
     public class TestSoftObjectUsePool : MonoBehaviour
     {
-        string info;
+        //string info;
 
-        [SoftObject]
-        [Tooltip("缓存对象")]
-        public SoftObject m_PooledObject;
+        //[SoftObject]
+        //[Tooltip("缓存对象")]
+        //public SoftObject m_PooledObject;
        
-        private Stack<MonoPooledObject> m_Stack = new Stack<MonoPooledObject>();
+        //private Stack<MonoPooledObject> m_Stack = new Stack<MonoPooledObject>();
 
-        private void OnGUI()
-        {
-            if (GUI.Button(new Rect(100, 100, 180, 80), "Load"))
-            {
-                StartTask_Case1();
-            }
+        //private void OnGUI()
+        //{
+        //    if (GUI.Button(new Rect(100, 100, 180, 80), "Load"))
+        //    {
+        //        StartTask_Case1();
+        //    }
 
-            if (GUI.Button(new Rect(100, 200, 180, 80), "Return To Pool"))
-            {
-                ReturnToPool_Case1();
-            }
+        //    if (GUI.Button(new Rect(100, 200, 180, 80), "Return To Pool"))
+        //    {
+        //        ReturnToPool_Case1();
+        //    }
 
-            if (GUI.Button(new Rect(100, 300, 180, 80), "Unload"))
-            {
-                EndTask_Case1();
-            }
+        //    if (GUI.Button(new Rect(100, 300, 180, 80), "Unload"))
+        //    {
+        //        EndTask_Case1();
+        //    }
 
-            if (!string.IsNullOrEmpty(info))
-            {
-                GUI.Label(new Rect(100, 600, 500, 100), info);
-            }
-        }
+        //    if (!string.IsNullOrEmpty(info))
+        //    {
+        //        GUI.Label(new Rect(100, 600, 500, 100), info);
+        //    }
+        //}
 
-        void StartTask_Case1()
-        {
-            if (m_PooledObject == null || string.IsNullOrEmpty(m_PooledObject.assetName))
-                return;
+        //void StartTask_Case1()
+        //{
+        //    if (m_PooledObject == null || string.IsNullOrEmpty(m_PooledObject.assetName))
+        //        return;
 
-            MonoPooledObject obj = (MonoPooledObject)m_PooledObject.SpawnFromPool<MonoPooledObject, PrefabObjectPool>();
-            obj.transform.position = Random.insideUnitSphere * 3;
+        //    MonoPooledObject obj = (MonoPooledObject)m_PooledObject.SpawnFromPool<MonoPooledObject, PrefabObjectPool>();
+        //    obj.transform.position = Random.insideUnitSphere * 3;
 
-            m_Stack.Push(obj);
+        //    m_Stack.Push(obj);
 
-            info = obj.gameObject != null ? "sucess to load: " : "fail to load: ";
-            info += m_PooledObject.assetName;
-        }
+        //    info = obj.gameObject != null ? "sucess to load: " : "fail to load: ";
+        //    info += m_PooledObject.assetName;
+        //}
 
-        void ReturnToPool_Case1()
-        {
-            if (m_Stack.Count > 0)
-            {
-                MonoPooledObject item = m_Stack.Pop();
-                item.ReturnToPool();
-            }
-        }
+        //void ReturnToPool_Case1()
+        //{
+        //    if (m_Stack.Count > 0)
+        //    {
+        //        MonoPooledObject item = m_Stack.Pop();
+        //        item.ReturnToPool();
+        //    }
+        //}
 
-        void EndTask_Case1()
-        {
-            if (m_PooledObject != null)
-            {
-                m_PooledObject.DestroyPool();
-            }
-            info = null;
-        }
+        //void EndTask_Case1()
+        //{
+        //    if (m_PooledObject != null)
+        //    {
+        //        m_PooledObject.DestroyPool();
+        //    }
+        //    info = null;
+        //}
     }
 }

@@ -16,7 +16,7 @@ namespace Application.Runtime
     {
         private const string m_CustomLuaPath = "assets/application/main/xlua/lua";
         static private LuaEnv m_LuaEnv;
-        static private Dictionary<string, AssetLoader<LuaAsset>> m_LuaScriptLoaders = new Dictionary<string, AssetLoader<LuaAsset>>();
+        static private Dictionary<string, AssetOperationHandle>     m_LuaScriptLoaderDict = new Dictionary<string, AssetOperationHandle>();
 
         static public void Init()
         {
@@ -31,11 +31,11 @@ namespace Application.Runtime
 
         static public void Uninit()
         {
-            foreach(var loader in m_LuaScriptLoaders)
+            foreach(var pair in m_LuaScriptLoaderDict)
             {
-                AssetManager.UnloadAsset(loader.Value);
+                pair.Value.Release();
             }
-            m_LuaScriptLoaders.Clear();
+            m_LuaScriptLoaderDict.Clear();
 
             m_LuaEnv?.Dispose();
             m_LuaEnv = null;
@@ -90,20 +90,17 @@ namespace Application.Runtime
         // lua脚本当作LuaAsset加载
         static private byte[] CustomLoaderFromBundle(ref string filepath)
         {
-            if (m_LuaScriptLoaders.ContainsKey(filepath))
+            if (m_LuaScriptLoaderDict.ContainsKey(filepath))
             {
                 Debug.LogError($"lua script [{filepath}] has already loaded.");
                 return null;
             }
 
-            AssetLoader<LuaAsset> loader = AssetManager.LoadAsset<LuaAsset>(string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}"));
-            if (loader == null || loader.asset == null)
-            {
-                Debug.LogError($"failed to load TextAsset from {m_CustomLuaPath}/{filepath}");
+            AssetOperationHandle handle = AssetManagerEx.LoadAsset<LuaAsset>(string.Format($"{m_CustomLuaPath}/{filepath.ToLower()}"));
+            if (handle.status == EOperationStatus.Failed)
                 return null;
-            }
-            m_LuaScriptLoaders.Add(filepath, loader);
-            return loader.asset.Require();
+            m_LuaScriptLoaderDict.Add(filepath, handle);
+            return ((LuaAsset)handle.assetObject).Require();
         }
     }
 }

@@ -67,7 +67,6 @@ namespace Application.Runtime
         private Canvas                  Canvas;
 #pragma warning restore CS0649
 
-        public string                   SceneName;
         public string                   ScenePath;
 
         void Awake()
@@ -95,9 +94,33 @@ namespace Application.Runtime
             }
         }
 
-        void Start()
+        IEnumerator Start()
         {
+            InitializeParameters initializeParameters = new InitializeParameters()
+            {
+                PlayMode = GetPlayMode(),
+                LocationToLower = false,
+                AssetLoadingMaxNumber = int.MaxValue
+            };
+            yield return AssetManagerEx.Initialize(initializeParameters);
+
             StartWork();
+        }
+
+        private void OnDestroy()
+        {
+            AssetManagerEx.Destroy();
+        }
+
+        private EPlayMode GetPlayMode()
+        {
+            Application.Runtime.LauncherMode mode = Application.Runtime.EditorLauncherMode.Mode();
+            if (mode == Application.Runtime.LauncherMode.FromEditor)
+                return EPlayMode.FromEditor;
+            else if (mode == Application.Runtime.LauncherMode.FromStreamingAssets)
+                return EPlayMode.FromStreaming;
+            else
+                return EPlayMode.FromHost;
         }
 
         void Update()
@@ -330,7 +353,7 @@ namespace Application.Runtime
         private void VersionControlFinished()
         {
             // 补丁下载完毕再初始化资源管理器
-            AssetManager.Init(GetLauncherMode());
+            //AssetManager.Init(GetLauncherMode());
 
             if (string.IsNullOrEmpty(m_Error))
             {
@@ -349,12 +372,14 @@ namespace Application.Runtime
         // 2、核心组件数据便于修改，可以热更
         private void LoadCoreScene()
         {
-            StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
-            ctx.sceneName = SceneName;
-            ctx.scenePath = ScenePath;
-            ctx.additive = false;
-            ctx.fromBundle = true;
-            StreamingLevelManager.Instance.LoadAsync(ctx);
+            //StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
+            //ctx.sceneName = SceneName;
+            //ctx.scenePath = ScenePath;
+            //ctx.additive = false;
+            //ctx.fromBundle = true;
+            //StreamingLevelManager.Instance.LoadAsync(ctx);
+
+            AssetManagerEx.LoadSceneAsync(ScenePath);
         }
 
         // disable Launcher
@@ -473,7 +498,6 @@ namespace Application.Runtime
         private SerializedProperty  m_useLocalCDNProp;
         private SerializedProperty  m_CameraProp;
         private SerializedProperty  m_CanvasProp;
-        private SerializedProperty  m_SceneNameProp;
         private SerializedProperty  m_ScenePathProp;
         private string              m_ipString      = "202.108.22.5";
         private string              m_pingResult    = "No Information";
@@ -486,7 +510,6 @@ namespace Application.Runtime
             m_useLocalCDNProp = serializedObject.FindProperty("useLocalCDN");
             m_CameraProp = serializedObject.FindProperty("Camera");
             m_CanvasProp = serializedObject.FindProperty("Canvas");
-            m_SceneNameProp = serializedObject.FindProperty("SceneName");
             m_ScenePathProp = serializedObject.FindProperty("ScenePath");
         }
 
@@ -496,7 +519,6 @@ namespace Application.Runtime
 
             EditorGUILayout.ObjectField(m_CameraProp, typeof(Camera));
             EditorGUILayout.ObjectField(m_CanvasProp, typeof(Canvas));
-            EditorGUILayout.PropertyField(m_SceneNameProp);
             EditorGUILayout.PropertyField(m_ScenePathProp);
             EditorGUILayout.PropertyField(m_useLocalCDNProp, new GUIContent("Use local CDN", @"Local CDN is ""Assets/../Deployment/CDN"""));
             EditorGUILayout.PropertyField(m_CdnURLProp);

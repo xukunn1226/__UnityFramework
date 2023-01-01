@@ -56,7 +56,7 @@ namespace Application.Logic
 
         private void AttachSword()
         {
-            m_SwordInst = AssetManager.InstantiatePrefab("assets/framework/animationinstancing/art/twinsword/twinsword.fbx");
+            m_SwordInst = AssetManagerEx.LoadAsset<GameObject>("assets/framework/animationinstancing/art/twinsword/twinsword.fbx").Instantiate();
             m_Sword = m_SwordInst.GetComponent<Sword>();
             if(m_Sword == null)
             {

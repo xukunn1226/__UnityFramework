@@ -4,6 +4,7 @@ using UnityEngine;
 using Framework.Core;
 using Application.Runtime;
 using Cinemachine;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Logic
 {
@@ -12,17 +13,21 @@ namespace Application.Logic
         public override GameState Id { get { return GameState.Dungeon; } }
 
         private MyPlayerLogic m_PlayerLogic;
+        private SceneOperationHandle m_Op;
 
         public override void OnEnter(IState<GameState> prevState)
         {
-            StreamingLevelManager.onLevelLoadEnd += OnLevelLoadEnd;
+            //StreamingLevelManager.onLevelLoadEnd += OnLevelLoadEnd;
 
-            StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
-            ctx.sceneName = "dungeon";
-            ctx.scenePath = "assets/res/scenes/dungeon.unity";
-            ctx.additive = false;
-            ctx.fromBundle = true;
-            StreamingLevelManager.Instance.LoadAsync(ctx);
+            //StreamingLevelManager.LevelContext ctx = new StreamingLevelManager.LevelContext();
+            //ctx.sceneName = "dungeon";
+            //ctx.scenePath = "assets/res/scenes/dungeon.unity";
+            //ctx.additive = false;
+            //ctx.fromBundle = true;
+            //StreamingLevelManager.Instance.LoadAsync(ctx);
+
+            m_Op = AssetManagerEx.LoadSceneAsync("assets/res/scenes/dungeon.unity");
+            m_Op.Completed += OnLevelLoadEnd;
         }
 
         public override void OnLeave(IState<GameState> nextState)
@@ -33,11 +38,12 @@ namespace Application.Logic
             m_PlayerLogic?.Update(deltaTime);
         }
         
-        private void OnLevelLoadEnd(string sceneName)
+        private void OnLevelLoadEnd(SceneOperationHandle op)
         {
-            if(string.Compare(sceneName, "dungeon") == 0)
+            //if(string.Compare(sceneName, "dungeon") == 0)
+            if(op.status == EOperationStatus.Succeed)
             {
-                StreamingLevelManager.onLevelLoadEnd -= OnLevelLoadEnd;
+                //StreamingLevelManager.onLevelLoadEnd -= OnLevelLoadEnd;
                 Launcher.Instance.Disable();        // 结束Launcher流程
 
                 m_PlayerLogic = MyPlayerLogic.Create(1);
