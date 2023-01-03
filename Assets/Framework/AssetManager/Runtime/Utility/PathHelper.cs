@@ -10,15 +10,15 @@ namespace Framework.AssetManagement.Runtime
 		private const string CacheFolderName = "CacheFiles";
 
 		/// <summary>
-		/// »ñÈ¡¹æ·¶»¯µÄÂ·¾¶
+		/// è·å–è§„èŒƒåŒ–çš„è·¯å¾„
 		/// </summary>
 		public static string GetRegularPath(string path)
 		{
-			return path.Replace('\\', '/').Replace("\\", "/"); //Ìæ»»ÎªLinuxÂ·¾¶¸ñÊ½
+			return path.Replace('\\', '/').Replace("\\", "/"); //æ›¿æ¢ä¸ºLinuxè·¯å¾„æ ¼å¼
 		}
 
 		/// <summary>
-		/// »ñÈ¡ÎÄ¼şËùÔÚµÄÄ¿Â¼Â·¾¶£¨Linux¸ñÊ½£©
+		/// è·å–æ–‡ä»¶æ‰€åœ¨çš„ç›®å½•è·¯å¾„ï¼ˆLinuxæ ¼å¼ï¼‰
 		/// </summary>
 		public static string GetDirectory(string filePath)
 		{
@@ -27,44 +27,44 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡»ùÓÚÁ÷ÎÄ¼ş¼ĞµÄ¼ÓÔØÂ·¾¶
+		/// è·å–åŸºäºæµæ–‡ä»¶å¤¹çš„åŠ è½½è·¯å¾„
 		/// </summary>
 		public static string MakeStreamingLoadPath(string path)
 		{
 			//return StringUtility.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, AssetManagerSettings.StreamingAssetsBuildinFolder, path);
-			return StringUtility.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, Framework.Core.Utility.GetPlatformName(), path);
+			return StringHelper.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, Framework.Core.Utility.GetPlatformName(), path);
 		}
 
 		/// <summary>
-		/// »ñÈ¡»ùÓÚÉ³ºĞÎÄ¼ş¼ĞµÄ¼ÓÔØÂ·¾¶
+		/// è·å–åŸºäºæ²™ç›’æ–‡ä»¶å¤¹çš„åŠ è½½è·¯å¾„
 		/// </summary>
 		public static string MakePersistentLoadPath(string path)
 		{
 			string root = MakePersistentRootPath();
-			return StringUtility.Format("{0}/{1}", root, path);
+			return StringHelper.Format("{0}/{1}", root, path);
 		}
 
 		/// <summary>
-		/// »ñÈ¡É³ºĞÎÄ¼ş¼ĞÂ·¾¶
+		/// è·å–æ²™ç›’æ–‡ä»¶å¤¹è·¯å¾„
 		/// </summary>
 		public static string MakePersistentRootPath()
 		{
 #if UNITY_EDITOR
-			// ×¢Òâ£ºÎªÁË·½±ãµ÷ÊÔ²é¿´£¬±à¼­Æ÷ÏÂ°Ñ´æ´¢Ä¿Â¼·Åµ½ÏîÄ¿Àï
+			// æ³¨æ„ï¼šä¸ºäº†æ–¹ä¾¿è°ƒè¯•æŸ¥çœ‹ï¼Œç¼–è¾‘å™¨ä¸‹æŠŠå­˜å‚¨ç›®å½•æ”¾åˆ°é¡¹ç›®é‡Œ
 			string projectPath = GetDirectory(UnityEngine.Application.dataPath);
-			return StringUtility.Format("{0}/Sandbox", projectPath);
+			return StringHelper.Format("{0}/Sandbox", projectPath);
 #else
 			return StringUtility.Format("{0}/Sandbox", UnityEngine.Application.persistentDataPath);
 #endif
 		}
 
 		/// <summary>
-		/// »ñÈ¡WWW¼ÓÔØ±¾µØ×ÊÔ´µÄÂ·¾¶
+		/// è·å–WWWåŠ è½½æœ¬åœ°èµ„æºçš„è·¯å¾„
 		/// </summary>
 		public static string ConvertToWWWPath(string path)
 		{
 #if UNITY_EDITOR
-			return StringUtility.Format("file:///{0}", path);
+			return StringHelper.Format("file:///{0}", path);
 #elif UNITY_IPHONE
 			return StringUtility.Format("file://{0}", path);
 #elif UNITY_ANDROID
@@ -77,7 +77,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// É¾³ıÉ³ºĞ×ÜÄ¿Â¼
+		/// åˆ é™¤æ²™ç›’æ€»ç›®å½•
 		/// </summary>
 		public static void DeleteSandbox()
 		{
@@ -87,7 +87,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// É¾³ıÉ³ºĞÄÚµÄ»º´æÎÄ¼ş¼Ğ
+		/// åˆ é™¤æ²™ç›’å†…çš„ç¼“å­˜æ–‡ä»¶å¤¹
 		/// </summary>
 		public static void DeleteCacheFolder()
 		{
@@ -97,7 +97,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
         /// <summary>
-        /// »ñÈ¡»º´æÎÄ¼ş¼ĞÂ·¾¶
+        /// è·å–ç¼“å­˜æ–‡ä»¶å¤¹è·¯å¾„
         /// </summary>
         public static string GetCacheFolderPath(string packageName)
         {
@@ -105,9 +105,9 @@ namespace Framework.AssetManagement.Runtime
             return $"{root}/{packageName}";
         }
 
-        #region É³ºĞÄÚÇåµ¥Ïà¹Ø
+        #region æ²™ç›’å†…æ¸…å•ç›¸å…³
         /// <summary>
-        /// »ñÈ¡É³ºĞÄÚÇåµ¥ÎÄ¼şµÄÂ·¾¶
+        /// è·å–æ²™ç›’å†…æ¸…å•æ–‡ä»¶çš„è·¯å¾„
         /// </summary>
         public static string GetCacheManifestFilePath(string packageName)
         {
@@ -116,7 +116,7 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// ¼ÓÔØÉ³ºĞÄÚÇåµ¥ÎÄ¼ş
+        /// åŠ è½½æ²™ç›’å†…æ¸…å•æ–‡ä»¶
         /// </summary>
         public static AssetManifest LoadCacheManifestFile(string packageName)
 		{
@@ -127,7 +127,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// ´æ´¢É³ºĞÄÚÇåµ¥ÎÄ¼ş
+		/// å­˜å‚¨æ²™ç›’å†…æ¸…å•æ–‡ä»¶
 		/// </summary>
 		public static AssetManifest SaveCacheManifestFile(string packageName, byte[] fileBytesData)
 		{
@@ -139,7 +139,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// ¼ì²âÉ³ºĞÄÚÇåµ¥ÎÄ¼şÊÇ·ñ´æÔÚ
+		/// æ£€æµ‹æ²™ç›’å†…æ¸…å•æ–‡ä»¶æ˜¯å¦å­˜åœ¨
 		/// </summary>
 		public static bool CheckCacheManifestFileExists(string packageName)
 		{
@@ -148,7 +148,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// É¾³ıÉ³ºĞÄÚÇåµ¥ÎÄ¼ş
+		/// åˆ é™¤æ²™ç›’å†…æ¸…å•æ–‡ä»¶
 		/// </summary>
 		public static bool DeleteCacheManifestFile(string packageName)
 		{

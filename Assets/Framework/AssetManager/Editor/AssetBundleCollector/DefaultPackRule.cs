@@ -7,21 +7,21 @@ using Framework.AssetManagement;
 namespace Framework.AssetManagement.AssetBundleCollector
 {
     /// <summary>
-    /// ÒÔÎÄ¼şÂ·¾¶Îª×ÊÔ´°üÃû
-    /// ÀıÈç£º"Assets/Res/UI/Checker.png" -> "assets_res_ui_checker.bundle"
+    /// ä»¥æ–‡ä»¶è·¯å¾„ä¸ºèµ„æºåŒ…å
+    /// ä¾‹å¦‚ï¼š"Assets/Res/UI/Checker.png" -> "assets_res_ui_checker.bundle"
     /// </summary>
     public class PackFile : IPackRule
     {
         string IPackRule.GetBundleName(PackRuleData data)
         {
-            string bundleName = Runtime.StringUtility.RemoveExtension(data.AssetPath);
+            string bundleName = Runtime.StringHelper.RemoveExtension(data.AssetPath);
             return EditorTools.GetRegularPath(bundleName).Replace('/', '_');
         }
     }
 
     /// <summary>
-    /// ÒÔ¸¸ÀàÎÄ¼ş¼ĞÂ·¾¶×÷Îª×ÊÔ´°üÃû
-    /// ÀıÈç£º"Assets/Res/UI/Backpack/main.prefab" -> "assets_res_ui_backpack.bundle"
+    /// ä»¥çˆ¶ç±»æ–‡ä»¶å¤¹è·¯å¾„ä½œä¸ºèµ„æºåŒ…å
+    /// ä¾‹å¦‚ï¼š"Assets/Res/UI/Backpack/main.prefab" -> "assets_res_ui_backpack.bundle"
     /// </summary>
     public class PackDirectory : IPackRule
     {
@@ -33,13 +33,13 @@ namespace Framework.AssetManagement.AssetBundleCollector
     }
 
     /// <summary>
-    /// ÒÔÊÕ¼¯Æ÷Â·¾¶ÏÂ¶¥¼¶ÎÄ¼ş¼ĞÎª×ÊÔ´°üÃû
-    /// ×¢Òâ£º¶¥¼¶ÎÄ¼ş¼ĞÏÂµÄËùÓĞÎÄ¼ş´ò½øÒ»¸ö×ÊÔ´°ü
-    /// ÀıÈç£ºÊÕ¼¯Æ÷Â·¾¶Îª£º"Assets/Res/Enviromnent/Building"
-    /// ÀıÈç£º"Assets/Res/Environment/Building/House/House.prefab" -> "assets_res_environment_building_house.bundle"
-    /// ÀıÈç£º"Assets/Res/Environment/Building/House/House_Albedo.png" -> "assets_res_environment_building_house.bundle"
-    /// ÀıÈç£º"Assets/Res/Environment/Building/House/House_Normal.png" -> "assets_res_environment_building_house.bundle"
-    /// ÀıÈç£º"Assets/Res/Environment/Building/House/House_Material.material" -> "assets_res_environment_building_house.bundle"
+    /// ä»¥æ”¶é›†å™¨è·¯å¾„ä¸‹é¡¶çº§æ–‡ä»¶å¤¹ä¸ºèµ„æºåŒ…å
+    /// æ³¨æ„ï¼šé¡¶çº§æ–‡ä»¶å¤¹ä¸‹çš„æ‰€æœ‰æ–‡ä»¶æ‰“è¿›ä¸€ä¸ªèµ„æºåŒ…
+    /// ä¾‹å¦‚ï¼šæ”¶é›†å™¨è·¯å¾„ä¸ºï¼š"Assets/Res/Enviromnent/Building"
+    /// ä¾‹å¦‚ï¼š"Assets/Res/Environment/Building/House/House.prefab" -> "assets_res_environment_building_house.bundle"
+    /// ä¾‹å¦‚ï¼š"Assets/Res/Environment/Building/House/House_Albedo.png" -> "assets_res_environment_building_house.bundle"
+    /// ä¾‹å¦‚ï¼š"Assets/Res/Environment/Building/House/House_Normal.png" -> "assets_res_environment_building_house.bundle"
+    /// ä¾‹å¦‚ï¼š"Assets/Res/Environment/Building/House/House_Material.material" -> "assets_res_environment_building_house.bundle"
     /// </summary>
     public class PackTopDirectory : IPackRule
     {
@@ -58,7 +58,7 @@ namespace Framework.AssetManagement.AssetBundleCollector
     }
 
     /// <summary>
-    /// ÒÔÊÕ¼¯Æ÷Â·¾¶×÷Îª×ÊÔ´°ü
+    /// ä»¥æ”¶é›†å™¨è·¯å¾„ä½œä¸ºèµ„æºåŒ…
     /// </summary>
     public class PackCollector : IPackRule
     {
@@ -70,14 +70,14 @@ namespace Framework.AssetManagement.AssetBundleCollector
     }
 
     /// <summary>
-    /// ´ò°üÔ­ÉúÎÄ¼ş
-    /// ×¢Òâ£ºÔ­ÉúÎÄ¼ş²»¿ÉÓĞÈÎºÎÒÀÀµ¹ØÏµ
+    /// æ‰“åŒ…åŸç”Ÿæ–‡ä»¶
+    /// æ³¨æ„ï¼šåŸç”Ÿæ–‡ä»¶ä¸å¯æœ‰ä»»ä½•ä¾èµ–å…³ç³»
     /// </summary>
     public class PackRawFile : IPackRule
     {
         string IPackRule.GetBundleName(PackRuleData data)
         {
-            string extension = Runtime.StringUtility.RemoveFirstChar(System.IO.Path.GetExtension(data.AssetPath));
+            string extension = Runtime.StringHelper.RemoveFirstChar(System.IO.Path.GetExtension(data.AssetPath));
             if (extension == EditorDefine.EAssetFileExtension.unity.ToString() || extension == EditorDefine.EAssetFileExtension.prefab.ToString() ||
                 extension == EditorDefine.EAssetFileExtension.mat.ToString() || extension == EditorDefine.EAssetFileExtension.controller.ToString() ||
                 extension == EditorDefine.EAssetFileExtension.fbx.ToString() || extension == EditorDefine.EAssetFileExtension.anim.ToString() ||
@@ -86,7 +86,7 @@ namespace Framework.AssetManagement.AssetBundleCollector
                 throw new System.Exception($"{nameof(PackRawFile)} is not support file estension : {extension}");
             }
 
-            // ×¢Òâ£ºÔ­ÉúÎÄ¼şÖ»Ö§³ÖÎŞÒÀÀµ¹ØÏµµÄ×ÊÔ´
+            // æ³¨æ„ï¼šåŸç”Ÿæ–‡ä»¶åªæ”¯æŒæ— ä¾èµ–å…³ç³»çš„èµ„æº
             string[] depends = AssetDatabase.GetDependencies(data.AssetPath, true);
             if (depends.Length != 1)
                 throw new System.Exception($"{nameof(PackRawFile)} is not support estension : {extension}");

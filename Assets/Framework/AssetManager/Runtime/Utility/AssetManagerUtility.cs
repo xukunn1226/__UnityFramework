@@ -10,7 +10,7 @@ namespace Framework.AssetManagement.Runtime
 	/// <summary>
 	/// 字符串工具类
 	/// </summary>
-	public static class StringUtility
+	public static class StringHelper
 	{
 		[ThreadStatic]
 		private static StringBuilder _cacheBuilder = new StringBuilder(1024);
