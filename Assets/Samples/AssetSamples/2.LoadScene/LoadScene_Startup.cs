@@ -10,29 +10,14 @@ public class LoadScene_Startup : MonoBehaviour
     private SceneOperationHandle m_Op2;
     private UnloadSceneOperation m_UnloadOp1;
     private UnloadSceneOperation m_UnloadOp2;
-
-    private EPlayMode GetPlayMode()
-    {
-#if UNITY_EDITOR
-        Application.Runtime.LauncherMode mode = Application.Runtime.EditorLauncherMode.Mode();
-        if (mode == Application.Runtime.LauncherMode.FromEditor)
-            return EPlayMode.FromEditor;
-        else if (mode == Application.Runtime.LauncherMode.FromStreamingAssets)
-            return EPlayMode.FromStreaming;
-        else
-            return EPlayMode.FromHost;
-#else
-        return EPlayMode.FromStreaming;
-#endif
-    }
-
+        
     IEnumerator Start()
     {
         Object.DontDestroyOnLoad(gameObject);
 
         InitializeParameters initializeParameters = new InitializeParameters()
         {
-            PlayMode = GetPlayMode(),
+            PlayMode = Application.Runtime.Launcher.GetPlayMode(),
             LocationToLower = false,
             AssetLoadingMaxNumber = int.MaxValue
         };
