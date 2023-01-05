@@ -37,7 +37,7 @@ namespace Application.Logic
 
         static System.Collections.IEnumerator Prepare()
         {
-            if(Launcher.GetLauncherMode() == LoaderType.FromStreamingAssets)
+            if(Launcher.GetPlayMode() == Framework.AssetManagement.Runtime.EPlayMode.FromStreaming)
             { // 仅FromStreamingAssets时需要提取db，FromEditor从本地读取，FromPersistent会首次启动时提取
                 yield return ConfigManager.ExtractDatabase();
             }

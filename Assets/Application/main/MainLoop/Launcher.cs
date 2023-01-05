@@ -112,8 +112,9 @@ namespace Application.Runtime
             AssetManagerEx.Destroy();
         }
 
-        private EPlayMode GetPlayMode()
+        static public EPlayMode GetPlayMode()
         {
+#if UNITY_EDITOR
             Application.Runtime.LauncherMode mode = Application.Runtime.EditorLauncherMode.Mode();
             if (mode == Application.Runtime.LauncherMode.FromEditor)
                 return EPlayMode.FromEditor;
@@ -121,6 +122,11 @@ namespace Application.Runtime
                 return EPlayMode.FromStreaming;
             else
                 return EPlayMode.FromHost;
+#elif LOAD_FROM_PERSISTENT
+            return EPlayMode.FromHost;
+#else
+            return EPlayMode.FromStreaming;
+#endif
         }
 
         void Update()
@@ -161,38 +167,14 @@ namespace Application.Runtime
             }
         }
 
-        // 启动模式
-        // 编辑器下：由Tools/Launcher mode控制
-        // 真机模式：由LOAD_FROM_PERSISTENT控制从Streaming Assets下加载还是persistentPath
-        static public LoaderType GetLauncherMode()
-        {
-#if UNITY_EDITOR
-            LauncherMode mode = EditorLauncherMode.Mode();
-            switch (mode)
-            {
-                case LauncherMode.FromEditor:
-                    return LoaderType.FromEditor;
-                case LauncherMode.FromStreamingAssets:
-                    return LoaderType.FromStreamingAssets;
-                case LauncherMode.FromPersistent:
-                    return LoaderType.FromPersistent;
-            }
-            return LoaderType.FromEditor;
-#elif LOAD_FROM_PERSISTENT
-            return LoaderType.FromPersistent;
-#else
-            return LoaderType.FromStreamingAssets;            
-#endif
-        }
-
         private void StartWork()
         {
             ShowUI(true);
 
             // 启动模式是FromPersistent时执行版控流程，否则略过版控流程
-            m_Phase = GetLauncherMode() == LoaderType.FromPersistent ? LaunchPhase.BeginExtract : LaunchPhase.EndPatch;
+            m_Phase = GetPlayMode() == EPlayMode.FromHost ? LaunchPhase.BeginExtract : LaunchPhase.EndPatch;
             
-            Debug.Log($"launcher mode is {GetLauncherMode()}");
+            Debug.Log($"launcher mode is {GetPlayMode()}");
         }
         
         // 再次执行完整流程（WARNING: 流程结束或异常时才可restart，过程中不可使用）
@@ -398,9 +380,9 @@ namespace Application.Runtime
         {
 #if UNITY_EDITOR
             return true;
-#else            
+#else
             return UnityEngine.Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
-#endif            
+#endif
         }
 
         // 网络链接是否断开
@@ -408,9 +390,9 @@ namespace Application.Runtime
         {
 #if UNITY_EDITOR
             return true;
-#else           
+#else
             return UnityEngine.Application.internetReachability != NetworkReachability.NotReachable;
-#endif            
+#endif
         }
 
         private bool ResloveCDN()
@@ -434,7 +416,7 @@ namespace Application.Runtime
                 Debug.LogError(e.Message);
                 return false;
             }
-#pragma warning restore CS0168            
+#pragma warning restore CS0168
             return true;
         }
 
@@ -485,7 +467,7 @@ namespace Application.Runtime
             }
             return false;
         }
-#endif        
+#endif
     }
 
 #if UNITY_EDITOR
@@ -516,7 +498,6 @@ namespace Application.Runtime
         async public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
             EditorGUILayout.ObjectField(m_CameraProp, typeof(Camera));
             EditorGUILayout.ObjectField(m_CanvasProp, typeof(Canvas));
             EditorGUILayout.PropertyField(m_ScenePathProp);

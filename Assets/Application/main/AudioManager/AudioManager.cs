@@ -78,10 +78,10 @@ namespace Application.Runtime
         {
             string bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
 
-            LoaderType type = Launcher.GetLauncherMode();
-            switch(type)
+            EPlayMode mode = Launcher.GetPlayMode();
+            switch(mode)
             {
-                case LoaderType.FromEditor:
+                case EPlayMode.FromEditor:
                     {
 #if UNITY_EDITOR
                         // Use original asset location because streaming asset folder will contain platform specific banks
@@ -101,14 +101,14 @@ namespace Application.Runtime
 #endif
                     }
                     break;
-                case LoaderType.FromStreamingAssets:
+                case EPlayMode.FromStreaming:
                     {
 #if UNITY_ANDROID && !UNITY_EDITOR
                         bankFolder = string.Format("{0}/{1}/{2}", "file:///android_asset", Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
 #endif
                     }
                     break;
-                case LoaderType.FromPersistent:
+                case EPlayMode.FromHost:
                     {
                         bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.persistentDataPath, Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
                     }

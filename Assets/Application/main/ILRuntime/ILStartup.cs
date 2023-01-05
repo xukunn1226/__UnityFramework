@@ -36,23 +36,23 @@ namespace Application.Runtime
 
 		IEnumerator Start()
 		{
-			if(Launcher.GetLauncherMode() == LoaderType.FromStreamingAssets)
+			if(Launcher.GetPlayMode() == EPlayMode.FromStreaming)
             { // 仅FromStreamingAssets时需要提取，FromEditor从本地读取，FromPersistent会首次启动时提取
                 yield return ILHelper.ExtractHotFixDLL();
 				yield return ILHelper.ExtractHotFixPDB();
             }
 
-			LoaderType type = Launcher.GetLauncherMode();
+			EPlayMode mode = Launcher.GetPlayMode();
 			string dllPath = UnityEngine.Application.streamingAssetsPath;
-			switch(type)
+			switch(mode)
 			{
-				case LoaderType.FromEditor:
+				case EPlayMode.FromEditor:
 				{
 					dllPath = string.Format($"{UnityEngine.Application.dataPath}/../Library/ScriptAssemblies");
 					break;
 				}
-				case LoaderType.FromStreamingAssets:
-				case LoaderType.FromPersistent:
+				case EPlayMode.FromStreaming:
+				case EPlayMode.FromHost:
 				{
 					dllPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}");
 					break;

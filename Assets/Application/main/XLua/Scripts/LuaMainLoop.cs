@@ -48,14 +48,14 @@ namespace Application.Runtime
 
         static private void SetupCustomLoader()
         {
-            LoaderType type = Launcher.GetLauncherMode();
-            switch(type)
+            EPlayMode mode = Launcher.GetPlayMode();
+            switch(mode)
             {
-                case LoaderType.FromEditor:
+                case EPlayMode.FromEditor:
                     m_LuaEnv.AddLoader(CustomLoaderFromEditor);
                     break;
-                case LoaderType.FromStreamingAssets:
-                case LoaderType.FromPersistent:
+                case EPlayMode.FromStreaming:
+                case EPlayMode.FromHost:
                     m_LuaEnv.AddLoader(CustomLoaderFromBundle);
                     break;
             }

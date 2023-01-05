@@ -54,32 +54,32 @@ namespace Framework.AssetManagement.Runtime
 			string projectPath = GetDirectory(UnityEngine.Application.dataPath);
 			return StringHelper.Format("{0}/Sandbox", projectPath);
 #else
-			return StringUtility.Format("{0}/Sandbox", UnityEngine.Application.persistentDataPath);
+			return StringHelper.Format("{0}/Sandbox", UnityEngine.Application.persistentDataPath);
 #endif
-		}
+        }
 
-		/// <summary>
-		/// 获取WWW加载本地资源的路径
-		/// </summary>
-		public static string ConvertToWWWPath(string path)
+        /// <summary>
+        /// 获取WWW加载本地资源的路径
+        /// </summary>
+        public static string ConvertToWWWPath(string path)
 		{
 #if UNITY_EDITOR
 			return StringHelper.Format("file:///{0}", path);
 #elif UNITY_IPHONE
-			return StringUtility.Format("file://{0}", path);
+			return StringHelper.Format("file://{0}", path);
 #elif UNITY_ANDROID
 			return path;
 #elif UNITY_STANDALONE
-			return StringUtility.Format("file:///{0}", path);
+			return StringHelper.Format("file:///{0}", path);
 #elif UNITY_WEBGL
 			return path;
 #endif
-		}
+        }
 
-		/// <summary>
-		/// 删除沙盒总目录
-		/// </summary>
-		public static void DeleteSandbox()
+        /// <summary>
+        /// 删除沙盒总目录
+        /// </summary>
+        public static void DeleteSandbox()
 		{
 			string directoryPath = PathHelper.MakePersistentLoadPath(string.Empty);
 			if (Directory.Exists(directoryPath))

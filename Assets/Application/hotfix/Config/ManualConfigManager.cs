@@ -17,13 +17,23 @@ namespace Application.Logic
             {
                 if(string.IsNullOrEmpty(m_DataPath))
                 {
-                    switch(Launcher.GetLauncherMode())
+                    //switch(Launcher.GetLauncherMode())
+                    //{
+                    //    case LoaderType.FromEditor:
+                    //        m_DataPath = ConfigBuilderSetting.DatabaseFilePath;
+                    //        break;
+                    //    case LoaderType.FromStreamingAssets:
+                    //    case LoaderType.FromPersistent:
+                    //        m_DataPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
+                    //        break;
+                    //}
+                    switch(Launcher.GetPlayMode())
                     {
-                        case LoaderType.FromEditor:
+                        case Framework.AssetManagement.Runtime.EPlayMode.FromEditor:
                             m_DataPath = ConfigBuilderSetting.DatabaseFilePath;
                             break;
-                        case LoaderType.FromStreamingAssets:
-                        case LoaderType.FromPersistent:
+                        case Framework.AssetManagement.Runtime.EPlayMode.FromStreaming:
+                        case Framework.AssetManagement.Runtime.EPlayMode.FromHost:
                             m_DataPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
                             break;
                     }

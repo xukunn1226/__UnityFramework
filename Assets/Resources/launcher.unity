@@ -178,7 +178,6 @@ MonoBehaviour:
   useLocalCDN: 1
   Camera: {fileID: 755209597}
   Canvas: {fileID: 1301741746}
-  SceneName: main
   ScenePath: assets/res/scenes/main.unity
 --- !u!114 &73561825
 MonoBehaviour:
@@ -456,6 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05531492bb44c724b88dbf01b65a15c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit

@@ -8,15 +8,15 @@ namespace Framework.AssetManagement
     static public class EditorTools
     {
 		/// <summary>
-		/// »ñÈ¡¹æ·¶µÄÂ·¾¶
+		/// è·å–è§„èŒƒçš„è·¯å¾„
 		/// </summary>
 		public static string GetRegularPath(string path)
 		{
-			return path.Replace('\\', '/').Replace("\\", "/"); //Ìæ»»ÎªLinuxÂ·¾¶¸ñÊ½
+			return path.Replace('\\', '/').Replace("\\", "/"); //æ›¿æ¢ä¸ºLinuxè·¯å¾„æ ¼å¼
 		}
 
 		/// <summary>
-		/// »ñÈ¡ÏîÄ¿¹¤³ÌÂ·¾¶
+		/// è·å–é¡¹ç›®å·¥ç¨‹è·¯å¾„
 		/// </summary>
 		public static string GetProjectPath()
 		{
@@ -25,8 +25,8 @@ namespace Framework.AssetManagement
 		}
 
 		/// <summary>
-		/// ×ª»»ÎÄ¼şµÄ¾ø¶ÔÂ·¾¶ÎªUnity×ÊÔ´Â·¾¶
-		/// ÀıÈç D:\\YourPorject\\Assets\\Works\\file.txt Ìæ»»Îª Assets/Works/file.txt
+		/// è½¬æ¢æ–‡ä»¶çš„ç»å¯¹è·¯å¾„ä¸ºUnityèµ„æºè·¯å¾„
+		/// ä¾‹å¦‚ D:\\YourPorject\\Assets\\Works\\file.txt æ›¿æ¢ä¸º Assets/Works/file.txt
 		/// </summary>
 		public static string AbsolutePathToAssetPath(string absolutePath)
 		{
@@ -35,8 +35,8 @@ namespace Framework.AssetManagement
 		}
 
 		/// <summary>
-		/// ×ª»»Unity×ÊÔ´Â·¾¶ÎªÎÄ¼şµÄ¾ø¶ÔÂ·¾¶
-		/// ÀıÈç£ºAssets/Works/file.txt Ìæ»»Îª D:\\YourPorject/Assets/Works/file.txt
+		/// è½¬æ¢Unityèµ„æºè·¯å¾„ä¸ºæ–‡ä»¶çš„ç»å¯¹è·¯å¾„
+		/// ä¾‹å¦‚ï¼šAssets/Works/file.txt æ›¿æ¢ä¸º D:\\YourPorject/Assets/Works/file.txt
 		/// </summary>
 		public static string AssetPathToAbsolutePath(string assetPath)
 		{
@@ -45,11 +45,11 @@ namespace Framework.AssetManagement
 		}
 
 		/// <summary>
-		/// µİ¹é²éÕÒÄ¿±êÎÄ¼ş¼ĞÂ·¾¶
+		/// é€’å½’æŸ¥æ‰¾ç›®æ ‡æ–‡ä»¶å¤¹è·¯å¾„
 		/// </summary>
-		/// <param name="root">ËÑË÷µÄ¸ùÄ¿Â¼</param>
-		/// <param name="folderName">Ä¿±êÎÄ¼ş¼ĞÃû³Æ</param>
-		/// <returns>·µ»ØÕÒµ½µÄÎÄ¼ş¼ĞÂ·¾¶£¬Èç¹ûÃ»ÓĞÕÒµ½·µ»Ø¿Õ×Ö·û´®</returns>
+		/// <param name="root">æœç´¢çš„æ ¹ç›®å½•</param>
+		/// <param name="folderName">ç›®æ ‡æ–‡ä»¶å¤¹åç§°</param>
+		/// <returns>è¿”å›æ‰¾åˆ°çš„æ–‡ä»¶å¤¹è·¯å¾„ï¼Œå¦‚æœæ²¡æœ‰æ‰¾åˆ°è¿”å›ç©ºå­—ç¬¦ä¸²</returns>
 		public static string FindFolder(string root, string folderName)
 		{
 			DirectoryInfo rootInfo = new DirectoryInfo(root);
@@ -68,13 +68,13 @@ namespace Framework.AssetManagement
 		}
 
 		/// <summary>
-		/// ½ØÈ¡×Ö·û´®
-		/// »ñÈ¡Æ¥Åäµ½µÄºóÃæÄÚÈİ
+		/// æˆªå–å­—ç¬¦ä¸²
+		/// è·å–åŒ¹é…åˆ°çš„åé¢å†…å®¹
 		/// </summary>
-		/// <param name="content">ÄÚÈİ</param>
-		/// <param name="key">¹Ø¼ü×Ö</param>
-		/// <param name="includeKey">·Ö¸îµÄ½á¹ûÀïÊÇ·ñ°üº¬¹Ø¼ü×Ö</param>
-		/// <param name="searchBegin">ÊÇ·ñÊ¹ÓÃ³õÊ¼Æ¥ÅäµÄÎ»ÖÃ£¬·ñÔòÊ¹ÓÃÄ©Î²Æ¥ÅäµÄÎ»ÖÃ</param>
+		/// <param name="content">å†…å®¹</param>
+		/// <param name="key">å…³é”®å­—</param>
+		/// <param name="includeKey">åˆ†å‰²çš„ç»“æœé‡Œæ˜¯å¦åŒ…å«å…³é”®å­—</param>
+		/// <param name="searchBegin">æ˜¯å¦ä½¿ç”¨åˆå§‹åŒ¹é…çš„ä½ç½®ï¼Œå¦åˆ™ä½¿ç”¨æœ«å°¾åŒ¹é…çš„ä½ç½®</param>
 		private static string Substring(string content, string key, bool includeKey, bool firstMatch = true)
 		{
 			if (string.IsNullOrEmpty(key))
@@ -82,11 +82,11 @@ namespace Framework.AssetManagement
 
 			int startIndex = -1;
 			if (firstMatch)
-				startIndex = content.IndexOf(key); //·µ»Ø×Ó×Ö·û´®µÚÒ»´Î³öÏÖÎ»ÖÃ		
+				startIndex = content.IndexOf(key); //è¿”å›å­å­—ç¬¦ä¸²ç¬¬ä¸€æ¬¡å‡ºç°ä½ç½®		
 			else
-				startIndex = content.LastIndexOf(key); //·µ»Ø×Ó×Ö·û´®×îºó³öÏÖµÄÎ»ÖÃ
+				startIndex = content.LastIndexOf(key); //è¿”å›å­å­—ç¬¦ä¸²æœ€åå‡ºç°çš„ä½ç½®
 
-			// Èç¹ûÃ»ÓĞÕÒµ½Æ¥ÅäµÄ¹Ø¼ü×Ö
+			// å¦‚æœæ²¡æœ‰æ‰¾åˆ°åŒ¹é…çš„å…³é”®å­—
 			if (startIndex == -1)
 				return content;
 
