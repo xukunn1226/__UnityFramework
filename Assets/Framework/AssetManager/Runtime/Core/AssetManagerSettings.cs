@@ -58,6 +58,10 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public const string StreamingAssetsBuildinFolder = "BuildinFiles";
 
+		/// <summary>
+		/// 编辑器模拟环境下异步加载时的延迟帧数
+		/// </summary>
+		public const int DelayedFrameNumInEditorSimulateMode = 2;
 
 		/// <summary>
 		/// 忽略的文件类型

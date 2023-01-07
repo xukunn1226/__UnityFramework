@@ -6,8 +6,11 @@ namespace Framework.AssetManagement.Runtime
 {
 	internal class DatabaseRawFileProvider : ProviderBase
 	{
+		private int m_DelayedFrameCount;
+
 		public DatabaseRawFileProvider(AssetSystem assetSystem, string providerGUID, AssetInfo assetInfo) : base(assetSystem, providerGUID, assetInfo)
 		{
+			m_DelayedFrameCount = Mathf.Max(1, AssetManagerSettings.DelayedFrameNumInEditorSimulateMode);
 		}
 
 		public override void Update()
@@ -29,11 +32,22 @@ namespace Framework.AssetManagement.Runtime
 					return;
 				}
 
-				status = EProviderStatus.Checking;
-
-				// 注意：模拟异步加载效果提前返回（延迟一帧）
-				if (!requestAsyncComplete)
-					return;
+				if (requestAsyncComplete)
+				{ // 立即结束异步模拟，进入下个流程
+					status = EProviderStatus.Loading;
+				}
+				else
+				{ // 模拟延迟几帧加载
+					if (m_DelayedFrameCount <= 0)
+					{
+						status = EProviderStatus.Loading;
+					}
+					else
+					{
+						--m_DelayedFrameCount;
+						return;
+					}
+				}
 			}
 
 			if (status == EProviderStatus.Checking)
