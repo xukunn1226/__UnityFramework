@@ -8,9 +8,9 @@ namespace Framework.AssetManagement.Runtime
     {
         private AssetBundleRequest m_AssetBundleRequest;
 
-#pragma warning disable CS0628 // ÔÚÃÜ·âÀàĞÍÖĞÉùÃ÷ÁËĞÂµÄ±£»¤³ÉÔ±
+#pragma warning disable CS0628 // åœ¨å¯†å°ç±»å‹ä¸­å£°æ˜äº†æ–°çš„ä¿æŠ¤æˆå‘˜
         protected BundleAssetProvider() { }
-#pragma warning restore CS0628 // ÔÚÃÜ·âÀàĞÍÖĞÉùÃ÷ÁËĞÂµÄ±£»¤³ÉÔ±
+#pragma warning restore CS0628 // åœ¨å¯†å°ç±»å‹ä¸­å£°æ˜äº†æ–°çš„ä¿æŠ¤æˆå‘˜
         public BundleAssetProvider(AssetSystem assetSystem, string providerGUID, AssetInfo assetInfo) : base(assetSystem, providerGUID, assetInfo)
         {
         }
@@ -22,11 +22,11 @@ namespace Framework.AssetManagement.Runtime
             if (isDone)
                 return;
 
-            // ¿ªÊ¼
+            // å¼€å§‹
             if (status == EProviderStatus.None)
                 status = EProviderStatus.CheckBundle;
 
-            // ¼ì²â×ÊÔ´°üµÄÍê³É×´Ì¬
+            // æ£€æµ‹èµ„æºåŒ…çš„å®ŒæˆçŠ¶æ€
             if(status == EProviderStatus.CheckBundle)
             {
                 if(requestAsyncComplete)
@@ -36,7 +36,7 @@ namespace Framework.AssetManagement.Runtime
                         dependBundleLoader.WaitForAsyncComplete();
                 }
 
-                // µÈ´ı×ÊÔ´°ü¼ÓÔØÍê³É
+                // ç­‰å¾…èµ„æºåŒ…åŠ è½½å®Œæˆ
                 if (!mainBundleLoader.isDone)
                     return;
                 if (dependBundleLoader != null && !dependBundleLoader.IsDone())
@@ -61,11 +61,11 @@ namespace Framework.AssetManagement.Runtime
                 status = EProviderStatus.Loading;
             }
 
-            // ¼ÓÔØ×ÊÔ´
+            // åŠ è½½èµ„æº
             if(status == EProviderStatus.Loading)
             {
                 if(requestAsyncComplete)
-                { // Í¬²½
+                { // åŒæ­¥
                     if(assetInfo.assetType == null)
                     {
                         assetObject = mainBundleLoader.cachedBundle.LoadAsset(assetInfo.addressableName);
@@ -76,7 +76,7 @@ namespace Framework.AssetManagement.Runtime
                     }
                 }
                 else
-                { // Òì²½
+                { // å¼‚æ­¥
                     if(assetInfo.assetType == null)
                     {
                         m_AssetBundleRequest = mainBundleLoader.cachedBundle.LoadAssetAsync(assetInfo.addressableName);
@@ -89,7 +89,7 @@ namespace Framework.AssetManagement.Runtime
                 status = EProviderStatus.Checking;
             }
 
-            // ¼ì²â¼ÓÔØ½á¹û
+            // æ£€æµ‹åŠ è½½ç»“æœ
             if(status == EProviderStatus.Checking)
             {
                 progress = m_AssetBundleRequest?.progress ?? 1;
@@ -98,7 +98,7 @@ namespace Framework.AssetManagement.Runtime
                 {
                     if (requestAsyncComplete)
                     {
-                        // Òì²½×ªÍ¬²½½«Ç¿ÖÆ¹ÒÆğÖ÷Ïß³Ì
+                        // å¼‚æ­¥è½¬åŒæ­¥å°†å¼ºåˆ¶æŒ‚èµ·ä¸»çº¿ç¨‹
                         Debug.LogWarning($"Suspend main thread to load unity asset");
                         assetObject = m_AssetBundleRequest.asset;
                     }

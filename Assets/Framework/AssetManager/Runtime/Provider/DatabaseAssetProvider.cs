@@ -21,7 +21,7 @@ namespace Framework.AssetManagement.Runtime
 
 			if (status == EProviderStatus.None)
 			{
-				// ¼ì²â×ÊÔ´ÎÄ¼şÊÇ·ñ´æÔÚ
+				// æ£€æµ‹èµ„æºæ–‡ä»¶æ˜¯å¦å­˜åœ¨
 				string guid = UnityEditor.AssetDatabase.AssetPathToGUID(assetInfo.assetPath);
 				if (string.IsNullOrEmpty(guid))
 				{
@@ -33,11 +33,11 @@ namespace Framework.AssetManagement.Runtime
 				}
 
 				if(requestAsyncComplete)
-                { // Á¢¼´½áÊøÒì²½Ä£Äâ£¬½øÈëÏÂ¸öÁ÷³Ì
+                { // ç«‹å³ç»“æŸå¼‚æ­¥æ¨¡æ‹Ÿï¼Œè¿›å…¥ä¸‹ä¸ªæµç¨‹
 					status = EProviderStatus.Loading;
                 }
 				else
-                { // Ä£ÄâÑÓ³Ù¼¸Ö¡¼ÓÔØ
+                { // æ¨¡æ‹Ÿå»¶è¿Ÿå‡ å¸§åŠ è½½
 					if (m_DelayedFrameCount <= 0)
 					{
 						status = EProviderStatus.Loading;
@@ -50,7 +50,7 @@ namespace Framework.AssetManagement.Runtime
                 }
 			}
 
-			// 1. ¼ÓÔØ×ÊÔ´¶ÔÏó
+			// 1. åŠ è½½èµ„æºå¯¹è±¡
 			if (status == EProviderStatus.Loading)
 			{
 				if (assetInfo.assetType == null)
@@ -60,7 +60,7 @@ namespace Framework.AssetManagement.Runtime
 				status = EProviderStatus.Checking;
 			}
 
-			// 2. ¼ì²â¼ÓÔØ½á¹û
+			// 2. æ£€æµ‹åŠ è½½ç»“æœ
 			if (status == EProviderStatus.Checking)
 			{
 				status = assetObject == null ? EProviderStatus.Failed : EProviderStatus.Succeed;

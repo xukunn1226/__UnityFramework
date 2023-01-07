@@ -21,7 +21,7 @@ namespace Framework.AssetManagement.Runtime
         public RawBundleLoader(AssetSystem assetSystem, BundleInfo bundleInfo) : base(assetSystem, bundleInfo)
         { }
 
-        // TODO: ÕâÀïĞèÒªÔÙºÃºÃÏëÏë£¬²»ÊÇËùÓĞÔ­Éú×ÊÔ´¶¼ĞèÒªÌáÈ¡³öÀ´£¬ÀıÈçFMOD¾ÍÖ§³ÖÖ±½Ó¼ÓÔØstreamingÏÂµÄÔ­Éú×ÊÔ´
+        // TODO: è¿™é‡Œéœ€è¦å†å¥½å¥½æƒ³æƒ³ï¼Œä¸æ˜¯æ‰€æœ‰åŸç”Ÿèµ„æºéƒ½éœ€è¦æå–å‡ºæ¥ï¼Œä¾‹å¦‚FMODå°±æ”¯æŒç›´æ¥åŠ è½½streamingä¸‹çš„åŸç”Ÿèµ„æº
         public override void Update()
         {
             if (m_Step == EStep.Done)
@@ -32,7 +32,7 @@ namespace Framework.AssetManagement.Runtime
                 if(bundleInfo.loadMethod == ELoadMethod.LoadFromStreaming)
                 {
 #if UNITY_ANDROID
-                    // °²×¿Æ½Ì¨ÎŞ·¨Ö±½ÓÊ¹ÓÃÄÚÖÃµÄÔ­Éú×ÊÔ´£¨streamingAssets£©£¬ĞèÒªÌáÈ¡³öÀ´
+                    // å®‰å“å¹³å°æ— æ³•ç›´æ¥ä½¿ç”¨å†…ç½®çš„åŸç”Ÿèµ„æºï¼ˆstreamingAssetsï¼‰ï¼Œéœ€è¦æå–å‡ºæ¥
                     m_Step = EStep.Unpack;
                     bundlePath = bundleInfo.descriptor.cachedFilePath;
 #else
@@ -57,14 +57,14 @@ namespace Framework.AssetManagement.Runtime
 
             if(m_Step == EStep.Unpack)
             {
-                // TODO: ½âÑ¹ÎÄ¼ş
+                // TODO: è§£å‹æ–‡ä»¶
 
                 m_Step = EStep.CheckUnpack;
             }
 
             if(m_Step == EStep.CheckUnpack)
             {
-                // TODO: µÈ´ı½âÑ¹½á¹û
+                // TODO: ç­‰å¾…è§£å‹ç»“æœ
 
                 m_Step = EStep.CheckFile;
             }
@@ -89,7 +89,7 @@ namespace Framework.AssetManagement.Runtime
 
         public override void WaitForAsyncComplete()
         {
-            // TODO: Èç¹ûUpdateµÄĞĞÎª²»ÊÇÔÚÏß³ÌÖĞÖ´ĞĞ£¨ÀıÈç£¬Ğ­³Ì£©£¬´Ë´¦»áÓĞËÀËøµÄ·çÏÕÂğ£¿
+            // TODO: å¦‚æœUpdateçš„è¡Œä¸ºä¸æ˜¯åœ¨çº¿ç¨‹ä¸­æ‰§è¡Œï¼ˆä¾‹å¦‚ï¼Œåç¨‹ï¼‰ï¼Œæ­¤å¤„ä¼šæœ‰æ­»é”çš„é£é™©å—ï¼Ÿ
             while(true)
             {
                 Update();

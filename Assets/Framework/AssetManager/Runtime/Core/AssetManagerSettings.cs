@@ -8,63 +8,63 @@ namespace Framework.AssetManagement.Runtime
 	public class AssetManagerSettings : ScriptableObject
 	{
 		/// <summary>
-		/// AssetBundleÎÄ¼şµÄºó×ºÃû
+		/// AssetBundleæ–‡ä»¶çš„åç¼€å
 		/// </summary>
 		public string AssetBundleFileVariant = "bundle";
 
 		/// <summary>
-		/// Ô­ÉúÎÄ¼şµÄºó×ºÃû
+		/// åŸç”Ÿæ–‡ä»¶çš„åç¼€å
 		/// </summary>
 		public string RawFileVariant = "rawfile";
 
 		/// <summary>
-		/// Çåµ¥ÎÄ¼şÃû³Æ
+		/// æ¸…å•æ–‡ä»¶åç§°
 		/// </summary>
 		public string PatchManifestFileName = "AssetManifest";
 
 
 		/// <summary>
-		/// Çåµ¥ÎÄ¼şÍ·±ê¼Ç
+		/// æ¸…å•æ–‡ä»¶å¤´æ ‡è®°
 		/// </summary>
 		public const uint PatchManifestFileSign = 0x594F4F;
 
 		/// <summary>
-		/// Çåµ¥ÎÄ¼ş¼«ÏŞ´óĞ¡£¨100MB£©
+		/// æ¸…å•æ–‡ä»¶æé™å¤§å°ï¼ˆ100MBï¼‰
 		/// </summary>
 		public const int PatchManifestFileMaxSize = 104857600;
 
 		/// <summary>
-		/// Çåµ¥ÎÄ¼ş¸ñÊ½°æ±¾
+		/// æ¸…å•æ–‡ä»¶æ ¼å¼ç‰ˆæœ¬
 		/// </summary>
 		public const int ManifestSerializationVersion = 1;
 
 		/// <summary>
-		/// ¹¹½¨Êä³öÎÄ¼ş¼ĞÃû³Æ
+		/// æ„å»ºè¾“å‡ºæ–‡ä»¶å¤¹åç§°
 		/// </summary>
 		public const string OutputFolderName = "OutputCache";
 
 		/// <summary>
-		/// ¹¹½¨Êä³öµÄ±¨¸æÎÄ¼ş
+		/// æ„å»ºè¾“å‡ºçš„æŠ¥å‘Šæ–‡ä»¶
 		/// </summary>
 		public const string ReportFileName = "BuildReport";
 
 		/// <summary>
-		/// Unity×ÅÉ«Æ÷×ÊÔ´°üÃû³Æ
+		/// Unityç€è‰²å™¨èµ„æºåŒ…åç§°
 		/// </summary>
 		public const string UnityShadersBundleName = "unityshaders";
 
 		/// <summary>
-		/// ÄÚÖÃ×ÊÔ´Ä¿Â¼Ãû³Æ
+		/// å†…ç½®èµ„æºç›®å½•åç§°
 		/// </summary>
 		public const string StreamingAssetsBuildinFolder = "BuildinFiles";
 
 		/// <summary>
-		/// ±à¼­Æ÷Ä£Äâ»·¾³ÏÂÒì²½¼ÓÔØÊ±µÄÑÓ³ÙÖ¡Êı
+		/// ç¼–è¾‘å™¨æ¨¡æ‹Ÿç¯å¢ƒä¸‹å¼‚æ­¥åŠ è½½æ—¶çš„å»¶è¿Ÿå¸§æ•°
 		/// </summary>
 		public const int DelayedFrameNumInEditorSimulateMode = 2;
 
 		/// <summary>
-		/// ºöÂÔµÄÎÄ¼şÀàĞÍ
+		/// å¿½ç•¥çš„æ–‡ä»¶ç±»å‹
 		/// </summary>
 		public static readonly string[] IgnoreFileExtensions = { "", ".so", ".dll", ".cs", ".js", ".boo", ".meta", ".cginc" };
 	}

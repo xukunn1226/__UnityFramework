@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// ÒÀÀµµÄ×ÊÔ´°ü¼ÓÔØÆ÷
+    /// ä¾èµ–çš„èµ„æºåŒ…åŠ è½½å™¨
     /// </summary>
     internal class DependAssetBundleLoader
     {

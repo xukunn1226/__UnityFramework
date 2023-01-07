@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 namespace Framework.AssetManagement.Runtime
 {
 	/// <summary>
-	/// ³¡¾°Ğ¶ÔØÒì²½²Ù×÷Àà
+	/// åœºæ™¯å¸è½½å¼‚æ­¥æ“ä½œç±»
 	/// </summary>
 	public sealed class UnloadSceneOperation : AsyncOperationBase
 	{

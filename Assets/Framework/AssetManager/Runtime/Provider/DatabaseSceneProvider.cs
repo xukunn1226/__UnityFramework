@@ -30,7 +30,7 @@ namespace Framework.AssetManagement.Runtime
 				status = EProviderStatus.Loading;
 			}
 
-			// 1. ¼ÓÔØ×ÊÔ´¶ÔÏó
+			// 1. åŠ è½½èµ„æºå¯¹è±¡
 			if (status == EProviderStatus.Loading)
 			{
 				LoadSceneParameters loadSceneParameters = new LoadSceneParameters();
@@ -52,7 +52,7 @@ namespace Framework.AssetManagement.Runtime
 				}
 			}
 
-			// 2. ¼ì²â¼ÓÔØ½á¹û
+			// 2. æ£€æµ‹åŠ è½½ç»“æœ
 			if (status == EProviderStatus.Checking)
 			{
 				progress = m_AsyncOp.progress;

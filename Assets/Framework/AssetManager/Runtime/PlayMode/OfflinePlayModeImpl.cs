@@ -28,7 +28,7 @@ namespace Framework.AssetManagement.Runtime
             if (patchBundle == null)
                 throw new System.Exception("Should never get here !");
 
-            // ≤È—ØAPP◊ ‘¥
+            // Êü•ËØ¢APPËµÑÊ∫ê
             {
                 BundleInfo bundleInfo = new BundleInfo(patchBundle, ELoadMethod.LoadFromStreaming);
                 return bundleInfo;

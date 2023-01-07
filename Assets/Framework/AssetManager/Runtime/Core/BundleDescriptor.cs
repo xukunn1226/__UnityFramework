@@ -6,38 +6,38 @@ using UnityEngine;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// ×ÊÔ´°üÃèÊöĞÅÏ¢
+    /// èµ„æºåŒ…æè¿°ä¿¡æ¯
     /// </summary>
     [Serializable]
     public class BundleDescriptor
     {
         /// <summary>
-        /// ×ÊÔ´°üÃû³Æ£¬°üÀ¨AssetBundle¼°RawFile
+        /// èµ„æºåŒ…åç§°ï¼ŒåŒ…æ‹¬AssetBundleåŠRawFile
         /// </summary>
         public string   bundleName;
 
         /// <summary>
-        /// ÎÄ¼şHash
+        /// æ–‡ä»¶Hash
         /// </summary>
         public string   fileHash;
 
         /// <summary>
-        /// ÎÄ¼şCRC
+        /// æ–‡ä»¶CRC
         /// </summary>
         public string   fileCRC;
 
         /// <summary>
-        /// ÎÄ¼ş´óĞ¡£¨×Ö½ÚÊı£©
+        /// æ–‡ä»¶å¤§å°ï¼ˆå­—èŠ‚æ•°ï¼‰
         /// </summary>
         public long     fileSize;
 
         /// <summary>
-        /// ÊÇ·ñÊÇÔ­ÉúÎÄ¼ş£¨µÚÈı·½¿âÓĞ×Ô¼ºµÄ¶ş½øÖÆÊı¾İ¸ñÊ½£¬ÀıÈçconfig.db£¬FMODµÈ£©
+        /// æ˜¯å¦æ˜¯åŸç”Ÿæ–‡ä»¶ï¼ˆç¬¬ä¸‰æ–¹åº“æœ‰è‡ªå·±çš„äºŒè¿›åˆ¶æ•°æ®æ ¼å¼ï¼Œä¾‹å¦‚config.dbï¼ŒFMODç­‰ï¼‰
         /// </summary>
         public bool     isRawFile;
 
         /// <summary>
-        /// ¼ÓÔØ·½Ê½£¬¼ûEBundleLoadMethod
+        /// åŠ è½½æ–¹å¼ï¼Œè§EBundleLoadMethod
         /// </summary>
         public byte     loadMethod;
 
@@ -71,7 +71,7 @@ namespace Framework.AssetManagement.Runtime
         }
         
         /// <summary>
-         /// ÎÄ¼şÃû³Æ
+         /// æ–‡ä»¶åç§°
          /// </summary>
         private string m_FileName;
         public string fileName
@@ -85,7 +85,7 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// »º´æ²éÑ¯Key
+        /// ç¼“å­˜æŸ¥è¯¢Key
         /// </summary>
         private string m_CacheKey;
         public string CacheKey
@@ -102,7 +102,7 @@ namespace Framework.AssetManagement.Runtime
         { }
 
         /// <summary>
-		/// ½âÎö×ÊÔ´°ü
+		/// è§£æèµ„æºåŒ…
 		/// </summary>
 		public void ParseBundle(string packageName, int nameStype)
         {

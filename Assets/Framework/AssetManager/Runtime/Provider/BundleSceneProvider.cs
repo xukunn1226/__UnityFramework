@@ -13,9 +13,9 @@ namespace Framework.AssetManagement.Runtime
         public int              priority        { get; private set; }
         private AsyncOperation  m_AsyncOp;
 
-#pragma warning disable CS0628 // ÔÚÃÜ·âÀàĞÍÖĞÉùÃ÷ÁËĞÂµÄ±£»¤³ÉÔ±
+#pragma warning disable CS0628 // åœ¨å¯†å°ç±»å‹ä¸­å£°æ˜äº†æ–°çš„ä¿æŠ¤æˆå‘˜
         protected BundleSceneProvider() { }
-#pragma warning restore CS0628 // ÔÚÃÜ·âÀàĞÍÖĞÉùÃ÷ÁËĞÂµÄ±£»¤³ÉÔ±
+#pragma warning restore CS0628 // åœ¨å¯†å°ç±»å‹ä¸­å£°æ˜äº†æ–°çš„ä¿æŠ¤æˆå‘˜
         public BundleSceneProvider(AssetSystem assetSystem, string providerGUID, AssetInfo assetInfo, LoadSceneMode sceneMode, bool activateOnLoad, int priority) : base(assetSystem, providerGUID, assetInfo)
         {
             this.sceneMode = sceneMode;
@@ -36,14 +36,14 @@ namespace Framework.AssetManagement.Runtime
             if (isDone)
                 return;
 
-            // ¿ªÊ¼
+            // å¼€å§‹
             if (status == EProviderStatus.None)
                 status = EProviderStatus.CheckBundle;
 
-            // ¼ì²â×ÊÔ´°ü
+            // æ£€æµ‹èµ„æºåŒ…
             if(status == EProviderStatus.CheckBundle)
             {
-                // µÈ´ı×ÊÔ´°ü¼ÓÔØÍê³É
+                // ç­‰å¾…èµ„æºåŒ…åŠ è½½å®Œæˆ
                 if (!mainBundleLoader.isDone)
                     return;
                 if (dependBundleLoader != null && !dependBundleLoader.IsDone())
@@ -68,16 +68,16 @@ namespace Framework.AssetManagement.Runtime
                 status = EProviderStatus.Loading;
             }
 
-            // ¼ÓÔØ³¡¾°
+            // åŠ è½½åœºæ™¯
             if(status == EProviderStatus.Loading)
             {
-                // ³¡¾°²»´æÔÚ·µ»ØNULL
+                // åœºæ™¯ä¸å­˜åœ¨è¿”å›NULL
                 m_AsyncOp = SceneManager.LoadSceneAsync(sceneName, sceneMode);
                 if(m_AsyncOp != null)
                 {
                     m_AsyncOp.allowSceneActivation = true;
                     m_AsyncOp.priority = priority;
-                    sceneObject = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);         // TODO: ¶¯Ì¬¼ÓÔØ³¡¾°»á¸üĞÂbuildsetting list£¿
+                    sceneObject = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);         // TODO: åŠ¨æ€åŠ è½½åœºæ™¯ä¼šæ›´æ–°buildsetting listï¼Ÿ
                     status = EProviderStatus.Checking;
                 }
                 else

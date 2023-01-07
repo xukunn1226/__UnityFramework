@@ -9,31 +9,31 @@ namespace Framework.AssetManagement.Runtime
 		public EPlayMode PlayMode;
 
 		/// <summary>
-		/// ÎÄ¼ş½âÃÜ·şÎñ½Ó¿Ú
+		/// æ–‡ä»¶è§£å¯†æœåŠ¡æ¥å£
 		/// </summary>
 		public IDecryptionServices DecryptionServices = null;
 
 		public IBundleServices BundleServices = null;
 		
 		/// <summary>
-		/// ×ÊÔ´¶¨Î»µØÖ·´óĞ¡Ğ´²»Ãô¸Ğ
-		/// ×¢Òâ£ºÄ¬ÈÏÖµÎªFalse
+		/// èµ„æºå®šä½åœ°å€å¤§å°å†™ä¸æ•æ„Ÿ
+		/// æ³¨æ„ï¼šé»˜è®¤å€¼ä¸ºFalse
 		/// </summary>
 		public bool LocationToLower = false;
 
 		/// <summary>
-		/// ×ÊÔ´¼ÓÔØµÄ×î´óÊıÁ¿
-		/// ×¢Òâ£ºÄ¬ÈÏÖµÎªMaxValue
+		/// èµ„æºåŠ è½½çš„æœ€å¤§æ•°é‡
+		/// æ³¨æ„ï¼šé»˜è®¤å€¼ä¸ºMaxValue
 		/// </summary>
 		public int AssetLoadingMaxNumber = int.MaxValue;
 
 		/// <summary>
-		/// Ä¬ÈÏµÄ×ÊÔ´·şÎñÆ÷ÏÂÔØµØÖ·
+		/// é»˜è®¤çš„èµ„æºæœåŠ¡å™¨ä¸‹è½½åœ°å€
 		/// </summary>
 		public string DefaultHostServer = string.Empty;
 
 		/// <summary>
-		/// ±¸ÓÃµÄ×ÊÔ´·şÎñÆ÷ÏÂÔØµØÖ·
+		/// å¤‡ç”¨çš„èµ„æºæœåŠ¡å™¨ä¸‹è½½åœ°å€
 		/// </summary>
 		public string FallbackHostServer = string.Empty;
 	}

@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// ²Ù×÷¾ä±ú
-    /// ¹¦ÄÜ£º»ñÈ¡¸÷ÖÖ¼ÓÔØ×´Ì¬¼°Êı¾İ£¬¶ÔProviderµÄ·â×°£¬Òş²ØÉÏ²ã¶ÔProviderµÄ¸ĞÖª
+    /// æ“ä½œå¥æŸ„
+    /// åŠŸèƒ½ï¼šè·å–å„ç§åŠ è½½çŠ¶æ€åŠæ•°æ®ï¼Œå¯¹Providerçš„å°è£…ï¼Œéšè—ä¸Šå±‚å¯¹Providerçš„æ„ŸçŸ¥
     /// </summary>
     public abstract class OperationHandleBase : IEnumerator
     {
@@ -78,22 +78,22 @@ namespace Framework.AssetManagement.Runtime
             provider = null;
         }
 
-        #region Òì²½²Ù×÷Ïà¹Ø
+        #region å¼‚æ­¥æ“ä½œç›¸å…³
         /// <summary>
-        /// Òì²½²Ù×÷ÈÎÎñ
+        /// å¼‚æ­¥æ“ä½œä»»åŠ¡
         /// </summary>
         public System.Threading.Tasks.Task Task
         {
             get { return provider.Task; }
         }
 
-        // Ğ­³ÌÏà¹Ø
+        // åç¨‹ç›¸å…³
         bool IEnumerator.MoveNext()
         {
 #if UNITY_EDITOR
-            return !isDone;                                     // Òì²½½áÊøÇ°Èç¹ûÖ´ĞĞÁËprovider.Destroy£¬½«µ¼ÖÂĞ­³ÌÎŞ·¨ÍË³ö
+            return !isDone;                                     // å¼‚æ­¥ç»“æŸå‰å¦‚æœæ‰§è¡Œäº†provider.Destroyï¼Œå°†å¯¼è‡´åç¨‹æ— æ³•é€€å‡º
 #else
-            return provider != null && !provider.isDone;        // Õæ»úÄ£Ê½ÏÂ¸ü°²È«
+            return provider != null && !provider.isDone;        // çœŸæœºæ¨¡å¼ä¸‹æ›´å®‰å…¨
 #endif
         }
         void IEnumerator.Reset()

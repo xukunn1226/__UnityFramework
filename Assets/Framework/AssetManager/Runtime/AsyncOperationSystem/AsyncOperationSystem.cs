@@ -8,12 +8,12 @@ namespace Framework.AssetManagement.Runtime
 	{
 		private static readonly List<AsyncOperationBase> s_Operations = new List<AsyncOperationBase>(100);
 
-		// ¼ÆÊ±Æ÷Ïà¹Ø
+		// è®¡æ—¶å™¨ç›¸å…³
 		private static Stopwatch	s_Watch;
 		private static long			s_FrameTime;
 
-		public static long		maxTimeSlice	{ get; set; } = long.MaxValue;		// Òì²½²Ù×÷µÄ×îĞ¡Ê±¼äÆ¬¶Î
-		public static bool		isBusy			{ get { return s_Watch.ElapsedMilliseconds - s_FrameTime >= maxTimeSlice; } }     // ´¦ÀíÆ÷ÊÇ·ñ·±Ã¦
+		public static long		maxTimeSlice	{ get; set; } = long.MaxValue;		// å¼‚æ­¥æ“ä½œçš„æœ€å°æ—¶é—´ç‰‡æ®µ
+		public static bool		isBusy			{ get { return s_Watch.ElapsedMilliseconds - s_FrameTime >= maxTimeSlice; } }     // å¤„ç†å™¨æ˜¯å¦ç¹å¿™
 
 		public static void Initialize()
 		{
@@ -27,7 +27,7 @@ namespace Framework.AssetManagement.Runtime
 			int removedCount = 0;
 			for (int i = s_Operations.Count - 1; i >= 0; i--)
 			{
-				// TODO: ÕâÖÖ±éÀú·½Ê½²»¹«Æ½£¬Êı×éÎ²²¿µÄÔªËØ»ñµÃÊ±¼äÆ¬µÄ»ú»á¸ü¶à
+				// TODO: è¿™ç§éå†æ–¹å¼ä¸å…¬å¹³ï¼Œæ•°ç»„å°¾éƒ¨çš„å…ƒç´ è·å¾—æ—¶é—´ç‰‡çš„æœºä¼šæ›´å¤š
 				if (isBusy)
 					break;
 

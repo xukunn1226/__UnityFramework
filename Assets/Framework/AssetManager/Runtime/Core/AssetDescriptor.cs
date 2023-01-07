@@ -6,23 +6,23 @@ using UnityEngine;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// 资源文件描述信息
+    /// 璧勬簮鏂囦欢鎻忚堪淇℃伅
     /// </summary>
     [Serializable]
     public class AssetDescriptor
     {
         /// <summary>
-        /// 资源路径
+        /// 璧勬簮璺緞
         /// </summary>
         public string       assetPath;
 
         /// <summary>
-        /// 所属资源包ID
+        /// 鎵�灞炶祫婧愬寘ID
         /// </summary>
         public int          bundleID;
 
         /// <summary>
-        /// 依赖的资源包ID
+        /// 渚濊禆鐨勮祫婧愬寘ID
         /// </summary>
         public int[]        dependIDs;
 

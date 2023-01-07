@@ -23,7 +23,7 @@ namespace Framework.AssetManagement.Runtime
 				status = EProviderStatus.CheckBundle;
 			}
 
-			// 1. ¼ì²â×ÊÔ´°ü
+			// 1. æ£€æµ‹èµ„æºåŒ…
 			if (status == EProviderStatus.CheckBundle)
 			{
 				if (requestAsyncComplete)
@@ -57,7 +57,7 @@ namespace Framework.AssetManagement.Runtime
 				status = EProviderStatus.Loading;
 			}
 
-			// 2. ¼ÓÔØ×ÊÔ´¶ÔÏó
+			// 2. åŠ è½½èµ„æºå¯¹è±¡
 			if (status == EProviderStatus.Loading)
 			{
 				if (requestAsyncComplete)
@@ -77,7 +77,7 @@ namespace Framework.AssetManagement.Runtime
 				status = EProviderStatus.Checking;
 			}
 
-			// 3. ¼ì²â¼ÓÔØ½á¹û
+			// 3. æ£€æµ‹åŠ è½½ç»“æœ
 			if (status == EProviderStatus.Checking)
 			{
 				progress = m_AssetBundleRequest?.progress ?? 1;
@@ -85,7 +85,7 @@ namespace Framework.AssetManagement.Runtime
 				{
 					if (requestAsyncComplete)
 					{
-						// Ç¿ÖÆ¹ÒÆğÖ÷Ïß³Ì£¨×¢Òâ£º¸Ã²Ù×÷»áºÜºÄÊ±£©
+						// å¼ºåˆ¶æŒ‚èµ·ä¸»çº¿ç¨‹ï¼ˆæ³¨æ„ï¼šè¯¥æ“ä½œä¼šå¾ˆè€—æ—¶ï¼‰
 						Debug.LogWarning("Suspend the main thread to load unity asset.");
 						allAssetObjects = m_AssetBundleRequest.allAssets;
 					}

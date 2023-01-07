@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// ×ÊÔ´°ü¼ÓÔØÆ÷
+    /// èµ„æºåŒ…åŠ è½½å™¨
     /// </summary>
     internal abstract class BundleLoaderBase
     {
@@ -15,7 +15,7 @@ namespace Framework.AssetManagement.Runtime
         public EBundleLoadStatus    status              { get; protected set; }
         public string               lastError           { get; protected set; }
         public AssetBundle          cachedBundle        { get; protected set; }
-        public string               bundlePath          { get; protected set; }     // Bundle×ÊÔ´°ü¼ÓÔØÂ·¾¶
+        public string               bundlePath          { get; protected set; }     // Bundleèµ„æºåŒ…åŠ è½½è·¯å¾„
         public float                downloadProgress    { get; set; }
         public ulong                downloadBytes       { get; set; }
         public bool                 isDone              { get { return status == EBundleLoadStatus.Succeed || status == EBundleLoadStatus.Failed; } }
@@ -43,7 +43,7 @@ namespace Framework.AssetManagement.Runtime
             --refCount;
         }
 
-        // TODO: ¿¼ÂÇ±ß½çÇé¿ö£¬bundleÎ´¼ÓÔØÍêÊ±¾Í±»Ïú»Ù£¬¸ÃÈçºÎ´¦Àí£¿
+        // TODO: è€ƒè™‘è¾¹ç•Œæƒ…å†µï¼ŒbundleæœªåŠ è½½å®Œæ—¶å°±è¢«é”€æ¯ï¼Œè¯¥å¦‚ä½•å¤„ç†ï¼Ÿ
         public void Destroy(bool forceDestroy)
         {
             if(!forceDestroy)

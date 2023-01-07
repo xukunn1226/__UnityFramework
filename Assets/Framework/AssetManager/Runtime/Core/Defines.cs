@@ -7,61 +7,61 @@ namespace Framework.AssetManagement.Runtime
     public enum EPlayMode
     {
         /// <summary>
-        /// ±à¼­Æ÷ÏÂÄ£ÄâÄ£Ê½
+        /// ç¼–è¾‘å™¨ä¸‹æ¨¡æ‹Ÿæ¨¡å¼
         /// </summary>
         FromEditor,
 
         /// <summary>
-        /// µ¥»úÄ£Ê½
+        /// å•æœºæ¨¡å¼
         /// </summary>
         FromStreaming,
 
         /// <summary>
-        /// Áª»úÄ£Ê½
+        /// è”æœºæ¨¡å¼
         /// </summary>
         FromHost,
     }
 
     /// <summary>
-    /// BundleÎÄ¼şµÄ¼ÓÔØ·½Ê½£¬¼ûAssetBundle.LoadFromFile
+    /// Bundleæ–‡ä»¶çš„åŠ è½½æ–¹å¼ï¼Œè§AssetBundle.LoadFromFile
     /// </summary>
     public enum EBundleLoadMethod
     {
         LoadFromFile        = 0,
-        LoadFromFileOffset  = 1,        // ¼Ó½âÃÜÓÃ´Ë·½Ê½
-        //LoadFromMemory = 2,             // Ôİ²»Ö§³Ö£¬´Ë·½Ê½µÄ×î´ó×÷ÓÃÊÇ¼Ó½âÃÜ£¬µ«°²×¿Æ½Ì¨ÏÂĞèÒª½âÑ¹ÖÁpersistent data path£¬²»ÊµÓÃ£¬¹Ê·ÏÆú
+        LoadFromFileOffset  = 1,        // åŠ è§£å¯†ç”¨æ­¤æ–¹å¼
+        //LoadFromMemory = 2,             // æš‚ä¸æ”¯æŒï¼Œæ­¤æ–¹å¼çš„æœ€å¤§ä½œç”¨æ˜¯åŠ è§£å¯†ï¼Œä½†å®‰å“å¹³å°ä¸‹éœ€è¦è§£å‹è‡³persistent data pathï¼Œä¸å®ç”¨ï¼Œæ•…åºŸå¼ƒ
     }
 
     /// <summary>
-    /// Bundle´ÓºÎ´¦¼ÓÔØ×ÊÔ´
+    /// Bundleä»ä½•å¤„åŠ è½½èµ„æº
     /// </summary>
     public enum ELoadMethod
     {
-        LoadFromStreaming   = 0,        // ÄÚÖÃ×ÊÔ´
-        LoadFromCache       = 1,        // ²¹¶¡×ÊÔ´
-        LoadFromRemote      = 2,        // ±ßÍæ±ßÏÂ
-        LoadFromEditor      = 3,        // ±à¼­Æ÷Ä£Ê½ÏÂ
+        LoadFromStreaming   = 0,        // å†…ç½®èµ„æº
+        LoadFromCache       = 1,        // è¡¥ä¸èµ„æº
+        LoadFromRemote      = 2,        // è¾¹ç©è¾¹ä¸‹
+        LoadFromEditor      = 3,        // ç¼–è¾‘å™¨æ¨¡å¼ä¸‹
     }
 
     /// <summary>
-    /// ×ÊÔ´°üµÄ¼ÓÔØ×´Ì¬
+    /// èµ„æºåŒ…çš„åŠ è½½çŠ¶æ€
     /// </summary>
     public enum EBundleLoadStatus
     {
-        None                = 0,        // Î´¶¨×´Ì¬
-        Succeed             = 1,        // ¼ÓÔØ³É¹¦
-        Failed              = 2,        // ¼ÓÔØÊ§°Ü
+        None                = 0,        // æœªå®šçŠ¶æ€
+        Succeed             = 1,        // åŠ è½½æˆåŠŸ
+        Failed              = 2,        // åŠ è½½å¤±è´¥
     }
 
     /// <summary>
-    /// ×ÊÔ´Ìá¹©ÕßµÄ×´Ì¬
+    /// èµ„æºæä¾›è€…çš„çŠ¶æ€
     /// </summary>
     public enum EProviderStatus
     {
-        None                = 0,        // Î´¿ªÊ¼
-        CheckBundle         = 1,        // ¼ì²âbundleµÄÍê³É×´Ì¬
-        Loading             = 2,        // ¼ÓÔØ×ÊÔ´
-        Checking            = 3,        // ¼ì²â¼ÓÔØ½á¹û
+        None                = 0,        // æœªå¼€å§‹
+        CheckBundle         = 1,        // æ£€æµ‹bundleçš„å®ŒæˆçŠ¶æ€
+        Loading             = 2,        // åŠ è½½èµ„æº
+        Checking            = 3,        // æ£€æµ‹åŠ è½½ç»“æœ
         Succeed             = 4,
         Failed              = 5,
     }

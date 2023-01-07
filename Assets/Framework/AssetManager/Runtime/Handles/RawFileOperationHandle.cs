@@ -49,7 +49,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡Ô­ÉúÎÄ¼şµÄ¶ş½øÖÆÊı¾İ
+		/// è·å–åŸç”Ÿæ–‡ä»¶çš„äºŒè¿›åˆ¶æ•°æ®
 		/// </summary>
 		public byte[] GetRawFileData()
 		{
@@ -62,7 +62,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡Ô­ÉúÎÄ¼şµÄÎÄ±¾Êı¾İ
+		/// è·å–åŸç”Ÿæ–‡ä»¶çš„æ–‡æœ¬æ•°æ®
 		/// </summary>
 		public string GetRawFileText()
 		{
@@ -75,7 +75,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡Ô­ÉúÎÄ¼şµÄÂ·¾¶
+		/// è·å–åŸç”Ÿæ–‡ä»¶çš„è·¯å¾„
 		/// </summary>
 		public string GetRawFilePath()
 		{

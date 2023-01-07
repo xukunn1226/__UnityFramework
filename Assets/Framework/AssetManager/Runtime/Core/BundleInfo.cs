@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// ×ÊÔ´°üµÄÔËĞĞÊ±ĞÅÏ¢
+    /// èµ„æºåŒ…çš„è¿è¡Œæ—¶ä¿¡æ¯
     /// </summary>
     public class BundleInfo
     {

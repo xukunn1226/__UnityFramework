@@ -30,7 +30,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// 异步操作任务
+		/// 寮傛鎿嶄綔浠诲姟
 		/// </summary>
 		public Task Task
 		{
@@ -61,7 +61,7 @@ namespace Framework.AssetManagement.Runtime
 			m_Callback = null;
 		}
 
-		#region 异步编程相关
+		#region 寮傛缂栫▼鐩稿叧
 		bool IEnumerator.MoveNext()
 		{
 			return !isDone;

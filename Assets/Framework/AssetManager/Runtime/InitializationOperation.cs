@@ -16,7 +16,7 @@ namespace Framework.AssetManagement.Runtime
     }
 
     /// <summary>
-    /// 编辑器模拟下的初始化流程
+    /// 缂栬緫鍣ㄦā鎷熶笅鐨勫垵濮嬪寲娴佺▼
     /// </summary>
     internal sealed class EditorSimulateModeInitializationOperation : InitializationOperation
     {
@@ -113,7 +113,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// 更新流程
+		/// 鏇存柊娴佺▼
 		/// </summary>
 		public void Update()
 		{
@@ -141,7 +141,7 @@ namespace Framework.AssetManagement.Runtime
 				}
 				else
 				{
-					// 解析APP里的补丁清单
+					// 瑙ｆ瀽APP閲岀殑琛ヤ竵娓呭崟
 					try
 					{
 						byte[] bytesData = m_Downloader.GetData();

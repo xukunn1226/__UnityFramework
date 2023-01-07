@@ -18,7 +18,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// ¼ÓÔØÅäÖÃÎÄ¼ş
+		/// åŠ è½½é…ç½®æ–‡ä»¶
 		/// </summary>
 		private static void LoadSettingData()
 		{
@@ -35,7 +35,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡¹¹½¨±¨¸æÎÄ¼şÃû
+		/// è·å–æ„å»ºæŠ¥å‘Šæ–‡ä»¶å
 		/// </summary>
 		public static string GetReportFileName(string packageName, string packageVersion)
 		{
@@ -43,7 +43,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡²¹¶¡Çåµ¥ÎÄ¼ş²»´ø°æ±¾ºÅµÄÃû³Æ
+		/// è·å–è¡¥ä¸æ¸…å•æ–‡ä»¶ä¸å¸¦ç‰ˆæœ¬å·çš„åç§°
 		/// </summary>
 		public static string GetPatchManifestFileNameWithoutVersion(string packageName)
 		{
@@ -51,7 +51,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡²¹¶¡Çåµ¥ÎÄ¼şÍêÕûÃû³Æ
+		/// è·å–è¡¥ä¸æ¸…å•æ–‡ä»¶å®Œæ•´åç§°
 		/// </summary>
 		public static string GetPatchManifestBinaryFileName(string packageName, string packageVersion)
 		{
@@ -59,7 +59,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡²¹¶¡Çåµ¥ÎÄ¼şÍêÕûÃû³Æ
+		/// è·å–è¡¥ä¸æ¸…å•æ–‡ä»¶å®Œæ•´åç§°
 		/// </summary>
 		public static string GetPatchManifestJsonFileName(string packageName, string packageVersion)
 		{
@@ -67,7 +67,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡²¹¶¡Çåµ¥¹şÏ£ÎÄ¼şÍêÕûÃû³Æ
+		/// è·å–è¡¥ä¸æ¸…å•å“ˆå¸Œæ–‡ä»¶å®Œæ•´åç§°
 		/// </summary>
 		public static string GetPatchManifestHashFileName(string packageName, string packageVersion)
 		{
@@ -75,7 +75,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡²¹¶¡Çåµ¥°æ±¾ÎÄ¼şÍêÕûÃû³Æ
+		/// è·å–è¡¥ä¸æ¸…å•ç‰ˆæœ¬æ–‡ä»¶å®Œæ•´åç§°
 		/// </summary>
 		public static string GetPatchManifestVersionFileName(string packageName)
 		{
@@ -83,7 +83,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// »ñÈ¡×ÅÉ«Æ÷×ÊÔ´°üÈ«Ãû³Æ£¨°üº¬ºó×ºÃû£©
+		/// è·å–ç€è‰²å™¨èµ„æºåŒ…å…¨åç§°ï¼ˆåŒ…å«åç¼€åï¼‰
 		/// </summary>
 		public static string GetUnityShadersBundleFullName()
 		{

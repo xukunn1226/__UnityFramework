@@ -10,42 +10,42 @@ namespace Framework.AssetManagement.Runtime
     public class AssetManifest
     {
         /// <summary>
-        /// ĞòÁĞ»¯°æ±¾ºÅ
+        /// åºåˆ—åŒ–ç‰ˆæœ¬å·
         /// </summary>
         public int                      SerializedVersion;
 
         /// <summary>
-        /// °æ±¾ºÅ
+        /// ç‰ˆæœ¬å·
         /// </summary>
         public string                   PackageVersion;
 
 		public string					PackageName			{ get { return $"v{PackageVersion}"; } }
 		
 		/// <summary>
-		/// ÎÄ¼şÃû³ÆÑùÊ½
+		/// æ–‡ä»¶åç§°æ ·å¼
 		/// </summary>
 		public int						OutputNameStyle;
 
 		/// <summary>
-		/// ×ÊÔ´ÁĞ±í
+		/// èµ„æºåˆ—è¡¨
 		/// </summary>
 		public List<AssetDescriptor>    AssetList = new List<AssetDescriptor>();
 
         /// <summary>
-        /// ×ÊÔ´°üÁĞ±í
+        /// èµ„æºåŒ…åˆ—è¡¨
         /// </summary>
         public List<BundleDescriptor>   BundleList = new List<BundleDescriptor>();
 
         /// <summary>
-        /// ×ÊÔ´¼¯ºÏ
-        /// KEY: assetPath£»VALUE: AssetDescriptor
+        /// èµ„æºé›†åˆ
+        /// KEY: assetPathï¼›VALUE: AssetDescriptor
         /// </summary>
         [NonSerialized]
         public readonly Dictionary<string, AssetDescriptor>     AssetDict = new Dictionary<string, AssetDescriptor>();
 
         /// <summary>
-        /// ×ÊÔ´°ü¼¯ºÏ
-        /// KEY: bundleName£»VALUE: BundleDescriptor
+        /// èµ„æºåŒ…é›†åˆ
+        /// KEY: bundleNameï¼›VALUE: BundleDescriptor
         /// </summary>
         [NonSerialized]
         public readonly Dictionary<string, BundleDescriptor>    BundleDict = new Dictionary<string, BundleDescriptor>();
@@ -109,7 +109,7 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// ³¢ÊÔ»ñÈ¡²¹¶¡×ÊÔ´
+        /// å°è¯•è·å–è¡¥ä¸èµ„æº
         /// </summary>
         public bool TryGetAssetDesc(string assetPath, out AssetDescriptor result)
         {
@@ -120,7 +120,7 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// ³¢ÊÔ»ñÈ¡²¹¶¡×ÊÔ´°ü
+        /// å°è¯•è·å–è¡¥ä¸èµ„æºåŒ…
         /// </summary>
         public bool TryGetBundleDesc(string bundleName, out BundleDescriptor result)
         {
@@ -134,26 +134,26 @@ namespace Framework.AssetManagement.Runtime
         }
 
 		/// <summary>
-		/// ĞòÁĞ»¯£¨¶ş½øÖÆÎÄ¼ş£©
+		/// åºåˆ—åŒ–ï¼ˆäºŒè¿›åˆ¶æ–‡ä»¶ï¼‰
 		/// </summary>
 		public static void SerializeToBinary(string savePath, AssetManifest assetManifest)
 		{
 			using (FileStream fs = new FileStream(savePath, FileMode.Create))
 			{
-				// ´´½¨»º´æÆ÷
+				// åˆ›å»ºç¼“å­˜å™¨
 				BufferWriter buffer = new BufferWriter(AssetManagerSettings.PatchManifestFileMaxSize);
 
-				// Ğ´ÈëÎÄ¼ş±ê¼Ç
+				// å†™å…¥æ–‡ä»¶æ ‡è®°
 				buffer.WriteUInt32(AssetManagerSettings.PatchManifestFileSign);
 
-				// Ğ´ÈëÎÄ¼ş°æ±¾
+				// å†™å…¥æ–‡ä»¶ç‰ˆæœ¬
 				buffer.WriteInt32(assetManifest.SerializedVersion);
 
-				// Ğ´ÈëÎÄ¼şÍ·ĞÅÏ¢
+				// å†™å…¥æ–‡ä»¶å¤´ä¿¡æ¯
 				buffer.WriteInt32(assetManifest.OutputNameStyle);
 				buffer.WriteUTF8(assetManifest.PackageVersion);
 
-				// Ğ´Èë×ÊÔ´ÁĞ±í
+				// å†™å…¥èµ„æºåˆ—è¡¨
 				buffer.WriteInt32(assetManifest.AssetList.Count);
 				for (int i = 0; i < assetManifest.AssetList.Count; i++)
 				{
@@ -163,7 +163,7 @@ namespace Framework.AssetManagement.Runtime
 					buffer.WriteInt32Array(patchAsset.dependIDs);
 				}
 
-				// Ğ´Èë×ÊÔ´°üÁĞ±í
+				// å†™å…¥èµ„æºåŒ…åˆ—è¡¨
 				buffer.WriteInt32(assetManifest.BundleList.Count);
 				for (int i = 0; i < assetManifest.BundleList.Count; i++)
 				{
@@ -176,37 +176,37 @@ namespace Framework.AssetManagement.Runtime
 					buffer.WriteByte(patchBundle.loadMethod);
 				}
 
-				// Ğ´ÈëÎÄ¼şÁ÷
+				// å†™å…¥æ–‡ä»¶æµ
 				buffer.WriteToStream(fs);
 				fs.Flush();
 			}
 		}
 
 		/// <summary>
-		/// ·´ĞòÁĞ»¯£¨¶ş½øÖÆÎÄ¼ş£©
+		/// ååºåˆ—åŒ–ï¼ˆäºŒè¿›åˆ¶æ–‡ä»¶ï¼‰
 		/// </summary>
 		public static AssetManifest DeserializeFromBinary(byte[] binaryData)
 		{
-			// ´´½¨»º´æÆ÷
+			// åˆ›å»ºç¼“å­˜å™¨
 			BufferReader buffer = new BufferReader(binaryData);
 
-			// ¶ÁÈ¡ÎÄ¼ş±ê¼Ç
+			// è¯»å–æ–‡ä»¶æ ‡è®°
 			uint fileSign = buffer.ReadUInt32();
 			if (fileSign != AssetManagerSettings.PatchManifestFileSign)
 				throw new Exception("Invalid manifest file !");
 
 			AssetManifest manifest = new AssetManifest();
 			{
-				// ¶ÁÈ¡ÎÄ¼ş°æ±¾
+				// è¯»å–æ–‡ä»¶ç‰ˆæœ¬
 				manifest.SerializedVersion = buffer.ReadInt32();
 				if (manifest.SerializedVersion != AssetManagerSettings.ManifestSerializationVersion)
 					throw new Exception($"The manifest file version are not compatible : {manifest.SerializedVersion} != {AssetManagerSettings.ManifestSerializationVersion}");
 
-				// ¶ÁÈ¡ÎÄ¼şÍ·ĞÅÏ¢
+				// è¯»å–æ–‡ä»¶å¤´ä¿¡æ¯
 				manifest.OutputNameStyle = buffer.ReadInt32();
 				manifest.PackageVersion = buffer.ReadUTF8();
 
-				// ¶ÁÈ¡×ÊÔ´ÁĞ±í
+				// è¯»å–èµ„æºåˆ—è¡¨
 				int patchAssetCount = buffer.ReadInt32();
 				manifest.AssetList = new List<AssetDescriptor>(patchAssetCount);
 				for (int i = 0; i < patchAssetCount; i++)
@@ -218,7 +218,7 @@ namespace Framework.AssetManagement.Runtime
 					manifest.AssetList.Add(patchAsset);
 				}
 
-				// ¶ÁÈ¡×ÊÔ´°üÁĞ±í
+				// è¯»å–èµ„æºåŒ…åˆ—è¡¨
 				int patchBundleCount = buffer.ReadInt32();
 				manifest.BundleList = new List<BundleDescriptor>(patchBundleCount);
 				for (int i = 0; i < patchBundleCount; i++)
@@ -244,7 +244,7 @@ namespace Framework.AssetManagement.Runtime
 			// AssetList
 			foreach (var patchAsset in manifest.AssetList)
 			{
-				// ×¢Òâ£ºÎÒÃÇ²»ÔÊĞíÔ­Ê¼Â·¾¶´æÔÚÖØÃû
+				// æ³¨æ„ï¼šæˆ‘ä»¬ä¸å…è®¸åŸå§‹è·¯å¾„å­˜åœ¨é‡å
 				string assetPath = patchAsset.assetPath;
 				if (manifest.AssetDict.ContainsKey(assetPath))
 					throw new Exception($"AssetPath have existed : {assetPath}");
@@ -256,14 +256,14 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// Éú³ÉBundleÎÄ¼şµÄÕıÊ½Ãû³Æ
+		/// ç”ŸæˆBundleæ–‡ä»¶çš„æ­£å¼åç§°
 		/// </summary>
 		public static string CreateBundleFileName(int nameStype, string bundleName, string fileHash)
 		{
 			if (nameStype == 1)
 			{
 				//return fileHash;
-				return bundleName;		// TODO: ÔİÊ±ÓÃbundleName
+				return bundleName;		// TODO: æš‚æ—¶ç”¨bundleName
 			}
 			else if (nameStype == 2)
 			{

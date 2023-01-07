@@ -6,9 +6,9 @@ namespace Framework.AssetManagement.Runtime
 {
     internal sealed class BundleRawFileProvider : BundleProvider
     {
-#pragma warning disable CS0628 // ÔÚÃÜ·âÀàĞÍÖĞÉùÃ÷ÁËĞÂµÄ±£»¤³ÉÔ±
+#pragma warning disable CS0628 // åœ¨å¯†å°ç±»å‹ä¸­å£°æ˜äº†æ–°çš„ä¿æŠ¤æˆå‘˜
         protected BundleRawFileProvider() { }
-#pragma warning restore CS0628 // ÔÚÃÜ·âÀàĞÍÖĞÉùÃ÷ÁËĞÂµÄ±£»¤³ÉÔ±
+#pragma warning restore CS0628 // åœ¨å¯†å°ç±»å‹ä¸­å£°æ˜äº†æ–°çš„ä¿æŠ¤æˆå‘˜
         public BundleRawFileProvider(AssetSystem assetSystem, string providerGUID, AssetInfo assetInfo) : base(assetSystem, providerGUID, assetInfo)
         {
         }

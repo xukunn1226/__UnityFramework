@@ -77,12 +77,12 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// Òì²½Ğ¶ÔØ×Ó³¡¾°
+        /// å¼‚æ­¥å¸è½½å­åœºæ™¯
         /// </summary>
         /// <returns></returns>
         public UnloadSceneOperation UnloadAsync()
         {
-            // Èç¹û¾ä±úÎŞĞ§
+            // å¦‚æœå¥æŸ„æ— æ•ˆ
             if (!isValid)
             {
                 string error = $"{nameof(SceneOperationHandle)} is invalid.";
@@ -91,7 +91,7 @@ namespace Framework.AssetManagement.Runtime
                 return operation;
             }
 
-            // Èç¹ûÊÇÖ÷³¡¾°
+            // å¦‚æœæ˜¯ä¸»åœºæ™¯
             if (IsMainScene())
             {
                 string error = $"Cannot unload main scene. Use {nameof(AssetManagerEx.LoadSceneAsync)} method to change the main scene !";
@@ -101,8 +101,8 @@ namespace Framework.AssetManagement.Runtime
                 return operation;
             }
 
-            // Ğ¶ÔØ×Ó³¡¾°
-            Scene sceneObj = sceneObject;       // ÕâÀï¸´ÖÆÒ»·İÊı¾İ£¬UnloadSubScene½«½øĞĞÊı¾İÇåÀí£¬Ê¹µÃsceneObjectÊ§Ğ§
+            // å¸è½½å­åœºæ™¯
+            Scene sceneObj = sceneObject;       // è¿™é‡Œå¤åˆ¶ä¸€ä»½æ•°æ®ï¼ŒUnloadSubSceneå°†è¿›è¡Œæ•°æ®æ¸…ç†ï¼Œä½¿å¾—sceneObjectå¤±æ•ˆ
             provider.assetSystem.UnloadSubScene(provider);
             {                
                 var operation = new UnloadSceneOperation(sceneObj);

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// AssetBundle¼ÓÔØÆ÷
+    /// AssetBundleåŠ è½½å™¨
     /// </summary>
     internal class AssetBundleLoaderEx : BundleLoaderBase
     {
@@ -43,7 +43,7 @@ namespace Framework.AssetManagement.Runtime
                     bundlePath = bundleInfo.descriptor.cachedFilePath;
                 }
                 else if(bundleInfo.loadMethod == ELoadMethod.LoadFromRemote)
-                { // todo: Ôİ²»Ö§³Ö
+                { // todo: æš‚ä¸æ”¯æŒ
                     throw new System.Exception($"Unsupport load bundle from remote: {bundleInfo.loadMethod}");
                 }
                 else
@@ -70,7 +70,7 @@ namespace Framework.AssetManagement.Runtime
                     }
                 }
                 else
-                { // ÆäËû¼ÓÔØÄ£Ê½ĞèÒª½âÃÜ
+                { // å…¶ä»–åŠ è½½æ¨¡å¼éœ€è¦è§£å¯†
                     if(assetSystem.decryptionServices == null)
                     {
                         m_Step = ESteps.Done;
@@ -80,18 +80,18 @@ namespace Framework.AssetManagement.Runtime
                         return;
                     }
 
-                    // TODO: ÒÔºóÔÙ×ö
+                    // TODO: ä»¥åå†åš
                 }
                 m_Step = ESteps.CheckLoadFile;
             }
 
-            // ¼ì²âAssetBundle¼ÓÔØ½á¹û
+            // æ£€æµ‹AssetBundleåŠ è½½ç»“æœ
             if(m_Step == ESteps.CheckLoadFile)
             {
                 if(m_BundleRequest != null)
                 {
                     if(m_RequestAsyncComplete)
-                    { // ³õÊ¼ÊÇÒì²½ÇëÇó£¬¼ÓÔØ½áÊøÇ°Ö´ĞĞWaitForAsyncComplete£¬½«Ö´ĞĞµ½ÕâÀï£¬Ç¿ÖÆ°ÑÒì²½×ªÎªÍ¬²½
+                    { // åˆå§‹æ˜¯å¼‚æ­¥è¯·æ±‚ï¼ŒåŠ è½½ç»“æŸå‰æ‰§è¡ŒWaitForAsyncCompleteï¼Œå°†æ‰§è¡Œåˆ°è¿™é‡Œï¼Œå¼ºåˆ¶æŠŠå¼‚æ­¥è½¬ä¸ºåŒæ­¥
                         Debug.LogWarning($"Suspend the main thread to load asset bundle.");
                         cachedBundle = m_BundleRequest.assetBundle;
                     }
@@ -117,7 +117,7 @@ namespace Framework.AssetManagement.Runtime
                     lastError = $"Failed to load asset bundle: {bundleInfo.descriptor.bundleName}";
                     Debug.LogError(lastError);
 
-                    // TODO: Èç¹ûÊÇ´Ócache¼ÓÔØ×ÊÔ´Ê§°Ü£¬¿ÉÄÜÊÇ×ÊÔ´Ëğ»µ£¬ĞèÒªÖØĞÂÏÂÔØ
+                    // TODO: å¦‚æœæ˜¯ä»cacheåŠ è½½èµ„æºå¤±è´¥ï¼Œå¯èƒ½æ˜¯èµ„æºæŸåï¼Œéœ€è¦é‡æ–°ä¸‹è½½
                     if(bundleInfo.loadMethod == ELoadMethod.LoadFromCache)
                     {
 
@@ -126,11 +126,11 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        // TODO: Òª²»ÒªÓĞ³¬Ê±»úÖÆ×ö±£»¤£¿
+        // TODO: è¦ä¸è¦æœ‰è¶…æ—¶æœºåˆ¶åšä¿æŠ¤ï¼Ÿ
         public override void WaitForAsyncComplete()
         {
             m_RequestAsyncComplete = true;
-            while(true)     // ÒòÎª¿ÉÄÜÓĞÏÂÔØ£¬ËùÒÔĞèÒªwhile(true)
+            while(true)     // å› ä¸ºå¯èƒ½æœ‰ä¸‹è½½ï¼Œæ‰€ä»¥éœ€è¦while(true)
             {
                 Update();
                 if (isDone)

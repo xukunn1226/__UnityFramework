@@ -51,10 +51,10 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-		/// »ñÈ¡×Ó×ÊÔ´¶ÔÏó
+		/// è·å–å­èµ„æºå¯¹è±¡
 		/// </summary>
-		/// <typeparam name="TObject">×Ó×ÊÔ´¶ÔÏóÀàĞÍ</typeparam>
-		/// <param name="assetName">×Ó×ÊÔ´¶ÔÏóÃû³Æ</param>
+		/// <typeparam name="TObject">å­èµ„æºå¯¹è±¡ç±»å‹</typeparam>
+		/// <param name="assetName">å­èµ„æºå¯¹è±¡åç§°</param>
 		public TObject GetSubAssetObject<TObject>(string assetName) where TObject : UnityEngine.Object
         {
             if (!isValid)
@@ -71,9 +71,9 @@ namespace Framework.AssetManagement.Runtime
         }
 
         /// <summary>
-        /// »ñÈ¡ËùÓĞµÄ×Ó×ÊÔ´¶ÔÏó¼¯ºÏ
+        /// è·å–æ‰€æœ‰çš„å­èµ„æºå¯¹è±¡é›†åˆ
         /// </summary>
-        /// <typeparam name="TObject">×Ó×ÊÔ´¶ÔÏóÀàĞÍ</typeparam>
+        /// <typeparam name="TObject">å­èµ„æºå¯¹è±¡ç±»å‹</typeparam>
         public TObject[] GetSubAssetObjects<TObject>() where TObject : UnityEngine.Object
         {
             if (!isValid)

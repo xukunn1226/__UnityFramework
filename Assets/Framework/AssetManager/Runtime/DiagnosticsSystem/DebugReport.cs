@@ -10,18 +10,18 @@ namespace Framework.AssetManagement.Runtime
 	public class DebugReport
 	{
 		/// <summary>
-		/// ÓÎÏ·Ö¡
+		/// æ¸¸æˆå¸§
 		/// </summary>
 		public int FrameCount;
 
 		/// <summary>
-		/// µ÷ÊÔµÄ°ü¹üÊı¾İÁĞ±í
+		/// è°ƒè¯•çš„åŒ…è£¹æ•°æ®åˆ—è¡¨
 		/// </summary>
 		public List<DebugProviderInfo> DebugProviderInfos = new List<DebugProviderInfo>(1000);
 
 
 		/// <summary>
-		/// ĞòÁĞ»¯
+		/// åºåˆ—åŒ–
 		/// </summary>
 		public static byte[] Serialize(DebugReport debugReport)
 		{
@@ -29,7 +29,7 @@ namespace Framework.AssetManagement.Runtime
 		}
 
 		/// <summary>
-		/// ·´ĞòÁĞ»¯
+		/// ååºåˆ—åŒ–
 		/// </summary>
 		public static DebugReport Deserialize(byte[] data)
 		{

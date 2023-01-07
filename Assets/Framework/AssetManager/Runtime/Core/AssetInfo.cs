@@ -6,7 +6,7 @@ using System;
 namespace Framework.AssetManagement.Runtime
 {
     /// <summary>
-    /// ×ÊÔ´ÔËĞĞÊ±ĞÅÏ¢
+    /// èµ„æºè¿è¡Œæ—¶ä¿¡æ¯
     /// </summary>
     public class AssetInfo
     {
