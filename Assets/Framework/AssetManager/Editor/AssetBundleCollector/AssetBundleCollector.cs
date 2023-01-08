@@ -3,22 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using System.Linq;
 
-namespace Framework.AssetManagement.AssetBundleCollector
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     [Serializable]
     public class AssetBundleCollector
     {
         /// <summary>
-        /// ÊÕ¼¯Â·¾¶GUID£¬ÎÄ¼ş¼Ğ»òµ¥¸ö×ÊÔ´ÎÄ¼ş
+        /// æ”¶é›†è·¯å¾„GUIDï¼Œæ–‡ä»¶å¤¹æˆ–å•ä¸ªèµ„æºæ–‡ä»¶
         /// </summary>
         public string           CollectGUID;
 
-        public ECollectorType   CollectorType = ECollectorType.MainAssetCollector;
+        public string           CollectPath     { get { return AssetDatabase.GUIDToAssetPath(CollectGUID);  } }
 
-        public string           PackRuleName;
+        public ECollectorType   CollectorType   = ECollectorType.MainAssetCollector;
 
-        public string           FilterRuleName;
+        public string           PackRuleName    = nameof(PackDirectory);
+
+        public string           FilterRuleName  = nameof(CollectAll);
 
         public bool IsValid()
         {
@@ -26,24 +29,178 @@ namespace Framework.AssetManagement.AssetBundleCollector
             {
                 return false;
             }
+
+            if (AssetBundleCollectorSettingData.HasPackRuleName(PackRuleName) == false)
+                return false;
+
+            if (AssetBundleCollectorSettingData.HasFilterRuleName(FilterRuleName) == false)
+                return false;
+
             return true;
+        }
+
+        public List<CollectAssetInfo> GetAllCollectAssets(AssetBundleCollectorGroup group)
+        {
+            Dictionary<string, CollectAssetInfo> result = new Dictionary<string, CollectAssetInfo>(1000);
+            bool isRawAsset = PackRuleName == nameof(PackRawFile);
+
+            // æ£€æµ‹åŸç”Ÿèµ„æºåŒ…çš„æ”¶é›†å™¨ç±»å‹
+            if (isRawAsset && CollectorType != ECollectorType.MainAssetCollector)
+                throw new Exception($"The raw file must be set to {nameof(ECollectorType)}.{ECollectorType.MainAssetCollector} : {CollectPath}");
+
+            if (string.IsNullOrEmpty(CollectPath))
+                throw new Exception($"The collect path is null or empty in group : {group.GroupName}");
+
+            // æ”¶é›†æ‰“åŒ…èµ„æº
+            if (AssetDatabase.IsValidFolder(CollectPath))
+            {
+                string collectDirectory = CollectPath;
+                string[] findAssets = EditorTools.FindAssets(EAssetSearchType.All, collectDirectory);
+                foreach (string assetPath in findAssets)
+                {
+                    if (IsValidateAsset(assetPath) && IsCollectAsset(assetPath))
+                    {
+                        if (result.ContainsKey(assetPath) == false)
+                        {
+                            var collectAssetInfo = CreateCollectAssetInfo(group, assetPath, isRawAsset);
+                            result.Add(assetPath, collectAssetInfo);
+                        }
+                        else
+                        {
+                            throw new Exception($"The collecting asset file is existed : {assetPath} in collector : {CollectPath}");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                string assetPath = CollectPath;
+                if (IsValidateAsset(assetPath) && IsCollectAsset(assetPath))
+                {
+                    var collectAssetInfo = CreateCollectAssetInfo(group, assetPath, isRawAsset);
+                    result.Add(assetPath, collectAssetInfo);
+                }
+                else
+                {
+                    throw new Exception($"The collecting single asset file is invalid : {assetPath} in collector : {CollectPath}");
+                }
+            }            
+
+            // è¿”å›åˆ—è¡¨
+            return result.Values.ToList();
+        }
+
+        private CollectAssetInfo CreateCollectAssetInfo(AssetBundleCollectorGroup group, string assetPath, bool isRawAsset)
+        {
+            string bundleName = GetBundleName(group, assetPath);
+            CollectAssetInfo collectAssetInfo = new CollectAssetInfo(CollectorType, bundleName, assetPath, isRawAsset);            
+            collectAssetInfo.DependAssets = GetAllDependencies(assetPath);
+
+            return collectAssetInfo;
+        }
+
+        private bool IsCollectAsset(string assetPath)
+        {
+            IFilterRule filterRuleInstance = AssetBundleCollectorSettingData.GetFilterRuleInstance(FilterRuleName);
+            return filterRuleInstance.IsCollectAsset(new FilterRuleData(assetPath));
+        }
+
+        private bool IsValidateAsset(string assetPath)
+        {
+            if (assetPath.StartsWith("Assets/") == false && assetPath.StartsWith("Packages/") == false)
+            {
+                UnityEngine.Debug.LogError($"Invalid asset path : {assetPath}");
+                return false;
+            }
+
+            // å¿½ç•¥æ–‡ä»¶å¤¹
+            if (AssetDatabase.IsValidFolder(assetPath))
+                return false;
+
+            // å¿½ç•¥ç¼–è¾‘å™¨ä¸‹çš„ç±»å‹èµ„æº
+            Type type = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
+            if (type == typeof(LightingDataAsset))
+                return false;
+
+            // å¿½ç•¥Unityæ— æ³•è¯†åˆ«çš„æ— æ•ˆæ–‡ä»¶
+            // æ³¨æ„ï¼šåªå¯¹éåŸç”Ÿæ–‡ä»¶æ”¶é›†å™¨å¤„ç†
+            if (PackRuleName != nameof(PackRawFile))
+            {
+                if (type == typeof(UnityEditor.DefaultAsset))
+                {
+                    UnityEngine.Debug.LogWarning($"Cannot pack default asset : {assetPath}");
+                    return false;
+                }
+            }
+
+            if (IsIgnoreFile(assetPath))
+                return false;
+
+            return true;
+        }
+
+        private bool IsIgnoreFile(string assetPath)
+        {
+            string fileExtension = System.IO.Path.GetExtension(assetPath);
+            foreach (var extension in AssetBundleCollectorSetting.IgnoreFileExtensions)
+            {
+                if (extension == fileExtension)
+                    return true;
+            }
+
+            string directory = EditorTools.GetRegularPath(System.IO.Path.GetDirectoryName(assetPath));
+            string[] splits = directory.Split("/", StringSplitOptions.RemoveEmptyEntries);
+            foreach(var ignoreDir in AssetBundleCollectorSetting.IgnoreDirectoryName)
+            {
+                foreach(var dir in splits)
+                {
+                    if (string.Compare(dir, ignoreDir, true) == 0)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        private string GetBundleName(AssetBundleCollectorGroup group, string assetPath)
+        {
+            // æ ¹æ®è§„åˆ™è®¾ç½®è·å–èµ„æºåŒ…åç§°
+            IPackRule packRuleInstance = AssetBundleCollectorSettingData.GetPackRuleInstance(PackRuleName);
+            string bundleName = packRuleInstance.GetBundleName(new PackRuleData(assetPath, CollectPath, group.GroupName));
+            return EditorTools.GetRegularPath(bundleName).ToLower();
+        }
+
+        private List<string> GetAllDependencies(string mainAssetPath)
+        {
+            List<string> result = new List<string>();
+            string[] depends = AssetDatabase.GetDependencies(mainAssetPath, true);
+            foreach (string assetPath in depends)
+            {
+                if (IsValidateAsset(assetPath))
+                {
+                    // æ³¨æ„ï¼šæ’é™¤ä¸»èµ„æºå¯¹è±¡
+                    if (assetPath != mainAssetPath)
+                        result.Add(assetPath);
+                }
+            }
+            return result;
         }
     }
 
     public enum ECollectorType
     {
         /// <summary>
-        /// ÊÕ¼¯²ÎÓë´ò°üµÄÖ÷×ÊÔ´£¬Ğ´Èë×ÊÔ´Çåµ¥ÁĞ±í£¬¿ÉÍ¨¹ı´úÂë¼ÓÔØ
+        /// æ”¶é›†å‚ä¸æ‰“åŒ…çš„ä¸»èµ„æºï¼Œå†™å…¥èµ„æºæ¸…å•åˆ—è¡¨ï¼Œå¯é€šè¿‡ä»£ç åŠ è½½
         /// </summary>
         MainAssetCollector,
 
         /// <summary>
-        /// ÊÕ¼¯²ÎÓë´ò°üµÄÖ÷×ÊÔ´£¬²»Ğ´Èë×ÊÔ´Çåµ¥ÁĞ±í£¬²»¿ÉÍ¨¹ı´úÂë¼ÓÔØ
+        /// æ”¶é›†å‚ä¸æ‰“åŒ…çš„ä¸»èµ„æºï¼Œä¸å†™å…¥èµ„æºæ¸…å•åˆ—è¡¨ï¼Œä¸å¯é€šè¿‡ä»£ç åŠ è½½
         /// </summary>
         StaticAssetCollector,
 
         /// <summary>
-        /// ÊÕ¼¯²ÎÓë´ò°üµÄÒÀÀµ×ÊÔ´£¬²»Ğ´Èë×ÊÔ´Çåµ¥ÁĞ±í£¬²»¿ÉÍ¨¹ı´úÂë¼ÓÔØ£¬Èç¹ûÃ»ÓĞ±»Ö÷×ÊÔ´¶ÔÏóÒıÓÃ£¬Ôò²»²ÎÓë¹¹½¨
+        /// æ”¶é›†å‚ä¸æ‰“åŒ…çš„ä¾èµ–èµ„æºï¼Œä¸å†™å…¥èµ„æºæ¸…å•åˆ—è¡¨ï¼Œä¸å¯é€šè¿‡ä»£ç åŠ è½½ï¼Œå¦‚æœæ²¡æœ‰è¢«ä¸»èµ„æºå¯¹è±¡å¼•ç”¨ï¼Œåˆ™ä¸å‚ä¸æ„å»º
         /// </summary>
         DependAssetCollector,
     }

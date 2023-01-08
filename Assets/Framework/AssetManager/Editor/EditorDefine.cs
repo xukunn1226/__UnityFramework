@@ -2,26 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.AssetManagement
+namespace Framework.AssetManagement.AssetEditorWindow
 {
-    public class EditorDefine
+    /// <summary>
+    /// 璧勬簮鏂囦欢鏍煎紡
+    /// </summary>
+    public enum EAssetFileExtension
     {
-		/// <summary>
-		/// 资源文件格式
-		/// </summary>
-		public enum EAssetFileExtension
-		{
-			prefab,
-			unity,
-			fbx,
-			anim,
-			controller,
-			png,
-			jpg,
-			mat,
-			shader,
-			ttf,
-			cs,
-		}
+        prefab,
+        unity,
+        fbx,
+        anim,
+        controller,
+        png,
+        jpg,
+        mat,
+        shader,
+        ttf,
+        cs,
+    }
+
+    /// <summary>
+    /// 璧勬簮鎼滅储绫诲瀷
+    /// </summary>
+    public enum EAssetSearchType
+    {
+        All,
+        RuntimeAnimatorController,
+        AnimationClip,
+        AudioClip,
+        AudioMixer,
+        Font,
+        Material,
+        Mesh,
+        Model,
+        PhysicMaterial,
+        Prefab,
+        Scene,
+        Script,
+        Shader,
+        Sprite,
+        Texture,
+        VideoClip,
     }
 }

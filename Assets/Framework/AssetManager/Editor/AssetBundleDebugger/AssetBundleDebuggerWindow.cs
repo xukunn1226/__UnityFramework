@@ -9,7 +9,7 @@ using Sirenix.Utilities;
 using Sirenix.OdinInspector;
 using UnityEditor.UIElements;
 
-namespace Framework.AssetManagement.AssetBundleDebugger
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class AssetBundleDebuggerWindow : OdinMenuEditorWindow
     {

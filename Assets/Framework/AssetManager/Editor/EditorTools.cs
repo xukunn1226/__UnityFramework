@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using System.IO;
+using System;
+using System.Linq;
 
-namespace Framework.AssetManagement
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     static public class EditorTools
     {
@@ -44,13 +47,62 @@ namespace Framework.AssetManagement
 			return $"{projectPath}/{assetPath}";
 		}
 
-		/// <summary>
-		/// 递归查找目标文件夹路径
+        /// <summary>
+		/// 搜集资源
 		/// </summary>
-		/// <param name="root">搜索的根目录</param>
-		/// <param name="folderName">目标文件夹名称</param>
-		/// <returns>返回找到的文件夹路径，如果没有找到返回空字符串</returns>
-		public static string FindFolder(string root, string folderName)
+		/// <param name="searchType">搜集的资源类型</param>
+		/// <param name="searchInFolders">指定搜索的文件夹列表</param>
+		/// <returns>返回搜集到的资源路径列表</returns>
+		public static string[] FindAssets(EAssetSearchType searchType, string[] searchInFolders)
+        {
+            // 注意：AssetDatabase.FindAssets()不支持末尾带分隔符的文件夹路径
+            for (int i = 0; i < searchInFolders.Length; i++)
+            {
+                string folderPath = searchInFolders[i];
+                searchInFolders[i] = folderPath.TrimEnd('/');
+            }
+
+            // 注意：获取指定目录下的所有资源对象（包括子文件夹）
+            string[] guids;
+            if (searchType == EAssetSearchType.All)
+                guids = AssetDatabase.FindAssets(string.Empty, searchInFolders);
+            else
+                guids = AssetDatabase.FindAssets($"t:{searchType}", searchInFolders);
+
+            // 注意：AssetDatabase.FindAssets()可能会获取到重复的资源
+            List<string> result = new List<string>();
+            for (int i = 0; i < guids.Length; i++)
+            {
+                string guid = guids[i];
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                if (result.Contains(assetPath) == false)
+                {
+                    result.Add(assetPath);
+                }
+            }
+
+            // 返回结果
+            return result.ToArray();
+        }
+
+        /// <summary>
+        /// 搜集资源
+        /// </summary>
+        /// <param name="searchType">搜集的资源类型</param>
+        /// <param name="searchInFolder">指定搜索的文件夹</param>
+        /// <returns>返回搜集到的资源路径列表</returns>
+        public static string[] FindAssets(EAssetSearchType searchType, string searchInFolder)
+        {
+            return FindAssets(searchType, new string[] { searchInFolder });
+        }
+
+        /// <summary>
+        /// 递归查找目标文件夹路径
+        /// </summary>
+        /// <param name="root">搜索的根目录</param>
+        /// <param name="folderName">目标文件夹名称</param>
+        /// <returns>返回找到的文件夹路径，如果没有找到返回空字符串</returns>
+        public static string FindFolder(string root, string folderName)
 		{
 			DirectoryInfo rootInfo = new DirectoryInfo(root);
 			DirectoryInfo[] infoList = rootInfo.GetDirectories();
@@ -95,5 +147,14 @@ namespace Framework.AssetManagement
 			else
 				return content.Substring(startIndex + key.Length);
 		}
-	}
+
+        /// <summary>
+		/// 获取带继承关系的所有类的类型
+		/// </summary>
+		public static List<Type> GetAssignableTypes(System.Type parentType)
+        {
+            TypeCache.TypeCollection collection = TypeCache.GetTypesDerivedFrom(parentType);
+            return collection.ToList();
+        }
+    }
 }

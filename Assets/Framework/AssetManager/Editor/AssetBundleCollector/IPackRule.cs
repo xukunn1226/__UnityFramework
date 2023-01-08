@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework.AssetManagement.AssetBundleCollector
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     public interface IPackRule
     {

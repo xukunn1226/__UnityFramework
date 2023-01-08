@@ -2,17 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IFilterRule : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
+namespace Framework.AssetManagement.AssetEditorWindow
+{    
+    public interface IFilterRule
     {
-        
+        /// <summary>
+		/// 是否为收集资源
+		/// </summary>
+		/// <returns>如果收集该资源返回TRUE</returns>
+		bool IsCollectAsset(FilterRuleData data);
     }
 
-    // Update is called once per frame
-    void Update()
+    public struct FilterRuleData
     {
-        
+        public string AssetPath;
+
+        public FilterRuleData(string assetPath)
+        {
+            AssetPath = assetPath;
+        }
     }
 }

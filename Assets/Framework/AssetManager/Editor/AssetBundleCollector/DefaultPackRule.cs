@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Framework.AssetManagement;
 
-namespace Framework.AssetManagement.AssetBundleCollector
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     /// <summary>
     /// 以文件路径为资源包名
@@ -70,6 +70,18 @@ namespace Framework.AssetManagement.AssetBundleCollector
     }
 
     /// <summary>
+    /// 以分组名称作为资源包名
+    /// 注意：收集的所有文件打进一个资源包
+    /// </summary>
+    public class PackGroup : IPackRule
+    {
+        string IPackRule.GetBundleName(PackRuleData data)
+        {
+            return data.GroupName;
+        }
+    }
+
+    /// <summary>
     /// 打包原生文件
     /// 注意：原生文件不可有任何依赖关系
     /// </summary>
@@ -78,10 +90,10 @@ namespace Framework.AssetManagement.AssetBundleCollector
         string IPackRule.GetBundleName(PackRuleData data)
         {
             string extension = Runtime.StringHelper.RemoveFirstChar(System.IO.Path.GetExtension(data.AssetPath));
-            if (extension == EditorDefine.EAssetFileExtension.unity.ToString() || extension == EditorDefine.EAssetFileExtension.prefab.ToString() ||
-                extension == EditorDefine.EAssetFileExtension.mat.ToString() || extension == EditorDefine.EAssetFileExtension.controller.ToString() ||
-                extension == EditorDefine.EAssetFileExtension.fbx.ToString() || extension == EditorDefine.EAssetFileExtension.anim.ToString() ||
-                extension == EditorDefine.EAssetFileExtension.shader.ToString())
+            if (extension == EAssetFileExtension.unity.ToString() || extension == EAssetFileExtension.prefab.ToString() ||
+                extension == EAssetFileExtension.mat.ToString() || extension == EAssetFileExtension.controller.ToString() ||
+                extension == EAssetFileExtension.fbx.ToString() || extension == EAssetFileExtension.anim.ToString() ||
+                extension == EAssetFileExtension.shader.ToString())
             {
                 throw new System.Exception($"{nameof(PackRawFile)} is not support file estension : {extension}");
             }

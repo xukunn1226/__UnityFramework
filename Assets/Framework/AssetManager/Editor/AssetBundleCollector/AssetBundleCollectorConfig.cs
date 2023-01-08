@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Framework.AssetManagement.AssetBundleCollector
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     [Serializable]
     public class AssetBundleCollectorConfig
