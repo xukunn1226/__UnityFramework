@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 
@@ -25,6 +25,8 @@ namespace Framework.AssetManagement.AssetBrowser
             UnityEngine.Object[] builtinExtra = AssetDatabase.LoadAllAssetsAtPath("Resources/unity_builtin_extra");         // shader, material, texture2D, sprite, lightmapParameters
             foreach (var obj in builtinExtra)
             {
+                Debug.Log($"unity_builtin_extra: {obj.name}");
+
                 string typeName = obj.GetType().Name;
 
                 if(typeName == "Material")
@@ -48,6 +50,8 @@ namespace Framework.AssetManagement.AssetBrowser
             UnityEngine.Object[] defaultResources = AssetDatabase.LoadAllAssetsAtPath("Library/unity default resources");   // monoScript, shader, computeShader, texture2D, material, font, mesh, sprite, GUISkin
             foreach (var obj in defaultResources)
             {
+                Debug.Log($"unity default resources: {obj.name}");
+
                 string typeName = obj.GetType().Name;
 
                 if(typeName == "Material")
