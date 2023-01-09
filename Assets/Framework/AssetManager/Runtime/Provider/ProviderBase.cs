@@ -69,7 +69,7 @@ namespace Framework.AssetManagement.Runtime
                 throw new System.NotImplementedException();
 
             m_Handlers.AddUnique(handle);
-            DebugStackTrace();
+            AddDebugStackTrace(handle);
             return (T)handle;
         }
 
@@ -81,6 +81,7 @@ namespace Framework.AssetManagement.Runtime
             if(!m_Handlers.Remove(handle))
                 throw new System.Exception($"How to get here!");
 
+            RemoveDebugStackTrace(handle);
             --refCount;
         }
 
@@ -179,14 +180,22 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        private List<string> m_StackTraces;
+        private Dictionary<OperationHandleBase, string> m_StackTraces;
         
-        [System.Diagnostics.Conditional("DEBUG")]
-        protected void DebugStackTrace()
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        protected void AddDebugStackTrace(OperationHandleBase handle)
         {
             if (m_StackTraces == null)
-                m_StackTraces = new List<string>();
-            m_StackTraces.Add(GetStackTrace());
+                m_StackTraces = new Dictionary<OperationHandleBase, string>();
+            m_StackTraces.Add(handle, GetStackTrace());
+        }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        protected void RemoveDebugStackTrace(OperationHandleBase handle)
+        {
+            if (m_StackTraces == null)
+                return;
+            m_StackTraces.Remove(handle);
         }
 
         static public string GetStackTrace()
@@ -210,6 +219,19 @@ namespace Framework.AssetManagement.Runtime
 
             return sb.ToString();
         }
+
+        private List<string> GetStackTraceInfos()
+        {
+            List<string> infos = new List<string>();
+            if (m_StackTraces == null)
+                return infos;
+
+            foreach(var pair in m_StackTraces)
+            {
+                infos.Add(pair.Value);
+            }
+            return null;
+        }
         
         [System.Diagnostics.Conditional("DEBUG")]
         public void GetProviderDebugInfo(ref DebugProviderInfo info)
@@ -221,7 +243,7 @@ namespace Framework.AssetManagement.Runtime
             info.RefCount           = refCount;
             info.Status             = status.ToString();
             info.DependBundleInfos  = new List<DebugBundleInfo>();
-            info.StackTraces = m_StackTraces;
+            info.StackTraces        = GetStackTraceInfos();
 
             if(this is BundleProvider)
             {
