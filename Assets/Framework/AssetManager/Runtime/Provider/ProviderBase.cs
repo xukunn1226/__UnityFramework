@@ -230,7 +230,7 @@ namespace Framework.AssetManagement.Runtime
             {
                 infos.Add(pair.Value);
             }
-            return null;
+            return infos;
         }
         
         [System.Diagnostics.Conditional("DEBUG")]
