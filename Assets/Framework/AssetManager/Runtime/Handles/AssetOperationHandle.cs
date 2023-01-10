@@ -29,7 +29,7 @@ namespace Framework.AssetManagement.Runtime
             {
                 if (!isValid)
                     throw new System.Exception($"AssetOperationHandle is invalid");
-                
+
                 if (provider.isDone)
                     value.Invoke(this);
                 else
@@ -52,7 +52,7 @@ namespace Framework.AssetManagement.Runtime
 
         public GameObject Instantiate(Transform parent = null)
         {
-            return InstantiateSyncInternal(Vector3.zero, Quaternion.identity, parent);
+            return InstantiateSyncInternal(parent);
         }
 
         public GameObject Instantiate(Vector3 position, Quaternion rotation, Transform parent = null)
@@ -65,6 +65,13 @@ namespace Framework.AssetManagement.Runtime
             if (!isValid || provider.assetObject == null)
                 return null;
             return UnityEngine.Object.Instantiate(provider.assetObject as GameObject, position, rotation, parent);
+        }
+
+        private GameObject InstantiateSyncInternal(Transform parent)
+        {
+            if (!isValid || provider.assetObject == null)
+                return null;
+            return UnityEngine.Object.Instantiate(provider.assetObject as GameObject, parent);
         }
     }
 }
