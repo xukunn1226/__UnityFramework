@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
@@ -133,6 +134,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 }
             }
 
+            // 不收集指定扩展名和特定文件夹下的资源
             if (IsIgnoreFile(assetPath))
                 return false;
 
