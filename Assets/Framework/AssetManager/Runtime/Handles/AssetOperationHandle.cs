@@ -6,6 +6,7 @@ namespace Framework.AssetManagement.Runtime
 {
     public class AssetOperationHandle : OperationHandleBase
     {
+        private GameObject m_Inst;
         private System.Action<AssetOperationHandle> m_Callback;
 
         internal AssetOperationHandle(ProviderBase provider) : base(provider)
@@ -13,6 +14,11 @@ namespace Framework.AssetManagement.Runtime
 
         public void Release()
         {
+            if (m_Inst != null)
+            {
+                Object.Destroy(m_Inst);
+                m_Inst = null;
+            }
             this.ReleaseInternal();
         }
 
@@ -52,12 +58,14 @@ namespace Framework.AssetManagement.Runtime
 
         public GameObject Instantiate(Transform parent = null)
         {
-            return InstantiateSyncInternal(parent);
+            m_Inst = InstantiateSyncInternal(parent);
+            return m_Inst;
         }
 
         public GameObject Instantiate(Vector3 position, Quaternion rotation, Transform parent = null)
         {
-            return InstantiateSyncInternal(position, rotation, parent);
+            m_Inst = InstantiateSyncInternal(position, rotation, parent);
+            return m_Inst;
         }
 
         private GameObject InstantiateSyncInternal(Vector3 position, Quaternion rotation, Transform parent)
