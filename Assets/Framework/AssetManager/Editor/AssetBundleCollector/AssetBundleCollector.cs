@@ -205,5 +205,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// 收集参与打包的依赖资源，不写入资源清单列表，不可通过代码加载，如果没有被主资源对象引用，则不参与构建
         /// </summary>
         DependAssetCollector,
+
+        /// <summary>
+        /// 不由收集器负责
+        /// </summary>
+        None
     }
 }

@@ -25,6 +25,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// </summary>
     public class PackDirectory : IPackRule
     {
+        public static PackDirectory StaticPackRule = new PackDirectory();
+
         string IPackRule.GetBundleName(PackRuleData data)
         {
             string bundleName = System.IO.Path.GetDirectoryName(data.AssetPath);
