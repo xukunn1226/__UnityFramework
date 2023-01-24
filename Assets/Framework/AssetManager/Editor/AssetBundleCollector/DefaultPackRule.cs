@@ -12,6 +12,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// </summary>
     public class PackFile : IPackRule
     {
+        public static PackFile StaticPackRule = new PackFile();
+
         string IPackRule.GetBundleName(PackRuleData data)
         {
             string bundleName = Runtime.StringHelper.RemoveExtension(data.AssetPath);

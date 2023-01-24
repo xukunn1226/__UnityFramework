@@ -116,7 +116,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <summary>
         /// 计算主资源或共享资源的完整包名
         /// </summary>
-        public void CalculateFullBundleName(bool uniqueBundleName, string packageName)
+        public void CalculateFullBundleName()
         {
             if (CollectorType == ECollectorType.None)
             {
@@ -139,11 +139,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     }
                 }
 
-                if (uniqueBundleName)
-                {
-                    if (string.IsNullOrEmpty(m_ShareBundleName) == false)
-                        m_ShareBundleName = $"{packageName.ToLower()}_{m_ShareBundleName}";
-                }
+                //if (uniqueBundleName)
+                //{
+                //    if (string.IsNullOrEmpty(m_ShareBundleName) == false)
+                //        m_ShareBundleName = $"{packageName.ToLower()}_{m_ShareBundleName}";
+                //}
             }
             else
             {

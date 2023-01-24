@@ -27,9 +27,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
         public bool IsValid()
         {
             if(string.IsNullOrEmpty(AssetDatabase.GUIDToAssetPath(CollectGUID)))
-            {
                 return false;
-            }
+
+            if (CollectorType == ECollectorType.None)
+                return false;
 
             if (AssetBundleCollectorSettingData.HasPackRuleName(PackRuleName) == false)
                 return false;
@@ -38,6 +39,25 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 检测配置错误
+        /// </summary>
+        public void CheckConfigError()
+        {
+            string assetGUID = AssetDatabase.AssetPathToGUID(CollectPath);
+            if (string.IsNullOrEmpty(assetGUID))
+                throw new Exception($"Invalid collect path : {CollectPath}");
+
+            if (CollectorType == ECollectorType.None)
+                throw new Exception($"{nameof(ECollectorType)}.{ECollectorType.None} is invalid in collector : {CollectPath}");
+
+            if (AssetBundleCollectorSettingData.HasPackRuleName(PackRuleName) == false)
+                throw new Exception($"Invalid {nameof(IPackRule)} class type : {PackRuleName} in collector : {CollectPath}");
+
+            if (AssetBundleCollectorSettingData.HasFilterRuleName(FilterRuleName) == false)
+                throw new Exception($"Invalid {nameof(IFilterRule)} class type : {FilterRuleName} in collector : {CollectPath}");
         }
 
         public List<CollectAssetInfo> GetAllCollectAssets(AssetBundleCollectorGroup group)
@@ -94,10 +114,44 @@ namespace Framework.AssetManagement.AssetEditorWindow
         private CollectAssetInfo CreateCollectAssetInfo(AssetBundleCollectorGroup group, string assetPath, bool isRawAsset)
         {
             string bundleName = GetBundleName(group, assetPath);
-            CollectAssetInfo collectAssetInfo = new CollectAssetInfo(CollectorType, bundleName, assetPath, isRawAsset);            
-            collectAssetInfo.DependAssets = GetAllDependencies(assetPath);
+            CollectAssetInfo collectAssetInfo = new CollectAssetInfo(CollectorType, bundleName, assetPath, isRawAsset);
+            collectAssetInfo.DependTree = CreateDependTree(assetPath);
 
             return collectAssetInfo;
+        }
+
+        private CollectAssetInfo.DependNode CreateDependTree(string mainAssetPath)
+        {
+            return CreateDependNode(mainAssetPath, null);
+        }
+
+        private CollectAssetInfo.DependNode CreateDependNode(string assetPath, CollectAssetInfo.DependNode parent)
+        {
+            CollectAssetInfo.DependNode node = new CollectAssetInfo.DependNode();
+            node.assetPath = assetPath;
+            node.parent = parent;
+
+            // create child node
+            string[] depends = AssetDatabase.GetDependencies(assetPath, false);     // 获取直接依赖
+            List<string> dependAssetPaths = new List<string>();
+            foreach (string path in depends)
+            {
+                if (IsValidateAsset(path, false))      // 获取直接依赖时，仅过滤指定的扩展名文件，不过滤指定文件夹下的文件
+                {
+                    // 排除主资源对象
+                    if (path == assetPath)
+                        continue;
+
+                    dependAssetPaths.Add(path);
+                }
+            }
+            
+            foreach(var path in dependAssetPaths)
+            {
+                node.children.Add(CreateDependNode(path, node));
+            }
+
+            return node;
         }
 
         private bool IsCollectAsset(string assetPath)
@@ -106,7 +160,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             return filterRuleInstance.IsCollectAsset(new FilterRuleData(assetPath));
         }
 
-        private bool IsValidateAsset(string assetPath)
+        private bool IsValidateAsset(string assetPath, bool considerByDirectory = true)
         {
             if (assetPath.StartsWith("Assets/") == false && assetPath.StartsWith("Packages/") == false)
             {
@@ -135,13 +189,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
 
             // 不收集指定扩展名和特定文件夹下的资源
-            if (IsIgnoreFile(assetPath))
+            if (IsIgnoreFileByExtension(assetPath))
+                return false;
+            if (considerByDirectory && IsIgnoreFileByDirectory(assetPath))
                 return false;
 
             return true;
         }
 
-        private bool IsIgnoreFile(string assetPath)
+        private bool IsIgnoreFileByExtension(string assetPath)
         {
             string fileExtension = System.IO.Path.GetExtension(assetPath);
             foreach (var extension in AssetBundleCollectorSetting.IgnoreFileExtensions)
@@ -150,11 +206,16 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     return true;
             }
 
+            return false;
+        }
+
+        private bool IsIgnoreFileByDirectory(string assetPath)
+        {
             string directory = EditorTools.GetRegularPath(System.IO.Path.GetDirectoryName(assetPath));
             string[] splits = directory.Split("/", StringSplitOptions.RemoveEmptyEntries);
-            foreach(var ignoreDir in AssetBundleCollectorSetting.IgnoreDirectoryName)
+            foreach (var ignoreDir in AssetBundleCollectorSetting.IgnoreDirectoryName)
             {
-                foreach(var dir in splits)
+                foreach (var dir in splits)
                 {
                     if (string.Compare(dir, ignoreDir, true) == 0)
                         return true;
@@ -170,22 +231,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             IPackRule packRuleInstance = AssetBundleCollectorSettingData.GetPackRuleInstance(PackRuleName);
             string bundleName = packRuleInstance.GetBundleName(new PackRuleData(assetPath, CollectPath, group.GroupName));
             return EditorTools.GetRegularPath(bundleName).ToLower();
-        }
-
-        private List<string> GetAllDependencies(string mainAssetPath)
-        {
-            List<string> result = new List<string>();
-            string[] depends = AssetDatabase.GetDependencies(mainAssetPath, true);
-            foreach (string assetPath in depends)
-            {
-                if (IsValidateAsset(assetPath))
-                {
-                    // 注意：排除主资源对象
-                    if (assetPath != mainAssetPath)
-                        result.Add(assetPath);
-                }
-            }
-            return result;
         }
     }
 
@@ -207,7 +252,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         DependAssetCollector,
 
         /// <summary>
-        /// 不由收集器负责
+        /// 不由收集器负责收集，解析过程中程序化生成
         /// </summary>
         None
     }

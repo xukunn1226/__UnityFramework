@@ -10,12 +10,12 @@ namespace Framework.AssetManagement.Runtime
 		/// <summary>
 		/// AssetBundle文件的后缀名
 		/// </summary>
-		public string AssetBundleFileVariant = "bundle";
+		public string AssetBundleFileVariant = "ab";
 
 		/// <summary>
 		/// 原生文件的后缀名
 		/// </summary>
-		public string RawFileVariant = "rawfile";
+		public string RawFileVariant = "rawdata";
 
 		/// <summary>
 		/// 清单文件名称

@@ -153,11 +153,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         public UnityEditor.AssetBundleBuild CreatePipelineBuild()
         {
-            // 注意：我们不在支持AssetBundle的变种机制
             AssetBundleBuild build = new AssetBundleBuild();
             build.assetBundleName = BundleName;
             build.assetBundleVariant = string.Empty;
             build.assetNames = GetBuildinAssetPaths();
+            build.addressableNames = new string[build.assetNames.Length];
+            for(int i = 0; i < build.assetNames.Length; ++i)
+            {
+                build.addressableNames[i] = System.IO.Path.GetFileName(build.assetNames[i]).ToLower();
+            }
             return build;
         }
 

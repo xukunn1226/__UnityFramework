@@ -27,9 +27,21 @@ namespace Framework.AssetManagement.AssetEditorWindow
         public bool IsRawAsset { private set; get; }
 
         /// <summary>
-        /// 依赖的资源列表
+        /// 记录被其他资源依赖的次数
+        /// 注意：仅CollectorType == ECollectorType.None才需要记录，其他type资源必定打包bundle
         /// </summary>
-        public List<string> DependAssets = new List<string>();
+        public int UsedBy { set; get; }
+
+        /// <summary>
+        /// 依赖的资源树列表
+        /// </summary>
+        public class DependNode
+        {
+            public string           assetPath;
+            public DependNode       parent;
+            public List<DependNode> children = new List<DependNode>();
+        }
+        public DependNode DependTree = new DependNode();
 
         public CollectAssetInfo(ECollectorType collectorType, string bundleName, string assetPath, bool isRawAsset)
         {
@@ -37,6 +49,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
             BundleName = bundleName;
             AssetPath = assetPath;
             IsRawAsset = isRawAsset;
+        }
+
+        /// <summary>
+        /// 复制BundleName
+        /// </summary>
+        /// <param name="other"></param>
+        public void CloneBundleName(CollectAssetInfo other)
+        {
+            BundleName = other.BundleName;
         }
 
         /// <summary>
