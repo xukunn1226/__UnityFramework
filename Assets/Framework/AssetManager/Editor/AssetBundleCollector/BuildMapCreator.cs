@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
+using System.Linq;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
@@ -25,20 +26,84 @@ namespace Framework.AssetManagement.AssetEditorWindow
             List<CollectAssetInfo> allCollectAssets = AssetBundleCollectorSettingData.Instance.GetAllCollectAssets(configName);
 
             // step3. 遍历所有收集资源的依赖资源，扩展资源列表
-            for(int i = allCollectAssets.Count - 1; i >= 0; --i)
+            ExtentCollectAssetInfos(ref allCollectAssets);
+
+            // step4. 再次遍历所有收集资源的依赖资源，进行合并处理
+            MergeAllAssets(ref allCollectAssets);
+
+            // step5. 记录所有收集器资源
+            Dictionary<string, BuildAssetInfo> buildAssetDic = CreateBuildAssetInfos(allCollectAssets);
+
+            // step6. 记录依赖资源列表
+            FillDependAssetInfos(ref allCollectAssets, ref buildAssetDic);
+
+            // step7. 计算完整的资源包名
+            foreach (KeyValuePair<string, BuildAssetInfo> pair in buildAssetDic)
+            {
+                pair.Value.CalculateFullBundleName();
+            }
+
+            // step8. 构建资源包
+            var allBuildinAssets = buildAssetDic.Values.ToList();
+            if (allBuildinAssets.Count == 0)
+                throw new System.Exception("构建的资源列表不能为空");
+            foreach (var assetInfo in allBuildinAssets)
+            {
+                context.PackAsset(assetInfo);
+            }
+
+            return context;
+        }
+
+        static private void FillDependAssetInfos(ref List<CollectAssetInfo> allCollectAssets, ref Dictionary<string, BuildAssetInfo> buildAssetDic)
+        {
+            foreach (var collectAsset in allCollectAssets)
+            {
+                if (buildAssetDic.ContainsKey(collectAsset.AssetPath) == false)
+                    throw new System.Exception($"Should never get here! {collectAsset.AssetPath} is not exists");
+
+                var dependAssetInfos = new List<BuildAssetInfo>();
+                List<CollectAssetInfo.DependNode> allDependNodes = collectAsset.GetAllDependNodes();
+                foreach (var dependNode in allDependNodes)
+                {
+                    if (buildAssetDic.TryGetValue(dependNode.assetPath, out var buildAssetInfo) == false)
+                        throw new System.Exception($"Should never get here!");
+
+                    CollectAssetInfo assetInfo = allCollectAssets.Find(item => { return item.AssetPath == dependNode.assetPath; });
+                    if (assetInfo == null)
+                        throw new System.Exception($"Should never get here! {dependNode.assetPath} not exists in allCollectAssets");
+
+                    // 此类资源将被合并至其他资源包中
+                    if (assetInfo.CollectorType == ECollectorType.None && assetInfo.UsedBy == 1)
+                        continue;
+
+                    dependAssetInfos.Add(buildAssetInfo);
+                }
+                buildAssetDic[collectAsset.AssetPath].SetAllDependAssetInfos(dependAssetInfos);
+            }
+        }
+
+        /// <summary>
+        /// 根据资源的依赖列表扩充
+        /// </summary>
+        /// <param name="allCollectAssets"></param>
+        /// <exception cref="System.Exception"></exception>
+        static private void ExtentCollectAssetInfos(ref List<CollectAssetInfo> allCollectAssets)
+        {
+            for (int i = allCollectAssets.Count - 1; i >= 0; --i)
             {
                 CollectAssetInfo collectAssetInfo = allCollectAssets[i];
-                
+
                 if (collectAssetInfo.AssetPath != collectAssetInfo.DependTree.assetPath)
                     throw new System.Exception("should never get here");
 
                 if (collectAssetInfo.DependTree.children.Count == 0)
                     continue;
 
-                foreach(var node in collectAssetInfo.DependTree.children)
+                foreach (var node in collectAssetInfo.DependTree.children)
                 {
                     CollectAssetInfo assetInfo = allCollectAssets.Find(item => { return item.AssetPath == node.assetPath; });
-                    if(assetInfo != null)
+                    if (assetInfo != null)
                     {
                         // 依赖资源已在收集器收集的资源列表中，且类型是ECollectorType.None，则自增被依赖的次数
                         if (assetInfo.CollectorType == ECollectorType.None)
@@ -50,7 +115,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     {
                         // 自动分析收集到的资源，默认使用PackFile打包规则
                         IPackRule packRule = PackFile.StaticPackRule;
-                        string bundleName = $"share_{packRule.GetBundleName(new PackRuleData(node.assetPath))}.{AssetManagerSettingsData.Setting.AssetBundleFileVariant}";
+                        string bundleName = $"share_{packRule.GetBundleName(new PackRuleData(node.assetPath))}";
 
                         assetInfo = new CollectAssetInfo(ECollectorType.None, bundleName, node.assetPath, false);
                         assetInfo.UsedBy = 1;
@@ -58,8 +123,33 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     }
                 }
             }
+        }
 
-            // step4. 再次遍历所有收集资源的依赖资源，进行合并处理
+        /// <summary>
+        /// 由收集器资源列表生成构建资源列表
+        /// </summary>
+        /// <param name="allCollectAssets"></param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception"></exception>
+        static private Dictionary<string, BuildAssetInfo> CreateBuildAssetInfos(List<CollectAssetInfo> allCollectAssets)
+        {
+            Dictionary<string, BuildAssetInfo> buildAssetDic = new Dictionary<string, BuildAssetInfo>(1000);
+            foreach (var collectAsset in allCollectAssets)
+            {
+                if (string.IsNullOrEmpty(collectAsset.BundleName))
+                    throw new System.Exception($"BundleName is null, {collectAsset.AssetPath}");
+
+                if (buildAssetDic.ContainsKey(collectAsset.AssetPath))
+                    throw new System.Exception($"Should never get here! {collectAsset.AssetPath} has already exists");
+
+                var buildAssetInfo = new BuildAssetInfo(collectAsset.CollectorType, collectAsset.BundleName, collectAsset.AssetPath, collectAsset.IsRawAsset);
+                buildAssetDic.Add(collectAsset.AssetPath, buildAssetInfo);
+            }
+            return buildAssetDic;
+        }
+
+        static private void MergeAllAssets(ref List<CollectAssetInfo> allCollectAssets)
+        {
             foreach (var topAsset in allCollectAssets)
             {
                 foreach (var childNode in topAsset.DependTree.children)
@@ -67,15 +157,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     MergeDependAssets(allCollectAssets, topAsset, childNode);
                 }
             }
-
-            // step5. 记录所有收集器资源
-            Dictionary<string, BuildAssetInfo> buildAssetDic = new Dictionary<string, BuildAssetInfo>(1000);
-            foreach(var collectAsset in allCollectAssets)
-            {
-
-            }
-
-            return context;
         }
 
         /// <summary>

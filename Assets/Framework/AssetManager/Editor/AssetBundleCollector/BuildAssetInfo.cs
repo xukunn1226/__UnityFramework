@@ -9,9 +9,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     public class BuildAssetInfo
     {
         private string                      m_MainBundleName;
-        private string                      m_ShareBundleName;
-        private readonly HashSet<string>    m_ReferenceBundleNames = new HashSet<string>();
-
+        
         /// <summary>
         /// 收集器类型
         /// </summary>
@@ -53,20 +51,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 IsShaderAsset = false;
         }
 
-        public BuildAssetInfo(string assetPath)
-        {
-            CollectorType = ECollectorType.None;
-            AssetPath = assetPath;
-            IsRawAsset = false;
-
-            System.Type assetType = UnityEditor.AssetDatabase.GetMainAssetTypeAtPath(assetPath);
-            if (assetType == typeof(UnityEngine.Shader) || assetType == typeof(UnityEngine.ShaderVariantCollection))
-                IsShaderAsset = true;
-            else
-                IsShaderAsset = false;
-        }
-
-
         /// <summary>
         /// 设置所有依赖的资源
         /// </summary>
@@ -95,22 +79,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         public string GetBundleName()
         {
-            if (CollectorType == ECollectorType.None)
-                return m_ShareBundleName;
-            else
-                return m_MainBundleName;
-        }
-
-        /// <summary>
-        /// 添加关联的资源包名称
-        /// </summary>
-        public void AddReferenceBundleName(string bundleName)
-        {
-            if (string.IsNullOrEmpty(bundleName))
-                throw new Exception("Should never get here !");
-
-            if (m_ReferenceBundleNames.Contains(bundleName) == false)
-                m_ReferenceBundleNames.Add(bundleName);
+            return m_MainBundleName;
         }
 
         /// <summary>
@@ -118,45 +87,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         public void CalculateFullBundleName()
         {
-            if (CollectorType == ECollectorType.None)
+            if (IsRawAsset)
             {
-                if (IsRawAsset)
-                    throw new Exception("Should never get here !");
-
-                if (IsShaderAsset)
-                {
-                    string shareBundleName = AssetManagerSettingsData.GetUnityShadersBundleFullName();
-                    m_ShareBundleName = EditorTools.GetRegularPath(shareBundleName).ToLower();
-                }
-                else
-                {
-                    if (m_ReferenceBundleNames.Count > 1)
-                    {
-                        IPackRule packRule = PackDirectory.StaticPackRule;
-                        var bundleName = packRule.GetBundleName(new PackRuleData(AssetPath));
-                        var shareBundleName = $"share_{bundleName}.{AssetManagerSettingsData.Setting.AssetBundleFileVariant}";
-                        m_ShareBundleName = EditorTools.GetRegularPath(shareBundleName).ToLower();
-                    }
-                }
-
-                //if (uniqueBundleName)
-                //{
-                //    if (string.IsNullOrEmpty(m_ShareBundleName) == false)
-                //        m_ShareBundleName = $"{packageName.ToLower()}_{m_ShareBundleName}";
-                //}
+                string mainBundleName = $"{m_MainBundleName}.{AssetManagerSettingsData.Setting.RawFileVariant}";
+                m_MainBundleName = EditorTools.GetRegularPath(mainBundleName).ToLower();
             }
             else
             {
-                if (IsRawAsset)
-                {
-                    string mainBundleName = $"{m_MainBundleName}.{AssetManagerSettingsData.Setting.RawFileVariant}";
-                    m_MainBundleName = EditorTools.GetRegularPath(mainBundleName).ToLower();
-                }
-                else
-                {
-                    string mainBundleName = $"{m_MainBundleName}.{AssetManagerSettingsData.Setting.AssetBundleFileVariant}";
-                    m_MainBundleName = EditorTools.GetRegularPath(mainBundleName).ToLower(); ;
-                }
+                string mainBundleName = $"{m_MainBundleName}.{AssetManagerSettingsData.Setting.AssetBundleFileVariant}";
+                m_MainBundleName = EditorTools.GetRegularPath(mainBundleName).ToLower(); ;
             }
         }
     }

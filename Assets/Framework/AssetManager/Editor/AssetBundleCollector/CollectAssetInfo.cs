@@ -60,6 +60,29 @@ namespace Framework.AssetManagement.AssetEditorWindow
             BundleName = other.BundleName;
         }
 
+        public List<DependNode> GetAllDependNodes()
+        {
+            List<DependNode> dependNodes = new List<DependNode>();
+            foreach(var child in DependTree.children)
+            {
+                dependNodes.AddRange(GetDependNodes(child));
+            }
+            return dependNodes;
+        }
+
+        private List<DependNode> GetDependNodes(DependNode node)
+        {
+            if (node == null)
+                throw new System.Exception($"Should never get here");
+
+            List<DependNode> nodes = new List<DependNode>(node.children);
+            foreach(var child in node.children)
+            {
+                nodes.AddRange(GetDependNodes(child));
+            }
+            return nodes;
+        }
+
         /// <summary>
         /// 资源包名称追加包裹名
         /// </summary>

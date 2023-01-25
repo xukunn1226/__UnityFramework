@@ -218,5 +218,30 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 throw new Exception($"{nameof(IFilterRule)}类型无效：{ruleName}");
             }
         }
+
+        static public AssetBundleCollectorConfig CreateConfig(string configName, string configDesc)
+        {
+            if (string.IsNullOrEmpty(configName))
+                throw new Exception($"CreateConfig: configName is null");
+
+            AssetBundleCollectorConfig config = new AssetBundleCollectorConfig();
+            config.ConfigName = configName;
+            config.ConfigDesc = configDesc;
+            Instance.Configs.Add(config);
+            isDirty = true;
+            return config;
+        }
+
+        static public void RemoveConfig(AssetBundleCollectorConfig config)
+        {
+            if(Instance.Configs.Remove(config))
+            {
+                isDirty = true;
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to remove AssetBundleCollectorConfig: {config.ConfigName}");
+            }
+        }
     }
 }

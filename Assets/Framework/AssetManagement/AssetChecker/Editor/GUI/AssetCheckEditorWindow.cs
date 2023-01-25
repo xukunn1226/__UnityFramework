@@ -24,7 +24,7 @@ namespace Framework.AssetManagement.AssetChecker
             }
         }
 
-        [MenuItem("Tools/Assets Management/Asset Check Editor Window &x")]
+        [MenuItem("Tools/Assets Management/资源配置检查工具 &x")]
         private static void OpenWindow()
         {
             var window = GetWindow<AssetCheckEditorWindow>();
