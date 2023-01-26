@@ -119,6 +119,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
 			}
 		}
 
+        static public void SetDirty()
+        {
+            isDirty = true;
+        }
+
         /// <summary>
 		/// 存储配置文件
 		/// </summary>
@@ -219,7 +224,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
         }
 
-        static public AssetBundleCollectorConfig CreateConfig(string configName, string configDesc)
+        static public AssetBundleCollectorConfig AddConfig(string configName, string configDesc)
         {
             if (string.IsNullOrEmpty(configName))
                 throw new Exception($"CreateConfig: configName is null");

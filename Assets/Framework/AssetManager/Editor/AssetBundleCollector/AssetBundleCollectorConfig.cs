@@ -62,5 +62,27 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
             return result;
         }
+
+        public AssetBundleCollectorGroup AddGroup(string groupName, string groupDesc)
+        {
+            AssetBundleCollectorGroup group = new AssetBundleCollectorGroup();
+            group.GroupName = groupName;
+            group.GroupDesc = groupDesc;
+            Groups.Add(group);
+            AssetBundleCollectorSettingData.SetDirty();
+            return group;
+        }
+
+        public void RemoveGroup(AssetBundleCollectorGroup group)
+        {
+            if(Groups.Remove(group))
+            {
+                AssetBundleCollectorSettingData.SetDirty();
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to remove AssetBundleCollectorGroup: {group.GroupName}");
+            }
+        }
     }
 }

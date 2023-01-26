@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
+    [CreateAssetMenu(fileName = "AssetBundleCollectorSetting", menuName = "AssetManager Settings/Create AssetBundleCollectorSetting")]
     public class AssetBundleCollectorSetting : ScriptableObject
     {
         static public readonly string[] IgnoreFileExtensions = { "", ".so", ".dll", ".cs", ".js", ".boo", ".meta", ".cginc" };

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f458542b446e5e24baa99e9e9c9fac15, type: 3}
+  m_Name: AssetBundleCollectorSetting
+  m_EditorClassIdentifier: 
+  Configs:
+  - ConfigName: Default ConfigName1
+    ConfigDesc: 121
+    Groups:
+    - GroupName: Default GroupName
+      GroupDesc: 
+      Collectors: []
+    - GroupName: Default GroupName
+      GroupDesc: 
+      Collectors: []
+  - ConfigName: Default ConfigName
+    ConfigDesc: 
+    Groups: []
+  - ConfigName: Default ConfigName
+    ConfigDesc: 
+    Groups: []
+  - ConfigName: Default ConfigName
+    ConfigDesc: 
+    Groups: []

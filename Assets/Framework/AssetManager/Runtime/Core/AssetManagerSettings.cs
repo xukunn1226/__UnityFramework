@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
 {
-	[CreateAssetMenu(fileName = "AssetManagerSettings", menuName = "AssetManager Settings/Create Settings")]
+	[CreateAssetMenu(fileName = "AssetManagerSettings", menuName = "AssetManager Settings/Create AssetManagerSettings")]
 	public class AssetManagerSettings : ScriptableObject
 	{
 		/// <summary>
