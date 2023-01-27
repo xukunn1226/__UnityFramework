@@ -10,6 +10,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// 以文件路径为资源包名
     /// 例如："Assets/Res/UI/Checker.png" -> "assets_res_ui_checker.bundle"
     /// </summary>
+    [DisplayName("以文件路径作为资源包名")]
     public class PackFile : IPackRule
     {
         public static PackFile StaticPackRule = new PackFile();
@@ -25,6 +26,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// 以父类文件夹路径作为资源包名
     /// 例如："Assets/Res/UI/Backpack/main.prefab" -> "assets_res_ui_backpack.bundle"
     /// </summary>
+    [DisplayName("以父类文件夹路径作为资源包名")]
     public class PackDirectory : IPackRule
     {
         public static PackDirectory StaticPackRule = new PackDirectory();
@@ -45,6 +47,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// 例如："Assets/Res/Environment/Building/House/House_Normal.png" -> "assets_res_environment_building_house.bundle"
     /// 例如："Assets/Res/Environment/Building/House/House_Material.material" -> "assets_res_environment_building_house.bundle"
     /// </summary>
+    [DisplayName("以收集器路径下顶级文件夹为资源包名")]
     public class PackTopDirectory : IPackRule
     {
         string IPackRule.GetBundleName(PackRuleData data)
@@ -64,6 +67,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// <summary>
     /// 以收集器路径作为资源包
     /// </summary>
+    [DisplayName("以收集器路径作为资源包名")]
     public class PackCollector : IPackRule
     {
         string IPackRule.GetBundleName(PackRuleData data)
@@ -77,6 +81,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// 以分组名称作为资源包名
     /// 注意：收集的所有文件打进一个资源包
     /// </summary>
+    [DisplayName("以分组名称作为资源包名")]
     public class PackGroup : IPackRule
     {
         string IPackRule.GetBundleName(PackRuleData data)
@@ -89,6 +94,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// 打包原生文件
     /// 注意：原生文件不可有任何依赖关系
     /// </summary>
+    [DisplayName("打包原生文件")]
     public class PackRawFile : IPackRule
     {
         string IPackRule.GetBundleName(PackRuleData data)

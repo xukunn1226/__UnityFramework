@@ -6,6 +6,7 @@ using System.IO;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
+    [DisplayName("收集所有资源")]
     public class CollectAll : IFilterRule
     {
         public bool IsCollectAsset(FilterRuleData data)
@@ -14,6 +15,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         }
     }
 
+    [DisplayName("收集场景")]
     public class CollectScene : IFilterRule
     {
         public bool IsCollectAsset(FilterRuleData data)
@@ -22,6 +24,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         }
     }
 
+    [DisplayName("收集预制体")]
     public class CollectPrefab : IFilterRule
     {
         public bool IsCollectAsset(FilterRuleData data)
@@ -30,6 +33,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         }
     }
 
+    [DisplayName("收集精灵类型的纹理")]
     public class CollectSprite : IFilterRule
     {
         public bool IsCollectAsset(FilterRuleData data)

@@ -63,48 +63,24 @@ namespace Framework.AssetManagement.AssetEditorWindow
             return result.Values.ToList();
         }
 
-        ///// <summary>
-        ///// 判断配置的合法性
-        ///// 原则：同一个资源不能被多个收集器收集
-        ///// </summary>
-        ///// <returns></returns>
-        //public bool IsValid(out string error)
-        //{
-        //    StringBuilder sb = new StringBuilder();
+        public AssetBundleCollector AddCollector()
+        {
+            AssetBundleCollector collector = new AssetBundleCollector();
+            Collectors.Add(collector);
+            AssetBundleCollectorSettingData.SetDirty();
+            return collector;
+        }
 
-        //    Dictionary<string, AssetBundleCollector> result = new Dictionary<string, AssetBundleCollector>(10000);      // key: assetPath; value: collector
-
-        //    foreach (var collector in Collectors)
-        //    {
-        //        var temper = collector.GetAllCollectAssets(this);
-        //        foreach (var assetInfo in temper)
-        //        {
-        //            if (result.ContainsKey(assetInfo.AssetPath) == false)
-        //                result.Add(assetInfo.AssetPath, collector);
-        //            else
-        //            {
-        //                sb.AppendLine($"{assetInfo.AssetPath}: The collecting asset file is coexisted [{collector.CollectPath}] and [{result[assetInfo.AssetPath].CollectPath}]");
-        //            }
-        //        }
-        //    }
-        //    error = sb.ToString();            
-        //    return string.IsNullOrEmpty(error);
-        //}
-
-        //public string ParseCollectResults(Dictionary<string, CollectAssetInfo> results)
-        //{
-        //    StringBuilder sb = new StringBuilder();
-        //    foreach(var pair in results)
-        //    {
-        //        foreach(var assetPath in pair.Value.DependAssets)
-        //        {
-        //            if(results.ContainsKey(assetPath) == false)
-        //            {
-        //                sb.AppendLine($"{assetPath}: depend of {pair.Value.AssetPath} is not included any collector");
-        //            }
-        //        }
-        //    }
-        //    return sb.ToString();
-        //}
+        public void RemoveCollector(AssetBundleCollector collector)
+        {
+            if (Collectors.Remove(collector))
+            {
+                AssetBundleCollectorSettingData.SetDirty();
+            }
+            else
+            {
+                Debug.LogWarning($"Failed to remove AssetBundleCollector: {collector.CollectPath}");
+            }
+        }
     }
 }

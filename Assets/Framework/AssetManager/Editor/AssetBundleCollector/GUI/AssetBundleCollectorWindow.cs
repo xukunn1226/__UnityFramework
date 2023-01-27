@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using Sirenix.OdinInspector.Editor;
@@ -13,6 +14,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
     {
         private ToolBarPanel m_ToolBarPanel;
         private PropertyTree m_ToolBarPropertyTree;
+        private List<AssetBundleCollectorGroup> m_PendingRemovedGroup = new List<AssetBundleCollectorGroup>();
+        private List<AssetBundleCollector> m_PendingRemovedCollector = new List<AssetBundleCollector>();
 
         [MenuItem("Tools/Assets Management/资源包收集工具")]
         private static void OpenWindow()
@@ -121,7 +124,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             [HideInInspector]
             public AssetBundleCollectorConfig config { get; private set; }
-            private PropertyTree m_PropertyTree;
+            //private PropertyTree m_PropertyTree;
 
             public ConfigPanel(AssetBundleCollectorConfig config)
             {
@@ -131,14 +134,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
             [OnInspectorGUI]
             void OnGUI()
             {
-                if(m_PropertyTree == null)
-                {
-                    m_PropertyTree = PropertyTree.Create(config);
-                }
-                m_PropertyTree.Draw(false);
-
-
-
+                //if(m_PropertyTree == null)
+                //{
+                //    m_PropertyTree = PropertyTree.Create(config);
+                //}
+                //m_PropertyTree.Draw(false);
 
                 EditorGUI.BeginChangeCheck();
                 
@@ -147,9 +147,14 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
                 // draw AssetBundleCollectorGroup
                 EditorGUI.indentLevel++;
-                for(int i = 0; i < config.Groups.Count; ++i)
+                AssetBundleCollectorWindow.instance.m_PendingRemovedGroup.Clear();
+                for (int i = 0; i < config.Groups.Count; ++i)
                 {
                     DrawGroup(config.Groups[i]);
+                }
+                foreach(var removedGroup in AssetBundleCollectorWindow.instance.m_PendingRemovedGroup)
+                {
+                    config.RemoveGroup(removedGroup);
                 }
                 EditorGUI.indentLevel--;
 
@@ -169,12 +174,74 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 EditorGUILayout.BeginHorizontal();
                 if(GUILayout.Button("[-]", GUILayout.Width(30)))
                 {
-                    config.RemoveGroup(group);
+                    AssetBundleCollectorWindow.instance.m_PendingRemovedGroup.Add(group);
                 }
 
                 EditorGUILayout.BeginVertical(EditorStyles.textArea);
                 group.GroupName = EditorGUILayout.TextField(new GUIContent("Group Name", ""), group.GroupName);
                 group.GroupDesc = EditorGUILayout.TextField(new GUIContent("Group Desc", ""), group.GroupDesc);
+                
+
+                // draw collector
+                EditorGUI.indentLevel++;
+                {
+                    AssetBundleCollectorWindow.instance.m_PendingRemovedCollector.Clear();
+                    foreach (var collector in group.Collectors)
+                    {
+                        DrawCollector(group, collector);
+                    }
+                    foreach(var removedCollector in AssetBundleCollectorWindow.instance.m_PendingRemovedCollector)
+                    {
+                        group.RemoveCollector(removedCollector);
+                    }
+                }
+                if(GUILayout.Button("Add Collector"))
+                {
+                    group.AddCollector();
+                }
+                EditorGUI.indentLevel--;
+                EditorGUILayout.EndVertical();
+
+                EditorGUILayout.EndHorizontal();
+            }
+
+            void DrawCollector(AssetBundleCollectorGroup group, AssetBundleCollector collector)
+            {
+                EditorGUILayout.BeginHorizontal();
+                if(GUILayout.Button("[-]", GUILayout.Width(30)))
+                {
+                    AssetBundleCollectorWindow.instance.m_PendingRemovedCollector.Add(collector);
+                }
+
+                EditorGUILayout.BeginVertical();
+                {
+                    UnityEngine.Object oldObj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(collector.CollectPath);
+                    UnityEngine.Object newObj = EditorGUILayout.ObjectField(new GUIContent("Collector", ""), oldObj, typeof(UnityEngine.Object), false);
+                    if(oldObj != newObj)
+                    {
+                        collector.CollectGUID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(newObj));
+                    }
+
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        // Collector Type
+                        int selectedIndex = EditorGUILayout.Popup((int)collector.CollectorType, new string[] { "MainCollector", "StaticCollector", "DependCollector" });
+                        collector.CollectorType = (ECollectorType)selectedIndex;
+
+                        // Pack Rule
+                        List<RuleDisplayName> packRuleDisplayNames = AssetBundleCollectorSettingData.GetPackRuleNames();                        
+                        int index = packRuleDisplayNames.FindIndex(item => { return item.ClassName == collector.PackRuleName; });
+                        selectedIndex = EditorGUILayout.Popup(Mathf.Max(0, index), packRuleDisplayNames.Select(item => item.DisplayName).ToArray());
+                        collector.PackRuleName = packRuleDisplayNames[selectedIndex].ClassName;
+
+                        // Filter Rule
+                        List<RuleDisplayName> filterRuleDisplayNames = AssetBundleCollectorSettingData.GetFilterRuleNames();
+                        index = filterRuleDisplayNames.FindIndex(item => { return item.ClassName == collector.FilterRuleName; });
+                        selectedIndex = EditorGUILayout.Popup(Mathf.Max(0, index), filterRuleDisplayNames.Select(item => item.DisplayName).ToArray());
+                        collector.FilterRuleName = filterRuleDisplayNames[selectedIndex].ClassName;
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
                 EditorGUILayout.EndVertical();
 
                 EditorGUILayout.EndHorizontal();
