@@ -45,7 +45,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                             result.Add(assetInfo.AssetPath, collector);
                         else
                         {
-                            sb.AppendLine($"{assetInfo.AssetPath}: The collecting asset file is coexisted [{collector.CollectPath}] and [{result[assetInfo.AssetPath].CollectPath}]");
+                            sb.AppendLine($"{assetInfo.AssetPath}: 资源同时存在于收集器 [{collector.CollectPath}] and [{result[assetInfo.AssetPath].CollectPath}]");
                         }
                     }
                 }

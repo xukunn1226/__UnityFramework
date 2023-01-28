@@ -91,19 +91,43 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
         }
 
+        private ConfigPanel selectedValue
+        {
+            get
+            {
+                if (instance.MenuTree.Selection.SelectedValue != null)
+                    return instance.MenuTree.Selection.SelectedValue as ConfigPanel;
+                return null;
+            }
+        }
+
         protected override void OnBeginDrawEditors()
         {
             base.OnBeginDrawEditors();
-            OdinMenuTreeSelection selected = this.MenuTree.Selection; //獲取目前的選擇
-            SirenixEditorGUI.BeginHorizontalToolbar(); //在這範圍內的選項會顯示在水平位置
+            SirenixEditorGUI.BeginHorizontalToolbar();
             {
                 GUILayout.FlexibleSpace();
-                if (SirenixEditorGUI.ToolbarButton("Delete current")) //如果點擊Delete current，此UnitData就會被刪除
+                if (SirenixEditorGUI.ToolbarButton("检查"))
                 {
-                    //UnitData unitData = selected.SelectedValue as UnitData;
-                    //string path = AssetDatabase.GetAssetPath(unitData);
-                    //AssetDatabase.DeleteAsset(path);
-                    //AssetDatabase.SaveAssets();
+                    if (selectedValue != null)
+                    {
+                        selectedValue.config.CheckConfigError();
+                        string error = selectedValue.config.CheckValidation();
+                        if(!string.IsNullOrEmpty(error))
+                        {
+                            Debug.LogError("-------------------------------------");
+                            Debug.LogError(error);
+                            Debug.LogError("检查完成，有异常，请根据日志修复");
+                        }
+                        else
+                        {
+                            Debug.Log("检查完成，无异常");
+                        }
+                    }
+                }
+                if(SirenixEditorGUI.ToolbarButton("Preview"))
+                {
+
                 }
             }
             SirenixEditorGUI.EndHorizontalToolbar();
@@ -208,19 +232,29 @@ namespace Framework.AssetManagement.AssetEditorWindow
             void DrawCollector(AssetBundleCollectorGroup group, AssetBundleCollector collector)
             {
                 EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.BeginVertical();
                 if(GUILayout.Button("[-]", GUILayout.Width(30)))
                 {
                     AssetBundleCollectorWindow.instance.m_PendingRemovedCollector.Add(collector);
                 }
+                if(GUILayout.Button("Log", GUILayout.Width(30)))
+                {
+                    Debug.LogWarning(group.LogCollector(collector));
+                }
+                EditorGUILayout.EndVertical();
 
                 EditorGUILayout.BeginVertical();
                 {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField(new GUIContent("Collector", $"{collector.CollectPath}"), GUILayout.Width(100));
                     UnityEngine.Object oldObj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(collector.CollectPath);
-                    UnityEngine.Object newObj = EditorGUILayout.ObjectField(new GUIContent("Collector", ""), oldObj, typeof(UnityEngine.Object), false);
+                    UnityEngine.Object newObj = EditorGUILayout.ObjectField(oldObj, typeof(UnityEngine.Object), false, GUILayout.ExpandWidth(true));
                     if(oldObj != newObj)
                     {
                         collector.CollectGUID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(newObj));
                     }
+                    EditorGUILayout.LabelField($"{collector.CollectPath}");
+                    EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
                     {

@@ -29,16 +29,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             Dictionary<string, CollectAssetInfo> result = new Dictionary<string, CollectAssetInfo>(10000);
 
-            //string error;
-            //if (IsValid(out error) == false)
-            //{
-            //    if (string.IsNullOrEmpty(error) == false)
-            //    {
-            //        Debug.LogError(error);
-            //    }
-            //    return result.Values.ToList();
-            //}
-
             // 收集打包资源
             foreach (var collector in Collectors)
             {
@@ -52,15 +42,19 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 }
             }
 
-            // 分析依赖资源不在收集列表中的情况
-            //string info = ParseCollectResults(result);
-            //if(string.IsNullOrEmpty(info) == false)
-            //{
-            //    Debug.LogWarning(info);
-            //}
-
             // 返回列表
             return result.Values.ToList();
+        }
+
+        public string LogCollector(AssetBundleCollector collector)
+        {
+            StringBuilder sb = new StringBuilder();
+            List<CollectAssetInfo> allAssetInfos = collector.GetAllCollectAssets(this);
+            foreach(var assetInfo in allAssetInfos)
+            {
+                sb.AppendLine(assetInfo.LogInfo());
+            }
+            return sb.ToString();
         }
 
         public AssetBundleCollector AddCollector()

@@ -83,6 +83,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
             return nodes;
         }
 
+        public string LogInfo()
+        {
+            return string.Format($"AssetPath: {AssetPath}   ECollectorType: {CollectorType}     BundleName: {BundleName}    IsRawAsset: {IsRawAsset}");
+        }
+
         /// <summary>
         /// 资源包名称追加包裹名
         /// </summary>
