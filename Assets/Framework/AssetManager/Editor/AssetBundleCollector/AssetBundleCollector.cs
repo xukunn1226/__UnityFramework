@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.Linq;
-using System.Text;
+using Framework.AssetManagement.Runtime;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
@@ -200,7 +200,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         private bool IsIgnoreFileByExtension(string assetPath)
         {
             string fileExtension = System.IO.Path.GetExtension(assetPath);
-            foreach (var extension in AssetBundleCollectorSetting.IgnoreFileExtensions)
+            foreach (var extension in AssetManagerSettings.IgnoreFileExtensions)
             {
                 if (extension == fileExtension)
                     return true;
@@ -213,7 +213,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             string directory = EditorTools.GetRegularPath(System.IO.Path.GetDirectoryName(assetPath));
             string[] splits = directory.Split("/", StringSplitOptions.RemoveEmptyEntries);
-            foreach (var ignoreDir in AssetBundleCollectorSetting.IgnoreDirectoryName)
+            foreach (var ignoreDir in AssetManagerSettings.IgnoreDirectoryName)
             {
                 foreach (var dir in splits)
                 {

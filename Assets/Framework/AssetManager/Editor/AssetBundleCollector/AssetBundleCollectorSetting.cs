@@ -7,10 +7,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
     [CreateAssetMenu(fileName = "AssetBundleCollectorSetting", menuName = "AssetManager Settings/Create AssetBundleCollectorSetting")]
     public class AssetBundleCollectorSetting : ScriptableObject
     {
-        static public readonly string[] IgnoreFileExtensions = { "", ".so", ".dll", ".cs", ".js", ".boo", ".meta", ".cginc", ".asmref" };
-
-        static public readonly string[] IgnoreDirectoryName = { "Temp", "Editor", "RawData", "Resources", "Examples" };
-
         public List<AssetBundleCollectorConfig> Configs = new List<AssetBundleCollectorConfig>();
 
         public AssetBundleCollectorConfig GetConfig(string configName)

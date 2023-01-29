@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f82d7412d9e4d734f9096bf205129f54, type: 3}
   m_Name: AssetManagerSettings
   m_EditorClassIdentifier: 
-  AssetBundleFileVariant: bundle
+  AssetBundleFileVariant: ab
   RawFileVariant: rawfile
   PatchManifestFileName: AssetManifest

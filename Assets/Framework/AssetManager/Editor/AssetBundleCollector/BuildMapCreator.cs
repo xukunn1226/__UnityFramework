@@ -60,6 +60,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             foreach (var collectAsset in allCollectAssets)
             {
+                if (collectAsset.CanBeMerged())
+                    continue;
+
                 if (buildAssetDic.ContainsKey(collectAsset.AssetPath) == false)
                     throw new System.Exception($"Should never get here! {collectAsset.AssetPath} is not exists");
 
@@ -75,7 +78,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                         throw new System.Exception($"Should never get here! {dependNode.assetPath} not exists in allCollectAssets");
 
                     // 此类资源将被合并至其他资源包中
-                    if (assetInfo.CollectorType == ECollectorType.None && assetInfo.UsedBy == 1)
+                    if (assetInfo.CanBeMerged())
                         continue;
 
                     dependAssetInfos.Add(buildAssetInfo);

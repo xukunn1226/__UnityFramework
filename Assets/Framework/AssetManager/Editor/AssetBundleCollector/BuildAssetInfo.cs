@@ -83,7 +83,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         }
 
         /// <summary>
-        /// 计算主资源或共享资源的完整包名
+        /// 计算主资源的完整包名
         /// </summary>
         public void CalculateFullBundleName()
         {
