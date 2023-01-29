@@ -60,11 +60,17 @@ namespace Framework.AssetManagement.AssetEditorWindow
             BundleName = other.BundleName;
         }
 
+        public List<DependNode> GetDirectDependNodes()
+        {
+            return DependTree.children;
+        }
+
         public List<DependNode> GetAllDependNodes()
         {
             List<DependNode> dependNodes = new List<DependNode>();
             foreach(var child in DependTree.children)
             {
+                dependNodes.Add(child);
                 dependNodes.AddRange(GetDependNodes(child));
             }
             return dependNodes;
@@ -89,11 +95,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
         }
 
         /// <summary>
-        /// 资源包名称追加包裹名
+        /// 资源是否可以合入其他资源包
+        /// 注意：CollectorType.None表示此资源非收集器收集，UsedBy == 1表示仅被引用一次
         /// </summary>
-        public void BundleNameAppendPackageName(string packageName)
+        /// <returns></returns>
+        public bool CanBeMerged()
         {
-            BundleName = $"{packageName.ToLower()}_{BundleName}";
+            if(CollectorType == ECollectorType.None && UsedBy == 1)
+                return true;
+            return false;
         }
     }
 }

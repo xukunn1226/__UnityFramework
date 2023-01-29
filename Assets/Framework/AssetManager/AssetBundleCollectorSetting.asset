@@ -19,11 +19,7 @@ MonoBehaviour:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectGUID: 8d64df46e6ceb8d468efc72d9b6bc0ee
-        CollectorType: 0
-        PackRuleName: PackDirectory
-        FilterRuleName: CollectAll
-      - CollectGUID: 8d64df46e6ceb8d468efc72d9b6bc0ee
+      - CollectGUID: d96a9452ca8c6f941885ed77786a9b34
         CollectorType: 0
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll

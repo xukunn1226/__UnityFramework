@@ -125,24 +125,16 @@ namespace Framework.AssetManagement.AssetEditorWindow
                         }
                     }
                 }
-                if(SirenixEditorGUI.ToolbarButton("Preview"))
+                if(SirenixEditorGUI.ToolbarButton("模拟打包"))
                 {
-
+                    if (selectedValue != null)
+                    {
+                        BuildMapCreator.CreateBuildMap(selectedValue.config.ConfigName);
+                    }
                 }
             }
             SirenixEditorGUI.EndHorizontalToolbar();
         }
-
-        //protected override void OnEndDrawEditors()
-        //{
-        //    SirenixEditorGUI.BeginIndentedHorizontal();
-        //    if(GUILayout.Button("Add Group"))
-        //    {
-
-        //    }
-        //    SirenixEditorGUI.EndIndentedHorizontal();
-        //    base.OnEndDrawEditors();
-        //}
 
         class ConfigPanel
         {

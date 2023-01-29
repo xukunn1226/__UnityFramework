@@ -122,7 +122,6 @@ namespace Framework.AssetManagement.Runtime
 
 			if (m_Steps == ESteps.LoadAppManifest)
 			{
-				//string fileName = YooAssetSettingsData.GetPatchManifestBinaryFileName(_buildinPackageName, _buildinPackageVersion);
 				string filePath = PathHelper.MakeStreamingLoadPath("AssetManifest.bytes");
 				string url = PathHelper.ConvertToWWWPath(filePath);
 				m_Downloader = new UnityWebDataRequester();

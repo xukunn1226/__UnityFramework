@@ -248,5 +248,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 Debug.LogWarning($"Failed to remove AssetBundleCollectorConfig: {config.ConfigName}");
             }
         }
+
+        static public BuildMapContext SimulateCreateBuildMap(string configName)
+        {
+            return BuildMapCreator.CreateBuildMap(configName);
+        }
     }
 }

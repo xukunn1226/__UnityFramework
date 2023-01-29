@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 using System.Linq;
+using static Framework.AssetManagement.AssetEditorWindow.CollectAssetInfo;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
@@ -26,7 +27,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             List<CollectAssetInfo> allCollectAssets = AssetBundleCollectorSettingData.Instance.GetAllCollectAssets(configName);
 
             // step3. 遍历所有收集资源的依赖资源，扩展资源列表
-            ExtentCollectAssetInfos(ref allCollectAssets);
+            ParseAllDependNodes(ref allCollectAssets);
 
             // step4. 再次遍历所有收集资源的依赖资源，进行合并处理
             MergeAllAssets(ref allCollectAssets);
@@ -88,8 +89,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         /// <param name="allCollectAssets"></param>
         /// <exception cref="System.Exception"></exception>
-        static private void ExtentCollectAssetInfos(ref List<CollectAssetInfo> allCollectAssets)
+        static private void ParseAllDependNodes(ref List<CollectAssetInfo> allCollectAssets)
         {
+            // 把所有依赖资源展开加入总资源列表中
             for (int i = allCollectAssets.Count - 1; i >= 0; --i)
             {
                 CollectAssetInfo collectAssetInfo = allCollectAssets[i];
@@ -100,26 +102,36 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 if (collectAssetInfo.DependTree.children.Count == 0)
                     continue;
 
-                foreach (var node in collectAssetInfo.DependTree.children)
+                List<CollectAssetInfo.DependNode> allDependNodes = collectAssetInfo.GetAllDependNodes();
+                foreach (var node in allDependNodes)
                 {
                     CollectAssetInfo assetInfo = allCollectAssets.Find(item => { return item.AssetPath == node.assetPath; });
-                    if (assetInfo != null)
-                    {
-                        // 依赖资源已在收集器收集的资源列表中，且类型是ECollectorType.None，则自增被依赖的次数
-                        if (assetInfo.CollectorType == ECollectorType.None)
-                        {
-                            ++assetInfo.UsedBy;
-                        }
-                    }
-                    else
+                    if (assetInfo == null)
                     {
                         // 自动分析收集到的资源，默认使用PackFile打包规则
                         IPackRule packRule = PackFile.StaticPackRule;
                         string bundleName = $"share_{packRule.GetBundleName(new PackRuleData(node.assetPath))}";
 
                         assetInfo = new CollectAssetInfo(ECollectorType.None, bundleName, node.assetPath, false);
-                        assetInfo.UsedBy = 1;
+                        assetInfo.UsedBy = 0;
                         allCollectAssets.Add(assetInfo);
+                    }
+                }
+            }
+
+            // 统计所有直接的依赖资源被引用的次数
+            foreach(var collectAsset in allCollectAssets)
+            {
+                List<DependNode> dependNodes = collectAsset.GetDirectDependNodes();
+                foreach (var depend in dependNodes)
+                {
+                    CollectAssetInfo dependAssetInfo = allCollectAssets.Find(item => { return item.AssetPath == depend.assetPath; });
+                    if (dependAssetInfo == null)
+                        throw new System.Exception($"should never get here");
+
+                    if (dependAssetInfo.CollectorType == ECollectorType.None)
+                    {
+                        ++dependAssetInfo.UsedBy;
                     }
                 }
             }
@@ -179,7 +191,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             if (assetInfo.CollectorType != ECollectorType.None)
                 return true;
 
-            // 第二种情况：未被收集器收集，但被引用了两次以上
+            // 第二种情况：未被收集器收集，但被引用了两次以上，将独立打为资源包
             if (assetInfo.UsedBy > 1)
                 return true;
 
@@ -192,7 +204,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 if (parentAssetInfo == null)
                     throw new System.Exception($"should never get here: {parent.assetPath}");
 
-                if (parentAssetInfo.CollectorType != ECollectorType.None || parentAssetInfo.UsedBy > 1)
+                // 向上追溯找到资源包
+                if(parentAssetInfo.CanBeMerged() == false)
                 {
                     // 找到可合并的资源
                     bMerged = true;

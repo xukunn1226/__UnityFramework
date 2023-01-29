@@ -25,14 +25,9 @@ namespace Framework.AssetManagement.Runtime
 			_setting = Resources.Load<AssetManagerSettings>("AssetManagerSettings");
 			if (_setting == null)
 			{
-				Debug.Log("YooAsset use default settings.");
 				_setting = ScriptableObject.CreateInstance<AssetManagerSettings>();
 			}
-			else
-			{
-				Debug.Log("YooAsset use user settings.");
-			}
-		}
+        }
 
 		/// <summary>
 		/// 获取构建报告文件名
