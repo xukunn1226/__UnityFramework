@@ -23,6 +23,10 @@ MonoBehaviour:
         CollectorType: 0
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
+      - CollectGUID: 8d64df46e6ceb8d468efc72d9b6bc0ee
+        CollectorType: 0
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
   - ConfigName: Default ConfigName
     ConfigDesc: 
     Groups: []
