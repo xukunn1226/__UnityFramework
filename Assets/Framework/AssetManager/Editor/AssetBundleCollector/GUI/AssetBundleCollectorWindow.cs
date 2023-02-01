@@ -129,7 +129,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 {
                     if (selectedValue != null)
                     {
-                        BuildMapCreator.CreateBuildMap(selectedValue.config.ConfigName);
+                        AssetBundleViewer.Open(BuildMapCreator.CreateBuildMap(selectedValue.config.ConfigName));
                     }
                 }
             }
