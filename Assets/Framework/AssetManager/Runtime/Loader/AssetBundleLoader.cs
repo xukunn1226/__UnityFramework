@@ -27,6 +27,7 @@ namespace Framework.AssetManagement.Runtime
 
         public override void Update()
         {
+            isTriggerLoadingRequest = false;
             if (m_Step == ESteps.Done)
                 return;
 
@@ -83,6 +84,7 @@ namespace Framework.AssetManagement.Runtime
                     // TODO: 以后再做
                 }
                 m_Step = ESteps.CheckLoadFile;
+                isTriggerLoadingRequest = true;
             }
 
             // 检测AssetBundle加载结果

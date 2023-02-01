@@ -9,17 +9,18 @@ namespace Framework.AssetManagement.Runtime
     /// </summary>
     internal abstract class BundleLoaderBase
     {
-        public BundleInfo           bundleInfo          { get; private set; }
-        public AssetSystem          assetSystem         { get; private set; }
-        public int                  refCount            { get; private set; }
-        public EBundleLoadStatus    status              { get; protected set; }
-        public string               lastError           { get; protected set; }
-        public AssetBundle          cachedBundle        { get; protected set; }
-        public string               bundlePath          { get; protected set; }     // Bundle资源包加载路径
-        public float                downloadProgress    { get; set; }
-        public ulong                downloadBytes       { get; set; }
-        public bool                 isDone              { get { return status == EBundleLoadStatus.Succeed || status == EBundleLoadStatus.Failed; } }
-        public bool                 canDestroy          { get { return isDone ? refCount <= 0 : false; } }
+        public BundleInfo           bundleInfo              { get; private set; }
+        public AssetSystem          assetSystem             { get; private set; }
+        public int                  refCount                { get; private set; }
+        public EBundleLoadStatus    status                  { get; protected set; }
+        public string               lastError               { get; protected set; }
+        public AssetBundle          cachedBundle            { get; protected set; }
+        public string               bundlePath              { get; protected set; }     // Bundle资源包加载路径
+        public float                downloadProgress        { get; set; }
+        public ulong                downloadBytes           { get; set; }
+        public bool                 isDone                  { get { return status == EBundleLoadStatus.Succeed || status == EBundleLoadStatus.Failed; } }
+        public bool                 canDestroy              { get { return isDone ? refCount <= 0 : false; } }
+        public bool                 isTriggerLoadingRequest { get; protected set; }     // 当前帧是否触发了加载请求
 
         protected BundleLoaderBase() { }
         public BundleLoaderBase(AssetSystem assetSystem, BundleInfo bundleInfo)

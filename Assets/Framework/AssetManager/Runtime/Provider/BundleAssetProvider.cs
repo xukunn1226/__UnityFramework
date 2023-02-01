@@ -19,6 +19,7 @@ namespace Framework.AssetManagement.Runtime
         {
             DebugLoadingTime();
 
+            isTriggerLoadingRequest = false;
             if (isDone)
                 return;
 
@@ -87,6 +88,7 @@ namespace Framework.AssetManagement.Runtime
                     }
                 }
                 status = EProviderStatus.Checking;
+                isTriggerLoadingRequest = true;
             }
 
             // 检测加载结果

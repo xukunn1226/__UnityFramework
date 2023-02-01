@@ -29,16 +29,16 @@ namespace Framework.AssetManagement.Runtime
             return s_AssetSystem.LoadAsset(assetPath, type);
         }
 
-        static public AssetOperationHandle LoadAssetAsync<TObject>(string assetPath) where TObject : UnityEngine.Object
+        static public AssetOperationHandle LoadAssetAsync<TObject>(string assetPath, ELoadingPriority priority = ELoadingPriority.Normal) where TObject : UnityEngine.Object
         {
             DebugCheckInitialize();
-            return s_AssetSystem.LoadAssetAsync<TObject>(assetPath);
+            return s_AssetSystem.LoadAssetAsync<TObject>(assetPath, priority);
         }
 
-        static public AssetOperationHandle LoadAssetAsync(string assetPath, System.Type type)
+        static public AssetOperationHandle LoadAssetAsync(string assetPath, System.Type type, ELoadingPriority priority = ELoadingPriority.Normal)
         {
             DebugCheckInitialize();
-            return s_AssetSystem.LoadAssetAsync(assetPath, type);
+            return s_AssetSystem.LoadAssetAsync(assetPath, type, priority);
         }
 
         static public SubAssetsOperationHandle LoadSubAssets<TObject>(string assetPath) where TObject : UnityEngine.Object
@@ -53,16 +53,16 @@ namespace Framework.AssetManagement.Runtime
             return s_AssetSystem.LoadSubAssets(assetPath, type);
         }
 
-        static public SubAssetsOperationHandle LoadSubAssetsAsync<TObject>(string assetPath) where TObject : UnityEngine.Object
+        static public SubAssetsOperationHandle LoadSubAssetsAsync<TObject>(string assetPath, ELoadingPriority priority = ELoadingPriority.Normal) where TObject : UnityEngine.Object
         {
             DebugCheckInitialize();
-            return s_AssetSystem.LoadSubAssetsAsync<TObject>(assetPath);
+            return s_AssetSystem.LoadSubAssetsAsync<TObject>(assetPath, priority);
         }
 
-        static public SubAssetsOperationHandle LoadSubAssetsAsync(string assetPath, System.Type type)
+        static public SubAssetsOperationHandle LoadSubAssetsAsync(string assetPath, System.Type type, ELoadingPriority priority = ELoadingPriority.Normal)
         {
             DebugCheckInitialize();
-            return s_AssetSystem.LoadSubAssetsAsync(assetPath, type);
+            return s_AssetSystem.LoadSubAssetsAsync(assetPath, type, priority);
         }
 
         /// <summary>

@@ -12,6 +12,10 @@ namespace Framework.AssetManagement.Runtime
         private Dictionary<string, BundleLoaderBase>    m_BundleLoaderDict  = new Dictionary<string, BundleLoaderBase>(1000);
         private IndexedSet<ProviderBase>                m_ProviderSet       = new IndexedSet<ProviderBase>();
         private Dictionary<string, ProviderBase>        m_ProviderDict      = new Dictionary<string, ProviderBase>(1000);
+        private IndexedSet<ProviderBase>                m_ProviderSetHigh   = new IndexedSet<ProviderBase>();
+        private Dictionary<string, ProviderBase>        m_ProviderDictHigh  = new Dictionary<string, ProviderBase>(100);
+        private IndexedSet<ProviderBase>                m_ProviderSetLow    = new IndexedSet<ProviderBase>();
+        private Dictionary<string, ProviderBase>        m_ProviderDictLow   = new Dictionary<string, ProviderBase>(100);
 
         private readonly Dictionary<string, SceneOperationHandle> m_SceneHandlesDict = new Dictionary<string, SceneOperationHandle>(100);
         private long s_SceneCreateCount = 0;
@@ -52,8 +56,27 @@ namespace Framework.AssetManagement.Runtime
                 m_BundleLoaderSet[i].Update();
             }
 
+            PollingProviders();
+
+            // for debug
+            UnloadUnusedAssets();
+        }
+
+        private void PollingProviders()
+        {
+            // polling high priority queue
             int loadingCount = 0;
-            for(int i = 0; i < m_ProviderSet.Count; ++i)
+            for (int i = 0; i < m_ProviderSetHigh.Count; ++i)
+            {
+                if (loadingCount < m_AssetLoadingMaxNumber)
+                    m_ProviderSetHigh[i].Update();
+
+                if (!m_ProviderSetHigh[i].isDone)
+                    ++loadingCount;
+            }
+
+            // polling normal priority queue
+            for (int i = 0; i < m_ProviderSet.Count; ++i)
             {
                 if (m_ProviderSet[i].IsSceneProvider())
                 { // 不能阻塞场景的加载
@@ -61,7 +84,7 @@ namespace Framework.AssetManagement.Runtime
                 }
                 else
                 {
-                    if(loadingCount < m_AssetLoadingMaxNumber)
+                    if (loadingCount < m_AssetLoadingMaxNumber)
                         m_ProviderSet[i].Update();
 
                     if (!m_ProviderSet[i].isDone)
@@ -69,20 +92,22 @@ namespace Framework.AssetManagement.Runtime
                 }
             }
 
-            // for debug
-            UnloadUnusedAssets();
+            // polling low priority queue
+            for (int i = 0; i < m_ProviderSetLow.Count; ++i)
+            {
+                if (loadingCount < m_AssetLoadingMaxNumber)
+                    m_ProviderSetLow[i].Update();
+
+                if (!m_ProviderSetLow[i].isDone)
+                    ++loadingCount;
+            }
         }
 
         public void Destroy()
         {
-            for (int i = 0; i < m_ProviderSet.Count; ++i)
-            {
-                m_ProviderSet[i].Destroy();
-            }
-            m_ProviderSet.Clear();
-            m_ProviderDict.Clear();
+            ClearAllProviders();
 
-            for(int i = 0; i < m_BundleLoaderSet.Count; ++i)
+            for (int i = 0; i < m_BundleLoaderSet.Count; ++i)
             {
                 m_BundleLoaderSet[i].Destroy(true);
             }
@@ -93,6 +118,30 @@ namespace Framework.AssetManagement.Runtime
 
             decryptionServices = null;
             bundleServices = null;
+        }
+
+        private void ClearAllProviders()
+        {
+            for (int i = 0; i < m_ProviderSet.Count; ++i)
+            {
+                m_ProviderSet[i].Destroy();
+            }
+            m_ProviderSet.Clear();
+            m_ProviderDict.Clear();
+
+            for (int i = 0; i < m_ProviderSetHigh.Count; ++i)
+            {
+                m_ProviderSetHigh[i].Destroy();
+            }
+            m_ProviderSetHigh.Clear();
+            m_ProviderDictHigh.Clear();
+
+            for (int i = 0; i < m_ProviderSetLow.Count; ++i)
+            {
+                m_ProviderSetLow[i].Destroy();
+            }
+            m_ProviderSetLow.Clear();
+            m_ProviderDictLow.Clear();
         }
 
         /// <summary>
@@ -111,6 +160,32 @@ namespace Framework.AssetManagement.Runtime
 
                     m_ProviderDict.Remove(provider.providerGUID);
                     m_ProviderSet.RemoveAt(i);
+
+                    hasProviderDestroy = true;
+                }
+            }
+            for (int i = m_ProviderSetHigh.Count - 1; i >= 0; --i)
+            {
+                ProviderBase provider = m_ProviderSetHigh[i];
+                if (provider.canDestroy)
+                {
+                    provider.Destroy();
+
+                    m_ProviderDictHigh.Remove(provider.providerGUID);
+                    m_ProviderSetHigh.RemoveAt(i);
+
+                    hasProviderDestroy = true;
+                }
+            }
+            for (int i = m_ProviderSetLow.Count - 1; i >= 0; --i)
+            {
+                ProviderBase provider = m_ProviderSetLow[i];
+                if (provider.canDestroy)
+                {
+                    provider.Destroy();
+
+                    m_ProviderDictLow.Remove(provider.providerGUID);
+                    m_ProviderSetLow.RemoveAt(i);
 
                     hasProviderDestroy = true;
                 }
@@ -138,14 +213,9 @@ namespace Framework.AssetManagement.Runtime
 
         public void ForceUnloadAllAssets()
         {
-            for (int i = m_ProviderSet.Count - 1; i >= 0; --i)
-            {
-                m_ProviderSet[i].Destroy();
-            }
-            m_ProviderSet.Clear();
-            m_ProviderDict.Clear();
+            ClearAllProviders();
 
-            for(int i = 0; i < m_BundleLoaderSet.Count; ++i)
+            for (int i = 0; i < m_BundleLoaderSet.Count; ++i)
             {
                 m_BundleLoaderSet[i].Destroy(true);
             }
@@ -198,8 +268,36 @@ namespace Framework.AssetManagement.Runtime
 
         private ProviderBase TryGetProvider(string providerGUID)
         {
-            m_ProviderDict.TryGetValue(providerGUID, out ProviderBase provider);
-            return provider;
+            if(m_ProviderDict.TryGetValue(providerGUID, out ProviderBase provider))
+                return provider;
+            if(m_ProviderDictHigh.TryGetValue(providerGUID, out provider))
+                return provider;
+            if(m_ProviderDictLow.TryGetValue(providerGUID, out provider))
+                return provider;
+            return null;
+        }
+
+        private void AddProvider(string providerGUID, ProviderBase provider, ELoadingPriority priority = ELoadingPriority.Normal)
+        {
+            if (priority == ELoadingPriority.Normal)
+            {
+                m_ProviderDict.Add(providerGUID, provider);
+                m_ProviderSet.AddUnique(provider);
+            }
+            else if(priority == ELoadingPriority.High)
+            {
+                m_ProviderDictHigh.Add(providerGUID, provider);
+                m_ProviderSetHigh.AddUnique(provider);
+            }
+            else if(priority == ELoadingPriority.Low)
+            {
+                m_ProviderDictLow.Add(providerGUID, provider);
+                m_ProviderSetLow.AddUnique(provider);
+            }
+            else
+            {
+                throw new System.Exception($"should never get here");
+            }
         }
 
         private AssetInfo ConvertLocationToAssetInfo(string assetPath, System.Type assetType)
@@ -290,8 +388,7 @@ namespace Framework.AssetManagement.Runtime
                 else
                     provider = new BundleRawFileProvider(this, providerGUID, assetInfo);
                 provider.InitSpawnDebugInfo();
-                m_ProviderDict.Add(providerGUID, provider);
-                m_ProviderSet.AddUnique(provider);
+                AddProvider(providerGUID, provider);
             }
             return provider.CreateHandle<RawFileOperationHandle>();
         }
@@ -325,10 +422,10 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		/// <typeparam name="TObject">资源类型</typeparam>
 		/// <param name="assetPath">资源的定位地址</param>
-		public AssetOperationHandle LoadAssetAsync<TObject>(string assetPath) where TObject : UnityEngine.Object
+		public AssetOperationHandle LoadAssetAsync<TObject>(string assetPath, ELoadingPriority priority = ELoadingPriority.Normal) where TObject : UnityEngine.Object
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
-            return LoadAssetInternal(assetInfo, false);
+            return LoadAssetInternal(assetInfo, false, priority);
         }
 
         /// <summary>
@@ -336,13 +433,13 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         /// <param name="assetPath">资源的定位地址</param>
         /// <param name="type">资源类型</param>
-        public AssetOperationHandle LoadAssetAsync(string assetPath, System.Type type)
+        public AssetOperationHandle LoadAssetAsync(string assetPath, System.Type type, ELoadingPriority priority = ELoadingPriority.Normal)
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
-            return LoadAssetInternal(assetInfo, false);
+            return LoadAssetInternal(assetInfo, false, priority);
         }
 
-        private AssetOperationHandle LoadAssetInternal(AssetInfo assetInfo, bool waitForAsyncComplete)
+        private AssetOperationHandle LoadAssetInternal(AssetInfo assetInfo, bool waitForAsyncComplete, ELoadingPriority priority = ELoadingPriority.Normal)
         {
 #if UNITY_EDITOR
             if (assetInfo.isValid && m_PlayMode != EPlayMode.FromEditor)
@@ -353,13 +450,13 @@ namespace Framework.AssetManagement.Runtime
             }
 #endif
 
-            var handle = LoadAssetAsync(assetInfo);
+            var handle = LoadAssetAsync(assetInfo, priority);
             if (waitForAsyncComplete)
                 handle.WaitForAsyncComplete();
             return handle;
         }
 
-        private AssetOperationHandle LoadAssetAsync(AssetInfo assetInfo)
+        private AssetOperationHandle LoadAssetAsync(AssetInfo assetInfo, ELoadingPriority priority = ELoadingPriority.Normal)
         {
             if (!assetInfo.isValid)
             {
@@ -378,8 +475,7 @@ namespace Framework.AssetManagement.Runtime
                 else
                     provider = new BundleAssetProvider(this, providerGUID, assetInfo);
                 provider.InitSpawnDebugInfo();
-                m_ProviderDict.Add(providerGUID, provider);
-                m_ProviderSet.AddUnique(provider);
+                AddProvider(providerGUID, provider, priority);
             }
             return provider.CreateHandle<AssetOperationHandle>();
         }
@@ -396,19 +492,19 @@ namespace Framework.AssetManagement.Runtime
             return LoadSubAssetsInternal(assetInfo, true);
         }
 
-        public SubAssetsOperationHandle LoadSubAssetsAsync<TObject>(string assetPath) where TObject : UnityEngine.Object
+        public SubAssetsOperationHandle LoadSubAssetsAsync<TObject>(string assetPath, ELoadingPriority priority = ELoadingPriority.Normal) where TObject : UnityEngine.Object
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(TObject));
-            return LoadSubAssetsInternal(assetInfo, false);
+            return LoadSubAssetsInternal(assetInfo, false, priority);
         }
 
-        public SubAssetsOperationHandle LoadSubAssetsAsync(string assetPath, System.Type type)
+        public SubAssetsOperationHandle LoadSubAssetsAsync(string assetPath, System.Type type, ELoadingPriority priority = ELoadingPriority.Normal)
         {
             AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, type);
-            return LoadSubAssetsInternal(assetInfo, false);
+            return LoadSubAssetsInternal(assetInfo, false, priority);
         }
 
-        private SubAssetsOperationHandle LoadSubAssetsInternal(AssetInfo assetInfo, bool waitForAsyncComplete)
+        private SubAssetsOperationHandle LoadSubAssetsInternal(AssetInfo assetInfo, bool waitForAsyncComplete, ELoadingPriority priority = ELoadingPriority.Normal)
         {
 #if UNITY_EDITOR
             if (assetInfo.isValid && m_PlayMode != EPlayMode.FromEditor)
@@ -419,13 +515,13 @@ namespace Framework.AssetManagement.Runtime
             }
 #endif
 
-            var handle = LoadSubAssetsAsync(assetInfo);
+            var handle = LoadSubAssetsAsync(assetInfo, priority);
             if (waitForAsyncComplete)
                 handle.WaitForAsyncComplete();
             return handle;
         }
 
-        private SubAssetsOperationHandle LoadSubAssetsAsync(AssetInfo assetInfo)
+        private SubAssetsOperationHandle LoadSubAssetsAsync(AssetInfo assetInfo, ELoadingPriority priority = ELoadingPriority.Normal)
         {
             if (!assetInfo.isValid)
             {
@@ -444,8 +540,7 @@ namespace Framework.AssetManagement.Runtime
                 else
                     provider = new BundleSubAssetsProvider(this, providerGUID, assetInfo);
                 provider.InitSpawnDebugInfo();
-                m_ProviderDict.Add(providerGUID, provider);
-                m_ProviderSet.AddUnique(provider);
+                AddProvider(providerGUID, provider, priority);
             }
             return provider.CreateHandle<SubAssetsOperationHandle>();
         }
@@ -498,12 +593,10 @@ namespace Framework.AssetManagement.Runtime
                 else
                     provider = new BundleSceneProvider(this, providerGUID, assetInfo, sceneMode, activateOnLoad, priority);
                 provider.InitSpawnDebugInfo();
-                m_ProviderDict.Add(providerGUID, provider);
-                m_ProviderSet.AddUnique(provider);
+                AddProvider(providerGUID, provider);
             }
 
             var handle = provider.CreateHandle<SceneOperationHandle>();
-            //handle.PackageName = BundleServices.GetPackageName();
             m_SceneHandlesDict.Add(providerGUID, handle);
             return handle;
         }

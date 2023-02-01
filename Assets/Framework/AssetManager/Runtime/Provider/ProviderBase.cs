@@ -17,7 +17,9 @@ namespace Framework.AssetManagement.Runtime
         public Object           assetObject             { get; protected set; }
         public Object[]         allAssetObjects         { get; protected set; }
         public Scene            sceneObject             { get; protected set; }
-        public EProviderStatus  status                  { get; protected set; } = EProviderStatus.None;
+        public EProviderStatus  wasStatus               { get; protected set; } = EProviderStatus.None;     // 上一帧的状态
+        public EProviderStatus  status                  { get { return m_Status; } protected set { wasStatus = m_Status; m_Status = value; } }
+        private EProviderStatus m_Status                = EProviderStatus.None;
         public string           lastError               { get; protected set; }
         public float            progress                { get; protected set; }
         public int              refCount                { get; protected set; }
@@ -26,6 +28,7 @@ namespace Framework.AssetManagement.Runtime
         public bool             canDestroy              { get { return isDone ? refCount <= 0 : false; } }
         public string           rawFilePath             { get; protected set; }     // 原生文件路径
         protected bool          requestAsyncComplete    { get; private set; }
+        public bool             isTriggerLoadingRequest { get; protected set; }     // 当前帧是否触发了加载请求
 
         private IndexedSet<OperationHandleBase> m_Handlers = new IndexedSet<OperationHandleBase>();
 

@@ -15,7 +15,8 @@ namespace Framework.AssetManagement.Runtime
 		{
 			DebugLoadingTime();
 
-			if (isDone)
+            isTriggerLoadingRequest = false;
+            if (isDone)
 				return;
 
 			if (status == EProviderStatus.None)
@@ -75,7 +76,8 @@ namespace Framework.AssetManagement.Runtime
 						m_AssetBundleRequest = mainBundleLoader.cachedBundle.LoadAssetWithSubAssetsAsync(assetInfo.addressableName, assetInfo.assetType);
 				}
 				status = EProviderStatus.Checking;
-			}
+                isTriggerLoadingRequest = true;
+            }
 
 			// 3. 检测加载结果
 			if (status == EProviderStatus.Checking)

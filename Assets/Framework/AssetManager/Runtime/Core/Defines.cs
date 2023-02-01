@@ -72,4 +72,11 @@ namespace Framework.AssetManagement.Runtime
         Succeed,
         Failed,
     }
+
+    public enum ELoadingPriority
+    {
+        Low,
+        Normal,
+        High,
+    }
 }
