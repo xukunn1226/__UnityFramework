@@ -56,37 +56,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             return context;
         }
 
-        static private void FillDependAssetInfos(ref List<CollectAssetInfo> allCollectAssets, ref Dictionary<string, BuildAssetInfo> buildAssetDic)
-        {
-            foreach (var collectAsset in allCollectAssets)
-            {
-                if (collectAsset.CanBeMerged())
-                    continue;
-
-                if (buildAssetDic.ContainsKey(collectAsset.AssetPath) == false)
-                    throw new System.Exception($"Should never get here! {collectAsset.AssetPath} is not exists");
-
-                var dependAssetInfos = new List<BuildAssetInfo>();
-                List<CollectAssetInfo.DependNode> allDependNodes = collectAsset.GetAllDependNodes();
-                foreach (var dependNode in allDependNodes)
-                {
-                    if (buildAssetDic.TryGetValue(dependNode.assetPath, out var buildAssetInfo) == false)
-                        throw new System.Exception($"Should never get here!");
-
-                    CollectAssetInfo assetInfo = allCollectAssets.Find(item => { return item.AssetPath == dependNode.assetPath; });
-                    if (assetInfo == null)
-                        throw new System.Exception($"Should never get here! {dependNode.assetPath} not exists in allCollectAssets");
-
-                    // 此类资源将被合并至其他资源包中
-                    if (assetInfo.CanBeMerged())
-                        continue;
-
-                    dependAssetInfos.Add(buildAssetInfo);
-                }
-                buildAssetDic[collectAsset.AssetPath].SetAllDependAssetInfos(dependAssetInfos);
-            }
-        }
-
         /// <summary>
         /// 根据资源的依赖列表扩充
         /// </summary>
@@ -123,7 +92,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
 
             // 统计所有直接的依赖资源被引用的次数
-            foreach(var collectAsset in allCollectAssets)
+            foreach (var collectAsset in allCollectAssets)
             {
                 List<DependNode> dependNodes = collectAsset.GetDirectDependNodes();
                 foreach (var depend in dependNodes)
@@ -138,29 +107,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// 由收集器资源列表生成构建资源列表
-        /// </summary>
-        /// <param name="allCollectAssets"></param>
-        /// <returns></returns>
-        /// <exception cref="System.Exception"></exception>
-        static private Dictionary<string, BuildAssetInfo> CreateBuildAssetInfos(List<CollectAssetInfo> allCollectAssets)
-        {
-            Dictionary<string, BuildAssetInfo> buildAssetDic = new Dictionary<string, BuildAssetInfo>(1000);
-            foreach (var collectAsset in allCollectAssets)
-            {
-                if (string.IsNullOrEmpty(collectAsset.BundleName))
-                    throw new System.Exception($"BundleName is null, {collectAsset.AssetPath}");
-
-                if (buildAssetDic.ContainsKey(collectAsset.AssetPath))
-                    throw new System.Exception($"Should never get here! {collectAsset.AssetPath} has already exists");
-
-                var buildAssetInfo = new BuildAssetInfo(collectAsset.CollectorType, collectAsset.BundleName, collectAsset.AssetPath, collectAsset.IsRawAsset);
-                buildAssetDic.Add(collectAsset.AssetPath, buildAssetInfo);
-            }
-            return buildAssetDic;
         }
 
         static private void MergeAllAssets(ref List<CollectAssetInfo> allCollectAssets)
@@ -208,7 +154,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     throw new System.Exception($"should never get here: {parent.assetPath}");
 
                 // 向上追溯找到资源包
-                if(parentAssetInfo.CanBeMerged() == false)
+                if (parentAssetInfo.CanBeMerged() == false)
                 {
                     // 找到可合并的资源
                     bMerged = true;
@@ -217,16 +163,70 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 }
                 parent = parent.parent;
             }
-            if(bMerged == false)
+            if (bMerged == false)
             { // 未找到可合并的资源，则与顶层资源合并
                 assetInfo.CloneBundleName(topAsset);
             }
 
-            foreach(var child in childNode.children)
+            foreach (var child in childNode.children)
             {
                 MergeDependAssets(allCollectAssets, topAsset, child);
             }
             return bMerged;
+        }
+
+        /// <summary>
+        /// 由收集器资源列表生成构建资源列表
+        /// </summary>
+        /// <param name="allCollectAssets"></param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception"></exception>
+        static private Dictionary<string, BuildAssetInfo> CreateBuildAssetInfos(List<CollectAssetInfo> allCollectAssets)
+        {
+            Dictionary<string, BuildAssetInfo> buildAssetDic = new Dictionary<string, BuildAssetInfo>(1000);
+            foreach (var collectAsset in allCollectAssets)
+            {
+                if (string.IsNullOrEmpty(collectAsset.BundleName))
+                    throw new System.Exception($"BundleName is null, {collectAsset.AssetPath}");
+
+                if (buildAssetDic.ContainsKey(collectAsset.AssetPath))
+                    throw new System.Exception($"Should never get here! {collectAsset.AssetPath} has already exists");
+
+                var buildAssetInfo = new BuildAssetInfo(collectAsset.CollectorType, collectAsset.BundleName, collectAsset.AssetPath, collectAsset.IsRawAsset);
+                buildAssetDic.Add(collectAsset.AssetPath, buildAssetInfo);
+            }
+            return buildAssetDic;
+        }
+
+        static private void FillDependAssetInfos(ref List<CollectAssetInfo> allCollectAssets, ref Dictionary<string, BuildAssetInfo> buildAssetDic)
+        {
+            foreach (var collectAsset in allCollectAssets)
+            {
+                if (collectAsset.CanBeMerged())
+                    continue;
+
+                if (buildAssetDic.ContainsKey(collectAsset.AssetPath) == false)
+                    throw new System.Exception($"Should never get here! {collectAsset.AssetPath} is not exists");
+
+                var dependAssetInfos = new List<BuildAssetInfo>();
+                List<CollectAssetInfo.DependNode> allDependNodes = collectAsset.GetAllDependNodes();
+                foreach (var dependNode in allDependNodes)
+                {
+                    if (buildAssetDic.TryGetValue(dependNode.assetPath, out var buildAssetInfo) == false)
+                        throw new System.Exception($"Should never get here!");
+
+                    CollectAssetInfo assetInfo = allCollectAssets.Find(item => { return item.AssetPath == dependNode.assetPath; });
+                    if (assetInfo == null)
+                        throw new System.Exception($"Should never get here! {dependNode.assetPath} not exists in allCollectAssets");
+
+                    // 此类资源将被合并至其他资源包中
+                    if (assetInfo.CanBeMerged())
+                        continue;
+
+                    dependAssetInfos.Add(buildAssetInfo);
+                }
+                buildAssetDic[collectAsset.AssetPath].SetAllDependAssetInfos(dependAssetInfos);
+            }
         }
     }
 }
