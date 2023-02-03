@@ -19,12 +19,18 @@ namespace Framework.AssetManagement.Runtime
                 Object.Destroy(m_Inst);
                 m_Inst = null;
             }
+            ClearCallback();
             this.ReleaseInternal();
         }
 
         internal override void InvokeCallback()
         {
             m_Callback?.Invoke(this);
+        }
+
+        public void ClearCallback()
+        {
+            m_Callback = null;
         }
 
         public Object assetObject { get { return isValid ? provider.assetObject : null; } }

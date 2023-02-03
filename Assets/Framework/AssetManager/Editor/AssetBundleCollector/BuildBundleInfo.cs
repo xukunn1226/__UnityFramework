@@ -1,48 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
+using System;
 using Framework.AssetManagement.Runtime;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
+    [Serializable]
     public class BuildBundleInfo
     {
-        //public class BuildPatchInfo
-        //{
-        //    /// <summary>
-        //    /// 构建内容的哈希值
-        //    /// </summary>
-        //    public string ContentHash { set; get; }
-
-        //    /// <summary>
-        //    /// 文件哈希值
-        //    /// </summary>
-        //    public string PatchFileHash { set; get; }
-
-        //    /// <summary>
-        //    /// 文件哈希值
-        //    /// </summary>
-        //    public string PatchFileCRC { set; get; }
-
-        //    /// <summary>
-        //    /// 文件哈希值
-        //    /// </summary>
-        //    public long PatchFileSize { set; get; }
-
-
-        //    /// <summary>
-        //    /// 构建输出的文件路径
-        //    /// </summary>
-        //    public string BuildOutputFilePath { set; get; }
-
-        //    /// <summary>
-        //    /// 补丁包输出文件路径
-        //    /// </summary>
-        //    public string PatchOutputFilePath { set; get; }
-        //}
-
         /// <summary>
         /// 资源包名称
         /// </summary>
@@ -50,14 +16,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         /// <summary>
         /// 参与构建的资源列表
-        /// 注意：不包含零依赖资源
         /// </summary>
         public readonly List<BuildAssetInfo> BuildinAssets = new List<BuildAssetInfo>();
-
-        /// <summary>
-        /// 补丁文件信息
-        /// </summary>
-        //public readonly BuildPatchInfo PatchInfo = new BuildPatchInfo();
 
         /// <summary>
         /// Bundle文件的加载方法
@@ -164,20 +124,5 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
             return build;
         }
-
-        /// <summary>
-        /// 创建PatchBundle类
-        /// </summary>
-        //internal BundleDescriptor CreatePatchBundle()
-        //{
-        //    BundleDescriptor patchBundle = new BundleDescriptor();
-        //    patchBundle.bundleName = BundleName;
-        //    patchBundle.fileHash = PatchInfo.PatchFileHash;
-        //    patchBundle.fileCRC = PatchInfo.PatchFileCRC;
-        //    patchBundle.fileSize = PatchInfo.PatchFileSize;
-        //    patchBundle.isRawFile = IsRawFile;
-        //    patchBundle.loadMethod = (byte)LoadMethod;
-        //    return patchBundle;
-        //}
     }
 }

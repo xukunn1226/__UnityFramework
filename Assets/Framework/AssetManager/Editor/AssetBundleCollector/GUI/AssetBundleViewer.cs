@@ -12,7 +12,7 @@ using System.Reflection;
 namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class AssetBundleViewer : OdinEditorWindow
-    {
+    {        
         public List<BuildBundleInfo> BuildBundleInfos;
 
         public static void Open(BuildMapContext context)
@@ -46,27 +46,65 @@ namespace Framework.AssetManagement.AssetEditorWindow
         }
     }
 
-    //public class BuildBundleInfoClassAttributeProcessor : OdinAttributeProcessor<BuildBundleInfo>
-    //{
-    //    public override void ProcessSelfAttributes(InspectorProperty property, List<Attribute> attributes)
-    //    {
-    //        attributes.Add(new InfoBoxAttribute("Dynamically added attributes."));
-    //        attributes.Add(new InlinePropertyAttribute());
-    //    }
+    public class BuildBundleInfoClassAttributeProcessor : OdinAttributeProcessor<BuildBundleInfo>
+    {
+        public override bool CanProcessChildMemberAttributes(InspectorProperty parentProperty, MemberInfo member)
+        {
+            return typeof(IList).IsAssignableFrom(parentProperty.ParentType);
+        }
 
-    //    public override void ProcessChildMemberAttributes(InspectorProperty parentProperty, MemberInfo member, List<Attribute> attributes)
-    //    {
-    //        attributes.Add(new HideLabelAttribute());
-    //        attributes.Add(new BoxGroupAttribute("Box", showLabel: false));
+        public override void ProcessSelfAttributes(InspectorProperty property, List<Attribute> attributes)
+        {
+            attributes.Add(new InlinePropertyAttribute());
+            attributes.Add(new HideReferenceObjectPickerAttribute());
+        }
 
-    //        if (member.Name == "Mode")
-    //        {
-    //            attributes.Add(new EnumToggleButtonsAttribute());
-    //        }
-    //        else if (member.Name == "Size")
-    //        {
-    //            attributes.Add(new RangeAttribute(0, 5));
-    //        }
-    //    }
-    //}
+        public override void ProcessChildMemberAttributes(InspectorProperty parentProperty, MemberInfo member, List<Attribute> attributes)
+        {
+            //attributes.Add(new HideLabelAttribute());
+            //attributes.Add(new BoxGroupAttribute("Box", showLabel: false));
+            
+            attributes.Add(new ReadOnlyAttribute());
+
+            if(member.Name == "BundleName")
+            {
+                attributes.Add(new ShowInInspectorAttribute());
+                attributes.Add(new PropertyOrderAttribute(0));
+            }
+            else if(member.Name == "BuildinAssets")
+            {
+                attributes.Add(new ShowInInspectorAttribute());
+                attributes.Add(new PropertyOrderAttribute(1));
+            }
+        }
+    }
+
+    public class BuildAssetInfoClassAttributeProcessor : OdinAttributeProcessor<BuildAssetInfo>
+    {
+        public override void ProcessSelfAttributes(InspectorProperty property, List<Attribute> attributes)
+        {
+            attributes.Add(new ReadOnlyAttribute());
+            attributes.Add(new InlinePropertyAttribute());
+            attributes.Add(new HideReferenceObjectPickerAttribute());
+        }
+
+        public override void ProcessChildMemberAttributes(InspectorProperty parentProperty, MemberInfo member, List<Attribute> attributes)
+        {
+            //attributes.Add(new HideLabelAttribute());
+            //attributes.Add(new BoxGroupAttribute("Box", showLabel: false));
+
+            attributes.Add(new ReadOnlyAttribute());
+
+            if (member.Name == "AssetPath")
+            {
+                attributes.Add(new ShowInInspectorAttribute());
+                attributes.Add(new PropertyOrderAttribute(0));
+            }
+            else if (member.Name == "MainBundleName")
+            {
+                attributes.Add(new ShowInInspectorAttribute());
+                attributes.Add(new PropertyOrderAttribute(1));
+            }
+        }
+    }
 }

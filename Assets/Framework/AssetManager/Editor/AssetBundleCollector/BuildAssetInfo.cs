@@ -8,7 +8,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class BuildAssetInfo
     {
-        private string                      m_MainBundleName;
+        /// <summary>
+        /// 资源所属的资源包名
+        /// </summary>
+        public string MainBundleName { get; private set; }
         
         /// <summary>
         /// 收集器类型
@@ -32,14 +35,18 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         /// <summary>
         /// 依赖的所有资源
-        /// 注意：包括零依赖资源和冗余资源（资源包名无效）
         /// </summary>
         public List<BuildAssetInfo> AllDependAssetInfos { private set; get; }
+
+        /// <summary>
+        /// 依赖的所有资源包名
+        /// </summary>
+        public List<string> AllDependBundleNames { private set; get; }
 
 
         public BuildAssetInfo(ECollectorType collectorType, string mainBundleName, string assetPath, bool isRawAsset)
         {
-            m_MainBundleName = mainBundleName;
+            MainBundleName = mainBundleName;
             CollectorType = collectorType;
             AssetPath = assetPath;
             IsRawAsset = isRawAsset;
@@ -60,18 +67,24 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 throw new System.Exception("Should never get here !");
 
             AllDependAssetInfos = dependAssetInfos;
-        }
 
-        /// <summary>
-        /// 资源包名是否存在
-        /// </summary>
-        public bool HasBundleName()
-        {
-            string bundleName = GetBundleName();
-            if (string.IsNullOrEmpty(bundleName))
-                return false;
-            else
-                return true;
+            List<string> allDependBundleNames = new List<string>();
+            foreach(var assetInfo in dependAssetInfos)
+            {
+                if (string.IsNullOrEmpty(assetInfo.MainBundleName))
+                    throw new Exception($"should never get here");
+
+                // 依赖资源与主资源在同一个资源包，跳过
+                if(assetInfo.MainBundleName == MainBundleName)
+                    continue;
+
+                // 依赖资源包已统计，跳过
+                if (allDependBundleNames.FindIndex(item => { return item == assetInfo.MainBundleName; }) != -1)
+                    continue;
+
+                allDependBundleNames.Add(assetInfo.MainBundleName);
+            }
+            AllDependBundleNames = allDependBundleNames;
         }
 
         /// <summary>
@@ -79,7 +92,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         public string GetBundleName()
         {
-            return m_MainBundleName;
+            return MainBundleName;
         }
 
         /// <summary>
@@ -89,13 +102,13 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             if (IsRawAsset)
             {
-                string mainBundleName = $"{m_MainBundleName}.{AssetManagerSettingsData.Setting.RawFileVariant}";
-                m_MainBundleName = EditorTools.GetRegularPath(mainBundleName).ToLower();
+                string mainBundleName = $"{MainBundleName}.{AssetManagerSettingsData.Setting.RawFileVariant}";
+                MainBundleName = EditorTools.GetRegularPath(mainBundleName).ToLower();
             }
             else
             {
-                string mainBundleName = $"{m_MainBundleName}.{AssetManagerSettingsData.Setting.AssetBundleFileVariant}";
-                m_MainBundleName = EditorTools.GetRegularPath(mainBundleName).ToLower(); ;
+                string mainBundleName = $"{MainBundleName}.{AssetManagerSettingsData.Setting.AssetBundleFileVariant}";
+                MainBundleName = EditorTools.GetRegularPath(mainBundleName).ToLower(); ;
             }
         }
     }

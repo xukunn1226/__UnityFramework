@@ -35,14 +35,14 @@ namespace Framework.AssetManagement.AssetEditorWindow
             // step5. 记录所有收集器资源
             Dictionary<string, BuildAssetInfo> buildAssetDic = CreateBuildAssetInfos(allCollectAssets);
 
-            // step6. 记录依赖资源列表
-            FillDependAssetInfos(ref allCollectAssets, ref buildAssetDic);
-
-            // step7. 计算完整的资源包名
+            // step6. 计算完整的资源包名
             foreach (KeyValuePair<string, BuildAssetInfo> pair in buildAssetDic)
             {
                 pair.Value.CalculateFullBundleName();
             }
+
+            // step7. 记录依赖资源列表
+            FillDependAssetInfos(ref allCollectAssets, ref buildAssetDic);
 
             // step8. 构建资源包
             var allBuildinAssets = buildAssetDic.Values.ToList();
@@ -198,6 +198,12 @@ namespace Framework.AssetManagement.AssetEditorWindow
             return buildAssetDic;
         }
 
+        /// <summary>
+        /// 记录依赖资源列表
+        /// </summary>
+        /// <param name="allCollectAssets"></param>
+        /// <param name="buildAssetDic"></param>
+        /// <exception cref="System.Exception"></exception>
         static private void FillDependAssetInfos(ref List<CollectAssetInfo> allCollectAssets, ref Dictionary<string, BuildAssetInfo> buildAssetDic)
         {
             foreach (var collectAsset in allCollectAssets)
