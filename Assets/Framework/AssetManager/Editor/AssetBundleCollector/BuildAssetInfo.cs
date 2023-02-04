@@ -36,13 +36,12 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <summary>
         /// 依赖的所有资源
         /// </summary>
-        public List<BuildAssetInfo> AllDependAssetInfos { private set; get; }
+        public List<BuildAssetInfo> AllDependAssetInfos { private set; get; } = new List<BuildAssetInfo>();
 
         /// <summary>
         /// 依赖的所有资源包名
         /// </summary>
-        public List<string> AllDependBundleNames { private set; get; }
-
+        public List<string> AllDependBundleNames { private set; get; } = new List<string>();
 
         public BuildAssetInfo(ECollectorType collectorType, string mainBundleName, string assetPath, bool isRawAsset)
         {
@@ -63,9 +62,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         public void SetAllDependAssetInfos(List<BuildAssetInfo> dependAssetInfos)
         {
-            if (AllDependAssetInfos != null)
-                throw new System.Exception("Should never get here !");
-
             AllDependAssetInfos = dependAssetInfos;
 
             List<string> allDependBundleNames = new List<string>();

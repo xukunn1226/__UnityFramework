@@ -113,7 +113,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             foreach (var topAsset in allCollectAssets)
             {
-                foreach (var childNode in topAsset.DependTree.children)
+                // 判断所有的依赖节点是否需要向上合并
+                foreach (var childNode in topAsset.GetDirectDependNodes())
                 {
                     MergeDependAssets(allCollectAssets, topAsset, childNode);
                 }

@@ -241,15 +241,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         MainAssetCollector,
 
-        /// <summary>
-        /// 收集参与打包的主资源，不写入资源清单列表，不可通过代码加载
-        /// </summary>
-        StaticAssetCollector,
+        ///// <summary>
+        ///// 收集参与打包的主资源，不写入资源清单列表，不可通过代码加载
+        ///// </summary>
+        //StaticAssetCollector,
 
-        /// <summary>
-        /// 收集参与打包的依赖资源，不写入资源清单列表，不可通过代码加载，如果没有被主资源对象引用，则不参与构建
-        /// </summary>
-        DependAssetCollector,
+        ///// <summary>
+        ///// 收集参与打包的依赖资源，不写入资源清单列表，不可通过代码加载，如果没有被主资源对象引用，则不参与构建
+        ///// </summary>
+        //DependAssetCollector,
 
         /// <summary>
         /// 不由收集器负责收集，解析过程中程序化生成

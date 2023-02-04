@@ -245,13 +245,13 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     {
                         collector.CollectGUID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(newObj));
                     }
-                    EditorGUILayout.LabelField($"{collector.CollectPath}");
+                    EditorGUILayout.LabelField($"路径：{collector.CollectPath}");
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
                     {
                         // Collector Type
-                        int selectedIndex = EditorGUILayout.Popup((int)collector.CollectorType, new string[] { "MainCollector", "StaticCollector", "DependCollector" });
+                        int selectedIndex = EditorGUILayout.Popup((int)collector.CollectorType, new string[] { "MainCollector" });  //, "StaticCollector", "DependCollector" });
                         collector.CollectorType = (ECollectorType)selectedIndex;
 
                         // Pack Rule
