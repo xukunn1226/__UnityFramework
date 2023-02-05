@@ -243,7 +243,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     UnityEngine.Object newObj = EditorGUILayout.ObjectField(oldObj, typeof(UnityEngine.Object), false, GUILayout.ExpandWidth(true));
                     if(oldObj != newObj)
                     {
-                        collector.CollectGUID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(newObj));
+                        collector.CollectPath = AssetDatabase.GetAssetPath(newObj);
                     }
                     EditorGUILayout.LabelField($"路径：{collector.CollectPath}");
                     EditorGUILayout.EndHorizontal();

@@ -19,11 +19,11 @@ MonoBehaviour:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectGUID: d96a9452ca8c6f941885ed77786a9b34
+      - CollectPath: Assets/Res/111
         CollectorType: 0
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-      - CollectGUID: 8d64df46e6ceb8d468efc72d9b6bc0ee
+      - CollectPath: Assets/Res/222
         CollectorType: 0
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll

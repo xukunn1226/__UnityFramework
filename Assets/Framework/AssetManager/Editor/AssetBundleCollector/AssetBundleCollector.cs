@@ -12,11 +12,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
     public class AssetBundleCollector
     {
         /// <summary>
-        /// 收集路径GUID，文件夹或单个资源文件
-        /// </summary>
-        public string           CollectGUID;
-
-        public string           CollectPath     { get { return AssetDatabase.GUIDToAssetPath(CollectGUID);  } }
+        /// 收集路径，文件夹或单个资源文件
+        /// </summary>        
+        public string           CollectPath;
 
         public ECollectorType   CollectorType   = ECollectorType.MainAssetCollector;
 
@@ -26,7 +24,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         public bool IsValid()
         {
-            if(string.IsNullOrEmpty(AssetDatabase.GUIDToAssetPath(CollectGUID)))
+            if (AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(CollectPath) == null)
                 return false;
 
             if (CollectorType == ECollectorType.None)
