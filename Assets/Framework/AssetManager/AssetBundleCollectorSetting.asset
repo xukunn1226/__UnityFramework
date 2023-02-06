@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: AssetBundleCollectorSetting
   m_EditorClassIdentifier: 
   Configs:
-  - ConfigName: Default ConfigName1
-    ConfigDesc: 121
+  - ConfigName: builtin
+    ConfigDesc: "\u9996\u5305\u8D44\u6E90"
     Groups:
     - GroupName: Default GroupName
       GroupDesc: 
