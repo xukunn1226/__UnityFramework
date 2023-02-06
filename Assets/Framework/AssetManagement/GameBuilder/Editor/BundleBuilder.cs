@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -15,6 +15,7 @@ using Framework.AssetManagement.AssetBuilder;
 using Framework.AssetManagement.Runtime;
 using Framework.AssetManagement.AssetPackageEditor.Editor;
 using UnityEditor.Build.Pipeline.Tasks;
+using Framework.AssetManagement.AssetEditorWindow;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -368,6 +369,59 @@ namespace Framework.AssetManagement.GameBuilder
             {
                 Debug.LogError("Failed to rebuild manifest");
             }
+
+            // step5. copy manifest and clear temp files
+            CopyManifestToOutput(manifestOutput, output);
+
+            return true;
+        }
+
+        static private bool BuildBundleWithSBPEx(string configName, string output, BundleBuilderSetting setting)
+        {
+            // step1. build map
+            BuildMapContext mapContext = BuildMapCreator.CreateBuildMap(configName);
+
+            // step2. build sbp
+            // step3. update build info
+            // step4. create asset manifest
+
+
+            var buildParams = new CustomBuildParameters(EditorUserBuildSettings.activeBuildTarget,
+                                                        BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget),
+                                                        output);
+
+            buildParams.BundleCompression = setting.useLZ4Compress ? UnityEngine.BuildCompression.LZ4 : UnityEngine.BuildCompression.Uncompressed;
+            buildParams.UseCache = !setting.rebuildBundles;
+            if (setting.DisableWriteTypeTree)
+                buildParams.ContentBuildFlags |= ContentBuildFlags.DisableWriteTypeTree;
+            if (setting.DevelopmentBuild)
+                buildParams.ScriptOptions |= ScriptCompilationOptions.DevelopmentBuild;
+            buildParams.OutputFolder = output;
+
+            ReturnCode exitCode = ContentPipeline.BuildAssetBundles(buildParams, 
+                                                                    new BundleBuildContent(mapContext.GetPipelineBuilds()), 
+                                                                    out s_buildResults, 
+                                                                    AssetBundleCompatible(true));
+            if (exitCode < ReturnCode.Success)
+            {
+                Debug.LogError($"Failed to build bundles, ReturnCode is {exitCode}");
+                ClearBundleRedundancy(output);
+                return false;
+            }
+            ClearBundleRedundancy(output);
+
+            // step4. build manifest
+            string manifestOutput = "Assets/Temp/";          // manifest必须生成在Assets/下才能CreateAsset
+            if (!Directory.Exists(manifestOutput))
+            {
+                Directory.CreateDirectory(manifestOutput);
+            }
+
+            // rebuild manifest
+            //if (!RebuildManifestAsBundle(s_abb, s_buildResults, s_BPInfo, manifestOutput, s_useHashToBundleName))
+            //{
+            //    Debug.LogError("Failed to rebuild manifest");
+            //}
 
             // step5. copy manifest and clear temp files
             CopyManifestToOutput(manifestOutput, output);
