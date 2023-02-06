@@ -11,11 +11,15 @@ namespace Framework.AssetManagement.Runtime
         static private AssetSystem s_AssetSystem;
         static EOperationStatus s_OperationStatus;
         static string s_Error;
+        static InitializationOperation m_InitOp;
 
         static public InitializationOperation Initialize(InitializeParameters para)
         {
+            // 允许重复初始化
             if (s_Init)
-                throw new System.Exception($"AssetManager has already init..");
+            {
+                return m_InitOp;
+            }
 
             s_Init = true;
             s_Driver = new GameObject($"AssetManager");
@@ -26,9 +30,9 @@ namespace Framework.AssetManagement.Runtime
             AsyncOperationSystem.Initialize();
             s_AssetSystem = new AssetSystem();
 
-            var op = s_AssetSystem.InitializeAsync(para);
-            op.Completed += InitializeOperation_Completed;
-            return op;
+            m_InitOp = s_AssetSystem.InitializeAsync(para);
+            m_InitOp.Completed += InitializeOperation_Completed;
+            return m_InitOp;
         }
 
         static private void InitializeOperation_Completed(AsyncOperationBase op)
