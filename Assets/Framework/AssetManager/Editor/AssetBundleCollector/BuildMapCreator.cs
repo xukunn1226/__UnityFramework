@@ -53,6 +53,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 context.PackAsset(assetInfo);
             }
 
+            // step9. 包含场景资源的资源包需要剔除非场景资源
+            context.ClearSceneBundles();
+
             return context;
         }
 

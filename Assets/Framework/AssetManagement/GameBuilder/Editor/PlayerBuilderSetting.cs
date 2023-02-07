@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -355,7 +355,7 @@ namespace Framework.AssetManagement.GameBuilder
                     break;
             }
 
-            return string.Format("{0}/{1}/{2}{3}", para.outputPath, Utility.GetPlatformName(), para.projectName, extension);
+            return string.Format("{0}/{1}{2}", para.outputPath, para.projectName, extension);
         }
 
         static private BuildOptions GenerateBuildOptions(this PlayerBuilderSetting para)

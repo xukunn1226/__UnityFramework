@@ -9,6 +9,7 @@ using System.Text;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Editor
 {
@@ -36,7 +37,7 @@ namespace Application.Editor
             DoRun();
 
             // copy db to streamingAssets
-            string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Framework.Core.Utility.GetPlatformName()}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
+            string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
             FileUtil.DeleteFileOrDirectory(dstPath);
             FileUtil.CopyFileOrDirectory(ConfigBuilderSetting.DatabaseFilePath, dstPath);
         }

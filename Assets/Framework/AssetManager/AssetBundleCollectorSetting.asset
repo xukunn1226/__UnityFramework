@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: AssetBundleCollectorSetting
   m_EditorClassIdentifier: 
   Configs:
-  - ConfigName: builtin
+  - ConfigName: buildin
     ConfigDesc: "\u9996\u5305\u8D44\u6E90"
     Groups:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectPath: Assets/Res/111
+      - CollectPath: Packages/com.unity.render-pipelines.universal/Shaders
         CollectorType: 0
-        PackRuleName: PackDirectory
+        PackRuleName: PackCollector
         FilterRuleName: CollectAll
-      - CollectPath: Assets/Res/222
+      - CollectPath: Assets/Res
         CollectorType: 0
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll

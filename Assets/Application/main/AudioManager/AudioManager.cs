@@ -76,7 +76,7 @@ namespace Application.Runtime
         // FromPersistent：从Application.persistentDataPath读取数据
         private string GetBankFolder()
         {
-            string bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
+            string bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, AssetManagerSettings.StreamingAssetsBuildinFolder, Settings.Instance.TargetSubFolder);
 
             EPlayMode mode = Launcher.GetPlayMode();
             switch(mode)
@@ -104,13 +104,13 @@ namespace Application.Runtime
                 case EPlayMode.FromStreaming:
                     {
 #if UNITY_ANDROID && !UNITY_EDITOR
-                        bankFolder = string.Format("{0}/{1}/{2}", "file:///android_asset", Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
+                        bankFolder = string.Format("{0}/{1}/{2}", "file:///android_asset", AssetManagerSettings.StreamingAssetsBuildinFolder, Settings.Instance.TargetSubFolder);
 #endif
                     }
                     break;
                 case EPlayMode.FromHost:
                     {
-                        bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.persistentDataPath, Utility.GetPlatformName(), Settings.Instance.TargetSubFolder);
+                        bankFolder = string.Format("{0}/{1}/{2}", UnityEngine.Application.persistentDataPath, AssetManagerSettings.StreamingAssetsBuildinFolder, Settings.Instance.TargetSubFolder);
                     }
                     break;
             }

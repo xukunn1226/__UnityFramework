@@ -68,7 +68,7 @@ namespace Application.Runtime
 
                 if (errorCount == 0)
                 {
-                    string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Framework.Core.Utility.GetPlatformName()}");
+                    string dstPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}");
                     if(!Directory.Exists(dstPath))
                         Directory.CreateDirectory(dstPath);
                     File.Copy(string.Format($"{buildOutput}/{ILStartup.dllFilename}.dll"), string.Format($"{dstPath}/{ILStartup.dllFilename}.dll"), true);

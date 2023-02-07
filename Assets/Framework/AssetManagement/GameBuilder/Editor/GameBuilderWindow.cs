@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -18,12 +18,12 @@ namespace Framework.AssetManagement.GameBuilder
         private string          info;
 
 
-        [MenuItem("Tools/Assets Management/GameBuilder Window")]
+        [MenuItem("Tools/Assets Management/资源包打包工具")]
         static void Init()
         {
             GameBuilderWindow window = GetWindow<GameBuilderWindow>();
             window.Show();
-            window.titleContent = new GUIContent("GameBuilder Window", EditorGUIUtility.FindTexture("SettingsIcon"));
+            window.titleContent = new GUIContent("资源包打包工具", EditorGUIUtility.FindTexture("SettingsIcon"));
             window.position = new Rect(600, 120, 700, 800);
         }
 

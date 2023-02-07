@@ -4,6 +4,7 @@ using UnityEngine;
 using Framework.Core;
 using Application.Runtime;
 using System.Linq;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Logic
 {
@@ -34,7 +35,7 @@ namespace Application.Logic
                             break;
                         case Framework.AssetManagement.Runtime.EPlayMode.FromStreaming:
                         case Framework.AssetManagement.Runtime.EPlayMode.FromHost:
-                            m_DataPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
+                            m_DataPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
                             break;
                     }
                 }
@@ -69,8 +70,8 @@ namespace Application.Logic
         // 提取配置数据库从streamingAssets至persistentDataPath
         static public IEnumerator ExtractDatabase()
         {
-            string srcPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
-            string dstPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
+            string srcPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
+            string dstPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
 
             DownloadTask task = new DownloadTask(new byte[1024]);
             DownloadTaskInfo info           = new DownloadTaskInfo();

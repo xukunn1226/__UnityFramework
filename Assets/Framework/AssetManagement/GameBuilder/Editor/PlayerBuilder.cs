@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
@@ -43,7 +43,7 @@ namespace Framework.AssetManagement.GameBuilder
             m_Setting = para;
 
             // clear previous directory and create new one
-            string outputPath = para.outputPath.TrimEnd(new char[] { '/' }) + "/" + Utility.GetPlatformName();
+            string outputPath = para.outputPath.TrimEnd(new char[] { '/' });
             if (Directory.Exists(outputPath))
                 Directory.Delete(outputPath, true);
             Directory.CreateDirectory(outputPath);

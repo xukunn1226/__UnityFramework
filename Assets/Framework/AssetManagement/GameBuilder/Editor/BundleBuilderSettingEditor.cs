@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -72,7 +72,7 @@ namespace Framework.AssetManagement.GameBuilder
                 EditorGUILayout.BeginHorizontal();
                 EditorGUI.BeginDisabledGroup(true);
                 GUILayout.Label("Actual Output:", EditorStyles.largeLabel);
-                GUILayout.Button(m_outputPathProp.stringValue + "/" + Utility.GetPlatformName());
+                GUILayout.Button(m_outputPathProp.stringValue);
                 EditorGUI.EndDisabledGroup();
                 EditorGUILayout.EndHorizontal();
 

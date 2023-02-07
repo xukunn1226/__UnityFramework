@@ -16,6 +16,7 @@ using Framework.AssetManagement.Runtime;
 using Framework.AssetManagement.AssetPackageEditor.Editor;
 using UnityEditor.Build.Pipeline.Tasks;
 using Framework.AssetManagement.AssetEditorWindow;
+using System.Security.Cryptography;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -61,11 +62,11 @@ namespace Framework.AssetManagement.GameBuilder
             string targetPath = @"Assets/StreamingAssets";
             AssetDatabase.DeleteAsset(targetPath);
             AssetDatabase.CreateFolder("Assets", "StreamingAssets");
-            AssetDatabase.CreateFolder(targetPath, Utility.GetPlatformName());
+            //AssetDatabase.CreateFolder(targetPath, Utility.GetPlatformName());
 
             // build bundles to streaming assets
             // Debug.Log($"        BuildAssetBundleOptions: {para.GenerateOptions()}");
-            if (!BuildBundleWithSBPEx("builtin", targetPath + "/" + Utility.GetPlatformName(), para))
+            if (!BuildBundleWithSBPEx("buildin", targetPath + "/" + AssetManagerSettings.StreamingAssetsBuildinFolder, para))
                 //if (!BuildBundleWithSBP(targetPath + "/" + Utility.GetPlatformName(), para))
             {
                 Debug.LogError($"End Build AssetBundles: Failed");
@@ -87,43 +88,43 @@ namespace Framework.AssetManagement.GameBuilder
             return true;
         }
 
-        private class BuildProcessor : IPreprocessBuildWithReport
-        {
-            public int callbackOrder { get { return 9999; } }     // 倒数第二步，见PlayerBuilder.BuildProcessor
+        //private class BuildProcessor : IPreprocessBuildWithReport
+        //{
+        //    public int callbackOrder { get { return 9999; } }     // 倒数第二步，见PlayerBuilder.BuildProcessor
 
-            // 等所有需要打包的资源汇集到了streaming assets再执行
-            public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
-            {
-                // 计算base,extra资源的MD5，存储于Assets/Resources
-                BuildBundleFileList();
+        //    // 等所有需要打包的资源汇集到了streaming assets再执行
+        //    public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+        //    {
+        //        // 计算base,extra资源的MD5，存储于Assets/Resources
+        //        BuildBundleFileList();
 
-                // step 1. create directory
-                GameBuilderSetting setting = GameBuilderSettingCollection.GetDefault().GetData("Win64");
+        //        // step 1. create directory
+        //        GameBuilderSetting setting = GameBuilderSettingCollection.GetDefault().GetData("Win64");
 
-                string outputPath = setting.bundleSetting.outputPath + "/" + Utility.GetPlatformName();
-                if (Directory.Exists(outputPath))
-                    Directory.Delete(outputPath, true);
-                Directory.CreateDirectory(outputPath);
-                Debug.Log($"        Bundles Output: {outputPath}");
+        //        string outputPath = setting.bundleSetting.outputPath + "/" + Utility.GetPlatformName();
+        //        if (Directory.Exists(outputPath))
+        //            Directory.Delete(outputPath, true);
+        //        Directory.CreateDirectory(outputPath);
+        //        Debug.Log($"        Bundles Output: {outputPath}");
 
-                // 最后把所有StreamingAssets中的资源复制到发布目录（Deployment/Latest/AssetBundles）
-                // 有些资源例如FMOD有自己的发布流程，等其发布完最后再执行
-                string srcPath = "Assets/StreamingAssets/" + Utility.GetPlatformName();
-                Framework.Core.Editor.EditorUtility.CopyDirectory(srcPath, outputPath);
-                Debug.Log($"        Copy streaming assets to Deployment/Latest/AssetBundles");
+        //        // 最后把所有StreamingAssets中的资源复制到发布目录（Deployment/Latest/AssetBundles）
+        //        // 有些资源例如FMOD有自己的发布流程，等其发布完最后再执行
+        //        string srcPath = "Assets/StreamingAssets/" + Utility.GetPlatformName();
+        //        Framework.Core.Editor.EditorUtility.CopyDirectory(srcPath, outputPath);
+        //        Debug.Log($"        Copy streaming assets to Deployment/Latest/AssetBundles");
 
-                // 最后删除其他资源(extra,pkg_XXX)，只有base发布到母包
-                string[] folders = AssetDatabase.GetSubFolders(srcPath);
-                foreach(var folder in folders)
-                {
-                    string dir = folder.Substring(folder.LastIndexOf("/") + 1);
-                    if(string.Compare(dir, VersionDefines.EXTRA_FOLDER, true) == 0 || dir.StartsWith(VersionDefines.PKG_FOLDER_PREFIX, StringComparison.OrdinalIgnoreCase))
-                    {
-                        AssetDatabase.DeleteAsset(folder);
-                    }
-                }
-            }
-        }
+        //        // 最后删除其他资源(extra,pkg_XXX)，只有base发布到母包
+        //        string[] folders = AssetDatabase.GetSubFolders(srcPath);
+        //        foreach(var folder in folders)
+        //        {
+        //            string dir = folder.Substring(folder.LastIndexOf("/") + 1);
+        //            if(string.Compare(dir, VersionDefines.EXTRA_FOLDER, true) == 0 || dir.StartsWith(VersionDefines.PKG_FOLDER_PREFIX, StringComparison.OrdinalIgnoreCase))
+        //            {
+        //                AssetDatabase.DeleteAsset(folder);
+        //            }
+        //        }
+        //    }
+        //}
 
         class CustomBuildParameters : BundleBuildParameters
         {
@@ -367,16 +368,17 @@ namespace Framework.AssetManagement.GameBuilder
             TaskUpdateBuildInfo.Run(output, mapContext, buildResults);
 
             // step4. create asset manifest
+            SerializeAssetManifestEx(mapContext);
 
-
+            CopyBuildinFilesToStreaming();
 
 
             // step4. build manifest
-            string manifestOutput = "Assets/Temp/";          // manifest必须生成在Assets/下才能CreateAsset
-            if (!Directory.Exists(manifestOutput))
-            {
-                Directory.CreateDirectory(manifestOutput);
-            }
+            //string manifestOutput = "Assets/Temp/";          // manifest必须生成在Assets/下才能CreateAsset
+            //if (!Directory.Exists(manifestOutput))
+            //{
+            //    Directory.CreateDirectory(manifestOutput);
+            //}
 
             // rebuild manifest
             //if (!RebuildManifestAsBundle(s_abb, s_buildResults, s_BPInfo, manifestOutput, s_useHashToBundleName))
@@ -385,9 +387,67 @@ namespace Framework.AssetManagement.GameBuilder
             //}
 
             // step5. copy manifest and clear temp files
-            CopyManifestToOutput(manifestOutput, output);
+            //CopyManifestToOutput(manifestOutput, output);
 
             return true;
+        }
+
+        static private void SerializeAssetManifestEx(BuildMapContext mapContext)
+        {
+            AssetManifest manifest = new AssetManifest();
+
+            manifest.SerializedVersion = 1;
+            manifest.PackageVersion = "0.0.1";
+            manifest.OutputNameStyle = 1;
+
+            foreach (var bundleInfo in mapContext.BuildBundleInfos)
+            {
+                BundleDescriptor desc = new BundleDescriptor();
+                desc.bundleName = bundleInfo.BundleName;
+                desc.fileHash = bundleInfo.PatchInfo.PatchFileHash;
+                desc.fileCRC = bundleInfo.PatchInfo.PatchFileCRC;
+                desc.fileSize = bundleInfo.PatchInfo.PatchFileSize;
+                desc.isRawFile = bundleInfo.IsRawFile;
+                desc.loadMethod = 0;
+                manifest.BundleList.Add(desc);
+            }
+
+            foreach (var bundleInfo in mapContext.BuildBundleInfos)
+            {
+                foreach(var assetInfo in bundleInfo.BuildinAssets)
+                {
+                    var assetDesc = new AssetDescriptor();
+                    assetDesc.assetPath = assetInfo.AssetPath;
+
+                    // find main bundle
+                    int index = manifest.BundleList.FindIndex(item => item.bundleName == assetInfo.MainBundleName);
+                    if (index == -1)
+                        throw new Exception($"should never get here! Can't find bundle {assetInfo.MainBundleName} from BundleList");
+                    assetDesc.bundleID = index;
+
+                    // fill depend bundles
+                    List<int> dependIDs = new List<int>();
+                    foreach(var dependBundleName in assetInfo.AllDependBundleNames)
+                    {
+                        index = manifest.BundleList.FindIndex(item => item.bundleName == dependBundleName);
+                        if (index == -1)
+                            throw new Exception($"should never get here! Can't find bundle {dependBundleName} from BundleList");
+                        dependIDs.Add(index);
+                    }
+                    assetDesc.dependIDs = dependIDs.ToArray();
+                    manifest.AssetList.Add(assetDesc);
+                }                
+            }
+
+            AssetManifest.SerializeToBinary($"Assets/StreamingAssets/{AssetManagerSettings.StreamingAssetsBuildinFolder}/AssetManifest.bytes", manifest);
+            AssetManifest.SerializeToJson($"Assets/Temp/AssetManifest.json", manifest);
+            AssetDatabase.ImportAsset($"Assets/StreamingAssets/{AssetManagerSettings.StreamingAssetsBuildinFolder}/AssetManifest.bytes");
+            AssetDatabase.ImportAsset($"Assets/Temp/AssetManifest.json");
+        }
+
+        static private void CopyBuildinFilesToStreaming()
+        {
+
         }
 
         static IList<IBuildTask> AssetBundleCompatible(bool builtinTask)

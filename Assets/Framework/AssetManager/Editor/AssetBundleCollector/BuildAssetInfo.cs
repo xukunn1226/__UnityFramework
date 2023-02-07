@@ -34,6 +34,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
         public bool IsShaderAsset { private set; get; }
 
         /// <summary>
+        /// 是否为场景资源
+        /// </summary>
+        public bool IsSceneAsset { get; private set; }
+
+        /// <summary>
         /// 依赖的所有资源
         /// </summary>
         public List<BuildAssetInfo> AllDependAssetInfos { private set; get; } = new List<BuildAssetInfo>();
@@ -55,6 +60,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 IsShaderAsset = true;
             else
                 IsShaderAsset = false;
+
+            IsSceneAsset = typeof(UnityEditor.SceneAsset) == assetType;
         }
 
         /// <summary>
@@ -81,14 +88,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 allDependBundleNames.Add(assetInfo.MainBundleName);
             }
             AllDependBundleNames = allDependBundleNames;
-        }
-
-        /// <summary>
-        /// 获取资源包名称
-        /// </summary>
-        public string GetBundleName()
-        {
-            return MainBundleName;
         }
 
         /// <summary>

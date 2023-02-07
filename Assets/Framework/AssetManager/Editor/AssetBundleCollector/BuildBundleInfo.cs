@@ -90,6 +90,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
         }
 
+        /// <summary>
+        /// 是否包含场景资源
+        /// </summary>
+        public bool IsIncludeSceneAsset { get; private set; }
+
 
         public BuildBundleInfo(string bundleName)
         {
@@ -105,6 +110,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 throw new System.Exception($"Asset is existed : {assetInfo.AssetPath}");
 
             BuildinAssets.Add(assetInfo);
+            IsIncludeSceneAsset |= assetInfo.IsSceneAsset;
         }
 
         /// <summary>
@@ -120,6 +126,23 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 清理非场景资源
+        /// </summary>
+        public void ClearNonSceneAsset()
+        {
+            if (IsIncludeSceneAsset == false)
+                throw new Exception("should never get here...");
+
+            for(int i = BuildinAssets.Count - 1; i >= 0; --i)
+            {
+                if (BuildinAssets[i].IsSceneAsset == false)
+                {
+                    BuildinAssets.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>

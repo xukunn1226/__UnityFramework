@@ -203,8 +203,8 @@ namespace Application.Runtime
 
         static public IEnumerator ExtractHotFixDLL()
         {
-            string srcDLLPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
-            string dstDLLPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
+            string srcDLLPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
+            string dstDLLPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
 
             DownloadTask task       = new DownloadTask(new byte[1024]);
             DownloadTaskInfo info   = new DownloadTaskInfo();
@@ -217,8 +217,8 @@ namespace Application.Runtime
 
         static public IEnumerator ExtractHotFixPDB()
         {
-            string srcPDBPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Utility.GetPlatformName()}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
-            string dstPDBPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
+            string srcPDBPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
+            string dstPDBPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
 
             DownloadTask task       = new DownloadTask(new byte[1024]);
             DownloadTaskInfo info   = new DownloadTaskInfo();

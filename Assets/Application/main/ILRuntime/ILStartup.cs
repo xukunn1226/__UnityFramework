@@ -54,7 +54,7 @@ namespace Application.Runtime
 				case EPlayMode.FromStreaming:
 				case EPlayMode.FromHost:
 				{
-					dllPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Utility.GetPlatformName()}");
+					dllPath = string.Format($"{UnityEngine.Application.persistentDataPath}");
 					break;
 				}
 			}

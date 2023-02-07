@@ -114,7 +114,7 @@ namespace Framework.AssetManagement.Runtime
 	/// <summary>
 	/// 文件工具类
 	/// </summary>
-	internal static class FileUtility
+	public static class FileUtility
 	{
 		/// <summary>
 		/// 读取文件的文本数据
@@ -212,7 +212,7 @@ namespace Framework.AssetManagement.Runtime
 	/// <summary>
 	/// 哈希工具类
 	/// </summary>
-	internal static class HashUtility
+	public static class HashUtility
 	{
 		private static string ToString(byte[] hashBytes)
 		{

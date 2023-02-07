@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.Build;
 using Framework.Core;
 using FMODUnity;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Editor
 {
@@ -24,7 +25,7 @@ namespace Application.Editor
             string srcFMOD = "Assets/StreamingAssets/" + FMODUnity.Settings.Instance.TargetSubFolder;
             if (System.IO.Directory.Exists(srcFMOD))
             {
-                string newPath = "Assets/StreamingAssets/" + Utility.GetPlatformName() + "/" + FMODUnity.Settings.Instance.TargetSubFolder;
+                string newPath = "Assets/StreamingAssets/" + AssetManagerSettings.StreamingAssetsBuildinFolder + "/" + FMODUnity.Settings.Instance.TargetSubFolder;
                 if (System.IO.Directory.Exists(newPath))
                 {
                     AssetDatabase.DeleteAsset(newPath);
