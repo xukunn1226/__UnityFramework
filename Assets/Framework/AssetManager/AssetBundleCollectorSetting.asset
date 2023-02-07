@@ -14,16 +14,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Configs:
   - ConfigName: buildin
-    ConfigDesc: "\u9996\u5305\u8D44\u6E90"
+    ConfigDesc: "\u5185\u7F6E\u8D44\u6E90"
     Groups:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectPath: Packages/com.unity.render-pipelines.universal/Shaders
+      - CollectPath: Packages/com.unity.render-pipelines.universal/Runtime
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
       - CollectPath: Assets/Res
+        CollectorType: 0
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+      - CollectPath: Assets/Application/main/XLua/Lua
+        CollectorType: 0
+        PackRuleName: PackCollector
+        FilterRuleName: CollectAll
+      - CollectPath: Assets/Settings
+        CollectorType: 0
+        PackRuleName: PackCollector
+        FilterRuleName: CollectAll
+      - CollectPath: Assets/Framework/AnimationInstancing/Art
+        CollectorType: 0
+        PackRuleName: PackTopDirectory
+        FilterRuleName: CollectAll
+      - CollectPath: Packages/com.unity.render-pipelines.universal/Shaders
+        CollectorType: 0
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+      - CollectPath: Packages/com.unity.render-pipelines.universal/Textures
         CollectorType: 0
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll

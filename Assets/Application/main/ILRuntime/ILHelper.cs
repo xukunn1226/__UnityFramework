@@ -9,6 +9,7 @@ using Framework.Core;
 using System;
 using System.IO;
 using System.Net;
+using Framework.AssetManagement.Runtime;
 
 namespace Application.Runtime
 {
@@ -203,8 +204,8 @@ namespace Application.Runtime
 
         static public IEnumerator ExtractHotFixDLL()
         {
-            string srcDLLPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
-            string dstDLLPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
+            string srcDLLPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
+            string dstDLLPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{Path.GetFileName(ILStartup.dllFilename)}.dll");
 
             DownloadTask task       = new DownloadTask(new byte[1024]);
             DownloadTaskInfo info   = new DownloadTaskInfo();
@@ -217,8 +218,8 @@ namespace Application.Runtime
 
         static public IEnumerator ExtractHotFixPDB()
         {
-            string srcPDBPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
-            string dstPDBPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
+            string srcPDBPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
+            string dstPDBPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{Path.GetFileName(ILStartup.dllFilename)}.pdb");
 
             DownloadTask task       = new DownloadTask(new byte[1024]);
             DownloadTaskInfo info   = new DownloadTaskInfo();

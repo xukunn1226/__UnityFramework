@@ -15,8 +15,8 @@ namespace Application.Runtime
 
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
             {
-                if(PlayerBuilder.m_Setting.releaseNative)
-                    return;     // 发布原生版本跳过IL相关设置及编译
+                //if(PlayerBuilder.m_Setting.releaseNative)
+                //    return;     // 发布原生版本跳过IL相关设置及编译
                 ILRuntimeCLRBinding.GenerateCLRBindingByAnalysis();
                 CopyLogicDLLToStreamingAssets();
             }
@@ -32,6 +32,7 @@ namespace Application.Runtime
             //{
             //    return;
             //}
+
 
             AssembyBuilder.BuildAssembly(true, true);
         }

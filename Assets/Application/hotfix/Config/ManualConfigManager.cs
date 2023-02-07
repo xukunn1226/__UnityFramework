@@ -70,8 +70,8 @@ namespace Application.Logic
         // 提取配置数据库从streamingAssets至persistentDataPath
         static public IEnumerator ExtractDatabase()
         {
-            string srcPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
-            string dstPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
+            string srcPath = string.Format($"{UnityEngine.Application.streamingAssetsPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
+            string dstPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
 
             DownloadTask task = new DownloadTask(new byte[1024]);
             DownloadTaskInfo info           = new DownloadTaskInfo();

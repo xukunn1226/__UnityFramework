@@ -417,7 +417,7 @@ namespace Framework.AssetManagement.GameBuilder
                 foreach(var assetInfo in bundleInfo.BuildinAssets)
                 {
                     var assetDesc = new AssetDescriptor();
-                    assetDesc.assetPath = assetInfo.AssetPath;
+                    assetDesc.assetPath = assetInfo.AssetPath.ToLower();
 
                     // find main bundle
                     int index = manifest.BundleList.FindIndex(item => item.bundleName == assetInfo.MainBundleName);
