@@ -19,7 +19,7 @@ MonoBehaviour:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectPath: Packages/com.unity.render-pipelines.universal/Runtime
+      - CollectPath: Packages/com.unity.render-pipelines.universal/Runtime/Materials
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll

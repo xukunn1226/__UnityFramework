@@ -16,7 +16,6 @@ namespace Framework.AssetManagement.GameBuilder
         SerializedProperty      m_DisableWriteTypeTreeProp;
         SerializedProperty      m_DevelopmentBuildProp;
         SerializedProperty      m_OverrideResourcePathProp;
-        SerializedProperty      m_packageEditorSettingProp;
 
         private void Awake()
         {
@@ -27,7 +26,6 @@ namespace Framework.AssetManagement.GameBuilder
             m_DisableWriteTypeTreeProp  = serializedObject.FindProperty("DisableWriteTypeTree");
             m_DevelopmentBuildProp      = serializedObject.FindProperty("DevelopmentBuild");
             m_OverrideResourcePathProp  = serializedObject.FindProperty("OverrideResourcePath");
-            m_packageEditorSettingProp  = serializedObject.FindProperty("packageEditorSetting");
         }
 
         public override void OnInspectorGUI()
@@ -104,7 +102,6 @@ namespace Framework.AssetManagement.GameBuilder
                 m_DisableWriteTypeTreeProp.boolValue    = EditorGUILayout.Toggle(new GUIContent("DisableWriteTypeTree"), m_DisableWriteTypeTreeProp.boolValue);
                 m_DevelopmentBuildProp.boolValue        = EditorGUILayout.Toggle(new GUIContent("DevelopmentBuild"), m_DevelopmentBuildProp.boolValue);
                 m_OverrideResourcePathProp.stringValue  = EditorGUILayout.TextField(new GUIContent("OverrideResourcePath", "非空表示仅此目录下的资源输出，留空表示所有设置了bundle name的资源都将输出"), m_OverrideResourcePathProp.stringValue);
-                EditorGUILayout.ObjectField(m_packageEditorSettingProp, new GUIContent("分包配置："));
             }
             GUILayout.EndVertical();
         }

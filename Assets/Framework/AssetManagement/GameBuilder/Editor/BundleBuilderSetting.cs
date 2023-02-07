@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -30,7 +30,6 @@ namespace Framework.AssetManagement.GameBuilder
         public bool             DisableWriteTypeTree;
         public bool             DevelopmentBuild;
         public string           OverrideResourcePath;         // 非空表示仅此目录下的资源输出，留空表示所有设置了bundle name的资源都将输出
-        public AssetPackageEditorSetting packageEditorSetting;
 
         public override string ToString()
         {
