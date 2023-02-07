@@ -3,19 +3,14 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
-using System.Globalization;
 using Framework.Core;
 using UnityEditor.Build.Pipeline.Interfaces;
 using UnityEditor.Build.Pipeline;
-using UnityEditor.Build;
 using UnityEditor.Build.Content;
 using UnityEditor.Build.Player;
-using UnityEngine.Build.Pipeline;
-using Framework.AssetManagement.AssetBuilder;
 using Framework.AssetManagement.Runtime;
 using UnityEditor.Build.Pipeline.Tasks;
 using Framework.AssetManagement.AssetEditorWindow;
-using System.Security.Cryptography;
 
 namespace Framework.AssetManagement.GameBuilder
 {

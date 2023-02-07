@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -272,6 +272,52 @@ namespace Framework.Core.Editor
             exit_code = process.ExitCode;
             process.Close();
             return exit_code;
+        }
+
+        // 复制资源路径到剪贴板，方便策划配置使用
+        [MenuItem("Assets/Copy Path(ToLower) &c", false, 20)]
+        static void FetchAssetPath()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID).ToLower();
+
+            EditorGUIUtility.systemCopyBuffer = assetPath;
+        }
+
+        [MenuItem("Assets/Copy AssetBundle Name(ToLower) &v", false, 21)]
+        static void FetchAssetBundleName()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID).ToLower();
+
+            string directory = assetPath;
+            if (!string.IsNullOrEmpty(Path.GetExtension(assetPath)))
+            {
+                directory = assetPath.Substring(0, assetPath.LastIndexOf("/"));
+            }
+
+            AssetImporter ti = AssetImporter.GetAtPath(directory);
+            if (ti == null || string.IsNullOrEmpty(ti.assetBundleName))
+            {
+                Debug.LogWarningFormat("Failed to fetch asset bundle name, plz contact programmer...");
+                return;
+            }
+
+            EditorGUIUtility.systemCopyBuffer = ti.assetBundleName;
+            Debug.Log($"BundleName is: {ti.assetBundleName}");
+        }
+
+        [MenuItem("Assets/Copy Asset Name(ToLower) &b", false, 22)]
+        static void FetchAssetName()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(Selection.activeInstanceID).ToLower();
+
+            if (string.IsNullOrEmpty(Path.GetExtension(assetPath)))
+            {
+                Debug.LogWarning("Failed to fetch asset name, because it is a directory.");
+                return;
+            }
+
+            EditorGUIUtility.systemCopyBuffer = Path.GetFileName(assetPath);
+            Debug.Log($"AssetName is: {EditorGUIUtility.systemCopyBuffer}");
         }
     }
 }
