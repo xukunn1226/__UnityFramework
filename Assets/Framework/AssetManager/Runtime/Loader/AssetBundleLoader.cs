@@ -7,7 +7,7 @@ namespace Framework.AssetManagement.Runtime
     /// <summary>
     /// AssetBundle加载器
     /// </summary>
-    internal class AssetBundleLoaderEx : BundleLoaderBase
+    internal class AssetBundleLoader : BundleLoaderBase
     {
         private enum ESteps
         {
@@ -20,9 +20,9 @@ namespace Framework.AssetManagement.Runtime
         private bool                        m_RequestAsyncComplete;
         private AssetBundleCreateRequest    m_BundleRequest;
 
-        private AssetBundleLoaderEx() { }
+        private AssetBundleLoader() { }
 
-        public AssetBundleLoaderEx(AssetSystem assetSystem, BundleInfo bundleInfo) : base(assetSystem, bundleInfo)
+        public AssetBundleLoader(AssetSystem assetSystem, BundleInfo bundleInfo) : base(assetSystem, bundleInfo)
         { }
 
         public override void Update()

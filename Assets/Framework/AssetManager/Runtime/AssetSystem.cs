@@ -253,7 +253,7 @@ namespace Framework.AssetManagement.Runtime
             if (bundleInfo.descriptor.isRawFile)
                 loader = new RawBundleLoader(this, bundleInfo);
             else
-                loader = new AssetBundleLoaderEx(this, bundleInfo);
+                loader = new AssetBundleLoader(this, bundleInfo);
 
             m_BundleLoaderDict.Add(loader.bundleInfo.descriptor.bundleName, loader);
             m_BundleLoaderSet.AddUnique(loader);
