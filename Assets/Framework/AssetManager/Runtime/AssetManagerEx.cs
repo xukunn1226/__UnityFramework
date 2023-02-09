@@ -32,6 +32,7 @@ namespace Framework.AssetManagement.Runtime
 
             m_InitOp = s_AssetSystem.InitializeAsync(para);
             m_InitOp.Completed += InitializeOperation_Completed;
+
             return m_InitOp;
         }
 
@@ -50,6 +51,7 @@ namespace Framework.AssetManagement.Runtime
 
             // destroy other system
             AsyncOperationSystem.Destroy();
+            DownloadSystem.DestroyAll();
             s_AssetSystem?.Destroy();
 
             if (s_Driver != null)
@@ -63,6 +65,7 @@ namespace Framework.AssetManagement.Runtime
                 return;
 
             AsyncOperationSystem.Update();
+            DownloadSystem.Update();
             s_AssetSystem?.Update();
         }
 

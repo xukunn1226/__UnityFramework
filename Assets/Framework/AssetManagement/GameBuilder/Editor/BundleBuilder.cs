@@ -51,7 +51,7 @@ namespace Framework.AssetManagement.GameBuilder
 
             // build bundles to streaming assets
             // Debug.Log($"        BuildAssetBundleOptions: {para.GenerateOptions()}");
-            if (!BuildBundleWithSBP("buildin", targetPath + "/" + AssetManagerSettings.StreamingAssetsBuildinFolder, para))
+            if (!BuildBundleWithSBP("ConfigName", targetPath + "/" + AssetManagerSettings.StreamingAssetsBuildinFolder, para))
             {
                 Debug.LogError($"End Build AssetBundles: Failed");
                 if (UnityEngine.Application.isBatchMode)

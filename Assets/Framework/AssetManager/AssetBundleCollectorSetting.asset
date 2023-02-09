@@ -47,21 +47,13 @@ MonoBehaviour:
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
-  - ConfigName: Default ConfigName
+  - ConfigName: ConfigName
     ConfigDesc: 
     Groups:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectPath: Packages/com.unity.render-pipelines.universal/Runtime/Materials
-        CollectorType: 0
-        PackRuleName: PackCollector
-        FilterRuleName: CollectAll
-      - CollectPath: Packages/com.unity.render-pipelines.universal/Shaders
-        CollectorType: 0
-        PackRuleName: PackCollector
-        FilterRuleName: CollectAll
-      - CollectPath: Packages/com.unity.render-pipelines.universal/Textures
+      - CollectPath: Assets/Res/111
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll

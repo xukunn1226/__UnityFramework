@@ -8,16 +8,14 @@ namespace Framework.AssetManagement.Runtime
 {
     internal sealed class FileDownloader : DownloaderBase
     {
-        private readonly bool m_BreakResume;
-        private UnityWebRequest m_Request = null;
-        private DownloadHandlerFileRange m_DownloadHandle = null;
+        private readonly bool       m_BreakResume;
+        private UnityWebRequest     m_Request;
 
-        // 重置变量
-        private bool _isAbort = false;
-        private ulong _fileOriginLength;
-        private ulong _latestDownloadBytes;
-        private float _latestDownloadRealtime;
-        private float _tryAgainTimer;
+        private bool                m_isAbort;
+        private ulong               m_FileOriginLength;
+        private ulong               m_LatestDownloadBytes;
+        private float               m_LatestDownloadRealtime;
+        private float               m_TryAgainTimer;
 
         public FileDownloader(BundleInfo bundleInfo, bool breakResume) : base(bundleInfo)
         {
@@ -39,11 +37,11 @@ namespace Framework.AssetManagement.Runtime
                 // 重置变量
                 m_DownloadProgress = 0f;
                 m_DownloadedBytes = 0;
-                _isAbort = false;
-                _fileOriginLength = 0;
-                _latestDownloadBytes = 0;
-                _latestDownloadRealtime = Time.realtimeSinceStartup;
-                _tryAgainTimer = 0f;
+                m_isAbort = false;
+                m_FileOriginLength = 0;
+                m_LatestDownloadBytes = 0;
+                m_LatestDownloadRealtime = Time.realtimeSinceStartup;
+                m_TryAgainTimer = 0f;
 
                 // 是否开启断点续传下载	
                 if (m_BreakResume)
@@ -53,21 +51,14 @@ namespace Framework.AssetManagement.Runtime
                     {
                         FileInfo fileInfo = new FileInfo(fileSavePath);
                         fileLength = fileInfo.Length;
-                        _fileOriginLength = (ulong)fileLength;
-                        m_DownloadedBytes = _fileOriginLength;
+                        m_FileOriginLength = (ulong)fileLength;
+                        m_DownloadedBytes = m_FileOriginLength;
                     }
 
                     m_RequestURL = GetRequestURL();
                     m_Request = UnityWebRequest.Get(m_RequestURL);
-
-#if UNITY_2019_4_OR_NEWER
                     var handler = new DownloadHandlerFile(fileSavePath, true);
                     handler.removeFileOnAbort = false;
-#else
-					var handler = new DownloadHandlerFileRange(fileSavePath, _bundleInfo.Bundle.FileSize, _webRequest);
-					_downloadHandle = handler;
-#endif
-
                     m_Request.downloadHandler = handler;
                     m_Request.disposeDownloadHandlerOnDispose = true;
                     if (fileLength > 0)
@@ -92,7 +83,7 @@ namespace Framework.AssetManagement.Runtime
             if (m_Steps == ESteps.CheckDownload)
             {
                 m_DownloadProgress = m_Request.downloadProgress;
-                m_DownloadedBytes = _fileOriginLength + m_Request.downloadedBytes;
+                m_DownloadedBytes = m_FileOriginLength + m_Request.downloadedBytes;
                 if (m_Request.isDone == false)
                 {
                     CheckTimeout();
@@ -141,8 +132,8 @@ namespace Framework.AssetManagement.Runtime
             // 重新尝试下载
             if (m_Steps == ESteps.TryAgain)
             {
-                _tryAgainTimer += Time.unscaledDeltaTime;
-                if (_tryAgainTimer > 1f)
+                m_TryAgainTimer += Time.unscaledDeltaTime;
+                if (m_TryAgainTimer > 1f)   // 延时一秒，再次下载
                 {
                     m_FailedTryAgain--;
                     m_Steps = ESteps.CreateDownload;
@@ -165,32 +156,26 @@ namespace Framework.AssetManagement.Runtime
         private void CheckTimeout()
         {
             // 注意：在连续时间段内无新增下载数据及判定为超时
-            if (_isAbort == false)
+            if (m_isAbort == false)
             {
-                if (_latestDownloadBytes != DownloadedBytes)
+                if (m_LatestDownloadBytes != DownloadedBytes)
                 {
-                    _latestDownloadBytes = DownloadedBytes;
-                    _latestDownloadRealtime = Time.realtimeSinceStartup;
+                    m_LatestDownloadBytes = DownloadedBytes;
+                    m_LatestDownloadRealtime = Time.realtimeSinceStartup;
                 }
 
-                float offset = Time.realtimeSinceStartup - _latestDownloadRealtime;
+                float offset = Time.realtimeSinceStartup - m_LatestDownloadRealtime;
                 if (offset > m_Timeout)
                 {
                     Debug.LogWarning($"Web file request timeout : {m_RequestURL}");
                     m_Request.Abort();
-                    _isAbort = true;
+                    m_isAbort = true;
                 }
             }
         }
 
         private void DisposeWebRequest()
-        {
-            if (m_DownloadHandle != null)
-            {
-                m_DownloadHandle.Cleanup();
-                m_DownloadHandle = null;
-            }
-
+        {            
             if (m_Request != null)
             {
                 m_Request.Dispose();

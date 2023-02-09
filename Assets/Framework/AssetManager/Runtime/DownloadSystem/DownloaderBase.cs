@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using log4net.Repository.Hierarchy;
 using UnityEngine;
 
 namespace Framework.AssetManagement.Runtime
