@@ -101,7 +101,7 @@ namespace Framework.AssetManagement.Runtime
         public static string GetCacheFolderPath(string packageName)
         {
             string root = PathHelper.MakePersistentLoadPath(CacheFolderName);
-            return $"{root}/{packageName}";
+            return string.IsNullOrEmpty(packageName) ? $"{root}" : $"{root}/{packageName}";
         }
 
         #region 沙盒内清单相关

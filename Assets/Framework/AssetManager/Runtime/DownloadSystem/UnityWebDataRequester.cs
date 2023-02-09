@@ -5,10 +5,13 @@ using UnityEngine.Networking;
 
 namespace Framework.AssetManagement.Runtime
 {
+    /// <summary>
+    /// 下载器：基于UnityWebRequest封装的下载器，支持从streaming assets中读取
+    /// </summary>
 	internal class UnityWebDataRequester
 	{
-		protected UnityWebRequest _webRequest;
-		protected UnityWebRequestAsyncOperation _operationHandle;
+		protected UnityWebRequest               m_Request;
+		protected UnityWebRequestAsyncOperation m_OperationHandle;
 
 		/// <summary>
 		/// 请求URL地址
@@ -22,15 +25,15 @@ namespace Framework.AssetManagement.Runtime
 		/// <param name="timeout">超时：从请求开始计时</param>
 		public void SendRequest(string url, int timeout = 0)
 		{
-			if (_webRequest == null)
+			if (m_Request == null)
 			{
 				URL = url;
-				_webRequest = new UnityWebRequest(URL, UnityWebRequest.kHttpVerbGET);
+				m_Request = new UnityWebRequest(URL, UnityWebRequest.kHttpVerbGET);
 				DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
-				_webRequest.downloadHandler = handler;
-				_webRequest.disposeDownloadHandlerOnDispose = true;
-				_webRequest.timeout = timeout;
-				_operationHandle = _webRequest.SendWebRequest();
+				m_Request.downloadHandler = handler;
+				m_Request.disposeDownloadHandlerOnDispose = true;
+				m_Request.timeout = timeout;
+				m_OperationHandle = m_Request.SendWebRequest();
 			}
 		}
 
@@ -39,8 +42,8 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public byte[] GetData()
 		{
-			if (_webRequest != null && IsDone())
-				return _webRequest.downloadHandler.data;
+			if (m_Request != null && IsDone())
+				return m_Request.downloadHandler.data;
 			else
 				return null;
 		}
@@ -50,8 +53,8 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public string GetText()
 		{
-			if (_webRequest != null && IsDone())
-				return _webRequest.downloadHandler.text;
+			if (m_Request != null && IsDone())
+				return m_Request.downloadHandler.text;
 			else
 				return null;
 		}
@@ -61,11 +64,11 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public void Dispose()
 		{
-			if (_webRequest != null)
+			if (m_Request != null)
 			{
-				_webRequest.Dispose();
-				_webRequest = null;
-				_operationHandle = null;
+				m_Request.Dispose();
+				m_Request = null;
+				m_OperationHandle = null;
 			}
 		}
 
@@ -74,9 +77,9 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public bool IsDone()
 		{
-			if (_operationHandle == null)
+			if (m_OperationHandle == null)
 				return false;
-			return _operationHandle.isDone;
+			return m_OperationHandle.isDone;
 		}
 
 		/// <summary>
@@ -84,9 +87,9 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public float Progress()
 		{
-			if (_operationHandle == null)
+			if (m_OperationHandle == null)
 				return 0;
-			return _operationHandle.progress;
+			return m_OperationHandle.progress;
 		}
 
 		/// <summary>
@@ -94,14 +97,7 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public bool HasError()
 		{
-#if UNITY_2020_3_OR_NEWER
-			return _webRequest.result != UnityWebRequest.Result.Success;
-#else
-			if (_webRequest.isNetworkError || _webRequest.isHttpError)
-				return true;
-			else
-				return false;
-#endif
+			return m_Request.result != UnityWebRequest.Result.Success;
 		}
 
 		/// <summary>
@@ -109,9 +105,9 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public string GetError()
 		{
-			if (_webRequest != null)
+			if (m_Request != null)
 			{
-				return $"URL : {URL} Error : {_webRequest.error}";
+				return $"URL : {URL} Error : {m_Request.error}";
 			}
 			return string.Empty;
 		}

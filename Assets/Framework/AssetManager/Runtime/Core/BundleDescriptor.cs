@@ -71,8 +71,8 @@ namespace Framework.AssetManagement.Runtime
         }
         
         /// <summary>
-         /// 文件名称
-         /// </summary>
+        /// 文件名称
+        /// </summary>
         private string m_FileName;
         public string fileName
         {
