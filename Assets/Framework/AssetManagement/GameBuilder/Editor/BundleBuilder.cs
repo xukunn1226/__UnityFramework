@@ -11,6 +11,7 @@ using UnityEditor.Build.Player;
 using Framework.AssetManagement.Runtime;
 using UnityEditor.Build.Pipeline.Tasks;
 using Framework.AssetManagement.AssetEditorWindow;
+using UnityEngine.Build.Pipeline;
 
 namespace Framework.AssetManagement.GameBuilder
 {
@@ -167,6 +168,12 @@ namespace Framework.AssetManagement.GameBuilder
             SerializeAssetManifest(mapContext);
 
             CopyBuildinFilesToStreaming();
+
+            // 输出默认manifest，调试用
+            var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
+            manifest.SetResults(buildResults.BundleInfos);
+            AssetDatabase.CreateAsset(manifest, "Assets/Temp/" + Utility.GetPlatformName() + "_manifest.asset");
+
 
             return true;
         }
