@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     static internal class GameBuilderUtil
     {

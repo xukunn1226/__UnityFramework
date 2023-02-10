@@ -6,7 +6,7 @@ using Framework.AssetManagement.AssetEditorWindow;
 using System;
 using Framework.AssetManagement.Runtime;
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     internal class TaskUpdateBuildInfo
     {

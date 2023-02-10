@@ -5,7 +5,7 @@ using Framework.Core;
 using UnityEngine;
 using UnityEditor;
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class Deployment
     {

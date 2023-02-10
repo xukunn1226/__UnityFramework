@@ -13,7 +13,7 @@ using UnityEditor.Build.Pipeline.Tasks;
 using Framework.AssetManagement.AssetEditorWindow;
 using UnityEngine.Build.Pipeline;
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class BundleBuilder
     {

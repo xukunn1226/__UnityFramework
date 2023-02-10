@@ -6,7 +6,7 @@ using UnityEditor;
 using Framework.Core;
 using Framework.Core.Editor;
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     internal class GameBuilderSettingCollection : ScriptableObject
     {

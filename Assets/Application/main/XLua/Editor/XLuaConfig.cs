@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEditor;
 using CSObjectWrapEditor;
 using XLua;
-using Framework.AssetManagement.GameBuilder;
 using System.Reflection;
 using System.Linq;
 using UnityEditor.Build;

@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using Framework.AssetManagement.Runtime;
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     public static class AssetBundleBuilderHelper
     {

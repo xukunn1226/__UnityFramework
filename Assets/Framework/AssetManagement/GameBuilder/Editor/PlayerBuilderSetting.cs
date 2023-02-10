@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEditor;
 using Framework.Core;
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     /// <summary>
     /// Player打包配置数据

@@ -11,7 +11,7 @@ using UnityEditor.iOS.Xcode;
 #endif
 
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class PlayerBuilder
     {

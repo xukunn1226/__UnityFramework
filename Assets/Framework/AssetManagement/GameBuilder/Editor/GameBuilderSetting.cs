@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using Framework.Core;
 
-namespace Framework.AssetManagement.GameBuilder
+namespace Framework.AssetManagement.AssetEditorWindow
 {
     /// <summary>
     /// app打包配置数据
