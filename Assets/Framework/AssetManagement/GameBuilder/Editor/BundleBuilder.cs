@@ -162,7 +162,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             ClearBundleRedundancy(output);
 
             // step3. update build info
-            TaskUpdateBuildInfo.Run(output, mapContext, buildResults);
+            TaskUpdateBuildInfoEx.Run(output, mapContext, buildResults);
 
             // step4. create asset manifest
             SerializeAssetManifest(mapContext);

@@ -32,49 +32,49 @@ namespace Framework.AssetManagement.Runtime
 		/// <summary>
 		/// 获取构建报告文件名
 		/// </summary>
-		public static string GetReportFileName(string packageName, string packageVersion)
+		public static string GetReportFileName(string packageVersion)
 		{
-			return $"{AssetManagerSettings.ReportFileName}_{packageName}_{packageVersion}.json";
+			return $"{AssetManagerSettings.ReportFileName}_{packageVersion}.json";
 		}
 
 		/// <summary>
 		/// 获取补丁清单文件不带版本号的名称
 		/// </summary>
-		public static string GetPatchManifestFileNameWithoutVersion(string packageName)
+		public static string GetManifestFileNameWithoutVersion(string packageName)
 		{
-			return $"{Setting.PatchManifestFileName}_{packageName}.bytes";
+			return $"{Setting.ManifestFileName}_{packageName}.bytes";
 		}
 
 		/// <summary>
 		/// 获取补丁清单文件完整名称
 		/// </summary>
-		public static string GetPatchManifestBinaryFileName(string packageName, string packageVersion)
+		public static string GetManifestBinaryFileName(string packageVersion)
 		{
-			return $"{Setting.PatchManifestFileName}_{packageName}_{packageVersion}.bytes";
+			return $"{Setting.ManifestFileName}_{packageVersion}.bytes";
 		}
 
 		/// <summary>
 		/// 获取补丁清单文件完整名称
 		/// </summary>
-		public static string GetPatchManifestJsonFileName(string packageName, string packageVersion)
+		public static string GetManifestJsonFileName(string packageVersion)
 		{
-			return $"{Setting.PatchManifestFileName}_{packageName}_{packageVersion}.json";
+			return $"{Setting.ManifestFileName}_{packageVersion}.json";
 		}
 
 		/// <summary>
 		/// 获取补丁清单哈希文件完整名称
 		/// </summary>
-		public static string GetPatchManifestHashFileName(string packageName, string packageVersion)
+		public static string GetManifestHashFileName(string packageVersion)
 		{
-			return $"{Setting.PatchManifestFileName}_{packageName}_{packageVersion}.hash";
+			return $"{Setting.ManifestFileName}_{packageVersion}.hash";
 		}
 
 		/// <summary>
 		/// 获取补丁清单版本文件完整名称
 		/// </summary>
-		public static string GetPatchManifestVersionFileName(string packageName)
+		public static string GetManifestVersionFileName()
 		{
-			return $"{Setting.PatchManifestFileName}_{packageName}.version";
+			return $"{Setting.ManifestFileName}.version";
 		}
 
 		/// <summary>

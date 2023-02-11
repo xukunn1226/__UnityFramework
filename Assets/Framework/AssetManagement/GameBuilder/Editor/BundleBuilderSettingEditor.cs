@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Framework.Core;
+using System.Linq;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
@@ -16,6 +17,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         SerializedProperty      m_DisableWriteTypeTreeProp;
         SerializedProperty      m_DevelopmentBuildProp;
         SerializedProperty      m_OverrideResourcePathProp;
+        SerializedProperty      m_bundleCollectorConfigNameProp;
 
         private void Awake()
         {
@@ -26,6 +28,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             m_DisableWriteTypeTreeProp  = serializedObject.FindProperty("DisableWriteTypeTree");
             m_DevelopmentBuildProp      = serializedObject.FindProperty("DevelopmentBuild");
             m_OverrideResourcePathProp  = serializedObject.FindProperty("OverrideResourcePath");
+            m_bundleCollectorConfigNameProp = serializedObject.FindProperty("bundleCollectorConfigName");
         }
 
         public override void OnInspectorGUI()
@@ -52,7 +55,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         private void DrawBundleBuilderSetting()
         {
-            bool needBuild = false;
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 EditorGUILayout.BeginHorizontal();
@@ -74,21 +76,22 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 EditorGUI.EndDisabledGroup();
                 EditorGUILayout.EndHorizontal();
 
+                // 绘制资源收集器配置
+                DrawCollectorConfigs();
+
                 EditorGUILayout.Space();
                 DrawBuildAssetBundleOptions();
-
-                EditorGUILayout.Space();
-                if (GUILayout.Button("Build Bundles", new GUIStyle("LargeButtonMid")))
-                {
-                    needBuild = true;
-                }
             }
             GUILayout.EndVertical();
+        }
 
-            if (needBuild)
-            {
-                BundleBuilder.BuildAssetBundles(target as BundleBuilderSetting);
-            }
+        private void DrawCollectorConfigs()
+        {
+            List<AssetBundleCollectorConfig> list = AssetBundleCollectorSettingData.Instance.Configs;
+            int index = list.FindIndex(item => { return item.ConfigName == m_bundleCollectorConfigNameProp.stringValue; });
+            string[] displayNames = list.Select(item => item.ConfigName).ToArray();
+            index = EditorGUILayout.Popup("资源收集器", Mathf.Max(0, index), displayNames);
+            m_bundleCollectorConfigNameProp.stringValue = list[index].ConfigName;
         }
 
         private void DrawBuildAssetBundleOptions()

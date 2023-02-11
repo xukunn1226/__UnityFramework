@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: 0_BundleBuilderSetting
   m_EditorClassIdentifier: 
   outputPath: Deployment/Latest/AssetBundles
+  bundleCollectorConfigName: buildin
   useLZ4Compress: 1
   rebuildBundles: 0
   appendHash: 0
   DisableWriteTypeTree: 0
   DevelopmentBuild: 0
   OverrideResourcePath: 
-  packageEditorSetting: {fileID: 11400000, guid: d19732752cc180e40858a622c59849be,
-    type: 2}

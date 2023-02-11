@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-    public class BuildMapContext
+    public class BuildMapContext : IContextObject
     {
         public string Error;
 

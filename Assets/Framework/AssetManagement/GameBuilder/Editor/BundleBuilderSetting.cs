@@ -14,6 +14,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// bundles输出目录
         /// </summary>
         public string           outputPath      = "Deployment/Latest/AssetBundles";
+
+        /// <summary>
+        /// 资源包收集配置名
+        /// </summary>
+        public string           bundleCollectorConfigName;
         
         /// <summary>
         /// 是否使用LZ4压缩模式

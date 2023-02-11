@@ -1,40 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.Build.Pipeline.Interfaces;
-using Framework.AssetManagement.AssetEditorWindow;
-using System;
 using Framework.AssetManagement.Runtime;
+using System;
+using UnityEditor.Build.Pipeline.Interfaces;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-    internal class TaskUpdateBuildInfoEx
+    public class TaskUpdateBuildInfo : IGameBuildTask
     {
-        static public void Run(string outputDirectory, BuildMapContext context, IBundleBuildResults results)
+        void IGameBuildTask.Run(BuildContext context)
         {
-            foreach (var bundleInfo in context.BuildBundleInfos)
+            var buildParametersContext = context.GetContextObject<BuildParametersContext>();
+            var buildMapContext = context.GetContextObject<BuildMapContext>();
+            var buildBundleResults = context.GetContextObject<BuildResultContext>().Results;
+
+            var bundleOutput = buildParametersContext.GetBundlesOutput();
+            foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
             {
-                string filePath = $"{outputDirectory}/{bundleInfo.BundleName}";
+                string filePath = $"{bundleOutput}/{bundleInfo.BundleName}";
                 if (filePath.Length >= 260)
                     throw new Exception($"输出的字符串长度过长 {filePath.Length}: {filePath}");
             }
 
-            foreach (var bundleInfo in context.BuildBundleInfos)
+            foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
             {
-                bundleInfo.PatchInfo.BuildOutputFilePath = $"{outputDirectory}/{bundleInfo.BundleName}";
+                bundleInfo.PatchInfo.BuildOutputFilePath = $"{bundleOutput}/{bundleInfo.BundleName}";
             }
 
-            foreach (var bundleInfo in context.BuildBundleInfos)
+            foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
             {
                 string buildOutputFilePath = bundleInfo.PatchInfo.BuildOutputFilePath;
-                bundleInfo.PatchInfo.ContentHash = GetBundleContentHash(bundleInfo, context, results);
+                bundleInfo.PatchInfo.ContentHash = GetBundleContentHash(bundleInfo, buildMapContext, buildBundleResults);
                 bundleInfo.PatchInfo.PatchFileHash = GetBundleFileHash(buildOutputFilePath);
                 bundleInfo.PatchInfo.PatchFileCRC = GetBundleFileCRC(buildOutputFilePath);
                 bundleInfo.PatchInfo.PatchFileSize = GetBundleFileSize(buildOutputFilePath);
             }
 
             int outputNameStyle = 1;
-            foreach (var bundleInfo in context.BuildBundleInfos)
+            foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
             {
                 string patchFileName = AssetManifest.CreateBundleFileName(outputNameStyle, bundleInfo.BundleName, bundleInfo.PatchInfo.PatchFileHash);
                 //bundleInfo.PatchInfo.PatchOutputFilePath = $"{packageOutputDirectory}/{patchFileName}";

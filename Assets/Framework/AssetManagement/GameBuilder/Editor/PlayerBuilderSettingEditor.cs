@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -106,7 +106,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         private void DrawPlayerBuilderSetting()
         {
-            bool needBuild = false;
             GUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 EditorGUILayout.BeginHorizontal();
@@ -140,19 +139,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
                 EditorGUILayout.Space();
                 DrawBuildScenes();
-
-                EditorGUILayout.Space();
-                if (GUILayout.Button("Build Player", new GUIStyle("LargeButtonMid")))
-                {
-                    needBuild = true;
-                }
             }
             GUILayout.EndVertical();
-
-            if(needBuild)
-            {
-                PlayerBuilder.BuildPlayer(target as PlayerBuilderSetting);
-            }
         }
 
         private void DrawBuildOptions()

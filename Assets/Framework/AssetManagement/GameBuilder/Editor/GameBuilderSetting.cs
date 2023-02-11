@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -14,6 +14,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     {
         public string               displayName;
         public BuildTarget          buildTarget;
+        public string               packageVersion = "0.0.1";
         public BundleBuilderSetting bundleSetting;
         public PlayerBuilderSetting playerSetting;
         public JsonAsset            backdoor;

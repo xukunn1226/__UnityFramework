@@ -20,8 +20,7 @@ namespace Framework.AssetManagement.Runtime
 		/// <summary>
 		/// 清单文件名称
 		/// </summary>
-		public string PatchManifestFileName = "AssetManifest";
-
+		public string ManifestFileName = "AssetManifest";
 
 		/// <summary>
 		/// 清单文件头标记

@@ -11,12 +11,52 @@ namespace Framework.AssetManagement.AssetEditorWindow
     public static class AssetBundleBuilderHelper
     {
         /// <summary>
-        /// 获取默认的输出根路录
+        /// 获取默认的输出根目录
         /// </summary>
         public static string GetDefaultOutputRoot()
         {
             string projectPath = EditorTools.GetProjectPath();
-            return $"{projectPath}/Bundles";
+            return $"{projectPath}/Deployment";
+        }
+
+        /// <summary>
+        /// 获取默认资源包输出目录
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDefaultBundlesOutputRoot()
+        {
+            return $"{GetDefaultOutputRoot()}/Cache/Bundles";
+        }
+
+        /// <summary>
+        /// 根据包名、平台等获取最终资源包的输出目录
+        /// </summary>
+        /// <param name="packageVersion"></param>
+        /// <param name="buildTarget"></param>
+        /// <returns></returns>
+        public static string GetTargetBundlesOutput(string packageVersion, UnityEditor.BuildTarget buildTarget)
+        {
+            return $"{GetDefaultBundlesOutputRoot()}/{packageVersion}/{buildTarget}";
+        }
+
+        /// <summary>
+        /// 获取默认APP输出目录
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDefaultPlayerOutputRoot()
+        {
+            return $"{GetDefaultOutputRoot()}/Cache/Player";
+        }
+
+        /// <summary>
+        /// 根据包名、平台等获取最终APP的输出目录
+        /// </summary>
+        /// <param name="packageVersion"></param>
+        /// <param name="buildTarget"></param>
+        /// <returns></returns>
+        public static string GetTargetPlayerOutput(string packageVersion, UnityEditor.BuildTarget buildTarget)
+        {
+            return $"{GetDefaultPlayerOutputRoot()}/{packageVersion}/{buildTarget}";
         }
 
         /// <summary>

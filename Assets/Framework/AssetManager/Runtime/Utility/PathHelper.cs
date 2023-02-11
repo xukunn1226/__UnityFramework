@@ -110,7 +110,7 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         public static string GetCacheManifestFilePath(string packageName)
         {
-            string fileName = AssetManagerSettingsData.GetPatchManifestFileNameWithoutVersion(packageName);
+            string fileName = AssetManagerSettingsData.GetManifestFileNameWithoutVersion(packageName);
             return PathHelper.MakePersistentLoadPath(fileName);
         }
 

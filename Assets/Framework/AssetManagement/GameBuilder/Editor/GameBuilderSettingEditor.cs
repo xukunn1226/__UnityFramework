@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -158,26 +158,12 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 GUIStyle boldStyle = new GUIStyle("ButtonLeft");
                 boldStyle.fontStyle = FontStyle.Bold;
                 boldStyle.alignment = TextAnchor.MiddleCenter;
-
-                bool disable = false;
-                switch(buildMode)
-                {
-                    case GameBuilderSetting.BuildMode.Bundles:
-                        disable = m_bundleSettingProp.objectReferenceValue == null;
-                        break;
-                    case GameBuilderSetting.BuildMode.Player:
-                        disable = m_playerSettingProp.objectReferenceValue == null;
-                        break;
-                    case GameBuilderSetting.BuildMode.BundlesAndPlayer:
-                        disable = m_bundleSettingProp.objectReferenceValue == null || m_playerSettingProp.objectReferenceValue == null;
-                        break;
-                }
-                EditorGUI.BeginDisabledGroup(disable);
+                                
                 if(GUILayout.Button("Build Game", boldStyle))
                 {
+                    ((GameBuilderSetting)target).buildMode = buildMode;
                     GameBuilder.BuildGame((GameBuilderSetting)target);                    
                 }
-                EditorGUI.EndDisabledGroup();
             }
             EditorGUILayout.EndHorizontal();
         }

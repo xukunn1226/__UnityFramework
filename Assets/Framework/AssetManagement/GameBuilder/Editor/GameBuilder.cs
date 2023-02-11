@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -17,57 +17,61 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <param name="playerSetting"></param>
         static public void BuildGame(GameBuilderSetting gameSetting)
         {
-            if(gameSetting == null)
-            {
-                if(UnityEngine.Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
-                throw new System.ArgumentNullException("GameBuilderSetting", "gameSetting == null");
-            }
+            GameBuilderEx.Run(gameSetting);
+            return;
 
-            if (gameSetting.bundleSetting == null)
-            {
-                if(UnityEngine.Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
-                throw new System.ArgumentNullException("BundleBuilderSetting", "bundleSetting == null");
-            }
 
-            if (gameSetting.playerSetting == null)
-            {
-                if (UnityEngine.Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
-                throw new System.ArgumentNullException("PlayerBuilderSetting", "playerSetting == null");
-            }
+            //if(gameSetting == null)
+            //{
+            //    if(UnityEngine.Application.isBatchMode)
+            //    {
+            //        EditorApplication.Exit(1);
+            //    }
+            //    throw new System.ArgumentNullException("GameBuilderSetting", "gameSetting == null");
+            //}
 
-            if(gameSetting.buildTarget != EditorUserBuildSettings.activeBuildTarget)
-            {
-                if (UnityEngine.Application.isBatchMode)
-                {
-                    EditorApplication.Exit(1);
-                }
-                throw new System.InvalidOperationException($"build target  [{gameSetting.buildTarget}] not match the active build target  [{EditorUserBuildSettings.activeBuildTarget}]");
-            }
+            //if (gameSetting.bundleSetting == null)
+            //{
+            //    if(UnityEngine.Application.isBatchMode)
+            //    {
+            //        EditorApplication.Exit(1);
+            //    }
+            //    throw new System.ArgumentNullException("BundleBuilderSetting", "bundleSetting == null");
+            //}
 
-            switch(gameSetting.buildMode)
-            {
-                case GameBuilderSetting.BuildMode.Bundles:
-                    BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting);
-                    break;
-                case GameBuilderSetting.BuildMode.Player:
-                    PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
-                    break;
-                case GameBuilderSetting.BuildMode.BundlesAndPlayer:
-                    if(BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting))
-                    {
-                        PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
-                    }
-                    break;
-            }
+            //if (gameSetting.playerSetting == null)
+            //{
+            //    if (UnityEngine.Application.isBatchMode)
+            //    {
+            //        EditorApplication.Exit(1);
+            //    }
+            //    throw new System.ArgumentNullException("PlayerBuilderSetting", "playerSetting == null");
+            //}
+
+            //if(gameSetting.buildTarget != EditorUserBuildSettings.activeBuildTarget)
+            //{
+            //    if (UnityEngine.Application.isBatchMode)
+            //    {
+            //        EditorApplication.Exit(1);
+            //    }
+            //    throw new System.InvalidOperationException($"build target  [{gameSetting.buildTarget}] not match the active build target  [{EditorUserBuildSettings.activeBuildTarget}]");
+            //}
+
+            //switch(gameSetting.buildMode)
+            //{
+            //    case GameBuilderSetting.BuildMode.Bundles:
+            //        BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting);
+            //        break;
+            //    case GameBuilderSetting.BuildMode.Player:
+            //        PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
+            //        break;
+            //    case GameBuilderSetting.BuildMode.BundlesAndPlayer:
+            //        if(BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting))
+            //        {
+            //            PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
+            //        }
+            //        break;
+            //}
         }
 
         static public void cmdBuildGame()
