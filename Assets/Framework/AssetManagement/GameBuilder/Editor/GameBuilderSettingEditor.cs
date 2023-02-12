@@ -67,16 +67,16 @@ namespace Framework.AssetManagement.AssetEditorWindow
             EditorGUILayout.Separator();
             DrawBuildButton();
 
-            EditorGUILayout.Separator();
-            EditorGUILayout.Separator();
-            EditorGUILayout.Separator();
-            EditorGUILayout.LabelField("----------------------------------- Deploy -----------------------------------", EditorStyles.boldLabel);
-            DrawDeploymentSetting();
+            //EditorGUILayout.Separator();
+            //EditorGUILayout.Separator();
+            //EditorGUILayout.Separator();
+            //EditorGUILayout.LabelField("----------------------------------- Deploy -----------------------------------", EditorStyles.boldLabel);
+            //DrawDeploymentSetting();
 
-            EditorGUILayout.Separator();
-            EditorGUILayout.Separator();
-            EditorGUILayout.Separator();
-            DrawBackdoorSetting();
+            //EditorGUILayout.Separator();
+            //EditorGUILayout.Separator();
+            //EditorGUILayout.Separator();
+            //DrawBackdoorSetting();
             
             serializedObject.ApplyModifiedProperties();
 
@@ -115,6 +115,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
             {
                 EditorGUILayout.HelpBox("Missing Bundle Builder Setting", MessageType.Error);
             }
+
+            Color cachedClr = GUI.color;
+            GUI.color = Color.green;
+            if (GUILayout.Button("Build Bundles"))
+            {
+                ((GameBuilderSetting)target).buildMode = GameBuilderSetting.BuildMode.Bundles;
+                GameBuilder.BuildGame((GameBuilderSetting)target);
+            }
+            GUI.color = cachedClr;
         }
 
         private void DrawPlayerSettingEditor()
@@ -146,6 +155,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
             {
                 EditorGUILayout.HelpBox("Missing Player Builder Setting", MessageType.Error);
             }
+
+            Color cachedClr = GUI.color;
+            GUI.color = Color.green;
+            if (GUILayout.Button("Build Player"))
+            {
+                ((GameBuilderSetting)target).buildMode = GameBuilderSetting.BuildMode.Player;
+                GameBuilder.BuildGame((GameBuilderSetting)target);
+            }
+            GUI.color = cachedClr;
         }
 
         private void DrawBuildButton()
@@ -158,12 +176,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 GUIStyle boldStyle = new GUIStyle("ButtonLeft");
                 boldStyle.fontStyle = FontStyle.Bold;
                 boldStyle.alignment = TextAnchor.MiddleCenter;
-                                
-                if(GUILayout.Button("Build Game", boldStyle))
+
+                Color cachedClr = GUI.color;
+                GUI.color = Color.green;
+                if (GUILayout.Button("Build Game", boldStyle))
                 {
                     ((GameBuilderSetting)target).buildMode = buildMode;
-                    GameBuilder.BuildGame((GameBuilderSetting)target);                    
+                    GameBuilder.BuildGame((GameBuilderSetting)target);
                 }
+                GUI.color = cachedClr;
             }
             EditorGUILayout.EndHorizontal();
         }

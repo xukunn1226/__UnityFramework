@@ -7,20 +7,19 @@ using System;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-    [TaskAttribute("创建清单文件")]
+    [TaskAttribute("Step6. 创建清单文件")]
     public class TaskCreateManifest : IGameBuildTask
     {
         void IGameBuildTask.Run(BuildContext context)
         {
             var buildMapContext = context.GetContextObject<BuildMapContext>();
             var buildParametersContext = context.GetContextObject<BuildParametersContext>();
-            //var buildParameters = buildParametersContext.Parameters;
-            string packageOutputDirectory = buildParametersContext.GetBundlesOutput();  // GetPackageOutputDirectory();
+            string cacheBundlesOutput = buildParametersContext.GetCacheBundlesOutput();
 
             // 创建清单文件
             AssetManifest manifest = new AssetManifest();
             manifest.SerializedVersion = 1;
-            manifest.PackageVersion = buildParametersContext.gameBuilderSetting.packageVersion;
+            manifest.PackageVersion = buildParametersContext.GetPackageVersion();
             manifest.OutputNameStyle = 1;
 
             foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
@@ -63,14 +62,14 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
 
             // 创建清单文件文本
-            string fileName = AssetManagerSettingsData.GetManifestJsonFileName(buildParametersContext.gameBuilderSetting.packageVersion);
-            string filePath = $"{packageOutputDirectory}/{fileName}";
+            string fileName = AssetManagerSettingsData.GetManifestJsonFileName(buildParametersContext.GetPackageVersion());
+            string filePath = $"{cacheBundlesOutput}/{fileName}";
             AssetManifest.SerializeToJson(filePath, manifest);
             BuildRunner.Log($"创建补丁清单文件：{filePath}");
 
             // 创建清单二进制文件
-            fileName = AssetManagerSettingsData.GetManifestBinaryFileName(buildParametersContext.gameBuilderSetting.packageVersion);
-            filePath = $"{packageOutputDirectory}/{fileName}";
+            fileName = AssetManagerSettingsData.GetManifestBinaryFileName(buildParametersContext.GetPackageVersion());
+            filePath = $"{cacheBundlesOutput}/{fileName}";
             AssetManifest.SerializeToBinary(filePath, manifest);
             string packageHash = HashUtility.FileMD5(filePath);
             BuildRunner.Log($"创建补丁清单文件：{filePath}");
@@ -81,21 +80,16 @@ namespace Framework.AssetManagement.AssetEditorWindow
             context.SetContextObject(patchManifestContext);
 
             // 创建清单的哈希文件
-            fileName = AssetManagerSettingsData.GetManifestHashFileName(buildParametersContext.gameBuilderSetting.packageVersion);
-            filePath = $"{packageOutputDirectory}/{fileName}";
+            fileName = AssetManagerSettingsData.GetManifestHashFileName(buildParametersContext.GetPackageVersion());
+            filePath = $"{cacheBundlesOutput}/{fileName}";
             FileUtility.CreateFile(filePath, packageHash);
             BuildRunner.Log($"创建补丁清单哈希文件：{filePath}");
 
             // 创建清单版本文件
             fileName = AssetManagerSettingsData.GetManifestVersionFileName();
-            filePath = $"{packageOutputDirectory}/{fileName}";
-            FileUtility.CreateFile(filePath, buildParametersContext.gameBuilderSetting.packageVersion);
+            filePath = $"{cacheBundlesOutput}/{fileName}";
+            FileUtility.CreateFile(filePath, buildParametersContext.GetPackageVersion());
             BuildRunner.Log($"创建补丁清单版本文件：{filePath}");
-
-            //AssetManifest.SerializeToBinary($"Assets/StreamingAssets/{AssetManagerSettings.StreamingAssetsBuildinFolder}/AssetManifest.bytes", manifest);
-            //AssetManifest.SerializeToJson($"Assets/Temp/AssetManifest.json", manifest);
-            //AssetDatabase.ImportAsset($"Assets/StreamingAssets/{AssetManagerSettings.StreamingAssetsBuildinFolder}/AssetManifest.bytes");
-            //AssetDatabase.ImportAsset($"Assets/Temp/AssetManifest.json");
         }
     }
 }

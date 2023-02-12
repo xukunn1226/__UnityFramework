@@ -9,19 +9,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
     [CustomEditor(typeof(PlayerBuilderSetting))]
     public class PlayerBuilderSettingEditor : Editor
     {
-        SerializedProperty              m_outputPathProp;
         SerializedProperty              m_projectNameProp;
-        SerializedProperty              m_autoRunPlayerProp;
         SerializedProperty              m_developmentProp;
-        SerializedProperty              m_connectWithProfilerProp;
-        SerializedProperty              m_allowDebuggingProp;
-        SerializedProperty              m_buildScriptsOnlyProp;
         SerializedProperty              m_compressWithLz4Prop;
         SerializedProperty              m_compressWithLz4HCProp;
         SerializedProperty              m_strictModeProp;
-
-        // SerializedProperty              m_bundleVersionProp;
-        SerializedProperty              m_versionChangedModeProp;
         SerializedProperty              m_releaseNativeProp;
         SerializedProperty              m_useIL2CPPProp;
         SerializedProperty              m_compilerConfiguration;
@@ -44,19 +36,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         private void Awake()
         {
-            m_outputPathProp            = serializedObject.FindProperty("outputPath");
             m_projectNameProp           = serializedObject.FindProperty("projectName");
-            m_autoRunPlayerProp         = serializedObject.FindProperty("autoRunPlayer");
             m_developmentProp           = serializedObject.FindProperty("development");
-            m_connectWithProfilerProp   = serializedObject.FindProperty("connectWithProfiler");
-            m_allowDebuggingProp        = serializedObject.FindProperty("allowDebugging");
-            m_buildScriptsOnlyProp      = serializedObject.FindProperty("buildScriptsOnly");
             m_compressWithLz4Prop       = serializedObject.FindProperty("compressWithLz4");
             m_compressWithLz4HCProp     = serializedObject.FindProperty("compressWithLz4HC");
             m_strictModeProp            = serializedObject.FindProperty("strictMode");
-
-            // m_bundleVersionProp         = serializedObject.FindProperty("bundleVersion");
-            m_versionChangedModeProp    = serializedObject.FindProperty("versionChangedMode");
             m_releaseNativeProp         = serializedObject.FindProperty("releaseNative");
             m_useIL2CPPProp             = serializedObject.FindProperty("useIL2CPP");
             m_compilerConfiguration     = serializedObject.FindProperty("il2CppCompilerConfiguration");
@@ -107,29 +91,17 @@ namespace Framework.AssetManagement.AssetEditorWindow
         private void DrawPlayerBuilderSetting()
         {
             GUILayout.BeginVertical(EditorStyles.helpBox);
-            {
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label("Output:", EditorStyles.largeLabel);
-                if (GUILayout.Button(m_outputPathProp.stringValue))
-                {
-                    string newPath = EditorUtility.OpenFolderPanel("", m_outputPathProp.stringValue, "");
-                    if (!string.IsNullOrEmpty(newPath))
-                    {
-                        m_outputPathProp.stringValue = Utility.GetProjectPath(newPath);
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
-
+            {                
                 string projectName = EditorGUILayout.TextField("ProjectName", m_projectNameProp.stringValue);
                 projectName = projectName.Trim(new char[] { '/', '\\', ' ', '\'', '.', '*'});
                 m_projectNameProp.stringValue = projectName;
 
-                EditorGUILayout.BeginHorizontal();
-                EditorGUI.BeginDisabledGroup(true);
-                GUILayout.Label("Full Output:", EditorStyles.largeLabel);
-                GUILayout.Button(((PlayerBuilderSetting)target).GetLocalPathName());
-                EditorGUI.EndDisabledGroup();
-                EditorGUILayout.EndHorizontal();
+                //EditorGUILayout.BeginHorizontal();
+                //EditorGUI.BeginDisabledGroup(true);
+                //GUILayout.Label("Full Output:", EditorStyles.largeLabel);
+                //GUILayout.Button(((PlayerBuilderSetting)target).GetLocalPathName());
+                //EditorGUI.EndDisabledGroup();
+                //EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.Space();
                 DrawBuildOptions();
@@ -148,13 +120,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
             EditorGUILayout.LabelField("BuildOptions", EditorStyles.largeLabel);
             GUILayout.BeginVertical(new GUIStyle("HelpBox"));
             {
-                m_autoRunPlayerProp.boolValue = EditorGUILayout.Toggle(new GUIContent("AutoRunPlayer"), m_autoRunPlayerProp.boolValue);
                 m_developmentProp.boolValue = EditorGUILayout.Toggle(new GUIContent("Development"), m_developmentProp.boolValue);
                 if (!m_developmentProp.boolValue)
                     EditorGUI.BeginDisabledGroup(true);
-                m_connectWithProfilerProp.boolValue = EditorGUILayout.Toggle(new GUIContent("ConnectWithProfiler"), m_connectWithProfilerProp.boolValue);
-                m_allowDebuggingProp.boolValue = EditorGUILayout.Toggle(new GUIContent("AllowDebugging"), m_allowDebuggingProp.boolValue);
-                m_buildScriptsOnlyProp.boolValue = EditorGUILayout.Toggle(new GUIContent("BuildScriptsOnly"), m_buildScriptsOnlyProp.boolValue);
                 if (!m_developmentProp.boolValue)
                     EditorGUI.EndDisabledGroup();
 

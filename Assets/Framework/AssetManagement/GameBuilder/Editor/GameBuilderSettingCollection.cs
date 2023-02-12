@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +10,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
 {
     internal class GameBuilderSettingCollection : ScriptableObject
     {
+        static public string s_DefaultSettingPath = "Assets/Framework/AssetManagement/GameBuilder/Data";
+
         [SerializeField] private List<GameBuilderSetting>   m_settings          = new List<GameBuilderSetting>();
 
         public List<GameBuilderSetting> setting { get { return m_settings; } }
@@ -131,7 +133,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         static public GameBuilderSettingCollection GetDefault()
         {
-            return Core.Editor.EditorUtility.GetOrCreateEditorConfigObject<GameBuilderSettingCollection>(GameBuilderUtil.s_DefaultSettingPath);
+            return Core.Editor.EditorUtility.GetOrCreateEditorConfigObject<GameBuilderSettingCollection>(s_DefaultSettingPath);
         }
     }
 }

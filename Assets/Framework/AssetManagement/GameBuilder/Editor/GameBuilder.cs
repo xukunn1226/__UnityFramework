@@ -17,61 +17,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <param name="playerSetting"></param>
         static public void BuildGame(GameBuilderSetting gameSetting)
         {
-            GameBuilderEx.Run(gameSetting);
-            return;
-
-
-            //if(gameSetting == null)
-            //{
-            //    if(UnityEngine.Application.isBatchMode)
-            //    {
-            //        EditorApplication.Exit(1);
-            //    }
-            //    throw new System.ArgumentNullException("GameBuilderSetting", "gameSetting == null");
-            //}
-
-            //if (gameSetting.bundleSetting == null)
-            //{
-            //    if(UnityEngine.Application.isBatchMode)
-            //    {
-            //        EditorApplication.Exit(1);
-            //    }
-            //    throw new System.ArgumentNullException("BundleBuilderSetting", "bundleSetting == null");
-            //}
-
-            //if (gameSetting.playerSetting == null)
-            //{
-            //    if (UnityEngine.Application.isBatchMode)
-            //    {
-            //        EditorApplication.Exit(1);
-            //    }
-            //    throw new System.ArgumentNullException("PlayerBuilderSetting", "playerSetting == null");
-            //}
-
-            //if(gameSetting.buildTarget != EditorUserBuildSettings.activeBuildTarget)
-            //{
-            //    if (UnityEngine.Application.isBatchMode)
-            //    {
-            //        EditorApplication.Exit(1);
-            //    }
-            //    throw new System.InvalidOperationException($"build target  [{gameSetting.buildTarget}] not match the active build target  [{EditorUserBuildSettings.activeBuildTarget}]");
-            //}
-
-            //switch(gameSetting.buildMode)
-            //{
-            //    case GameBuilderSetting.BuildMode.Bundles:
-            //        BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting);
-            //        break;
-            //    case GameBuilderSetting.BuildMode.Player:
-            //        PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
-            //        break;
-            //    case GameBuilderSetting.BuildMode.BundlesAndPlayer:
-            //        if(BundleBuilder.BuildAssetBundles(gameSetting.bundleSetting))
-            //        {
-            //            PlayerBuilder.BuildPlayer(gameSetting.playerSetting);
-            //        }
-            //        break;
-            //}
+            var buildResult = GameBuilderEx.Run(gameSetting);
+            if (buildResult.Success)
+            {
+                EditorUtility.RevealInFinder(buildResult.OutputPackageDirectory);
+            }
         }
 
         static public void cmdBuildGame()
@@ -103,22 +53,13 @@ namespace Framework.AssetManagement.AssetEditorWindow
             SetOverridePara(ref setting.buildMode,                                  "BuildMode",                GameBuilderSetting.BuildMode.BundlesAndPlayer);
 
             // override the bundle setting parameters
-            SetOverridePara(ref setting.bundleSetting.outputPath,                   "BundlesOutput");
             SetOverridePara(ref setting.bundleSetting.useLZ4Compress,               "UseLZ4Compress");
             SetOverridePara(ref setting.bundleSetting.appendHash,                   "AppendHash");
             SetOverridePara(ref setting.bundleSetting.rebuildBundles,               "RebuildBundles");
 
             // override the player setting parameters
-            SetOverridePara(ref setting.playerSetting.outputPath,                   "PlayerOutput");
-            SetOverridePara(ref setting.playerSetting.projectName,                  "ProjectName");
-            SetOverridePara(ref setting.playerSetting.autoRunPlayer,                "AutoRunPlayer");
-            // batch mode没有连接设备会出包失败
-            if (UnityEngine.Application.isBatchMode)
-                setting.playerSetting.autoRunPlayer = false;
+            SetOverridePara(ref setting.playerSetting.projectName,                  "ProjectName");            
             SetOverridePara(ref setting.playerSetting.development,                  "Development");
-            SetOverridePara(ref setting.playerSetting.connectWithProfiler,          "ConnectWithProfiler");
-            SetOverridePara(ref setting.playerSetting.allowDebugging,               "AllowDebugging");
-            SetOverridePara(ref setting.playerSetting.buildScriptsOnly,             "BuildScriptsOnly");
             SetOverridePara(ref setting.playerSetting.compressWithLz4,              "CompressWithLz4");
             SetOverridePara(ref setting.playerSetting.compressWithLz4HC,            "CompressWithLz4HC");
             SetOverridePara(ref setting.playerSetting.strictMode,                   "PlayerStrictMode");

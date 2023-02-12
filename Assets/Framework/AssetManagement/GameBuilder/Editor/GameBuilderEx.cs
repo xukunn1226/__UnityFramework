@@ -17,6 +17,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
             if (buildParameters.playerSetting == null)
                 throw new System.Exception($"{nameof(PlayerBuilderSetting)} is null");
 
+            m_BuildContext.ClearAllContext();
+
             // 传递构建参数
             var buildParametersContext = new BuildParametersContext(buildParameters);
             m_BuildContext.SetContextObject(buildParametersContext);
@@ -46,7 +48,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             var buildResult = BuildRunner.Run(tasks, m_BuildContext);
             if (buildResult.Success)
             {
-                //buildResult.OutputPackageDirectory = buildParametersContext.GetPackageOutputDirectory();
+                buildResult.OutputPackageDirectory = AssetBundleBuilderHelper.GetDefaultOutputRoot();
                 Debug.Log($"{buildParameters.buildMode} pipeline build succeed !");
             }
             else
@@ -71,6 +73,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 new TaskVerifyBuildResult(),        // 验证打包结果
                 new TaskUpdateBuildInfo(),          // 根据打包结果更新数据
                 new TaskCreateManifest(),           // 创建清单
+                new TaskCopyToStreamingAssets(),    // 拷贝文件到Streaming
             };
             tasks.AddRange(bundleTasks);
         }
@@ -83,7 +86,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             List<IGameBuildTask> playerTasks = new List<IGameBuildTask>
             {
-
+                new TaskSetupPlayerSetting(),       // 设置PlayerSetting
+                new TaskBuildPlayer(),              // 构建Player
+                new TaskRestorePlayerSetting(),     // 还原PlayerSetting
             };
             tasks.AddRange(playerTasks);
         }

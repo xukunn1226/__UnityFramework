@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-    [TaskAttribute("获取资源构建内容")]
+    [TaskAttribute("Step2. 获取资源构建内容")]
     public class TaskBuildBundleMap : IGameBuildTask
     {
         void IGameBuildTask.Run(BuildContext context)

@@ -79,7 +79,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
                 if(GUILayout.Button(new GUIContent("Add", ""), new GUIStyle("LargeButton"), GUILayout.Width(100)))
                 {
-                    target.Add(GameBuilderUtil.s_DefaultSettingPath);
+                    target.Add(GameBuilderSettingCollection.s_DefaultSettingPath);
                     UpdateToolbar(toolbarLabels.Count);
                 }
 

@@ -7,6 +7,7 @@ using UnityEditor.Build.Pipeline.Interfaces;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
+    [TaskAttribute("Step5. 更新构建数据")]
     public class TaskUpdateBuildInfo : IGameBuildTask
     {
         void IGameBuildTask.Run(BuildContext context)
@@ -15,7 +16,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             var buildMapContext = context.GetContextObject<BuildMapContext>();
             var buildBundleResults = context.GetContextObject<BuildResultContext>().Results;
 
-            var bundleOutput = buildParametersContext.GetBundlesOutput();
+            var bundleOutput = buildParametersContext.GetCacheBundlesOutput();
             foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
             {
                 string filePath = $"{bundleOutput}/{bundleInfo.BundleName}";

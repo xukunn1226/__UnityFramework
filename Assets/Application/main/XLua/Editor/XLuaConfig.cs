@@ -78,9 +78,9 @@ static public class XLuaConfig
         public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
         {
             // 重新生成代码
-            //DelegateBridge.Gen_Flag = true;
-            //Generator.ClearAll();
-            //Generator.GenAll();
+            DelegateBridge.Gen_Flag = true;
+            Generator.ClearAll();
+            Generator.GenAll();
         }
     }
 

@@ -31,12 +31,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <summary>
         /// 根据包名、平台等获取最终资源包的输出目录
         /// </summary>
-        /// <param name="packageVersion"></param>
         /// <param name="buildTarget"></param>
         /// <returns></returns>
-        public static string GetTargetBundlesOutput(string packageVersion, UnityEditor.BuildTarget buildTarget)
+        public static string GetCacheBundlesOutput(BuildTarget buildTarget)
         {
-            return $"{GetDefaultBundlesOutputRoot()}/{packageVersion}/{buildTarget}";
+            return $"{GetDefaultBundlesOutputRoot()}/{buildTarget}";
         }
 
         /// <summary>
@@ -51,12 +50,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <summary>
         /// 根据包名、平台等获取最终APP的输出目录
         /// </summary>
-        /// <param name="packageVersion"></param>
         /// <param name="buildTarget"></param>
         /// <returns></returns>
-        public static string GetTargetPlayerOutput(string packageVersion, UnityEditor.BuildTarget buildTarget)
+        public static string GetCachePlayerOutput(BuildTarget buildTarget)
         {
-            return $"{GetDefaultPlayerOutputRoot()}/{packageVersion}/{buildTarget}";
+            return $"{GetDefaultPlayerOutputRoot()}/{buildTarget}";
         }
 
         /// <summary>

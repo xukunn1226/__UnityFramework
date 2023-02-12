@@ -20,20 +20,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
             Specific,       // 指定版本号
         }
 
-        public string                       outputPath                          = "Deployment/Latest/Player";
-
         public string                       projectName                         = "MyProject";
         
         ////////////////////// BuildOptions
-        public bool                         autoRunPlayer;                      // Run the built player
-
         public bool                         development;                        // includes symbols and enables the profiler
-
-        public bool                         connectWithProfiler;                // When the build is started, an open Profiler Window will automatically connect to the Player and start profiling
-
-        public bool                         allowDebugging;                     // Allow script debuggers to attach to the player remotely
-
-        public bool                         buildScriptsOnly;                   // 仅编译脚本，需与development使用，首次build player时不可使用
 
         public bool                         compressWithLz4;                    // Use chunk-based LZ4 compression when building the Player
 
@@ -101,13 +91,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
         public override string ToString()
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            sb.Append(string.Format($"outputPath: {outputPath}  \n"));
             sb.Append(string.Format($"projectName: {projectName}  \n"));
-            sb.Append(string.Format($"autoRunPlayer: {autoRunPlayer}  \n"));
             sb.Append(string.Format($"development: {development}  \n"));
-            sb.Append(string.Format($"connectWithProfiler: {connectWithProfiler}  \n"));
-            sb.Append(string.Format($"allowDebugging: {allowDebugging}  \n"));
-            sb.Append(string.Format($"buildScriptsOnly: {buildScriptsOnly}  \n"));
             sb.Append(string.Format($"compressWithLz4: {compressWithLz4}  \n"));
             sb.Append(string.Format($"compressWithLz4HC: {compressWithLz4HC}  \n"));
             sb.Append(string.Format($"strictMode: {strictMode}  \n"));
@@ -132,304 +117,294 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
     static public class PlayerBuilderSettingExtension
     {
-        static internal void SetupPlayerSettings(this PlayerBuilderSetting para, AppVersion version)
-        {
-            BuildTargetGroup buildTargetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+        //static internal void SetupPlayerSettings(this PlayerBuilderSetting para, AppVersion version)
+        //{
+        //    BuildTargetGroup buildTargetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
 
-            // cache player settings
-            // para.cachedBundleVersion                = PlayerSettings.bundleVersion;
-            para.cachedUseIL2CPP                    = PlayerSettings.GetScriptingBackend(buildTargetGroup) == ScriptingImplementation.IL2CPP;
-            para.cachedIl2CppCompilerConfigureation = PlayerSettings.GetIl2CppCompilerConfiguration(buildTargetGroup);
-            para.cachedUseMTRendering               = PlayerSettings.GetMobileMTRendering(buildTargetGroup);
-            para.cachedBuildAppBundle               = EditorUserBuildSettings.buildAppBundle;
-            para.cachedCreateSymbols                = EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Disabled;
-            para.cachedMacroDefines                 = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+        //    // cache player settings
+        //    // para.cachedBundleVersion                = PlayerSettings.bundleVersion;
+        //    para.cachedUseIL2CPP                    = PlayerSettings.GetScriptingBackend(buildTargetGroup) == ScriptingImplementation.IL2CPP;
+        //    para.cachedIl2CppCompilerConfigureation = PlayerSettings.GetIl2CppCompilerConfiguration(buildTargetGroup);
+        //    para.cachedUseMTRendering               = PlayerSettings.GetMobileMTRendering(buildTargetGroup);
+        //    para.cachedBuildAppBundle               = EditorUserBuildSettings.buildAppBundle;
+        //    para.cachedCreateSymbols                = EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Disabled;
+        //    para.cachedMacroDefines                 = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
 
-            // setup new settings
-            // PlayerSettings.bundleVersion = para.bundleVersion;
-            // PlayerSettings.bundleVersion = version.ToString();
+        //    // setup new settings
+        //    // PlayerSettings.bundleVersion = para.bundleVersion;
+        //    // PlayerSettings.bundleVersion = version.ToString();
 
-            PlayerSettings.SetScriptingBackend(buildTargetGroup, para.useIL2CPP ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
+        //    PlayerSettings.SetScriptingBackend(buildTargetGroup, para.useIL2CPP ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
 
-            if (para.useIL2CPP)
-            {
-                PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, para.il2CppCompilerConfiguration);
-            }
+        //    if (para.useIL2CPP)
+        //    {
+        //        PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, para.il2CppCompilerConfiguration);
+        //    }
 
-            PlayerSettings.SetMobileMTRendering(buildTargetGroup, para.useMTRendering);
-            PlayerSettings.MTRendering = para.useMTRendering;
+        //    PlayerSettings.SetMobileMTRendering(buildTargetGroup, para.useMTRendering);
+        //    PlayerSettings.MTRendering = para.useMTRendering;
 
-            if(buildTargetGroup == BuildTargetGroup.Android)
-            {
-                PlayerSettings.Android.targetArchitectures = para.useIL2CPP ? AndroidArchitecture.All : AndroidArchitecture.ARMv7;
-                EditorUserBuildSettings.buildAppBundle = para.buildAppBundle;
-                EditorUserBuildSettings.androidCreateSymbols = para.createSymbols ? AndroidCreateSymbols.Debugging : AndroidCreateSymbols.Disabled;
-                PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
+        //    if(buildTargetGroup == BuildTargetGroup.Android)
+        //    {
+        //        PlayerSettings.Android.targetArchitectures = para.useIL2CPP ? AndroidArchitecture.All : AndroidArchitecture.ARMv7;
+        //        EditorUserBuildSettings.buildAppBundle = para.buildAppBundle;
+        //        EditorUserBuildSettings.androidCreateSymbols = para.createSymbols ? AndroidCreateSymbols.Debugging : AndroidCreateSymbols.Disabled;
+        //        PlayerSettings.Android.bundleVersionCode = version.BuildNumber;
 
-                PlayerSettings.Android.useCustomKeystore = para.useCustomKeystore;
-                PlayerSettings.Android.keystoreName = para.keystoreName;
-                PlayerSettings.Android.keystorePass = para.keystorePass;
-                PlayerSettings.Android.keyaliasName = para.keyaliasName;
-                PlayerSettings.Android.keyaliasPass = para.keyaliasPass;
-            }
-            else if(buildTargetGroup == BuildTargetGroup.iOS)
-            {
-                PlayerSettings.iOS.buildNumber = version.BuildNumber.ToString();
-            }
+        //        PlayerSettings.Android.useCustomKeystore = para.useCustomKeystore;
+        //        PlayerSettings.Android.keystoreName = para.keystoreName;
+        //        PlayerSettings.Android.keystorePass = para.keystorePass;
+        //        PlayerSettings.Android.keyaliasName = para.keyaliasName;
+        //        PlayerSettings.Android.keyaliasPass = para.keyaliasPass;
+        //    }
+        //    else if(buildTargetGroup == BuildTargetGroup.iOS)
+        //    {
+        //        PlayerSettings.iOS.buildNumber = version.BuildNumber.ToString();
+        //    }
 
-            // final macro defines = PlayerSetting.ScriptingDefineSymbols + PlayerBuilderSetting.macroDefines - PlayerBuilderSetting.excludedDefines
-            HashSet<string> macroSet = new HashSet<string>();
-            macroSet.UnionWith(para.cachedMacroDefines.Split(new char[]{';'}));
-            macroSet.UnionWith(para.macroDefines.Split(new char[]{';'}));
+        //    // final macro defines = PlayerSetting.ScriptingDefineSymbols + PlayerBuilderSetting.macroDefines - PlayerBuilderSetting.excludedDefines
+        //    HashSet<string> macroSet = new HashSet<string>();
+        //    macroSet.UnionWith(para.cachedMacroDefines.Split(new char[]{';'}));
+        //    macroSet.UnionWith(para.macroDefines.Split(new char[]{';'}));
 
-            string[] exDefines = para.excludedDefines.Split(new char[] {';'});
-            foreach(var ex in exDefines)
-            {
-                macroSet.Remove(ex);
-            }
+        //    string[] exDefines = para.excludedDefines.Split(new char[] {';'});
+        //    foreach(var ex in exDefines)
+        //    {
+        //        macroSet.Remove(ex);
+        //    }
 
-            // 分包发布时加上特定macro以控制obb流程
-            // if(para.useAPKExpansionFiles && buildTargetGroup == BuildTargetGroup.Android)
-            // {
-            //     macroSet.Add("USE_APK_EXPANSIONFILES");
-            // }
-            // else
-            // {
-            //     macroSet.Remove("USE_APK_EXPANSIONFILES");
-            // }
+        //    string finalMacroDefines = string.Join(";", macroSet.ToArray());
+        //    PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, finalMacroDefines.Trim(new char[] {';'}));
 
-            string finalMacroDefines = string.Join(";", macroSet.ToArray());
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, finalMacroDefines.Trim(new char[] {';'}));
+        //    CacheQualityRenderPipelineAsset(para);
+        //}
 
-            CacheQualityRenderPipelineAsset(para);
-        }
+        //static internal void RestorePlayerSettings(this PlayerBuilderSetting para)
+        //{
+        //    BuildTargetGroup buildTargetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
 
-        static internal void RestorePlayerSettings(this PlayerBuilderSetting para)
-        {
-            BuildTargetGroup buildTargetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+        //    // PlayerSettings.bundleVersion = para.cachedBundleVersion;
 
-            // PlayerSettings.bundleVersion = para.cachedBundleVersion;
+        //    if (buildTargetGroup == BuildTargetGroup.Android || buildTargetGroup == BuildTargetGroup.iOS)
+        //    {
+        //        PlayerSettings.SetScriptingBackend(buildTargetGroup, para.cachedUseIL2CPP ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
 
-            if (buildTargetGroup == BuildTargetGroup.Android || buildTargetGroup == BuildTargetGroup.iOS)
-            {
-                PlayerSettings.SetScriptingBackend(buildTargetGroup, para.cachedUseIL2CPP ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
+        //        if(para.cachedUseIL2CPP)
+        //        {
+        //            PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, para.cachedIl2CppCompilerConfigureation);
+        //        }
 
-                if(para.cachedUseIL2CPP)
-                {
-                    PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, para.cachedIl2CppCompilerConfigureation);
-                }
+        //        PlayerSettings.SetMobileMTRendering(buildTargetGroup, para.cachedUseMTRendering);
+        //        PlayerSettings.MTRendering = para.cachedUseMTRendering;
 
-                PlayerSettings.SetMobileMTRendering(buildTargetGroup, para.cachedUseMTRendering);
-                PlayerSettings.MTRendering = para.cachedUseMTRendering;
+        //        if(buildTargetGroup == BuildTargetGroup.Android)
+        //        {
+        //            EditorUserBuildSettings.buildAppBundle = para.cachedBuildAppBundle;
+        //            EditorUserBuildSettings.androidCreateSymbols = para.cachedCreateSymbols ? AndroidCreateSymbols.Debugging : AndroidCreateSymbols.Disabled;
 
-                if(buildTargetGroup == BuildTargetGroup.Android)
-                {
-                    EditorUserBuildSettings.buildAppBundle = para.cachedBuildAppBundle;
-                    EditorUserBuildSettings.androidCreateSymbols = para.cachedCreateSymbols ? AndroidCreateSymbols.Debugging : AndroidCreateSymbols.Disabled;
+        //            PlayerSettings.Android.useCustomKeystore = false;
+        //            PlayerSettings.Android.keystoreName = string.Empty;
+        //            PlayerSettings.Android.keystorePass = string.Empty;
+        //            PlayerSettings.Android.keyaliasName = string.Empty;
+        //            PlayerSettings.Android.keyaliasPass = string.Empty;
+        //        }
+        //    }
 
-                    PlayerSettings.Android.useCustomKeystore = false;
-                    PlayerSettings.Android.keystoreName = string.Empty;
-                    PlayerSettings.Android.keystorePass = string.Empty;
-                    PlayerSettings.Android.keyaliasName = string.Empty;
-                    PlayerSettings.Android.keyaliasPass = string.Empty;
-                }
-            }
+        //    PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, para.cachedMacroDefines);
 
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, para.cachedMacroDefines);
+        //    RestoreQualityRenderPipelineAsset(para);
 
-            RestoreQualityRenderPipelineAsset(para);
+        //    AssetDatabase.SaveAssets();
+        //}
 
-            AssetDatabase.SaveAssets();
-        }
+        //static private void CacheQualityRenderPipelineAsset(this PlayerBuilderSetting para)
+        //{
+        //    if (!para.clearRenderPipelineAsset)
+        //        return;
 
-        static private void CacheQualityRenderPipelineAsset(this PlayerBuilderSetting para)
-        {
-            if (!para.clearRenderPipelineAsset)
-                return;
+        //    para.cachedGraphicsRenderPipelineAsset = GraphicsSettings.defaultRenderPipeline;
+        //    para.curQualityLevel = QualitySettings.GetQualityLevel();
+        //    para.cachedRenderPipelineAsset = new List<string>();
+        //    for(int i = 0; i < QualitySettings.names.Length; ++i)
+        //    {
+        //        RenderPipelineAsset asset = QualitySettings.GetRenderPipelineAssetAt(i);
+        //        para.cachedRenderPipelineAsset.Add(asset == null ? null : AssetDatabase.GetAssetPath(asset));
+        //    }
 
-            para.cachedGraphicsRenderPipelineAsset = GraphicsSettings.defaultRenderPipeline;
-            para.curQualityLevel = QualitySettings.GetQualityLevel();
-            para.cachedRenderPipelineAsset = new List<string>();
-            for(int i = 0; i < QualitySettings.names.Length; ++i)
-            {
-                RenderPipelineAsset asset = QualitySettings.GetRenderPipelineAssetAt(i);
-                para.cachedRenderPipelineAsset.Add(asset == null ? null : AssetDatabase.GetAssetPath(asset));
-            }
+        //    GraphicsSettings.defaultRenderPipeline = null;
+        //    RenderPipelineAsset rawPipelineAsset = AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>("assets/settings/empty_universalrp.asset");
+        //    for(int i = 0; i < QualitySettings.names.Length; ++i)
+        //    {
+        //        QualitySettings.SetQualityLevel(i);
+        //        QualitySettings.renderPipeline = rawPipelineAsset;
+        //    }
+        //}
 
-            GraphicsSettings.defaultRenderPipeline = null;
-            RenderPipelineAsset rawPipelineAsset = AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>("assets/settings/empty_universalrp.asset");
-            for(int i = 0; i < QualitySettings.names.Length; ++i)
-            {
-                QualitySettings.SetQualityLevel(i);
-                QualitySettings.renderPipeline = rawPipelineAsset;
-            }
-        }
+        //static private void RestoreQualityRenderPipelineAsset(this PlayerBuilderSetting para)
+        //{
+        //    if (!para.clearRenderPipelineAsset)
+        //        return;
 
-        static private void RestoreQualityRenderPipelineAsset(this PlayerBuilderSetting para)
-        {
-            if (!para.clearRenderPipelineAsset)
-                return;
+        //    GraphicsSettings.defaultRenderPipeline = para.cachedGraphicsRenderPipelineAsset;
+        //    for (int i = 0; i < para.cachedRenderPipelineAsset.Count; ++i)
+        //    {
+        //        QualitySettings.SetQualityLevel(i);
+        //        QualitySettings.renderPipeline = string.IsNullOrEmpty(para.cachedRenderPipelineAsset[i]) ? null : AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>(para.cachedRenderPipelineAsset[i]);
+        //    }
+        //    QualitySettings.SetQualityLevel(para.curQualityLevel);
+        //}
 
-            GraphicsSettings.defaultRenderPipeline = para.cachedGraphicsRenderPipelineAsset;
-            for (int i = 0; i < para.cachedRenderPipelineAsset.Count; ++i)
-            {
-                QualitySettings.SetQualityLevel(i);
-                QualitySettings.renderPipeline = string.IsNullOrEmpty(para.cachedRenderPipelineAsset[i]) ? null : AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>(para.cachedRenderPipelineAsset[i]);
-            }
-            QualitySettings.SetQualityLevel(para.curQualityLevel);
-        }
+        //static internal BuildPlayerOptions GenerateBuildPlayerOptions(this PlayerBuilderSetting para)
+        //{
+        //    BuildPlayerOptions opt = new BuildPlayerOptions();
+        //    opt.locationPathName = para.GetLocalPathName();
+        //    opt.scenes = GetBuildScenes(para);
+        //    opt.target = EditorUserBuildSettings.activeBuildTarget;
+        //    opt.targetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+        //    opt.options = para.GenerateBuildOptions();
+        //    return opt;
+        //}
 
-        static internal BuildPlayerOptions GenerateBuildPlayerOptions(this PlayerBuilderSetting para)
-        {
-            BuildPlayerOptions opt = new BuildPlayerOptions();
-            opt.locationPathName = para.GetLocalPathName();
-            opt.scenes = GetBuildScenes(para);
-            opt.target = EditorUserBuildSettings.activeBuildTarget;
-            opt.targetGroup = GameBuilderUtil.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-            opt.options = para.GenerateBuildOptions();
-            return opt;
-        }
+        //static string[] GetBuildScenes(PlayerBuilderSetting para)
+        //{
+        //    List<string> names = new List<string>();
+        //    if(!para.development)
+        //    { // NOTE: 发布release版本时仅发布Build Settings中第一个激活的场景
+        //        foreach(var scene in EditorBuildSettings.scenes)
+        //        {
+        //            if(scene == null || !scene.enabled)
+        //                continue;
 
-        static string[] GetBuildScenes(PlayerBuilderSetting para)
-        {
-            List<string> names = new List<string>();
-            if(!para.development)
-            { // NOTE: 发布release版本时仅发布Build Settings中第一个激活的场景
-                foreach(var scene in EditorBuildSettings.scenes)
-                {
-                    if(scene == null || !scene.enabled)
-                        continue;
+        //            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(scene.guid.ToString())) == null)
+        //                continue;
 
-                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(scene.guid.ToString())) == null)
-                        continue;
+        //            names.Add(scene.path);
+        //            break;
+        //        }
+        //    }
+        //    else if (para.bOverrideBuildScenes)
+        //    {
+        //        foreach(var scenePath in para.overrideBuildScenes)
+        //        {
+        //            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
+        //            {
+        //                Debug.LogWarning($"Can't find SceneAsset at [{scenePath}]");
+        //                continue;
+        //            }
 
-                    names.Add(scene.path);
-                    break;
-                }
-            }
-            else if (para.bOverrideBuildScenes)
-            {
-                foreach(var scenePath in para.overrideBuildScenes)
-                {
-                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
-                    {
-                        Debug.LogWarning($"Can't find SceneAsset at [{scenePath}]");
-                        continue;
-                    }
+        //            names.Add(scenePath);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        foreach (var scene in EditorBuildSettings.scenes)
+        //        {
+        //            if (scene == null || !scene.enabled)
+        //                continue;
 
-                    names.Add(scenePath);
-                }
-            }
-            else
-            {
-                foreach (var scene in EditorBuildSettings.scenes)
-                {
-                    if (scene == null || !scene.enabled)
-                        continue;
+        //            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(scene.guid.ToString())) == null)
+        //                continue;
 
-                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(AssetDatabase.GUIDToAssetPath(scene.guid.ToString())) == null)
-                        continue;
+        //            names.Add(scene.path);
+        //        }
+        //    }
+        //    return names.ToArray();
+        //}
 
-                    names.Add(scene.path);
-                }
-            }
-            return names.ToArray();
-        }
+        //static internal string GetLocalPathName(this PlayerBuilderSetting para)
+        //{
+        //    string extension = string.Empty;
+        //    switch(EditorUserBuildSettings.activeBuildTarget)
+        //    {
+        //        case BuildTarget.StandaloneWindows64:
+        //            extension = "_64.exe";
+        //            break;
+        //        case BuildTarget.StandaloneWindows:
+        //            extension = ".exe";
+        //            break;
+        //        case BuildTarget.Android:
+        //            extension = para.buildAppBundle ? ".aab" : ".apk";
+        //            break;
+        //        case BuildTarget.iOS:
+        //            extension = ".ipa";
+        //            break;
+        //    }
 
-        static internal string GetLocalPathName(this PlayerBuilderSetting para)
-        {
-            string extension = string.Empty;
-            switch(EditorUserBuildSettings.activeBuildTarget)
-            {
-                case BuildTarget.StandaloneWindows64:
-                    extension = "_64.exe";
-                    break;
-                case BuildTarget.StandaloneWindows:
-                    extension = ".exe";
-                    break;
-                case BuildTarget.Android:
-                    extension = para.buildAppBundle ? ".aab" : ".apk";
-                    break;
-                case BuildTarget.iOS:
-                    extension = ".ipa";
-                    break;
-            }
+        //    return string.Format("{0}/{1}{2}", para.outputPath, para.projectName, extension);
+        //}
 
-            return string.Format("{0}/{1}{2}", para.outputPath, para.projectName, extension);
-        }
+        //static private BuildOptions GenerateBuildOptions(this PlayerBuilderSetting para)
+        //{
+        //    BuildOptions opt = BuildOptions.None;
 
-        static private BuildOptions GenerateBuildOptions(this PlayerBuilderSetting para)
-        {
-            BuildOptions opt = BuildOptions.None;
+        //    if (para.autoRunPlayer)
+        //        opt |= BuildOptions.AutoRunPlayer;
+        //    else
+        //        opt &= ~BuildOptions.AutoRunPlayer;
 
-            if (para.autoRunPlayer)
-                opt |= BuildOptions.AutoRunPlayer;
-            else
-                opt &= ~BuildOptions.AutoRunPlayer;
+        //    if (para.development)
+        //        opt |= BuildOptions.Development;
+        //    else
+        //        opt &= ~BuildOptions.Development;
 
-            if (para.development)
-                opt |= BuildOptions.Development;
-            else
-                opt &= ~BuildOptions.Development;
+        //    if (para.connectWithProfiler && para.development)
+        //        opt |= BuildOptions.ConnectWithProfiler;
+        //    else
+        //        opt &= ~BuildOptions.ConnectWithProfiler;
 
-            if (para.connectWithProfiler && para.development)
-                opt |= BuildOptions.ConnectWithProfiler;
-            else
-                opt &= ~BuildOptions.ConnectWithProfiler;
+        //    if (para.allowDebugging && para.development)
+        //        opt |= BuildOptions.AllowDebugging;
+        //    else
+        //        opt &= ~BuildOptions.AllowDebugging;
 
-            if (para.allowDebugging && para.development)
-                opt |= BuildOptions.AllowDebugging;
-            else
-                opt &= ~BuildOptions.AllowDebugging;
+        //    if (para.buildScriptsOnly && para.development)
+        //        opt |= BuildOptions.BuildScriptsOnly;
+        //    else
+        //        opt &= ~BuildOptions.BuildScriptsOnly;
 
-            if (para.buildScriptsOnly && para.development)
-                opt |= BuildOptions.BuildScriptsOnly;
-            else
-                opt &= ~BuildOptions.BuildScriptsOnly;
+        //    if (para.compressWithLz4HC)
+        //    {
+        //        opt |= BuildOptions.CompressWithLz4HC;
+        //        opt &= ~BuildOptions.CompressWithLz4;
+        //    }
+        //    else
+        //        opt &= ~BuildOptions.CompressWithLz4HC;
 
-            if (para.compressWithLz4HC)
-            {
-                opt |= BuildOptions.CompressWithLz4HC;
-                opt &= ~BuildOptions.CompressWithLz4;
-            }
-            else
-                opt &= ~BuildOptions.CompressWithLz4HC;
+        //    if (para.compressWithLz4 && !para.compressWithLz4HC)
+        //        opt |= BuildOptions.CompressWithLz4;
+        //    else
+        //        opt &= ~BuildOptions.CompressWithLz4;
 
-            if (para.compressWithLz4 && !para.compressWithLz4HC)
-                opt |= BuildOptions.CompressWithLz4;
-            else
-                opt &= ~BuildOptions.CompressWithLz4;
+        //    if (para.strictMode)
+        //        opt |= BuildOptions.StrictMode;
+        //    else
+        //        opt &= ~BuildOptions.StrictMode;
 
-            if (para.strictMode)
-                opt |= BuildOptions.StrictMode;
-            else
-                opt &= ~BuildOptions.StrictMode;
+        //    return opt;
+        //}
 
-            return opt;
-        }
+        //static internal AppVersion SetAppVersion(this PlayerBuilderSetting para)
+        //{
+        //    AppVersion version = AppVersion.EditorLoad();
+        //    if(version == null)
+        //        throw new System.Exception("can't find AppVersion.asset in Assets/Resources");
 
-        static internal AppVersion SetAppVersion(this PlayerBuilderSetting para)
-        {
-            AppVersion version = AppVersion.EditorLoad();
-            if(version == null)
-                throw new System.Exception("can't find AppVersion.asset in Assets/Resources");
-
-            version.Changelist = para.changelist;
-            switch(para.versionChangedMode)
-            {
-                case PlayerBuilderSetting.VersionChangedMode.NoChanged:
-                    break;
-                case PlayerBuilderSetting.VersionChangedMode.Increase:
-                    version.Grow();
-                    EditorUtility.SetDirty(version);
-                    break;
-                case PlayerBuilderSetting.VersionChangedMode.Specific:
-                    version.Set(para.mainVersion, para.minorVersion, para.revision);
-                    EditorUtility.SetDirty(version);
-                    break;
-            }
-            AssetDatabase.SaveAssets();
-            return version;
-        }
+        //    version.Changelist = para.changelist;
+        //    switch(para.versionChangedMode)
+        //    {
+        //        case PlayerBuilderSetting.VersionChangedMode.NoChanged:
+        //            break;
+        //        case PlayerBuilderSetting.VersionChangedMode.Increase:
+        //            version.Grow();
+        //            EditorUtility.SetDirty(version);
+        //            break;
+        //        case PlayerBuilderSetting.VersionChangedMode.Specific:
+        //            version.Set(para.mainVersion, para.minorVersion, para.revision);
+        //            EditorUtility.SetDirty(version);
+        //            break;
+        //    }
+        //    AssetDatabase.SaveAssets();
+        //    return version;
+        //}
     }
 }

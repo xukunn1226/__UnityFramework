@@ -6,6 +6,7 @@ using System;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
+    [TaskAttribute("Step1. 构建准备工作")]
     public class TaskPrepare : IGameBuildTask
     {
         void IGameBuildTask.Run(BuildContext context)
@@ -28,21 +29,14 @@ namespace Framework.AssetManagement.AssetEditorWindow
             // 保存改动的资源
             AssetDatabase.SaveAssets();
 
-            {
-                // 删除平台总目录
-                //string platformDirectory = $"{buildParameters.OutputRoot}/{buildParameters.PackageName}/{buildParameters.BuildTarget}";
-                //if (EditorTools.DeleteDirectory(platformDirectory))
-                //{
-                //    BuildRunner.Log($"删除平台总目录：{platformDirectory}");
-                //}
-            }
-
             // 创建输出目录
-            string pipelineOutputDirectory = AssetBundleBuilderHelper.GetTargetBundlesOutput("v0.0.1", gameBuilderSetting.buildTarget);
-            if (EditorTools.CreateDirectory(pipelineOutputDirectory))
-            {
-                BuildRunner.Log($"创建输出目录：{pipelineOutputDirectory}");
-            }
+            string bundleOutputDirectory = AssetBundleBuilderHelper.GetCacheBundlesOutput(gameBuilderSetting.buildTarget);
+            string playerOutputDirectory = AssetBundleBuilderHelper.GetCachePlayerOutput(gameBuilderSetting.buildTarget);
+            EditorTools.DeleteDirectory(bundleOutputDirectory);
+            EditorTools.DeleteDirectory(playerOutputDirectory);
+            EditorTools.CreateDirectory(bundleOutputDirectory);
+            EditorTools.CreateDirectory(playerOutputDirectory);
+            BuildRunner.Log($"创建输出目录：{bundleOutputDirectory} and {playerOutputDirectory}");
         }
     }
 }

@@ -34,23 +34,19 @@ namespace Framework.AssetManagement.AssetEditorWindow
             m_BuildWatch.Stop();
         }
 
-        public string GetBundlesOutput()
+        public string GetCacheBundlesOutput()
         {
-            return AssetBundleBuilderHelper.GetTargetBundlesOutput(gameBuilderSetting.packageVersion, gameBuilderSetting.buildTarget);
+            return AssetBundleBuilderHelper.GetCacheBundlesOutput(gameBuilderSetting.buildTarget);
         }
 
-        public BundleBuildParameters GetSBPBuildParameters()
-		{
-            var buildParams = new BundleBuildParameters(gameBuilderSetting.buildTarget,
-                                                        BuildPipeline.GetBuildTargetGroup(gameBuilderSetting.buildTarget),
-                                                        GetBundlesOutput());
+        public string GetCachePlayerOutput()
+        {
+            return AssetBundleBuilderHelper.GetCachePlayerOutput(gameBuilderSetting.buildTarget);
+        }
 
-            buildParams.BundleCompression = gameBuilderSetting.bundleSetting.useLZ4Compress ? BuildCompression.LZ4 : BuildCompression.Uncompressed;
-            buildParams.UseCache = !gameBuilderSetting.bundleSetting.rebuildBundles;
-            if (gameBuilderSetting.bundleSetting.DisableWriteTypeTree)
-                buildParams.ContentBuildFlags |= UnityEditor.Build.Content.ContentBuildFlags.DisableWriteTypeTree;
-
-			return buildParams;
-		}
+        public string GetPackageVersion()
+        {
+            return gameBuilderSetting.packageVersion;
+        }
     }
 }
