@@ -15,13 +15,13 @@ namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class PlayerBuilder
     {
-        public delegate void onPreprocessPlayerBuild();
-        public delegate void onPostprocessPlayerBuild();
+        //public delegate void onPreprocessPlayerBuild();
+        //public delegate void onPostprocessPlayerBuild();
 
-        static public event onPreprocessPlayerBuild OnPreprocessPlayerBuild;
-        static public event onPostprocessPlayerBuild OnPostprocessPlayerBuild;
+        //static public event onPreprocessPlayerBuild OnPreprocessPlayerBuild;
+        //static public event onPostprocessPlayerBuild OnPostprocessPlayerBuild;
 
-        static public PlayerBuilderSetting m_Setting;
+        //static public PlayerBuilderSetting m_Setting;
 
         /// <summary>
         /// 构建Player接口（唯一）

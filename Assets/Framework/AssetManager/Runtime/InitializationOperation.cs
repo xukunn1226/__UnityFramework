@@ -122,7 +122,7 @@ namespace Framework.AssetManagement.Runtime
 
 			if (m_Steps == ESteps.LoadAppManifest)
 			{
-				string filePath = PathHelper.MakeStreamingLoadPath("AssetManifest.bytes");
+				string filePath = PathHelper.MakeStreamingLoadPath("AssetManifest_0.0.1.bytes");
 				string url = PathHelper.ConvertToWWWPath(filePath);
 				m_Downloader = new UnityWebDataRequester();
 				m_Downloader.SendRequest(url);

@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Framework.AssetManagement.Runtime;
+using UnityEditor.Build;
 
 namespace Application.Editor
 {
@@ -26,9 +27,18 @@ namespace Application.Editor
         static private string       m_Info;
         static private bool         m_SkipTheFile;
 
+        private class BuildProcessor : IPreprocessBuildWithReport
+        {
+            public int callbackOrder { get { return 50; } }
+
+            public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+            {
+                OnPostprocessBundleBuild();
+            }
+        }
+
         static ConfigBuilder()
         {
-            BundleBuilder.OnPostprocessBundleBuild += OnPostprocessBundleBuild;
             CtrlGEditor.OnPreprocessQuickLaunch += DoRun;
         }
 

@@ -17,7 +17,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
         public string               packageVersion = "0.0.1";
         public BundleBuilderSetting bundleSetting;
         public PlayerBuilderSetting playerSetting;
-        public JsonAsset            backdoor;
 
         public enum BuildMode
         {

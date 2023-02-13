@@ -52,10 +52,10 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public const string UnityShadersBundleName = "unityshaders";
 
-		/// <summary>
-		/// 内置资源目录名称
-		/// </summary>
-		public const string StreamingAssetsBuildinFolder = "BuildinFiles";
+        /// <summary>
+        /// 内置资源目录名称
+        /// </summary>
+        public const string StreamingAssetsBuildinFolder = "";  // "BuildinFiles";  TODO: 暂时取空
 
 		/// <summary>
 		/// 编辑器模拟环境下异步加载时的延迟帧数

@@ -17,11 +17,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class BundleBuilder
     {
-        public delegate void onPreprocessBundleBuild();
-        public delegate void onPostprocessBundleBuild();
+        //public delegate void onPreprocessBundleBuild();
+        //public delegate void onPostprocessBundleBuild();
 
-        static public event onPreprocessBundleBuild OnPreprocessBundleBuild;
-        static public event onPostprocessBundleBuild OnPostprocessBundleBuild;
+        //static public event onPreprocessBundleBuild OnPreprocessBundleBuild;
+        //static public event onPostprocessBundleBuild OnPostprocessBundleBuild;
 
         /// <summary>
         /// 构建Bundles接口（唯一）

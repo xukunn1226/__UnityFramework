@@ -25,7 +25,9 @@ namespace Application.Editor
             string srcFMOD = "Assets/StreamingAssets/" + FMODUnity.Settings.Instance.TargetSubFolder;
             if (System.IO.Directory.Exists(srcFMOD))
             {
-                string newPath = "Assets/StreamingAssets/" + AssetManagerSettings.StreamingAssetsBuildinFolder + "/" + FMODUnity.Settings.Instance.TargetSubFolder;
+                string newPath = "Assets/StreamingAssets/" + AssetManagerSettings.StreamingAssetsBuildinFolder + FMODUnity.Settings.Instance.TargetSubFolder;
+                if (srcFMOD == newPath)
+                    return;
                 if (System.IO.Directory.Exists(newPath))
                 {
                     AssetDatabase.DeleteAsset(newPath);

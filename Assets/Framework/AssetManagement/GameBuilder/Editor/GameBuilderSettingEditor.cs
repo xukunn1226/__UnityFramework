@@ -13,8 +13,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
         SerializedProperty  m_playerSettingProp;
         SerializedProperty  m_buildTargetProp;
         SerializedProperty  m_buildModeProp;
-        SerializedProperty  m_backdoorProp;
-        Backdoor            m_backdoor;
 
         Editor              m_bundleSettingEditor;
         Editor              m_playerSettingEditor;
@@ -29,8 +27,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             m_playerSettingProp = serializedObject.FindProperty("playerSetting");
             m_buildTargetProp   = serializedObject.FindProperty("buildTarget");
             m_buildModeProp     = serializedObject.FindProperty("buildMode");
-            m_backdoorProp      = serializedObject.FindProperty("backdoor");
-            m_backdoor          = ((JsonAsset)m_backdoorProp.objectReferenceValue)?.Require<Backdoor>(true);
             m_AppVersion        = AppVersion.EditorLoad();
         }
 
@@ -233,83 +229,83 @@ namespace Framework.AssetManagement.AssetEditorWindow
             EditorGUI.EndDisabledGroup();
         }
 
-        private void DrawBackdoorSetting()
-        {
-            JsonAsset obj = (JsonAsset)EditorGUILayout.ObjectField(new GUIContent("Backdoor Setting", ""), 
-                                                                              m_backdoorProp.objectReferenceValue, 
-                                                                              typeof(JsonAsset), 
-                                                                              false);
-            if (obj != m_backdoorProp.objectReferenceValue)
-            {
-                m_backdoorProp.objectReferenceValue = null;
-                m_backdoor = null;
-                if(obj != null)
-                {
-                    m_backdoor = obj.Require<Backdoor>();
-                    m_backdoorProp.objectReferenceValue = obj;
-                }
-            }
+        //private void DrawBackdoorSetting()
+        //{
+        //    JsonAsset obj = (JsonAsset)EditorGUILayout.ObjectField(new GUIContent("Backdoor Setting", ""), 
+        //                                                                      m_backdoorProp.objectReferenceValue, 
+        //                                                                      typeof(JsonAsset), 
+        //                                                                      false);
+        //    if (obj != m_backdoorProp.objectReferenceValue)
+        //    {
+        //        m_backdoorProp.objectReferenceValue = null;
+        //        m_backdoor = null;
+        //        if(obj != null)
+        //        {
+        //            m_backdoor = obj.Require<Backdoor>();
+        //            m_backdoorProp.objectReferenceValue = obj;
+        //        }
+        //    }
 
-            if(m_backdoor == null)
-                return;
+        //    if(m_backdoor == null)
+        //        return;
 
-            string assetPath = AssetDatabase.GetAssetPath(m_backdoorProp.objectReferenceValue);
-            bool changed = false;
+        //    string assetPath = AssetDatabase.GetAssetPath(m_backdoorProp.objectReferenceValue);
+        //    bool changed = false;
 
-            string minVersion = EditorGUILayout.TextField("MinVersion", m_backdoor.MinVersion);
-            if(minVersion != m_backdoor.MinVersion)
-            {
-                changed = true;
-                m_backdoor.MinVersion = minVersion;
-            }
+        //    string minVersion = EditorGUILayout.TextField("MinVersion", m_backdoor.MinVersion);
+        //    if(minVersion != m_backdoor.MinVersion)
+        //    {
+        //        changed = true;
+        //        m_backdoor.MinVersion = minVersion;
+        //    }
 
-            // 显示不可编辑属性
-            EditorGUI.BeginDisabledGroup(true);
-            EditorGUILayout.TextField("CurVersion", m_backdoor.CurVersion);
+        //    // 显示不可编辑属性
+        //    EditorGUI.BeginDisabledGroup(true);
+        //    EditorGUILayout.TextField("CurVersion", m_backdoor.CurVersion);
 
-            // VersionHistory_Win64
-            EditorGUILayout.LabelField(new GUIContent("VersionHistory_Win64"));
-            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
-            foreach(var item in m_backdoor.VersionHistory_Win64)
-            {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(item.Key);
-                EditorGUILayout.LabelField(item.Value);
-                EditorGUILayout.EndHorizontal();
-            }
-            GUILayout.EndVertical();
+        //    // VersionHistory_Win64
+        //    EditorGUILayout.LabelField(new GUIContent("VersionHistory_Win64"));
+        //    GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+        //    foreach(var item in m_backdoor.VersionHistory_Win64)
+        //    {
+        //        EditorGUILayout.BeginHorizontal();
+        //        EditorGUILayout.LabelField(item.Key);
+        //        EditorGUILayout.LabelField(item.Value);
+        //        EditorGUILayout.EndHorizontal();
+        //    }
+        //    GUILayout.EndVertical();
 
-            // VersionHistory_Android
-            EditorGUILayout.LabelField(new GUIContent("VersionHistory_Android"));
-            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
-            foreach (var item in m_backdoor.VersionHistory_Android)
-            {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(item.Key);
-                EditorGUILayout.LabelField(item.Value);
-                EditorGUILayout.EndHorizontal();
-            }
-            GUILayout.EndVertical();
+        //    // VersionHistory_Android
+        //    EditorGUILayout.LabelField(new GUIContent("VersionHistory_Android"));
+        //    GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+        //    foreach (var item in m_backdoor.VersionHistory_Android)
+        //    {
+        //        EditorGUILayout.BeginHorizontal();
+        //        EditorGUILayout.LabelField(item.Key);
+        //        EditorGUILayout.LabelField(item.Value);
+        //        EditorGUILayout.EndHorizontal();
+        //    }
+        //    GUILayout.EndVertical();
 
-            // VersionHistory_IOS
-            EditorGUILayout.LabelField(new GUIContent("VersionHistory_IOS"));
-            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
-            foreach (var item in m_backdoor.VersionHistory_IOS)
-            {
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(item.Key);
-                EditorGUILayout.LabelField(item.Value);
-                EditorGUILayout.EndHorizontal();
-            }
-            GUILayout.EndVertical();
+        //    // VersionHistory_IOS
+        //    EditorGUILayout.LabelField(new GUIContent("VersionHistory_IOS"));
+        //    GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+        //    foreach (var item in m_backdoor.VersionHistory_IOS)
+        //    {
+        //        EditorGUILayout.BeginHorizontal();
+        //        EditorGUILayout.LabelField(item.Key);
+        //        EditorGUILayout.LabelField(item.Value);
+        //        EditorGUILayout.EndHorizontal();
+        //    }
+        //    GUILayout.EndVertical();
 
-            EditorGUI.EndDisabledGroup();
+        //    EditorGUI.EndDisabledGroup();
             
-            if(changed)
-            {
-                Backdoor.Serialize(assetPath, m_backdoor);
-                AssetDatabase.Refresh();
-            }
-        }
+        //    if(changed)
+        //    {
+        //        Backdoor.Serialize(assetPath, m_backdoor);
+        //        AssetDatabase.Refresh();
+        //    }
+        //}
     }
 }

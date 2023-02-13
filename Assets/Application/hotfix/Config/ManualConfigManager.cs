@@ -30,11 +30,11 @@ namespace Application.Logic
                     //}
                     switch(Launcher.GetPlayMode())
                     {
-                        case Framework.AssetManagement.Runtime.EPlayMode.FromEditor:
+                        case EPlayMode.FromEditor:
                             m_DataPath = ConfigBuilderSetting.DatabaseFilePath;
                             break;
-                        case Framework.AssetManagement.Runtime.EPlayMode.FromStreaming:
-                        case Framework.AssetManagement.Runtime.EPlayMode.FromHost:
+                        case EPlayMode.FromStreaming:
+                        case EPlayMode.FromHost:
                             m_DataPath = string.Format($"{UnityEngine.Application.persistentDataPath}/{AssetManagerSettings.StreamingAssetsBuildinFolder}/{System.IO.Path.GetFileName(ConfigBuilderSetting.DatabaseFilePath)}");
                             break;
                     }
