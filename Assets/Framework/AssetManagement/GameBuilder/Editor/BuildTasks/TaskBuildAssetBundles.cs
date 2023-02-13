@@ -38,6 +38,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
             buildResultContext.Results = buildResults;
             context.SetContextObject(buildResultContext);
 
+            CopyRawBundle(buildMapContext, buildParametersContext);
+
             // 输出UnityManifest，调试用
             var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
             manifest.SetResults(buildResults.BundleInfos);            
@@ -46,6 +48,23 @@ namespace Framework.AssetManagement.AssetEditorWindow
             AssetDatabase.DeleteAsset(unityManifestPath);
             AssetDatabase.CreateAsset(manifest, unityManifestPath);
         }
+
+        private void CopyRawBundle(BuildMapContext buildMapContext, BuildParametersContext buildParametersContext)
+		{
+			string cacheBundleOutput = buildParametersContext.GetCacheBundlesOutput();
+			foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
+			{
+				if (bundleInfo.IsRawFile)
+				{
+					string dest = $"{cacheBundleOutput}/{bundleInfo.BundleName}";
+					foreach (var buildAsset in bundleInfo.BuildinAssets)
+					{
+						if (buildAsset.IsRawAsset)
+							EditorTools.CopyFile(buildAsset.AssetPath, dest, true);
+					}
+				}
+			}
+		}
 
         private BundleBuildParameters GetSBPBuildParameters(BuildParametersContext buildParametersContext)
         {
