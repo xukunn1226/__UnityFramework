@@ -9,6 +9,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
 {
     public class GameBuilder
     {
+        static private readonly BuildContext m_BuildContext = new BuildContext();
+
         /// <summary>
         /// 构建app接口
         /// 允许仅构建bundles或player
@@ -17,11 +19,96 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <param name="playerSetting"></param>
         static public void BuildGame(GameBuilderSetting gameSetting)
         {
-            var buildResult = GameBuilderEx.Run(gameSetting);
+            var buildResult = Run(gameSetting);
             if (buildResult.Success)
             {
                 EditorUtility.RevealInFinder(buildResult.OutputPackageDirectory);
             }
+        }
+        
+        static private GameBuildResult Run(GameBuilderSetting buildParameters)
+        {
+            if (buildParameters == null)
+                throw new System.Exception($"{nameof(GameBuilderSetting)} is null");
+            if (buildParameters.bundleSetting == null)
+                throw new System.Exception($"{nameof(BundleBuilderSetting)} is null");
+            if (buildParameters.playerSetting == null)
+                throw new System.Exception($"{nameof(PlayerBuilderSetting)} is null");
+
+            m_BuildContext.ClearAllContext();
+
+            // 传递构建参数
+            var buildParametersContext = new BuildParametersContext(buildParameters);
+            m_BuildContext.SetContextObject(buildParametersContext);
+
+            // 创建构建任务
+            List<IGameBuildTask> tasks = new List<IGameBuildTask>
+            {
+                new TaskPrepare(),
+            };
+            switch(buildParameters.buildMode)
+            {
+                case GameBuilderSetting.BuildMode.Bundles:
+                    SetBuildBundleTasks(tasks);
+                    break;
+                case GameBuilderSetting.BuildMode.Player:
+                    SetBuildPlayerTasks(tasks);
+                    break;
+                case GameBuilderSetting.BuildMode.BundlesAndPlayer:
+                    SetBuildBundleTasks(tasks);
+                    SetBuildPlayerTasks(tasks);
+                    break;
+                default:
+                    throw new System.Exception($"should never get here");
+            }
+
+            // 执行构建任务
+            var buildResult = BuildRunner.Run(tasks, m_BuildContext);
+            if (buildResult.Success)
+            {
+                buildResult.OutputPackageDirectory = AssetBundleBuilderHelper.GetDefaultOutputRoot();
+                Debug.Log($"{buildParameters.buildMode} pipeline build succeed !");
+            }
+            else
+            {
+                Debug.LogWarning($"{buildParameters.buildMode} pipeline build failed !");
+                Debug.LogError($"Build task failed : {buildResult.FailedTask}");
+                Debug.LogError($"Build task error : {buildResult.FailedInfo}");
+            }
+            return buildResult;
+        }
+
+        /// <summary>
+        /// 设置构建资源包的任务列表
+        /// </summary>
+        /// <param name="tasks"></param>
+        static private void SetBuildBundleTasks(List<IGameBuildTask> tasks)
+        {
+            List<IGameBuildTask> bundleTasks = new List<IGameBuildTask>
+            {
+                new TaskBuildBundleMap(),           // 准备构建的内容，分析资源的依赖关系
+                new TaskBuildAssetBundles(),        // 执行构建
+                new TaskVerifyBuildResult(),        // 验证打包结果
+                new TaskUpdateBuildInfo(),          // 根据打包结果更新数据
+                new TaskCreateManifest(),           // 创建清单
+                new TaskCopyToStreamingAssets(),    // 拷贝文件到Streaming
+            };
+            tasks.AddRange(bundleTasks);
+        }
+
+        /// <summary>
+        /// 设置构建Player的任务列表
+        /// </summary>
+        /// <param name="tasks"></param>
+        static private void SetBuildPlayerTasks(List<IGameBuildTask> tasks)
+        {
+            List<IGameBuildTask> playerTasks = new List<IGameBuildTask>
+            {
+                new TaskSetupPlayerSetting(),       // 设置PlayerSetting
+                new TaskBuildPlayer(),              // 构建Player
+                new TaskRestorePlayerSetting(),     // 还原PlayerSetting
+            };
+            tasks.AddRange(playerTasks);
         }
 
         static public void cmdBuildGame()
@@ -64,7 +151,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             SetOverridePara(ref setting.playerSetting.compressWithLz4HC,            "CompressWithLz4HC");
             SetOverridePara(ref setting.playerSetting.strictMode,                   "PlayerStrictMode");
             SetOverridePara(ref setting.playerSetting.useIL2CPP,                    "useIL2CPP");
-            SetOverridePara(ref setting.playerSetting.il2CppCompilerConfiguration,  "CompilerConfiguration");
             SetOverridePara(ref setting.playerSetting.useMTRendering,               "UseMTRendering");
             SetOverridePara(ref setting.playerSetting.buildAppBundle,               "BuildAppBundle");
             SetOverridePara(ref setting.playerSetting.createSymbols,                "CreateSymbols");

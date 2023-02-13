@@ -295,7 +295,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 {
                     if (instance.MenuTree.Selection.SelectedValue != null)
                     {
-                        AssetBundleCollectorSettingData.RemoveConfig(instance.MenuTree.Selection.SelectedValue as AssetBundleCollectorConfig);
+                        AssetBundleCollectorSettingData.RemoveConfig(((ConfigPanel)instance.MenuTree.Selection.SelectedValue).config as AssetBundleCollectorConfig);
                         instance.ForceMenuTreeRebuild();
                     }
                 }

@@ -26,12 +26,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             if (buildTargetGroup == BuildTargetGroup.Android || buildTargetGroup == BuildTargetGroup.iOS)
             {
                 PlayerSettings.SetScriptingBackend(buildTargetGroup, para.cachedUseIL2CPP ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
-
-                if (para.cachedUseIL2CPP)
-                {
-                    PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, para.cachedIl2CppCompilerConfigureation);
-                }
-
                 PlayerSettings.SetMobileMTRendering(buildTargetGroup, para.cachedUseMTRendering);
                 PlayerSettings.MTRendering = para.cachedUseMTRendering;
 

@@ -27,18 +27,12 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
             // cache player settings
             para.cachedUseIL2CPP = PlayerSettings.GetScriptingBackend(buildTargetGroup) == ScriptingImplementation.IL2CPP;
-            para.cachedIl2CppCompilerConfigureation = PlayerSettings.GetIl2CppCompilerConfiguration(buildTargetGroup);
             para.cachedUseMTRendering = PlayerSettings.GetMobileMTRendering(buildTargetGroup);
             para.cachedBuildAppBundle = EditorUserBuildSettings.buildAppBundle;
             para.cachedCreateSymbols = EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Disabled;
             para.cachedMacroDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
 
             PlayerSettings.SetScriptingBackend(buildTargetGroup, para.useIL2CPP ? ScriptingImplementation.IL2CPP : ScriptingImplementation.Mono2x);
-
-            if (para.useIL2CPP)
-            {
-                PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, para.il2CppCompilerConfiguration);
-            }
 
             PlayerSettings.SetMobileMTRendering(buildTargetGroup, para.useMTRendering);
             PlayerSettings.MTRendering = para.useMTRendering;

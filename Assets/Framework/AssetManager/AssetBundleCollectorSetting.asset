@@ -57,9 +57,3 @@ MonoBehaviour:
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
-  - ConfigName: Default ConfigName
-    ConfigDesc: 
-    Groups: []
-  - ConfigName: Default ConfigName
-    ConfigDesc: 
-    Groups: []

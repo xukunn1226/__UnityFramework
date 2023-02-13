@@ -86,20 +86,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     names.Add(scene.path);
                     break;
                 }
-            }
-            else if (para.bOverrideBuildScenes)
-            {
-                foreach (var scenePath in para.overrideBuildScenes)
-                {
-                    if (AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath) == null)
-                    {
-                        Debug.LogWarning($"Can't find SceneAsset at [{scenePath}]");
-                        continue;
-                    }
-
-                    names.Add(scenePath);
-                }
-            }
+            }            
             else
             {
                 foreach (var scene in EditorBuildSettings.scenes)

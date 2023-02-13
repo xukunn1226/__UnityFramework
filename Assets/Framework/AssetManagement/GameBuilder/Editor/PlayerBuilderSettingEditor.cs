@@ -16,7 +16,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
         SerializedProperty              m_strictModeProp;
         SerializedProperty              m_releaseNativeProp;
         SerializedProperty              m_useIL2CPPProp;
-        SerializedProperty              m_compilerConfiguration;
         SerializedProperty              m_useMTRenderingProp;
         SerializedProperty              m_buildAppBundleProp;
         SerializedProperty              m_createSymbolsProp;
@@ -27,8 +26,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
         SerializedProperty              m_keyaliasPassProp;
         SerializedProperty              m_macroDefinesProp;
         SerializedProperty              m_excludedDefinesProp;
-        SerializedProperty              m_bOverrideBuildScenesProp;
-        SerializedProperty              m_overrideBuildScenesProp;
         SerializedProperty              m_clearRenderPipelineAssetProp;
 
         AppVersion                      m_AppVersion;
@@ -43,7 +40,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             m_strictModeProp            = serializedObject.FindProperty("strictMode");
             m_releaseNativeProp         = serializedObject.FindProperty("releaseNative");
             m_useIL2CPPProp             = serializedObject.FindProperty("useIL2CPP");
-            m_compilerConfiguration     = serializedObject.FindProperty("il2CppCompilerConfiguration");
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
             m_buildAppBundleProp        = serializedObject.FindProperty("buildAppBundle");
             m_createSymbolsProp         = serializedObject.FindProperty("createSymbols");
@@ -56,9 +52,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             m_macroDefinesProp          = serializedObject.FindProperty("macroDefines");
             m_excludedDefinesProp       = serializedObject.FindProperty("excludedDefines");
             m_clearRenderPipelineAssetProp = serializedObject.FindProperty("clearRenderPipelineAsset");
-
-            m_bOverrideBuildScenesProp  = serializedObject.FindProperty("bOverrideBuildScenes");
-            m_overrideBuildScenesProp   = serializedObject.FindProperty("overrideBuildScenes");            
         }
 
         void OnEnable()
@@ -140,19 +133,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
         private void DrawBuildScenes()
         {
             EditorGUILayout.LabelField("Scenes In Build", EditorStyles.largeLabel);
-
-            if(!m_developmentProp.boolValue)
-            {
-                EditorGUILayout.HelpBox("发布release版本时，仅发布Build Settings中第一个激活的场景", MessageType.Info);
-            }
-
-            m_bOverrideBuildScenesProp.boolValue = EditorGUILayout.Toggle(new GUIContent("Override Build Scenes"), m_bOverrideBuildScenesProp.boolValue, EditorStyles.toggle);
-
-            EditorGUI.BeginDisabledGroup(!m_bOverrideBuildScenesProp.boolValue);
-            EditorGUILayout.PropertyField(m_overrideBuildScenesProp);
-            EditorGUI.EndDisabledGroup();
-
-            EditorGUI.BeginDisabledGroup(m_bOverrideBuildScenesProp.boolValue);
             GUILayout.BeginVertical(new GUIStyle("HelpBox"));
             {
                 for (int i = 0; i < EditorBuildSettings.scenes.Length; ++i)
@@ -176,7 +156,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 }
             }
             GUILayout.EndVertical();
-            EditorGUI.EndDisabledGroup();
         }
 
         static private List<EditorBuildSettingsScene> CopyEditorBuildSettingsScene()
@@ -238,14 +217,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
                 m_releaseNativeProp.boolValue = EditorGUILayout.Toggle("ReleaseNative", m_releaseNativeProp.boolValue);
                 m_useIL2CPPProp.boolValue = EditorGUILayout.Toggle("UseIL2CPP", m_useIL2CPPProp.boolValue);
-
-                EditorGUI.BeginDisabledGroup(!m_useIL2CPPProp.boolValue);
-                // ((PlayerBuilderSetting)target).il2CppCompilerConfiguration = (Il2CppCompilerConfiguration)EditorGUILayout.EnumPopup("CompilerConfiguration", ((PlayerBuilderSetting)target).il2CppCompilerConfiguration);
-                Il2CppCompilerConfiguration cc = (Il2CppCompilerConfiguration)m_compilerConfiguration.enumValueFlag;
-                cc = (Il2CppCompilerConfiguration)EditorGUILayout.EnumFlagsField("CompilerConfiguration", cc);
-                m_compilerConfiguration.enumValueFlag = (int)cc;
-				
-                EditorGUI.EndDisabledGroup();
 
                 m_useMTRenderingProp.boolValue = EditorGUILayout.Toggle("UseMTRendering", m_useMTRenderingProp.boolValue);
 

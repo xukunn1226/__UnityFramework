@@ -376,7 +376,7 @@ namespace Framework.Core
         }
 
 #if UNITY_EDITOR        
-        [UnityEditor.MenuItem("Test/Foo")]
+        //[UnityEditor.MenuItem("Test/Foo")]
         public static void Test()
         {
             byte v1 = 1;
