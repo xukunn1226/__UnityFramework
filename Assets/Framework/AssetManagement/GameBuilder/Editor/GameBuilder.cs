@@ -43,7 +43,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
             // 创建构建任务
             List<IGameBuildTask> tasks = new List<IGameBuildTask>
-            {
+            {                
                 new TaskPrepare(),
             };
             switch(buildParameters.buildMode)
@@ -86,6 +86,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             List<IGameBuildTask> bundleTasks = new List<IGameBuildTask>
             {
+                new TaskPreprocessBuildBundles(),   // 执行自定义的构建任务
                 new TaskBuildBundleMap(),           // 准备构建的内容，分析资源的依赖关系
                 new TaskBuildAssetBundles(),        // 执行构建
                 new TaskVerifyBuildResult(),        // 验证打包结果
@@ -104,6 +105,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         {
             List<IGameBuildTask> playerTasks = new List<IGameBuildTask>
             {
+                new TaskPreprocessBuildPlayer(),    // 执行自定义的构建任务
                 new TaskSetupPlayerSetting(),       // 设置PlayerSetting
                 new TaskBuildPlayer(),              // 构建Player
                 new TaskRestorePlayerSetting(),     // 还原PlayerSetting

@@ -272,11 +272,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   render: {fileID: 2039237573}
   textures:
-  - {fileID: 2800000, guid: 0c37a428e2e32cd44ad09d8651d6d603, type: 3}
-  - {fileID: 2800000, guid: 0a5fd76889c1b5247bf02d4ea7fb6202, type: 3}
-  - {fileID: 2800000, guid: 7873626c8931254408d17af4358ead9c, type: 3}
-  - {fileID: 2800000, guid: 55793d500bc954f45a0bf6d84fe7349a, type: 3}
+  - {fileID: 2800000, guid: a5409b56435ef4e43aa8e643a6861de7, type: 3}
+  - {fileID: 2800000, guid: 5414b765b9adc48418d9113fd28c8620, type: 3}
+  - {fileID: 2800000, guid: 21d3209c375e5af46b93f94e3a34aad8, type: 3}
+  - {fileID: 2800000, guid: 3c44430b14db4664baaf1a1fdf37e737, type: 3}
   copyTexMethod: 0
+  linear: 0
 --- !u!65 &2039237572
 BoxCollider:
   m_ObjectHideFlags: 0

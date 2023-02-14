@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Framework.AssetManagement.Runtime;
 using UnityEditor.Build;
+using Framework.AssetManagement.AssetEditorWindow;
 
 namespace Application.Editor
 {
@@ -34,6 +35,14 @@ namespace Application.Editor
             public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
             {
                 OnPostprocessBundleBuild();
+            }
+        }
+
+        class BuildConfigProcessor : IPreprocessBuildBundle
+        {
+            public void Run(BuildContext context)
+            {
+                DoRun();
             }
         }
 
