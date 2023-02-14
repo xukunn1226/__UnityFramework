@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Framework.Core;
-using UnityEditor.Build.Reporting;
+using System.IO;
+#if UNITY_IOS
+using UnityEditor.iOS.Xcode;
+#endif
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
@@ -226,27 +229,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             SetOverridePara(ref overridePara, command, defaultValue);
         }
 
-        static private void SetOverridePara(ref Il2CppCompilerConfiguration overridePara, string command)
-        {
-            string defaultValue = string.Empty;
-            if (CommandLineReader.GetCommand(command, ref defaultValue))
-            {
-                string lowerValue = defaultValue.ToLower();
-                if(lowerValue == "debug")
-                {
-                    overridePara = Il2CppCompilerConfiguration.Debug;
-                }
-                else if(lowerValue == "release")
-                {
-                    overridePara = Il2CppCompilerConfiguration.Release;
-                }
-                else if(lowerValue == "master")
-                {
-                    overridePara = Il2CppCompilerConfiguration.Master;
-                }
-            }
-        }
-
         static private void SetOverridePara(ref GameBuilderSetting.BuildMode overridePara, string command, GameBuilderSetting.BuildMode defaultValue)
         {
             int buildMode = (int)defaultValue;
@@ -270,5 +252,82 @@ namespace Framework.AssetManagement.AssetEditorWindow
         //         overridePara = (PlayerBuilderSetting.VersionChangedMode)versionMode;
         //     }
         // }
+
+        private static void CopyStreamingAssetsToCustomPackage()
+        {
+            string targetPath = @"Assets/CustomAssetPacks.androidpack";
+            string streamingAssetPath = @"Assets/StreamingAssets";
+
+            // step1. 重新创建CustomAssetPacks.androidpack
+            if (System.IO.Directory.Exists(targetPath))
+            {
+                System.IO.Directory.Delete(targetPath, true);
+            }
+            System.IO.Directory.CreateDirectory(targetPath);
+
+            // step2. 重新创建build.gradle
+            string text = @"apply plugin: 'com.android.asset-pack'
+assetPack {
+    packName = ""CustomAssetPacks""
+    dynamicDelivery {
+        deliveryType = ""install-time""
+    }
+}";
+            System.IO.File.WriteAllText($"{targetPath}/build.gradle", text);
+
+            // step3. 把StreamingAssets移至CustomAssetPacks.androidpack
+            Framework.Core.Editor.EditorUtility.CopyDirectory(streamingAssetPath, targetPath);
+            System.IO.Directory.Delete(streamingAssetPath, true);
+
+            AssetDatabase.Refresh();
+        }
+
+#if UNITY_IOS
+            [PostProcessBuildAttribute(1)]
+            public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+            {
+                //为ios xcode工程增加编译选项-lz，-w
+                if (target == BuildTarget.iOS)
+                {
+                    PBXProject project = new PBXProject();
+                    string sPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+                    project.ReadFromFile(sPath);
+                    var frameworkGUID = project.GetUnityFrameworkTargetGuid();
+                    project.AddBuildProperty(frameworkGUID, "OTHER_LDFLAGS", "-lz");
+                    project.AddBuildProperty(frameworkGUID, "OTHER_LDFLAGS", "-w");
+                    File.WriteAllText(sPath, project.WriteToString());
+                }
+            }
+#endif
+        
+        [MenuItem("Tools/Check scripts compilation &r")]
+        static public void BuildMinorBundle()
+        {
+            var options = BuildAssetBundleOptions.None;
+            string outputPath = "Assets/Temp";
+            if(!Directory.Exists(outputPath))
+            {
+                Directory.CreateDirectory(outputPath);
+            }
+            File.Delete(outputPath + "/test_script");
+            File.Delete(outputPath + "/test_script.manifest");
+            AssetBundleBuild[] abbs = new AssetBundleBuild[1];
+            AssetBundleBuild abb = new AssetBundleBuild();
+            abb.assetBundleName = "test_script";
+            abb.assetNames = new string[1];
+            abb.assetNames[0] = "assets/res/tech/core/gamedebug.prefab";
+            abbs[0] = abb;
+            var manifest = BuildPipeline.BuildAssetBundles(outputPath, abbs, options, EditorUserBuildSettings.activeBuildTarget);
+            if(manifest != null)
+            {
+                Debug.Log($"Success to compile scripts");
+            }
+            else
+            {
+                Debug.LogError($"Failed to compile scripts");
+                if(UnityEngine.Application.isBatchMode)
+                    UnityEditor.EditorApplication.Exit(-1);
+            }
+        }
     }
 }

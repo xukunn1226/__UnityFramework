@@ -39,7 +39,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
             if (buildTargetGroup == BuildTargetGroup.Android)
             {
-                PlayerSettings.Android.targetArchitectures = para.useIL2CPP ? AndroidArchitecture.All : AndroidArchitecture.ARMv7;
+                PlayerSettings.Android.targetArchitectures = para.useIL2CPP ? AndroidArchitecture.ARM64 | AndroidArchitecture.ARMv7 : AndroidArchitecture.ARMv7;
                 EditorUserBuildSettings.buildAppBundle = para.buildAppBundle;
                 EditorUserBuildSettings.androidCreateSymbols = para.createSymbols ? AndroidCreateSymbols.Debugging : AndroidCreateSymbols.Disabled;
                 PlayerSettings.Android.bundleVersionCode = buildNumber;
@@ -67,6 +67,17 @@ namespace Framework.AssetManagement.AssetEditorWindow
             }
 
             string finalMacroDefines = string.Join(";", macroSet.ToArray());
+
+            // 内置的特殊宏
+            if (finalMacroDefines.Contains("ZGAME_OPENGLES_ONLY"))
+            {
+                PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, false);
+                
+                PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new GraphicsDeviceType[]
+                {
+                    GraphicsDeviceType.OpenGLES3
+                });
+            }
             PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, finalMacroDefines.Trim(new char[] { ';' }));
 
             CacheQualityRenderPipelineAsset(para);
@@ -78,6 +89,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <param name="para"></param>
         private void CacheQualityRenderPipelineAsset(PlayerBuilderSetting para)
         {
+            // 编辑器下打包不执行
+            if(!UnityEngine.Application.isBatchMode)
+                return;
+                
             if (!para.clearRenderPipelineAsset)
                 return;
 

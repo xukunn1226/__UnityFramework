@@ -51,6 +51,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         private void RestoreQualityRenderPipelineAsset(PlayerBuilderSetting para)
         {
+            // 编辑器下打包不执行
+            if(!UnityEngine.Application.isBatchMode)
+                return;
+
             if (!para.clearRenderPipelineAsset)
                 return;
 
