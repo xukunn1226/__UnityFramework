@@ -187,46 +187,46 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         private void DrawDeploymentSetting()
         {
-            m_isForceUpdate = EditorGUILayout.Toggle("强更版本", m_isForceUpdate);
+            // m_isForceUpdate = EditorGUILayout.Toggle("强更版本", m_isForceUpdate);
 
-            EditorGUILayout.LabelField("AppVersion");
-            GUILayout.BeginVertical(new GUIStyle("HelpBox"));
-            EditorGUI.BeginDisabledGroup(true);
-            int mainVersion = EditorGUILayout.IntField("MainVersion", m_AppVersion.MainVersion, GUILayout.Width(400));
-            int minorVersion = EditorGUILayout.IntField("MinorVersion", m_AppVersion.MinorVersion, GUILayout.Width(400));
-            int revision = EditorGUILayout.IntField("Revision", m_AppVersion.Revision, GUILayout.Width(400));
-            EditorGUILayout.IntField("Build Number", m_AppVersion.BuildNumber, GUILayout.Width(400));
-            EditorGUI.EndDisabledGroup();
-            EditorGUI.BeginDisabledGroup(m_isForceUpdate);
-                m_HotfixNumber = Mathf.Max(1, EditorGUILayout.IntField("HotfixNumber", m_HotfixNumber, GUILayout.Width(400)));
-            EditorGUI.EndDisabledGroup();
-            GUILayout.EndVertical();
+            // EditorGUILayout.LabelField("AppVersion");
+            // GUILayout.BeginVertical(new GUIStyle("HelpBox"));
+            // EditorGUI.BeginDisabledGroup(true);
+            // int mainVersion = EditorGUILayout.IntField("MainVersion", m_AppVersion.MainVersion, GUILayout.Width(400));
+            // int minorVersion = EditorGUILayout.IntField("MinorVersion", m_AppVersion.MinorVersion, GUILayout.Width(400));
+            // int revision = EditorGUILayout.IntField("Revision", m_AppVersion.Revision, GUILayout.Width(400));
+            // EditorGUILayout.IntField("Build Number", m_AppVersion.BuildNumber, GUILayout.Width(400));
+            // EditorGUI.EndDisabledGroup();
+            // EditorGUI.BeginDisabledGroup(m_isForceUpdate);
+            //     m_HotfixNumber = Mathf.Max(1, EditorGUILayout.IntField("HotfixNumber", m_HotfixNumber, GUILayout.Width(400)));
+            // EditorGUI.EndDisabledGroup();
+            // GUILayout.EndVertical();
 
-            string deployVersion = string.Format($"{mainVersion}.{minorVersion}.{revision}");
-            if(!m_isForceUpdate)
-                deployVersion = string.Format($"{deployVersion}.{m_HotfixNumber}");
+            // string deployVersion = string.Format($"{mainVersion}.{minorVersion}.{revision}");
+            // if(!m_isForceUpdate)
+            //     deployVersion = string.Format($"{deployVersion}.{m_HotfixNumber}");
 
-            string error = AppVersion.Check(deployVersion);
-            if(!string.IsNullOrEmpty(error))
-            {
-                GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
-                style.normal.textColor = Color.red;
-                EditorGUILayout.LabelField(error, style);
-            }
+            // string error = AppVersion.Check(deployVersion);
+            // if(!string.IsNullOrEmpty(error))
+            // {
+            //     GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
+            //     style.normal.textColor = Color.red;
+            //     EditorGUILayout.LabelField(error, style);
+            // }
 
-            string directory = string.IsNullOrEmpty(error) ? deployVersion : "X.X.X";
-            string dstPath = string.Format($"{VersionDefines.DEPLOYMENT_ROOT_PATH}/{VersionDefines.DEPLOYMENT_BACKUP_FOLDER}/{Utility.GetPlatformName()}/{directory}");
-            EditorGUILayout.LabelField("备份目录", dstPath);
+            // string directory = string.IsNullOrEmpty(error) ? deployVersion : "X.X.X";
+            // string dstPath = string.Format($"{VersionDefines.DEPLOYMENT_ROOT_PATH}/{VersionDefines.DEPLOYMENT_BACKUP_FOLDER}/{Utility.GetPlatformName()}/{directory}");
+            // EditorGUILayout.LabelField("备份目录", dstPath);
 
-            string patchPath = string.Format($"{VersionDefines.DEPLOYMENT_ROOT_PATH}/{VersionDefines.cdnPatchDataPath}/{Utility.GetPlatformName()}/{directory}");
-            EditorGUILayout.LabelField("补丁目录", patchPath);
+            // string patchPath = string.Format($"{VersionDefines.DEPLOYMENT_ROOT_PATH}/{VersionDefines.cdnPatchDataPath}/{Utility.GetPlatformName()}/{directory}");
+            // EditorGUILayout.LabelField("补丁目录", patchPath);
 
-            EditorGUI.BeginDisabledGroup(!string.IsNullOrEmpty(error));
-            if (GUILayout.Button("Deploy", EditorStyles.toolbarButton))
-            {
-                Deployment.Run(VersionDefines.DEPLOYMENT_ROOT_PATH, deployVersion);
-            }
-            EditorGUI.EndDisabledGroup();
+            // EditorGUI.BeginDisabledGroup(!string.IsNullOrEmpty(error));
+            // if (GUILayout.Button("Deploy", EditorStyles.toolbarButton))
+            // {
+            //     Deployment.Run(VersionDefines.DEPLOYMENT_ROOT_PATH, deployVersion);
+            // }
+            // EditorGUI.EndDisabledGroup();
         }
 
         //private void DrawBackdoorSetting()
