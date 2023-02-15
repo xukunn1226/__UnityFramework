@@ -171,9 +171,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
             build.assetBundleVariant = string.Empty;
             build.assetNames = GetBuildinAssetPaths();
             build.addressableNames = new string[build.assetNames.Length];
-            for(int i = 0; i < build.assetNames.Length; ++i)
+            for (int i = 0; i < build.assetNames.Length; ++i)
             {
-                build.addressableNames[i] = System.IO.Path.GetFileName(build.assetNames[i]).ToLower();
+                build.addressableNames[i] = build.assetNames[i].ToLower();
             }
             return build;
         }

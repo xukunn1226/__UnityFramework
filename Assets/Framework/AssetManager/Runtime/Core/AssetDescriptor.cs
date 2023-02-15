@@ -31,11 +31,12 @@ namespace Framework.AssetManagement.Runtime
         {
             get
             {
-                if(!string.IsNullOrEmpty(m_AddressableName))
-                    return m_AddressableName;
-                
-                m_AddressableName = System.IO.Path.GetFileName(assetPath);
-                return m_AddressableName;
+                //if(!string.IsNullOrEmpty(m_AddressableName))
+                //    return m_AddressableName;
+
+                //m_AddressableName = System.IO.Path.GetFileName(assetPath);
+                //return m_AddressableName;
+                return assetPath;
             }
         }
     }
