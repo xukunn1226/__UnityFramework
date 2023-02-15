@@ -454,7 +454,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         public static string GetProjectPath()
         {
-            string projectPath = Path.GetDirectoryName(Application.dataPath);
+            string projectPath = Path.GetDirectoryName(UnityEngine.Application.dataPath);
             return GetRegularPath(projectPath);
         }
 

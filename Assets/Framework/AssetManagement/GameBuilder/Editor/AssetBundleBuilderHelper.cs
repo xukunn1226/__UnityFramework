@@ -62,7 +62,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// </summary>
         public static string GetStreamingAssetsFolderPath()
         {
-            return $"{Application.dataPath}/StreamingAssets/{AssetManagerSettings.StreamingAssetsBuildinFolder}/";
+            return $"{UnityEngine.Application.dataPath}/StreamingAssets/{AssetManagerSettings.StreamingAssetsBuildinFolder}/";
         }
 
         /// <summary>

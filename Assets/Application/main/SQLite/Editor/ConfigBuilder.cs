@@ -28,6 +28,9 @@ namespace Application.Editor
         static private string       m_Info;
         static private bool         m_SkipTheFile;
 
+        /// <summary>
+        /// 构建Player之前生成配置数据库、代码，且把db复制到streaming
+        /// </summary>
         private class BuildProcessor : IPreprocessBuildWithReport
         {
             public int callbackOrder { get { return 50; } }
@@ -38,6 +41,9 @@ namespace Application.Editor
             }
         }
 
+        /// <summary>
+        /// 构建资源包前生成配置数据库及代码
+        /// </summary>
         class BuildConfigProcessor : IPreprocessBuildBundle
         {
             public void Run(BuildContext context)
