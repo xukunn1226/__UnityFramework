@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using Framework.AssetManagement;
+using Framework.AssetManagement.Runtime;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
@@ -72,8 +72,17 @@ namespace Framework.AssetManagement.AssetEditorWindow
     {
         string IPackRule.GetBundleName(PackRuleData data)
         {
-            string collectPath = EditorTools.GetRegularPath(System.IO.Path.GetDirectoryName(data.CollectPath));
-            return EditorTools.GetRegularPath(collectPath).Replace('/', '_');
+            string collectPath = data.CollectPath;
+			if (AssetDatabase.IsValidFolder(collectPath))
+			{
+				string bundleName = collectPath;
+				return EditorTools.GetRegularPath(bundleName).Replace('/', '_');
+			}
+			else
+			{
+				string bundleName = StringHelper.RemoveExtension(collectPath);
+				return EditorTools.GetRegularPath(bundleName).Replace('/', '_');
+			}
         }
     }
 

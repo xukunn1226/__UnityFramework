@@ -74,7 +74,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
             buildParams.BundleCompression = buildParametersContext.gameBuilderSetting.bundleSetting.useLZ4Compress ? UnityEngine.BuildCompression.LZ4 : UnityEngine.BuildCompression.Uncompressed;
             buildParams.UseCache = !buildParametersContext.gameBuilderSetting.bundleSetting.rebuildBundles;
-            if (buildParametersContext.gameBuilderSetting.bundleSetting.DisableWriteTypeTree)
+            if (buildParametersContext.gameBuilderSetting.bundleSetting.disableWriteTypeTree)
                 buildParams.ContentBuildFlags |= ContentBuildFlags.DisableWriteTypeTree;
             buildParams.AppendHash = buildParametersContext.gameBuilderSetting.bundleSetting.appendHash;
             return buildParams;

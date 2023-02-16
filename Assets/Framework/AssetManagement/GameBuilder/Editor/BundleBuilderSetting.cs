@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Framework.AssetManagement.Runtime;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
@@ -14,6 +15,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// 资源包收集配置名
         /// </summary>
         public string           bundleCollectorConfigName;
+
+        /// <summary>
+        /// 资源包的名称样式
+        /// </summary>
+        public EOutputNameStyle nameStyle = EOutputNameStyle.HashName;
         
         /// <summary>
         /// 是否使用LZ4压缩模式
@@ -26,7 +32,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// 是否在bundle name附加hash
         /// </summary>
         public bool             appendHash;
-        public bool             DisableWriteTypeTree;
+        public bool             disableWriteTypeTree;
 
         public override string ToString()
         {
@@ -34,7 +40,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             sb.Append(string.Format($"useLZ4Compress: {useLZ4Compress}  \n"));
             sb.Append(string.Format($"rebuildBundles: {rebuildBundles}  \n"));
             sb.Append(string.Format($"appendHash: {appendHash}  \n"));
-            sb.Append(string.Format($"DisableWriteTypeTree: {DisableWriteTypeTree}  \n"));
+            sb.Append(string.Format($"DisableWriteTypeTree: {disableWriteTypeTree}  \n"));
             sb.Append(string.Format($"bundleCollectorConfigName: {bundleCollectorConfigName}  \n"));
             return sb.ToString();
         }

@@ -95,6 +95,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 new TaskVerifyBuildResult(),        // 验证打包结果
                 new TaskUpdateBuildInfo(),          // 根据打包结果更新数据
                 new TaskCreateManifest(),           // 创建清单
+                new TaskCreateReport(),             // 创建构建报告
                 new TaskCopyToStreamingAssets(),    // 拷贝文件到Streaming
             };
             tasks.AddRange(bundleTasks);

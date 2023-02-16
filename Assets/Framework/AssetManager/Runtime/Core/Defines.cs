@@ -27,8 +27,8 @@ namespace Framework.AssetManagement.Runtime
     /// </summary>
     public enum EBundleLoadMethod
     {
-        LoadFromFile        = 0,
-        LoadFromFileOffset  = 1,        // 加解密用此方式
+        LoadFromFile        = 0,        // 正常加载，不需要解密
+        LoadFromFileOffset  = 1,        // 通过文件偏移来解密加载
         //LoadFromMemory = 2,             // 暂不支持，此方式的最大作用是加解密，但安卓平台下需要解压至persistent data path，不实用，故废弃
     }
 
@@ -79,4 +79,27 @@ namespace Framework.AssetManagement.Runtime
         Normal,
         High,
     }
+
+    public enum EOutputNameStyle
+	{
+		/// <summary>
+		/// 000000000000000f000000000000000
+		/// </summary>
+		HashName = 1,
+
+		/// <summary>
+		/// 000000000000000f000000000000000.ab
+		/// </summary>
+		HashName_Extension = 2,
+
+		/// <summary>
+		/// bundle_name_000000000000000f000000000000000
+		/// </summary>
+		BundleName_HashName = 3,
+
+		/// <summary>
+		/// bundle_name_000000000000000f000000000000000.ab
+		/// </summary>
+		BundleName_HashName_Extension = 4,
+	}
 }

@@ -281,10 +281,19 @@ namespace Framework.AssetManagement.AssetEditorWindow
             {
                 EditorGUILayout.BeginHorizontal();
                 string text = AssetBundleCollectorSettingData.isDirty ? "保存*" : "保存";
+                Color cachedClr = GUI.color;
+                if(AssetBundleCollectorSettingData.isDirty)
+                {                    
+                    GUI.color = Color.green;
+                }
                 if (GUILayout.Button(new GUIContent(text), GUILayoutOptions.Width(120)))
                 {
                     AssetBundleCollectorSettingData.SaveFile();
                     instance.ForceMenuTreeRebuild();
+                }
+                if(AssetBundleCollectorSettingData.isDirty)
+                {
+                    GUI.color = cachedClr;
                 }
                 if (GUILayout.Button(new GUIContent("Add Config"), GUILayoutOptions.Width(150)))
                 {

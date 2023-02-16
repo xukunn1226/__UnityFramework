@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 1_BundleBuilderSetting
   m_EditorClassIdentifier: 
   bundleCollectorConfigName: buildin
+  nameStyle: 1
   useLZ4Compress: 1
   rebuildBundles: 1
   appendHash: 0

@@ -12,7 +12,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
         SerializedProperty  m_bundleSettingProp;
         SerializedProperty  m_playerSettingProp;
         SerializedProperty  m_buildTargetProp;
-        SerializedProperty  m_buildModeProp;
 
         Editor              m_bundleSettingEditor;
         Editor              m_playerSettingEditor;
@@ -26,7 +25,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             m_bundleSettingProp = serializedObject.FindProperty("bundleSetting");
             m_playerSettingProp = serializedObject.FindProperty("playerSetting");
             m_buildTargetProp   = serializedObject.FindProperty("buildTarget");
-            m_buildModeProp     = serializedObject.FindProperty("buildMode");
             m_AppVersion        = AppVersion.EditorLoad();
         }
 
@@ -165,19 +163,16 @@ namespace Framework.AssetManagement.AssetEditorWindow
         private void DrawBuildButton()
         {
             EditorGUILayout.BeginHorizontal();
-            {                
-                m_buildModeProp.enumValueIndex = (int)(GameBuilderSetting.BuildMode)EditorGUILayout.EnumPopup("", (GameBuilderSetting.BuildMode)m_buildModeProp.enumValueIndex, GUILayout.Width(140));
-                GameBuilderSetting.BuildMode buildMode = (GameBuilderSetting.BuildMode)m_buildModeProp.enumValueIndex;
-
+            {
                 GUIStyle boldStyle = new GUIStyle("ButtonLeft");
                 boldStyle.fontStyle = FontStyle.Bold;
                 boldStyle.alignment = TextAnchor.MiddleCenter;
 
                 Color cachedClr = GUI.color;
                 GUI.color = Color.green;
-                if (GUILayout.Button("Build Game", boldStyle))
+                if (GUILayout.Button("Build Bundles And Player", boldStyle))
                 {
-                    ((GameBuilderSetting)target).buildMode = buildMode;
+                    ((GameBuilderSetting)target).buildMode = GameBuilderSetting.BuildMode.BundlesAndPlayer;
                     GameBuilder.BuildGame((GameBuilderSetting)target);
                 }
                 GUI.color = cachedClr;

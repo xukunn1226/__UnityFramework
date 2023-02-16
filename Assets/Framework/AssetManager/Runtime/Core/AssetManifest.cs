@@ -260,23 +260,23 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public static string CreateBundleFileName(int nameStype, string bundleName, string fileHash)
 		{
-			if (nameStype == 1)
+			if ((EOutputNameStyle)nameStype == EOutputNameStyle.HashName)
 			{
 				//return fileHash;
 				return bundleName;		// TODO: 暂时用bundleName
 			}
-			else if (nameStype == 2)
+			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.HashName_Extension)
 			{
 				string tempFileExtension = System.IO.Path.GetExtension(bundleName);
 				return $"{fileHash}{tempFileExtension}";
 			}
-			else if (nameStype == 3)
+			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.BundleName_HashName)
 			{
 				string tempFileExtension = System.IO.Path.GetExtension(bundleName);
 				string tempBundleName = bundleName.Replace('/', '_').Replace(tempFileExtension, "");
 				return $"{tempBundleName}_{fileHash}";
 			}
-			else if (nameStype == 4)
+			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.BundleName_HashName_Extension)
 			{
 				string tempFileExtension = System.IO.Path.GetExtension(bundleName);
 				string tempBundleName = bundleName.Replace('/', '_').Replace(tempFileExtension, "");
