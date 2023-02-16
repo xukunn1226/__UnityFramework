@@ -52,7 +52,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
     {
         string IPackRule.GetBundleName(PackRuleData data)
         {
-            string collectPath = EditorTools.GetRegularPath(System.IO.Path.GetDirectoryName(data.CollectPath));
+            if(AssetDatabase.IsValidFolder(data.CollectPath) == false)
+                throw new System.Exception($"PackTopDirectory: unsupported collector path {data.CollectPath}");
+
+            string collectPath = EditorTools.GetRegularPath(data.CollectPath);            
             string assetPath = data.AssetPath.Replace(collectPath, string.Empty).TrimStart('/');
             string[] splits = assetPath.Split('/');
             if(splits.Length > 0)
