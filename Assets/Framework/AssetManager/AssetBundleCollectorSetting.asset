@@ -53,7 +53,7 @@ MonoBehaviour:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectPath: Assets/Res/Characters
+      - CollectPath: Assets/Res/Desert_01
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll

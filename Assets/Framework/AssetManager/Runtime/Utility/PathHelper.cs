@@ -31,7 +31,8 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public static string MakeStreamingLoadPath(string path)
 		{
-            return StringHelper.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, AssetManagerSettings.StreamingAssetsBuildinFolder, path);
+            // return StringHelper.Format("{0}/{1}/{2}", UnityEngine.Application.streamingAssetsPath, AssetManagerSettings.StreamingAssetsBuildinFolder, path);
+			return StringHelper.Format("{0}/{1}", UnityEngine.Application.streamingAssetsPath, path);
 		}
 
 		/// <summary>

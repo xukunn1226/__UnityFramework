@@ -18,11 +18,19 @@ namespace Framework.AssetManagement.AssetEditorWindow
         private List<AssetBundleCollector> m_PendingRemovedCollector = new List<AssetBundleCollector>();
 
         [MenuItem("Tools/Assets Management/资源包收集工具")]
-        private static void OpenWindow()
+        public static void OpenWindow()
         {
-            var window = GetWindow<AssetBundleCollectorWindow>();
-            window.position = GUIHelper.GetEditorWindowRect().AlignCenter(800, 600);
-            window.titleContent = new GUIContent("资源包收集工具");
+            if(instance == null)
+            {
+                var window = GetWindow<AssetBundleCollectorWindow>();
+                window.position = GUIHelper.GetEditorWindowRect().AlignCenter(800, 600);
+                window.titleContent = new GUIContent("资源包收集工具");
+            }
+            else            
+            {
+                instance.Show(true);
+                instance.Focus();
+            }
         }
 
         static private AssetBundleCollectorWindow s_Instance;

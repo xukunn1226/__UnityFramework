@@ -65,11 +65,23 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         private void DrawCollectorConfigs()
         {
+            EditorGUILayout.BeginHorizontal();
+
             List<AssetBundleCollectorConfig> list = AssetBundleCollectorSettingData.Instance.Configs;
             int index = list.FindIndex(item => { return item.ConfigName == m_bundleCollectorConfigNameProp.stringValue; });
             string[] displayNames = list.Select(item => item.ConfigName).ToArray();
             index = EditorGUILayout.Popup("资源收集器", Mathf.Max(0, index), displayNames);
             m_bundleCollectorConfigNameProp.stringValue = list[index].ConfigName;
+
+            Color cachedClr = GUI.color;
+            GUI.color = Color.cyan;
+            if(GUILayout.Button("打开收集工具", GUILayout.Width(120)))
+            {
+                AssetBundleCollectorWindow.OpenWindow();
+            }
+            GUI.color = cachedClr;
+
+            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawBuildAssetBundleOptions()

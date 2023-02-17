@@ -27,6 +27,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
             {
                 EditorUtility.RevealInFinder(buildResult.OutputPackageDirectory);
             }
+
+            if(UnityEngine.Application.isBatchMode && buildResult.Success == false)
+            {
+                EditorApplication.Exit(1);
+            }
         }
         
         static private GameBuildResult Run(GameBuilderSetting buildParameters)
