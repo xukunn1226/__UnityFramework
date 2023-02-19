@@ -14,13 +14,17 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <summary>
         /// 收集路径，文件夹或单个资源文件
         /// </summary>        
-        public string           CollectPath;
+        public string                       CollectPath;
 
-        public ECollectorType   CollectorType   = ECollectorType.MainAssetCollector;
+        public ECollectorType               CollectorType   = ECollectorType.MainAssetCollector;
 
-        public string           PackRuleName    = nameof(PackDirectory);
+        public string                       PackRuleName    = nameof(PackDirectory);
 
-        public string           FilterRuleName  = nameof(CollectAll);
+        public string                       FilterRuleName  = nameof(CollectAll);
+
+        public string                       OtherCollectPath;
+
+        public AssetBundleCollectorGroup    Group { get; private set; }
 
         public bool IsValid()
         {
@@ -60,6 +64,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         public List<CollectAssetInfo> GetAllCollectAssets(AssetBundleCollectorGroup group)
         {
+            Group = group;
+
             Dictionary<string, CollectAssetInfo> result = new Dictionary<string, CollectAssetInfo>(1000);
             bool isRawAsset = PackRuleName == nameof(PackRawFile);
 
@@ -112,7 +118,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         private CollectAssetInfo CreateCollectAssetInfo(AssetBundleCollectorGroup group, string assetPath, bool isRawAsset)
         {
             string bundleName = GetBundleName(group, assetPath);
-            CollectAssetInfo collectAssetInfo = new CollectAssetInfo(CollectorType, bundleName, assetPath, isRawAsset);
+            CollectAssetInfo collectAssetInfo = new CollectAssetInfo(CollectorType, bundleName, assetPath, isRawAsset, this);
             collectAssetInfo.DependTree = CreateDependTree(assetPath);
 
             return collectAssetInfo;
@@ -223,12 +229,28 @@ namespace Framework.AssetManagement.AssetEditorWindow
             return false;
         }
 
-        private string GetBundleName(AssetBundleCollectorGroup group, string assetPath)
+        public string GetBundleName(AssetBundleCollectorGroup group, string assetPath)
         {
             // 根据规则设置获取资源包名称
             IPackRule packRuleInstance = AssetBundleCollectorSettingData.GetPackRuleInstance(PackRuleName);
             string bundleName = packRuleInstance.GetBundleName(new PackRuleData(assetPath, CollectPath, group.GroupName));
             return EditorTools.GetRegularPath(bundleName).ToLower();
+        }
+
+        /// <summary>
+        /// 获取最终的打包资源路径
+        /// 注意：仅打包规则为PackToOtherCollector的使用
+        /// </summary>
+        /// <param name="assetPath"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public string GetPackToOtherAssetPath(string assetPath)
+        {
+            if (PackRuleName != nameof(PackToOtherCollector))
+                throw new Exception($"should never get here! Only support Pack Rule: PackToOtherCollector");
+
+            string relativePath = assetPath.Substring(CollectPath.Length + 1);
+            return string.Format($"{OtherCollectPath}/{relativePath}");
         }
     }
 

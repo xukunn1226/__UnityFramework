@@ -76,5 +76,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 Debug.LogWarning($"Failed to remove AssetBundleCollector: {collector.CollectPath}");
             }
         }
+
+        public AssetBundleCollector FindCollector(string collectPath)
+        {
+            return Collectors.Find(item => string.Compare(item.CollectPath, collectPath, true) == 0);
+        }
     }
 }

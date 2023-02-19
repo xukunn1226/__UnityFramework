@@ -49,6 +49,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     typeof(PackCollector),
                     typeof(PackGroup),
                     typeof(PackRawFile),
+                    typeof(PackToOtherCollector),
                 };
 
                 var customTypes = EditorTools.GetAssignableTypes(typeof(IPackRule));

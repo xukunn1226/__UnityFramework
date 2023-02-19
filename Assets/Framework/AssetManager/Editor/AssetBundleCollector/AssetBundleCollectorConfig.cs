@@ -53,14 +53,50 @@ namespace Framework.AssetManagement.AssetEditorWindow
             return sb.ToString();
         }
 
-        public List<CollectAssetInfo> GetAllCollectAssets()
+        public AssetBundleCollector FindCollector(string collectPath)
         {
-            List<CollectAssetInfo> result = new List<CollectAssetInfo>();
             foreach(var group in Groups)
             {
-                result.AddRange(group.GetAllCollectAssets());
+                var collector = group.FindCollector(collectPath);
+                if(collector != null)
+                    return collector;
             }
-            return result;
+            return null;
+        }
+
+        public List<CollectAssetInfo> GetAllCollectAssets()
+        {
+            List<CollectAssetInfo> results = new List<CollectAssetInfo>();
+            foreach(var group in Groups)
+            {
+                results.AddRange(group.GetAllCollectAssets());
+            }
+
+            // 针对符合PackToOtherCollector打包规则的资源，在所有资源收集后更新其BundleName
+            string ruleName = nameof(PackToOtherCollector);
+            foreach(var assetInfo in results)
+            {
+                if (assetInfo.Collector == null)
+                    continue;
+                if (assetInfo.Collector.PackRuleName != ruleName)
+                    continue;
+
+                // 找到引用的其他收集器
+                var referencedCollector = FindCollector(assetInfo.Collector.OtherCollectPath);
+                if (referencedCollector == null)
+                {
+                    Debug.LogWarning($"Not found the referenced collector: {assetInfo.Collector.OtherCollectPath}");
+                    continue;       // 没有找到引用的收集器，则不执行重定向
+                }
+
+                // 重定位后的资源路径
+                string finalAssetPath = assetInfo.Collector.GetPackToOtherAssetPath(assetInfo.AssetPath);
+
+                // 重新计算BundleName
+                string newBundleName = referencedCollector.GetBundleName(referencedCollector.Group, finalAssetPath);
+                assetInfo.SetNewBundleName(newBundleName);
+            }
+            return results;
         }
 
         public AssetBundleCollectorGroup AddGroup(string groupName, string groupDesc)

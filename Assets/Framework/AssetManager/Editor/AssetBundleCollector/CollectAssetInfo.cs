@@ -33,6 +33,12 @@ namespace Framework.AssetManagement.AssetEditorWindow
         public int UsedBy { set; get; }
 
         /// <summary>
+        /// 资源隶属的收集器
+        /// 注意：
+        /// </summary>
+        public AssetBundleCollector Collector { get; private set; }
+
+        /// <summary>
         /// 依赖的资源树列表
         /// </summary>
         public class DependNode
@@ -43,21 +49,18 @@ namespace Framework.AssetManagement.AssetEditorWindow
         }
         public DependNode DependTree = new DependNode();
 
-        public CollectAssetInfo(ECollectorType collectorType, string bundleName, string assetPath, bool isRawAsset)
+        public CollectAssetInfo(ECollectorType collectorType, string bundleName, string assetPath, bool isRawAsset, AssetBundleCollector collector = null)
         {
             CollectorType = collectorType;
             BundleName = bundleName;
             AssetPath = assetPath;
             IsRawAsset = isRawAsset;
+            Collector = collector;
         }
 
-        /// <summary>
-        /// 复制BundleName
-        /// </summary>
-        /// <param name="other"></param>
-        public void CloneBundleName(CollectAssetInfo other)
+        public void SetNewBundleName(string newBundleName)
         {
-            BundleName = other.BundleName;
+            BundleName = newBundleName;
         }
 
         public List<DependNode> GetDirectDependNodes()

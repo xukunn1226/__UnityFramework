@@ -23,37 +23,50 @@ MonoBehaviour:
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
+        OtherCollectPath: 
       - CollectPath: Assets/Res
         CollectorType: 0
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
+        OtherCollectPath: 
       - CollectPath: Assets/Application/main/XLua/Lua
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
+        OtherCollectPath: 
       - CollectPath: Assets/Settings
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
+        OtherCollectPath: 
       - CollectPath: Assets/Framework/AnimationInstancing/Art
         CollectorType: 0
         PackRuleName: PackTopDirectory
         FilterRuleName: CollectAll
+        OtherCollectPath: 
       - CollectPath: Packages/com.unity.render-pipelines.universal/Shaders
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
+        OtherCollectPath: 
       - CollectPath: Packages/com.unity.render-pipelines.universal/Textures
         CollectorType: 0
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
+        OtherCollectPath: 
   - ConfigName: ConfigName
     ConfigDesc: 
     Groups:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectPath: Assets/Res/Desert_01
+      - CollectPath: Assets/Res/Characters
         CollectorType: 0
-        PackRuleName: PackCollector
+        PackRuleName: PackTopDirectory
         FilterRuleName: CollectAll
+        OtherCollectPath: 
+      - CollectPath: Assets/Res/FX/Characters
+        CollectorType: 0
+        PackRuleName: PackToOtherCollector
+        FilterRuleName: CollectAll
+        OtherCollectPath: Assets/Res/Characters

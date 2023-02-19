@@ -162,14 +162,14 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 {
                     // 找到可合并的资源
                     bMerged = true;
-                    assetInfo.CloneBundleName(parentAssetInfo);
+                    assetInfo.SetNewBundleName(parentAssetInfo.BundleName);
                     break;
                 }
                 parent = parent.parent;
             }
             if (bMerged == false)
             { // 未找到可合并的资源，则与顶层资源合并
-                assetInfo.CloneBundleName(topAsset);
+                assetInfo.SetNewBundleName(topAsset.BundleName);
             }
 
             foreach (var child in childNode.children)
