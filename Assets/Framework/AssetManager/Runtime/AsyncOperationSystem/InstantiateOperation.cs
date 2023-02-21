@@ -12,18 +12,14 @@ namespace Framework.AssetManagement.Runtime
 			Clone,
 			Done,
 		}
-        private ESteps m_Steps = ESteps.None;
-		private readonly AssetOperationHandle m_Handle;
-		private readonly Vector3 m_Position;
-		private readonly Quaternion m_Rotation;
-		private readonly Transform m_Parent;
+        private ESteps  m_Steps = ESteps.None;
+
+		private readonly AssetOperationHandle   m_Handle;
+		private readonly Vector3                m_Position;
+		private readonly Quaternion             m_Rotation;
+		private readonly Transform              m_Parent;
 		
-
-		/// <summary>
-		/// 实例化的游戏对象
-		/// </summary>
 		public GameObject Result = null;
-
 
 		internal InstantiateOperation(AssetOperationHandle handle, Vector3 position, Quaternion rotation, Transform parent)
 		{
@@ -32,6 +28,7 @@ namespace Framework.AssetManagement.Runtime
 			m_Rotation = rotation;
 			m_Parent = parent;
 		}
+
 		internal override void Start()
 		{
 			m_Steps = ESteps.Clone;
@@ -59,7 +56,7 @@ namespace Framework.AssetManagement.Runtime
 				{
 					m_Steps = ESteps.Done;
 					status = EOperationStatus.Failed;
-					lastError = $"{nameof(AssetOperationHandle.assetObject)} is null.";
+					lastError = $"{nameof(AssetOperationHandle.assetInfo.assetPath)} is null.";
 					return;
 				}
 

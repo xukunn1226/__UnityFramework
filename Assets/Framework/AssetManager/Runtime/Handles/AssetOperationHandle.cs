@@ -64,7 +64,7 @@ namespace Framework.AssetManagement.Runtime
 
         public GameObject Instantiate(Transform parent = null)
         {
-            m_Inst = InstantiateSyncInternal(parent);
+            m_Inst = InstantiateSyncInternal(Vector3.zero, Quaternion.identity, parent);
             return m_Inst;
         }
 
@@ -81,11 +81,21 @@ namespace Framework.AssetManagement.Runtime
             return UnityEngine.Object.Instantiate(provider.assetObject as GameObject, position, rotation, parent);
         }
 
-        private GameObject InstantiateSyncInternal(Transform parent)
+        public InstantiateOperation InstantiateAsync(Transform parent = null)
         {
-            if (!isValid || provider.assetObject == null)
-                return null;
-            return UnityEngine.Object.Instantiate(provider.assetObject as GameObject, parent);
+            return InstantiateAsyncInternal(Vector3.zero, Quaternion.identity, parent);
+        }
+
+        public InstantiateOperation InstantiateAsync(Vector3 position, Quaternion rotation, Transform parent = null)
+        {
+            return InstantiateAsyncInternal(position, rotation, parent);
+        }
+
+        private InstantiateOperation InstantiateAsyncInternal(Vector3 position, Quaternion rotation, Transform parent)
+        {
+            InstantiateOperation operation = new InstantiateOperation(this, position, rotation, parent);
+            AsyncOperationSystem.StartOperation(operation);
+            return operation;
         }
     }
 }
