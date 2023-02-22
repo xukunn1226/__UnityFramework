@@ -65,7 +65,7 @@ namespace Framework.AssetManagement.Runtime
 		/// <summary>
 		/// 忽略的文件类型
 		/// </summary>
-		public static readonly string[] IgnoreFileExtensions = { "", ".so", ".dll", ".cs", ".js", ".boo", ".meta", ".cginc", ".asmref" };
+		public static readonly string[] IgnoreFileExtensions = { "", ".so", ".dll", ".cs", ".js", ".boo", ".meta", ".cginc", ".asmref", ".spriteatlas" };
 
         /// <summary>
         /// 忽略的文件夹

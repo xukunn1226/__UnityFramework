@@ -19,6 +19,9 @@ public class AM_Startup : MonoBehaviour
     GameObject m_Instance1;
     GameObject m_Instance2;
 
+    AssetOperationHandle m_Op8;
+    GameObject m_Instance8;
+
     IEnumerator Start()
     {
         InitializeParameters initializeParameters = new InitializeParameters()
@@ -27,7 +30,7 @@ public class AM_Startup : MonoBehaviour
             LocationToLower = false,
             AssetLoadingMaxNumber = int.MaxValue
         };
-        yield return AssetManagerEx.Initialize(initializeParameters);
+        yield return AssetManagerEx.Initialize(initializeParameters);        
     }
 
     private void OnDestroy()
@@ -123,20 +126,31 @@ public class AM_Startup : MonoBehaviour
         {
             TestCase7_Release();
         }
+
+        // test case8
+        y += 100;
+        if (GUI.Button(new Rect(100, y, 120, 60), "TestCase8"))
+        {
+            StartCoroutine(TestCase8_LoadPrefabAsync());
+        }
+        if (GUI.Button(new Rect(300, y, 120, 60), "Release"))
+        {
+            TestCase8_Release();
+        }
     }
 
-    /// /////////////////////////////////////// ²âÊÔÍ¬²½¡¢Òì²½¼ÓÔØ
+    /// /////////////////////////////////////// ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ì²½ï¿½ï¿½ï¿½ï¿½
     private void TestCase1_LoadAssetAsync()
     {
         m_Op1 = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/checker.png");
-        //m_Op1.WaitForAsyncComplete();   // ²âÊÔÒì²½±äÍ¬²½
+        //m_Op1.WaitForAsyncComplete();   // ï¿½ï¿½ï¿½ï¿½ï¿½ì²½ï¿½ï¿½Í¬ï¿½ï¿½
         m_Op1.Completed += OnCompleted_TestCase1;
     }
 
     private void TestCase1_Release()
     {
         m_Op1.Release();
-        m_Op1.Release();    // ²âÊÔÖØ¸´ÊÍ·Å
+        m_Op1.Release();    // ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½Í·ï¿½
     }
 
     private void OnCompleted_TestCase1(AssetOperationHandle op)
@@ -153,7 +167,7 @@ public class AM_Startup : MonoBehaviour
 
 
 
-    /// /////////////////////////////////////// ²âÊÔ»Øµ÷ÖĞ´´½¨»òÏú»Ù¾ä±ú
+    /// /////////////////////////////////////// ï¿½ï¿½ï¿½Ô»Øµï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¾ï¿½ï¿½
     private void TestCase2_InvokeException()
     {
         m_Op2 = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/m_building_bar_01_01.prefab");
@@ -168,13 +182,13 @@ public class AM_Startup : MonoBehaviour
 
     private void OnCompleted_TestCase2(AssetOperationHandle op)
     {
-        // »Øµ÷ÖĞÔÙ´Î¼ÓÔØ×Ô¼º£¬PASS
+        // ï¿½Øµï¿½ï¿½ï¿½ï¿½Ù´Î¼ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½PASS
         AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/m_building_bar_01_01.prefab");
 
-        // »Øµ÷ÖĞÊÍ·Å×Ô¼º£¬PASS
+        // ï¿½Øµï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½PASS
         //op.Release();
 
-        // »Øµ÷ÖĞ¼ÓÔØÆäËû×ÊÔ´£¬PASS
+        // ï¿½Øµï¿½ï¿½Ğ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½PASS
         //AssetManagerEx.LoadAssetAsync<Texture2D>("Assets/Res/T_Building_Bar_01_01_D.tga");
 
 
@@ -191,7 +205,7 @@ public class AM_Startup : MonoBehaviour
 
 
 
-    /// /////////////////////////////////////// ²âÊÔÍ¬Ò»Ö¡Í¬Ê±Í¬²½¼°Òì²½¼ÓÔØ×ÊÔ´
+    /// /////////////////////////////////////// ï¿½ï¿½ï¿½ï¿½Í¬Ò»Ö¡Í¬Ê±Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ì²½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´
     private void TestCase3_SyncAndAsyncOneFrame()
     {
         m_Op31 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");
@@ -221,7 +235,7 @@ public class AM_Startup : MonoBehaviour
 
 
 
-    /// /////////////////////////////////////// ²âÊÔ¼ÓÔØÊ§°Ü
+    /// /////////////////////////////////////// ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
     private void TestCase4_FailedToLoad()
     {
         m_Op4 = AssetManagerEx.LoadAssetAsync<Texture2D>("Assets/Res/Checker111111.png");
@@ -247,13 +261,13 @@ public class AM_Startup : MonoBehaviour
 
 
 
-    /// /////////////////////////////////////// ²âÊÔÒì²½¼ÓÔØºóÁ¢¼´ÊÍ·Å
+    /// /////////////////////////////////////// ï¿½ï¿½ï¿½ï¿½ï¿½ì²½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½
     private void TestCase5_ReleaseImmediately()
     {
         m_Op5 = AssetManagerEx.LoadAssetAsync<Texture2D>("assets/res/checker.png");
         m_Op5.Completed += OnCompleted_TestCase5;
 
-        // ÉĞÎ´¼ÓÔØÍê¾ÍÊÍ·Å£¬Êµ¼ÊÉÏ»áµÈ×ÊÔ´¼ÓÔØÍêºóÔÙÊÍ·Å£¬ÇÒ×¢²áµÄ»Øµ÷ÒÑÊÍ·ÅÁË£¬²»»á´¥·¢
+        // ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·Å£ï¿½Êµï¿½ï¿½ï¿½Ï»ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·Å£ï¿½ï¿½ï¿½×¢ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½á´¥ï¿½ï¿½
         m_Op5.Release();
     }
 
@@ -276,7 +290,7 @@ public class AM_Startup : MonoBehaviour
 
 
 
-    /// /////////////////////////////////////// ²âÊÔ£ºÏÈºó¼ÓÔØÁ½¸ö×ÊÔ´£¬ËûÃÇÓĞ²¿·Ö¹²Í¬ÒÀÀµµÄbundle
+    /// /////////////////////////////////////// ï¿½ï¿½ï¿½Ô£ï¿½ï¿½Èºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ²ï¿½ï¿½Ö¹ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½bundle
     private void TestCase6_MultiLoad_1()
     {
         m_Op61 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/111/cube.prefab");
@@ -329,7 +343,7 @@ public class AM_Startup : MonoBehaviour
 
 
 
-    /// /////////////////////////////////////// ²âÊÔÍ¬Ò»Ö¡¶ÔÍ¬Ò»¸öBundle¼ÓÔØ
+    /// /////////////////////////////////////// ï¿½ï¿½ï¿½ï¿½Í¬Ò»Ö¡ï¿½ï¿½Í¬Ò»ï¿½ï¿½Bundleï¿½ï¿½ï¿½ï¿½
     private void TestCase7_LoadTheSameBundle()
     {
         m_Op71 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/222/sphere.prefab");
@@ -370,6 +384,27 @@ public class AM_Startup : MonoBehaviour
         else
         {
             Debug.LogError($"Failed to load {op.assetInfo.assetPath}");
+        }
+    }
+
+    IEnumerator TestCase8_LoadPrefabAsync()
+    {
+        m_Op8 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");
+        yield return m_Op8;
+        
+        // InstantiateOperationä¼šè‡ªåŠ¨å›æ”¶ï¼Œä¸éœ€è¦æŒæœ‰
+        var instOp = m_Op8.InstantiateAsync();
+        yield return instOp;
+        m_Instance8 = instOp.Result;
+    }
+
+    private void TestCase8_Release()
+    {
+        Destroy(m_Instance8);
+
+        if(m_Op8 != null)
+        {
+            m_Op8.Release();
         }
     }
 }
