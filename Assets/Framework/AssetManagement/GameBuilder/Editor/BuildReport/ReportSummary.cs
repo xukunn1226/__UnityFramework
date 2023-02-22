@@ -79,5 +79,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
 		/// 最大的依赖资源包数
 		/// </summary>
 		public int MaxDependBundlesCount;
+
+        /// <summary>
+        /// 平均资源包大小
+        /// </summary>
+        public long AverageBundleSize;
 	}
 }

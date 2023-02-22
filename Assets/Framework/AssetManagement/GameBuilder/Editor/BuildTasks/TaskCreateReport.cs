@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -50,7 +50,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
 				buildReport.Summary.AllBundleTotalSize = GetAllBundleSize(assetManifest);
 				buildReport.Summary.RawBundleTotalCount = GetRawBundleCount(assetManifest);
 				buildReport.Summary.RawBundleTotalSize = GetRawBundleSize(assetManifest);
-			}
+                buildReport.Summary.AverageDependBundlesCount = GetAverageDependBundleCount(assetManifest);
+                buildReport.Summary.MaxDependBundlesCount = GetMaxDependBundleCount(assetManifest);
+                buildReport.Summary.AverageBundleSize = GetAverageBundleSize(assetManifest);
+            }
 
 			// 资源对象列表
 			buildReport.AssetInfos = new List<ReportAssetInfo>(assetManifest.AssetList.Count);
@@ -200,9 +203,35 @@ namespace Framework.AssetManagement.AssetEditorWindow
 			return fileBytes;
 		}
 
-		private float GetAverageDependBundlesCount(AssetManifest manifest)
+		private float GetAverageDependBundleCount(AssetManifest manifest)
 		{
-			return 0;
+            int allDependBundleTotal = 0;
+            foreach(var assetDesc in manifest.AssetList)
+            {
+                allDependBundleTotal += assetDesc.dependIDs.Length;
+            }
+			return allDependBundleTotal * 1.0f / manifest.AssetList.Count;
 		}
+
+        private int GetMaxDependBundleCount(AssetManifest manifest)
+        {
+            int maxCount = -1;
+            foreach(var assetDesc in manifest.AssetList)
+            {
+                if(assetDesc.dependIDs.Length > maxCount)
+                    maxCount = assetDesc.dependIDs.Length;
+            }
+            return maxCount;
+        }
+
+        private long GetAverageBundleSize(AssetManifest manifest)
+        {
+            long size = 0;
+            foreach(var bundleDesc in manifest.BundleList)
+            {
+                size += bundleDesc.fileSize;
+            }
+            return (long)(size * 1.0f / manifest.BundleList.Count);
+        }
 	}
 }
