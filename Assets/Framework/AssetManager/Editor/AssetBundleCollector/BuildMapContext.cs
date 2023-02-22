@@ -8,6 +8,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
     {
         public string Error;
 
+        /// <summary>
+        /// 参与构建的资源总数
+        /// </summary>
         public int AssetFileCount;
 
         public List<BuildBundleInfo> BuildBundleInfos = new List<BuildBundleInfo>(1000);

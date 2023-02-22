@@ -35,24 +35,49 @@ namespace Framework.AssetManagement.AssetEditorWindow
 		/// </summary>
 		public string BuildPackageVersion;
 
-		/// <summary>
-		/// 加密服务类名称
-		/// </summary>
-		// public string EncryptionServicesClassName;
-
 		// 构建参数
 		public EOutputNameStyle OutputNameStyle;
 		public BuildCompression CompressOption;
 		public bool DisableWriteTypeTree;
 
-		// 构建结果
+		/// <summary>
+		/// 参与构建的资源总数
+		/// </summary>
 		public int AssetFileTotalCount;
+
+		/// <summary>
+		/// 写入清单的资源总数
+		/// </summary>
 		public int MainAssetTotalCount;
+
+		/// <summary>
+		/// 资源包总数
+		/// </summary>
 		public int AllBundleTotalCount;
+
+		/// <summary>
+		/// 资源包总大小，包含原生文件
+		/// </summary>
 		public long AllBundleTotalSize;
-		// public int EncryptedBundleTotalCount;
-		// public long EncryptedBundleTotalSize;
+
+		/// <summary>
+		/// 原生资源包总数
+		/// </summary>
 		public int RawBundleTotalCount;
+
+		/// <summary>
+		/// 原生资源包总大小
+		/// </summary>
 		public long RawBundleTotalSize;
+
+		/// <summary>
+		/// 平均资源包依赖数
+		/// </summary>
+		public float AverageDependBundlesCount;
+
+		/// <summary>
+		/// 最大的依赖资源包数
+		/// </summary>
+		public int MaxDependBundlesCount;
 	}
 }

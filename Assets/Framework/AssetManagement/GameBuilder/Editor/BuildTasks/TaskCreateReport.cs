@@ -199,5 +199,10 @@ namespace Framework.AssetManagement.AssetEditorWindow
 			}
 			return fileBytes;
 		}
+
+		private float GetAverageDependBundlesCount(AssetManifest manifest)
+		{
+			return 0;
+		}
 	}
 }
