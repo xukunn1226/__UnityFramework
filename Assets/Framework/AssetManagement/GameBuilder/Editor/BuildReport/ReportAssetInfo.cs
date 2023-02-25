@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -27,15 +27,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
 		/// 所属资源包的大小
 		/// </summary>
 		public long MainBundleSize;
-		
-		/// <summary>
-		/// 依赖的资源包名称列表
-		/// </summary>
+
+        /// <summary>
+        /// 依赖的资源包名称列表
+        /// </summary>
 		public List<string> DependBundles = new List<string>();
 
-		/// <summary>
-		/// 依赖的资源路径列表
-		/// </summary>
-		public List<string> DependAssets = new List<string>();
+        /// <summary>
+        /// 依赖的资源路径列表
+        /// </summary>
+        public List<string> DependAssets = new List<string>();
 	}
 }

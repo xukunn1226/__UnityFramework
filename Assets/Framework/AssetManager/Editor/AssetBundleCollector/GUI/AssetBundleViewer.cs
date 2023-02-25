@@ -91,7 +91,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
             [OnInspectorGUI]
             [LabelText("资源包名")]
-            public string BundleName { get { return m_Context.BundleName; } }
+            public string BundleName { get { return m_Context?.BundleName; } }
 
             [OnInspectorGUI]
             private void ShowAssetsList()
@@ -131,15 +131,15 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
             [OnInspectorGUI]
             [LabelText("资源名")]
-            public string AssetPath { get { return m_Context.AssetPath; } }
+            public string AssetPath { get { return m_Context?.AssetPath; } }
 
             [OnInspectorGUI]
             [LabelText("所属资源包")]
-            public string MainBundleName { get { return m_Context.MainBundleName; } }
+            public string MainBundleName { get { return m_Context?.MainBundleName; } }
 
             [OnInspectorGUI]
             [LabelText("收集类型")]
-            public string CollectorType { get { return m_Context.CollectorType.ToString(); } }
+            public string CollectorType { get { return m_Context?.CollectorType.ToString(); } }
 
             [OnInspectorGUI]
             private void ShowAssetsList()

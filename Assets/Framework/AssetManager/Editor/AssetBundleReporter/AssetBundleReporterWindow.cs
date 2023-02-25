@@ -51,7 +51,9 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         private ReportBuild m_Reporter;
         private SummaryViewer m_SummaryViewer;
-        
+        private AssetViewer m_AssetViewer;
+        private BundleViewer m_BundleViewer;
+
         protected override void OnBeginDrawEditors()
         {            
             base.OnBeginDrawEditors();
@@ -73,12 +75,19 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
         protected override void DrawEditors()
         {
-            if(m_Reporter != null)
+            base.DrawEditors();
+            if (m_Reporter != null)
             {
-                switch(m_ViewMode)
+                switch (m_ViewMode)
                 {
                     case ViewMode.Summary:
                         m_SummaryViewer?.Draw();
+                        break;
+                    case ViewMode.Asset:
+                        m_AssetViewer?.Draw();
+                        break;
+                    case ViewMode.Bundle:
+                        m_BundleViewer?.Draw();
                         break;
                 }
             }
@@ -92,6 +101,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 m_Reporter = ReportBuild.Deserialize(jsonData);
 
                 m_SummaryViewer = new SummaryViewer(m_Reporter);
+                m_AssetViewer = new AssetViewer(m_Reporter);
+                m_BundleViewer = new BundleViewer(m_Reporter);
             }
         }
     }
