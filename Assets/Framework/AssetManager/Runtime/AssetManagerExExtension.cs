@@ -40,6 +40,30 @@ namespace Framework.AssetManagement.Runtime
             DebugCheckInitialize();
             return s_AssetSystem.LoadAssetAsync(assetPath, type, priority);
         }
+        
+        static public PrefabOperationHandle LoadPrefab(string assetPath, Transform parent = null)
+        {
+            DebugCheckInitialize();
+            return s_AssetSystem.LoadPrefab(assetPath, parent, Vector3.zero, Quaternion.identity);
+        }
+
+        static public PrefabOperationHandle LoadPrefab(string assetPath, Transform parent, Vector3 pos, Quaternion rot)
+        {
+            DebugCheckInitialize();
+            return s_AssetSystem.LoadPrefab(assetPath, parent, pos, rot);
+        }
+
+        static public PrefabOperationHandle LoadPrefabAsync(string assetPath, Transform parent = null, ELoadingPriority priority = ELoadingPriority.Normal)
+        {
+            DebugCheckInitialize();
+            return s_AssetSystem.LoadPrefabAsync(assetPath, parent, Vector3.zero, Quaternion.identity, priority);
+        }
+
+        static public PrefabOperationHandle LoadPrefabAsync(string assetPath, Transform parent, Vector3 pos, Quaternion rot, ELoadingPriority priority = ELoadingPriority.Normal)
+        {
+            DebugCheckInitialize();
+            return s_AssetSystem.LoadPrefabAsync(assetPath, parent, pos, rot, priority);
+        }
 
         static public SubAssetsOperationHandle LoadSubAssets<TObject>(string assetPath) where TObject : UnityEngine.Object
         {

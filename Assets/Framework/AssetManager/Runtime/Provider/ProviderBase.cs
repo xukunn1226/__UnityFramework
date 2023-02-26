@@ -17,6 +17,10 @@ namespace Framework.AssetManagement.Runtime
         public Object           assetObject             { get; protected set; }
         public Object[]         allAssetObjects         { get; protected set; }
         public Scene            sceneObject             { get; protected set; }
+        public GameObject       gameObject              { get; protected set; }
+        public Transform        parent                  { get; protected set; }
+        public Vector3          position                { get; protected set; }
+        public Quaternion       rotation                { get; protected set; }
         public EProviderStatus  wasStatus               { get; protected set; } = EProviderStatus.None;     // 上一帧的状态
         public EProviderStatus  status                  { get { return m_Status; } protected set { wasStatus = m_Status; m_Status = value; } }
         private EProviderStatus m_Status                = EProviderStatus.None;
@@ -55,18 +59,24 @@ namespace Framework.AssetManagement.Runtime
             isDestroyed = true;
         }
 
-        public T CreateHandle<T>() where T : OperationHandleBase
+        /// <summary>
+        /// 创建句柄，除了PrefabOperationHandle
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        internal T CreateHandle<T>() where T : OperationHandleBase
         {
             ++refCount;
 
-            OperationHandleBase handle = null;            
+            OperationHandleBase handle = null;
             if (typeof(T) == typeof(AssetOperationHandle))
                 handle = new AssetOperationHandle(this);
             else if (typeof(T) == typeof(SceneOperationHandle))
                 handle = new SceneOperationHandle(this);
             else if (typeof(T) == typeof(RawFileOperationHandle))
                 handle = new RawFileOperationHandle(this);
-            else if(typeof(T) == typeof(SubAssetsOperationHandle))
+            else if (typeof(T) == typeof(SubAssetsOperationHandle))
                 handle = new SubAssetsOperationHandle(this);
             else
                 throw new System.NotImplementedException();
@@ -74,6 +84,23 @@ namespace Framework.AssetManagement.Runtime
             m_Handlers.AddUnique(handle);
             AddDebugStackTrace(handle);
             return (T)handle;
+        }
+
+        /// <summary>
+        /// 创建适配PrefabOperationHandle的句柄
+        /// </summary>
+        /// <returns></returns>
+        internal PrefabOperationHandle CreateHandle(Transform parent, Vector3 pos, Quaternion rot)
+        {
+            ++refCount;
+
+            PrefabOperationHandle handle = new PrefabOperationHandle(this);
+            m_Handlers.AddUnique(handle);
+            AddDebugStackTrace(handle);
+            this.parent = parent;
+            this.position = pos;
+            this.rotation = rot;
+            return handle;
         }
 
         public void ReleaseHandle(OperationHandleBase handle)

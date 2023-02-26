@@ -44,7 +44,6 @@ namespace Framework.AssetManagement.Runtime
             --refCount;
         }
 
-        // TODO: 考虑边界情况，bundle未加载完时就被销毁，该如何处理？
         public void Destroy(bool forceDestroy)
         {
             if(!forceDestroy)

@@ -33,7 +33,6 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
-        internal int            id          { get; private set; }
         internal ProviderBase   provider    { get; private set; }
         public AssetInfo        assetInfo   { get; private set; }
         public bool             isDone      { get { return isValid ? provider.isDone : false; } }
@@ -57,18 +56,11 @@ namespace Framework.AssetManagement.Runtime
 
         internal OperationHandleBase(ProviderBase provider)
         {
-            this.id = MakeUniqueID();
             this.provider = provider;
             assetInfo = provider.assetInfo;
         }
 
         internal abstract void InvokeCallback();
-
-        static private int s_HanderID = 0;
-        static private int MakeUniqueID()
-        {
-            return s_HanderID++;
-        }
 
         internal void ReleaseInternal()
         {

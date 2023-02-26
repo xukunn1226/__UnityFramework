@@ -62,8 +62,9 @@ namespace Framework.AssetManagement.Runtime
         CheckBundle         = 1,        // 检测bundle的完成状态
         Loading             = 2,        // 加载资源
         Checking            = 3,        // 检测加载结果
-        Succeed             = 4,
-        Failed              = 5,
+        Instantiate         = 4,        // 实例化
+        Succeed             = 5,
+        Failed              = 6,
     }
 
     public enum EOperationStatus

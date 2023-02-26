@@ -346,9 +346,9 @@ namespace Framework.AssetManagement.Runtime
             return LoadRawFileInternal(assetInfo, true);
         }
 
-        public RawFileOperationHandle LoadRawFileAsync(string location)
+        public RawFileOperationHandle LoadRawFileAsync(string assetPath)
         {
-            AssetInfo assetInfo = ConvertLocationToAssetInfo(location, null);
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, null);
             return LoadRawFileInternal(assetInfo, false);
         }
 
@@ -478,6 +478,69 @@ namespace Framework.AssetManagement.Runtime
                 AddProvider(providerGUID, provider, priority);
             }
             return provider.CreateHandle<AssetOperationHandle>();
+        }
+
+        /// <summary>
+        /// 同步加载Prefab资源对象
+        /// </summary>
+        /// <param name="assetPath">资源的定位地址</param>
+        /// <param name="type">资源类型</param>
+        public PrefabOperationHandle LoadPrefab(string assetPath, Transform parent, Vector3 pos, Quaternion rot)
+        {
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(GameObject));
+            return LoadPrefabInternal(assetInfo, parent, pos, rot, true);
+        }
+
+        /// <summary>
+        /// 异步加载Prefab资源对象
+        /// </summary>
+        /// <param name="assetPath">资源的定位地址</param>
+        /// <param name="type">资源类型</param>
+        public PrefabOperationHandle LoadPrefabAsync(string assetPath, Transform parent, Vector3 pos, Quaternion rot, ELoadingPriority priority = ELoadingPriority.Normal)
+        {
+            AssetInfo assetInfo = ConvertLocationToAssetInfo(assetPath, typeof(GameObject));
+            return LoadPrefabInternal(assetInfo, parent, pos, rot, false, priority);
+        }
+
+        private PrefabOperationHandle LoadPrefabInternal(AssetInfo assetInfo, Transform parent, Vector3 pos, Quaternion rot, bool waitForAsyncComplete, ELoadingPriority priority = ELoadingPriority.Normal)
+        {
+#if UNITY_EDITOR
+            if (assetInfo.isValid && m_PlayMode != EPlayMode.FromEditor)
+            {
+                BundleInfo bundleInfo = bundleServices.GetBundleInfo(assetInfo);
+                if (bundleInfo.descriptor.isRawFile)
+                    throw new System.Exception($"Cannot load raw file using {nameof(LoadPrefabAsync)} method !");
+            }
+#endif
+
+            var handle = LoadPrefabAsync(assetInfo, parent, pos, rot, priority);
+            if (waitForAsyncComplete)
+                handle.WaitForAsyncComplete();
+            return handle;
+        }
+
+        private PrefabOperationHandle LoadPrefabAsync(AssetInfo assetInfo, Transform parent, Vector3 pos, Quaternion rot, ELoadingPriority priority = ELoadingPriority.Normal)
+        {
+            if (!assetInfo.isValid)
+            {
+                UnityEngine.Debug.LogError($"Failed to load prefab ! {assetInfo.lastError}");
+                CompletedProvider completedProvider = new CompletedProvider(assetInfo);
+                completedProvider.SetCompleted(assetInfo.lastError);
+                return completedProvider.CreateHandle(null, Vector3.zero, Quaternion.identity);
+            }
+
+            string providerGUID = assetInfo.guid;
+            ProviderBase provider = TryGetProvider(providerGUID);
+            if (provider == null)
+            {
+                if (m_PlayMode == EPlayMode.FromEditor)
+                    provider = new DatabasePrefabProvider(this, providerGUID, assetInfo);
+                else
+                    provider = new BundlePrefabProvider(this, providerGUID, assetInfo);
+                provider.InitSpawnDebugInfo();
+                AddProvider(providerGUID, provider, priority);
+            }
+            return provider.CreateHandle(parent, pos, rot);
         }
 
         public SubAssetsOperationHandle LoadSubAssets<TObject>(string assetPath) where TObject : UnityEngine.Object
