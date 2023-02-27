@@ -12,14 +12,14 @@ public class AM_Startup : MonoBehaviour
     AssetOperationHandle m_Op32;
     AssetOperationHandle m_Op4;
     AssetOperationHandle m_Op5;
-    AssetOperationHandle m_Op61;
-    AssetOperationHandle m_Op62;
-    AssetOperationHandle m_Op71;
-    AssetOperationHandle m_Op72;
+    PrefabOperationHandle m_Op61;
+    PrefabOperationHandle m_Op62;
+    PrefabOperationHandle m_Op71;
+    PrefabOperationHandle m_Op72;
     GameObject m_Instance1;
     GameObject m_Instance2;
 
-    AssetOperationHandle m_Op8;
+    PrefabOperationHandle m_Op8;
     GameObject m_Instance8;
 
     IEnumerator Start()
@@ -293,7 +293,7 @@ public class AM_Startup : MonoBehaviour
     /// /////////////////////////////////////// ���ԣ��Ⱥ����������Դ�������в��ֹ�ͬ������bundle
     private void TestCase6_MultiLoad_1()
     {
-        m_Op61 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/111/cube.prefab");
+        m_Op61 = AssetManagerEx.LoadPrefabAsync("assets/res/111/cube.prefab");
         m_Op61.Completed += OnCompleted_TestCase61;
     }
 
@@ -303,12 +303,12 @@ public class AM_Startup : MonoBehaviour
         m_Op61.Release();
     }
 
-    private void OnCompleted_TestCase61(AssetOperationHandle op)
+    private void OnCompleted_TestCase61(PrefabOperationHandle op)
     {
         if (op.assetObject != null)
         {
             Debug.Log($"Succeed to load {op.assetObject.name}");
-            m_Instance1 = op.Instantiate(Vector3.one, Quaternion.identity);
+            m_Instance1 = op.gameObject;
         }
         else
         {
@@ -318,7 +318,7 @@ public class AM_Startup : MonoBehaviour
 
     private void TestCase6_MultiLoad_2()
     {
-        m_Op62 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/222/sphere.prefab");
+        m_Op62 = AssetManagerEx.LoadPrefabAsync("assets/res/222/sphere.prefab");
         m_Op62.Completed += OnCompleted_TestCase62;
     }
 
@@ -328,12 +328,12 @@ public class AM_Startup : MonoBehaviour
         m_Op62.Release();
     }
 
-    private void OnCompleted_TestCase62(AssetOperationHandle op)
+    private void OnCompleted_TestCase62(PrefabOperationHandle op)
     {
         if (op.assetObject != null)
         {
             Debug.Log($"Succeed to load {op.assetObject.name}");
-            m_Instance2 = op.Instantiate();
+            m_Instance2 = op.gameObject;
         }
         else
         {
@@ -346,10 +346,10 @@ public class AM_Startup : MonoBehaviour
     /// /////////////////////////////////////// ����ͬһ֡��ͬһ��Bundle����
     private void TestCase7_LoadTheSameBundle()
     {
-        m_Op71 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/222/sphere.prefab");
+        m_Op71 = AssetManagerEx.LoadPrefabAsync("assets/res/222/sphere.prefab", null, Vector3.one, Quaternion.identity);
         m_Op71.Completed += OnCompleted_TestCase71;
 
-        m_Op72 = AssetManagerEx.LoadAsset<GameObject>("assets/res/111/cube.prefab");
+        m_Op72 = AssetManagerEx.LoadPrefab("assets/res/111/cube.prefab");
         m_Op72.Completed += OnCompleted_TestCase72;
     }
 
@@ -361,12 +361,12 @@ public class AM_Startup : MonoBehaviour
         m_Op72.Release();
     }
 
-    private void OnCompleted_TestCase71(AssetOperationHandle op)
+    private void OnCompleted_TestCase71(PrefabOperationHandle op)
     {
         if (op.assetObject != null)
         {
             Debug.Log($"Succeed to load {op.assetObject.name}");
-            m_Instance1 = op.Instantiate(Vector3.one, Quaternion.identity);
+            m_Instance1 = op.gameObject;
         }
         else
         {
@@ -374,12 +374,12 @@ public class AM_Startup : MonoBehaviour
         }
     }
 
-    private void OnCompleted_TestCase72(AssetOperationHandle op)
+    private void OnCompleted_TestCase72(PrefabOperationHandle op)
     {
         if (op.assetObject != null)
         {
             Debug.Log($"Succeed to load {op.assetObject.name}");
-            m_Instance2 = op.Instantiate();
+            m_Instance2 = op.gameObject;
         }
         else
         {
@@ -389,18 +389,19 @@ public class AM_Startup : MonoBehaviour
 
     IEnumerator TestCase8_LoadPrefabAsync()
     {
-        m_Op8 = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");
+        m_Op8 = AssetManagerEx.LoadPrefabAsync("assets/res/m_building_bar_01_01.prefab");
         yield return m_Op8;
+        // m_Instance8 = m_Op8.gameObject;
         
         // InstantiateOperation会自动回收，不需要持有
-        var instOp = m_Op8.InstantiateAsync();
-        yield return instOp;
-        m_Instance8 = instOp.Result;
+        // var instOp = m_Op8.InstantiateAsync();
+        // yield return instOp;
+        // m_Instance8 = instOp.Result;
     }
 
     private void TestCase8_Release()
     {
-        Destroy(m_Instance8);
+        // Destroy(m_Instance8);
 
         if(m_Op8 != null)
         {

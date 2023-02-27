@@ -94,9 +94,9 @@ public class Regular_Startup : MonoBehaviour
     // 加载Prefab
     private IEnumerator TestCase3_InstancePrefabAsync()
     {
-        var op = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");
+        var op = AssetManagerEx.LoadPrefabAsync("assets/res/m_building_bar_01_01.prefab");
         yield return op;
-        GameObject go = op.Instantiate(Vector3.zero, Quaternion.identity, null);
+        GameObject go = op.gameObject;
 
 
         //Object.Destroy(go);
@@ -106,9 +106,9 @@ public class Regular_Startup : MonoBehaviour
     // Task加载方式
     async void TestCase4_InstancePrefabAsync()
     {
-        var op = AssetManagerEx.LoadAssetAsync<GameObject>("assets/res/m_building_bar_01_01.prefab");
+        var op = AssetManagerEx.LoadPrefabAsync("assets/res/m_building_bar_01_01.prefab");
         await op.Task;
-        GameObject go = op.Instantiate(Vector3.zero, Quaternion.identity, null);
+        GameObject go = op.gameObject;
 
 
         //Object.Destroy(go);

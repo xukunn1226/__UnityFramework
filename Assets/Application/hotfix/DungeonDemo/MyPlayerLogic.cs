@@ -12,7 +12,7 @@ namespace Application.Logic
         {
             const string assetPath = "assets/res/dungeondemo/thirdpersoncontroller/prefabs/playerarmatureex.prefab";
 			//GameObject go = AssetManager.InstantiatePrefab(assetPath);
-			GameObject go = AssetManagerEx.LoadAsset<GameObject>(assetPath).Instantiate();
+			GameObject go = AssetManagerEx.LoadPrefab(assetPath).gameObject;
             MyPlayerLogic player = new MyPlayerLogic();
 			player.id = id;
             player.Init(go);

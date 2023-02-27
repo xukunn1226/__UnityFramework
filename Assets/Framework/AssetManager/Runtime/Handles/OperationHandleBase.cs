@@ -61,11 +61,13 @@ namespace Framework.AssetManagement.Runtime
         }
 
         internal abstract void InvokeCallback();
+        internal abstract void ClearCallback();
 
         internal void ReleaseInternal()
         {
             if (!isValid)
                 return;
+            ClearCallback();
             provider.ReleaseHandle(this);
             provider = null;
         }

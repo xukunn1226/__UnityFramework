@@ -19,7 +19,6 @@ namespace Framework.AssetManagement.Runtime
                 Object.Destroy(m_Inst);
                 m_Inst = null;
             }
-            ClearCallback();
             this.ReleaseInternal();
         }
 
@@ -28,7 +27,7 @@ namespace Framework.AssetManagement.Runtime
             m_Callback?.Invoke(this);
         }
 
-        public void ClearCallback()
+        internal override void ClearCallback()
         {
             m_Callback = null;
         }

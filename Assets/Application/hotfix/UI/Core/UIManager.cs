@@ -327,7 +327,7 @@ namespace Application.Logic
             //AsyncLoaderManager.Instance.AsyncLoadPrefab(def.assetPath, OnPrefabLoadCompleted, new System.Object[] { def, userData });
 
             m_UserData = new System.Object[] { def, userData };
-            var op = AssetManagerEx.LoadAssetAsync<GameObject>(def.assetPath);
+            var op = AssetManagerEx.LoadPrefabAsync(def.assetPath);
             op.Completed += OnUIPrefabCompleted;
             return false;
         }
@@ -336,7 +336,7 @@ namespace Application.Logic
         /// <summary>
         /// 资源加载完成的回调
         /// </summary>
-        private void OnUIPrefabCompleted(AssetOperationHandle op)
+        private void OnUIPrefabCompleted(PrefabOperationHandle op)
         {
             if(op.status == EOperationStatus.Failed)
             {
@@ -348,7 +348,7 @@ namespace Application.Logic
             System.Object state = data[1];
 
             PanelState ps = GetOrCreatePanel(def);
-            AddResource(ps.panel, op.Instantiate());
+            AddResource(ps.panel, op.gameObject);
             ps.isLoadRes = true;
 
             OnPostResourceLoaded(ps, data[1]);

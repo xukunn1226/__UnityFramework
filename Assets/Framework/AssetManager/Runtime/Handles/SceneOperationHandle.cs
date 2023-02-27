@@ -38,6 +38,11 @@ namespace Framework.AssetManagement.Runtime
                 m_Callback -= value;
             }
         }
+        
+        internal override void ClearCallback()
+        {
+            m_Callback = null;
+        }
 
         public bool ActivateScene()
         {

@@ -21,6 +21,11 @@ namespace Framework.AssetManagement.Runtime
             m_Callback?.Invoke(this);
         }
 
+        internal override void ClearCallback()
+        {
+            m_Callback = null;
+        }
+
         public UnityEngine.Object[] allAssetObjects { get { return isValid ? provider.allAssetObjects : null; } }
 
         public event System.Action<SubAssetsOperationHandle> Completed

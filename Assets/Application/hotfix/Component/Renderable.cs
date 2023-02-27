@@ -24,7 +24,7 @@ namespace Application.Logic
         }
 
         private string              m_AssetPath;
-        private AssetOperationHandle m_Handle;
+        private PrefabOperationHandle m_Handle;
 
         public Renderable() {}
         public Renderable(ZActor actor) : base(actor) {}
@@ -44,8 +44,8 @@ namespace Application.Logic
             if(m_Handle == null && string.IsNullOrEmpty(m_AssetPath))
             {
                 m_AssetPath = assetPath;
-                m_Handle = AssetManagerEx.LoadAsset<GameObject>(m_AssetPath);
-                renderer = m_Handle.Instantiate();
+                m_Handle = AssetManagerEx.LoadPrefab(m_AssetPath);
+                renderer = m_Handle.gameObject;
             }
             else
             {

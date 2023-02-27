@@ -22,6 +22,11 @@ namespace Framework.AssetManagement.Runtime
 			m_Callback?.Invoke(this);
 		}
 
+		internal override void ClearCallback()
+        {
+            m_Callback = null;
+        }
+
 		public event System.Action<RawFileOperationHandle> Completed
 		{
 			add

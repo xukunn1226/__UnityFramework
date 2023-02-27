@@ -6,7 +6,6 @@ namespace Framework.AssetManagement.Runtime
 {
     public class PrefabOperationHandle : OperationHandleBase
     {
-        private GameObject m_Inst;
         private System.Action<PrefabOperationHandle> m_Callback;
 
         internal PrefabOperationHandle(ProviderBase provider) : base(provider)
@@ -14,12 +13,10 @@ namespace Framework.AssetManagement.Runtime
 
         public void Release()
         {
-            if (m_Inst != null)
+            if (gameObject != null)
             {
-                Object.Destroy(m_Inst);
-                m_Inst = null;
+                Object.Destroy(gameObject);
             }
-            ClearCallback();
             this.ReleaseInternal();
         }
 
@@ -28,7 +25,7 @@ namespace Framework.AssetManagement.Runtime
             m_Callback?.Invoke(this);
         }
 
-        public void ClearCallback()
+        internal override void ClearCallback()
         {
             m_Callback = null;
         }
@@ -63,24 +60,24 @@ namespace Framework.AssetManagement.Runtime
             provider.WaitForAsyncComplete();
         }
 
-        public GameObject Instantiate(Transform parent = null)
-        {
-            m_Inst = InstantiateSyncInternal(Vector3.zero, Quaternion.identity, parent);
-            return m_Inst;
-        }
+        // public GameObject Instantiate(Transform parent = null)
+        // {
+        //     m_Inst = InstantiateSyncInternal(Vector3.zero, Quaternion.identity, parent);
+        //     return m_Inst;
+        // }
 
-        public GameObject Instantiate(Vector3 position, Quaternion rotation, Transform parent = null)
-        {
-            m_Inst = InstantiateSyncInternal(position, rotation, parent);
-            return m_Inst;
-        }
+        // public GameObject Instantiate(Vector3 position, Quaternion rotation, Transform parent = null)
+        // {
+        //     m_Inst = InstantiateSyncInternal(position, rotation, parent);
+        //     return m_Inst;
+        // }
 
-        private GameObject InstantiateSyncInternal(Vector3 position, Quaternion rotation, Transform parent)
-        {
-            if (!isValid || provider.assetObject == null)
-                return null;
-            return UnityEngine.Object.Instantiate(provider.assetObject as GameObject, position, rotation, parent);
-        }
+        // private GameObject InstantiateSyncInternal(Vector3 position, Quaternion rotation, Transform parent)
+        // {
+        //     if (!isValid || provider.assetObject == null)
+        //         return null;
+        //     return UnityEngine.Object.Instantiate(provider.assetObject as GameObject, position, rotation, parent);
+        // }
 
         //public InstantiateOperation InstantiateAsync(Transform parent = null)
         //{
