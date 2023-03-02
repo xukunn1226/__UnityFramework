@@ -77,6 +77,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             if (buildParametersContext.gameBuilderSetting.bundleSetting.disableWriteTypeTree)
                 buildParams.ContentBuildFlags |= ContentBuildFlags.DisableWriteTypeTree;
             buildParams.AppendHash = buildParametersContext.gameBuilderSetting.bundleSetting.appendHash;
+            buildParams.WriteLinkXML = true;
             return buildParams;
         }
 
