@@ -293,6 +293,7 @@ public class AM_Startup : MonoBehaviour
     /// /////////////////////////////////////// ���ԣ��Ⱥ����������Դ�������в��ֹ�ͬ������bundle
     private void TestCase6_MultiLoad_1()
     {
+        Debug.Log($"Start: {Time.frameCount}");
         m_Op61 = AssetManagerEx.LoadPrefabAsync("assets/res/111/cube.prefab");
         m_Op61.Completed += OnCompleted_TestCase61;
     }
@@ -307,7 +308,7 @@ public class AM_Startup : MonoBehaviour
     {
         if (op.assetObject != null)
         {
-            Debug.Log($"Succeed to load {op.assetObject.name}");
+            Debug.Log($"Succeed to load {op.assetObject.name}       {Time.frameCount}");
             m_Instance1 = op.gameObject;
         }
         else

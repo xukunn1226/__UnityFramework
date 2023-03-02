@@ -70,6 +70,6 @@ namespace Framework.AssetManagement.Runtime
         /// <summary>
         /// 忽略的文件夹
         /// </summary>
-        static public readonly string[] IgnoreDirectoryName = { "Temp", "Editor", "RawData", "Resources", "Examples" };
+        static public readonly string[] IgnoreDirectoryName = { "Temp", "Editor", "Scripts", "Resources", "Examples" };
     }
 }

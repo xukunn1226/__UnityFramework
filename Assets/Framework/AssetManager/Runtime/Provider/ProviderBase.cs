@@ -83,6 +83,9 @@ namespace Framework.AssetManagement.Runtime
 
             m_Handlers.AddUnique(handle);
             AddDebugStackTrace(handle);
+
+            ConditionalResetStatus();
+            
             return (T)handle;
         }
 
@@ -100,7 +103,21 @@ namespace Framework.AssetManagement.Runtime
             this.parent = parent;
             this.position = pos;
             this.rotation = rot;
+
+            ConditionalResetStatus();
+
             return handle;
+        }
+
+        /// <summary>
+        /// 在资源已加载成功情况下，如有其他加载请求则重置状态，强制沦陷一遍以达到下一帧触发回调的效果（模拟异步）
+        /// </summary>
+        protected virtual void ConditionalResetStatus()
+        {            
+            if(status == EProviderStatus.Succeed)
+            {
+                status = EProviderStatus.None;
+            }
         }
 
         public void ReleaseHandle(OperationHandleBase handle)
@@ -137,6 +154,7 @@ namespace Framework.AssetManagement.Runtime
                     try
                     {
                         handle.InvokeCallback();
+                        handle.ClearCallback();     // 触发完回调，自动回收cb
                     }
                     catch(System.Exception e)
                     {

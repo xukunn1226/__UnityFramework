@@ -86,5 +86,11 @@ namespace Framework.AssetManagement.Runtime
 			}
 #endif
 		}
+
+		protected override void ConditionalResetStatus()
+        {
+            base.ConditionalResetStatus();
+            m_DelayedFrameCount = Mathf.Max(1, AssetManagerSettings.DelayedFrameNumInEditorSimulateMode);
+        }
 	}
 }
