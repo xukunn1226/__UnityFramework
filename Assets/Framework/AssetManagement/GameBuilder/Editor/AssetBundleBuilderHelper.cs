@@ -20,41 +20,33 @@ namespace Framework.AssetManagement.AssetEditorWindow
         }
 
         /// <summary>
-        /// 获取默认资源包输出目录
-        /// </summary>
-        /// <returns></returns>
-        public static string GetDefaultBundlesOutputRoot()
-        {
-            return $"{GetDefaultOutputRoot()}/Cache/Bundles";
-        }
-
-        /// <summary>
-        /// 根据包名、平台等获取最终资源包的输出目录
+        /// 获取最终资源包的输出目录
         /// </summary>
         /// <param name="buildTarget"></param>
         /// <returns></returns>
         public static string GetCacheBundlesOutput(BuildTarget buildTarget)
         {
-            return $"{GetDefaultBundlesOutputRoot()}/{buildTarget}";
+            return $"{GetDefaultOutputRoot()}/{AssetManagerSettings.OutputFolderName}/Bundles/{buildTarget}";
         }
-
+        
         /// <summary>
-        /// 获取默认APP输出目录
-        /// </summary>
-        /// <returns></returns>
-        public static string GetDefaultPlayerOutputRoot()
-        {
-            return $"{GetDefaultOutputRoot()}/Cache/Player";
-        }
-
-        /// <summary>
-        /// 根据包名、平台等获取最终APP的输出目录
+        /// 获取最终APP的输出目录
         /// </summary>
         /// <param name="buildTarget"></param>
         /// <returns></returns>
         public static string GetCachePlayerOutput(BuildTarget buildTarget)
         {
-            return $"{GetDefaultPlayerOutputRoot()}/{buildTarget}";
+            return $"{GetDefaultOutputRoot()}/{AssetManagerSettings.OutputFolderName}/Player/{buildTarget}";
+        }
+
+        /// <summary>
+        /// 获取最终APP的输出目录
+        /// </summary>
+        /// <param name="buildTarget"></param>
+        /// <returns></returns>
+        public static string GetCacheStreamingOutput(BuildTarget buildTarget)
+        {
+            return $"{GetDefaultOutputRoot()}/{AssetManagerSettings.OutputFolderName}/StreamingAssets/{buildTarget}";
         }
 
         /// <summary>
@@ -97,15 +89,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     info.Delete();
                 }
             }
-        }
-
-        /// <summary>
-        /// 获取构建管线的输出目录
-        /// </summary>
-        public static string MakePipelineOutputDirectory(string outputRoot, string buildPackage, BuildTarget buildTarget)
-        {
-            string outputDirectory = $"{outputRoot}/{buildPackage}/{buildTarget}/{AssetManagerSettings.OutputFolderName}";
-            return outputDirectory;
         }
     }
 }

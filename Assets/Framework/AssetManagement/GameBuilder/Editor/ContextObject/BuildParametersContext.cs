@@ -44,6 +44,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
             return AssetBundleBuilderHelper.GetCachePlayerOutput(gameBuilderSetting.buildTarget);
         }
 
+        public string GetCacheStreamingOutput()
+        {
+            return AssetBundleBuilderHelper.GetCacheStreamingOutput(gameBuilderSetting.buildTarget);
+        }
+
         public string GetPackageVersion()
         {
             return gameBuilderSetting.packageVersion;

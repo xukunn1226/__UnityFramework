@@ -40,7 +40,7 @@ namespace Framework.AssetManagement.Runtime
 		/// <summary>
 		/// 构建输出文件夹名称
 		/// </summary>
-		public const string OutputFolderName = "OutputCache";
+		public const string OutputFolderName = "Cache";
 
 		/// <summary>
 		/// 构建输出的报告文件

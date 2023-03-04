@@ -6,7 +6,7 @@ using Framework.AssetManagement.Runtime;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-	[TaskAttribute("创建构建报告文件")]
+	[TaskAttribute("step6. 创建构建报告文件")]
 	public class TaskCreateReport : IGameBuildTask
 	{
 		void IGameBuildTask.Run(BuildContext context)

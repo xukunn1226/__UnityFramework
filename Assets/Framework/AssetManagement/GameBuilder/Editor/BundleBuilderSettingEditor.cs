@@ -82,6 +82,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
             GUI.color = cachedClr;
 
             EditorGUILayout.EndHorizontal();
+
+            m_nameStyleProp.intValue = (int)(EOutputNameStyle)EditorGUILayout.EnumPopup("资源包名称样式", (EOutputNameStyle)m_nameStyleProp.intValue);
         }
 
         private void DrawBuildAssetBundleOptions()
@@ -92,8 +94,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 m_useLZ4CompressProp.boolValue          = EditorGUILayout.Toggle(new GUIContent("UseLZ4Compress"), m_useLZ4CompressProp.boolValue);
                 m_rebuildBundlesProp.boolValue          = EditorGUILayout.Toggle(new GUIContent("RebuildBundles"), m_rebuildBundlesProp.boolValue);                
                 m_appendHashProp.boolValue              = EditorGUILayout.Toggle(new GUIContent("AppendHash"), m_appendHashProp.boolValue);
-                m_disableWriteTypeTreeProp.boolValue    = EditorGUILayout.Toggle(new GUIContent("DisableWriteTypeTree"), m_disableWriteTypeTreeProp.boolValue);
-                // m_nameStyleProp.intValue                = (int)(EOutputNameStyle)EditorGUILayout.EnumPopup("资源包名称样式", (EOutputNameStyle)m_nameStyleProp.intValue);
+                m_disableWriteTypeTreeProp.boolValue    = EditorGUILayout.Toggle(new GUIContent("DisableWriteTypeTree"), m_disableWriteTypeTreeProp.boolValue);                
             }
             GUILayout.EndVertical();
         }

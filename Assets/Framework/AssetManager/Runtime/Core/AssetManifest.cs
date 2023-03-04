@@ -260,11 +260,10 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		public static string CreateBundleFileName(int nameStype, string bundleName, string fileHash)
 		{
-			if ((EOutputNameStyle)nameStype == EOutputNameStyle.HashName)
+			if ((EOutputNameStyle)nameStype == EOutputNameStyle.BundleName)
 			{
-				//return fileHash;
-				return bundleName;		// TODO: 暂时用bundleName
-			}
+                return bundleName;
+            }
 			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.HashName_Extension)
 			{
 				string tempFileExtension = System.IO.Path.GetExtension(bundleName);

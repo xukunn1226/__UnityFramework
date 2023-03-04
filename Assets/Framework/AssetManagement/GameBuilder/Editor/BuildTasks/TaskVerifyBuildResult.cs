@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-    [TaskAttribute("Step4. 验证构建结果")]
+    [TaskAttribute("Step3. 验证构建结果")]
     public class TaskVerifyBuildResult : IGameBuildTask
     {
         void IGameBuildTask.Run(BuildContext context)

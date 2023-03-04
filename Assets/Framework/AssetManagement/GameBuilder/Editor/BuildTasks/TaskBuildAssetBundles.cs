@@ -5,7 +5,6 @@ using UnityEditor;
 using System;
 using System.Linq;
 using UnityEditor.Build.Pipeline;
-using UnityEngine.Build.Pipeline;
 using UnityEditor.Build.Pipeline.Interfaces;
 using UnityEditor.Build.Pipeline.Tasks;
 using UnityEditor.Build.Content;
@@ -13,7 +12,7 @@ using UnityEditor.Build.Pipeline.Injector;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-    [TaskAttribute("Step3. 构建资源包(SBP)")]
+    [TaskAttribute("Step2. 构建资源包(SBP)")]
     public class TaskBuildAssetBundles : IGameBuildTask
     {
         void IGameBuildTask.Run(BuildContext context)
@@ -39,14 +38,6 @@ namespace Framework.AssetManagement.AssetEditorWindow
             context.SetContextObject(buildResultContext);
 
             CopyRawBundle(buildMapContext, buildParametersContext);
-
-            // 输出UnityManifest，调试用
-            var manifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
-            manifest.SetResults(buildResults.BundleInfos);            
-            string unityManifestPath = $"Assets/Temp/UnityManifest.asset";
-            EditorTools.CreateFileDirectory(unityManifestPath);
-            AssetDatabase.DeleteAsset(unityManifestPath);
-            AssetDatabase.CreateAsset(manifest, unityManifestPath);
         }
 
         private void CopyRawBundle(BuildMapContext buildMapContext, BuildParametersContext buildParametersContext)

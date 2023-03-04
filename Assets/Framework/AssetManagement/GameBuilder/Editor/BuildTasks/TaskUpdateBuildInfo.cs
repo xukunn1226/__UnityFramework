@@ -7,7 +7,7 @@ using UnityEditor.Build.Pipeline.Interfaces;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-    [TaskAttribute("Step5. 更新构建数据")]
+    [TaskAttribute("Step4. 更新构建数据")]
     public class TaskUpdateBuildInfo : IGameBuildTask
     {
         void IGameBuildTask.Run(BuildContext context)
@@ -38,11 +38,12 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 bundleInfo.PatchInfo.PatchFileSize = GetBundleFileSize(buildOutputFilePath);
             }
 
-            int outputNameStyle = 1;
+            int outputNameStyle = (int)buildParametersContext.gameBuilderSetting.bundleSetting.nameStyle;
+            string cacheStreaingOutput = buildParametersContext.GetCacheStreamingOutput();
             foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
             {
                 string patchFileName = AssetManifest.CreateBundleFileName(outputNameStyle, bundleInfo.BundleName, bundleInfo.PatchInfo.PatchFileHash);
-                //bundleInfo.PatchInfo.PatchOutputFilePath = $"{packageOutputDirectory}/{patchFileName}";
+                bundleInfo.PatchInfo.PatchOutputFilePath = $"{cacheStreaingOutput}/{patchFileName}";
             }
         }
 

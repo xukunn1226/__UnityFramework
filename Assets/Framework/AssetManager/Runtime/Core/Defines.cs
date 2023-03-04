@@ -84,9 +84,9 @@ namespace Framework.AssetManagement.Runtime
     public enum EOutputNameStyle
 	{
 		/// <summary>
-		/// 000000000000000f000000000000000
+		/// bundle_name
 		/// </summary>
-		HashName = 1,
+		BundleName = 1,
 
 		/// <summary>
 		/// 000000000000000f000000000000000.ab

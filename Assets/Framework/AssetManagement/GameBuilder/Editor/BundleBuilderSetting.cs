@@ -19,7 +19,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         /// <summary>
         /// 资源包的名称样式
         /// </summary>
-        public EOutputNameStyle nameStyle = EOutputNameStyle.HashName;
+        public EOutputNameStyle nameStyle = EOutputNameStyle.BundleName;
         
         /// <summary>
         /// 是否使用LZ4压缩模式
@@ -42,6 +42,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             sb.Append(string.Format($"appendHash: {appendHash}  \n"));
             sb.Append(string.Format($"DisableWriteTypeTree: {disableWriteTypeTree}  \n"));
             sb.Append(string.Format($"bundleCollectorConfigName: {bundleCollectorConfigName}  \n"));
+            sb.Append(string.Format($"nameStyle: {nameStyle}  \n"));
             return sb.ToString();
         }
     }

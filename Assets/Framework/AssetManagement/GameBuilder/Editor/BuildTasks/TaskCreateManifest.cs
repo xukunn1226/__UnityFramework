@@ -4,34 +4,29 @@ using UnityEngine;
 using UnityEditor;
 using Framework.AssetManagement.Runtime;
 using System;
+using UnityEngine.Build.Pipeline;
 
 namespace Framework.AssetManagement.AssetEditorWindow
 {
-    [TaskAttribute("Step6. 创建清单文件")]
+    [TaskAttribute("Step5. 创建清单文件")]
     public class TaskCreateManifest : IGameBuildTask
     {
         void IGameBuildTask.Run(BuildContext context)
         {
             var buildMapContext = context.GetContextObject<BuildMapContext>();
             var buildParametersContext = context.GetContextObject<BuildParametersContext>();
+            var buildResultContext = context.GetContextObject<BuildResultContext>();
             string cacheBundlesOutput = buildParametersContext.GetCacheBundlesOutput();
 
             // 创建清单文件
             AssetManifest manifest = new AssetManifest();
             manifest.SerializedVersion = 1;
             manifest.PackageVersion = buildParametersContext.GetPackageVersion();
-            manifest.OutputNameStyle = 1;
+            manifest.OutputNameStyle = (int)buildParametersContext.gameBuilderSetting.bundleSetting.nameStyle;       // see EOutputNameStyle
 
             foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
             {
-                BundleDescriptor desc = new BundleDescriptor();
-                desc.bundleName = bundleInfo.BundleName;
-                desc.fileHash = bundleInfo.PatchInfo.PatchFileHash;
-                desc.fileCRC = bundleInfo.PatchInfo.PatchFileCRC;
-                desc.fileSize = bundleInfo.PatchInfo.PatchFileSize;
-                desc.isRawFile = bundleInfo.IsRawFile;
-                desc.loadMethod = 0;
-                manifest.BundleList.Add(desc);
+                manifest.BundleList.Add(bundleInfo.CreateBundleDescriptor());
             }
 
             foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
@@ -90,6 +85,16 @@ namespace Framework.AssetManagement.AssetEditorWindow
             filePath = $"{cacheBundlesOutput}/{fileName}";
             FileUtility.CreateFile(filePath, buildParametersContext.GetPackageVersion());
             BuildRunner.Log($"创建补丁清单版本文件：{filePath}");
+
+            // 输出UnityManifest，调试用
+            var unityManifest = ScriptableObject.CreateInstance<CompatibilityAssetBundleManifest>();
+            unityManifest.SetResults(buildResultContext.Results.BundleInfos);
+            fileName = "UnityManifest.asset";
+            string srcFilePath = $"Assets/Temp";
+            string dstFilePath = $"{cacheBundlesOutput}/{fileName}";
+            EditorTools.CreateDirectory(srcFilePath);
+            AssetDatabase.CreateAsset(unityManifest, $"{srcFilePath}/{fileName}");
+            EditorTools.CopyFile($"{srcFilePath}/{fileName}", dstFilePath, true);
         }
     }
 }

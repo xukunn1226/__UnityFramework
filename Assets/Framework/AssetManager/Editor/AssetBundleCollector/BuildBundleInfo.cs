@@ -35,6 +35,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
             /// 构建输出的文件路径
             /// </summary>
             public string BuildOutputFilePath { set; get; }
+
+            /// <summary>
+			/// 补丁包输出文件路径
+			/// </summary>
+			public string PatchOutputFilePath { set; get; }
         }
 
         /// <summary>
@@ -176,6 +181,18 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 build.addressableNames[i] = build.assetNames[i].ToLower();
             }
             return build;
+        }
+
+        internal BundleDescriptor CreateBundleDescriptor()
+        {
+            BundleDescriptor desc = new BundleDescriptor();
+            desc.bundleName = BundleName;
+            desc.fileHash = PatchInfo.PatchFileHash;
+            desc.fileCRC = PatchInfo.PatchFileCRC;
+            desc.fileSize = PatchInfo.PatchFileSize;
+            desc.isRawFile = IsRawFile;
+            desc.loadMethod = 0;
+            return desc;
         }
     }
 }

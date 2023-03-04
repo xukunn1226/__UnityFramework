@@ -102,6 +102,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 new TaskUpdateBuildInfo(),          // 根据打包结果更新数据
                 new TaskCreateManifest(),           // 创建清单
                 new TaskCreateReport(),             // 创建构建报告
+                new TaskCreatePatchPackage(),       // 创建补丁包
                 new TaskCopyToStreamingAssets(),    // 拷贝文件到Streaming
             };
             tasks.AddRange(bundleTasks);

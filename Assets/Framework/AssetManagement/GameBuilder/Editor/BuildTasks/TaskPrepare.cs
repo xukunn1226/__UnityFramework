@@ -32,11 +32,14 @@ namespace Framework.AssetManagement.AssetEditorWindow
             // 创建输出目录
             string bundleOutputDirectory = AssetBundleBuilderHelper.GetCacheBundlesOutput(gameBuilderSetting.buildTarget);
             string playerOutputDirectory = AssetBundleBuilderHelper.GetCachePlayerOutput(gameBuilderSetting.buildTarget);
+            string streamingOutputDirectory = AssetBundleBuilderHelper.GetCacheStreamingOutput(gameBuilderSetting.buildTarget);
             EditorTools.DeleteDirectory(bundleOutputDirectory);
             EditorTools.DeleteDirectory(playerOutputDirectory);
+            EditorTools.DeleteDirectory(streamingOutputDirectory);
             EditorTools.CreateDirectory(bundleOutputDirectory);
             EditorTools.CreateDirectory(playerOutputDirectory);
-            BuildRunner.Log($"创建输出目录：{bundleOutputDirectory} and {playerOutputDirectory}");
+            EditorTools.CreateDirectory(streamingOutputDirectory);
+            BuildRunner.Log($"创建输出目录：{bundleOutputDirectory}、{playerOutputDirectory}、{streamingOutputDirectory}");
         }
     }
 }
