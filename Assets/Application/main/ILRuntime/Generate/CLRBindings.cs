@@ -45,7 +45,7 @@ namespace ILRuntime.Runtime.Generated
             System_Type_Binding.Register(app);
             AnimationInstancingModule_Runtime_AnimationInstancing_Binding.Register(app);
             Framework_AssetManagement_Runtime_AssetManagerEx_Binding.Register(app);
-            Framework_AssetManagement_Runtime_AssetOperationHandle_Binding.Register(app);
+            Framework_AssetManagement_Runtime_PrefabOperationHandle_Binding.Register(app);
             AnimationInstancingModule_Runtime_Sword_Binding.Register(app);
             System_Threading_Interlocked_Binding.Register(app);
             System_Action_Binding.Register(app);
@@ -108,6 +108,7 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine_Screen_Binding.Register(app);
             UnityEngine_Resolution_Binding.Register(app);
             UnityEngine_Rendering_OnDemandRendering_Binding.Register(app);
+            Framework_AssetManagement_Runtime_AssetOperationHandle_Binding.Register(app);
             UnityEngine_Resources_Binding.Register(app);
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_LinkedList_1_ILTypeInstance_Binding_Enumerator_Binding.Register(app);

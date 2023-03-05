@@ -26,6 +26,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         public bool                         compressWithLz4;                    // Use chunk-based LZ4 compression when building the Player
         public bool                         compressWithLz4HC;                  // Use chunk-based LZ4 high-compression when building the Player.
         public bool                         strictMode;                         // Do not allow the build to succeed if any errors are reporting during it.
+        public bool                         allowDebugging;
         [System.NonSerialized]
         public VersionChangedMode           versionChangedMode;                 // 版本号设定方式
         [System.NonSerialized] public int   mainVersion;
@@ -66,6 +67,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             sb.Append(string.Format($"compressWithLz4: {compressWithLz4}  \n"));
             sb.Append(string.Format($"compressWithLz4HC: {compressWithLz4HC}  \n"));
             sb.Append(string.Format($"strictMode: {strictMode}  \n"));
+            sb.Append(string.Format($"allowDebugging: {allowDebugging}  \n"));
             // sb.Append(string.Format($"bundleVersion: {bundleVersion}  \n"));
             sb.Append(string.Format($"releaseNative: {releaseNative}    \n"));
             sb.Append(string.Format($"useIL2CPP: {useIL2CPP}  \n"));

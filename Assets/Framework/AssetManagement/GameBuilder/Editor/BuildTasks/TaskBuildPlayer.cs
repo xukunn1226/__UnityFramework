@@ -22,7 +22,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             BuildRunner.Log("引擎构建Player成功！");
         }
 
-        private static BuildReport OpenLastBuild()
+        private BuildReport OpenLastBuild()
         {
             const string buildReportDir = "Assets/BuildReports";
             if (!Directory.Exists(buildReportDir))
@@ -30,7 +30,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
 
             var date = File.GetLastWriteTime("Library/LastBuild.buildreport");
             var assetPath = buildReportDir + "/Build_" + date.ToString("yyyy-dd-MMM-HH-mm-ss") + ".buildreport";
-            File.Copy("Library/LastBuild.buildreport", assetPath, true);
+            EditorTools.CopyFile("Library/LastBuild.buildreport", assetPath, true);
+            EditorTools.CopyFile("Library/LastBuild.buildreport", $"{AssetBundleBuilderHelper.GetDefaultOutputRoot()}/LastBuild.buildreport", true);
             AssetDatabase.ImportAsset(assetPath);
             BuildReport report = AssetDatabase.LoadAssetAtPath<BuildReport>(assetPath);
             Selection.objects = new UnityEngine.Object[] { report };
@@ -129,6 +130,11 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 opt |= BuildOptions.StrictMode;
             else
                 opt &= ~BuildOptions.StrictMode;
+
+            if (para.allowDebugging)
+                opt |= BuildOptions.AllowDebugging;
+            else
+                opt &= ~BuildOptions.AllowDebugging;
 
             return opt;
         }

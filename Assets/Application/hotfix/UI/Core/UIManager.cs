@@ -120,7 +120,7 @@ namespace Application.Logic
 
         protected override void InternalInit()
         {
-            AtlasManager.InitPersistentAtlas();
+            // AtlasManager.InitPersistentAtlas();
             InitCanvas();
             InitLayer();
             UIDefines.Init();

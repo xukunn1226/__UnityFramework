@@ -14,6 +14,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         SerializedProperty              m_compressWithLz4Prop;
         SerializedProperty              m_compressWithLz4HCProp;
         SerializedProperty              m_strictModeProp;
+        SerializedProperty              m_allowDebuggingProp;
         SerializedProperty              m_releaseNativeProp;
         SerializedProperty              m_useIL2CPPProp;
         SerializedProperty              m_useMTRenderingProp;
@@ -38,6 +39,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
             m_compressWithLz4Prop       = serializedObject.FindProperty("compressWithLz4");
             m_compressWithLz4HCProp     = serializedObject.FindProperty("compressWithLz4HC");
             m_strictModeProp            = serializedObject.FindProperty("strictMode");
+            m_allowDebuggingProp        = serializedObject.FindProperty("allowDebugging");
             m_releaseNativeProp         = serializedObject.FindProperty("releaseNative");
             m_useIL2CPPProp             = serializedObject.FindProperty("useIL2CPP");
             m_useMTRenderingProp        = serializedObject.FindProperty("useMTRendering");
@@ -126,6 +128,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     EditorGUI.EndDisabledGroup();
                 m_compressWithLz4HCProp.boolValue = EditorGUILayout.Toggle(new GUIContent("CompressWithLz4HC"), m_compressWithLz4HCProp.boolValue);
                 m_strictModeProp.boolValue = EditorGUILayout.Toggle(new GUIContent("StrictMode"), m_strictModeProp.boolValue);
+                m_allowDebuggingProp.boolValue = EditorGUILayout.Toggle(new GUIContent("AllowDebugging"), m_allowDebuggingProp.boolValue);
             }
             GUILayout.EndVertical();
         }
