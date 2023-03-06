@@ -231,8 +231,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
                         throw new System.Exception($"Should never get here! {dependNode.assetPath} not exists in allCollectAssets");
 
                     // 此类资源将被合并至其他资源包中
-                    if (assetInfo.CanBeMerged())
-                        continue;
+                    // if (assetInfo.CanBeMerged())
+                    //     continue;
 
                     dependAssetInfos.Add(buildAssetInfo);
                 }
