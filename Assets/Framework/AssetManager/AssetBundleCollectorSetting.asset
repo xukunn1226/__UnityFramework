@@ -84,4 +84,4 @@ MonoBehaviour:
         CollectorType: 0
         PackRuleName: PackToOtherCollector
         FilterRuleName: CollectAll
-        OtherCollectPath: 
+        OtherCollectPath: Assets/Res

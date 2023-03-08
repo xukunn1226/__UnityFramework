@@ -270,22 +270,22 @@ namespace Framework.AssetManagement.AssetEditorWindow
                         collector.PackRuleName = packRuleDisplayNames[selectedIndex].ClassName;
                         if(collector.PackRuleName == nameof(PackToOtherCollector))
                         {
-                            EditorGUILayout.BeginVertical();
-                            //EditorGUILayout.LabelField("其他收集器：", GUILayout.Width(80));
-                            //collector.OtherCollectPath = EditorGUILayout.TextField(collector.OtherCollectPath, GUILayout.Width(320));
-                                                        
-                            EditorGUILayout.LabelField(new GUIContent("其他收集器：", $"{collector.OtherCollectPath}"), GUILayout.Width(100));
                             EditorGUILayout.BeginHorizontal();
-                            UnityEngine.Object oldObj1 = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(collector.OtherCollectPath);
-                            UnityEngine.Object newObj1 = EditorGUILayout.ObjectField(oldObj1, typeof(UnityEngine.Object), false, GUILayout.ExpandWidth(true));
-                            if (oldObj1 != newObj1)
-                            {
-                                collector.OtherCollectPath = AssetDatabase.GetAssetPath(newObj1);
-                            }
-                            EditorGUILayout.LabelField($"路径：{collector.OtherCollectPath}");
-                            EditorGUILayout.EndHorizontal();
+                            EditorGUILayout.LabelField("其他收集器前缀名：", GUILayout.Width(150));
+                            collector.OtherCollectPath = EditorGUILayout.TextField(collector.OtherCollectPath);
 
-                            EditorGUILayout.EndVertical();
+                            //EditorGUILayout.LabelField(new GUIContent("其他收集器：", $"{collector.OtherCollectPath}"), GUILayout.Width(100));
+                            //EditorGUILayout.BeginHorizontal();
+                            //UnityEngine.Object oldObj1 = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(collector.OtherCollectPath);
+                            //UnityEngine.Object newObj1 = EditorGUILayout.ObjectField(oldObj1, typeof(UnityEngine.Object), false, GUILayout.ExpandWidth(true));
+                            //if (oldObj1 != newObj1)
+                            //{
+                            //    collector.OtherCollectPath = AssetDatabase.GetAssetPath(newObj1);
+                            //}
+                            //EditorGUILayout.LabelField($"路径：{collector.OtherCollectPath}");
+                            //EditorGUILayout.EndHorizontal();
+
+                            EditorGUILayout.EndHorizontal();
                         }
                         EditorGUILayout.EndVertical();
 

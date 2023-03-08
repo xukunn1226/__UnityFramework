@@ -139,7 +139,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         string IPackRule.GetBundleName(PackRuleData data)
         {
             // 默认以文件路径为资源包名
-            return ((IPackRule)PackFile.StaticPackRule).GetBundleName(data);
+            return ((IPackRule)PackDirectory.StaticPackRule).GetBundleName(data);
         }
     }
 }

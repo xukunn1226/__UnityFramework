@@ -81,19 +81,20 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 if (assetInfo.Collector.PackRuleName != ruleName)
                     continue;
 
-                // 找到引用的其他收集器
-                var referencedCollector = FindCollector(assetInfo.Collector.OtherCollectPath);
-                if (referencedCollector == null)
-                {
-                    Debug.LogWarning($"Not found the referenced collector: {assetInfo.Collector.OtherCollectPath}");
-                    continue;       // 没有找到引用的收集器，则不执行重定向
-                }
+                var filename = System.IO.Path.GetFileName(assetInfo.AssetPath);
+                var directoryName = EditorTools.GetRegularPath(System.IO.Path.GetDirectoryName(assetInfo.AssetPath));
 
-                // 重定位后的资源路径
-                string finalAssetPath = assetInfo.Collector.GetPackToOtherAssetPath(assetInfo.AssetPath);
+                // assetPath - collector.CollectPath + collector.OtherCollectorPath
+                var assetPath = directoryName.Substring(assetInfo.Collector.CollectPath.Length + 1);
+                var toAssetPath = $"{assetInfo.Collector.OtherCollectPath}/{assetPath}";
 
-                // 重新计算BundleName
-                string newBundleName = referencedCollector.GetBundleName(referencedCollector.Group, finalAssetPath);
+                // 找到目标收集器
+                var targetAssetCollector = results.Find(item => { return item.AssetPath.Contains(toAssetPath); });
+                if (targetAssetCollector == null)
+                    continue;
+
+                // 使用目标收集器重新计算bundleName
+                string newBundleName = targetAssetCollector.Collector.GetBundleName(targetAssetCollector.Collector.Group, $"{toAssetPath}/{filename}");
                 assetInfo.SetNewBundleName(newBundleName);
             }
             return results;
