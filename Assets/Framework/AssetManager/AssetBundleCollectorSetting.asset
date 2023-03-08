@@ -60,13 +60,23 @@ MonoBehaviour:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectPath: Assets/Res/Characters
+      - CollectPath: Assets/Res/111
+        CollectorType: 0
+        PackRuleName: PackCollector
+        FilterRuleName: CollectAll
+        OtherCollectPath: 
+      - CollectPath: Assets/Res/DG/Heros
+        CollectorType: 0
+        PackRuleName: PackTopDirectory
+        FilterRuleName: CollectAll
+        OtherCollectPath: Assets/Res/Characters
+      - CollectPath: Assets/Res/WD/Heros
         CollectorType: 0
         PackRuleName: PackTopDirectory
         FilterRuleName: CollectAll
         OtherCollectPath: 
-      - CollectPath: Assets/Res/FX/Characters
+      - CollectPath: Assets/Res/FX/Materials
         CollectorType: 0
-        PackRuleName: PackToOtherCollector
+        PackRuleName: PackCollector
         FilterRuleName: CollectAll
-        OtherCollectPath: Assets/Res/Characters
+        OtherCollectPath: 
