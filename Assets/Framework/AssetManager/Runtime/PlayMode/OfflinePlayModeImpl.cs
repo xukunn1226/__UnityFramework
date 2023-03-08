@@ -66,5 +66,10 @@ namespace Framework.AssetManagement.Runtime
             else
                 return null;
         }
+
+        string IBundleServices.GetBundleName(int bundleID)
+		{
+			return m_Manifest.GetBundleName(bundleID);
+		}
     }
 }

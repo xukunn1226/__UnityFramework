@@ -41,6 +41,11 @@ namespace Framework.AssetManagement.Runtime
         /// </summary>
         public byte     loadMethod;
 
+        /// <summary>
+		/// 引用该资源包的ID列表
+		/// </summary>
+		public int[]    referenceIDs;
+
         private string  m_PackageName;
 
         private string  m_StreamingFilePath;

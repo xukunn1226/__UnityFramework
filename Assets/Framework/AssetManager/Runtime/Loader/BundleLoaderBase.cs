@@ -19,7 +19,7 @@ namespace Framework.AssetManagement.Runtime
         public float                downloadProgress        { get; set; }
         public ulong                downloadBytes           { get; set; }
         public bool                 isDone                  { get { return status == EBundleLoadStatus.Succeed || status == EBundleLoadStatus.Failed; } }
-        public bool                 canDestroy              { get { return isDone ? refCount <= 0 : false; } }
+        public bool                 isDestroyed             { get; private set; }
         public bool                 isTriggerLoadingRequest { get; protected set; }     // 当前帧是否触发了加载请求
 
         protected BundleLoaderBase() { }
@@ -44,8 +44,28 @@ namespace Framework.AssetManagement.Runtime
             --refCount;
         }
 
+        public bool canDestroy()
+        {
+            if(isDone == false)
+                return false;
+            if(refCount > 0)
+                return false;
+
+            // 检查引用链上的资源包是否全部销毁
+            // referenceIDs: 引用了该资源包的ID列表
+            // 仅当引用了该资源包的资源包都销毁了，才能销毁
+            foreach(var bundleID in bundleInfo.descriptor.referenceIDs)
+            {
+                if(assetSystem.CheckBundleDestroyed(bundleID) == false)
+                    return false;
+            }
+            return true;
+        }
+
         public void Destroy(bool forceDestroy)
         {
+            isDestroyed = true;
+            
             if(!forceDestroy)
             {
                 if (refCount > 0)

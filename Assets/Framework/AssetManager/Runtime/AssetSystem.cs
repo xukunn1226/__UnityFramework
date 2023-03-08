@@ -58,7 +58,6 @@ namespace Framework.AssetManagement.Runtime
 
             PollingProviders();
 
-            // for debug
             UnloadUnusedAssets();
         }
 
@@ -150,7 +149,6 @@ namespace Framework.AssetManagement.Runtime
         public void UnloadUnusedAssets()
         {
             // 遍历资源提供者，引用计数为0的销毁
-            bool hasProviderDestroy = false;
             for(int i = m_ProviderSet.Count - 1; i >= 0; --i)
             {
                 ProviderBase provider = m_ProviderSet[i];
@@ -160,8 +158,6 @@ namespace Framework.AssetManagement.Runtime
 
                     m_ProviderDict.Remove(provider.providerGUID);
                     m_ProviderSet.RemoveAt(i);
-
-                    hasProviderDestroy = true;
                 }
             }
             for (int i = m_ProviderSetHigh.Count - 1; i >= 0; --i)
@@ -173,8 +169,6 @@ namespace Framework.AssetManagement.Runtime
 
                     m_ProviderDictHigh.Remove(provider.providerGUID);
                     m_ProviderSetHigh.RemoveAt(i);
-
-                    hasProviderDestroy = true;
                 }
             }
             for (int i = m_ProviderSetLow.Count - 1; i >= 0; --i)
@@ -186,26 +180,21 @@ namespace Framework.AssetManagement.Runtime
 
                     m_ProviderDictLow.Remove(provider.providerGUID);
                     m_ProviderSetLow.RemoveAt(i);
-
-                    hasProviderDestroy = true;
                 }
             }
 
             // 编辑器模拟模式不会产生BundleLoader
             if (m_PlayMode != EPlayMode.FromEditor)
             {
-                if (hasProviderDestroy)
-                { // 仅当有Provider被销毁了，才可能需要销毁Bundle Loader
-                    for (int i = m_BundleLoaderSet.Count - 1; i >= 0; --i)
+                for (int i = m_BundleLoaderSet.Count - 1; i >= 0; --i)
+                {
+                    var loader = m_BundleLoaderSet[i];
+                    if (loader.canDestroy())
                     {
-                        var loader = m_BundleLoaderSet[i];
-                        if (loader.canDestroy)
-                        {
-                            loader.Destroy(false);
+                        loader.Destroy(false);
 
-                            m_BundleLoaderDict.Remove(loader.bundleInfo.descriptor.bundleName);
-                            m_BundleLoaderSet.RemoveAt(i);
-                        }
+                        m_BundleLoaderDict.Remove(loader.bundleInfo.descriptor.bundleName);
+                        m_BundleLoaderSet.RemoveAt(i);
                     }
                 }
             }
@@ -259,6 +248,20 @@ namespace Framework.AssetManagement.Runtime
             m_BundleLoaderSet.AddUnique(loader);
             return loader;
         }
+
+        /// <summary>
+        /// 检查资源包的销毁状态
+        /// </summary>
+        /// <param name="bundleID"></param>
+        /// <returns></returns>
+        internal bool CheckBundleDestroyed(int bundleID)
+		{
+			string bundleName = bundleServices.GetBundleName(bundleID);
+			BundleLoaderBase loader = TryGetAssetBundleLoader(bundleName);
+			if (loader == null)
+				return true;
+			return loader.isDestroyed;
+		}
 
         private BundleLoaderBase TryGetAssetBundleLoader(string bundleName)
         {

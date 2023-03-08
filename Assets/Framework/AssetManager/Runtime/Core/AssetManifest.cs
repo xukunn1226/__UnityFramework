@@ -108,6 +108,19 @@ namespace Framework.AssetManagement.Runtime
             }
         }
 
+		public string GetBundleName(int bundleID)
+		{
+			if (bundleID >= 0 && bundleID < BundleList.Count)
+			{
+				var bundleDesc = BundleList[bundleID];
+				return bundleDesc.bundleName;
+			}
+			else
+			{
+				throw new Exception($"Invalid bundle id : {bundleID}");
+			}
+		}
+
         /// <summary>
         /// 尝试获取补丁资源
         /// </summary>
@@ -174,6 +187,7 @@ namespace Framework.AssetManagement.Runtime
 					buffer.WriteInt64(patchBundle.fileSize);
 					buffer.WriteBool(patchBundle.isRawFile);
 					buffer.WriteByte(patchBundle.loadMethod);
+					buffer.WriteInt32Array(patchBundle.referenceIDs);
 				}
 
 				// 写入文件流
@@ -230,6 +244,7 @@ namespace Framework.AssetManagement.Runtime
 					patchBundle.fileSize = buffer.ReadInt64();
 					patchBundle.isRawFile = buffer.ReadBool();
 					patchBundle.loadMethod = buffer.ReadByte();
+					patchBundle.referenceIDs = buffer.ReadInt32Array();
 					manifest.BundleList.Add(patchBundle);
 				}
 			}

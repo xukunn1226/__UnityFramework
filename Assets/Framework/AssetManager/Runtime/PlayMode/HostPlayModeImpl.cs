@@ -20,5 +20,10 @@ namespace Framework.AssetManagement.Runtime
         {
             return null;
         }
+
+        string IBundleServices.GetBundleName(int bundleID)
+		{
+			return null;
+		}
     }
 }

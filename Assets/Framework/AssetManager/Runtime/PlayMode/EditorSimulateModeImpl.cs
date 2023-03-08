@@ -30,5 +30,10 @@ namespace Framework.AssetManagement.Runtime
 
             return desc;
         }
+
+        string IBundleServices.GetBundleName(int bundleID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

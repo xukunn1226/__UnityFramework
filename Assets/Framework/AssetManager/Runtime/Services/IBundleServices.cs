@@ -11,5 +11,7 @@ namespace Framework.AssetManagement.Runtime
         BundleInfo[] GetAllDependBundleInfos(AssetInfo assetInfo);
 
         AssetDescriptor TryGetAssetDesc(string assetPath);
+
+        string GetBundleName(int bundleID);
     }
 }
