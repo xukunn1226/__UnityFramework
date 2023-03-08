@@ -279,10 +279,9 @@ namespace Framework.AssetManagement.Runtime
 			{
                 return bundleName;
             }
-			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.HashName_Extension)
+			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.HashName)
 			{
-				string tempFileExtension = System.IO.Path.GetExtension(bundleName);
-				return $"{fileHash}{tempFileExtension}";
+				return fileHash;
 			}
 			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.BundleName_HashName)
 			{
@@ -290,11 +289,15 @@ namespace Framework.AssetManagement.Runtime
 				string tempBundleName = bundleName.Replace('/', '_').Replace(tempFileExtension, "");
 				return $"{tempBundleName}_{fileHash}";
 			}
-			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.BundleName_HashName_Extension)
+			else if ((EOutputNameStyle)nameStype == EOutputNameStyle.Hierarchy_Directory)
 			{
-				string tempFileExtension = System.IO.Path.GetExtension(bundleName);
-				string tempBundleName = bundleName.Replace('/', '_').Replace(tempFileExtension, "");
-				return $"{tempBundleName}_{fileHash}{tempFileExtension}";
+				int index = bundleName.LastIndexOf("_");
+				if(index == -1)
+					return bundleName;
+
+				string fileName = bundleName.Substring(index + 1);
+				string path = bundleName.Substring(0, index).Replace('_', '/');
+				return $"{path}/{fileName}";
 			}
 			else
 			{

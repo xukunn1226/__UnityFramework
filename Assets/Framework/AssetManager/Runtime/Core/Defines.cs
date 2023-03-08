@@ -88,19 +88,19 @@ namespace Framework.AssetManagement.Runtime
 		/// </summary>
 		BundleName = 1,
 
-		/// <summary>
-		/// 000000000000000f000000000000000.ab
+        /// <summary>
+		/// 哈希值
 		/// </summary>
-		HashName_Extension = 2,
+        HashName = 2,
 
 		/// <summary>
-		/// bundle_name_000000000000000f000000000000000
+		/// 资源包 + 哈希值
 		/// </summary>
 		BundleName_HashName = 3,
 
-		/// <summary>
-		/// bundle_name_000000000000000f000000000000000.ab
-		/// </summary>
-		BundleName_HashName_Extension = 4,
+        /// <summary>
+        /// 同资源目录结构
+        /// </summary>
+        Hierarchy_Directory = 4,
 	}
 }

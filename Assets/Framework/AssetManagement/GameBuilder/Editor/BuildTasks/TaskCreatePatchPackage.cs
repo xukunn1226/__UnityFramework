@@ -11,7 +11,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
         void IGameBuildTask.Run(BuildContext context)
         {
             var buildParametersContext = context.GetContextObject<BuildParametersContext>();
-            var manifestContext = context.GetContextObject<AssetManifestContext>();
+            var buildMapContext = context.GetContextObject<BuildMapContext>();
             var packageVersion = buildParametersContext.GetPackageVersion();
             string cacheBundlesOutput = buildParametersContext.GetCacheBundlesOutput();
             string cacheStreamingOutput = buildParametersContext.GetCacheStreamingOutput();
@@ -40,13 +40,14 @@ namespace Framework.AssetManagement.AssetEditorWindow
                 EditorTools.CopyFile(sourcePath, destPath, true);
             }
 
-            // 拷贝文件列表（所有文件）
-            foreach (var patchBundle in manifestContext.Manifest.BundleList)
-            {
-                string sourcePath = $"{cacheBundlesOutput}/{patchBundle.bundleName}";
-                string destPath = $"{cacheStreamingOutput}/{patchBundle.fileName}";
-                EditorTools.CopyFile(sourcePath, destPath, true);
-            }
+			int progressValue = 0;
+			int patchFileTotalCount = buildMapContext.BuildBundleInfos.Count;
+			foreach (var bundleInfo in buildMapContext.BuildBundleInfos)
+			{
+				EditorTools.CopyFile(bundleInfo.PatchInfo.BuildOutputFilePath, bundleInfo.PatchInfo.PatchOutputFilePath, true);
+				EditorTools.DisplayProgressBar("拷贝补丁文件", ++progressValue, patchFileTotalCount);
+			}
+			EditorTools.ClearProgressBar();
 
             BuildRunner.Log($"创建补丁包完成：{cacheStreamingOutput}");
         }
