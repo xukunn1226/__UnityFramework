@@ -80,3 +80,8 @@ MonoBehaviour:
         PackRuleName: PackCollector
         FilterRuleName: CollectAll
         OtherCollectPath: 
+      - CollectPath: Assets/Res/FX/Prefabs
+        CollectorType: 0
+        PackRuleName: PackToOtherCollector
+        FilterRuleName: CollectAll
+        OtherCollectPath: 
