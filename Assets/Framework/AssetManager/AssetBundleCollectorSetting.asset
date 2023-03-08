@@ -85,3 +85,14 @@ MonoBehaviour:
         PackRuleName: PackToOtherCollector
         FilterRuleName: CollectAll
         OtherCollectPath: Assets/Res
+  - ConfigName: Test
+    ConfigDesc: 
+    Groups:
+    - GroupName: Default GroupName
+      GroupDesc: 
+      Collectors:
+      - CollectPath: Assets/Res/DG/NPC
+        CollectorType: 0
+        PackRuleName: PackTopDirectory
+        FilterRuleName: CollectAll
+        OtherCollectPath: 
