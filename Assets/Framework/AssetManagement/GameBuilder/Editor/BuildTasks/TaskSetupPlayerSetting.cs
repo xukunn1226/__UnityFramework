@@ -110,7 +110,8 @@ namespace Framework.AssetManagement.AssetEditorWindow
             for (int i = 0; i < QualitySettings.names.Length; ++i)
             {
                 QualitySettings.SetQualityLevel(i);
-                QualitySettings.renderPipeline = rawPipelineAsset;
+                //QualitySettings.renderPipeline = rawPipelineAsset;
+                QualitySettings.renderPipeline = null;
             }
         } 
     }

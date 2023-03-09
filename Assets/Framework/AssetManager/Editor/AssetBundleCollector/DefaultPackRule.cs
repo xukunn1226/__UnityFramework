@@ -50,6 +50,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
     [DisplayName("PackTopDirectory：以收集器路径下顶级文件夹为资源包名")]
     public class PackTopDirectory : IPackRule
     {
+        static private int depth = 1;
         string IPackRule.GetBundleName(PackRuleData data)
         {
             if(AssetDatabase.IsValidFolder(data.CollectPath) == false)
