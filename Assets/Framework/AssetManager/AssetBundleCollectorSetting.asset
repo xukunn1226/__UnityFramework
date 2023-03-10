@@ -93,6 +93,6 @@ MonoBehaviour:
       Collectors:
       - CollectPath: Assets/Res/DG/Heros
         CollectorType: 0
-        PackRuleName: PackCollector
+        PackRuleName: PackSecondTopDirectory
         FilterRuleName: CollectAll
         OtherCollectPath: 
