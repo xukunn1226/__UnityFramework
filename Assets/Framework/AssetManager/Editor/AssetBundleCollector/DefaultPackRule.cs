@@ -47,11 +47,17 @@ namespace Framework.AssetManagement.AssetEditorWindow
     /// 例如："Assets/Res/Environment/Building/House/House_Normal.png" -> "assets_res_environment_building_house.bundle"
     /// 例如："Assets/Res/Environment/Building/House/House_Material.material" -> "assets_res_environment_building_house.bundle"
     /// </summary>
-    [DisplayName("PackTopDirectory：以收集器路径下顶级文件夹为资源包名")]
+    [DisplayName("PackTopDirectory：收集器路径下一级文件夹为资源包名")]
     public class PackTopDirectory : IPackRule
     {
-        static private int depth = 1;
-        string IPackRule.GetBundleName(PackRuleData data)
+        protected int depth = 1;
+
+        public virtual string GetBundleName(PackRuleData data)
+        {
+            return InternalGetBundleName(data, depth);
+        }
+
+        static protected string InternalGetBundleName(PackRuleData data, int depth)
         {
             if(AssetDatabase.IsValidFolder(data.CollectPath) == false)
                 throw new System.Exception($"PackTopDirectory: unsupported collector path {data.CollectPath}");
@@ -61,10 +67,25 @@ namespace Framework.AssetManagement.AssetEditorWindow
             string[] splits = assetPath.Split('/');
             if(splits.Length > 0)
             {
-                string bundleName = $"{collectPath}/{splits[0]}";
-                return EditorTools.GetRegularPath(bundleName.TrimEnd('/')).Replace('/', '_');
+                string bundleName = $"{collectPath}";
+                for(int i = 0; i < depth; ++i)
+                {
+                    bundleName = $"/{bundleName}/{splits[i]}";
+                }
+                return EditorTools.GetRegularPath(bundleName.Trim('/')).Replace('/', '_');
             }
             throw new System.Exception($"Not found root directory : {assetPath}");
+        }
+    }
+
+    [DisplayName("PackSecondTopDirectory：收集器路径下二级文件夹为资源包名")]
+    public class PackSecondTopDirectory : PackTopDirectory
+    {
+        new protected int depth = 2;
+
+        public override string GetBundleName(PackRuleData data)
+        {
+            return InternalGetBundleName(data, depth);
         }
     }
 

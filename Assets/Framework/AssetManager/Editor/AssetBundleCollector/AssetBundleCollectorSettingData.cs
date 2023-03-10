@@ -46,6 +46,7 @@ namespace Framework.AssetManagement.AssetEditorWindow
                     typeof(PackFile),
                     typeof(PackDirectory),
                     typeof(PackTopDirectory),
+                    typeof(PackSecondTopDirectory),
                     typeof(PackCollector),
                     typeof(PackGroup),
                     typeof(PackRawFile),

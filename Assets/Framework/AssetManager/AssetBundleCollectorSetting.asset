@@ -91,8 +91,8 @@ MonoBehaviour:
     - GroupName: Default GroupName
       GroupDesc: 
       Collectors:
-      - CollectPath: Assets/Res/DG/NPC
+      - CollectPath: Assets/Res/DG/Heros
         CollectorType: 0
-        PackRuleName: PackTopDirectory
+        PackRuleName: PackCollector
         FilterRuleName: CollectAll
         OtherCollectPath: 
